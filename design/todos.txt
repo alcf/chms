@@ -1,0 +1,4 @@
+* Membership within a group must have 1 or more "roles"
+* Roles are defined over an entire ministry
+* Consider (e.g. for RW): Bulk Add
+* Can we have individuals that are NOT part of a household?  All we have for them are an email or cell phone
