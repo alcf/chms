@@ -1,8 +1,12 @@
-* Membership within a group must have 1 or more "roles"
-* Roles are defined over an entire ministry
 * Consider (e.g. for RW): Bulk Add
-* Can we have individuals that are NOT part of a household?  All we have for them are an email or cell phone
+* Add Delete Buttons
 
-* Merge Records
-* Managing Individuals w/o Households
+* Show Screen 2.6 and 2.6.1 to Oom
+* Reports that Oom would need?
+
+Screens TO DO
+* Screen 2.4.2 - Find Group to Add Individual to
+* Screen 2.7.1 - Merge Individuals, Reconcile Data
+* Screen 2.8 - Assign/Create Household for Individual
+* Adding custom attributes to Individuals
 * Communications
