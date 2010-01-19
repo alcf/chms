@@ -5,7 +5,4 @@
 * Reports that Oom would need?
 
 Screens TO DO
-* Screen 2.7.1 - Merge Individuals, Reconcile Data
-* Screen 2.8 - Assign/Create Household for Individual
-* Adding custom attributes to Individuals
 * Communications
