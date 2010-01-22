@@ -1,30 +1,39 @@
 <?php
-	// This is the "recommended" version of configuration.inc.php, without any comments, and restructured in a way
-	// that should make sense for most pro-users of Qcodo.
-
-	// While it is recommended (for ease of code readability) to use this version of configuration.inc.php-dist,
-	// the configuration.inc.php-full version could potentially be more useful for newer users of Qcodo as it has
-	// comments inline within the file.
-
-	// To use, simply rename or copy this file to includes/configuration.inc.php, and begin making modifications
-	// to the configuration constants as it makes sense for your PHP and docroot installation.
-
 	define('SERVER_INSTANCE', 'dev');
 
 	switch (SERVER_INSTANCE) {
 		case 'dev':
-			define ('__DOCROOT__', '/var/www/chms.alcf.dev/www');
-			define ('__VIRTUAL_DIRECTORY__', '');
-			define ('__SUBDIRECTORY__', '');
+			// If you have machine-specific settings for your development workstation,
+			// then create a file called "configuration.local" in your includes directory
+			// and specify your name in that file.  Then, add a case to the switch
+			// statement below for your configuration.  If the file does not exist,
+			// we will default to the "default" configuration setting.
+			$strLocalConfiguration = null;
+			if (file_exists(dirname(__FILE__) . '/configuration.local'))
+				$strLocalConfiguration = trim(file_get_contents(dirname(__FILE__) . '/configuration.local'));
 
-			define('DB_CONNECTION_1', serialize(array(
-				'adapter' => 'MySqli5',
-				'server' => 'localhost',
-				'port' => null,
-				'database' => 'qcodo',
-				'username' => 'root',
-				'password' => '',
-				'profiling' => false)));
+			switch ($strLocalConfiguration) {
+				case 'foobar':
+					// So for example, user-specific configuration settings
+					// for the user "foobar" would go here, and would only apply
+					// if there is a configuration.local file saved in the includes/ directory
+					// with the contents "foobar"
+					break;
+
+				default:
+					// Default Development Configuration (unless otherwise overridden)
+					define ('__DOCROOT__', '/var/www/chms.alcf.dev/www');
+					define('DB_CONNECTION_1', serialize(array(
+						'adapter' => 'MySqli5',
+						'server' => 'localhost',
+						'port' => null,
+						'database' => 'alcf_chms',
+						'username' => 'root',
+						'password' => '',
+						'profiling' => false)));
+					break;
+			}
+			unset($strLocalConfiguration);
 			break;
 
 		case 'test':
@@ -39,6 +48,9 @@
 
 	define('ALLOW_REMOTE_ADMIN', false);
 	define ('__URL_REWRITE__', 'none');
+
+	define ('__VIRTUAL_DIRECTORY__', '');
+	define ('__SUBDIRECTORY__', '');
 
 	define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/../cli');
 	define ('__INCLUDES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/../includes');
