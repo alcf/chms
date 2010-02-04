@@ -1,8 +1,7 @@
 * Consider (e.g. for RW): Bulk Add
-* Add Delete Buttons
-
-* Show Screen 2.6 and 2.6.1 to Oom
+* MICRImage itegration
 * Reports that Oom would need?
-
-Screens TO DO
-* Communications
+* Report Module in general
+* Communication Lists Screens
+* Admin Screens
+* Financial Package
