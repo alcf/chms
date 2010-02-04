@@ -19,6 +19,10 @@ INSERT INTO address_type VALUES(2, 'Work');
 INSERT INTO address_type VALUES(3, 'Other');
 INSERT INTO address_type VALUES(4, 'Temporary');
 
+INSERT INTO email_broadcast_type VALUES(1, 'Public List');
+INSERT INTO email_broadcast_type VALUES(2, 'Private List');
+INSERT INTO email_broadcast_type VALUES(3, 'Announcement Only');
+
 INSERT INTO marital_status_type VALUES(1, 'Single');
 INSERT INTO marital_status_type VALUES(2, 'Married');
 INSERT INTO marital_status_type VALUES(3, 'Separated');
