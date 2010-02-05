@@ -80,13 +80,13 @@ INSERT INTO other_contact_method VALUES(null, 'MySpace');
 INSERT INTO other_contact_method VALUES(null, 'AOL Instant Messenger');
 INSERT INTO other_contact_method VALUES(null, 'Yahoo! Messenger');
 
-INSERT INTO attrbiute(1, 2, 'Date Accepted Christ');
-INSERT INTO attrbiute(2, 3, 'Ministry Consultant');
-INSERT INTO attrbiute(3, 2, 'Ministry Consultant Meeting');
-INSERT INTO attrbiute(4, 2, 'Date Baptized');
-INSERT INTO attrbiute(5, 1, 'Baptized at ALCF');
-INSERT INTO attribute(6, 5, 'Spiritual Gifts');
-INSERT INTO attribute(7, 7, 'Vocational Gifts');
+INSERT INTO attribute VALUES (1, 2, 'Date Accepted Christ');
+INSERT INTO attribute VALUES (2, 3, 'Ministry Consultant');
+INSERT INTO attribute VALUES (3, 2, 'Ministry Consultant Meeting');
+INSERT INTO attribute VALUES (4, 2, 'Date Baptized');
+INSERT INTO attribute VALUES (5, 1, 'Baptized at ALCF');
+INSERT INTO attribute VALUES (6, 5, 'Spiritual Gifts');
+INSERT INTO attribute VALUES (7, 7, 'Vocational Gifts');
 
 INSERT INTO attribute_option VALUES (null, 6, 'Healing');
 INSERT INTO attribute_option VALUES (null, 6, 'Prayer');
