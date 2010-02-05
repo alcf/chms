@@ -13,27 +13,28 @@
 				$strLocalConfiguration = trim(file_get_contents(dirname(__FILE__) . '/configuration.local'));
 
 			switch ($strLocalConfiguration) {
-				case 'foobar':
-					// So for example, user-specific configuration settings
-					// for the user "foobar" would go here, and would only apply
-					// if there is a configuration.local file saved in the includes/ directory
-					// with the contents "foobar"
+				case 'mike':
+					// User-specific configuration settings for the user "mike"
+					// only applies if there is a configuration.local file saved in
+					// the includes/ directory with the contents "mike"
+					define ('__DOCROOT__', '/var/www/alcf/chms/www');
 					break;
 
 				default:
 					// Default Development Configuration (unless otherwise overridden)
 					define ('__DOCROOT__', '/var/www/chms.alcf.dev/www');
-					define('DB_CONNECTION_1', serialize(array(
-						'adapter' => 'MySqli5',
-						'server' => 'localhost',
-						'port' => null,
-						'database' => 'alcf_chms',
-						'username' => 'root',
-						'password' => '',
-						'profiling' => false)));
 					break;
 			}
 			unset($strLocalConfiguration);
+			
+			define('DB_CONNECTION_1', serialize(array(
+				'adapter' => 'MySqli5',
+				'server' => 'localhost',
+				'port' => null,
+				'database' => 'alcf_chms',
+				'username' => 'root',
+				'password' => '',
+				'profiling' => false)));
 			break;
 
 		case 'test':
