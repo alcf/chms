@@ -59,7 +59,7 @@
 			$this->dtgPeople->MetaAddTypeColumn('MembershipStatusTypeId', 'MembershipStatusType');
 			$this->dtgPeople->MetaAddTypeColumn('MaritalStatusTypeId', 'MaritalStatusType');
 			$this->dtgPeople->MetaAddColumn('FirstName');
-			$this->dtgPeople->MetaAddColumn('MiddleNae');
+			$this->dtgPeople->MetaAddColumn('MiddleName');
 			$this->dtgPeople->MetaAddColumn('LastName');
 			$this->dtgPeople->MetaAddColumn('MailingLabel');
 			$this->dtgPeople->MetaAddColumn('PriorLastNames');

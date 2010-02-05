@@ -24,8 +24,8 @@
 	 * property-read QLabel $MaritalStatusTypeIdLabel
 	 * property QTextBox $FirstNameControl
 	 * property-read QLabel $FirstNameLabel
-	 * property QTextBox $MiddleNaeControl
-	 * property-read QLabel $MiddleNaeLabel
+	 * property QTextBox $MiddleNameControl
+	 * property-read QLabel $MiddleNameLabel
 	 * property QTextBox $LastNameControl
 	 * property-read QLabel $LastNameLabel
 	 * property QTextBox $MailingLabelControl
@@ -82,7 +82,7 @@
 		protected $lstMembershipStatusType;
 		protected $lstMaritalStatusType;
 		protected $txtFirstName;
-		protected $txtMiddleNae;
+		protected $txtMiddleName;
 		protected $txtLastName;
 		protected $txtMailingLabel;
 		protected $txtPriorLastNames;
@@ -105,7 +105,7 @@
 		protected $lblMembershipStatusTypeId;
 		protected $lblMaritalStatusTypeId;
 		protected $lblFirstName;
-		protected $lblMiddleNae;
+		protected $lblMiddleName;
 		protected $lblLastName;
 		protected $lblMailingLabel;
 		protected $lblPriorLastNames;
@@ -321,28 +321,28 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtMiddleNae
+		 * Create and setup QTextBox txtMiddleName
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtMiddleNae_Create($strControlId = null) {
-			$this->txtMiddleNae = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtMiddleNae->Name = QApplication::Translate('Middle Nae');
-			$this->txtMiddleNae->Text = $this->objPerson->MiddleNae;
-			$this->txtMiddleNae->MaxLength = Person::MiddleNaeMaxLength;
-			return $this->txtMiddleNae;
+		public function txtMiddleName_Create($strControlId = null) {
+			$this->txtMiddleName = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtMiddleName->Name = QApplication::Translate('Middle Name');
+			$this->txtMiddleName->Text = $this->objPerson->MiddleName;
+			$this->txtMiddleName->MaxLength = Person::MiddleNameMaxLength;
+			return $this->txtMiddleName;
 		}
 
 		/**
-		 * Create and setup QLabel lblMiddleNae
+		 * Create and setup QLabel lblMiddleName
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblMiddleNae_Create($strControlId = null) {
-			$this->lblMiddleNae = new QLabel($this->objParentObject, $strControlId);
-			$this->lblMiddleNae->Name = QApplication::Translate('Middle Nae');
-			$this->lblMiddleNae->Text = $this->objPerson->MiddleNae;
-			return $this->lblMiddleNae;
+		public function lblMiddleName_Create($strControlId = null) {
+			$this->lblMiddleName = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMiddleName->Name = QApplication::Translate('Middle Name');
+			$this->lblMiddleName->Text = $this->objPerson->MiddleName;
+			return $this->lblMiddleName;
 		}
 
 		/**
@@ -928,8 +928,8 @@
 			if ($this->txtFirstName) $this->txtFirstName->Text = $this->objPerson->FirstName;
 			if ($this->lblFirstName) $this->lblFirstName->Text = $this->objPerson->FirstName;
 
-			if ($this->txtMiddleNae) $this->txtMiddleNae->Text = $this->objPerson->MiddleNae;
-			if ($this->lblMiddleNae) $this->lblMiddleNae->Text = $this->objPerson->MiddleNae;
+			if ($this->txtMiddleName) $this->txtMiddleName->Text = $this->objPerson->MiddleName;
+			if ($this->lblMiddleName) $this->lblMiddleName->Text = $this->objPerson->MiddleName;
 
 			if ($this->txtLastName) $this->txtLastName->Text = $this->objPerson->LastName;
 			if ($this->lblLastName) $this->lblLastName->Text = $this->objPerson->LastName;
@@ -1118,7 +1118,7 @@
 				if ($this->lstMembershipStatusType) $this->objPerson->MembershipStatusTypeId = $this->lstMembershipStatusType->SelectedValue;
 				if ($this->lstMaritalStatusType) $this->objPerson->MaritalStatusTypeId = $this->lstMaritalStatusType->SelectedValue;
 				if ($this->txtFirstName) $this->objPerson->FirstName = $this->txtFirstName->Text;
-				if ($this->txtMiddleNae) $this->objPerson->MiddleNae = $this->txtMiddleNae->Text;
+				if ($this->txtMiddleName) $this->objPerson->MiddleName = $this->txtMiddleName->Text;
 				if ($this->txtLastName) $this->objPerson->LastName = $this->txtLastName->Text;
 				if ($this->txtMailingLabel) $this->objPerson->MailingLabel = $this->txtMailingLabel->Text;
 				if ($this->txtPriorLastNames) $this->objPerson->PriorLastNames = $this->txtPriorLastNames->Text;
@@ -1207,12 +1207,12 @@
 				case 'FirstNameLabel':
 					if (!$this->lblFirstName) return $this->lblFirstName_Create();
 					return $this->lblFirstName;
-				case 'MiddleNaeControl':
-					if (!$this->txtMiddleNae) return $this->txtMiddleNae_Create();
-					return $this->txtMiddleNae;
-				case 'MiddleNaeLabel':
-					if (!$this->lblMiddleNae) return $this->lblMiddleNae_Create();
-					return $this->lblMiddleNae;
+				case 'MiddleNameControl':
+					if (!$this->txtMiddleName) return $this->txtMiddleName_Create();
+					return $this->txtMiddleName;
+				case 'MiddleNameLabel':
+					if (!$this->lblMiddleName) return $this->lblMiddleName_Create();
+					return $this->lblMiddleName;
 				case 'LastNameControl':
 					if (!$this->txtLastName) return $this->txtLastName_Create();
 					return $this->txtLastName;
@@ -1363,8 +1363,8 @@
 						return ($this->lstMaritalStatusType = QType::Cast($mixValue, 'QControl'));
 					case 'FirstNameControl':
 						return ($this->txtFirstName = QType::Cast($mixValue, 'QControl'));
-					case 'MiddleNaeControl':
-						return ($this->txtMiddleNae = QType::Cast($mixValue, 'QControl'));
+					case 'MiddleNameControl':
+						return ($this->txtMiddleName = QType::Cast($mixValue, 'QControl'));
 					case 'LastNameControl':
 						return ($this->txtLastName = QType::Cast($mixValue, 'QControl'));
 					case 'MailingLabelControl':

@@ -25,7 +25,7 @@
 
 		<?php $this->txtFirstName->RenderWithName(); ?>
 
-		<?php $this->txtMiddleNae->RenderWithName(); ?>
+		<?php $this->txtMiddleName->RenderWithName(); ?>
 
 		<?php $this->txtLastName->RenderWithName(); ?>
 

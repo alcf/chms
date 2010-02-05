@@ -13,7 +13,7 @@
 
 		<?php $_CONTROL->txtFirstName->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtMiddleNae->RenderWithName(); ?>
+		<?php $_CONTROL->txtMiddleName->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtLastName->RenderWithName(); ?>
 

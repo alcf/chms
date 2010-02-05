@@ -27,7 +27,7 @@
 		protected $lstMembershipStatusType;
 		protected $lstMaritalStatusType;
 		protected $txtFirstName;
-		protected $txtMiddleNae;
+		protected $txtMiddleName;
 		protected $txtLastName;
 		protected $txtMailingLabel;
 		protected $txtPriorLastNames;
@@ -78,7 +78,7 @@
 			$this->lstMembershipStatusType = $this->mctPerson->lstMembershipStatusType_Create();
 			$this->lstMaritalStatusType = $this->mctPerson->lstMaritalStatusType_Create();
 			$this->txtFirstName = $this->mctPerson->txtFirstName_Create();
-			$this->txtMiddleNae = $this->mctPerson->txtMiddleNae_Create();
+			$this->txtMiddleName = $this->mctPerson->txtMiddleName_Create();
 			$this->txtLastName = $this->mctPerson->txtLastName_Create();
 			$this->txtMailingLabel = $this->mctPerson->txtMailingLabel_Create();
 			$this->txtPriorLastNames = $this->mctPerson->txtPriorLastNames_Create();

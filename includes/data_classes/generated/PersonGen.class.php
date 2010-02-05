@@ -19,7 +19,7 @@
 	 * @property integer $MembershipStatusTypeId the value for intMembershipStatusTypeId (Not Null)
 	 * @property integer $MaritalStatusTypeId the value for intMaritalStatusTypeId 
 	 * @property string $FirstName the value for strFirstName 
-	 * @property string $MiddleNae the value for strMiddleNae 
+	 * @property string $MiddleName the value for strMiddleName 
 	 * @property string $LastName the value for strLastName 
 	 * @property string $MailingLabel the value for strMailingLabel 
 	 * @property string $PriorLastNames the value for strPriorLastNames 
@@ -113,12 +113,12 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column person.middle_nae
-		 * @var string strMiddleNae
+		 * Protected member variable that maps to the database column person.middle_name
+		 * @var string strMiddleName
 		 */
-		protected $strMiddleNae;
-		const MiddleNaeMaxLength = 100;
-		const MiddleNaeDefault = null;
+		protected $strMiddleName;
+		const MiddleNameMaxLength = 100;
+		const MiddleNameDefault = null;
 
 
 		/**
@@ -840,7 +840,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'membership_status_type_id', $strAliasPrefix . 'membership_status_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'marital_status_type_id', $strAliasPrefix . 'marital_status_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'first_name', $strAliasPrefix . 'first_name');
-			$objBuilder->AddSelectItem($strTableName, 'middle_nae', $strAliasPrefix . 'middle_nae');
+			$objBuilder->AddSelectItem($strTableName, 'middle_name', $strAliasPrefix . 'middle_name');
 			$objBuilder->AddSelectItem($strTableName, 'last_name', $strAliasPrefix . 'last_name');
 			$objBuilder->AddSelectItem($strTableName, 'mailing_label', $strAliasPrefix . 'mailing_label');
 			$objBuilder->AddSelectItem($strTableName, 'prior_last_names', $strAliasPrefix . 'prior_last_names');
@@ -1125,8 +1125,8 @@
 			$objToReturn->intMaritalStatusTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'first_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'first_name'] : $strAliasPrefix . 'first_name';
 			$objToReturn->strFirstName = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'middle_nae', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'middle_nae'] : $strAliasPrefix . 'middle_nae';
-			$objToReturn->strMiddleNae = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'middle_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'middle_name'] : $strAliasPrefix . 'middle_name';
+			$objToReturn->strMiddleName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'last_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'last_name'] : $strAliasPrefix . 'last_name';
 			$objToReturn->strLastName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'mailing_label', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'mailing_label'] : $strAliasPrefix . 'mailing_label';
@@ -1649,7 +1649,7 @@
 							`membership_status_type_id`,
 							`marital_status_type_id`,
 							`first_name`,
-							`middle_nae`,
+							`middle_name`,
 							`last_name`,
 							`mailing_label`,
 							`prior_last_names`,
@@ -1671,7 +1671,7 @@
 							' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strFirstName) . ',
-							' . $objDatabase->SqlVariable($this->strMiddleNae) . ',
+							' . $objDatabase->SqlVariable($this->strMiddleName) . ',
 							' . $objDatabase->SqlVariable($this->strLastName) . ',
 							' . $objDatabase->SqlVariable($this->strMailingLabel) . ',
 							' . $objDatabase->SqlVariable($this->strPriorLastNames) . ',
@@ -1707,7 +1707,7 @@
 							`membership_status_type_id` = ' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
 							`marital_status_type_id` = ' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
 							`first_name` = ' . $objDatabase->SqlVariable($this->strFirstName) . ',
-							`middle_nae` = ' . $objDatabase->SqlVariable($this->strMiddleNae) . ',
+							`middle_name` = ' . $objDatabase->SqlVariable($this->strMiddleName) . ',
 							`last_name` = ' . $objDatabase->SqlVariable($this->strLastName) . ',
 							`mailing_label` = ' . $objDatabase->SqlVariable($this->strMailingLabel) . ',
 							`prior_last_names` = ' . $objDatabase->SqlVariable($this->strPriorLastNames) . ',
@@ -1835,7 +1835,7 @@
 			$this->MembershipStatusTypeId = $objReloaded->MembershipStatusTypeId;
 			$this->MaritalStatusTypeId = $objReloaded->MaritalStatusTypeId;
 			$this->strFirstName = $objReloaded->strFirstName;
-			$this->strMiddleNae = $objReloaded->strMiddleNae;
+			$this->strMiddleName = $objReloaded->strMiddleName;
 			$this->strLastName = $objReloaded->strLastName;
 			$this->strMailingLabel = $objReloaded->strMailingLabel;
 			$this->strPriorLastNames = $objReloaded->strPriorLastNames;
@@ -1893,10 +1893,10 @@
 					// @return string
 					return $this->strFirstName;
 
-				case 'MiddleNae':
-					// Gets the value for strMiddleNae 
+				case 'MiddleName':
+					// Gets the value for strMiddleName 
 					// @return string
-					return $this->strMiddleNae;
+					return $this->strMiddleName;
 
 				case 'LastName':
 					// Gets the value for strLastName 
@@ -2287,12 +2287,12 @@
 						throw $objExc;
 					}
 
-				case 'MiddleNae':
-					// Sets the value for strMiddleNae 
+				case 'MiddleName':
+					// Sets the value for strMiddleName 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strMiddleNae = QType::Cast($mixValue, QType::String));
+						return ($this->strMiddleName = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -4854,7 +4854,7 @@
 			$strToReturn .= '<element name="MembershipStatusTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="MaritalStatusTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="FirstName" type="xsd:string"/>';
-			$strToReturn .= '<element name="MiddleNae" type="xsd:string"/>';
+			$strToReturn .= '<element name="MiddleName" type="xsd:string"/>';
 			$strToReturn .= '<element name="LastName" type="xsd:string"/>';
 			$strToReturn .= '<element name="MailingLabel" type="xsd:string"/>';
 			$strToReturn .= '<element name="PriorLastNames" type="xsd:string"/>';
@@ -4905,8 +4905,8 @@
 				$objToReturn->intMaritalStatusTypeId = $objSoapObject->MaritalStatusTypeId;
 			if (property_exists($objSoapObject, 'FirstName'))
 				$objToReturn->strFirstName = $objSoapObject->FirstName;
-			if (property_exists($objSoapObject, 'MiddleNae'))
-				$objToReturn->strMiddleNae = $objSoapObject->MiddleNae;
+			if (property_exists($objSoapObject, 'MiddleName'))
+				$objToReturn->strMiddleName = $objSoapObject->MiddleName;
 			if (property_exists($objSoapObject, 'LastName'))
 				$objToReturn->strLastName = $objSoapObject->LastName;
 			if (property_exists($objSoapObject, 'MailingLabel'))
@@ -5060,8 +5060,8 @@
 					return new QQNode('marital_status_type_id', 'MaritalStatusTypeId', 'integer', $this);
 				case 'FirstName':
 					return new QQNode('first_name', 'FirstName', 'string', $this);
-				case 'MiddleNae':
-					return new QQNode('middle_nae', 'MiddleNae', 'string', $this);
+				case 'MiddleName':
+					return new QQNode('middle_name', 'MiddleName', 'string', $this);
 				case 'LastName':
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'MailingLabel':
@@ -5162,8 +5162,8 @@
 					return new QQNode('marital_status_type_id', 'MaritalStatusTypeId', 'integer', $this);
 				case 'FirstName':
 					return new QQNode('first_name', 'FirstName', 'string', $this);
-				case 'MiddleNae':
-					return new QQNode('middle_nae', 'MiddleNae', 'string', $this);
+				case 'MiddleName':
+					return new QQNode('middle_name', 'MiddleName', 'string', $this);
 				case 'LastName':
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'MailingLabel':

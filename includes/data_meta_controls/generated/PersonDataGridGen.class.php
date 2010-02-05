@@ -277,7 +277,7 @@
 				case 'MembershipStatusTypeId': return QQN::Person()->MembershipStatusTypeId;
 				case 'MaritalStatusTypeId': return QQN::Person()->MaritalStatusTypeId;
 				case 'FirstName': return QQN::Person()->FirstName;
-				case 'MiddleNae': return QQN::Person()->MiddleNae;
+				case 'MiddleName': return QQN::Person()->MiddleName;
 				case 'LastName': return QQN::Person()->LastName;
 				case 'MailingLabel': return QQN::Person()->MailingLabel;
 				case 'PriorLastNames': return QQN::Person()->PriorLastNames;
