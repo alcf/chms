@@ -57,7 +57,7 @@ INSERT INTO phone_type VALUES(3, 'Mobile');
 INSERT INTO phone_type VALUES(4, 'Fax');
 INSERT INTO phone_type VALUES(5, 'Other');
 
-INSERT INTO relationship_type VALUES(1, 'Parent');
+INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
 INSERT INTO relationship_type VALUES(3, 'Sibling');
 
