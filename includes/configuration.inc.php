@@ -47,7 +47,7 @@
 			break;
 	}
 
-	define('ALLOW_REMOTE_ADMIN', false);
+	define('ALLOW_REMOTE_ADMIN', true);
 	define ('__URL_REWRITE__', 'none');
 
 	define ('__VIRTUAL_DIRECTORY__', '');

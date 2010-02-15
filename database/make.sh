@@ -5,7 +5,7 @@
 ################################################
 
 # Specify Path to DB Scripts and DB Name here
-dbpath=/var/www/alcf/chms/database
+dbpath=/var/www/chms.alcf.dev/database
 dbname=alcf_chms
 
 # Perform DB Tasks
