@@ -9,7 +9,7 @@
 	 * under the terms of The MIT License.  More information can be found at
 	 * http://www.opensource.org/licenses/mit-license.php
 	 * 
-	 * Copyright (c) 2001 - 2009, Quasidea Development, LLC
+	 * Copyright (c) 2001 - 2010, Quasidea Development, LLC
 	 * 
 	 * Permission is hereby granted, free of charge, to any person obtaining a copy of
 	 * this software and associated documentation files (the "Software"), to deal in
@@ -31,7 +31,7 @@
 	 */
 
 	// Versioning Information
-	define('QCODO_VERSION', '0.4.11');
+	define('QCODO_VERSION', '0.4.12');
 
 	// Preload Required Framework Classes
 	require(__QCODO_CORE__ . '/framework/QBaseClass.class.php');
@@ -49,7 +49,7 @@
 	require(__INCLUDES__ . '/QApplication.class.php');
 
 	// Load the Core Database Class
-	require(__QCODO_CORE__ . '/framework/QDatabaseBase.class.php');
+	require(__QCODO_CORE__ . '/framework/QDatabaseBase.class.php');        
 
 	// Define Other Classes to be Preloaded on QApplication::Initialize()
 	QApplicationBase::$PreloadedClassFile['qdatetime'] = (version_compare(PHP_VERSION, '5.2.0', '<')) ? (__QCODO_CORE__ . '/framework/QDateTime.legacy.class.php') : (__QCODO_CORE__ . '/framework/QDateTime.class.php');
@@ -90,6 +90,7 @@
 	QApplicationBase::$ClassFile['qcliparameterprocessor'] = __QCODO_CORE__ . '/framework/QCliParameterProcessor.class.php';
 
 	QApplicationBase::$ClassFile['qcodegen'] = __QCODO__ . '/codegen/QCodeGen.class.php';
+	QApplicationBase::$ClassFile['qdatagen'] = __QCODO_CORE__ . '/framework/QDataGen.class.php';
 
 	QApplicationBase::$ClassFile['qpackagemanager'] = __QCODO_CORE__ . '/framework/QPackageManager.class.php';
 	QApplicationBase::$ClassFile['qpackagemanagerdownload'] = __QCODO_CORE__ . '/framework/QPackageManagerDownload.class.php';
@@ -167,6 +168,8 @@
 	QApplicationBase::$ClassFile['qwaiticon'] = __QCODO_CORE__ . '/qform/QWaitIcon.class.php';
 	QApplicationBase::$ClassFile['qcontrolgrouping'] = __QCODO_CORE__ . '/qform/QControlGrouping.class.php';
 	QApplicationBase::$ClassFile['qdropzonegrouping'] = __QCODO_CORE__ . '/qform/QDropZoneGrouping.class.php';
+
+	QApplicationBase::$ClassFile['qpdodatabase'] = __QCODO_CORE__ . '/database/QPdoDatabase.class.php';
 
 	// Finally, load in any generated classpaths or type-based classpaths constants files
 	if (__DATAGEN_CLASSES__) {

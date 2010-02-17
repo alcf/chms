@@ -90,8 +90,6 @@
 
 			$strCustomAttributes = $this->GetCustomAttributes();
 
-			$strActions = $this->GetActionAttributes();
-
 			if ($this->intCellPadding >= 0)
 				$strCellPadding = sprintf('cellpadding="%s" ', $this->intCellPadding);
 			else
@@ -156,11 +154,23 @@
 							$strDisabled = 'disabled="disabled" ';
 						}
 
+						if ($this->objItemsArray[$intIndex]->ItemStyle) {
+							$strLabelAttributes = $this->objItemsArray[$intIndex]->ItemStyle->GetAttributes();
+							$strCheckboxAttributes = $this->objItemsArray[$intIndex]->ItemStyle->GetNonStyleAttributes();
+						} else {
+							$strLabelAttributes = null;
+							$strCheckboxAttributes = null;
+						}
+
+						$this->strActionParameter = $intIndex;
+						$strActions = $this->GetActionAttributes();
+
 						if ($this->strTextAlign == QTextAlign::Left) {
-							$strToReturn .= sprintf('<td>%s<label for="%s_%s">%s</label><input id="%s_%s" name="%s" value="%s" type="radio" %s%s%s%s />%s</td>',
+							$strToReturn .= sprintf('<td>%s<label for="%s_%s" %s>%s</label><input id="%s_%s" name="%s" value="%s" type="radio" %s%s%s%s%s />%s</td>',
 								$strDisabledStart,
 								$this->strControlId,
 								$intIndex,
+								$strLabelAttributes,
 								($this->blnHtmlEntities) ? QApplication::HtmlEntities($this->objItemsArray[$intIndex]->Name) : $this->objItemsArray[$intIndex]->Name,
 								$this->strControlId,
 								$intIndex,
@@ -170,9 +180,10 @@
 								$strChecked,
 								$strActions,
 								$strTabIndex,
+								$strCheckboxAttributes,
 								$strDisabledEnd);
 						} else {
-							$strToReturn .= sprintf('<td>%s<input id="%s_%s" name="%s" value="%s" type="radio" %s%s%s%s /><label for="%s_%s">%s</label>%s</td>',
+							$strToReturn .= sprintf('<td>%s<input id="%s_%s" name="%s" value="%s" type="radio" %s%s%s%s%s /><label for="%s_%s" %s>%s</label>%s</td>',
 								$strDisabledStart,
 								$this->strControlId,
 								$intIndex,
@@ -182,8 +193,10 @@
 								$strChecked,
 								$strActions,
 								$strTabIndex,
+								$strCheckboxAttributes,
 								$this->strControlId,
 								$intIndex,
+								$strLabelAttributes,
 								($this->blnHtmlEntities) ? QApplication::HtmlEntities($this->objItemsArray[$intIndex]->Name) : $this->objItemsArray[$intIndex]->Name,
 								$strDisabledEnd);
 						}

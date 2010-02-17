@@ -1,17 +1,25 @@
 <?php
 	class QFileUploader extends QControl {
-		protected $intExample;
-		protected $strFoo;
 		protected $strJavaScripts = '_core/control_file.js';
 		protected $blnIsBlockElement = true;
-		
-		protected $strTempFilePath;
+
+		protected $pxyRemoveFile;
+
+		protected $strFilePath;
 		protected $strFileName;
-		protected $strFileSize;
+		protected $intFileSize;
 		protected $strMimeType;
-		
+
+		protected $strTemporaryUploadFolder = '/tmp';
+
 		protected $strCssClass = 'fileUploader';
-		
+
+		protected $strFileUploadedCallbackMethod;
+		protected $objFileUploadedCallbackObject;
+
+		protected $strFileRemovedCallbackMethod;
+		protected $objFileRemovedCallbackObject;
+
 		/**
 		 * If this control needs to update itself from the $_POST data, the logic to do so
 		 * will be performed in this method.
@@ -23,7 +31,19 @@
 		 * will be performed in this method.
 		 * @return boolean
 		 */
-		public function Validate() {return true;}
+		public function Validate() {
+			$this->strValidationError = null;
+			if ($this->blnRequired) {
+				if (!$this->strFilePath) {
+					if ($this->strName)
+						$this->strValidationError = sprintf('%s is required', $this->strName);
+					else
+						$this->strValidationError = 'Required';
+					return false;
+				}
+			}
+			return true;
+		}
 
 		/**
 		 * Get the HTML for this Control.
@@ -39,7 +59,7 @@
 
 			// Return the HTML
 			$strHtml = null;
-			if (!$this->strTempFilePath) {
+			if (!$this->strFilePath) {
 				$strHtml .= sprintf('<input type="button" class="button" id="%s_button" value="Browse..."/>', $this->strControlId);
 
 				$strHtml .= sprintf('<div class="progress" id="%s_progress" style="display: none;">', $this->strControlId);
@@ -53,7 +73,8 @@
 				$strHtml .= '<div class="cancel"><a href="#">Cancel</a></div>';
 				$strHtml .= '</div>';
 			} else {
-				$strHtml .= sprintf('<strong>%s</strong> (%s) &nbsp; <a href="#">Remove</a></div>', $this->strFileName, QString::GetByteSize($this->strFileSize));
+				$strHtml .= sprintf('<strong>%s</strong> (%s) &nbsp; <a href="#" %s>Remove</a></div>',
+					$this->strFileName, QString::GetByteSize($this->intFileSize), $this->pxyRemoveFile->RenderAsEvents(null, false));
 			}
 
 			return sprintf('<div id="%s" %s%s>%s</div>', $this->strControlId, $strAttributes, $strStyle, $strHtml);
@@ -63,7 +84,7 @@
 			$strToReturn = parent::GetEndScript();
 			$strUniqueHash = md5(microtime() . rand(0, 1000000));
 
-			if (($this->blnVisible) && (!$this->strTempFilePath)) {
+			if (($this->blnVisible) && (!$this->strFilePath)) {
 				$strToReturn .= sprintf('qc.regFUP("%s", "%s", "%s"); ',
 					$this->strControlId, QApplication::$RequestUri, $strUniqueHash
 				);
@@ -83,14 +104,69 @@
 			} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }
 
 			$this->AddAction(new QFileUploadedEvent(), new QAjaxControlAction($this, 'HandleFileUploaded'));
+
+			$this->pxyRemoveFile = new QControlProxy($this);
+			$this->pxyRemoveFile->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'HandleFileRemoved'));
+			$this->pxyRemoveFile->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+
+		/**
+		 * Used internally by Qcodo to handle the javascript-based post call to update form and control
+		 * state when a file has been uploaded.  This will also make a call to any FileUploadedCallback if one was set.
+		 * @param string $strFormId
+		 * @param string $strControlId
+		 * @param string $strParameter
+		 * @return void
+		 */
+		public function HandleFileUploaded($strFormId, $strControlId, $strParameter) {
+			$this->strValidationError = null;
+			$this->strFilePath = $_FILES[$this->strControlId . '_ctlflc']['tmp_name'];
+			$this->strFileName = $_FILES[$this->strControlId . '_ctlflc']['name'];
+			$this->intFileSize = $_FILES[$this->strControlId . '_ctlflc']['size'];
+			$this->strMimeType = $_FILES[$this->strControlId . '_ctlflc']['type'];
+
+			// Save the File in a slightly more permanent temporary location
+			$strTempFilePath = $this->strTemporaryUploadFolder . '/' . basename($this->strFilePath) . rand(1000, 9999);
+			copy($this->strFilePath, $strTempFilePath);
+			$this->strFilePath = $strTempFilePath;
+
+			$this->Refresh();
+			if ($this->strFileUploadedCallbackMethod) call_user_func(array($this->objFileUploadedCallbackObject, $this->strFileUploadedCallbackMethod));
+		}
+
+		/**
+		 * Used internally by Qcodo to handle the javascript-based post call to update form and control
+		 * state when a file has been removed.  This will also make a call to any FileRemovedCallback if one was set.
+		 * @param string $strFormId
+		 * @param string $strControlId
+		 * @param string $strParameter
+		 * @return void
+		 */
+		public function HandleFileRemoved($strFormId, $strControlId, $strParameter) {
+			$this->strFilePath = null;
+			$this->strFileName = null;
+			$this->intFileSize = null;
+			$this->strMimeType = null;
+			$this->Refresh();
+			if ($this->strFileRemovedCallbackMethod) call_user_func(array($this->objFileRemovedCallbackObject, $this->strFileRemovedCallbackMethod));
 		}
 		
-		public function HandleFileUploaded($strFormId, $strControlId, $strParameter) {
-			$this->strTempFilePath = $_FILES[$this->strControlId . '_ctlflc']['tmp_name'];
-			$this->strFileName = $_FILES[$this->strControlId . '_ctlflc']['name'];
-			$this->strFileSize = $_FILES[$this->strControlId . '_ctlflc']['size'];
-			$this->strMimeType = $_FILES[$this->strControlId . '_ctlflc']['type'];
-			$this->Refresh();
+		public function SetFileUploadedCallback($objCallbackObject, $strCallbackMethod) {
+			$this->objFileUploadedCallbackObject = $objCallbackObject;
+			$this->strFileUploadedCallbackMethod = $strCallbackMethod;
+		}
+
+		public function SetFileRemovedCallback($objCallbackObject, $strCallbackMethod) {
+			$this->objFileRemovedCallbackObject = $objCallbackObject;
+			$this->strFileRemovedCallbackMethod = $strCallbackMethod;
+		}
+
+		/**
+		 * Used to remove a previously-set file to this FileUploader control
+		 * @return void
+		 */
+		public function RemoveFile() {
+			$this->HandleFileRemoved(null, null, null);
 		}
 
 		// For any HTML code that needs to be rendered at the END of the QForm when this control is INITIALLY rendered.
@@ -104,8 +180,11 @@
 		/////////////////////////
 		public function __get($strName) {
 			switch ($strName) {
-				case 'Example': return $this->intExample;
-				case 'Foo': return $this->strFoo;
+				case 'FilePath': return $this->strFilePath;
+				case 'FileName': return $this->strFileName;
+				case 'FileSize': return $this->intFileSize;
+				case 'MimeType': return $this->strMimeType;
+				case 'TemporaryUploadFolder': return $this->strTemporaryUploadFolder;
 
 				default:
 					try {
@@ -122,13 +201,28 @@
 
 			switch ($strName) {
 
-				case 'Example': 
+				case 'FilePath': 
 					try {
-						return ($this->intExample = QType::Cast($mixValue, QType::Integer));
+						$strFile = QType::Cast($mixValue, QType::String);
 					} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }
-				case 'Foo': 
+
+					if (!is_file($strFile))
+						throw new QCallerException('File does not exist: ' . $strFile);
+
+					$strNewFilePath = $this->strTemporaryUploadFolder . '/' . md5(microtime());
+					copy($strFile, $strNewFilePath);
+					$this->intFileSize = filesize($strNewFilePath);
+					$this->strFilePath = $strNewFilePath;
+					return $strFile;
+
+				case 'FileName': 
 					try {
-						return ($this->strFoo = QType::Cast($mixValue, QType::String));
+						return ($this->strFileName = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }
+
+				case 'TemporaryUploadFolder':
+					try {
+						return ($this->strTemporaryUploadFolder = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }
 
 				default:
