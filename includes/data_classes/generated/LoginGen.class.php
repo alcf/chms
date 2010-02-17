@@ -19,7 +19,7 @@
 	 * @property integer $RoleTypeId the value for intRoleTypeId (Not Null)
 	 * @property string $Username the value for strUsername (Unique)
 	 * @property string $PasswordCache the value for strPasswordCache 
-	 * @property string $PasswordLastSet the value for strPasswordLastSet 
+	 * @property QDateTime $DateLastLogin the value for dttDateLastLogin 
 	 * @property boolean $DomainActiveFlag the value for blnDomainActiveFlag 
 	 * @property boolean $LoginActiveFlag the value for blnLoginActiveFlag 
 	 * @property string $Email the value for strEmail (Unique)
@@ -73,12 +73,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column login.password_last_set
-		 * @var string strPasswordLastSet
+		 * Protected member variable that maps to the database column login.date_last_login
+		 * @var QDateTime dttDateLastLogin
 		 */
-		protected $strPasswordLastSet;
-		const PasswordLastSetMaxLength = 200;
-		const PasswordLastSetDefault = null;
+		protected $dttDateLastLogin;
+		const DateLastLoginDefault = null;
 
 
 		/**
@@ -454,7 +453,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'role_type_id', $strAliasPrefix . 'role_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
 			$objBuilder->AddSelectItem($strTableName, 'password_cache', $strAliasPrefix . 'password_cache');
-			$objBuilder->AddSelectItem($strTableName, 'password_last_set', $strAliasPrefix . 'password_last_set');
+			$objBuilder->AddSelectItem($strTableName, 'date_last_login', $strAliasPrefix . 'date_last_login');
 			$objBuilder->AddSelectItem($strTableName, 'domain_active_flag', $strAliasPrefix . 'domain_active_flag');
 			$objBuilder->AddSelectItem($strTableName, 'login_active_flag', $strAliasPrefix . 'login_active_flag');
 			$objBuilder->AddSelectItem($strTableName, 'email', $strAliasPrefix . 'email');
@@ -546,8 +545,8 @@
 			$objToReturn->strUsername = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'password_cache', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password_cache'] : $strAliasPrefix . 'password_cache';
 			$objToReturn->strPasswordCache = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'password_last_set', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password_last_set'] : $strAliasPrefix . 'password_last_set';
-			$objToReturn->strPasswordLastSet = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_last_login', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_last_login'] : $strAliasPrefix . 'date_last_login';
+			$objToReturn->dttDateLastLogin = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'domain_active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'domain_active_flag'] : $strAliasPrefix . 'domain_active_flag';
 			$objToReturn->blnDomainActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'login_active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'login_active_flag'] : $strAliasPrefix . 'login_active_flag';
@@ -773,7 +772,7 @@
 							`role_type_id`,
 							`username`,
 							`password_cache`,
-							`password_last_set`,
+							`date_last_login`,
 							`domain_active_flag`,
 							`login_active_flag`,
 							`email`,
@@ -784,7 +783,7 @@
 							' . $objDatabase->SqlVariable($this->intRoleTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strUsername) . ',
 							' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
-							' . $objDatabase->SqlVariable($this->strPasswordLastSet) . ',
+							' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
 							' . $objDatabase->SqlVariable($this->blnDomainActiveFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnLoginActiveFlag) . ',
 							' . $objDatabase->SqlVariable($this->strEmail) . ',
@@ -809,7 +808,7 @@
 							`role_type_id` = ' . $objDatabase->SqlVariable($this->intRoleTypeId) . ',
 							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
 							`password_cache` = ' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
-							`password_last_set` = ' . $objDatabase->SqlVariable($this->strPasswordLastSet) . ',
+							`date_last_login` = ' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
 							`domain_active_flag` = ' . $objDatabase->SqlVariable($this->blnDomainActiveFlag) . ',
 							`login_active_flag` = ' . $objDatabase->SqlVariable($this->blnLoginActiveFlag) . ',
 							`email` = ' . $objDatabase->SqlVariable($this->strEmail) . ',
@@ -897,7 +896,7 @@
 			$this->RoleTypeId = $objReloaded->RoleTypeId;
 			$this->strUsername = $objReloaded->strUsername;
 			$this->strPasswordCache = $objReloaded->strPasswordCache;
-			$this->strPasswordLastSet = $objReloaded->strPasswordLastSet;
+			$this->dttDateLastLogin = $objReloaded->dttDateLastLogin;
 			$this->blnDomainActiveFlag = $objReloaded->blnDomainActiveFlag;
 			$this->blnLoginActiveFlag = $objReloaded->blnLoginActiveFlag;
 			$this->strEmail = $objReloaded->strEmail;
@@ -944,10 +943,10 @@
 					// @return string
 					return $this->strPasswordCache;
 
-				case 'PasswordLastSet':
-					// Gets the value for strPasswordLastSet 
-					// @return string
-					return $this->strPasswordLastSet;
+				case 'DateLastLogin':
+					// Gets the value for dttDateLastLogin 
+					// @return QDateTime
+					return $this->dttDateLastLogin;
 
 				case 'DomainActiveFlag':
 					// Gets the value for blnDomainActiveFlag 
@@ -1073,12 +1072,12 @@
 						throw $objExc;
 					}
 
-				case 'PasswordLastSet':
-					// Sets the value for strPasswordLastSet 
-					// @param string $mixValue
-					// @return string
+				case 'DateLastLogin':
+					// Sets the value for dttDateLastLogin 
+					// @param QDateTime $mixValue
+					// @return QDateTime
 					try {
-						return ($this->strPasswordLastSet = QType::Cast($mixValue, QType::String));
+						return ($this->dttDateLastLogin = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1467,7 +1466,7 @@
 			$strToReturn .= '<element name="RoleTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Username" type="xsd:string"/>';
 			$strToReturn .= '<element name="PasswordCache" type="xsd:string"/>';
-			$strToReturn .= '<element name="PasswordLastSet" type="xsd:string"/>';
+			$strToReturn .= '<element name="DateLastLogin" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DomainActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="LoginActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Email" type="xsd:string"/>';
@@ -1504,8 +1503,8 @@
 				$objToReturn->strUsername = $objSoapObject->Username;
 			if (property_exists($objSoapObject, 'PasswordCache'))
 				$objToReturn->strPasswordCache = $objSoapObject->PasswordCache;
-			if (property_exists($objSoapObject, 'PasswordLastSet'))
-				$objToReturn->strPasswordLastSet = $objSoapObject->PasswordLastSet;
+			if (property_exists($objSoapObject, 'DateLastLogin'))
+				$objToReturn->dttDateLastLogin = new QDateTime($objSoapObject->DateLastLogin);
 			if (property_exists($objSoapObject, 'DomainActiveFlag'))
 				$objToReturn->blnDomainActiveFlag = $objSoapObject->DomainActiveFlag;
 			if (property_exists($objSoapObject, 'LoginActiveFlag'))
@@ -1536,6 +1535,8 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
+			if ($objObject->dttDateLastLogin)
+				$objObject->dttDateLastLogin = $objObject->dttDateLastLogin->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1591,8 +1592,8 @@
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'PasswordCache':
 					return new QQNode('password_cache', 'PasswordCache', 'string', $this);
-				case 'PasswordLastSet':
-					return new QQNode('password_last_set', 'PasswordLastSet', 'string', $this);
+				case 'DateLastLogin':
+					return new QQNode('date_last_login', 'DateLastLogin', 'QDateTime', $this);
 				case 'DomainActiveFlag':
 					return new QQNode('domain_active_flag', 'DomainActiveFlag', 'boolean', $this);
 				case 'LoginActiveFlag':
@@ -1637,8 +1638,8 @@
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'PasswordCache':
 					return new QQNode('password_cache', 'PasswordCache', 'string', $this);
-				case 'PasswordLastSet':
-					return new QQNode('password_last_set', 'PasswordLastSet', 'string', $this);
+				case 'DateLastLogin':
+					return new QQNode('date_last_login', 'DateLastLogin', 'QDateTime', $this);
 				case 'DomainActiveFlag':
 					return new QQNode('domain_active_flag', 'DomainActiveFlag', 'boolean', $this);
 				case 'LoginActiveFlag':

@@ -24,8 +24,8 @@
 	 * property-read QLabel $UsernameLabel
 	 * property QTextBox $PasswordCacheControl
 	 * property-read QLabel $PasswordCacheLabel
-	 * property QTextBox $PasswordLastSetControl
-	 * property-read QLabel $PasswordLastSetLabel
+	 * property QDateTimePicker $DateLastLoginControl
+	 * property-read QLabel $DateLastLoginLabel
 	 * property QCheckBox $DomainActiveFlagControl
 	 * property-read QLabel $DomainActiveFlagLabel
 	 * property QCheckBox $LoginActiveFlagControl
@@ -56,7 +56,7 @@
 		protected $lstRoleType;
 		protected $txtUsername;
 		protected $txtPasswordCache;
-		protected $txtPasswordLastSet;
+		protected $calDateLastLogin;
 		protected $chkDomainActiveFlag;
 		protected $chkLoginActiveFlag;
 		protected $txtEmail;
@@ -68,7 +68,7 @@
 		protected $lblRoleTypeId;
 		protected $lblUsername;
 		protected $lblPasswordCache;
-		protected $lblPasswordLastSet;
+		protected $lblDateLastLogin;
 		protected $lblDomainActiveFlag;
 		protected $lblLoginActiveFlag;
 		protected $lblEmail;
@@ -268,29 +268,33 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtPasswordLastSet
+		 * Create and setup QDateTimePicker calDateLastLogin
 		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
+		 * @return QDateTimePicker
 		 */
-		public function txtPasswordLastSet_Create($strControlId = null) {
-			$this->txtPasswordLastSet = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtPasswordLastSet->Name = QApplication::Translate('Password Last Set');
-			$this->txtPasswordLastSet->Text = $this->objLogin->PasswordLastSet;
-			$this->txtPasswordLastSet->MaxLength = Login::PasswordLastSetMaxLength;
-			return $this->txtPasswordLastSet;
+		public function calDateLastLogin_Create($strControlId = null) {
+			$this->calDateLastLogin = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateLastLogin->Name = QApplication::Translate('Date Last Login');
+			$this->calDateLastLogin->DateTime = $this->objLogin->DateLastLogin;
+			$this->calDateLastLogin->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDateLastLogin;
 		}
 
 		/**
-		 * Create and setup QLabel lblPasswordLastSet
+		 * Create and setup QLabel lblDateLastLogin
 		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
 		 * @return QLabel
 		 */
-		public function lblPasswordLastSet_Create($strControlId = null) {
-			$this->lblPasswordLastSet = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPasswordLastSet->Name = QApplication::Translate('Password Last Set');
-			$this->lblPasswordLastSet->Text = $this->objLogin->PasswordLastSet;
-			return $this->lblPasswordLastSet;
+		public function lblDateLastLogin_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateLastLogin = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateLastLogin->Name = QApplication::Translate('Date Last Login');
+			$this->strDateLastLoginDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateLastLogin->Text = sprintf($this->objLogin->DateLastLogin) ? $this->objLogin->DateLastLogin->__toString($this->strDateLastLoginDateTimeFormat) : null;
+			return $this->lblDateLastLogin;
 		}
+
+		protected $strDateLastLoginDateTimeFormat;
 
 		/**
 		 * Create and setup QCheckBox chkDomainActiveFlag
@@ -502,8 +506,8 @@
 			if ($this->txtPasswordCache) $this->txtPasswordCache->Text = $this->objLogin->PasswordCache;
 			if ($this->lblPasswordCache) $this->lblPasswordCache->Text = $this->objLogin->PasswordCache;
 
-			if ($this->txtPasswordLastSet) $this->txtPasswordLastSet->Text = $this->objLogin->PasswordLastSet;
-			if ($this->lblPasswordLastSet) $this->lblPasswordLastSet->Text = $this->objLogin->PasswordLastSet;
+			if ($this->calDateLastLogin) $this->calDateLastLogin->DateTime = $this->objLogin->DateLastLogin;
+			if ($this->lblDateLastLogin) $this->lblDateLastLogin->Text = sprintf($this->objLogin->DateLastLogin) ? $this->objLogin->__toString($this->strDateLastLoginDateTimeFormat) : null;
 
 			if ($this->chkDomainActiveFlag) $this->chkDomainActiveFlag->Checked = $this->objLogin->DomainActiveFlag;
 			if ($this->lblDomainActiveFlag) $this->lblDomainActiveFlag->Text = ($this->objLogin->DomainActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
@@ -580,7 +584,7 @@
 				if ($this->lstRoleType) $this->objLogin->RoleTypeId = $this->lstRoleType->SelectedValue;
 				if ($this->txtUsername) $this->objLogin->Username = $this->txtUsername->Text;
 				if ($this->txtPasswordCache) $this->objLogin->PasswordCache = $this->txtPasswordCache->Text;
-				if ($this->txtPasswordLastSet) $this->objLogin->PasswordLastSet = $this->txtPasswordLastSet->Text;
+				if ($this->calDateLastLogin) $this->objLogin->DateLastLogin = $this->calDateLastLogin->DateTime;
 				if ($this->chkDomainActiveFlag) $this->objLogin->DomainActiveFlag = $this->chkDomainActiveFlag->Checked;
 				if ($this->chkLoginActiveFlag) $this->objLogin->LoginActiveFlag = $this->chkLoginActiveFlag->Checked;
 				if ($this->txtEmail) $this->objLogin->Email = $this->txtEmail->Text;
@@ -655,12 +659,12 @@
 				case 'PasswordCacheLabel':
 					if (!$this->lblPasswordCache) return $this->lblPasswordCache_Create();
 					return $this->lblPasswordCache;
-				case 'PasswordLastSetControl':
-					if (!$this->txtPasswordLastSet) return $this->txtPasswordLastSet_Create();
-					return $this->txtPasswordLastSet;
-				case 'PasswordLastSetLabel':
-					if (!$this->lblPasswordLastSet) return $this->lblPasswordLastSet_Create();
-					return $this->lblPasswordLastSet;
+				case 'DateLastLoginControl':
+					if (!$this->calDateLastLogin) return $this->calDateLastLogin_Create();
+					return $this->calDateLastLogin;
+				case 'DateLastLoginLabel':
+					if (!$this->lblDateLastLogin) return $this->lblDateLastLogin_Create();
+					return $this->lblDateLastLogin;
 				case 'DomainActiveFlagControl':
 					if (!$this->chkDomainActiveFlag) return $this->chkDomainActiveFlag_Create();
 					return $this->chkDomainActiveFlag;
@@ -733,8 +737,8 @@
 						return ($this->txtUsername = QType::Cast($mixValue, 'QControl'));
 					case 'PasswordCacheControl':
 						return ($this->txtPasswordCache = QType::Cast($mixValue, 'QControl'));
-					case 'PasswordLastSetControl':
-						return ($this->txtPasswordLastSet = QType::Cast($mixValue, 'QControl'));
+					case 'DateLastLoginControl':
+						return ($this->calDateLastLogin = QType::Cast($mixValue, 'QControl'));
 					case 'DomainActiveFlagControl':
 						return ($this->chkDomainActiveFlag = QType::Cast($mixValue, 'QControl'));
 					case 'LoginActiveFlagControl':

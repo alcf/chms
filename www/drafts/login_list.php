@@ -59,7 +59,7 @@
 			$this->dtgLogins->MetaAddTypeColumn('RoleTypeId', 'RoleType');
 			$this->dtgLogins->MetaAddColumn('Username');
 			$this->dtgLogins->MetaAddColumn('PasswordCache');
-			$this->dtgLogins->MetaAddColumn('PasswordLastSet');
+			$this->dtgLogins->MetaAddColumn('DateLastLogin');
 			$this->dtgLogins->MetaAddColumn('DomainActiveFlag');
 			$this->dtgLogins->MetaAddColumn('LoginActiveFlag');
 			$this->dtgLogins->MetaAddColumn('Email');

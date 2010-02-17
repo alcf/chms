@@ -13,7 +13,7 @@
 
 		<?php $_CONTROL->txtPasswordCache->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtPasswordLastSet->RenderWithName(); ?>
+		<?php $_CONTROL->calDateLastLogin->RenderWithName(); ?>
 
 		<?php $_CONTROL->chkDomainActiveFlag->RenderWithName(); ?>
 

@@ -188,7 +188,7 @@
 					$strLinkUrl .= '?intId=<?=urlencode($_ITEM->Id)?>';
 					break;
 				case QMetaControlArgumentType::PathInfo:
-					$strLinkUrl .= '/<?=urlencode($_ITEM->Id)?>';
+					$strLinkUrl .= '/<?=str_replace("+","%20",urlencode($_ITEM->Id))?>';
 					break;
 				default:
 					throw new QCallerException('Unable to pass arguments with this intArgumentType: ' . $intArgumentType);
@@ -277,7 +277,7 @@
 				case 'RoleTypeId': return QQN::Login()->RoleTypeId;
 				case 'Username': return QQN::Login()->Username;
 				case 'PasswordCache': return QQN::Login()->PasswordCache;
-				case 'PasswordLastSet': return QQN::Login()->PasswordLastSet;
+				case 'DateLastLogin': return QQN::Login()->DateLastLogin;
 				case 'DomainActiveFlag': return QQN::Login()->DomainActiveFlag;
 				case 'LoginActiveFlag': return QQN::Login()->LoginActiveFlag;
 				case 'Email': return QQN::Login()->Email;

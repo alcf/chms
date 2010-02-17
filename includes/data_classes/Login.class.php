@@ -27,6 +27,81 @@
 			return sprintf('Login Object %s',  $this->intId);
 		}
 
+		/**
+		 * Given a username/email and a password, this will attempt to load the valid Login object.
+		 * 
+		 * If a valid/cached password is stored locally, it will validate against that.  If the cache is missing or invalid,
+		 * it will validate against the LDAP server and if correct, update the local cache accordingly.
+		 * @param string $strUsername
+		 * @param string $strPassword
+		 * @return Login
+		 */
+		public static function LoadByUsernamePassword($strUsername, $strPassword) {
+			$strUsername = trim(strtolower($strUsername));
+
+			// First, let's get the Login object via Username
+			$objLogin = Login::LoadByUsername($strUsername);
+
+			// Next, try using Email
+			if (!$objLogin) {
+				$objPerson = Person::LoadByEmail($strUsername);
+				if ($objPerson) $objLogin = $objPerson->Login;
+			}
+
+			// If it still fails, indicate so by returning null
+			if (!$objLogin) return;
+
+			// Check Against the Password Cache
+			if ($objLogin->IsPasswordValidAgainstCache($strPassword)) {
+				// Update and Return Login Record
+				$objLogin->LastLoginDate = QDateTime::Now();
+				$objLogin->Save();
+				return $objLogin;
+			}
+
+			// Check Against LDAP
+			try {
+				$objLdap = new AlcfLdap(LDAP_PATH, 'ir\\' . $objLogin->Username, $strPassword);
+
+				// If we're here, then we've validated correctly against LDAP
+				$objLogin->SetPasswordCache($strPassword);
+
+				// Update and Return Login Record
+				$objLogin->LastLoginDate = QDateTime::Now();
+				$objLogin->Save();
+				return $objLogin;
+			} catch (Exception $objExc) {}
+
+			// If we're here, then we've FAILED against LDAP
+			return;
+		}
+		
+		/**
+		 * Returns whether or not this Login user is currently allowed to use the Chms
+		 * based on DomainActiveFlag and LoginActiveFlag settings
+		 * @return boolean
+		 */
+		public function IsAllowedToUseChms() {
+			return $this->blnDomainActiveFlag || $this->blnLoginActiveFlag;
+		}
+
+		/**
+		 * Sets the PasswordCache value, encrypted with salt
+		 * @param string $strPassword
+		 * @return void
+		 */
+		public function SetPasswordCache($strPassword) {
+			$this->strPasswordCache = md5($strPassword . 'chms-SALT4alcf!');
+		}
+
+		/**
+		 * Returns whether or not the password checks valid against the cached password in the object
+		 * @param string $strPassword
+		 * @return boolean
+		 */
+		public function IsPasswordValidAgainstCache($strPassword) {
+			return (md5($strPassword . 'chms-SALT4alcf!') == $this->strPasswordCache);
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

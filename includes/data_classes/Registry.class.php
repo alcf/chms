@@ -27,6 +27,33 @@
 			return sprintf('Registry Object %s',  $this->intId);
 		}
 
+		/**
+		 * Sets the value of an item in the Registry.
+		 * If the Name does not exist in the registry, this will error.
+		 * 
+		 * @param string $strName
+		 * @param string $strValue
+		 * @return string
+		 */
+		public static function SetValue($strName, $strValue) {
+			$strName = trim(strtolower($strName));
+			$objRegistry = Registry::LoadByName($strName);
+			$objRegistry->Value = $strValue;
+			$objRegistry->Save();
+		}
+
+		/**
+		 * Looks up and returns the value from the registry
+		 * If the Name does not exist in the registry, this will error
+		 * 
+		 * @param string $strName
+		 * @return string
+		 */
+		public static function GetValue($strName) {
+			$strName = trim(strtolower($strName));
+			$objRegistry = Registry::LoadByName($strName);
+			return $objRegistry->Value;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -27,7 +27,7 @@
 		protected $lstRoleType;
 		protected $txtUsername;
 		protected $txtPasswordCache;
-		protected $txtPasswordLastSet;
+		protected $calDateLastLogin;
 		protected $chkDomainActiveFlag;
 		protected $chkLoginActiveFlag;
 		protected $txtEmail;
@@ -65,7 +65,7 @@
 			$this->lstRoleType = $this->mctLogin->lstRoleType_Create();
 			$this->txtUsername = $this->mctLogin->txtUsername_Create();
 			$this->txtPasswordCache = $this->mctLogin->txtPasswordCache_Create();
-			$this->txtPasswordLastSet = $this->mctLogin->txtPasswordLastSet_Create();
+			$this->calDateLastLogin = $this->mctLogin->calDateLastLogin_Create();
 			$this->chkDomainActiveFlag = $this->mctLogin->chkDomainActiveFlag_Create();
 			$this->chkLoginActiveFlag = $this->mctLogin->chkLoginActiveFlag_Create();
 			$this->txtEmail = $this->mctLogin->txtEmail_Create();

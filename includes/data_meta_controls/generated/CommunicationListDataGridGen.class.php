@@ -188,7 +188,7 @@
 					$strLinkUrl .= '?intId=<?=urlencode($_ITEM->Id)?>';
 					break;
 				case QMetaControlArgumentType::PathInfo:
-					$strLinkUrl .= '/<?=urlencode($_ITEM->Id)?>';
+					$strLinkUrl .= '/<?=str_replace("+","%20",urlencode($_ITEM->Id))?>';
 					break;
 				default:
 					throw new QCallerException('Unable to pass arguments with this intArgumentType: ' . $intArgumentType);

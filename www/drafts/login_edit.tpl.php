@@ -25,7 +25,7 @@
 
 		<?php $this->txtPasswordCache->RenderWithName(); ?>
 
-		<?php $this->txtPasswordLastSet->RenderWithName(); ?>
+		<?php $this->calDateLastLogin->RenderWithName(); ?>
 
 		<?php $this->chkDomainActiveFlag->RenderWithName(); ?>
 
