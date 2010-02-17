@@ -69,6 +69,13 @@
 		QApplicationBase::$ClassFile['emailmetacontrol'] = __DATA_META_CONTROLS__ . '/EmailMetaControl.class.php';
 		QApplicationBase::$ClassFile['emaildatagrid'] = __DATA_META_CONTROLS__ . '/EmailDataGrid.class.php';
 
+	// ClassPaths for the HeadShot class
+		QApplicationBase::$ClassFile['headshot'] = __DATA_CLASSES__ . '/HeadShot.class.php';
+		QApplicationBase::$ClassFile['qqnodeheadshot'] = __DATA_CLASSES__ . '/HeadShot.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeheadshot'] = __DATA_CLASSES__ . '/HeadShot.class.php';
+		QApplicationBase::$ClassFile['headshotmetacontrol'] = __DATA_META_CONTROLS__ . '/HeadShotMetaControl.class.php';
+		QApplicationBase::$ClassFile['headshotdatagrid'] = __DATA_META_CONTROLS__ . '/HeadShotDataGrid.class.php';
+
 	// ClassPaths for the Household class
 		QApplicationBase::$ClassFile['household'] = __DATA_CLASSES__ . '/Household.class.php';
 		QApplicationBase::$ClassFile['qqnodehousehold'] = __DATA_CLASSES__ . '/Household.class.php';
@@ -110,13 +117,6 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodeministry'] = __DATA_CLASSES__ . '/Ministry.class.php';
 		QApplicationBase::$ClassFile['ministrymetacontrol'] = __DATA_META_CONTROLS__ . '/MinistryMetaControl.class.php';
 		QApplicationBase::$ClassFile['ministrydatagrid'] = __DATA_META_CONTROLS__ . '/MinistryDataGrid.class.php';
-
-	// ClassPaths for the MugShot class
-		QApplicationBase::$ClassFile['mugshot'] = __DATA_CLASSES__ . '/MugShot.class.php';
-		QApplicationBase::$ClassFile['qqnodemugshot'] = __DATA_CLASSES__ . '/MugShot.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodemugshot'] = __DATA_CLASSES__ . '/MugShot.class.php';
-		QApplicationBase::$ClassFile['mugshotmetacontrol'] = __DATA_META_CONTROLS__ . '/MugShotMetaControl.class.php';
-		QApplicationBase::$ClassFile['mugshotdatagrid'] = __DATA_META_CONTROLS__ . '/MugShotDataGrid.class.php';
 
 	// ClassPaths for the NameItem class
 		QApplicationBase::$ClassFile['nameitem'] = __DATA_CLASSES__ . '/NameItem.class.php';

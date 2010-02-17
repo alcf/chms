@@ -61,6 +61,12 @@
 			return new QQNodeEmail('email', null, null);
 		}
 		/**
+		 * @return QQNodeHeadShot
+		 */
+		static public function HeadShot() {
+			return new QQNodeHeadShot('head_shot', null, null);
+		}
+		/**
 		 * @return QQNodeHousehold
 		 */
 		static public function Household() {
@@ -95,12 +101,6 @@
 		 */
 		static public function Ministry() {
 			return new QQNodeMinistry('ministry', null, null);
-		}
-		/**
-		 * @return QQNodeMugShot
-		 */
-		static public function MugShot() {
-			return new QQNodeMugShot('mug_shot', null, null);
 		}
 		/**
 		 * @return QQNodeNameItem

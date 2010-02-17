@@ -7,7 +7,7 @@
 		// Counts of items to generate
 		const UserCount = 50;
 
-		// Data
+		// Static Data
 		public static $MinistryArray = array(
 			'bc' => 'Biblical Counseling',
 			'busops' => 'Business Operations',
@@ -35,6 +35,9 @@
 			'womens' => 'Women\'s Ministry',
 			'worshiparts' => 'Worship Arts',
 			'yam' => 'Young Adult Ministry');
+
+		// Generated Data
+		public static $UserArray;
 
 		/**
 		 * Main DataGen Runner
@@ -84,6 +87,7 @@
 					$objLogin->AssociateMinistry($objMinistry);
 				}
 			}
+			self::$UserArray = Login::LoadAll();
 		}
 	}
 

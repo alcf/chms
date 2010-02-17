@@ -636,7 +636,7 @@
 			$this->lstCurrentMugShot = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCurrentMugShot->Name = QApplication::Translate('Current Mug Shot');
 			$this->lstCurrentMugShot->AddItem(QApplication::Translate('- Select One -'), null);
-			$objCurrentMugShotArray = MugShot::LoadAll();
+			$objCurrentMugShotArray = HeadShot::LoadAll();
 			if ($objCurrentMugShotArray) foreach ($objCurrentMugShotArray as $objCurrentMugShot) {
 				$objListItem = new QListItem($objCurrentMugShot->__toString(), $objCurrentMugShot->Id);
 				if (($this->objPerson->CurrentMugShot) && ($this->objPerson->CurrentMugShot->Id == $objCurrentMugShot->Id))
@@ -967,7 +967,7 @@
 			if ($this->lstCurrentMugShot) {
 					$this->lstCurrentMugShot->RemoveAllItems();
 				$this->lstCurrentMugShot->AddItem(QApplication::Translate('- Select One -'), null);
-				$objCurrentMugShotArray = MugShot::LoadAll();
+				$objCurrentMugShotArray = HeadShot::LoadAll();
 				if ($objCurrentMugShotArray) foreach ($objCurrentMugShotArray as $objCurrentMugShot) {
 					$objListItem = new QListItem($objCurrentMugShot->__toString(), $objCurrentMugShot->Id);
 					if (($this->objPerson->CurrentMugShot) && ($this->objPerson->CurrentMugShot->Id == $objCurrentMugShot->Id))

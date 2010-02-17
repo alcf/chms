@@ -37,7 +37,7 @@
 	 * @property boolean $CanMailFlag the value for blnCanMailFlag 
 	 * @property boolean $CanEmailFlag the value for blnCanEmailFlag 
 	 * @property boolean $CanPhoneFlag the value for blnCanPhoneFlag 
-	 * @property MugShot $CurrentMugShot the value for the MugShot object referenced by intCurrentMugShotId (Unique)
+	 * @property HeadShot $CurrentMugShot the value for the HeadShot object referenced by intCurrentMugShotId (Unique)
 	 * @property Address $MailingAddress the value for the Address object referenced by intMailingAddressId 
 	 * @property Address $StewardshipAddress the value for the Address object referenced by intStewardshipAddressId 
 	 * @property Household $HouseholdAsHead the value for the Household object that uniquely references this Person
@@ -53,6 +53,8 @@
 	 * @property Comment[] $_CommentArray the value for the private _objCommentArray (Read-Only) if set due to an ExpandAsArray on the comment.person_id reverse relationship
 	 * @property Email $_Email the value for the private _objEmail (Read-Only) if set due to an expansion on the email.person_id reverse relationship
 	 * @property Email[] $_EmailArray the value for the private _objEmailArray (Read-Only) if set due to an ExpandAsArray on the email.person_id reverse relationship
+	 * @property HeadShot $_HeadShot the value for the private _objHeadShot (Read-Only) if set due to an expansion on the head_shot.person_id reverse relationship
+	 * @property HeadShot[] $_HeadShotArray the value for the private _objHeadShotArray (Read-Only) if set due to an ExpandAsArray on the head_shot.person_id reverse relationship
 	 * @property HouseholdParticipation $_HouseholdParticipation the value for the private _objHouseholdParticipation (Read-Only) if set due to an expansion on the household_participation.person_id reverse relationship
 	 * @property HouseholdParticipation[] $_HouseholdParticipationArray the value for the private _objHouseholdParticipationArray (Read-Only) if set due to an ExpandAsArray on the household_participation.person_id reverse relationship
 	 * @property Marriage $_Marriage the value for the private _objMarriage (Read-Only) if set due to an expansion on the marriage.person_id reverse relationship
@@ -61,8 +63,6 @@
 	 * @property Marriage[] $_MarriageAsMarriedToArray the value for the private _objMarriageAsMarriedToArray (Read-Only) if set due to an ExpandAsArray on the marriage.married_to_person_id reverse relationship
 	 * @property Membership $_Membership the value for the private _objMembership (Read-Only) if set due to an expansion on the membership.person_id reverse relationship
 	 * @property Membership[] $_MembershipArray the value for the private _objMembershipArray (Read-Only) if set due to an ExpandAsArray on the membership.person_id reverse relationship
-	 * @property MugShot $_MugShot the value for the private _objMugShot (Read-Only) if set due to an expansion on the mug_shot.person_id reverse relationship
-	 * @property MugShot[] $_MugShotArray the value for the private _objMugShotArray (Read-Only) if set due to an ExpandAsArray on the mug_shot.person_id reverse relationship
 	 * @property OtherContactInfo $_OtherContactInfo the value for the private _objOtherContactInfo (Read-Only) if set due to an expansion on the other_contact_info.person_id reverse relationship
 	 * @property OtherContactInfo[] $_OtherContactInfoArray the value for the private _objOtherContactInfoArray (Read-Only) if set due to an ExpandAsArray on the other_contact_info.person_id reverse relationship
 	 * @property Phone $_Phone the value for the private _objPhone (Read-Only) if set due to an expansion on the phone.person_id reverse relationship
@@ -360,6 +360,22 @@
 		private $_objEmailArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single HeadShot object
+		 * (of type HeadShot), if this Person object was restored with
+		 * an expansion on the head_shot association table.
+		 * @var HeadShot _objHeadShot;
+		 */
+		private $_objHeadShot;
+
+		/**
+		 * Private member variable that stores a reference to an array of HeadShot objects
+		 * (of type HeadShot[]), if this Person object was restored with
+		 * an ExpandAsArray on the head_shot association table.
+		 * @var HeadShot[] _objHeadShotArray;
+		 */
+		private $_objHeadShotArray = array();
+
+		/**
 		 * Private member variable that stores a reference to a single HouseholdParticipation object
 		 * (of type HouseholdParticipation), if this Person object was restored with
 		 * an expansion on the household_participation association table.
@@ -422,22 +438,6 @@
 		 * @var Membership[] _objMembershipArray;
 		 */
 		private $_objMembershipArray = array();
-
-		/**
-		 * Private member variable that stores a reference to a single MugShot object
-		 * (of type MugShot), if this Person object was restored with
-		 * an expansion on the mug_shot association table.
-		 * @var MugShot _objMugShot;
-		 */
-		private $_objMugShot;
-
-		/**
-		 * Private member variable that stores a reference to an array of MugShot objects
-		 * (of type MugShot[]), if this Person object was restored with
-		 * an ExpandAsArray on the mug_shot association table.
-		 * @var MugShot[] _objMugShotArray;
-		 */
-		private $_objMugShotArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single OtherContactInfo object
@@ -529,9 +529,9 @@
 		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column person.current_mug_shot_id.
 		 *
-		 * NOTE: Always use the CurrentMugShot property getter to correctly retrieve this MugShot object.
+		 * NOTE: Always use the CurrentMugShot property getter to correctly retrieve this HeadShot object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var MugShot objCurrentMugShot
+		 * @var HeadShot objCurrentMugShot
 		 */
 		protected $objCurrentMugShot;
 
@@ -980,6 +980,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'headshot__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objHeadShotArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objHeadShotArray[$intPreviousChildItemCount - 1];
+						$objChildItem = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'headshot__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objHeadShotArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objHeadShotArray[] = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'headshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'householdparticipation__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1033,20 +1047,6 @@
 							$objPreviousItem->_objMembershipArray[] = $objChildItem;
 					} else
 						$objPreviousItem->_objMembershipArray[] = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-					$blnExpandedViaArray = true;
-				}
-
-				$strAlias = $strAliasPrefix . 'mugshot__id';
-				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objMugShotArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objMugShotArray[$intPreviousChildItemCount - 1];
-						$objChildItem = MugShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'mugshot__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
-						if ($objChildItem)
-							$objPreviousItem->_objMugShotArray[] = $objChildItem;
-					} else
-						$objPreviousItem->_objMugShotArray[] = MugShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'mugshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -1178,7 +1178,7 @@
 			$strAlias = $strAliasPrefix . 'current_mug_shot_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objCurrentMugShot = MugShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'current_mug_shot_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objCurrentMugShot = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'current_mug_shot_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for MailingAddress Early Binding
 			$strAlias = $strAliasPrefix . 'mailing_address_id__id';
@@ -1267,6 +1267,16 @@
 					$objToReturn->_objEmail = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'email__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+			// Check for HeadShot Virtual Binding
+			$strAlias = $strAliasPrefix . 'headshot__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objHeadShotArray[] = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'headshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objHeadShot = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'headshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
 			// Check for HouseholdParticipation Virtual Binding
 			$strAlias = $strAliasPrefix . 'householdparticipation__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1305,16 +1315,6 @@
 					$objToReturn->_objMembershipArray[] = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objMembership = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
-
-			// Check for MugShot Virtual Binding
-			$strAlias = $strAliasPrefix . 'mugshot__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objMugShotArray[] = MugShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'mugshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objMugShot = MugShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'mugshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for OtherContactInfo Virtual Binding
@@ -1988,11 +1988,11 @@
 				// Member Objects
 				///////////////////
 				case 'CurrentMugShot':
-					// Gets the value for the MugShot object referenced by intCurrentMugShotId (Unique)
-					// @return MugShot
+					// Gets the value for the HeadShot object referenced by intCurrentMugShotId (Unique)
+					// @return HeadShot
 					try {
 						if ((!$this->objCurrentMugShot) && (!is_null($this->intCurrentMugShotId)))
-							$this->objCurrentMugShot = MugShot::Load($this->intCurrentMugShotId);
+							$this->objCurrentMugShot = HeadShot::Load($this->intCurrentMugShotId);
 						return $this->objCurrentMugShot;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -2119,6 +2119,18 @@
 					// @return Email[]
 					return (array) $this->_objEmailArray;
 
+				case '_HeadShot':
+					// Gets the value for the private _objHeadShot (Read-Only)
+					// if set due to an expansion on the head_shot.person_id reverse relationship
+					// @return HeadShot
+					return $this->_objHeadShot;
+
+				case '_HeadShotArray':
+					// Gets the value for the private _objHeadShotArray (Read-Only)
+					// if set due to an ExpandAsArray on the head_shot.person_id reverse relationship
+					// @return HeadShot[]
+					return (array) $this->_objHeadShotArray;
+
 				case '_HouseholdParticipation':
 					// Gets the value for the private _objHouseholdParticipation (Read-Only)
 					// if set due to an expansion on the household_participation.person_id reverse relationship
@@ -2166,18 +2178,6 @@
 					// if set due to an ExpandAsArray on the membership.person_id reverse relationship
 					// @return Membership[]
 					return (array) $this->_objMembershipArray;
-
-				case '_MugShot':
-					// Gets the value for the private _objMugShot (Read-Only)
-					// if set due to an expansion on the mug_shot.person_id reverse relationship
-					// @return MugShot
-					return $this->_objMugShot;
-
-				case '_MugShotArray':
-					// Gets the value for the private _objMugShotArray (Read-Only)
-					// if set due to an ExpandAsArray on the mug_shot.person_id reverse relationship
-					// @return MugShot[]
-					return (array) $this->_objMugShotArray;
 
 				case '_OtherContactInfo':
 					// Gets the value for the private _objOtherContactInfo (Read-Only)
@@ -2493,23 +2493,23 @@
 				// Member Objects
 				///////////////////
 				case 'CurrentMugShot':
-					// Sets the value for the MugShot object referenced by intCurrentMugShotId (Unique)
-					// @param MugShot $mixValue
-					// @return MugShot
+					// Sets the value for the HeadShot object referenced by intCurrentMugShotId (Unique)
+					// @param HeadShot $mixValue
+					// @return HeadShot
 					if (is_null($mixValue)) {
 						$this->intCurrentMugShotId = null;
 						$this->objCurrentMugShot = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a MugShot object
+						// Make sure $mixValue actually is a HeadShot object
 						try {
-							$mixValue = QType::Cast($mixValue, 'MugShot');
+							$mixValue = QType::Cast($mixValue, 'HeadShot');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						} 
 
-						// Make sure $mixValue is a SAVED MugShot object
+						// Make sure $mixValue is a SAVED HeadShot object
 						if (is_null($mixValue->Id))
 							throw new QCallerException('Unable to set an unsaved CurrentMugShot for this Person');
 
@@ -3248,6 +3248,156 @@
 
 			
 		
+		// Related Objects' Methods for HeadShot
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated HeadShots as an array of HeadShot objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return HeadShot[]
+		*/ 
+		public function GetHeadShotArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return HeadShot::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated HeadShots
+		 * @return int
+		*/ 
+		public function CountHeadShots() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return HeadShot::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a HeadShot
+		 * @param HeadShot $objHeadShot
+		 * @return void
+		*/ 
+		public function AssociateHeadShot(HeadShot $objHeadShot) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateHeadShot on this unsaved Person.');
+			if ((is_null($objHeadShot->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateHeadShot on this Person with an unsaved HeadShot.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`head_shot`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objHeadShot->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a HeadShot
+		 * @param HeadShot $objHeadShot
+		 * @return void
+		*/ 
+		public function UnassociateHeadShot(HeadShot $objHeadShot) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHeadShot on this unsaved Person.');
+			if ((is_null($objHeadShot->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHeadShot on this Person with an unsaved HeadShot.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`head_shot`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objHeadShot->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all HeadShots
+		 * @return void
+		*/ 
+		public function UnassociateAllHeadShots() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHeadShot on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`head_shot`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated HeadShot
+		 * @param HeadShot $objHeadShot
+		 * @return void
+		*/ 
+		public function DeleteAssociatedHeadShot(HeadShot $objHeadShot) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHeadShot on this unsaved Person.');
+			if ((is_null($objHeadShot->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHeadShot on this Person with an unsaved HeadShot.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`head_shot`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objHeadShot->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated HeadShots
+		 * @return void
+		*/ 
+		public function DeleteAllHeadShots() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHeadShot on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`head_shot`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for HouseholdParticipation
 		//-------------------------------------------------------------------
 
@@ -3841,156 +3991,6 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`membership`
-				WHERE
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-			
-		
-		// Related Objects' Methods for MugShot
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated MugShots as an array of MugShot objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return MugShot[]
-		*/ 
-		public function GetMugShotArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return MugShot::LoadArrayByPersonId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated MugShots
-		 * @return int
-		*/ 
-		public function CountMugShots() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return MugShot::CountByPersonId($this->intId);
-		}
-
-		/**
-		 * Associates a MugShot
-		 * @param MugShot $objMugShot
-		 * @return void
-		*/ 
-		public function AssociateMugShot(MugShot $objMugShot) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMugShot on this unsaved Person.');
-			if ((is_null($objMugShot->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMugShot on this Person with an unsaved MugShot.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`mug_shot`
-				SET
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objMugShot->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a MugShot
-		 * @param MugShot $objMugShot
-		 * @return void
-		*/ 
-		public function UnassociateMugShot(MugShot $objMugShot) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMugShot on this unsaved Person.');
-			if ((is_null($objMugShot->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMugShot on this Person with an unsaved MugShot.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`mug_shot`
-				SET
-					`person_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objMugShot->Id) . ' AND
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all MugShots
-		 * @return void
-		*/ 
-		public function UnassociateAllMugShots() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMugShot on this unsaved Person.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`mug_shot`
-				SET
-					`person_id` = null
-				WHERE
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated MugShot
-		 * @param MugShot $objMugShot
-		 * @return void
-		*/ 
-		public function DeleteAssociatedMugShot(MugShot $objMugShot) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMugShot on this unsaved Person.');
-			if ((is_null($objMugShot->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMugShot on this Person with an unsaved MugShot.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`mug_shot`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objMugShot->Id) . ' AND
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated MugShots
-		 * @return void
-		*/ 
-		public function DeleteAllMugShots() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMugShot on this unsaved Person.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`mug_shot`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -4866,7 +4866,7 @@
 			$strToReturn .= '<element name="DobApproximateFlag" type="xsd:int"/>';
 			$strToReturn .= '<element name="DeceasedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateDeceased" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="CurrentMugShot" type="xsd1:MugShot"/>';
+			$strToReturn .= '<element name="CurrentMugShot" type="xsd1:HeadShot"/>';
 			$strToReturn .= '<element name="MailingAddress" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="StewardshipAddress" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="CanMailFlag" type="xsd:boolean"/>';
@@ -4880,7 +4880,7 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('Person', $strComplexTypeArray)) {
 				$strComplexTypeArray['Person'] = Person::GetSoapComplexTypeXml();
-				MugShot::AlterSoapComplexTypeArray($strComplexTypeArray);
+				HeadShot::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
@@ -4931,7 +4931,7 @@
 				$objToReturn->dttDateDeceased = new QDateTime($objSoapObject->DateDeceased);
 			if ((property_exists($objSoapObject, 'CurrentMugShot')) &&
 				($objSoapObject->CurrentMugShot))
-				$objToReturn->CurrentMugShot = MugShot::GetObjectFromSoapObject($objSoapObject->CurrentMugShot);
+				$objToReturn->CurrentMugShot = HeadShot::GetObjectFromSoapObject($objSoapObject->CurrentMugShot);
 			if ((property_exists($objSoapObject, 'MailingAddress')) &&
 				($objSoapObject->MailingAddress))
 				$objToReturn->MailingAddress = Address::GetObjectFromSoapObject($objSoapObject->MailingAddress);
@@ -4967,7 +4967,7 @@
 			if ($objObject->dttDateDeceased)
 				$objObject->dttDateDeceased = $objObject->dttDateDeceased->__toString(QDateTime::FormatSoap);
 			if ($objObject->objCurrentMugShot)
-				$objObject->objCurrentMugShot = MugShot::GetSoapObjectFromObject($objObject->objCurrentMugShot, false);
+				$objObject->objCurrentMugShot = HeadShot::GetSoapObjectFromObject($objObject->objCurrentMugShot, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intCurrentMugShotId = null;
 			if ($objObject->objMailingAddress)
@@ -5087,7 +5087,7 @@
 				case 'CurrentMugShotId':
 					return new QQNode('current_mug_shot_id', 'CurrentMugShotId', 'integer', $this);
 				case 'CurrentMugShot':
-					return new QQNodeMugShot('current_mug_shot_id', 'CurrentMugShot', 'integer', $this);
+					return new QQNodeHeadShot('current_mug_shot_id', 'CurrentMugShot', 'integer', $this);
 				case 'MailingAddressId':
 					return new QQNode('mailing_address_id', 'MailingAddressId', 'integer', $this);
 				case 'MailingAddress':
@@ -5114,6 +5114,8 @@
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
+				case 'HeadShot':
+					return new QQReverseReferenceNodeHeadShot($this, 'headshot', 'reverse_reference', 'person_id');
 				case 'HouseholdAsHead':
 					return new QQReverseReferenceNodeHousehold($this, 'householdashead', 'reverse_reference', 'head_person_id', 'HouseholdAsHead');
 				case 'HouseholdParticipation':
@@ -5124,8 +5126,6 @@
 					return new QQReverseReferenceNodeMarriage($this, 'marriageasmarriedto', 'reverse_reference', 'married_to_person_id');
 				case 'Membership':
 					return new QQReverseReferenceNodeMembership($this, 'membership', 'reverse_reference', 'person_id');
-				case 'MugShot':
-					return new QQReverseReferenceNodeMugShot($this, 'mugshot', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'Phone':
@@ -5189,7 +5189,7 @@
 				case 'CurrentMugShotId':
 					return new QQNode('current_mug_shot_id', 'CurrentMugShotId', 'integer', $this);
 				case 'CurrentMugShot':
-					return new QQNodeMugShot('current_mug_shot_id', 'CurrentMugShot', 'integer', $this);
+					return new QQNodeHeadShot('current_mug_shot_id', 'CurrentMugShot', 'integer', $this);
 				case 'MailingAddressId':
 					return new QQNode('mailing_address_id', 'MailingAddressId', 'integer', $this);
 				case 'MailingAddress':
@@ -5216,6 +5216,8 @@
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
+				case 'HeadShot':
+					return new QQReverseReferenceNodeHeadShot($this, 'headshot', 'reverse_reference', 'person_id');
 				case 'HouseholdAsHead':
 					return new QQReverseReferenceNodeHousehold($this, 'householdashead', 'reverse_reference', 'head_person_id', 'HouseholdAsHead');
 				case 'HouseholdParticipation':
@@ -5226,8 +5228,6 @@
 					return new QQReverseReferenceNodeMarriage($this, 'marriageasmarriedto', 'reverse_reference', 'married_to_person_id');
 				case 'Membership':
 					return new QQReverseReferenceNodeMembership($this, 'membership', 'reverse_reference', 'person_id');
-				case 'MugShot':
-					return new QQReverseReferenceNodeMugShot($this, 'mugshot', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'Phone':
