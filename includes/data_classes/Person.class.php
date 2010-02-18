@@ -27,6 +27,34 @@
 			return sprintf('Person Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Name': return $this->strFirstName . ' ' . $this->strLastName;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
+		/**
+		 * Calcluates based on this person's birthdate whether or not the person is less than 18 years old.
+		 * If the person is 18 or older, OR if no birthdate is specified, then this will return false.
+		 * @return boolean whether or not the person is a child
+		 */
+		public function IsChild() {
+			if (!$this->DateOfBirth) return false;
+
+			$dtt18YearsAgo = QDateTime::Now(false);
+			$dtt18YearsAgo->Year -= 18;
+			return $this->DateOfBirth->IsEarlierOrEqualTo($dtt18YearsAgo);
+		}
+
+
 		/**
 		 * Recalculates this member's Membership Status and updates MembershipStatusTypeId
 		 * based on the calculation.  Will call save if asked to do so
@@ -208,20 +236,6 @@
 		// of the data generated properties, please feel free to uncomment them.
 /*
 		protected $strSomeNewProperty;
-
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {

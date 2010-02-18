@@ -27,6 +27,31 @@
 			return sprintf('HouseholdParticipation Object %s',  $this->intId);
 		}
 
+		/**
+		 * Calculates the role value based on the person and his/her relationship to the head of household.
+		 * Will call save unless explicitly specified not to
+		 * @param boolean $blnSave whether or not to call save after updating role value
+		 * @return void
+		 */
+		public function RefreshRole($blnSave) {
+			$objHeadPerson = $this->Household->HeadPerson;
+			if ($this->PersonId == $objHeadPerson->Id) {
+				$this->strRole = 'Head';
+				if ($blnSave) $this->Save();
+				return;
+			}
+
+			// TODO: Calculate based on family relationships
+
+			// Can't figure out any relationship -- simply specify as "Child" or "Adult"
+			if ($this->Person->IsChild()) {
+				$this->strRole = 'Child';
+			} else {
+				$this->strRole = 'Adult';
+			}
+			if ($blnSave) $this->Save();
+			return;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -7,7 +7,8 @@
 		// Counts of items to generate
 		const UserCount = 50;
 		const IndividualCount = 100;
-
+		const HouseholdCount = 100;
+		
 		// Static Data
 		public static $MinistryArray = array(
 			'bc' => 'Biblical Counseling',
@@ -40,6 +41,7 @@
 		// Generated Data
 		public static $SystemStartDate;
 		public static $LifeStartDate;
+		public static $OldestChildBirthDate;
 		public static $UserArray;
 
 		/**
@@ -49,6 +51,8 @@
 		public static function Run() {
 			self::$SystemStartDate = new QDateTime('1990-01-01');
 			self::$LifeStartDate = new QDateTime('1930-01-01');
+			self::$OldestChildBirthDate = QDateTime::Now(false);
+			self::$OldestChildBirthDate->Year -= 18;
 
 			// Erase Directories
 			exec('rm -r -f ' . __DOCROOT__ . '/../file_assets/head_shots');
@@ -56,7 +60,7 @@
 			// Generate Stuff
 			ChmsDataGen::GenerateMinistries();
 			ChmsDataGen::GenerateUsers();
-			ChmsDataGen::GenerateIndividuals();
+			ChmsDataGen::GenerateHouseholds();
 		}
 
 
@@ -109,13 +113,74 @@
 		}
 
 
+		public static function GenerateHouseholds() {
+			while (QDataGen::DisplayWhileTask('Generating Households', self::HouseholdCount, false)) {
+				switch (rand(0, 9)) {
+					case 0:
+					case 1:
+					case 2:
+						// Single-Family Household
+						$objHousehold = self::GenerateHouseholdSingleFamily();
+						break;
+					case 3:
+					case 4:
+					case 5:
+						// Single-Person Household
+						$objPerson = self::GenerateIndividual(rand(0, 1), rand(0, 8));
+						$objHousehold = Household::CreateHousehold($objPerson);
+						break;
+					case 6:
+					case 7:
+						// Multi-Family Households
+						// TODO
+						break;
+					case 8:
+					case 9:
+						// Non-Household
+						$objPerson = self::GenerateIndividual(rand(0, 1), rand(0, 8));
+						break;
+				}
+			}
+		}
+
+		/**
+		 * Generates a typical Single-Family household
+		 * @return Household
+		 */
+		public static function GenerateHouseholdSingleFamily() {
+			$strLastName = QDataGen::GenerateLastName();
+
+			$objHeadPerson = self::GenerateIndividual(rand(0, 6), true, $strLastName);
+			$objHousehold = Household::CreateHousehold($objHeadPerson);
+
+			// Add a Spouse
+			if (rand(0, 6)) {
+				$objSpouse = self::GenerateIndividual(!$objHeadPerson->MaleFlag, true, $strLastName);
+				$objHousehold->AssociatePerson($objSpouse);
+				$intMinimumChildCount = 0;
+			} else {
+				// If no spouse, we must have at least one child in order to be a "family"
+				$intMinimumChildCount = 1;
+			}
+
+			// Add Children (if applicable)
+			$intChildCount = rand($intMinimumChildCount, 4);
+			for ($i = 0; $i < $intChildCount; $i++) {
+				$objChild = self::GenerateIndividual(rand(0, 1), false, $strLastName);
+				$objHousehold->AssociatePerson($objChild);
+			}
+
+			return $objHousehold;
+		}
+
 		/**
 		 * Generates a single Individual record
 		 * @param boolean $blnMaleFlag
+		 * @param boolean $blnAdultFlag whether this Individual should be a child or an adult
 		 * @param string $strLastName optional last name
 		 * @return Person
 		 */
-		protected static function GenerateIndividual($blnMaleFlag, $strLastName = null) {
+		protected static function GenerateIndividual($blnMaleFlag, $blnAdultFlag, $strLastName = null) {
 			$objPerson = new Person();
 			$objPerson->MaleFlag = $blnMaleFlag;
 
@@ -134,9 +199,19 @@
 			}
 			$objPerson->LastName = ($strLastName) ? $strLastName : QDataGen::GenerateLastName();
 
+			// Date of Birth
+			if ($blnAdultFlag) {
+				if (rand(0, 1))
+					$objPerson->DateOfBirth = QDataGen::GenerateDateTime(self::$LifeStartDate, self::$OldestChildBirthDate);
+			} else {
+				$objPerson->DateOfBirth = QDataGen::GenerateDateTime(self::$OldestChildBirthDate, QDateTime::Now());
+			}
+
+			// Refresh Membership and Marital Statuses
 			$objPerson->RefreshMembershipStatusTypeId(false);
 			$objPerson->RefreshMaritalStatusTypeId(false);
 
+			// Setup Deceased Information
 			$objPerson->DeceasedFlag = !rand(0, 200);
 			if ($objPerson->DeceasedFlag && rand(0, 1))
 				$objPerson->DateDeceased = QDataGen::GenerateDateTime(self::$LifeStartDate, QDateTime::Now());

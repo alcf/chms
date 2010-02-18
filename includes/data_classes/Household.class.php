@@ -27,6 +27,54 @@
 			return sprintf('Household Object %s',  $this->intId);
 		}
 
+		/**
+		 * Creates a new Household record, and sets the HeadPerson as the Head of Household and HouseholdParticipant for this household
+		 * 
+		 * This will throw an exception if the HeadPerson is already head of another household.
+		 * @param Person $objHeadPerson
+		 * @return Household
+		 */
+		public static function CreateHousehold(Person $objHeadPerson) {
+			if (Household::LoadByHeadPersonId($objHeadPerson->Id)) throw new QCallerException('HeadPerson is already head of another household');
+			
+			// Create the new Household record
+			$objHousehold = new Household();
+			$objHousehold->HeadPerson = $objHeadPerson;
+			$objHousehold->RefreshName(false);
+			$objHousehold->Save();
+
+			$objHousehold->AssociatePerson($objHeadPerson);
+			return $objHousehold;
+		}
+
+		/**
+		 * Associates a Person into this Household, and an optional role can be specified.  If no role is specified,
+		 * then the role is calculated.
+		 * @param Person $objPerson
+		 * @param string $strRole
+		 * @return void
+		 */
+		public function AssociatePerson(Person $objPerson, $strRole = null) {
+			$objHouseholdParticipation = new HouseholdParticipation();
+			$objHouseholdParticipation->Person = $objPerson;
+			$objHouseholdParticipation->Household = $this;
+			if ($strRole) {
+				$objHouseholdParticipation->Role = $strRole;
+			} else {
+				$objHouseholdParticipation->RefreshRole(false);
+			}
+			$objHouseholdParticipation->Save();
+		}
+
+		/**
+		 * Refreshes the name of the household based on the Head of Household information.  Will call Save unless explicilty specified not to.
+		 * @param boolean $blnSave whether or not to call save after updating
+		 * @return void
+		 */
+		public function RefreshName($blnSave = true) {
+			$this->strName = $this->HeadPerson->Name . ' Household';
+			if ($blnSave) $this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
