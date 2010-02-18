@@ -1,5 +1,6 @@
 <?php
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
+	QApplication::Authenticate();
 
 	class SampleForm extends ChmsForm {
 		protected $lblMessage;

@@ -71,8 +71,16 @@
 		 * @return void
 		 */
 		public static function InitializeLogin() {
-			if (array_key_exists('intLoginId', $_SESSION))
+			if (array_key_exists('intLoginId', $_SESSION)) {
 				QApplication::$Login = Login::Load($_SESSION['intLoginId']);
+
+				// Make sure this Login is allowed to use Chms
+				if (QApplication::$Login && !QApplication::$Login->IsAllowedToUseChms()) {
+					$_SESSION['intLoginId'] = null;
+					unset($_SESSION['intLoginId']);
+					QApplication::$Login = null;
+				}
+			}
 		}
 
 		/**
@@ -100,7 +108,8 @@
 		public static function Logout() {
 			$_SESSION['intLoginId'] = null;
 			unset($_SESSION['intLoginId']);
-			if (!QApplication::$Login) QApplication::Redirect('/index.php/1');
+			QApplication::$Login = null;
+			QApplication::Redirect('/index.php/1');
 		}
 
 		////////////////////////////

@@ -13,11 +13,15 @@
 	<div class="content">
 		<div class="left">ALCF Church Management System</div>
 		<div class="right">
-			<strong>John Doe</strong> &bull; <strong>ChMS Administrator</strong>
+			&nbsp;
+<?php if (QApplication::$Login) { ?>
+			<strong><?php _p(QApplication::$Login->Name); ?></strong> &bull; <?php _p(QApplication::$Login->Type); ?>
+<?php } ?>
 		</div>
 	</div>
 </div>
 
+<?php if (QApplication::$Login) { ?>
 <div class="navBar">
 	<div class="content">
 		<ul>
@@ -31,5 +35,6 @@
 		</ul>
 	</div>
 </div>
+<?php } ?>
 
 <div class="mainSection">

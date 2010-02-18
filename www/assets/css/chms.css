@@ -2,8 +2,8 @@ body { margin: 0; padding: 0; background-color: #efd; font-family: arial, helvet
 
 div.titleBar { background-color: #240; height: 32px; }
 	div.titleBar div.content { width: 980px; margin: 0 auto; }
-		div.titleBar div.content div.left { width: 780px; float: left; padding-top: 2px; font-size: 22px; font-family: arial, helvetica, sans-serif; font-weight: bold; color: #fff; }
-		div.titleBar div.content div.right { width: 200px; float: right; text-align: right; padding-top: 12px; font-size: 10px; font-family: verdana, arial, helvetica, sans-serif; color: #fff; }
+		div.titleBar div.content div.left { width: 490px; float: left; padding-top: 2px; font-size: 22px; font-family: arial, helvetica, sans-serif; font-weight: bold; color: #fff; }
+		div.titleBar div.content div.right { width: 490px; float: right; text-align: right; padding-top: 12px; font-size: 10px; font-family: verdana, arial, helvetica, sans-serif; color: #fff; }
 
 div.navBar { background-color: #240; height: 20px; border-bottom: 1px solid #fff; border-top: 1px solid #fff; }
 	div.navBar div.content { width: 980px; margin: 0 auto; }

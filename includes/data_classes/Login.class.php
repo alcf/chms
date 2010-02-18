@@ -27,6 +27,27 @@
 			return sprintf('Login Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Name':
+					if ($this->strMiddleInitial)
+						return $this->strFirstName . ' ' . $this->strMiddleInitial . '. ' . $this->strLastName;
+					else
+						return $this->strFirstName . ' ' . $this->strLastName;
+
+				case 'Type':
+					return RoleType::$NameArray[$this->intRoleTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		/**
 		 * Given a username/email and a password, this will attempt to load the valid Login object.
 		 * 
@@ -82,7 +103,7 @@
 		 * @return boolean
 		 */
 		public function IsAllowedToUseChms() {
-			return $this->blnDomainActiveFlag || $this->blnLoginActiveFlag;
+			return $this->blnDomainActiveFlag && $this->blnLoginActiveFlag;
 		}
 
 		/**
