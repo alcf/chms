@@ -22,8 +22,10 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QDateTimePicker $DateUploadedControl
 	 * property-read QLabel $DateUploadedLabel
-	 * property QListBox $PersonAsCurrentMugShotControl
-	 * property-read QLabel $PersonAsCurrentMugShotLabel
+	 * property QListBox $ImageTypeIdControl
+	 * property-read QLabel $ImageTypeIdLabel
+	 * property QListBox $PersonAsCurrentControl
+	 * property-read QLabel $PersonAsCurrentLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -39,16 +41,18 @@
 		protected $lblId;
 		protected $lstPerson;
 		protected $calDateUploaded;
+		protected $lstImageType;
 
 		// Controls that allow the viewing of HeadShot's individual data fields
 		protected $lblPersonId;
 		protected $lblDateUploaded;
+		protected $lblImageTypeId;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
-		protected $lstPersonAsCurrentMugShot;
+		protected $lstPersonAsCurrent;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
-		protected $lblPersonAsCurrentMugShot;
+		protected $lblPersonAsCurrent;
 
 
 		/**
@@ -224,34 +228,61 @@
 		protected $strDateUploadedDateTimeFormat;
 
 		/**
-		 * Create and setup QListBox lstPersonAsCurrentMugShot
+		 * Create and setup QListBox lstImageType
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
 		 */
-		public function lstPersonAsCurrentMugShot_Create($strControlId = null) {
-			$this->lstPersonAsCurrentMugShot = new QListBox($this->objParentObject, $strControlId);
-			$this->lstPersonAsCurrentMugShot->Name = QApplication::Translate('Person As Current Mug Shot');
-			$this->lstPersonAsCurrentMugShot->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
-				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
-				if ($objPerson->CurrentMugShotId == $this->objHeadShot->Id)
-					$objListItem->Selected = true;
-				$this->lstPersonAsCurrentMugShot->AddItem($objListItem);
-			}
-			return $this->lstPersonAsCurrentMugShot;
+		public function lstImageType_Create($strControlId = null) {
+			$this->lstImageType = new QListBox($this->objParentObject, $strControlId);
+			$this->lstImageType->Name = QApplication::Translate('Image Type');
+			$this->lstImageType->Required = true;
+			foreach (ImageType::$NameArray as $intId => $strValue)
+				$this->lstImageType->AddItem(new QListItem($strValue, $intId, $this->objHeadShot->ImageTypeId == $intId));
+			return $this->lstImageType;
 		}
 
 		/**
-		 * Create and setup QLabel lblPersonAsCurrentMugShot
+		 * Create and setup QLabel lblImageTypeId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblPersonAsCurrentMugShot_Create($strControlId = null) {
-			$this->lblPersonAsCurrentMugShot = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPersonAsCurrentMugShot->Name = QApplication::Translate('Person As Current Mug Shot');
-			$this->lblPersonAsCurrentMugShot->Text = ($this->objHeadShot->PersonAsCurrentMugShot) ? $this->objHeadShot->PersonAsCurrentMugShot->__toString() : null;
-			return $this->lblPersonAsCurrentMugShot;
+		public function lblImageTypeId_Create($strControlId = null) {
+			$this->lblImageTypeId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblImageTypeId->Name = QApplication::Translate('Image Type');
+			$this->lblImageTypeId->Text = ($this->objHeadShot->ImageTypeId) ? ImageType::$NameArray[$this->objHeadShot->ImageTypeId] : null;
+			$this->lblImageTypeId->Required = true;
+			return $this->lblImageTypeId;
+		}
+
+		/**
+		 * Create and setup QListBox lstPersonAsCurrent
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstPersonAsCurrent_Create($strControlId = null) {
+			$this->lstPersonAsCurrent = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPersonAsCurrent->Name = QApplication::Translate('Person As Current');
+			$this->lstPersonAsCurrent->AddItem(QApplication::Translate('- Select One -'), null);
+			$objPersonArray = Person::LoadAll();
+			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+				if ($objPerson->CurrentHeadShotId == $this->objHeadShot->Id)
+					$objListItem->Selected = true;
+				$this->lstPersonAsCurrent->AddItem($objListItem);
+			}
+			return $this->lstPersonAsCurrent;
+		}
+
+		/**
+		 * Create and setup QLabel lblPersonAsCurrent
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPersonAsCurrent_Create($strControlId = null) {
+			$this->lblPersonAsCurrent = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPersonAsCurrent->Name = QApplication::Translate('Person As Current');
+			$this->lblPersonAsCurrent->Text = ($this->objHeadShot->PersonAsCurrent) ? $this->objHeadShot->PersonAsCurrent->__toString() : null;
+			return $this->lblPersonAsCurrent;
 		}
 
 
@@ -284,18 +315,21 @@
 			if ($this->calDateUploaded) $this->calDateUploaded->DateTime = $this->objHeadShot->DateUploaded;
 			if ($this->lblDateUploaded) $this->lblDateUploaded->Text = sprintf($this->objHeadShot->DateUploaded) ? $this->objHeadShot->__toString($this->strDateUploadedDateTimeFormat) : null;
 
-			if ($this->lstPersonAsCurrentMugShot) {
-				$this->lstPersonAsCurrentMugShot->RemoveAllItems();
-				$this->lstPersonAsCurrentMugShot->AddItem(QApplication::Translate('- Select One -'), null);
+			if ($this->lstImageType) $this->lstImageType->SelectedValue = $this->objHeadShot->ImageTypeId;
+			if ($this->lblImageTypeId) $this->lblImageTypeId->Text = ($this->objHeadShot->ImageTypeId) ? ImageType::$NameArray[$this->objHeadShot->ImageTypeId] : null;
+
+			if ($this->lstPersonAsCurrent) {
+				$this->lstPersonAsCurrent->RemoveAllItems();
+				$this->lstPersonAsCurrent->AddItem(QApplication::Translate('- Select One -'), null);
 				$objPersonArray = Person::LoadAll();
 				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
 					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
-					if ($objPerson->CurrentMugShotId == $this->objHeadShot->Id)
+					if ($objPerson->CurrentHeadShotId == $this->objHeadShot->Id)
 						$objListItem->Selected = true;
-					$this->lstPersonAsCurrentMugShot->AddItem($objListItem);
+					$this->lstPersonAsCurrent->AddItem($objListItem);
 				}
 			}
-			if ($this->lblPersonAsCurrentMugShot) $this->lblPersonAsCurrentMugShot->Text = ($this->objHeadShot->PersonAsCurrentMugShot) ? $this->objHeadShot->PersonAsCurrentMugShot->__toString() : null;
+			if ($this->lblPersonAsCurrent) $this->lblPersonAsCurrent->Text = ($this->objHeadShot->PersonAsCurrent) ? $this->objHeadShot->PersonAsCurrent->__toString() : null;
 
 		}
 
@@ -322,9 +356,10 @@
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objHeadShot->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->calDateUploaded) $this->objHeadShot->DateUploaded = $this->calDateUploaded->DateTime;
+				if ($this->lstImageType) $this->objHeadShot->ImageTypeId = $this->lstImageType->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
-				if ($this->lstPersonAsCurrentMugShot) $this->objHeadShot->PersonAsCurrentMugShot = Person::Load($this->lstPersonAsCurrentMugShot->SelectedValue);
+				if ($this->lstPersonAsCurrent) $this->objHeadShot->PersonAsCurrent = Person::Load($this->lstPersonAsCurrent->SelectedValue);
 
 				// Save the HeadShot object
 				$this->objHeadShot->Save();
@@ -383,12 +418,18 @@
 				case 'DateUploadedLabel':
 					if (!$this->lblDateUploaded) return $this->lblDateUploaded_Create();
 					return $this->lblDateUploaded;
-				case 'PersonAsCurrentMugShotControl':
-					if (!$this->lstPersonAsCurrentMugShot) return $this->lstPersonAsCurrentMugShot_Create();
-					return $this->lstPersonAsCurrentMugShot;
-				case 'PersonAsCurrentMugShotLabel':
-					if (!$this->lblPersonAsCurrentMugShot) return $this->lblPersonAsCurrentMugShot_Create();
-					return $this->lblPersonAsCurrentMugShot;
+				case 'ImageTypeIdControl':
+					if (!$this->lstImageType) return $this->lstImageType_Create();
+					return $this->lstImageType;
+				case 'ImageTypeIdLabel':
+					if (!$this->lblImageTypeId) return $this->lblImageTypeId_Create();
+					return $this->lblImageTypeId;
+				case 'PersonAsCurrentControl':
+					if (!$this->lstPersonAsCurrent) return $this->lstPersonAsCurrent_Create();
+					return $this->lstPersonAsCurrent;
+				case 'PersonAsCurrentLabel':
+					if (!$this->lblPersonAsCurrent) return $this->lblPersonAsCurrent_Create();
+					return $this->lblPersonAsCurrent;
 				default:
 					try {
 						return parent::__get($strName);
@@ -417,8 +458,10 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'DateUploadedControl':
 						return ($this->calDateUploaded = QType::Cast($mixValue, 'QControl'));
-					case 'PersonAsCurrentMugShotControl':
-						return ($this->lstPersonAsCurrentMugShot = QType::Cast($mixValue, 'QControl'));
+					case 'ImageTypeIdControl':
+						return ($this->lstImageType = QType::Cast($mixValue, 'QControl'));
+					case 'PersonAsCurrentControl':
+						return ($this->lstPersonAsCurrent = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

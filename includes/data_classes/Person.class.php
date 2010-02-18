@@ -27,6 +27,113 @@
 			return sprintf('Person Object %s',  $this->intId);
 		}
 
+		/**
+		 * Recalculates this member's Membership Status and updates MembershipStatusTypeId
+		 * based on the calculation.  Will call save if asked to do so
+		 * @param boolean $blnSave whether or not to call save after updating
+		 * @return integer the new/updated TypeId
+		 */
+		public function RefreshMembershipStatusTypeId($blnSave = true) {
+			// If this Individual record isn't saved yet, then we are automatically not a member
+			if (!$this->intId) {
+				$this->intMembershipStatusTypeId = MembershipStatusType::NonMember;
+				if ($blnSave) $this->Save();
+				return $this->intMembershipStatusTypeId;
+			}
+			
+			// Pull the most recent Membership
+			$objMembership = Membership::QuerySingle(QQ::Equal(QQN::Membership()->Person), QQ::OrderBy(QQN::Membership()->DateStart, false));
+
+			// If no membership
+			if (!$objMembership) {
+				// TODO: Check to see if "Child of Member"
+				
+				$this->intMembershipStatusTypeId = MembershipStatusType::NonMember;
+				if ($blnSave) $this->Save();
+				return $this->intMembershipStatusTypeId;
+			}
+
+			// If no EndDate, or EndDate is in the future
+			if (!$objMembership->EndDate || !$objMembership->EndDate->IsLaterThan(QDateTime::Now(false))) {
+				$this->intMembershipStatusTypeId = MembershipStatusType::Member;
+				if ($blnSave) $this->Save();
+				return $this->intMembershipStatusTypeId;
+			}
+
+			// Otherwise, we are a Past member
+			$this->intMembershipStatusTypeId = MembershipStatusType::FormerMember;
+			if ($blnSave) $this->Save();
+			return $this->intMembershipStatusTypeId;
+		}
+
+		/**
+		 * Recalculates this member's Marital Status and updates MaritalStatusTypeId
+		 * based on the calculation.  Will call save if asked to do so
+		 * @param boolean $blnSave whether or not to call save after updating
+		 * @return integer the new/updated TypeId
+		 */
+		public function RefreshMaritalStatusTypeId($blnSave = true) {
+			// If this Individual record isn't saved yet, then we are automatically Not Specified
+			if (!$this->intId) {
+				$this->intMaritalStatusTypeId = MaritalStatusType::NotSpecified;
+				if ($blnSave) $this->Save();
+				return $this->intMaritalStatusTypeId;
+			}
+
+			// Pull the most recent Marriage
+			$objMarriage = Marriage::QuerySingle(QQ::Equal(QQN::Marriage()->Person), QQ::OrderBy(QQN::Marriage()->DateStart, false));
+
+			// If no marriage
+			if (!$objMarriage) {
+				// If we were previously specified as Single, then keep it -- otherwise, we are "Not Specified"
+				if ($this->intMaritalStatusTypeId == MaritalStatusType::Single) {
+					$this->intMaritalStatusTypeId = MaritalStatusType::Single;
+				} else {
+					$this->intMaritalStatusTypeId = MaritalStatusType::NotSpecified;
+				}
+				if ($blnSave) $this->Save();
+				return $this->intMaritalStatusTypeId;
+			}
+
+			// There was a marriage -- marital status is dependent on the marriage status
+			switch ($objMarriage->MarriageStatusTypeId) {
+				case MarriageStatusType::Married:
+					$this->intMaritalStatusTypeId = MaritalStatusType::Married;
+					break;
+				case MarriageStatusType::Separated:
+					$this->intMaritalStatusTypeId = MaritalStatusType::Separated;
+					break;
+				default:
+					$this->intMaritalStatusTypeId = MaritalStatusType::Single;
+					break;
+			}
+
+			if ($blnSave) $this->Save();
+			return $this->intMaritalStatusTypeId;
+		}
+		
+		
+		/**
+		 * Given a temporary file path on the server, this will save the file as a HeadShot for this Person
+		 * @param string $strTempFilePath
+		 * @param QDateTime $dttDateUploaded optional parameter -- will be set to Now() if null is passed in
+		 * @return HeadShot
+		 */
+		public function SaveHeadShot($strTempFilePath, $dttDateUploaded = null) {
+			$objHeadShot = new HeadShot();
+			$objHeadShot->PersonId = $this->intId;
+			$objHeadShot->DateUploaded = ($dttDateUploaded) ? $dttDateUploaded : QDateTime::Now();
+			$objHeadShot->SaveHeadShot($strTempFilePath);
+			
+			return $objHeadShot;
+		}
+
+		public function SetCurrentHeadShot(HeadShot $objHeadShot) {
+			if ($objHeadShot->PersonId != $this->intId)
+				throw new QCallerException('Cannot set Current headshot for a headshot that does not belong to this person');
+			$this->CurrentHeadShot = $objHeadShot;
+			$this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

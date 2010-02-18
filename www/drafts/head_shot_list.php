@@ -58,7 +58,8 @@
 			$this->dtgHeadShots->MetaAddColumn('Id');
 			$this->dtgHeadShots->MetaAddColumn(QQN::HeadShot()->Person);
 			$this->dtgHeadShots->MetaAddColumn('DateUploaded');
-			$this->dtgHeadShots->MetaAddColumn(QQN::HeadShot()->PersonAsCurrentMugShot);
+			$this->dtgHeadShots->MetaAddTypeColumn('ImageTypeId', 'ImageType');
+			$this->dtgHeadShots->MetaAddColumn(QQN::HeadShot()->PersonAsCurrent);
 		}
 	}
 

@@ -18,8 +18,9 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property QDateTime $DateUploaded the value for dttDateUploaded (Not Null)
+	 * @property integer $ImageTypeId the value for intImageTypeId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
-	 * @property Person $PersonAsCurrentMugShot the value for the Person object that uniquely references this HeadShot
+	 * @property Person $PersonAsCurrent the value for the Person object that uniquely references this HeadShot
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class HeadShotGen extends QBaseClass {
@@ -50,6 +51,14 @@
 		 */
 		protected $dttDateUploaded;
 		const DateUploadedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column head_shot.image_type_id
+		 * @var integer intImageTypeId
+		 */
+		protected $intImageTypeId;
+		const ImageTypeIdDefault = null;
 
 
 		/**
@@ -86,21 +95,21 @@
 
 		/**
 		 * Protected member variable that contains the object which points to
-		 * this object by the reference in the unique database column person.current_mug_shot_id.
+		 * this object by the reference in the unique database column person.current_head_shot_id.
 		 *
-		 * NOTE: Always use the PersonAsCurrentMugShot property getter to correctly retrieve this Person object.
+		 * NOTE: Always use the PersonAsCurrent property getter to correctly retrieve this Person object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Person objPersonAsCurrentMugShot
+		 * @var Person objPersonAsCurrent
 		 */
-		protected $objPersonAsCurrentMugShot;
+		protected $objPersonAsCurrent;
 		
 		/**
-		 * Used internally to manage whether the adjoined PersonAsCurrentMugShot object
+		 * Used internally to manage whether the adjoined PersonAsCurrent object
 		 * needs to be updated on save.
 		 * 
 		 * NOTE: Do not manually update this value 
 		 */
-		protected $blnDirtyPersonAsCurrentMugShot;
+		protected $blnDirtyPersonAsCurrent;
 
 
 
@@ -368,6 +377,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_uploaded', $strAliasPrefix . 'date_uploaded');
+			$objBuilder->AddSelectItem($strTableName, 'image_type_id', $strAliasPrefix . 'image_type_id');
 		}
 
 
@@ -405,6 +415,8 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_uploaded', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_uploaded'] : $strAliasPrefix . 'date_uploaded';
 			$objToReturn->dttDateUploaded = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'image_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'image_type_id'] : $strAliasPrefix . 'image_type_id';
+			$objToReturn->intImageTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -425,16 +437,16 @@
 				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
-			// Check for PersonAsCurrentMugShot Unique ReverseReference Binding
-			$strAlias = $strAliasPrefix . 'personascurrentmugshot__id';
+			// Check for PersonAsCurrent Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'personascurrent__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if ($objDbRow->ColumnExists($strAliasName)) {
 				if (!is_null($objDbRow->GetColumn($strAliasName)))
-					$objToReturn->objPersonAsCurrentMugShot = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personascurrentmugshot__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->objPersonAsCurrent = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personascurrent__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
 					// Let's set to FALSE so that the object knows not to try and re-query again
-					$objToReturn->objPersonAsCurrentMugShot = false;
+					$objToReturn->objPersonAsCurrent = false;
 			}
 
 
@@ -527,6 +539,38 @@
 				QQ::Equal(QQN::HeadShot()->PersonId, $intPersonId)
 			);
 		}
+			
+		/**
+		 * Load an array of HeadShot objects,
+		 * by ImageTypeId Index(es)
+		 * @param integer $intImageTypeId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return HeadShot[]
+		*/
+		public static function LoadArrayByImageTypeId($intImageTypeId, $objOptionalClauses = null) {
+			// Call HeadShot::QueryArray to perform the LoadArrayByImageTypeId query
+			try {
+				return HeadShot::QueryArray(
+					QQ::Equal(QQN::HeadShot()->ImageTypeId, $intImageTypeId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count HeadShots
+		 * by ImageTypeId Index(es)
+		 * @param integer $intImageTypeId
+		 * @return int
+		*/
+		public static function CountByImageTypeId($intImageTypeId) {
+			// Call HeadShot::QueryCount to perform the CountByImageTypeId query
+			return HeadShot::QueryCount(
+				QQ::Equal(QQN::HeadShot()->ImageTypeId, $intImageTypeId)
+			);
+		}
 
 
 
@@ -559,10 +603,12 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `head_shot` (
 							`person_id`,
-							`date_uploaded`
+							`date_uploaded`,
+							`image_type_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->dttDateUploaded) . '
+							' . $objDatabase->SqlVariable($this->dttDateUploaded) . ',
+							' . $objDatabase->SqlVariable($this->intImageTypeId) . '
 						)
 					');
 
@@ -579,7 +625,8 @@
 							`head_shot`
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`date_uploaded` = ' . $objDatabase->SqlVariable($this->dttDateUploaded) . '
+							`date_uploaded` = ' . $objDatabase->SqlVariable($this->dttDateUploaded) . ',
+							`image_type_id` = ' . $objDatabase->SqlVariable($this->intImageTypeId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -587,23 +634,23 @@
 
 		
 		
-				// Update the adjoined PersonAsCurrentMugShot object (if applicable)
+				// Update the adjoined PersonAsCurrent object (if applicable)
 				// TODO: Make this into hard-coded SQL queries
-				if ($this->blnDirtyPersonAsCurrentMugShot) {
+				if ($this->blnDirtyPersonAsCurrent) {
 					// Unassociate the old one (if applicable)
-					if ($objAssociated = Person::LoadByCurrentMugShotId($this->intId)) {
-						$objAssociated->CurrentMugShotId = null;
+					if ($objAssociated = Person::LoadByCurrentHeadShotId($this->intId)) {
+						$objAssociated->CurrentHeadShotId = null;
 						$objAssociated->Save();
 					}
 
 					// Associate the new one (if applicable)
-					if ($this->objPersonAsCurrentMugShot) {
-						$this->objPersonAsCurrentMugShot->CurrentMugShotId = $this->intId;
-						$this->objPersonAsCurrentMugShot->Save();
+					if ($this->objPersonAsCurrent) {
+						$this->objPersonAsCurrent->CurrentHeadShotId = $this->intId;
+						$this->objPersonAsCurrent->Save();
 					}
 
 					// Reset the "Dirty" flag
-					$this->blnDirtyPersonAsCurrentMugShot = false;
+					$this->blnDirtyPersonAsCurrent = false;
 				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -631,12 +678,12 @@
 
 			
 			
-			// Update the adjoined PersonAsCurrentMugShot object (if applicable) and perform the unassociation
+			// Update the adjoined PersonAsCurrent object (if applicable) and perform the unassociation
 
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
 			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
-			if ($objAssociated = Person::LoadByCurrentMugShotId($this->intId)) {
-				$objAssociated->CurrentMugShotId = null;
+			if ($objAssociated = Person::LoadByCurrentHeadShotId($this->intId)) {
+				$objAssociated->CurrentHeadShotId = null;
 				$objAssociated->Save();
 			}
 
@@ -690,6 +737,7 @@
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
 			$this->dttDateUploaded = $objReloaded->dttDateUploaded;
+			$this->ImageTypeId = $objReloaded->ImageTypeId;
 		}
 
 
@@ -725,6 +773,11 @@
 					// @return QDateTime
 					return $this->dttDateUploaded;
 
+				case 'ImageTypeId':
+					// Gets the value for intImageTypeId (Not Null)
+					// @return integer
+					return $this->intImageTypeId;
+
 
 				///////////////////
 				// Member Objects
@@ -743,17 +796,17 @@
 
 		
 		
-				case 'PersonAsCurrentMugShot':
+				case 'PersonAsCurrent':
 					// Gets the value for the Person object that uniquely references this HeadShot
-					// by objPersonAsCurrentMugShot (Unique)
+					// by objPersonAsCurrent (Unique)
 					// @return Person
 					try {
-						if ($this->objPersonAsCurrentMugShot === false)
+						if ($this->objPersonAsCurrent === false)
 							// We've attempted early binding -- and the reverse reference object does not exist
 							return null;
-						if (!$this->objPersonAsCurrentMugShot)
-							$this->objPersonAsCurrentMugShot = Person::LoadByCurrentMugShotId($this->intId);
-						return $this->objPersonAsCurrentMugShot;
+						if (!$this->objPersonAsCurrent)
+							$this->objPersonAsCurrent = Person::LoadByCurrentHeadShotId($this->intId);
+						return $this->objPersonAsCurrent;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -815,6 +868,17 @@
 						throw $objExc;
 					}
 
+				case 'ImageTypeId':
+					// Sets the value for intImageTypeId (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intImageTypeId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -849,15 +913,15 @@
 					}
 					break;
 
-				case 'PersonAsCurrentMugShot':
-					// Sets the value for the Person object referenced by objPersonAsCurrentMugShot (Unique)
+				case 'PersonAsCurrent':
+					// Sets the value for the Person object referenced by objPersonAsCurrent (Unique)
 					// @param Person $mixValue
 					// @return Person
 					if (is_null($mixValue)) {
-						$this->objPersonAsCurrentMugShot = null;
+						$this->objPersonAsCurrent = null;
 
 						// Make sure we update the adjoined Person object the next time we call Save()
-						$this->blnDirtyPersonAsCurrentMugShot = true;
+						$this->blnDirtyPersonAsCurrent = true;
 
 						return null;
 					} else {
@@ -869,14 +933,14 @@
 							throw $objExc;
 						}
 
-						// Are we setting objPersonAsCurrentMugShot to a DIFFERENT $mixValue?
-						if ((!$this->PersonAsCurrentMugShot) || ($this->PersonAsCurrentMugShot->Id != $mixValue->Id)) {
+						// Are we setting objPersonAsCurrent to a DIFFERENT $mixValue?
+						if ((!$this->PersonAsCurrent) || ($this->PersonAsCurrent->Id != $mixValue->Id)) {
 							// Yes -- therefore, set the "Dirty" flag to true
 							// to make sure we update the adjoined Person object the next time we call Save()
-							$this->blnDirtyPersonAsCurrentMugShot = true;
+							$this->blnDirtyPersonAsCurrent = true;
 
 							// Update Local Member Variable
-							$this->objPersonAsCurrentMugShot = $mixValue;
+							$this->objPersonAsCurrent = $mixValue;
 						} else {
 							// Nope -- therefore, make no changes
 						}
@@ -926,6 +990,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="DateUploaded" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="ImageTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -956,6 +1021,8 @@
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if (property_exists($objSoapObject, 'DateUploaded'))
 				$objToReturn->dttDateUploaded = new QDateTime($objSoapObject->DateUploaded);
+			if (property_exists($objSoapObject, 'ImageTypeId'))
+				$objToReturn->intImageTypeId = $objSoapObject->ImageTypeId;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1008,8 +1075,10 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'DateUploaded':
 					return new QQNode('date_uploaded', 'DateUploaded', 'QDateTime', $this);
-				case 'PersonAsCurrentMugShot':
-					return new QQReverseReferenceNodePerson($this, 'personascurrentmugshot', 'reverse_reference', 'current_mug_shot_id', 'PersonAsCurrentMugShot');
+				case 'ImageTypeId':
+					return new QQNode('image_type_id', 'ImageTypeId', 'integer', $this);
+				case 'PersonAsCurrent':
+					return new QQReverseReferenceNodePerson($this, 'personascurrent', 'reverse_reference', 'current_head_shot_id', 'PersonAsCurrent');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1038,8 +1107,10 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'DateUploaded':
 					return new QQNode('date_uploaded', 'DateUploaded', 'QDateTime', $this);
-				case 'PersonAsCurrentMugShot':
-					return new QQReverseReferenceNodePerson($this, 'personascurrentmugshot', 'reverse_reference', 'current_mug_shot_id', 'PersonAsCurrentMugShot');
+				case 'ImageTypeId':
+					return new QQNode('image_type_id', 'ImageTypeId', 'integer', $this);
+				case 'PersonAsCurrent':
+					return new QQReverseReferenceNodePerson($this, 'personascurrent', 'reverse_reference', 'current_head_shot_id', 'PersonAsCurrent');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

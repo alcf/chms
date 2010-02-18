@@ -49,7 +49,7 @@
 
 		<?php $this->calDateDeceased->RenderWithName(); ?>
 
-		<?php $this->lstCurrentMugShot->RenderWithName(); ?>
+		<?php $this->lstCurrentHeadShot->RenderWithName(); ?>
 
 		<?php $this->lstMailingAddress->RenderWithName(); ?>
 

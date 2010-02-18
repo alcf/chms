@@ -289,8 +289,8 @@
 				case 'DobApproximateFlag': return QQN::Person()->DobApproximateFlag;
 				case 'DeceasedFlag': return QQN::Person()->DeceasedFlag;
 				case 'DateDeceased': return QQN::Person()->DateDeceased;
-				case 'CurrentMugShotId': return QQN::Person()->CurrentMugShotId;
-				case 'CurrentMugShot': return QQN::Person()->CurrentMugShot;
+				case 'CurrentHeadShotId': return QQN::Person()->CurrentHeadShotId;
+				case 'CurrentHeadShot': return QQN::Person()->CurrentHeadShot;
 				case 'MailingAddressId': return QQN::Person()->MailingAddressId;
 				case 'MailingAddress': return QQN::Person()->MailingAddress;
 				case 'StewardshipAddressId': return QQN::Person()->StewardshipAddressId;

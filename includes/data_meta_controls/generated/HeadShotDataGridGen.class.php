@@ -277,7 +277,8 @@
 				case 'PersonId': return QQN::HeadShot()->PersonId;
 				case 'Person': return QQN::HeadShot()->Person;
 				case 'DateUploaded': return QQN::HeadShot()->DateUploaded;
-				case 'PersonAsCurrentMugShot': return QQN::HeadShot()->PersonAsCurrentMugShot;
+				case 'ImageTypeId': return QQN::HeadShot()->ImageTypeId;
+				case 'PersonAsCurrent': return QQN::HeadShot()->PersonAsCurrent;
 
 				default: throw new QCallerException('Simple Property not found in HeadShotDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

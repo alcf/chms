@@ -23,7 +23,9 @@
 
 		<?php $this->calDateUploaded->RenderWithName(); ?>
 
-		<?php $this->lstPersonAsCurrentMugShot->RenderWithName(); ?>
+		<?php $this->lstImageType->RenderWithName(); ?>
+
+		<?php $this->lstPersonAsCurrent->RenderWithName(); ?>
 
 	</div>
 

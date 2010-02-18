@@ -37,7 +37,7 @@
 
 		<?php $_CONTROL->calDateDeceased->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstCurrentMugShot->RenderWithName(); ?>
+		<?php $_CONTROL->lstCurrentHeadShot->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstMailingAddress->RenderWithName(); ?>
 

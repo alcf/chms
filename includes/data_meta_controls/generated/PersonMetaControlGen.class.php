@@ -48,8 +48,8 @@
 	 * property-read QLabel $DeceasedFlagLabel
 	 * property QDateTimePicker $DateDeceasedControl
 	 * property-read QLabel $DateDeceasedLabel
-	 * property QListBox $CurrentMugShotIdControl
-	 * property-read QLabel $CurrentMugShotIdLabel
+	 * property QListBox $CurrentHeadShotIdControl
+	 * property-read QLabel $CurrentHeadShotIdLabel
 	 * property QListBox $MailingAddressIdControl
 	 * property-read QLabel $MailingAddressIdLabel
 	 * property QListBox $StewardshipAddressIdControl
@@ -94,7 +94,7 @@
 		protected $txtDobApproximateFlag;
 		protected $chkDeceasedFlag;
 		protected $calDateDeceased;
-		protected $lstCurrentMugShot;
+		protected $lstCurrentHeadShot;
 		protected $lstMailingAddress;
 		protected $lstStewardshipAddress;
 		protected $chkCanMailFlag;
@@ -117,7 +117,7 @@
 		protected $lblDobApproximateFlag;
 		protected $lblDeceasedFlag;
 		protected $lblDateDeceased;
-		protected $lblCurrentMugShotId;
+		protected $lblCurrentHeadShotId;
 		protected $lblMailingAddressId;
 		protected $lblStewardshipAddressId;
 		protected $lblCanMailFlag;
@@ -277,7 +277,7 @@
 		public function lstMaritalStatusType_Create($strControlId = null) {
 			$this->lstMaritalStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMaritalStatusType->Name = QApplication::Translate('Marital Status Type');
-			$this->lstMaritalStatusType->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstMaritalStatusType->Required = true;
 			foreach (MaritalStatusType::$NameArray as $intId => $strValue)
 				$this->lstMaritalStatusType->AddItem(new QListItem($strValue, $intId, $this->objPerson->MaritalStatusTypeId == $intId));
 			return $this->lstMaritalStatusType;
@@ -292,6 +292,7 @@
 			$this->lblMaritalStatusTypeId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblMaritalStatusTypeId->Name = QApplication::Translate('Marital Status Type');
 			$this->lblMaritalStatusTypeId->Text = ($this->objPerson->MaritalStatusTypeId) ? MaritalStatusType::$NameArray[$this->objPerson->MaritalStatusTypeId] : null;
+			$this->lblMaritalStatusTypeId->Required = true;
 			return $this->lblMaritalStatusTypeId;
 		}
 
@@ -628,34 +629,34 @@
 		protected $strDateDeceasedDateTimeFormat;
 
 		/**
-		 * Create and setup QListBox lstCurrentMugShot
+		 * Create and setup QListBox lstCurrentHeadShot
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
 		 */
-		public function lstCurrentMugShot_Create($strControlId = null) {
-			$this->lstCurrentMugShot = new QListBox($this->objParentObject, $strControlId);
-			$this->lstCurrentMugShot->Name = QApplication::Translate('Current Mug Shot');
-			$this->lstCurrentMugShot->AddItem(QApplication::Translate('- Select One -'), null);
-			$objCurrentMugShotArray = HeadShot::LoadAll();
-			if ($objCurrentMugShotArray) foreach ($objCurrentMugShotArray as $objCurrentMugShot) {
-				$objListItem = new QListItem($objCurrentMugShot->__toString(), $objCurrentMugShot->Id);
-				if (($this->objPerson->CurrentMugShot) && ($this->objPerson->CurrentMugShot->Id == $objCurrentMugShot->Id))
+		public function lstCurrentHeadShot_Create($strControlId = null) {
+			$this->lstCurrentHeadShot = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCurrentHeadShot->Name = QApplication::Translate('Current Head Shot');
+			$this->lstCurrentHeadShot->AddItem(QApplication::Translate('- Select One -'), null);
+			$objCurrentHeadShotArray = HeadShot::LoadAll();
+			if ($objCurrentHeadShotArray) foreach ($objCurrentHeadShotArray as $objCurrentHeadShot) {
+				$objListItem = new QListItem($objCurrentHeadShot->__toString(), $objCurrentHeadShot->Id);
+				if (($this->objPerson->CurrentHeadShot) && ($this->objPerson->CurrentHeadShot->Id == $objCurrentHeadShot->Id))
 					$objListItem->Selected = true;
-				$this->lstCurrentMugShot->AddItem($objListItem);
+				$this->lstCurrentHeadShot->AddItem($objListItem);
 			}
-			return $this->lstCurrentMugShot;
+			return $this->lstCurrentHeadShot;
 		}
 
 		/**
-		 * Create and setup QLabel lblCurrentMugShotId
+		 * Create and setup QLabel lblCurrentHeadShotId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblCurrentMugShotId_Create($strControlId = null) {
-			$this->lblCurrentMugShotId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblCurrentMugShotId->Name = QApplication::Translate('Current Mug Shot');
-			$this->lblCurrentMugShotId->Text = ($this->objPerson->CurrentMugShot) ? $this->objPerson->CurrentMugShot->__toString() : null;
-			return $this->lblCurrentMugShotId;
+		public function lblCurrentHeadShotId_Create($strControlId = null) {
+			$this->lblCurrentHeadShotId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCurrentHeadShotId->Name = QApplication::Translate('Current Head Shot');
+			$this->lblCurrentHeadShotId->Text = ($this->objPerson->CurrentHeadShot) ? $this->objPerson->CurrentHeadShot->__toString() : null;
+			return $this->lblCurrentHeadShotId;
 		}
 
 		/**
@@ -964,18 +965,18 @@
 			if ($this->calDateDeceased) $this->calDateDeceased->DateTime = $this->objPerson->DateDeceased;
 			if ($this->lblDateDeceased) $this->lblDateDeceased->Text = sprintf($this->objPerson->DateDeceased) ? $this->objPerson->__toString($this->strDateDeceasedDateTimeFormat) : null;
 
-			if ($this->lstCurrentMugShot) {
-					$this->lstCurrentMugShot->RemoveAllItems();
-				$this->lstCurrentMugShot->AddItem(QApplication::Translate('- Select One -'), null);
-				$objCurrentMugShotArray = HeadShot::LoadAll();
-				if ($objCurrentMugShotArray) foreach ($objCurrentMugShotArray as $objCurrentMugShot) {
-					$objListItem = new QListItem($objCurrentMugShot->__toString(), $objCurrentMugShot->Id);
-					if (($this->objPerson->CurrentMugShot) && ($this->objPerson->CurrentMugShot->Id == $objCurrentMugShot->Id))
+			if ($this->lstCurrentHeadShot) {
+					$this->lstCurrentHeadShot->RemoveAllItems();
+				$this->lstCurrentHeadShot->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCurrentHeadShotArray = HeadShot::LoadAll();
+				if ($objCurrentHeadShotArray) foreach ($objCurrentHeadShotArray as $objCurrentHeadShot) {
+					$objListItem = new QListItem($objCurrentHeadShot->__toString(), $objCurrentHeadShot->Id);
+					if (($this->objPerson->CurrentHeadShot) && ($this->objPerson->CurrentHeadShot->Id == $objCurrentHeadShot->Id))
 						$objListItem->Selected = true;
-					$this->lstCurrentMugShot->AddItem($objListItem);
+					$this->lstCurrentHeadShot->AddItem($objListItem);
 				}
 			}
-			if ($this->lblCurrentMugShotId) $this->lblCurrentMugShotId->Text = ($this->objPerson->CurrentMugShot) ? $this->objPerson->CurrentMugShot->__toString() : null;
+			if ($this->lblCurrentHeadShotId) $this->lblCurrentHeadShotId->Text = ($this->objPerson->CurrentHeadShot) ? $this->objPerson->CurrentHeadShot->__toString() : null;
 
 			if ($this->lstMailingAddress) {
 					$this->lstMailingAddress->RemoveAllItems();
@@ -1130,7 +1131,7 @@
 				if ($this->txtDobApproximateFlag) $this->objPerson->DobApproximateFlag = $this->txtDobApproximateFlag->Text;
 				if ($this->chkDeceasedFlag) $this->objPerson->DeceasedFlag = $this->chkDeceasedFlag->Checked;
 				if ($this->calDateDeceased) $this->objPerson->DateDeceased = $this->calDateDeceased->DateTime;
-				if ($this->lstCurrentMugShot) $this->objPerson->CurrentMugShotId = $this->lstCurrentMugShot->SelectedValue;
+				if ($this->lstCurrentHeadShot) $this->objPerson->CurrentHeadShotId = $this->lstCurrentHeadShot->SelectedValue;
 				if ($this->lstMailingAddress) $this->objPerson->MailingAddressId = $this->lstMailingAddress->SelectedValue;
 				if ($this->lstStewardshipAddress) $this->objPerson->StewardshipAddressId = $this->lstStewardshipAddress->SelectedValue;
 				if ($this->chkCanMailFlag) $this->objPerson->CanMailFlag = $this->chkCanMailFlag->Checked;
@@ -1279,12 +1280,12 @@
 				case 'DateDeceasedLabel':
 					if (!$this->lblDateDeceased) return $this->lblDateDeceased_Create();
 					return $this->lblDateDeceased;
-				case 'CurrentMugShotIdControl':
-					if (!$this->lstCurrentMugShot) return $this->lstCurrentMugShot_Create();
-					return $this->lstCurrentMugShot;
-				case 'CurrentMugShotIdLabel':
-					if (!$this->lblCurrentMugShotId) return $this->lblCurrentMugShotId_Create();
-					return $this->lblCurrentMugShotId;
+				case 'CurrentHeadShotIdControl':
+					if (!$this->lstCurrentHeadShot) return $this->lstCurrentHeadShot_Create();
+					return $this->lstCurrentHeadShot;
+				case 'CurrentHeadShotIdLabel':
+					if (!$this->lblCurrentHeadShotId) return $this->lblCurrentHeadShotId_Create();
+					return $this->lblCurrentHeadShotId;
 				case 'MailingAddressIdControl':
 					if (!$this->lstMailingAddress) return $this->lstMailingAddress_Create();
 					return $this->lstMailingAddress;
@@ -1387,8 +1388,8 @@
 						return ($this->chkDeceasedFlag = QType::Cast($mixValue, 'QControl'));
 					case 'DateDeceasedControl':
 						return ($this->calDateDeceased = QType::Cast($mixValue, 'QControl'));
-					case 'CurrentMugShotIdControl':
-						return ($this->lstCurrentMugShot = QType::Cast($mixValue, 'QControl'));
+					case 'CurrentHeadShotIdControl':
+						return ($this->lstCurrentHeadShot = QType::Cast($mixValue, 'QControl'));
 					case 'MailingAddressIdControl':
 						return ($this->lstMailingAddress = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipAddressIdControl':

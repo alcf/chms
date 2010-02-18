@@ -26,9 +26,10 @@
 		protected $lblId;
 		protected $lstPerson;
 		protected $calDateUploaded;
+		protected $lstImageType;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		protected $lstPersonAsCurrentMugShot;
+		protected $lstPersonAsCurrent;
 
 		// Other Controls
 		protected $btnSave;
@@ -56,7 +57,8 @@
 			$this->lblId = $this->mctHeadShot->lblId_Create();
 			$this->lstPerson = $this->mctHeadShot->lstPerson_Create();
 			$this->calDateUploaded = $this->mctHeadShot->calDateUploaded_Create();
-			$this->lstPersonAsCurrentMugShot = $this->mctHeadShot->lstPersonAsCurrentMugShot_Create();
+			$this->lstImageType = $this->mctHeadShot->lstImageType_Create();
+			$this->lstPersonAsCurrent = $this->mctHeadShot->lstPersonAsCurrent_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

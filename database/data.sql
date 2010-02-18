@@ -31,9 +31,14 @@ INSERT INTO email_broadcast_type VALUES(1, 'Public List');
 INSERT INTO email_broadcast_type VALUES(2, 'Private List');
 INSERT INTO email_broadcast_type VALUES(3, 'Announcement Only');
 
-INSERT INTO marital_status_type VALUES(1, 'Single');
-INSERT INTO marital_status_type VALUES(2, 'Married');
-INSERT INTO marital_status_type VALUES(3, 'Separated');
+INSERT INTO image_type VALUES(1, 'jpg');
+INSERT INTO image_type VALUES(2, 'png');
+INSERT INTO image_type VALUES(3, 'gif');
+
+INSERT INTO marital_status_type VALUES(1, 'Not Specified');
+INSERT INTO marital_status_type VALUES(2, 'Single');
+INSERT INTO marital_status_type VALUES(3, 'Married');
+INSERT INTO marital_status_type VALUES(4, 'Separated');
 
 INSERT INTO marriage_status_type VALUES(1, 'Married');
 INSERT INTO marriage_status_type VALUES(2, 'Separated');

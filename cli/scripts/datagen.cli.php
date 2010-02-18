@@ -6,6 +6,7 @@
 	class ChmsDataGen extends QDataGen {
 		// Counts of items to generate
 		const UserCount = 50;
+		const IndividualCount = 100;
 
 		// Static Data
 		public static $MinistryArray = array(
@@ -37,6 +38,8 @@
 			'yam' => 'Young Adult Ministry');
 
 		// Generated Data
+		public static $SystemStartDate;
+		public static $LifeStartDate;
 		public static $UserArray;
 
 		/**
@@ -44,8 +47,16 @@
 		 * @return void
 		 */
 		public static function Run() {
+			self::$SystemStartDate = new QDateTime('1990-01-01');
+			self::$LifeStartDate = new QDateTime('1930-01-01');
+
+			// Erase Directories
+			exec('rm -r -f ' . __DOCROOT__ . '/../file_assets/head_shots');
+
+			// Generate Stuff
 			ChmsDataGen::GenerateMinistries();
 			ChmsDataGen::GenerateUsers();
+			ChmsDataGen::GenerateIndividuals();
 		}
 
 
@@ -89,6 +100,91 @@
 			}
 			self::$UserArray = Login::LoadAll();
 		}
+
+
+		public static function GenerateIndividuals() {
+			while (QDataGen::DisplayWhileTask('Generating Individuals', self::IndividualCount, false)) {
+				$objPerson = self::GenerateIndividual(rand(0, 1));
+			}
+		}
+
+
+		/**
+		 * Generates a single Individual record
+		 * @param boolean $blnMaleFlag
+		 * @param string $strLastName optional last name
+		 * @return Person
+		 */
+		protected static function GenerateIndividual($blnMaleFlag, $strLastName = null) {
+			$objPerson = new Person();
+			$objPerson->MaleFlag = $blnMaleFlag;
+
+			// Generate the name
+			$objPerson->FirstName = ($blnMaleFlag) ? QDataGen::GenerateMaleFirstName() : QDataGen::GenerateFemaleFirstName();
+			switch (rand(1, 10)) {
+				case 1:
+				case 2:
+				case 3:
+					$objPerson->MiddleName = chr(rand(ord('A'), ord('Z'))) . '.';
+					break;
+				case 4:
+				case 5:
+					$objPerson->MiddleName = ($blnMaleFlag) ? QDataGen::GenerateMaleFirstName() : QDataGen::GenerateFemaleFirstName();
+					break;
+			}
+			$objPerson->LastName = ($strLastName) ? $strLastName : QDataGen::GenerateLastName();
+
+			$objPerson->RefreshMembershipStatusTypeId(false);
+			$objPerson->RefreshMaritalStatusTypeId(false);
+
+			$objPerson->DeceasedFlag = !rand(0, 200);
+			if ($objPerson->DeceasedFlag && rand(0, 1))
+				$objPerson->DateDeceased = QDataGen::GenerateDateTime(self::$LifeStartDate, QDateTime::Now());
+			$objPerson->Save();
+
+			// Head Shots
+			$objHeadShotArray = array();
+			$intHeadShotCount = rand(0, 3);
+			for ($i = 0; $i < $intHeadShotCount; $i++) {
+				$objHeadShotArray[] = $objPerson->SaveHeadShot(self::GetRandomHeadShot($objPerson->MaleFlag), QDataGen::GenerateDateTime(self::$SystemStartDate, QDateTime::Now()));
+			}
+			if (count($objHeadShotArray)) {
+				$objPerson->SetCurrentHeadShot(QDataGen::GenerateFromArray($objHeadShotArray));
+			}
+
+			return $objPerson;
+		}
+
+		protected static $HeadShotMaleArray;
+		protected static $HeadShotFemaleArray;
+		protected static function GetRandomHeadShot($blnMaleFlag) {
+			if (!self::$HeadShotMaleArray) {
+				// Create the Arrays
+				self::$HeadShotMaleArray = array();
+				$objDirectory = opendir(__DEVTOOLS_CLI__ . '/datagen_file_assets/headshots/male');
+				while ($strFile = readdir($objDirectory)) {
+					if (substr($strFile, 0, 8) == 'headshot') self::$HeadShotMaleArray[] = $strFile;
+				}
+
+				self::$HeadShotFemaleArray = array();
+				$objDirectory = opendir(__DEVTOOLS_CLI__ . '/datagen_file_assets/headshots/female');
+				while ($strFile = readdir($objDirectory)) {
+					if (substr($strFile, 0, 8) == 'headshot') self::$HeadShotFemaleArray[] = $strFile;
+				}
+			}
+
+			if ($blnMaleFlag) {
+				return __DEVTOOLS_CLI__ . '/datagen_file_assets/headshots/male/' . QDataGen::GenerateFromArray(self::$HeadShotMaleArray);
+			} else {
+				return __DEVTOOLS_CLI__ . '/datagen_file_assets/headshots/female/' . QDataGen::GenerateFromArray(self::$HeadShotFemaleArray);
+			}
+		}
+	}
+
+	// Make sure we are NOT in Production!
+	if (SERVER_INSTANCE == 'prod') {
+		print "error: datagen cannot be run in production\r\n";
+		exit(1);
 	}
 
 	// Run the Generator

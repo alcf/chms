@@ -27,6 +27,57 @@
 			return sprintf('HeadShot Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Folder': return __DOCROOT__ . '/../file_assets/head_shots';
+				case 'Path': return $this->Folder . '/' . $this->Id . '.' . ImageType::$NameArray[$this->intImageTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
+		
+		/**
+		 * Given a Temp File Path, this will save the database record AND copy the file at the temporary file path
+		 * to the file assets directory for headshots
+		 * @param string $strTempFilePath
+		 * @return void
+		 */
+		public function SaveHeadShot($strTempFilePath) {
+			// Figure out the Image Type
+			$mixImageInfo = getimagesize($strTempFilePath);
+			switch($mixImageInfo['mime']) {
+				case 'image/gif':
+					$this->intImageTypeId = ImageType::gif;
+					break;
+				case 'image/jpeg':
+					$this->intImageTypeId = ImageType::jpg;
+					break;
+				case 'image/png':
+					$this->intImageTypeId = ImageType::png;
+					break;
+				default:
+					throw new QCallerException('Image Type Not Supported: ' . $mixImageInfo['mime']);
+			}
+
+			// Start the Transaction
+			HeadShot::GetDatabase()->TransactionBegin();
+
+			// Save the DB Record, Make Folders (if appicable) and Save the File
+			$this->Save();
+			QApplication::MakeDirectory($this->Folder, 0777);
+			copy($strTempFilePath, $this->Path);
+			chmod($this->Path, 0777);
+
+			// Commit the Transaction
+			HeadShot::GetDatabase()->TransactionCommit();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

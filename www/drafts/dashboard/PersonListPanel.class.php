@@ -81,7 +81,7 @@
 			$this->dtgPeople->MetaAddColumn('DobApproximateFlag');
 			$this->dtgPeople->MetaAddColumn('DeceasedFlag');
 			$this->dtgPeople->MetaAddColumn('DateDeceased');
-			$this->dtgPeople->MetaAddColumn(QQN::Person()->CurrentMugShot);
+			$this->dtgPeople->MetaAddColumn(QQN::Person()->CurrentHeadShot);
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->MailingAddress);
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->StewardshipAddress);
 			$this->dtgPeople->MetaAddColumn('CanMailFlag');

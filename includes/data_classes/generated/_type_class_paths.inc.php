@@ -7,6 +7,8 @@
 		QApplicationBase::$ClassFile['commentprivacytype'] = __DATA_CLASSES__ . '/CommentPrivacyType.class.php';
 	// ClassPaths for the EmailBroadcastType type class
 		QApplicationBase::$ClassFile['emailbroadcasttype'] = __DATA_CLASSES__ . '/EmailBroadcastType.class.php';
+	// ClassPaths for the ImageType type class
+		QApplicationBase::$ClassFile['imagetype'] = __DATA_CLASSES__ . '/ImageType.class.php';
 	// ClassPaths for the MaritalStatusType type class
 		QApplicationBase::$ClassFile['maritalstatustype'] = __DATA_CLASSES__ . '/MaritalStatusType.class.php';
 	// ClassPaths for the MarriageStatusType type class

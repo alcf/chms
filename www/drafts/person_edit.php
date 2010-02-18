@@ -39,7 +39,7 @@
 		protected $txtDobApproximateFlag;
 		protected $chkDeceasedFlag;
 		protected $calDateDeceased;
-		protected $lstCurrentMugShot;
+		protected $lstCurrentHeadShot;
 		protected $lstMailingAddress;
 		protected $lstStewardshipAddress;
 		protected $chkCanMailFlag;
@@ -90,7 +90,7 @@
 			$this->txtDobApproximateFlag = $this->mctPerson->txtDobApproximateFlag_Create();
 			$this->chkDeceasedFlag = $this->mctPerson->chkDeceasedFlag_Create();
 			$this->calDateDeceased = $this->mctPerson->calDateDeceased_Create();
-			$this->lstCurrentMugShot = $this->mctPerson->lstCurrentMugShot_Create();
+			$this->lstCurrentHeadShot = $this->mctPerson->lstCurrentHeadShot_Create();
 			$this->lstMailingAddress = $this->mctPerson->lstMailingAddress_Create();
 			$this->lstStewardshipAddress = $this->mctPerson->lstStewardshipAddress_Create();
 			$this->chkCanMailFlag = $this->mctPerson->chkCanMailFlag_Create();

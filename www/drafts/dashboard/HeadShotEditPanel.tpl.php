@@ -11,7 +11,9 @@
 
 		<?php $_CONTROL->calDateUploaded->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstPersonAsCurrentMugShot->RenderWithName(); ?>
+		<?php $_CONTROL->lstImageType->RenderWithName(); ?>
+
+		<?php $_CONTROL->lstPersonAsCurrent->RenderWithName(); ?>
 
 	</div>
 

@@ -17,7 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $MembershipStatusTypeId the value for intMembershipStatusTypeId (Not Null)
-	 * @property integer $MaritalStatusTypeId the value for intMaritalStatusTypeId 
+	 * @property integer $MaritalStatusTypeId the value for intMaritalStatusTypeId (Not Null)
 	 * @property string $FirstName the value for strFirstName 
 	 * @property string $MiddleName the value for strMiddleName 
 	 * @property string $LastName the value for strLastName 
@@ -31,13 +31,13 @@
 	 * @property integer $DobApproximateFlag the value for intDobApproximateFlag 
 	 * @property boolean $DeceasedFlag the value for blnDeceasedFlag (Not Null)
 	 * @property QDateTime $DateDeceased the value for dttDateDeceased 
-	 * @property integer $CurrentMugShotId the value for intCurrentMugShotId (Unique)
+	 * @property integer $CurrentHeadShotId the value for intCurrentHeadShotId (Unique)
 	 * @property integer $MailingAddressId the value for intMailingAddressId 
 	 * @property integer $StewardshipAddressId the value for intStewardshipAddressId 
 	 * @property boolean $CanMailFlag the value for blnCanMailFlag 
 	 * @property boolean $CanEmailFlag the value for blnCanEmailFlag 
 	 * @property boolean $CanPhoneFlag the value for blnCanPhoneFlag 
-	 * @property HeadShot $CurrentMugShot the value for the HeadShot object referenced by intCurrentMugShotId (Unique)
+	 * @property HeadShot $CurrentHeadShot the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 	 * @property Address $MailingAddress the value for the Address object referenced by intMailingAddressId 
 	 * @property Address $StewardshipAddress the value for the Address object referenced by intStewardshipAddressId 
 	 * @property Household $HouseholdAsHead the value for the Household object that uniquely references this Person
@@ -216,11 +216,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column person.current_mug_shot_id
-		 * @var integer intCurrentMugShotId
+		 * Protected member variable that maps to the database column person.current_head_shot_id
+		 * @var integer intCurrentHeadShotId
 		 */
-		protected $intCurrentMugShotId;
-		const CurrentMugShotIdDefault = null;
+		protected $intCurrentHeadShotId;
+		const CurrentHeadShotIdDefault = null;
 
 
 		/**
@@ -527,13 +527,13 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column person.current_mug_shot_id.
+		 * in the database column person.current_head_shot_id.
 		 *
-		 * NOTE: Always use the CurrentMugShot property getter to correctly retrieve this HeadShot object.
+		 * NOTE: Always use the CurrentHeadShot property getter to correctly retrieve this HeadShot object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var HeadShot objCurrentMugShot
+		 * @var HeadShot objCurrentHeadShot
 		 */
-		protected $objCurrentMugShot;
+		protected $objCurrentHeadShot;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -852,7 +852,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'dob_approximate_flag', $strAliasPrefix . 'dob_approximate_flag');
 			$objBuilder->AddSelectItem($strTableName, 'deceased_flag', $strAliasPrefix . 'deceased_flag');
 			$objBuilder->AddSelectItem($strTableName, 'date_deceased', $strAliasPrefix . 'date_deceased');
-			$objBuilder->AddSelectItem($strTableName, 'current_mug_shot_id', $strAliasPrefix . 'current_mug_shot_id');
+			$objBuilder->AddSelectItem($strTableName, 'current_head_shot_id', $strAliasPrefix . 'current_head_shot_id');
 			$objBuilder->AddSelectItem($strTableName, 'mailing_address_id', $strAliasPrefix . 'mailing_address_id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_address_id', $strAliasPrefix . 'stewardship_address_id');
 			$objBuilder->AddSelectItem($strTableName, 'can_mail_flag', $strAliasPrefix . 'can_mail_flag');
@@ -1149,8 +1149,8 @@
 			$objToReturn->blnDeceasedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_deceased', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_deceased'] : $strAliasPrefix . 'date_deceased';
 			$objToReturn->dttDateDeceased = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'current_mug_shot_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'current_mug_shot_id'] : $strAliasPrefix . 'current_mug_shot_id';
-			$objToReturn->intCurrentMugShotId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'current_head_shot_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'current_head_shot_id'] : $strAliasPrefix . 'current_head_shot_id';
+			$objToReturn->intCurrentHeadShotId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'mailing_address_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'mailing_address_id'] : $strAliasPrefix . 'mailing_address_id';
 			$objToReturn->intMailingAddressId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_address_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_address_id'] : $strAliasPrefix . 'stewardship_address_id';
@@ -1174,11 +1174,11 @@
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'person__';
 
-			// Check for CurrentMugShot Early Binding
-			$strAlias = $strAliasPrefix . 'current_mug_shot_id__id';
+			// Check for CurrentHeadShot Early Binding
+			$strAlias = $strAliasPrefix . 'current_head_shot_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objCurrentMugShot = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'current_mug_shot_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objCurrentHeadShot = HeadShot::InstantiateDbRow($objDbRow, $strAliasPrefix . 'current_head_shot_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for MailingAddress Early Binding
 			$strAlias = $strAliasPrefix . 'mailing_address_id__id';
@@ -1416,13 +1416,13 @@
 			
 		/**
 		 * Load a single Person object,
-		 * by CurrentMugShotId Index(es)
-		 * @param integer $intCurrentMugShotId
+		 * by CurrentHeadShotId Index(es)
+		 * @param integer $intCurrentHeadShotId
 		 * @return Person
 		*/
-		public static function LoadByCurrentMugShotId($intCurrentMugShotId) {
+		public static function LoadByCurrentHeadShotId($intCurrentHeadShotId) {
 			return Person::QuerySingle(
-				QQ::Equal(QQN::Person()->CurrentMugShotId, $intCurrentMugShotId)
+				QQ::Equal(QQN::Person()->CurrentHeadShotId, $intCurrentHeadShotId)
 			);
 		}
 			
@@ -1661,7 +1661,7 @@
 							`dob_approximate_flag`,
 							`deceased_flag`,
 							`date_deceased`,
-							`current_mug_shot_id`,
+							`current_head_shot_id`,
 							`mailing_address_id`,
 							`stewardship_address_id`,
 							`can_mail_flag`,
@@ -1683,7 +1683,7 @@
 							' . $objDatabase->SqlVariable($this->intDobApproximateFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 							' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
-							' . $objDatabase->SqlVariable($this->intCurrentMugShotId) . ',
+							' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
 							' . $objDatabase->SqlVariable($this->intMailingAddressId) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipAddressId) . ',
 							' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
@@ -1719,7 +1719,7 @@
 							`dob_approximate_flag` = ' . $objDatabase->SqlVariable($this->intDobApproximateFlag) . ',
 							`deceased_flag` = ' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 							`date_deceased` = ' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
-							`current_mug_shot_id` = ' . $objDatabase->SqlVariable($this->intCurrentMugShotId) . ',
+							`current_head_shot_id` = ' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
 							`mailing_address_id` = ' . $objDatabase->SqlVariable($this->intMailingAddressId) . ',
 							`stewardship_address_id` = ' . $objDatabase->SqlVariable($this->intStewardshipAddressId) . ',
 							`can_mail_flag` = ' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
@@ -1847,7 +1847,7 @@
 			$this->intDobApproximateFlag = $objReloaded->intDobApproximateFlag;
 			$this->blnDeceasedFlag = $objReloaded->blnDeceasedFlag;
 			$this->dttDateDeceased = $objReloaded->dttDateDeceased;
-			$this->CurrentMugShotId = $objReloaded->CurrentMugShotId;
+			$this->CurrentHeadShotId = $objReloaded->CurrentHeadShotId;
 			$this->MailingAddressId = $objReloaded->MailingAddressId;
 			$this->StewardshipAddressId = $objReloaded->StewardshipAddressId;
 			$this->blnCanMailFlag = $objReloaded->blnCanMailFlag;
@@ -1884,7 +1884,7 @@
 					return $this->intMembershipStatusTypeId;
 
 				case 'MaritalStatusTypeId':
-					// Gets the value for intMaritalStatusTypeId 
+					// Gets the value for intMaritalStatusTypeId (Not Null)
 					// @return integer
 					return $this->intMaritalStatusTypeId;
 
@@ -1953,10 +1953,10 @@
 					// @return QDateTime
 					return $this->dttDateDeceased;
 
-				case 'CurrentMugShotId':
-					// Gets the value for intCurrentMugShotId (Unique)
+				case 'CurrentHeadShotId':
+					// Gets the value for intCurrentHeadShotId (Unique)
 					// @return integer
-					return $this->intCurrentMugShotId;
+					return $this->intCurrentHeadShotId;
 
 				case 'MailingAddressId':
 					// Gets the value for intMailingAddressId 
@@ -1987,13 +1987,13 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'CurrentMugShot':
-					// Gets the value for the HeadShot object referenced by intCurrentMugShotId (Unique)
+				case 'CurrentHeadShot':
+					// Gets the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 					// @return HeadShot
 					try {
-						if ((!$this->objCurrentMugShot) && (!is_null($this->intCurrentMugShotId)))
-							$this->objCurrentMugShot = HeadShot::Load($this->intCurrentMugShotId);
-						return $this->objCurrentMugShot;
+						if ((!$this->objCurrentHeadShot) && (!is_null($this->intCurrentHeadShotId)))
+							$this->objCurrentHeadShot = HeadShot::Load($this->intCurrentHeadShotId);
+						return $this->objCurrentHeadShot;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2266,7 +2266,7 @@
 					}
 
 				case 'MaritalStatusTypeId':
-					// Sets the value for intMaritalStatusTypeId 
+					// Sets the value for intMaritalStatusTypeId (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
@@ -2419,13 +2419,13 @@
 						throw $objExc;
 					}
 
-				case 'CurrentMugShotId':
-					// Sets the value for intCurrentMugShotId (Unique)
+				case 'CurrentHeadShotId':
+					// Sets the value for intCurrentHeadShotId (Unique)
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objCurrentMugShot = null;
-						return ($this->intCurrentMugShotId = QType::Cast($mixValue, QType::Integer));
+						$this->objCurrentHeadShot = null;
+						return ($this->intCurrentHeadShotId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2492,13 +2492,13 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'CurrentMugShot':
-					// Sets the value for the HeadShot object referenced by intCurrentMugShotId (Unique)
+				case 'CurrentHeadShot':
+					// Sets the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 					// @param HeadShot $mixValue
 					// @return HeadShot
 					if (is_null($mixValue)) {
-						$this->intCurrentMugShotId = null;
-						$this->objCurrentMugShot = null;
+						$this->intCurrentHeadShotId = null;
+						$this->objCurrentHeadShot = null;
 						return null;
 					} else {
 						// Make sure $mixValue actually is a HeadShot object
@@ -2511,11 +2511,11 @@
 
 						// Make sure $mixValue is a SAVED HeadShot object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved CurrentMugShot for this Person');
+							throw new QCallerException('Unable to set an unsaved CurrentHeadShot for this Person');
 
 						// Update Local Member Variables
-						$this->objCurrentMugShot = $mixValue;
-						$this->intCurrentMugShotId = $mixValue->Id;
+						$this->objCurrentHeadShot = $mixValue;
+						$this->intCurrentHeadShotId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -4866,7 +4866,7 @@
 			$strToReturn .= '<element name="DobApproximateFlag" type="xsd:int"/>';
 			$strToReturn .= '<element name="DeceasedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateDeceased" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="CurrentMugShot" type="xsd1:HeadShot"/>';
+			$strToReturn .= '<element name="CurrentHeadShot" type="xsd1:HeadShot"/>';
 			$strToReturn .= '<element name="MailingAddress" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="StewardshipAddress" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="CanMailFlag" type="xsd:boolean"/>';
@@ -4929,9 +4929,9 @@
 				$objToReturn->blnDeceasedFlag = $objSoapObject->DeceasedFlag;
 			if (property_exists($objSoapObject, 'DateDeceased'))
 				$objToReturn->dttDateDeceased = new QDateTime($objSoapObject->DateDeceased);
-			if ((property_exists($objSoapObject, 'CurrentMugShot')) &&
-				($objSoapObject->CurrentMugShot))
-				$objToReturn->CurrentMugShot = HeadShot::GetObjectFromSoapObject($objSoapObject->CurrentMugShot);
+			if ((property_exists($objSoapObject, 'CurrentHeadShot')) &&
+				($objSoapObject->CurrentHeadShot))
+				$objToReturn->CurrentHeadShot = HeadShot::GetObjectFromSoapObject($objSoapObject->CurrentHeadShot);
 			if ((property_exists($objSoapObject, 'MailingAddress')) &&
 				($objSoapObject->MailingAddress))
 				$objToReturn->MailingAddress = Address::GetObjectFromSoapObject($objSoapObject->MailingAddress);
@@ -4966,10 +4966,10 @@
 				$objObject->dttDateOfBirth = $objObject->dttDateOfBirth->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateDeceased)
 				$objObject->dttDateDeceased = $objObject->dttDateDeceased->__toString(QDateTime::FormatSoap);
-			if ($objObject->objCurrentMugShot)
-				$objObject->objCurrentMugShot = HeadShot::GetSoapObjectFromObject($objObject->objCurrentMugShot, false);
+			if ($objObject->objCurrentHeadShot)
+				$objObject->objCurrentHeadShot = HeadShot::GetSoapObjectFromObject($objObject->objCurrentHeadShot, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intCurrentMugShotId = null;
+				$objObject->intCurrentHeadShotId = null;
 			if ($objObject->objMailingAddress)
 				$objObject->objMailingAddress = Address::GetSoapObjectFromObject($objObject->objMailingAddress, false);
 			else if (!$blnBindRelatedObjects)
@@ -5084,10 +5084,10 @@
 					return new QQNode('deceased_flag', 'DeceasedFlag', 'boolean', $this);
 				case 'DateDeceased':
 					return new QQNode('date_deceased', 'DateDeceased', 'QDateTime', $this);
-				case 'CurrentMugShotId':
-					return new QQNode('current_mug_shot_id', 'CurrentMugShotId', 'integer', $this);
-				case 'CurrentMugShot':
-					return new QQNodeHeadShot('current_mug_shot_id', 'CurrentMugShot', 'integer', $this);
+				case 'CurrentHeadShotId':
+					return new QQNode('current_head_shot_id', 'CurrentHeadShotId', 'integer', $this);
+				case 'CurrentHeadShot':
+					return new QQNodeHeadShot('current_head_shot_id', 'CurrentHeadShot', 'integer', $this);
 				case 'MailingAddressId':
 					return new QQNode('mailing_address_id', 'MailingAddressId', 'integer', $this);
 				case 'MailingAddress':
@@ -5186,10 +5186,10 @@
 					return new QQNode('deceased_flag', 'DeceasedFlag', 'boolean', $this);
 				case 'DateDeceased':
 					return new QQNode('date_deceased', 'DateDeceased', 'QDateTime', $this);
-				case 'CurrentMugShotId':
-					return new QQNode('current_mug_shot_id', 'CurrentMugShotId', 'integer', $this);
-				case 'CurrentMugShot':
-					return new QQNodeHeadShot('current_mug_shot_id', 'CurrentMugShot', 'integer', $this);
+				case 'CurrentHeadShotId':
+					return new QQNode('current_head_shot_id', 'CurrentHeadShotId', 'integer', $this);
+				case 'CurrentHeadShot':
+					return new QQNodeHeadShot('current_head_shot_id', 'CurrentHeadShot', 'integer', $this);
 				case 'MailingAddressId':
 					return new QQNode('mailing_address_id', 'MailingAddressId', 'integer', $this);
 				case 'MailingAddress':
