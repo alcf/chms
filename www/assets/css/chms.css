@@ -2,7 +2,8 @@ body { margin: 0; padding: 0; background-color: #efd; font-family: arial, helvet
 
 div.titleBar { background-color: #240; height: 32px; }
 	div.titleBar div.content { width: 980px; margin: 0 auto; }
-		div.titleBar div.content div.left { width: 490px; float: left; padding-top: 2px; font-size: 22px; font-family: arial, helvetica, sans-serif; font-weight: bold; color: #fff; }
+		div.titleBar div.content div.left { width: 490px; float: left; padding-top: 2px; font-size: 22px; font-family: arial, helvetica, sans-serif; font-weight: bold; }
+			div.titleBar div.content div.left a { color: #fff; text-decoration: none; }
 		div.titleBar div.content div.right { width: 490px; float: right; text-align: right; padding-top: 12px; font-size: 10px; font-family: verdana, arial, helvetica, sans-serif; color: #fff; }
 
 div.navBar { background-color: #240; height: 20px; border-bottom: 1px solid #fff; border-top: 1px solid #fff; }
@@ -11,9 +12,10 @@ div.navBar { background-color: #240; height: 20px; border-bottom: 1px solid #fff
 	div.navBar div.content ul li { float: left; }
 	div.navBar div.content ul li a { display: block; width: 150px; padding: 3px; text-align: center; background-color: #240; color: #fff; text-decoration: none; font-size: 12px; font-family: arial, helvetica, sans-serif; font-weight: bold;
 					border-color: #efd; border-style: solid; border-width: 0 0 0 1px; }
-	div.navBar div.content ul li a:hover { color: #240; background-color: #efd; }
 	div.navBar div.content ul li.right {float: right; }
+	div.navBar div.content ul li.current a { background-color: #dda; color: #442; }
 	div.navBar div.content ul li.last a { border-right-width: 1px; }
+	div.navBar div.content ul li a:hover { color: #240; background-color: #efd; }
 
 div.mainSection { width: 980px; margin: 0 auto; }
 

@@ -2,9 +2,9 @@
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 	QApplication::Authenticate();
 
-	class MainForm extends ChmsForm {
-		protected $strPageTitle = 'Main Menu';
-		protected $intNavSectionId = null;
+	class SearchEmailListsForm extends ChmsForm {
+		protected $strPageTitle = 'Email Lists';
+		protected $intNavSectionId = ChmsForm::NavSectionCommunications;
 
 		protected $lblMessage;
 		protected $btnButton;
@@ -23,5 +23,5 @@
 		}
 	}
 
-	MainForm::Run('MainForm');
+	SearchEmailListsForm::Run('SearchEmailListsForm');
 ?>

@@ -80,6 +80,12 @@
 					unset($_SESSION['intLoginId']);
 					QApplication::$Login = null;
 				}
+
+				// Update the NavBar based on Login
+				if (QApplication::$Login &&
+					(QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator)) {
+					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
+				}
 			}
 		}
 
@@ -95,10 +101,23 @@
 
 		/**
 		 * Verifies that the user is logged in, and if not, will redirect user to the login page
+		 * If authenticated, it will then check the array of acceptible RoleTypeIds (if applicable)
+		 * @param integer[] $intAcceptableRoleTypeIdArray optional array of acceptable RoleTypeIds -- if none is passed in, then this check is not done
 		 * @return void
 		 */
-		public static function Authenticate() {
+		public static function Authenticate($intAcceptableRoleTypeIdArray = null) {
 			if (!QApplication::$Login) QApplication::Redirect('/index.php/2');
+			
+			// Check against RoleTypeIdArray (if applicable)
+			if (is_array($intAcceptableRoleTypeIdArray)) {
+				foreach ($intAcceptableRoleTypeIdArray as $intRoleTypeId) {
+					if ($intRoleTypeId == QApplication::$Login->RoleTypeId)
+						return;
+				}
+				
+				// If we are here, then we failed finding the acceptable role type id
+				QApplication::Redirect('/main/');
+			}
 		}
 
 		/**

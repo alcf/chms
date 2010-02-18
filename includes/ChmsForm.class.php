@@ -9,8 +9,7 @@
 		const NavSectionCommunications = 4;
 		const NavSectionAdministration = 5;
 
-		protected $intNavSectionLastId = 5;
-		protected $strNavSectionArray = array(
+		public static $NavSectionArray = array(
 			ChmsForm::NavSectionPeople => array('Individuals', '/individuals/'),
 			ChmsForm::NavSectionHouseholds => array('Households', '/households/'),
 			ChmsForm::NavSectionGroups => array('Groups', '/groups/'),

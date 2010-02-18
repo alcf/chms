@@ -11,7 +11,7 @@
 
 <div class="titleBar">
 	<div class="content">
-		<div class="left">ALCF Church Management System</div>
+		<div class="left"><a href="/main/" title="Back to Main Menu">ALCF Church Management System</a></div>
 		<div class="right">
 			&nbsp;
 <?php if (QApplication::$Login) { ?>
@@ -26,10 +26,11 @@
 	<div class="content">
 		<ul>
 <?php
-			foreach ($this->strNavSectionArray as $intNavSectionId => $strNavSectionArray) {
-				$strClassName = ($intNavSectionId == $this->intNavSectionLastId) ? ' class="last"' : null;
+			foreach (ChmsForm::$NavSectionArray as $intNavSectionId => $strNavSectionArray) {
+				$strClassName = ($intNavSectionId == $this->intNavSectionId) ? 'current' : null;
+				$strClassName .= ($intNavSectionId == count(ChmsForm::$NavSectionArray)) ? ' last' : null;
 ?>
-			<li <?php _p($strClassName, false); ?>><a href="<?php _p($strNavSectionArray[1]); ?>"><?php _p($strNavSectionArray[0]); ?></a></li>
+			<li class="<?php _p($strClassName); ?>"><a href="<?php _p($strNavSectionArray[1]); ?>"><?php _p($strNavSectionArray[0]); ?></a></li>
 <?php } ?>
 			<li class="right last"><a href="/logout/">Logout</a></li>
 		</ul>

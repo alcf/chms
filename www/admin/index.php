@@ -1,10 +1,10 @@
 <?php
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
-	QApplication::Authenticate();
+	QApplication::Authenticate(array(RoleType::ChMSAdministrator));
 
-	class MainForm extends ChmsForm {
-		protected $strPageTitle = 'Main Menu';
-		protected $intNavSectionId = null;
+	class AdminMainForm extends ChmsForm {
+		protected $strPageTitle = 'Administration - Main Menu';
+		protected $intNavSectionId = ChmsForm::NavSectionAdministration;
 
 		protected $lblMessage;
 		protected $btnButton;
@@ -23,5 +23,5 @@
 		}
 	}
 
-	MainForm::Run('MainForm');
+	AdminMainForm::Run('AdminMainForm');
 ?>
