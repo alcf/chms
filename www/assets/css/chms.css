@@ -1,0 +1,28 @@
+body { margin: 0; padding: 0; background-color: #efd; font-family: arial, helvetica, sans-serif; }
+
+div.titleBar { background-color: #240; height: 32px; }
+	div.titleBar div.content { width: 980px; margin: 0 auto; }
+		div.titleBar div.content div.left { width: 780px; float: left; padding-top: 2px; font-size: 22px; font-family: arial, helvetica, sans-serif; font-weight: bold; color: #fff; }
+		div.titleBar div.content div.right { width: 200px; float: right; text-align: right; padding-top: 12px; font-size: 10px; font-family: verdana, arial, helvetica, sans-serif; color: #fff; }
+
+div.navBar { background-color: #240; height: 20px; border-bottom: 1px solid #fff; border-top: 1px solid #fff; }
+	div.navBar div.content { width: 980px; margin: 0 auto; }
+	div.navBar div.content ul { list-style: none; margin: 0; padding: 0; display: block; }
+	div.navBar div.content ul li { float: left; }
+	div.navBar div.content ul li a { display: block; width: 150px; padding: 3px; text-align: center; background-color: #240; color: #fff; text-decoration: none; font-size: 12px; font-family: arial, helvetica, sans-serif; font-weight: bold;
+					border-color: #efd; border-style: solid; border-width: 0 0 0 1px; }
+	div.navBar div.content ul li a:hover { color: #240; background-color: #efd; }
+	div.navBar div.content ul li.right {float: right; }
+	div.navBar div.content ul li.last a { border-right-width: 1px; }
+
+div.mainSection { width: 980px; margin: 0 auto; }
+
+
+div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
+div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+	div.renderWithName div.left { float: left; width: 200px; margin-right: 25px; }
+	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; }
+	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
+
+	div.renderWithName div.right { float: left; }
+	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}

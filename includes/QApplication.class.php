@@ -57,11 +57,51 @@
 			}
 		}
 
-		////////////////////////////
-		// QApplication Customizations (e.g. EncodingType, Disallowing PHP Session, etc.)
-		////////////////////////////
-		// public static $EncodingType = 'ISO-8859-1';
-		// public static $EnableSession = false;
+		/////////////////////////////////////////////
+		// Login-related Static Methods and Variables
+		/////////////////////////////////////////////
+		/**
+		 * @var Login
+		 */
+		public static $Login;
+
+		/**
+		 * Called by initialize_chms.inc.php to setup QApplication::$Login
+		 * from data in Session
+		 * @return void
+		 */
+		public static function InitializeLogin() {
+			if (array_key_exists('intLoginId', $_SESSION))
+				QApplication::$Login = Login::Load($_SESSION['intLoginId']);
+		}
+
+		/**
+		 * Called by the LoginForm to actually peform a Login
+		 * @param Login $objLogin
+		 * @return void
+		 */
+		public static function Login(Login $objLogin) {
+			QApplication::$Login = $objLogin;
+			$_SESSION['intLoginId'] = $objLogin->Id;
+		}
+
+		/**
+		 * Verifies that the user is logged in, and if not, will redirect user to the login page
+		 * @return void
+		 */
+		public static function Authenticate() {
+			if (!QApplication::$Login) QApplication::Redirect('/index.php/2');
+		}
+
+		/**
+		 * Logs the user out (if applicable) and will redirect user to the login page
+		 * @return void
+		 */
+		public static function Logout() {
+			$_SESSION['intLoginId'] = null;
+			unset($_SESSION['intLoginId']);
+			if (!QApplication::$Login) QApplication::Redirect('/index.php/1');
+		}
 
 		////////////////////////////
 		// Additional Static Methods

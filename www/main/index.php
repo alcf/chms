@@ -1,13 +1,7 @@
 <?php
-	/**
-	 * This is a standard, sample QForm which you can use as a starting
-	 * point to build any QForm page that you wish.
-	 */
+	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 
-	// Include prepend.inc to load Qcodo
-	require(dirname(__FILE__) . '/../includes/prepend.inc.php');
-
-	class SampleForm extends QForm {
+	class SampleForm extends ChmsForm {
 		protected $lblMessage;
 		protected $btnButton;
 
