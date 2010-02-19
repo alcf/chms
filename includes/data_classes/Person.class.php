@@ -30,6 +30,11 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Name': return $this->strFirstName . ' ' . $this->strLastName;
+				case 'FormalName':
+					if ($this->strTitle)
+						return $this->strTitle . ' ' . $this->Name;
+					else
+						$this->Name;
 
 				default:
 					try {
