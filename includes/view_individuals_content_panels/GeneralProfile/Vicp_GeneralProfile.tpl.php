@@ -3,7 +3,7 @@
 <div style="background-color: #ccc; margin: 0 15px; padding: 5px; ">
 	<h4>Names</h4>
 	<a href="#general/edit_name">Edit Names</a>
-	<?php _p($_FORM->objPerson->FormalName); ?>
+	<?php _p($_FORM->objPerson->Name); ?>
 </div>
 <br/>
 <div style="background-color: #ccc; margin: 0 15px; padding: 5px; ">
