@@ -20,6 +20,13 @@
 			// First use the Qcodo Autoloader
 			if (!parent::Autoload($strClassName)) {
 				// NOTE: Run any custom autoloading functionality (if any) here...
+				
+				// For ViewIndividual-related Forms' ContentPanels
+				if (substr($strClassName, 0, 5) == 'Vicp_') {
+					$strTokens = explode('_', $strClassName);
+					$strFile = sprintf('%s/view_individuals_content_panels/%s/%s.class.php', __INCLUDES__, $strTokens[1], $strClassName);
+					if (is_file($strFile)) require($strFile);
+				}
 			}
 		}
 
