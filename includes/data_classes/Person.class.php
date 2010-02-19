@@ -34,7 +34,7 @@
 					if ($this->strTitle)
 						return $this->strTitle . ' ' . $this->Name;
 					else
-						$this->Name;
+						return $this->Name;
 
 				default:
 					try {
