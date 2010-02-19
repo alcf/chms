@@ -5,9 +5,15 @@
 		public $txtLastName;
 		
 		public $lstTitle;
+		public $lstGender;
 		
-		public $strTitleArray = array('Dr.','Mr.','Mrs.','Sir');
-
+		private $strTitleArray = array('Dr.','Mr.','Mrs.','Sir');
+		
+		private $strGenderArray = array('Male', 'Female');
+		
+		public $dtxCalendar;
+		public $calCalendar;
+		
 		protected function SetupPanel() {
 			$this->lstTitle = new QListBox($this);
 			$this->lstTitle->Name = 'Title';
@@ -26,6 +32,27 @@
 			$this->txtLastName = new QTextBox($this);
 			$this->txtLastName->Name = 'Last Name';
 			$this->txtLastName->Text = $this->objPerson->LastName;
+			
+			$this->lstGender = new QListBox($this);
+			$this->lstGender->Name = 'Gender';			
+			$this->lstGender->AddItem('Male', true, $this->objPerson->MaleFlag);
+			$this->lstGender->AddItem('Female', false, !$this->objPerson->MaleFlag);
+			
+			
+			
+//			$this->dateBirthdate = new QDateTimePicker($this);
+//			$this->dateBirthdate->Name = 'Date of Birth';
+//			$this->dateBirthdate->dttDateTime = $this->objPerson->DateOfBirth;
+
+			// Note that QCalendar REQUIRES a "linked" QDateTimeTextBox
+            $this->dtxCalendar = new QDateTimeTextBox($this, 'foo');
+            $this->dtxCalendar->Name = "Date of Birth";
+            $this->calCalendar = new QCalendar($this, $this->dtxCalendar);
+
+            // To make things easier, let's make sure the $dtxCalendar is disabled, and clicking
+            // on it makes the calendar appear.
+            $this->dtxCalendar->AddAction(new QFocusEvent(), new QBlurControlAction($this->dtxCalendar));
+            $this->dtxCalendar->AddAction(new QClickEvent(), new QShowCalendarAction($this->calCalendar));
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
@@ -33,6 +60,10 @@
 			$this->objPerson->FirstName = trim($this->txtFirstName->Text);
 			$this->objPerson->MiddleName = trim($this->txtMiddleName->Text);
 			$this->objPerson->LastName = trim($this->txtLastName->Text);
+			
+			$this->objPerson->MaleFlag = trim($this->lstGender->SelectedValue);
+			
+//			$this->objPerson->DateOfBirth = trim($this->dateBirthdate->);
 
 			$this->objPerson->Save();
 			QApplication::ExecuteJavaScript('document.location = "#general";');
