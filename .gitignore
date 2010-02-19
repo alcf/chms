@@ -3,4 +3,5 @@
 .settings
 .cache
 .DS_Store
+configuration.local
 /file_assets/head_shots
