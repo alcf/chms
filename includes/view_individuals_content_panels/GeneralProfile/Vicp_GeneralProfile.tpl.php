@@ -10,3 +10,8 @@
 	<h4>Membership</h4>
 	<a href="#general/edit_membership">Edit Memberships</a>
 </div>
+<br/>
+<div style="background-color: #ccc; margin: 0 15px; padding: 5px; ">
+	<h4>Membership</h4>
+	<a href="#general/edit_family">Edit Family Information</a>
+</div>
