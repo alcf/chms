@@ -9,7 +9,6 @@
 		
 		private $strTitleArray = array('Dr.','Mr.','Mrs.','Sir');
 		
-		private $strGenderArray = array('Male', 'Female');
 		
 		public $dtxCalendar;
 		public $calCalendar;
@@ -37,12 +36,7 @@
 			$this->lstGender->Name = 'Gender';			
 			$this->lstGender->AddItem('Male', true, $this->objPerson->MaleFlag);
 			$this->lstGender->AddItem('Female', false, !$this->objPerson->MaleFlag);
-			
-			
-			
-//			$this->dateBirthdate = new QDateTimePicker($this);
-//			$this->dateBirthdate->Name = 'Date of Birth';
-//			$this->dateBirthdate->dttDateTime = $this->objPerson->DateOfBirth;
+					
 
 			// Note that QCalendar REQUIRES a "linked" QDateTimeTextBox
             $this->dtxCalendar = new QDateTimeTextBox($this, 'foo');
@@ -63,7 +57,10 @@
 			
 			$this->objPerson->MaleFlag = trim($this->lstGender->SelectedValue);
 			
-//			$this->objPerson->DateOfBirth = trim($this->dateBirthdate->);
+			
+//            $objControlToLookup = $this->GetControl($strParameter);
+//            $dttDateTime = $objControlToLookup->DateTime;
+//			$this->objPerson->DateOfBirth = $dttDateTime;
 
 			$this->objPerson->Save();
 			QApplication::ExecuteJavaScript('document.location = "#general";');
