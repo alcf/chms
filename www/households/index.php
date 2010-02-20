@@ -2,26 +2,25 @@
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 	QApplication::Authenticate();
 
-	class SearchHouseholdsForm extends ChmsForm {
-		protected $strPageTitle = 'Search Households';
-		protected $intNavSectionId = ChmsForm::NavSectionHouseholds;
+	class SearchIndividualsForm extends ChmsForm {
+		protected $strPageTitle = 'Search for a Household';
+		protected $intNavSectionId = ChmsForm::NavSectionPeople;
 
-		protected $lblMessage;
-		protected $btnButton;
+		protected $dtgHouseholds;
 
 		protected function Form_Create() {
-			$this->lblMessage = new QLabel($this);
-			$this->lblMessage->Text = 'Click the button to change my message.';
-
-			$this->btnButton = new QButton($this);
-			$this->btnButton->Text = 'Click Me';
-			$this->btnButton->AddAction(new QClickEvent(), new QAjaxAction('btnButton_Click'));
+			$this->dtgHouseholds = new HouseholdDataGrid($this);
+			$this->dtgHouseholds->Paginator = new QPaginator($this->dtgHouseholds);
+			$this->dtgHouseholds->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgHouseholds->MetaAddColumn('Name','Html=<?=$_FORM->RenderHouseholdName($_ITEM); ?>', 'HtmlEntities=false');
 		}
-
-		protected function btnButton_Click($strFormId, $strControlId, $strParameter) {
-			$this->lblMessage->Text = 'Hello, World!';
-		}
+		
+		public function RenderHouseholdName(Household $objHousehold) {
+			return sprintf('<a href="/households/view.php/%s">%s</a>', $objHousehold->Id, QApplication::HtmlEntities($objHousehold->Name));
+		}		
+		
+		
 	}
 
-	SearchHouseholdsForm::Run('SearchHouseholdsForm');
+	SearchIndividualsForm::Run('SearchIndividualsForm');
 ?>
