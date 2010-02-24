@@ -75,7 +75,7 @@
 			}
 			
 			// Pull the most recent Membership
-			$objMembership = Membership::QuerySingle(QQ::Equal(QQN::Membership()->Person), QQ::OrderBy(QQN::Membership()->DateStart, false));
+			$objMembership = Membership::QuerySingle(QQ::Equal(QQN::Membership()->PersonId, $this->intId), QQ::OrderBy(QQN::Membership()->DateStart, false));
 
 			// If no membership
 			if (!$objMembership) {
@@ -87,7 +87,7 @@
 			}
 
 			// If no EndDate, or EndDate is in the future
-			if (!$objMembership->EndDate || !$objMembership->EndDate->IsLaterThan(QDateTime::Now(false))) {
+			if (!$objMembership->DateEnd || $objMembership->DateEnd->IsLaterThan(QDateTime::Now(false))) {
 				$this->intMembershipStatusTypeId = MembershipStatusType::Member;
 				if ($blnSave) $this->Save();
 				return $this->intMembershipStatusTypeId;

@@ -80,27 +80,30 @@
 
 
 		public static function GenerateUsers() {
+			$blnAdminGenerated = false;
 			while (QDataGen::DisplayWhileTask('Generating ChMS Users', self::UserCount, false)) {
 				$objLogin = new Login();
-				$objLogin->RoleTypeId = QDataGen::GenerateFromArray(array_keys(RoleType::$NameArray));
+				$objLogin->RoleTypeId = ($blnAdminGenerated) ? QDataGen::GenerateFromArray(array_keys(RoleType::$NameArray)) : RoleType::ChMSAdministrator;
 				$objLogin->FirstName = QDataGen::GenerateFirstName();
 				$objLogin->LastName = QDataGen::GenerateLastName();
 				if (rand(0, 1)) $objLogin->MiddleInitial = chr(rand(ord('A'), ord('Z')));
-				$objLogin->Username = QDataGen::GenerateUsername($objLogin->FirstName, $objLogin->LastName);
+				$objLogin->Username = ($blnAdminGenerated) ? QDataGen::GenerateUsername($objLogin->FirstName, $objLogin->LastName) : 'admin';
 				$objLogin->Email = QDataGen::GenerateEmail($objLogin->FirstName, $objLogin->LastName);
 				$objLogin->SetPasswordCache('password');
-				$objLogin->DomainActiveFlag = rand(0, 10);
-				$objLogin->LoginActiveFlag = rand(0, 10);
+				$objLogin->DomainActiveFlag = ($blnAdminGenerated) ? rand(0, 10) : true;
+				$objLogin->LoginActiveFlag = ($blnAdminGenerated) ? rand(0, 10) : true;
 				$objLogin->Save();
 
 				// Associate Random Ministries
-				$intMinistryCount = rand(1, 3);
+				$intMinistryCount = ($blnAdminGenerated) ? rand(1, 3) : 5;
 				for ($i = 0; $i < $intMinistryCount; $i++) {
 					$objMinistry = Ministry::LoadByToken(QDataGen::GenerateFromArray(array_keys(self::$MinistryArray)));
 					while ($objLogin->IsMinistryAssociated($objMinistry))
 						$objMinistry = Ministry::LoadByToken(QDataGen::GenerateFromArray(array_keys(self::$MinistryArray)));
 					$objLogin->AssociateMinistry($objMinistry);
 				}
+
+				$blnAdminGenerated = true;
 			}
 			self::$UserArray = Login::LoadAll();
 		}
@@ -206,7 +209,7 @@
 			} else {
 				$objPerson->DateOfBirth = QDataGen::GenerateDateTime(self::$OldestChildBirthDate, QDateTime::Now());
 			}
-
+				
 			// Refresh Membership and Marital Statuses
 			$objPerson->RefreshMembershipStatusTypeId(false);
 			$objPerson->RefreshMaritalStatusTypeId(false);
@@ -225,6 +228,53 @@
 			}
 			if (count($objHeadShotArray)) {
 				$objPerson->SetCurrentHeadShot(QDataGen::GenerateFromArray($objHeadShotArray));
+			}
+
+
+			// Membership
+			$intMembershipCount = 0;
+			if ($blnAdultFlag) {
+				if (!rand(0, 2)) {
+					$intMembershipCount = rand(1, 3);
+				}
+			} else {
+				if (!rand(0, 10)) {
+					$intMembershipCount = rand(1, 2);
+				}
+			}
+
+			if ($intMembershipCount) {
+				$dttEarliestPossible = new QDateTime(($objPerson->DateOfBirth) ? $objPerson->DateOfBirth : self::$SystemStartDate);
+
+				for ($i = 0; $i < $intMembershipCount; $i++) {
+					$objMembership = new Membership();
+					$objMembership->Person = $objPerson;
+
+					$dttDateStart = QDateTime::Now();
+					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+
+					$objMembership->DateStart = $dttDateStart;
+					$dttEarliestPossible = new QDateTime($dttDateStart);
+
+					if ((($i + 1) != $intMembershipCount) || !rand(0, 3)) {
+						$dttDateEnd = QDateTime::Now();
+						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+
+						$objMembership->DateEnd = $dttDateEnd;
+						$dttEarliestPossible = new QDateTime($dttDateEnd);
+						
+						$objMembership->TerminationReason = QDataGen::GenerateContent(1, 3, 10);
+					}
+					
+					$objMembership->Save();
+					$objPerson->RefreshMembershipStatusTypeId();
+				}
 			}
 
 			return $objPerson;
