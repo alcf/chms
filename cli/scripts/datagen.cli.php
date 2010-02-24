@@ -169,6 +169,17 @@
 				$objAddress->InvalidFlag = false;
 				$objAddress->CurrentFlag = (($i+1) == $intAddressCount);
 				$objAddress->Save();
+
+				$intPhoneCount = rand(1, 3);
+				for ($j = 0; $j < $intPhoneCount; $j++) {
+					$objPhone = new Phone();
+					$objPhone->PhoneTypeId = PhoneType::Home;
+					$objPhone->Address = $objAddress;
+					$objPhone->Number = QDataGen::GeneratePhone();
+					if (($j+1) == $intPhoneCount)
+						$objPhone->PrimaryFlag = true;
+					$objPhone->Save();
+				}
 			}
 		}
 
