@@ -118,6 +118,8 @@
 
 		public static function GenerateHouseholds() {
 			while (QDataGen::DisplayWhileTask('Generating Households', self::HouseholdCount, false)) {
+				$objHousehold = null;
+
 				switch (rand(0, 9)) {
 					case 0:
 					case 1:
@@ -143,6 +145,30 @@
 						$objPerson = self::GenerateIndividual(rand(0, 1), rand(0, 8));
 						break;
 				}
+				
+				// Address and Phone for Household
+				if ($objHousehold) {
+					self::GenerateAddressesForHousehold($objHousehold);
+				}
+			}
+		}
+
+		protected static function GenerateAddressesForHousehold(Household $objHousehold) {
+			// Add address and phone
+			$intAddressCount = rand(1, 5);
+			for ($i = 0; $i < $intAddressCount; $i++) {
+				$objAddress = new Address();
+				$objAddress->AddressTypeId = AddressType::Home;
+				$objAddress->Household = $objHousehold;
+				$objAddress->Address1 = QDataGen::GenerateStreetAddress();
+				if (rand(0, 1)) $objAddress->Address2 = QDataGen::GenerateAddressLine2();
+				$objAddress->City = QDataGen::GenerateCity();
+				$objAddress->State = QDataGen::GenerateUsState();
+				$objAddress->ZipCode = rand(10000, 99999);
+				$objAddress->Country = 'US';
+				$objAddress->InvalidFlag = false;
+				$objAddress->CurrentFlag = (($i+1) == $intAddressCount);
+				$objAddress->Save();
 			}
 		}
 
@@ -230,7 +256,6 @@
 				$objPerson->SetCurrentHeadShot(QDataGen::GenerateFromArray($objHeadShotArray));
 			}
 
-
 			// Membership
 			$intMembershipCount = 0;
 			if ($blnAdultFlag) {
@@ -245,39 +270,43 @@
 
 			if ($intMembershipCount) {
 				$dttEarliestPossible = new QDateTime(($objPerson->DateOfBirth) ? $objPerson->DateOfBirth : self::$SystemStartDate);
-
-				for ($i = 0; $i < $intMembershipCount; $i++) {
-					$objMembership = new Membership();
-					$objMembership->Person = $objPerson;
-
-					$dttDateStart = QDateTime::Now();
-					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
-					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
-					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
-					$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
-
-					$objMembership->DateStart = $dttDateStart;
-					$dttEarliestPossible = new QDateTime($dttDateStart);
-
-					if ((($i + 1) != $intMembershipCount) || !rand(0, 3)) {
-						$dttDateEnd = QDateTime::Now();
-						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
-						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
-						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
-						$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
-
-						$objMembership->DateEnd = $dttDateEnd;
-						$dttEarliestPossible = new QDateTime($dttDateEnd);
-						
-						$objMembership->TerminationReason = QDataGen::GenerateContent(1, 3, 10);
-					}
-					
-					$objMembership->Save();
-					$objPerson->RefreshMembershipStatusTypeId();
-				}
+				self::GenerateMembershipsForIndividual($objPerson, $dttEarliestPossible, $intMembershipCount);
 			}
 
 			return $objPerson;
+		}
+		
+		protected static function GenerateMembershipsForIndividual(Person $objPerson, QDateTime $dttEarliestPossible, $intMembershipCount) {
+			for ($i = 0; $i < $intMembershipCount; $i++) {
+				$objMembership = new Membership();
+				$objMembership->Person = $objPerson;
+
+				$dttDateStart = QDateTime::Now();
+				$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+				$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+				$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+				$dttDateStart = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateStart);
+
+				$objMembership->DateStart = $dttDateStart;
+				$dttEarliestPossible = new QDateTime($dttDateStart);
+
+				if ((($i + 1) != $intMembershipCount) || !rand(0, 3)) {
+					$dttDateEnd = QDateTime::Now();
+					$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+					$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+					$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+					$dttDateEnd = QDataGen::GenerateDateTime($dttEarliestPossible, $dttDateEnd);
+
+					$objMembership->DateEnd = $dttDateEnd;
+					$dttEarliestPossible = new QDateTime($dttDateEnd);
+					
+					$objMembership->TerminationReason = QDataGen::GenerateContent(1, 3, 10);
+				}
+				
+				$objMembership->Save();
+			}
+
+			$objPerson->RefreshMembershipStatusTypeId();
 		}
 
 		protected static $HeadShotMaleArray;
