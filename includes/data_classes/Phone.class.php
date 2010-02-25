@@ -27,6 +27,28 @@
 			return sprintf('Phone Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will set this phone object as the "primary" phone number for (if associated to an address) the address
+		 * or (if associated to a person) the person.
+		 * 
+		 * This will automatically UNSET as primary any current-primary phone (if applicable)
+		 * @return void
+		 */
+		public function SetAsPrimary() {
+			if ($this->Address) {
+				$objPhoneArray = $this->Address->GetPhoneArray();
+			} else {
+				$objPhoneArray = $this->Person->GetPhoneArray();
+			}
+			
+			foreach ($objPhoneArray as $objPhone) {
+				$objPhone->PrimaryFlag = null;
+				$objPhone->Save();
+			}
+
+			$this->PrimaryFlag = true;
+			$this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

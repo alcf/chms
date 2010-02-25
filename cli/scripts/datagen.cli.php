@@ -176,10 +176,11 @@
 					$objPhone->PhoneTypeId = PhoneType::Home;
 					$objPhone->Address = $objAddress;
 					$objPhone->Number = QDataGen::GeneratePhone();
-					if (($j+1) == $intPhoneCount)
-						$objPhone->PrimaryFlag = true;
 					$objPhone->Save();
 				}
+
+				// Set the last one we created as "Primary"
+				$objPhone->SetAsPrimary();
 			}
 		}
 
