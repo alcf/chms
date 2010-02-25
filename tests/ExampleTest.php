@@ -1,6 +1,4 @@
-<?php
-require_once 'PHPUnit/Framework.php';
- 
+<?php 
 class ExampleTest extends PHPUnit_Framework_TestCase
 {
     /**
