@@ -141,8 +141,6 @@
 		////////////////////////////
 		// Additional Static Methods
 		////////////////////////////
-		public static function InitializePhpUnit() {
-			ini_set('include_path', '.;' . __INCLUDES__);
-		}
+		// NOTE: Define any other custom global WebApplication functions (if any) here...
 	}
 ?>
