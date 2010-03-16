@@ -114,7 +114,7 @@
 			}
 
 			// Pull the most recent Marriage
-			$objMarriage = Marriage::QuerySingle(QQ::Equal(QQN::Marriage()->Person), QQ::OrderBy(QQN::Marriage()->DateStart, false));
+			$objMarriage = Marriage::QuerySingle(QQ::Equal(QQN::Marriage()->PersonId, $this->intId), QQ::OrderBy(QQN::Marriage()->DateStart, false));
 
 			// If no marriage
 			if (!$objMarriage) {
@@ -145,7 +145,33 @@
 			return $this->intMaritalStatusTypeId;
 		}
 		
-		
+		/**
+		 * Creates a new Marriage record and refreshes the marrital status for both this person and the spouse
+		 * @param Person $objSpouse the spouse
+		 * @param QDateTime $dttStartDate the start date of the marriage
+		 * @return Marriage
+		 */
+		public function CreateMarriageWith(Person $objSpouse, QDateTime $dttStartDate = null) {
+			$objMarriage = new Marriage();
+			$objMarriage->Person = $this;
+			$objMarriage->MarriedToPerson = $objSpouse;
+			$objMarriage->MarriageStatusTypeId = MarriageStatusType::Married;
+			$objMarriage->DateStart = $dttStartDate;
+			$objMarriage->Save();
+
+			$objOtherMarriage = new Marriage();
+			$objOtherMarriage->Person = $objSpouse;
+			$objOtherMarriage->MarriedToPerson = $this;
+			$objOtherMarriage->MarriageStatusTypeId = MarriageStatusType::Married;
+			$objOtherMarriage->DateStart = $dttStartDate;
+			$objOtherMarriage->Save();
+
+			$this->RefreshMaritalStatusTypeId();
+			$objSpouse->RefreshMaritalStatusTypeId();
+			
+			return $objMarriage;
+		}
+
 		/**
 		 * Given a temporary file path on the server, this will save the file as a HeadShot for this Person
 		 * @param string $strTempFilePath

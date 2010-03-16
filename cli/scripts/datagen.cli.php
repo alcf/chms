@@ -145,7 +145,7 @@
 						$objPerson = self::GenerateIndividual(rand(0, 1), rand(0, 8));
 						break;
 				}
-				
+
 				// Address and Phone for Household
 				if ($objHousehold) {
 					self::GenerateAddressesForHousehold($objHousehold);
@@ -199,6 +199,19 @@
 				$objSpouse = self::GenerateIndividual(!$objHeadPerson->MaleFlag, true, $strLastName);
 				$objHousehold->AssociatePerson($objSpouse);
 				$intMinimumChildCount = 0;
+				
+				$objHeadPerson->DeleteAllMarriages();
+				$objSpouse->DeleteAllMarriages();
+
+				if ($objHeadPerson->DateOfBirth)
+					$dttStartDate = $objHeadPerson->DateOfBirth;
+				else if ($objSpouse->DateOfBirth)
+					$dttStartDate = $objSpouse->DateOfBirth;
+				else
+					$dttStartDate = QDataGen::GenerateDateTime(self::$LifeStartDate, QDateTime::Now());
+				$dttStartDate = QDataGen::GenerateDateTime($dttStartDate, QDateTime::Now());
+
+				$objHeadPerson->CreateMarriageWith($objSpouse, $dttStartDate);
 			} else {
 				// If no spouse, we must have at least one child in order to be a "family"
 				$intMinimumChildCount = 1;
@@ -283,6 +296,33 @@
 			if ($intMembershipCount) {
 				$dttEarliestPossible = new QDateTime(($objPerson->DateOfBirth) ? $objPerson->DateOfBirth : self::$SystemStartDate);
 				self::GenerateMembershipsForIndividual($objPerson, $dttEarliestPossible, $intMembershipCount);
+			}
+
+			// Past or non-defined marriage
+			if ($blnAdultFlag && !rand(0, 10)) {
+				$objMarriage = new Marriage();
+				$objMarriage->Person = $objPerson;
+				$objMarriage->MarriageStatusTypeId = QDataGen::GenerateFromArray(array_keys(MarriageStatusType::$NameArray));
+
+				if (rand(0, 1)) {
+					$dttStart = QDateTime::Now();
+					$dttStart = QDataGen::GenerateDateTime(self::$LifeStartDate, $dttStart);
+					$dttStart = QDataGen::GenerateDateTime(self::$LifeStartDate, $dttStart);
+					$dttStart = QDataGen::GenerateDateTime(self::$LifeStartDate, $dttStart);
+					$dttStart = QDataGen::GenerateDateTime(self::$LifeStartDate, $dttStart);
+					$dttStart = QDataGen::GenerateDateTime(self::$LifeStartDate, $dttStart);
+
+					$objMarriage->DateStart = $dttStart;
+					switch ($objMarriage->MarriageStatusTypeId) {
+						case MarriageStatusType::Divorced;
+						case MarriageStatusType::Widowed;
+							$objMarriage->DateEnd = QDataGen::GenerateDateTime($dttStart, QDateTime::Now());
+							break;
+					}
+				}
+
+				$objMarriage->Save();
+				$objPerson->RefreshMaritalStatusTypeId();
 			}
 
 			return $objPerson;
