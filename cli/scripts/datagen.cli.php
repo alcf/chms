@@ -252,6 +252,28 @@
 					break;
 			}
 			$objPerson->LastName = ($strLastName) ? $strLastName : QDataGen::GenerateLastName();
+			
+			if (!rand(0, 10)) {
+				$objPerson->Nickname = ($blnMaleFlag) ? QDataGen::GenerateMaleFirstName() : QDataGen::GenerateFemaleFirstName();
+			}
+
+			if (!rand(0, 5) && !$blnMaleFlag) {
+				$objPerson->PriorLastNames = QDataGen::GenerateLastName();
+			}
+
+			if (!rand(0, 10)) {
+				$objPerson->MailingLabel = QString::FirstCharacter($objPerson->FirstName) . '. ' . $objPerson->LastName;
+			}
+
+			if (!rand(0, 10)) {
+				$arrTitleArray = ($blnMaleFlag) ? array('Mr.', 'Dr.', 'Sir') : array('Ms.', 'Miss', 'Mrs.', 'Dr.', 'Lady');
+				$objPerson->Title = QDataGen::GenerateFromArray($arrTitleArray);
+			}
+
+			if (!rand(0, 10)) {
+				$arrSuffixArray = array('Sr.', 'Jr.', 'III', 'PhD', 'MD');
+				$objPerson->Suffix = QDataGen::GenerateFromArray($arrSuffixArray);
+			}
 
 			// Date of Birth
 			if ($blnAdultFlag) {
