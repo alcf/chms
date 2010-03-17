@@ -31,6 +31,7 @@
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+			$this->btnSave->CausesValidation = QCausesValidation::SiblingsAndChildren;
 
 			$this->btnCancel = new QLinkButton($this);
 			$this->btnCancel->Text = 'Cancel';

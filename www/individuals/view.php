@@ -47,6 +47,19 @@
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
 
+		protected function Form_Validate() {
+			$blnFocus = false;
+			foreach ($this->GetErrorControls() as $objControl) {
+				$objControl->Blink();
+				if (!$blnFocus) {
+					$objControl->Focus();
+					$blnFocus = true;
+				}
+			}
+
+			return true;
+		}
+
 		/**
 		 * This method will process the value of the "URL Hash" and display the appropriate panel
 		 * In general, we expect the hash value to be somethign like
