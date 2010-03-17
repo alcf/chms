@@ -9,6 +9,8 @@
 
 		<?php $_CONTROL->lstRoleType->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtPermissionBitmap->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtUsername->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtPasswordCache->RenderWithName(); ?>

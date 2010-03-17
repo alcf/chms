@@ -46,7 +46,11 @@
 
 <div style="background-color: #ccc; padding: 5px; ">
 	<div style="float: left; width: 50px;">
-		<a href="#general/edit_membership">Edit</a>
+		<?php if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) { ?>
+			<a href="#general/edit_membership">Edit</a>
+		<?php } else { ?>
+			&nbsp;
+		<?php } ?>
 	</div>
 	<div style="float: left; width: 500px;">
 		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Membership Status:</div>
@@ -65,6 +69,5 @@
 <br/>
 
 <div style="background-color: #ccc; padding: 5px; ">
-	<h4>Membership</h4>
 	<a href="#general/edit_family">Edit Family Information</a>
 </div>

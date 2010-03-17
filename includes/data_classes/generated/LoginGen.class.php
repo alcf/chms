@@ -17,6 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $RoleTypeId the value for intRoleTypeId (Not Null)
+	 * @property integer $PermissionBitmap the value for intPermissionBitmap 
 	 * @property string $Username the value for strUsername (Unique)
 	 * @property string $PasswordCache the value for strPasswordCache 
 	 * @property QDateTime $DateLastLogin the value for dttDateLastLogin 
@@ -52,6 +53,14 @@
 		 */
 		protected $intRoleTypeId;
 		const RoleTypeIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column login.permission_bitmap
+		 * @var integer intPermissionBitmap
+		 */
+		protected $intPermissionBitmap;
+		const PermissionBitmapDefault = null;
 
 
 		/**
@@ -451,6 +460,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'role_type_id', $strAliasPrefix . 'role_type_id');
+			$objBuilder->AddSelectItem($strTableName, 'permission_bitmap', $strAliasPrefix . 'permission_bitmap');
 			$objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
 			$objBuilder->AddSelectItem($strTableName, 'password_cache', $strAliasPrefix . 'password_cache');
 			$objBuilder->AddSelectItem($strTableName, 'date_last_login', $strAliasPrefix . 'date_last_login');
@@ -541,6 +551,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'role_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'role_type_id'] : $strAliasPrefix . 'role_type_id';
 			$objToReturn->intRoleTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'permission_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'permission_bitmap'] : $strAliasPrefix . 'permission_bitmap';
+			$objToReturn->intPermissionBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'username', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'username'] : $strAliasPrefix . 'username';
 			$objToReturn->strUsername = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'password_cache', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password_cache'] : $strAliasPrefix . 'password_cache';
@@ -770,6 +782,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `login` (
 							`role_type_id`,
+							`permission_bitmap`,
 							`username`,
 							`password_cache`,
 							`date_last_login`,
@@ -781,6 +794,7 @@
 							`last_name`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intRoleTypeId) . ',
+							' . $objDatabase->SqlVariable($this->intPermissionBitmap) . ',
 							' . $objDatabase->SqlVariable($this->strUsername) . ',
 							' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
 							' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
@@ -806,6 +820,7 @@
 							`login`
 						SET
 							`role_type_id` = ' . $objDatabase->SqlVariable($this->intRoleTypeId) . ',
+							`permission_bitmap` = ' . $objDatabase->SqlVariable($this->intPermissionBitmap) . ',
 							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
 							`password_cache` = ' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
 							`date_last_login` = ' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
@@ -894,6 +909,7 @@
 
 			// Update $this's local variables to match
 			$this->RoleTypeId = $objReloaded->RoleTypeId;
+			$this->intPermissionBitmap = $objReloaded->intPermissionBitmap;
 			$this->strUsername = $objReloaded->strUsername;
 			$this->strPasswordCache = $objReloaded->strPasswordCache;
 			$this->dttDateLastLogin = $objReloaded->dttDateLastLogin;
@@ -932,6 +948,11 @@
 					// Gets the value for intRoleTypeId (Not Null)
 					// @return integer
 					return $this->intRoleTypeId;
+
+				case 'PermissionBitmap':
+					// Gets the value for intPermissionBitmap 
+					// @return integer
+					return $this->intPermissionBitmap;
 
 				case 'Username':
 					// Gets the value for strUsername (Unique)
@@ -1045,6 +1066,17 @@
 					// @return integer
 					try {
 						return ($this->intRoleTypeId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PermissionBitmap':
+					// Sets the value for intPermissionBitmap 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intPermissionBitmap = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1464,6 +1496,7 @@
 			$strToReturn = '<complexType name="Login"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="RoleTypeId" type="xsd:int"/>';
+			$strToReturn .= '<element name="PermissionBitmap" type="xsd:int"/>';
 			$strToReturn .= '<element name="Username" type="xsd:string"/>';
 			$strToReturn .= '<element name="PasswordCache" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateLastLogin" type="xsd:dateTime"/>';
@@ -1499,6 +1532,8 @@
 				$objToReturn->intId = $objSoapObject->Id;
 			if (property_exists($objSoapObject, 'RoleTypeId'))
 				$objToReturn->intRoleTypeId = $objSoapObject->RoleTypeId;
+			if (property_exists($objSoapObject, 'PermissionBitmap'))
+				$objToReturn->intPermissionBitmap = $objSoapObject->PermissionBitmap;
 			if (property_exists($objSoapObject, 'Username'))
 				$objToReturn->strUsername = $objSoapObject->Username;
 			if (property_exists($objSoapObject, 'PasswordCache'))
@@ -1588,6 +1623,8 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'RoleTypeId':
 					return new QQNode('role_type_id', 'RoleTypeId', 'integer', $this);
+				case 'PermissionBitmap':
+					return new QQNode('permission_bitmap', 'PermissionBitmap', 'integer', $this);
 				case 'Username':
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'PasswordCache':
@@ -1634,6 +1671,8 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'RoleTypeId':
 					return new QQNode('role_type_id', 'RoleTypeId', 'integer', $this);
+				case 'PermissionBitmap':
+					return new QQNode('permission_bitmap', 'PermissionBitmap', 'integer', $this);
 				case 'Username':
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'PasswordCache':

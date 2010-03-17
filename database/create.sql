@@ -135,11 +135,30 @@ CREATE TABLE `_version`
 `version` VARCHAR(20)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `attributevalue_option_assn`
+(
+`attribute_value_id` INTEGER UNSIGNED NOT NULL,
+`attribute_option_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `attribute_option`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `attribute_id` INTEGER UNSIGNED NOT NULL,
 `name` VARCHAR(100),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `attribute_value`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`attribute_id` INTEGER UNSIGNED NOT NULL,
+`person_id` INTEGER UNSIGNED NOT NULL,
+`date_value` DATE,
+`text_value` TEXT,
+`boolean_value` BOOLEAN,
+`attribute_option_id` INTEGER UNSIGNED,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -201,25 +220,6 @@ CREATE TABLE `email`
 `address` VARCHAR(200),
 `primary_flag` BOOLEAN,
 PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `attribute_value`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`attribute_id` INTEGER UNSIGNED NOT NULL,
-`person_id` INTEGER UNSIGNED NOT NULL,
-`date_value` DATE,
-`text_value` TEXT,
-`boolean_value` BOOLEAN,
-`attribute_option_id` INTEGER UNSIGNED,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `attributevalue_option_assn`
-(
-`attribute_value_id` INTEGER UNSIGNED NOT NULL,
-`attribute_option_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `attribute`
@@ -294,6 +294,7 @@ CREATE TABLE `login`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `role_type_id` INTEGER UNSIGNED NOT NULL,
+`permission_bitmap` INTEGER UNSIGNED,
 `username` VARCHAR(40) UNIQUE,
 `password_cache` VARCHAR(200),
 `date_last_login` DATETIME,
@@ -401,15 +402,28 @@ ALTER TABLE `communicationlist_entry_assn` ADD FOREIGN KEY communication_list_id
 
 ALTER TABLE `communicationlist_entry_assn` ADD FOREIGN KEY communication_list_entry_id_idxfk (`communication_list_entry_id`) REFERENCES `communication_list_entry` (`id`);
 
+ALTER TABLE `attributevalue_option_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
+
+ALTER TABLE `attributevalue_option_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+
 CREATE INDEX `attribute_id_idx` ON `attribute_option`(`attribute_id`);
 ALTER TABLE `attribute_option` ADD FOREIGN KEY attribute_id_idxfk (`attribute_id`) REFERENCES `attribute` (`id`);
 
+CREATE INDEX `attribute_id_idx` ON `attribute_value`(`attribute_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_id_idxfk_1 (`attribute_id`) REFERENCES `attribute` (`id`);
+
+CREATE INDEX `person_id_idx` ON `attribute_value`(`person_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `attribute_option_id_idx` ON `attribute_value`(`attribute_option_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_option_id_idxfk_1 (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY communication_list_id_idxfk_1 (`communication_list_id`) REFERENCES `communication_list` (`id`);
 
-ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `person_id_idx` ON `relationship`(`person_id`);
-ALTER TABLE `relationship` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `relationship` ADD FOREIGN KEY person_id_idxfk_2 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `related_to_person_id_idx` ON `relationship`(`related_to_person_id`);
 ALTER TABLE `relationship` ADD FOREIGN KEY related_to_person_id_idxfk (`related_to_person_id`) REFERENCES `person` (`id`);
@@ -420,13 +434,13 @@ ALTER TABLE `relationship` ADD FOREIGN KEY relationship_type_id_idxfk (`relation
 CREATE UNIQUE INDEX `relationship_idx` ON `relationship` (`person_id`,`related_to_person_id`);
 
 CREATE INDEX `person_id_idx` ON `head_shot`(`person_id`);
-ALTER TABLE `head_shot` ADD FOREIGN KEY person_id_idxfk_2 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `head_shot` ADD FOREIGN KEY person_id_idxfk_3 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `image_type_id_idx` ON `head_shot`(`image_type_id`);
 ALTER TABLE `head_shot` ADD FOREIGN KEY image_type_id_idxfk (`image_type_id`) REFERENCES `image_type` (`id`);
 
 CREATE INDEX `person_id_idx` ON `marriage`(`person_id`);
-ALTER TABLE `marriage` ADD FOREIGN KEY person_id_idxfk_3 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `marriage` ADD FOREIGN KEY person_id_idxfk_4 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `married_to_person_id_idx` ON `marriage`(`married_to_person_id`);
 ALTER TABLE `marriage` ADD FOREIGN KEY married_to_person_id_idxfk (`married_to_person_id`) REFERENCES `person` (`id`);
@@ -434,29 +448,16 @@ ALTER TABLE `marriage` ADD FOREIGN KEY married_to_person_id_idxfk (`married_to_p
 CREATE INDEX `marriage_status_type_id_idx` ON `marriage`(`marriage_status_type_id`);
 ALTER TABLE `marriage` ADD FOREIGN KEY marriage_status_type_id_idxfk (`marriage_status_type_id`) REFERENCES `marriage_status_type` (`id`);
 
-ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY person_id_idxfk_4 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY person_id_idxfk_5 (`person_id`) REFERENCES `person` (`id`);
 
 ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY name_item_id_idxfk (`name_item_id`) REFERENCES `name_item` (`id`);
 
 ALTER TABLE `household` ADD FOREIGN KEY head_person_id_idxfk (`head_person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `person_id_idx` ON `email`(`person_id`);
-ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_5 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_6 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `address_idx` ON `email`(`address`);
-CREATE INDEX `attribute_id_idx` ON `attribute_value`(`attribute_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_id_idxfk_1 (`attribute_id`) REFERENCES `attribute` (`id`);
-
-CREATE INDEX `person_id_idx` ON `attribute_value`(`person_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk_6 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `attribute_option_id_idx` ON `attribute_value`(`attribute_option_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
-
-ALTER TABLE `attributevalue_option_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
-
-ALTER TABLE `attributevalue_option_assn` ADD FOREIGN KEY attribute_option_id_idxfk_1 (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
-
 CREATE INDEX `attribute_data_type_id_idx` ON `attribute`(`attribute_data_type_id`);
 ALTER TABLE `attribute` ADD FOREIGN KEY attribute_data_type_id_idxfk (`attribute_data_type_id`) REFERENCES `attribute_data_type` (`id`);
 

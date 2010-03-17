@@ -21,6 +21,8 @@
 
 		<?php $this->lstRoleType->RenderWithName(); ?>
 
+		<?php $this->txtPermissionBitmap->RenderWithName(); ?>
+
 		<?php $this->txtUsername->RenderWithName(); ?>
 
 		<?php $this->txtPasswordCache->RenderWithName(); ?>

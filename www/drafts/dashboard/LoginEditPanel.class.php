@@ -22,6 +22,7 @@
 		// Controls for Login's Data Fields
 		public $lblId;
 		public $lstRoleType;
+		public $txtPermissionBitmap;
 		public $txtUsername;
 		public $txtPasswordCache;
 		public $calDateLastLogin;
@@ -63,6 +64,7 @@
 			// Call MetaControl's methods to create qcontrols based on Login's data fields
 			$this->lblId = $this->mctLogin->lblId_Create();
 			$this->lstRoleType = $this->mctLogin->lstRoleType_Create();
+			$this->txtPermissionBitmap = $this->mctLogin->txtPermissionBitmap_Create();
 			$this->txtUsername = $this->mctLogin->txtUsername_Create();
 			$this->txtPasswordCache = $this->mctLogin->txtPasswordCache_Create();
 			$this->calDateLastLogin = $this->mctLogin->calDateLastLogin_Create();

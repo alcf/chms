@@ -92,6 +92,14 @@
 				$objLogin->SetPasswordCache('password');
 				$objLogin->DomainActiveFlag = ($blnAdminGenerated) ? rand(0, 10) : true;
 				$objLogin->LoginActiveFlag = ($blnAdminGenerated) ? rand(0, 10) : true;
+
+				// Random Permissions
+				$intPermissionBitmap = 0;
+				foreach (PermissionType::$NameArray as $intId => $strName) {
+					if (!rand(0, 2))
+						$intPermissionBitmap = $intPermissionBitmap | $intId;
+				}
+				$objLogin->PermissionBitmap = $intPermissionBitmap;
 				$objLogin->Save();
 
 				// Associate Random Ministries

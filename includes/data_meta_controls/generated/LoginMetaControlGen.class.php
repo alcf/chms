@@ -20,6 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $RoleTypeIdControl
 	 * property-read QLabel $RoleTypeIdLabel
+	 * property QIntegerTextBox $PermissionBitmapControl
+	 * property-read QLabel $PermissionBitmapLabel
 	 * property QTextBox $UsernameControl
 	 * property-read QLabel $UsernameLabel
 	 * property QTextBox $PasswordCacheControl
@@ -54,6 +56,7 @@
 		// Controls that allow the editing of Login's individual data fields
 		protected $lblId;
 		protected $lstRoleType;
+		protected $txtPermissionBitmap;
 		protected $txtUsername;
 		protected $txtPasswordCache;
 		protected $calDateLastLogin;
@@ -66,6 +69,7 @@
 
 		// Controls that allow the viewing of Login's individual data fields
 		protected $lblRoleTypeId;
+		protected $lblPermissionBitmap;
 		protected $lblUsername;
 		protected $lblPasswordCache;
 		protected $lblDateLastLogin;
@@ -215,6 +219,32 @@
 			$this->lblRoleTypeId->Text = ($this->objLogin->RoleTypeId) ? RoleType::$NameArray[$this->objLogin->RoleTypeId] : null;
 			$this->lblRoleTypeId->Required = true;
 			return $this->lblRoleTypeId;
+		}
+
+		/**
+		 * Create and setup QIntegerTextBox txtPermissionBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtPermissionBitmap_Create($strControlId = null) {
+			$this->txtPermissionBitmap = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtPermissionBitmap->Name = QApplication::Translate('Permission Bitmap');
+			$this->txtPermissionBitmap->Text = $this->objLogin->PermissionBitmap;
+			return $this->txtPermissionBitmap;
+		}
+
+		/**
+		 * Create and setup QLabel lblPermissionBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblPermissionBitmap_Create($strControlId = null, $strFormat = null) {
+			$this->lblPermissionBitmap = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPermissionBitmap->Name = QApplication::Translate('Permission Bitmap');
+			$this->lblPermissionBitmap->Text = $this->objLogin->PermissionBitmap;
+			$this->lblPermissionBitmap->Format = $strFormat;
+			return $this->lblPermissionBitmap;
 		}
 
 		/**
@@ -500,6 +530,9 @@
 			if ($this->lstRoleType) $this->lstRoleType->SelectedValue = $this->objLogin->RoleTypeId;
 			if ($this->lblRoleTypeId) $this->lblRoleTypeId->Text = ($this->objLogin->RoleTypeId) ? RoleType::$NameArray[$this->objLogin->RoleTypeId] : null;
 
+			if ($this->txtPermissionBitmap) $this->txtPermissionBitmap->Text = $this->objLogin->PermissionBitmap;
+			if ($this->lblPermissionBitmap) $this->lblPermissionBitmap->Text = $this->objLogin->PermissionBitmap;
+
 			if ($this->txtUsername) $this->txtUsername->Text = $this->objLogin->Username;
 			if ($this->lblUsername) $this->lblUsername->Text = $this->objLogin->Username;
 
@@ -582,6 +615,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstRoleType) $this->objLogin->RoleTypeId = $this->lstRoleType->SelectedValue;
+				if ($this->txtPermissionBitmap) $this->objLogin->PermissionBitmap = $this->txtPermissionBitmap->Text;
 				if ($this->txtUsername) $this->objLogin->Username = $this->txtUsername->Text;
 				if ($this->txtPasswordCache) $this->objLogin->PasswordCache = $this->txtPasswordCache->Text;
 				if ($this->calDateLastLogin) $this->objLogin->DateLastLogin = $this->calDateLastLogin->DateTime;
@@ -647,6 +681,12 @@
 				case 'RoleTypeIdLabel':
 					if (!$this->lblRoleTypeId) return $this->lblRoleTypeId_Create();
 					return $this->lblRoleTypeId;
+				case 'PermissionBitmapControl':
+					if (!$this->txtPermissionBitmap) return $this->txtPermissionBitmap_Create();
+					return $this->txtPermissionBitmap;
+				case 'PermissionBitmapLabel':
+					if (!$this->lblPermissionBitmap) return $this->lblPermissionBitmap_Create();
+					return $this->lblPermissionBitmap;
 				case 'UsernameControl':
 					if (!$this->txtUsername) return $this->txtUsername_Create();
 					return $this->txtUsername;
@@ -733,6 +773,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'RoleTypeIdControl':
 						return ($this->lstRoleType = QType::Cast($mixValue, 'QControl'));
+					case 'PermissionBitmapControl':
+						return ($this->txtPermissionBitmap = QType::Cast($mixValue, 'QControl'));
 					case 'UsernameControl':
 						return ($this->txtUsername = QType::Cast($mixValue, 'QControl'));
 					case 'PasswordCacheControl':

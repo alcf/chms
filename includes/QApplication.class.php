@@ -128,6 +128,19 @@
 		}
 
 		/**
+		 * Returns whether or not the currently logged-in user has a given permission.
+		 * Will return TRUE if the user is the ChMS Administrator or has the explicit permission assigned to him/her.
+		 * Will return FALSE otherwise.  Will also return FALSE if no one is currently logged in.
+		 * @param integer $intPermissionTypeId a Permission ID from the PermissionType class
+		 * @return boolean
+		 */
+		public static function IsLoginHasPermission($intPermissionTypeId) {
+			if (!QApplication::$Login) return false;
+			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) return true;
+			return QApplication::$Login->PermissionBitmap & $intPermissionTypeId;
+		}
+
+		/**
 		 * Logs the user out (if applicable) and will redirect user to the login page
 		 * @return void
 		 */

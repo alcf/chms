@@ -275,6 +275,7 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::Login()->Id;
 				case 'RoleTypeId': return QQN::Login()->RoleTypeId;
+				case 'PermissionBitmap': return QQN::Login()->PermissionBitmap;
 				case 'Username': return QQN::Login()->Username;
 				case 'PasswordCache': return QQN::Login()->PasswordCache;
 				case 'DateLastLogin': return QQN::Login()->DateLastLogin;

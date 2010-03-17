@@ -67,6 +67,7 @@
 			// can traverse down QQN::login() to display fields that are down the hierarchy)
 			$this->dtgLogins->MetaAddColumn('Id');
 			$this->dtgLogins->MetaAddTypeColumn('RoleTypeId', 'RoleType');
+			$this->dtgLogins->MetaAddColumn('PermissionBitmap');
 			$this->dtgLogins->MetaAddColumn('Username');
 			$this->dtgLogins->MetaAddColumn('PasswordCache');
 			$this->dtgLogins->MetaAddColumn('DateLastLogin');
