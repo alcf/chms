@@ -41,12 +41,29 @@
 	</div>
 	<br clear="all"/>
 </div>
+
 <br/>
+
 <div style="background-color: #ccc; padding: 5px; ">
-	<h4>Membership</h4>
-	<a href="#general/edit_membership">Edit Memberships</a>
+	<div style="float: left; width: 50px;">
+		<a href="#general/edit_membership">Edit</a>
+	</div>
+	<div style="float: left; width: 500px;">
+		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Membership Status:</div>
+		<div style="float: left;">
+<?php
+			_p($_FORM->objPerson->MembershipStatus);
+			if ($strInfo = $_FORM->objPerson->CurrentMembershipInfo) _p(', ' . $strInfo);
+			if ($strPriors = $_CONTROL->GetPriorMembershipText()) _p('<br/>' . $strPriors, false);
+?>
+		</div>
+		<br clear="all"/>
+	</div
+	<br clear="all"/>
 </div>
+
 <br/>
+
 <div style="background-color: #ccc; padding: 5px; ">
 	<h4>Membership</h4>
 	<a href="#general/edit_family">Edit Family Information</a>

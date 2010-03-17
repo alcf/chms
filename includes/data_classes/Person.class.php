@@ -63,6 +63,16 @@
 					else
 						return $this->Name;
 
+				case 'MembershipStatus':
+					return MembershipStatusType::$NameArray[$this->intMembershipStatusTypeId];
+
+				case 'CurrentMembershipInfo':
+					$objMembership = Membership::QuerySingle(QQ::Equal(QQN::Membership()->PersonId, $this->intId), QQ::OrderBy(QQN::Membership()->DateStart, false));
+					if (!$objMembership) return null;
+					if ($objMembership->DateEnd) return null;
+					$intYears = QDateTime::Now()->Difference($objMembership->DateStart)->Years;
+					return sprintf('since %s (%s year%s)', $objMembership->DateStart->__toString('MMMM D, YYYY'), $intYears, ($intYears == 1) ? '' : 's');
+
 				case 'Gender':
 					return $this->blnMaleFlag ? 'Male' : 'Female';
 
@@ -73,7 +83,8 @@
 					$strToReturn .= sprintf(' - %s year%s old', $intAge, ($intAge != 1) ? 's' : '');
 					if ($this->blnDobApproximateFlag)
 						$strToReturn .= ' (approx.)';
-					return $strToReturn; 
+					return $strToReturn;
+
 				case 'Age':
 					if (!$this->dttDateOfBirth) return null;
 					return QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;
