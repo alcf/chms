@@ -28,7 +28,7 @@
 	 * @property string $Suffix the value for strSuffix 
 	 * @property boolean $MaleFlag the value for blnMaleFlag (Not Null)
 	 * @property QDateTime $DateOfBirth the value for dttDateOfBirth 
-	 * @property integer $DobApproximateFlag the value for intDobApproximateFlag 
+	 * @property boolean $DobApproximateFlag the value for blnDobApproximateFlag 
 	 * @property boolean $DeceasedFlag the value for blnDeceasedFlag (Not Null)
 	 * @property QDateTime $DateDeceased the value for dttDateDeceased 
 	 * @property integer $CurrentHeadShotId the value for intCurrentHeadShotId (Unique)
@@ -193,9 +193,9 @@
 
 		/**
 		 * Protected member variable that maps to the database column person.dob_approximate_flag
-		 * @var integer intDobApproximateFlag
+		 * @var boolean blnDobApproximateFlag
 		 */
-		protected $intDobApproximateFlag;
+		protected $blnDobApproximateFlag;
 		const DobApproximateFlagDefault = null;
 
 
@@ -1144,7 +1144,7 @@
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_of_birth', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_of_birth'] : $strAliasPrefix . 'date_of_birth';
 			$objToReturn->dttDateOfBirth = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAliasName = array_key_exists($strAliasPrefix . 'dob_approximate_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'dob_approximate_flag'] : $strAliasPrefix . 'dob_approximate_flag';
-			$objToReturn->intDobApproximateFlag = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$objToReturn->blnDobApproximateFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'deceased_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'deceased_flag'] : $strAliasPrefix . 'deceased_flag';
 			$objToReturn->blnDeceasedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_deceased', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_deceased'] : $strAliasPrefix . 'date_deceased';
@@ -1680,7 +1680,7 @@
 							' . $objDatabase->SqlVariable($this->strSuffix) . ',
 							' . $objDatabase->SqlVariable($this->blnMaleFlag) . ',
 							' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
-							' . $objDatabase->SqlVariable($this->intDobApproximateFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 							' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
 							' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
@@ -1716,7 +1716,7 @@
 							`suffix` = ' . $objDatabase->SqlVariable($this->strSuffix) . ',
 							`male_flag` = ' . $objDatabase->SqlVariable($this->blnMaleFlag) . ',
 							`date_of_birth` = ' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
-							`dob_approximate_flag` = ' . $objDatabase->SqlVariable($this->intDobApproximateFlag) . ',
+							`dob_approximate_flag` = ' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
 							`deceased_flag` = ' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 							`date_deceased` = ' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
 							`current_head_shot_id` = ' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
@@ -1844,7 +1844,7 @@
 			$this->strSuffix = $objReloaded->strSuffix;
 			$this->blnMaleFlag = $objReloaded->blnMaleFlag;
 			$this->dttDateOfBirth = $objReloaded->dttDateOfBirth;
-			$this->intDobApproximateFlag = $objReloaded->intDobApproximateFlag;
+			$this->blnDobApproximateFlag = $objReloaded->blnDobApproximateFlag;
 			$this->blnDeceasedFlag = $objReloaded->blnDeceasedFlag;
 			$this->dttDateDeceased = $objReloaded->dttDateDeceased;
 			$this->CurrentHeadShotId = $objReloaded->CurrentHeadShotId;
@@ -1939,9 +1939,9 @@
 					return $this->dttDateOfBirth;
 
 				case 'DobApproximateFlag':
-					// Gets the value for intDobApproximateFlag 
-					// @return integer
-					return $this->intDobApproximateFlag;
+					// Gets the value for blnDobApproximateFlag 
+					// @return boolean
+					return $this->blnDobApproximateFlag;
 
 				case 'DeceasedFlag':
 					// Gets the value for blnDeceasedFlag (Not Null)
@@ -2387,11 +2387,11 @@
 					}
 
 				case 'DobApproximateFlag':
-					// Sets the value for intDobApproximateFlag 
-					// @param integer $mixValue
-					// @return integer
+					// Sets the value for blnDobApproximateFlag 
+					// @param boolean $mixValue
+					// @return boolean
 					try {
-						return ($this->intDobApproximateFlag = QType::Cast($mixValue, QType::Integer));
+						return ($this->blnDobApproximateFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -4863,7 +4863,7 @@
 			$strToReturn .= '<element name="Suffix" type="xsd:string"/>';
 			$strToReturn .= '<element name="MaleFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateOfBirth" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="DobApproximateFlag" type="xsd:int"/>';
+			$strToReturn .= '<element name="DobApproximateFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DeceasedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateDeceased" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="CurrentHeadShot" type="xsd1:HeadShot"/>';
@@ -4924,7 +4924,7 @@
 			if (property_exists($objSoapObject, 'DateOfBirth'))
 				$objToReturn->dttDateOfBirth = new QDateTime($objSoapObject->DateOfBirth);
 			if (property_exists($objSoapObject, 'DobApproximateFlag'))
-				$objToReturn->intDobApproximateFlag = $objSoapObject->DobApproximateFlag;
+				$objToReturn->blnDobApproximateFlag = $objSoapObject->DobApproximateFlag;
 			if (property_exists($objSoapObject, 'DeceasedFlag'))
 				$objToReturn->blnDeceasedFlag = $objSoapObject->DeceasedFlag;
 			if (property_exists($objSoapObject, 'DateDeceased'))
@@ -5079,7 +5079,7 @@
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
 				case 'DobApproximateFlag':
-					return new QQNode('dob_approximate_flag', 'DobApproximateFlag', 'integer', $this);
+					return new QQNode('dob_approximate_flag', 'DobApproximateFlag', 'boolean', $this);
 				case 'DeceasedFlag':
 					return new QQNode('deceased_flag', 'DeceasedFlag', 'boolean', $this);
 				case 'DateDeceased':
@@ -5181,7 +5181,7 @@
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
 				case 'DobApproximateFlag':
-					return new QQNode('dob_approximate_flag', 'DobApproximateFlag', 'integer', $this);
+					return new QQNode('dob_approximate_flag', 'DobApproximateFlag', 'boolean', $this);
 				case 'DeceasedFlag':
 					return new QQNode('deceased_flag', 'DeceasedFlag', 'boolean', $this);
 				case 'DateDeceased':

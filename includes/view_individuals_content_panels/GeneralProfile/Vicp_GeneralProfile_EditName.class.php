@@ -6,12 +6,11 @@
 		
 		public $lstTitle;
 		public $lstGender;
-		
-		private $strTitleArray = array('Dr.','Mr.','Mrs.','Sir');
-		
-		
-		public $dtxCalendar;
-		public $calCalendar;
+
+		private $strTitleArray = array('Dr.', 'Lady', 'Madam', 'Miss', 'Mr.', 'Mrs.', 'Ms.', 'Sir');
+
+		public $dtxDateOfBirth;
+		public $calDateOfBirth;
 		
 		protected function SetupPanel() {
 			$this->lstTitle = new QListBox($this);
@@ -36,17 +35,14 @@
 			$this->lstGender->Name = 'Gender';			
 			$this->lstGender->AddItem('Male', true, $this->objPerson->MaleFlag);
 			$this->lstGender->AddItem('Female', false, !$this->objPerson->MaleFlag);
-					
 
 			// Note that QCalendar REQUIRES a "linked" QDateTimeTextBox
-            $this->dtxCalendar = new QDateTimeTextBox($this, 'foo');
-            $this->dtxCalendar->Name = "Date of Birth";
-            $this->calCalendar = new QCalendar($this, $this->dtxCalendar);
+			$this->dtxDateOfBirth = new QDateTimeTextBox($this);
+			$this->dtxDateOfBirth->Name = "Date of Birth";
+			$this->dtxDateOfBirth->Text = ($this->objPerson->DateOfBirth) ? $this->objPerson->DateOfBirth->__toString() : null; 
 
-            // To make things easier, let's make sure the $dtxCalendar is disabled, and clicking
-            // on it makes the calendar appear.
-            $this->dtxCalendar->AddAction(new QFocusEvent(), new QBlurControlAction($this->dtxCalendar));
-            $this->dtxCalendar->AddAction(new QClickEvent(), new QShowCalendarAction($this->calCalendar));
+			$this->calDateOfBirth = new QCalendar($this, $this->dtxDateOfBirth);
+			$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
@@ -56,7 +52,7 @@
 			$this->objPerson->LastName = trim($this->txtLastName->Text);
 			
 			$this->objPerson->MaleFlag = trim($this->lstGender->SelectedValue);
-			
+			$this->objPerson->DateOfBirth = $this->dtxDateOfBirth->DateTime;			
 			
 //            $objControlToLookup = $this->GetControl($strParameter);
 //            $dttDateTime = $objControlToLookup->DateTime;

@@ -43,7 +43,7 @@
 
 		<?php $this->calDateOfBirth->RenderWithName(); ?>
 
-		<?php $this->txtDobApproximateFlag->RenderWithName(); ?>
+		<?php $this->chkDobApproximateFlag->RenderWithName(); ?>
 
 		<?php $this->chkDeceasedFlag->RenderWithName(); ?>
 

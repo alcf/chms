@@ -36,7 +36,7 @@
 		protected $txtSuffix;
 		protected $chkMaleFlag;
 		protected $calDateOfBirth;
-		protected $txtDobApproximateFlag;
+		protected $chkDobApproximateFlag;
 		protected $chkDeceasedFlag;
 		protected $calDateDeceased;
 		protected $lstCurrentHeadShot;
@@ -87,7 +87,7 @@
 			$this->txtSuffix = $this->mctPerson->txtSuffix_Create();
 			$this->chkMaleFlag = $this->mctPerson->chkMaleFlag_Create();
 			$this->calDateOfBirth = $this->mctPerson->calDateOfBirth_Create();
-			$this->txtDobApproximateFlag = $this->mctPerson->txtDobApproximateFlag_Create();
+			$this->chkDobApproximateFlag = $this->mctPerson->chkDobApproximateFlag_Create();
 			$this->chkDeceasedFlag = $this->mctPerson->chkDeceasedFlag_Create();
 			$this->calDateDeceased = $this->mctPerson->calDateDeceased_Create();
 			$this->lstCurrentHeadShot = $this->mctPerson->lstCurrentHeadShot_Create();

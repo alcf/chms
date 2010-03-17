@@ -9,7 +9,7 @@
 		<div style="width: 760px; height: 50px; background-color: #aaa; ">
 			<?php $this->pnlSubnavBar->Render(); ?>
 		</div>
-		<div style="width: 760px; height: 450px; background-color: #eee; overflow: auto; ">
+		<div style="width: 740px; height: 450px; background-color: #eee; overflow: auto; padding: 0px 10px; ">
 			<?php $this->pnlMainContent->Render(); ?>
 		</div>
 	</div>

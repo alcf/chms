@@ -12,7 +12,7 @@
 		public $btnSave;
 
 		/**
-		 * @var QButton
+		 * @var QLinkButton
 		 */
 		public $btnCancel;
 		
@@ -31,11 +31,13 @@
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
-			
-			$this->btnCancel = new QButton($this);
+
+			$this->btnCancel = new QLinkButton($this);
 			$this->btnCancel->Text = 'Cancel';
+			$this->btnCancel->ForeColor = '#666666';
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
-			
+			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+
 			$this->SetupPanel();
 		}
 

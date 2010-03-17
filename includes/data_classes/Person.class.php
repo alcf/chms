@@ -29,12 +29,54 @@
 
 		public function __get($strName) {
 			switch ($strName) {
-				case 'Name': return $this->strFirstName . ' ' . $this->strLastName;
+				case 'Name':
+					if ($this->strNickname)
+						return sprintf('%s "%s" %s', $this->strFirstName, $this->strNickname, $this->strLastName);
+					else
+						return $this->strFirstName . ' ' . $this->strLastName;
+
 				case 'FormalName':
+					$strToReturn = null;
+					
 					if ($this->strTitle)
-						return $this->strTitle . ' ' . $this->Name;
+						$strToReturn .= $this->strTitle . ' ';
+
+					$strToReturn .= $this->strFirstName . ' ';
+					
+					if ($this->strMiddleName) {
+						if (strlen($this->strMiddleName) == 1)
+							$strToReturn .= $this->strMiddleName . '. ';
+						else
+							$strToReturn .= $this->strMiddleName . ' ';
+					}
+
+					$strToReturn .= $this->strLastName;
+					
+					if ($this->strSuffix)
+						$strToReturn .= ', ' . $this->strSuffix;
+
+					return $strToReturn;
+
+				case 'ActiveMailingLabel':
+					if ($this->strMailingLabel)
+						return $this->strMailingLabel;
 					else
 						return $this->Name;
+
+				case 'Gender':
+					return $this->blnMaleFlag ? 'Male' : 'Female';
+
+				case 'Birthdate':
+					if (!$this->dttDateOfBirth) return null;
+					$strToReturn = $this->dttDateOfBirth->__toString('MMMM D, YYYY');
+					$intAge = $this->Age;
+					$strToReturn .= sprintf(' - %s year%s old', $intAge, ($intAge != 1) ? 's' : '');
+					if ($this->blnDobApproximateFlag)
+						$strToReturn .= ' (approx.)';
+					return $strToReturn; 
+				case 'Age':
+					if (!$this->dttDateOfBirth) return null;
+					return QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;
 
 				default:
 					try {
