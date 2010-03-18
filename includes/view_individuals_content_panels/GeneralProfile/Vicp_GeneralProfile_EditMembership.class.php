@@ -113,6 +113,8 @@
 		}
 		
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			// TODO: Need to add validation rules around the dates (cannot add a membership that crosses over dates of other memberships
+
 			$this->objMembership->DateStart = $this->dtxDateStart->DateTime;
 			$this->objMembership->DateEnd = $this->dtxDateEnd->DateTime;
 			if ($this->objMembership->DateEnd) {
