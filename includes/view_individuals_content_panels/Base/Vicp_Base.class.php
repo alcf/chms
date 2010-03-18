@@ -42,6 +42,18 @@
 			$this->SetupPanel();
 		}
 
+		/**
+		 * Make sure the caller of this method is also a "return" call to cease processing within that given method.
+		 * This will safely redirect the user back to whatever URL is being requested, even if it's a HASH.
+		 * @param string $strUrl
+		 * @return null
+		 */
+		public function ReturnTo($strUrl) {
+			$this->strTemplate = null;
+			QApplication::ExecuteJavaScript('document.location = "' . $strUrl . '";');
+			return null;
+		}
+
 		abstract protected function SetupPanel();
 	}
 ?>

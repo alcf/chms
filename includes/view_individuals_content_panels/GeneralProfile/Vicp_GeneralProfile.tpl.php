@@ -47,7 +47,7 @@
 <div style="background-color: #ccc; padding: 5px; ">
 	<div style="float: left; width: 50px;">
 		<?php if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) { ?>
-			<a href="#general/edit_membership">Edit</a>
+			<a href="#general/view_membership">Edit</a>
 		<?php } else { ?>
 			&nbsp;
 		<?php } ?>
