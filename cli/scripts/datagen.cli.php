@@ -207,7 +207,7 @@
 				$objSpouse = self::GenerateIndividual(!$objHeadPerson->MaleFlag, true, $strLastName);
 				$objHousehold->AssociatePerson($objSpouse);
 				$intMinimumChildCount = 0;
-				
+
 				$objHeadPerson->DeleteAllMarriages();
 				$objSpouse->DeleteAllMarriages();
 
@@ -222,14 +222,26 @@
 				$objHeadPerson->CreateMarriageWith($objSpouse, $dttStartDate);
 			} else {
 				// If no spouse, we must have at least one child in order to be a "family"
+				$objSpouse = null;
 				$intMinimumChildCount = 1;
 			}
 
 			// Add Children (if applicable)
 			$intChildCount = rand($intMinimumChildCount, 4);
+			$objChildArray = array();
 			for ($i = 0; $i < $intChildCount; $i++) {
 				$objChild = self::GenerateIndividual(rand(0, 1), false, $strLastName);
 				$objHousehold->AssociatePerson($objChild);
+
+				// Add the relationship
+				$objHeadPerson->AddRelationship($objChild, RelationshipType::Child);
+				if ($objSpouse) $objSpouse->AddRelationship($objChild, RelationshipType::Child);
+				
+				foreach ($objChildArray as $objSibling) {
+					$objChild->AddRelationship($objSibling, RelationshipType::Sibling);
+				}
+
+				$objChildArray[] = $objChild;
 			}
 
 			return $objHousehold;
