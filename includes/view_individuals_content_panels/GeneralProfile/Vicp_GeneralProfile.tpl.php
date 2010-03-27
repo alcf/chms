@@ -76,5 +76,5 @@
 <div style="background-color: #ccc; padding: 5px; ">
 	Household:
 	<br/>
-	<a href="#general/details_primary_contact_info">Details</a>Primary Contact Info
+	<a href="#contact">Details</a>Primary Contact Info
 </div>
