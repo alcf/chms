@@ -62,7 +62,7 @@
 ?>
 		</div>
 		<br clear="all"/>
-	</div
+	</div>
 	<br clear="all"/>
 </div>
 
