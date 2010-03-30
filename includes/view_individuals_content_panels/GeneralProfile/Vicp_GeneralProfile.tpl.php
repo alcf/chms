@@ -54,6 +54,7 @@
 	</div>
 	<div style="float: left; width: 500px;">
 		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Membership Status:</div>
+		
 		<div style="float: left;">
 <?php
 			_p($_FORM->objPerson->MembershipStatus);
@@ -62,7 +63,7 @@
 ?>
 		</div>
 		<br clear="all"/>
-	</div
+	</div>
 	<br clear="all"/>
 </div>
 
@@ -70,4 +71,10 @@
 
 <div style="background-color: #ccc; padding: 5px; ">
 	<a href="#general/edit_family">Edit Family Information</a>
+</div>
+<br/>
+<div style="background-color: #ccc; padding: 5px; ">
+	Household:
+	<br/>
+	<a href="#contact">Details</a>Primary Contact Info
 </div>

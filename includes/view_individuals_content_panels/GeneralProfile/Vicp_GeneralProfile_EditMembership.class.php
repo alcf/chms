@@ -58,6 +58,7 @@
 			$this->dtxDateEnd = new QDateTimeTextBox($this);
 			$this->dtxDateEnd->Name = 'Membership Ended';
 			$this->dtxDateEnd->Text = ($this->objMembership->DateEnd) ? $this->objMembership->DateEnd->__toString() : null;
+			$this->dtxDateEnd->AddAction(new QBlurEvent(), new QAjaxControlAction($this, 'dtxDateEnd_Blur'));
 			$this->calDateEnd = new QCalendar($this, $this->dtxDateEnd);
 
 			$this->dtxDateStart->RemoveAllActions(QClickEvent::EventName);
@@ -87,8 +88,20 @@
 			// Setup and Call Actions
 			$this->lstTermination->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtTermination_Refresh'));
 			$this->txtTermination_Refresh();
+			$this->dtxDateEnd_Blur();
 		}
-		
+
+		public function dtxDateEnd_Blur() {
+			if ($this->dtxDateEnd->DateTime) {
+				if (!$this->lstTermination->Enabled) $this->lstTermination->Enabled = true;
+			} else {
+				if ($this->lstTermination->Enabled) {
+					$this->lstTermination->Enabled = false;
+					$this->lstTermination->SelectedIndex = 0;
+				}
+			}
+		}
+
 		public function txtTermination_Refresh() {
 			if ($this->lstTermination->SelectedValue == -1) {
 				$this->txtTermination->Visible = true;
@@ -112,11 +125,42 @@
 			return $this->ReturnTo('#general/view_membership');
 		}
 		
-		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			// TODO: Need to add validation rules around the dates (cannot add a membership that crosses over dates of other memberships
+		public function Validate() {
+			$blnToReturn = parent::Validate();
 
+			// Validate proper datetimes
+			if ($this->dtxDateEnd->DateTime &&
+				($this->dtxDateEnd->DateTime->IsEarlierOrEqualTo($this->dtxDateStart->DateTime))) {
+				$this->dtxDateEnd->Warning = 'Must be later than Membership Start Date';
+				$blnToReturn = false;
+			}
+
+			// Dates must be in the past (no future dates)
+			if ($this->dtxDateStart->DateTime->IsLaterThan(QDateTime::Now())) {
+				$this->dtxDateStart->Warning = 'Date cannot be in the future';
+				$blnToReturn = false;
+			}
+			
+			// Dates must be in the past (no future dates)
+			if ($this->dtxDateEnd->DateTime &&
+				$this->dtxDateEnd->DateTime->IsLaterThan(QDateTime::Now())) {
+				$this->dtxDateEnd->Warning = 'Date cannot be in the future';
+				$blnToReturn = false;
+			}
+
+			return $blnToReturn;
+		}
+
+		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
 			$this->objMembership->DateStart = $this->dtxDateStart->DateTime;
 			$this->objMembership->DateEnd = $this->dtxDateEnd->DateTime;
+
+			// Check for conflicts
+			if ($this->objMembership->IsDatesConflict()) {
+				$this->dtxDateStart->Warning = 'Dates conflict with another membership period';
+				return;
+			}
+
 			if ($this->objMembership->DateEnd) {
 				if ($this->lstTermination->SelectedValue == -1) {
 					$this->objMembership->TerminationReason = trim($this->txtTermination->Text);

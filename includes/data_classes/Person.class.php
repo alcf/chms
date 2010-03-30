@@ -112,6 +112,61 @@
 			return $this->DateOfBirth->IsEarlierOrEqualTo($dtt18YearsAgo);
 		}
 
+		/**
+		 * Given a Person to be related to an a RelationshipTypeId, this will create BOTH ends of
+		 * the relationship (e.g. TWO relationship records).
+		 * 
+		 * If a relationship of any kind is already defined between these two individuals, this will
+		 * return null and make no changes.
+		 * 
+		 * Otherwise, this will return the relationship record for this person.
+		 * 
+		 * If either THIS or $objWithPerson has not yet been saved, this will throw a QCallerException
+		 * 
+		 * @param Person $objWithPerson
+		 * @param integer $intRelationshipTypeId
+		 * @return Relationship
+		 */
+		public function AddRelationship(Person $objWithPerson, $intRelationshipTypeId) {
+			if (!$objWithPerson->Id) throw new QCallerException('Attempting to add relationship with an unsaved Person record');
+			if (!$this->intId) throw new QCallerException('Attempting to add relationship for an unsaved Person record');
+
+			// Ensure no relationship already exists
+			if (Relationship::LoadByPersonIdRelatedToPersonId($this->intId, $objWithPerson->Id)) return null;
+			if (Relationship::LoadByPersonIdRelatedToPersonId($objWithPerson->Id, $this->intId)) return null;
+
+			// Figure out the "Opposite" relationship to create
+			switch ($intRelationshipTypeId) {
+				case RelationshipType::Child:
+					$intOppositeRelationship = RelationshipType::Parental;
+					break;
+				case RelationshipType::Parental:
+					$intOppositeRelationship = RelationshipType::Child;
+					break;
+				case RelationshipType::Sibling:
+					$intOppositeRelationship = RelationshipType::Sibling;
+					break;
+				default:
+					throw new Exception('Invalid Relationship Type Id: ' . $intRelationshipTypeId);
+			}
+
+			// Create the relationship
+			$objRelationship = new Relationship();
+			$objRelationship->Person = $this;
+			$objRelationship->RelatedToPerson = $objWithPerson;
+			$objRelationship->RelationshipTypeId = $intRelationshipTypeId;
+			$objRelationship->Save();
+
+			// Create the other end of the relationship
+			$objOtherRelationship = new Relationship();
+			$objOtherRelationship->Person = $objWithPerson;
+			$objOtherRelationship->RelatedToPerson = $this;
+			$objOtherRelationship->RelationshipTypeId = $intOppositeRelationship;
+			$objOtherRelationship->Save();
+
+			// Return
+			return $objRelationship;
+		}
 
 		/**
 		 * Recalculates this member's Membership Status and updates MembershipStatusTypeId
