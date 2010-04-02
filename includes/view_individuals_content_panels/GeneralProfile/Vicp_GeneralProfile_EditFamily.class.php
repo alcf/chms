@@ -12,7 +12,6 @@
 
 		public $lstGender;
 
-		private $strTitleArray = array('Dr.', 'Lady', 'Madam', 'Miss', 'Mr.', 'Mrs.', 'Ms.', 'Sir');
 		private $strSuffixArray = array('Sr.', 'Jr.', 'III', 'PhD', 'MD');
 
 		public $dtxDateOfBirth;
@@ -25,13 +24,14 @@
 
 		protected function SetupPanel() {
 			$this->lstTitle = new QListBox($this);
-			$this->lstTitle->Name = 'Title';
+			$this->lstTitle->Name = 'Marital Status:';
 			$this->lstTitle->AddItem('- None -', null);
-			foreach ($this->strTitleArray as $strTitle)
+			$strTitleArray = array('Single', 'Married', 'Separated');
+			foreach ($strTitleArray as $strTitle)
 				$this->lstTitle->AddItem($strTitle, $strTitle, $this->objPerson->Title == $strTitle);
 
 			$this->txtFirstName = new QTextBox($this);
-			$this->txtFirstName->Name = 'First Name';
+			$this->txtFirstName->Name = 'Married To:';
 			$this->txtFirstName->Text = $this->objPerson->FirstName;
 			$this->txtFirstName->Required = true;
 
@@ -81,7 +81,7 @@
 			$this->lstGender->AddItem('Female', false, !$this->objPerson->MaleFlag);
 
 			$this->dtxDateOfBirth = new QDateTimeTextBox($this);
-			$this->dtxDateOfBirth->Name = "Date of Birth";
+			$this->dtxDateOfBirth->Name = "Married Since:";
 			$this->dtxDateOfBirth->Text = ($this->objPerson->DateOfBirth) ? $this->objPerson->DateOfBirth->__toString() : null; 
 
 			$this->calDateOfBirth = new QCalendar($this, $this->dtxDateOfBirth);
