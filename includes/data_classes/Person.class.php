@@ -302,6 +302,30 @@
 			$this->Save();
 		}
 
+		/**
+		 * Saves a Comment for this Person.  Note that the PostDate is optional.  If none is provided, the system
+		 * will just use QDateTime::Now()
+		 * 
+		 * @param Login $objLogin the login/user who posted the comment
+		 * @param string $strComment the comment itself
+		 * @param integer $intCommentPrivacyTypeId
+		 * @param integer $intCommentCategoryId
+		 * @param QDateTime $dttPostDate
+		 * @return Comment
+		 */
+		public function SaveComment(Login $objLogin, $strComment, $intCommentPrivacyTypeId, $intCommentCategoryId, QDateTime $dttPostDate = null) {
+			$objComment = new Comment();
+			$objComment->Person = $this;
+			$objComment->PostedByLogin = $objLogin;
+			$objComment->CommentPrivacyTypeId = $intCommentPrivacyTypeId;
+			$objComment->CommentCategoryId = $intCommentCategoryId;
+			$objComment->Comment = $strComment;
+			$objComment->DatePosted = ($dttPostDate ? $dttPostDate : QDateTime::Now());
+			$objComment->Save();
+			
+			return $objComment;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

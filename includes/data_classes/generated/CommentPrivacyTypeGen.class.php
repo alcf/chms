@@ -18,15 +18,27 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class CommentPrivacyTypeGen extends QBaseClass {
+		const Confidential = 1;
+		const Staff = 2;
+		const General = 3;
 
-		const MaxId = 0;
+		const MaxId = 3;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Confidential',
+			2 => 'Staff',
+			3 => 'General');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'Confidential',
+			2 => 'Staff',
+			3 => 'General');
 
 		public static function ToString($intCommentPrivacyTypeId) {
 			switch ($intCommentPrivacyTypeId) {
+				case 1: return 'Confidential';
+				case 2: return 'Staff';
+				case 3: return 'General';
 				default:
 					throw new QCallerException(sprintf('Invalid intCommentPrivacyTypeId: %s', $intCommentPrivacyTypeId));
 			}
@@ -34,6 +46,9 @@
 
 		public static function ToToken($intCommentPrivacyTypeId) {
 			switch ($intCommentPrivacyTypeId) {
+				case 1: return 'Confidential';
+				case 2: return 'Staff';
+				case 3: return 'General';
 				default:
 					throw new QCallerException(sprintf('Invalid intCommentPrivacyTypeId: %s', $intCommentPrivacyTypeId));
 			}

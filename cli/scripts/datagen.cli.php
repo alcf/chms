@@ -44,6 +44,9 @@
 		public static $OldestChildBirthDate;
 		public static $UserArray;
 
+		// Cached Data
+		public static $CommentCategoryArray;
+
 		/**
 		 * Main DataGen Runner
 		 * @return void
@@ -53,6 +56,9 @@
 			self::$LifeStartDate = new QDateTime('1930-01-01');
 			self::$OldestChildBirthDate = QDateTime::Now(false);
 			self::$OldestChildBirthDate->Year -= 18;
+
+			// Get Cached Data
+			self::$CommentCategoryArray = CommentCategory::LoadAll();
 
 			// Erase Directories
 			exec('rm -r -f ' . __DOCROOT__ . '/../file_assets/head_shots');
@@ -367,9 +373,21 @@
 				$objPerson->RefreshMaritalStatusTypeId();
 			}
 
+			// Comments
+			$intCount = rand(0, 12);
+			for ($intIndex = 0; $intIndex < $intCount; $intIndex++) {
+				$dttPostDate = self::GenerateDateTime(self::$SystemStartDate, QDateTime::Now());
+				$objLogin = self::GenerateFromArray(self::$UserArray);
+				$objCommentCategory = self::GenerateFromArray(self::$CommentCategoryArray);
+				$intCommentPrivacyTypeId = self::GenerateFromArray(array_keys(CommentPrivacyType::$NameArray));
+				$strComment = self::GenerateContent(rand (1, 2), 5, 20);
+
+				$objPerson->SaveComment($objLogin, $strComment, $intCommentPrivacyTypeId, $objCommentCategory->Id, $dttPostDate);
+			}
+
 			return $objPerson;
 		}
-		
+
 		protected static function GenerateMembershipsForIndividual(Person $objPerson, QDateTime $dttEarliestPossible, $intMembershipCount) {
 			for ($i = 0; $i < $intMembershipCount; $i++) {
 				$objMembership = new Membership();

@@ -89,6 +89,10 @@ INSERT INTO attribute_data_type VALUES(5, 'Immutable Multiple Dropdown');
 INSERT INTO attribute_data_type VALUES(6, 'Mutable Single Dropdown');
 INSERT INTO attribute_data_type VALUES(7, 'Mutable Multiple Dropdown');
 
+INSERT INTO comment_privacy_type VALUES(1, 'Confidential');
+INSERT INTO comment_privacy_type VALUES(2, 'Staff');
+INSERT INTO comment_privacy_type VALUES(3, 'General');
+
 INSERT INTO email_broadcast_type VALUES(1, 'Public List');
 INSERT INTO email_broadcast_type VALUES(2, 'Private List');
 INSERT INTO email_broadcast_type VALUES(3, 'Announcement Only');
