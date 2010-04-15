@@ -66,7 +66,10 @@
 				case 'MembershipStatus':
 					return MembershipStatusType::$NameArray[$this->intMembershipStatusTypeId];
 
-				case 'CurrentMembershipInfo':
+				case 'MaritalStatus':
+					return MaritalStatusType::$NameArray[$this->intMaritalStatusTypeId];
+
+					case 'CurrentMembershipInfo':
 					$objMembership = Membership::QuerySingle(QQ::Equal(QQN::Membership()->PersonId, $this->intId), QQ::OrderBy(QQN::Membership()->DateStart, false));
 					if (!$objMembership) return null;
 					if ($objMembership->DateEnd) return null;
@@ -255,28 +258,28 @@
 		
 		/**
 		 * Creates a new Marriage record and refreshes the marrital status for both this person and the spouse
+		 * @param integer $intMarriageStatusTypeId (defaults to "Married")
 		 * @param Person $objSpouse the spouse
 		 * @param QDateTime $dttStartDate the start date of the marriage
+		 * @param QDateTime $dttEndDate the end date of the marriage
 		 * @return Marriage
 		 */
-		public function CreateMarriageWith(Person $objSpouse, QDateTime $dttStartDate = null) {
+		public function CreateMarriageWith(Person $objSpouse = null, QDateTime $dttStartDate = null, QDateTime $dttEndDate = null, $intMarriageStatusTypeId = MarriageStatusType::Married) {
 			$objMarriage = new Marriage();
 			$objMarriage->Person = $this;
 			$objMarriage->MarriedToPerson = $objSpouse;
-			$objMarriage->MarriageStatusTypeId = MarriageStatusType::Married;
+			$objMarriage->MarriageStatusTypeId = $intMarriageStatusTypeId;
 			$objMarriage->DateStart = $dttStartDate;
+			$objMarriage->DateEnd = $dttEndDate;
 			$objMarriage->Save();
 
-			$objOtherMarriage = new Marriage();
-			$objOtherMarriage->Person = $objSpouse;
-			$objOtherMarriage->MarriedToPerson = $this;
-			$objOtherMarriage->MarriageStatusTypeId = MarriageStatusType::Married;
-			$objOtherMarriage->DateStart = $dttStartDate;
-			$objOtherMarriage->Save();
+			// Updated Link record (if applicable)
+			if ($objSpouse) $objMarriage->UpdateLinkedMarriage();
 
+			// Refresh Stats
 			$this->RefreshMaritalStatusTypeId();
-			$objSpouse->RefreshMaritalStatusTypeId();
-			
+			if ($objSpouse) $objSpouse->RefreshMaritalStatusTypeId();
+
 			return $objMarriage;
 		}
 

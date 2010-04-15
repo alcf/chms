@@ -18,6 +18,8 @@
 	 * property-read Marriage $Marriage the actual Marriage data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
+	 * property QListBox $LinkedMarriageIdControl
+	 * property-read QLabel $LinkedMarriageIdLabel
 	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
 	 * property QListBox $MarriedToPersonIdControl
@@ -28,6 +30,8 @@
 	 * property-read QLabel $DateStartLabel
 	 * property QDateTimePicker $DateEndControl
 	 * property-read QLabel $DateEndLabel
+	 * property QListBox $MarriageAsLinkedControl
+	 * property-read QLabel $MarriageAsLinkedLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -41,6 +45,7 @@
 
 		// Controls that allow the editing of Marriage's individual data fields
 		protected $lblId;
+		protected $lstLinkedMarriage;
 		protected $lstPerson;
 		protected $lstMarriedToPerson;
 		protected $lstMarriageStatusType;
@@ -48,6 +53,7 @@
 		protected $calDateEnd;
 
 		// Controls that allow the viewing of Marriage's individual data fields
+		protected $lblLinkedMarriageId;
 		protected $lblPersonId;
 		protected $lblMarriedToPersonId;
 		protected $lblMarriageStatusTypeId;
@@ -55,8 +61,10 @@
 		protected $lblDateEnd;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+		protected $lstMarriageAsLinked;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+		protected $lblMarriageAsLinked;
 
 
 		/**
@@ -164,6 +172,37 @@
 			else
 				$this->lblId->Text = 'N/A';
 			return $this->lblId;
+		}
+
+		/**
+		 * Create and setup QListBox lstLinkedMarriage
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstLinkedMarriage_Create($strControlId = null) {
+			$this->lstLinkedMarriage = new QListBox($this->objParentObject, $strControlId);
+			$this->lstLinkedMarriage->Name = QApplication::Translate('Linked Marriage');
+			$this->lstLinkedMarriage->AddItem(QApplication::Translate('- Select One -'), null);
+			$objLinkedMarriageArray = Marriage::LoadAll();
+			if ($objLinkedMarriageArray) foreach ($objLinkedMarriageArray as $objLinkedMarriage) {
+				$objListItem = new QListItem($objLinkedMarriage->__toString(), $objLinkedMarriage->Id);
+				if (($this->objMarriage->LinkedMarriage) && ($this->objMarriage->LinkedMarriage->Id == $objLinkedMarriage->Id))
+					$objListItem->Selected = true;
+				$this->lstLinkedMarriage->AddItem($objListItem);
+			}
+			return $this->lstLinkedMarriage;
+		}
+
+		/**
+		 * Create and setup QLabel lblLinkedMarriageId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblLinkedMarriageId_Create($strControlId = null) {
+			$this->lblLinkedMarriageId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblLinkedMarriageId->Name = QApplication::Translate('Linked Marriage');
+			$this->lblLinkedMarriageId->Text = ($this->objMarriage->LinkedMarriage) ? $this->objMarriage->LinkedMarriage->__toString() : null;
+			return $this->lblLinkedMarriageId;
 		}
 
 		/**
@@ -316,6 +355,37 @@
 
 		protected $strDateEndDateTimeFormat;
 
+		/**
+		 * Create and setup QListBox lstMarriageAsLinked
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstMarriageAsLinked_Create($strControlId = null) {
+			$this->lstMarriageAsLinked = new QListBox($this->objParentObject, $strControlId);
+			$this->lstMarriageAsLinked->Name = QApplication::Translate('Marriage As Linked');
+			$this->lstMarriageAsLinked->AddItem(QApplication::Translate('- Select One -'), null);
+			$objMarriageArray = Marriage::LoadAll();
+			if ($objMarriageArray) foreach ($objMarriageArray as $objMarriage) {
+				$objListItem = new QListItem($objMarriage->__toString(), $objMarriage->Id);
+				if ($objMarriage->LinkedMarriageId == $this->objMarriage->Id)
+					$objListItem->Selected = true;
+				$this->lstMarriageAsLinked->AddItem($objListItem);
+			}
+			return $this->lstMarriageAsLinked;
+		}
+
+		/**
+		 * Create and setup QLabel lblMarriageAsLinked
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblMarriageAsLinked_Create($strControlId = null) {
+			$this->lblMarriageAsLinked = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMarriageAsLinked->Name = QApplication::Translate('Marriage As Linked');
+			$this->lblMarriageAsLinked->Text = ($this->objMarriage->MarriageAsLinked) ? $this->objMarriage->MarriageAsLinked->__toString() : null;
+			return $this->lblMarriageAsLinked;
+		}
+
 
 
 		/**
@@ -328,6 +398,19 @@
 				$this->objMarriage->Reload();
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objMarriage->Id;
+
+			if ($this->lstLinkedMarriage) {
+					$this->lstLinkedMarriage->RemoveAllItems();
+				$this->lstLinkedMarriage->AddItem(QApplication::Translate('- Select One -'), null);
+				$objLinkedMarriageArray = Marriage::LoadAll();
+				if ($objLinkedMarriageArray) foreach ($objLinkedMarriageArray as $objLinkedMarriage) {
+					$objListItem = new QListItem($objLinkedMarriage->__toString(), $objLinkedMarriage->Id);
+					if (($this->objMarriage->LinkedMarriage) && ($this->objMarriage->LinkedMarriage->Id == $objLinkedMarriage->Id))
+						$objListItem->Selected = true;
+					$this->lstLinkedMarriage->AddItem($objListItem);
+				}
+			}
+			if ($this->lblLinkedMarriageId) $this->lblLinkedMarriageId->Text = ($this->objMarriage->LinkedMarriage) ? $this->objMarriage->LinkedMarriage->__toString() : null;
 
 			if ($this->lstPerson) {
 					$this->lstPerson->RemoveAllItems();
@@ -365,6 +448,19 @@
 			if ($this->calDateEnd) $this->calDateEnd->DateTime = $this->objMarriage->DateEnd;
 			if ($this->lblDateEnd) $this->lblDateEnd->Text = sprintf($this->objMarriage->DateEnd) ? $this->objMarriage->__toString($this->strDateEndDateTimeFormat) : null;
 
+			if ($this->lstMarriageAsLinked) {
+				$this->lstMarriageAsLinked->RemoveAllItems();
+				$this->lstMarriageAsLinked->AddItem(QApplication::Translate('- Select One -'), null);
+				$objMarriageArray = Marriage::LoadAll();
+				if ($objMarriageArray) foreach ($objMarriageArray as $objMarriage) {
+					$objListItem = new QListItem($objMarriage->__toString(), $objMarriage->Id);
+					if ($objMarriage->LinkedMarriageId == $this->objMarriage->Id)
+						$objListItem->Selected = true;
+					$this->lstMarriageAsLinked->AddItem($objListItem);
+				}
+			}
+			if ($this->lblMarriageAsLinked) $this->lblMarriageAsLinked->Text = ($this->objMarriage->MarriageAsLinked) ? $this->objMarriage->MarriageAsLinked->__toString() : null;
+
 		}
 
 
@@ -388,6 +484,7 @@
 		public function SaveMarriage() {
 			try {
 				// Update any fields for controls that have been created
+				if ($this->lstLinkedMarriage) $this->objMarriage->LinkedMarriageId = $this->lstLinkedMarriage->SelectedValue;
 				if ($this->lstPerson) $this->objMarriage->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->lstMarriedToPerson) $this->objMarriage->MarriedToPersonId = $this->lstMarriedToPerson->SelectedValue;
 				if ($this->lstMarriageStatusType) $this->objMarriage->MarriageStatusTypeId = $this->lstMarriageStatusType->SelectedValue;
@@ -395,6 +492,7 @@
 				if ($this->calDateEnd) $this->objMarriage->DateEnd = $this->calDateEnd->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstMarriageAsLinked) $this->objMarriage->MarriageAsLinked = Marriage::Load($this->lstMarriageAsLinked->SelectedValue);
 
 				// Save the Marriage object
 				$this->objMarriage->Save();
@@ -441,6 +539,12 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
+				case 'LinkedMarriageIdControl':
+					if (!$this->lstLinkedMarriage) return $this->lstLinkedMarriage_Create();
+					return $this->lstLinkedMarriage;
+				case 'LinkedMarriageIdLabel':
+					if (!$this->lblLinkedMarriageId) return $this->lblLinkedMarriageId_Create();
+					return $this->lblLinkedMarriageId;
 				case 'PersonIdControl':
 					if (!$this->lstPerson) return $this->lstPerson_Create();
 					return $this->lstPerson;
@@ -471,6 +575,12 @@
 				case 'DateEndLabel':
 					if (!$this->lblDateEnd) return $this->lblDateEnd_Create();
 					return $this->lblDateEnd;
+				case 'MarriageAsLinkedControl':
+					if (!$this->lstMarriageAsLinked) return $this->lstMarriageAsLinked_Create();
+					return $this->lstMarriageAsLinked;
+				case 'MarriageAsLinkedLabel':
+					if (!$this->lblMarriageAsLinked) return $this->lblMarriageAsLinked_Create();
+					return $this->lblMarriageAsLinked;
 				default:
 					try {
 						return parent::__get($strName);
@@ -495,6 +605,8 @@
 					// Controls that point to Marriage fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
+					case 'LinkedMarriageIdControl':
+						return ($this->lstLinkedMarriage = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'MarriedToPersonIdControl':
@@ -505,6 +617,8 @@
 						return ($this->calDateStart = QType::Cast($mixValue, 'QControl'));
 					case 'DateEndControl':
 						return ($this->calDateEnd = QType::Cast($mixValue, 'QControl'));
+					case 'MarriageAsLinkedControl':
+						return ($this->lstMarriageAsLinked = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

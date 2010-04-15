@@ -19,6 +19,8 @@
 	<div id="formControls">
 		<?php $this->lblId->RenderWithName(); ?>
 
+		<?php $this->lstLinkedMarriage->RenderWithName(); ?>
+
 		<?php $this->lstPerson->RenderWithName(); ?>
 
 		<?php $this->lstMarriedToPerson->RenderWithName(); ?>
@@ -28,6 +30,8 @@
 		<?php $this->calDateStart->RenderWithName(); ?>
 
 		<?php $this->calDateEnd->RenderWithName(); ?>
+
+		<?php $this->lstMarriageAsLinked->RenderWithName(); ?>
 
 	</div>
 

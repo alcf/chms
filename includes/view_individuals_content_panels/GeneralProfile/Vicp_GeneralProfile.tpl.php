@@ -71,6 +71,7 @@
 
 <div style="background-color: #ccc; padding: 5px; ">
 	<a href="#general/edit_family">Edit Family Information</a>
+	<a href="#general/view_marriage">View Marriage Information</a>
 </div>
 <br/>
 <div style="background-color: #ccc; padding: 5px; ">

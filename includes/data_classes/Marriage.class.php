@@ -27,6 +27,49 @@
 			return sprintf('Marriage Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'MarriageStatus': return MarriageStatusType::$NameArray[$this->intMarriageStatusTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
+		/**
+		 * Given this marriage record, this will update the "linked" marriage record with the same stats and details.
+		 * Only does anything if this marriage record has a MarriedToPerson object (otherwise, this does nothing).
+		 * 
+		 * This will CREATE the Linked Marriage record if none yet exists.
+		 * 
+		 */
+		public function UpdateLinkedMarriage() {
+			if (!$this->MarriedToPersonId) return;
+
+			$objLinkedMarriage = $this->LinkedMarriage;
+
+			if (!$objLinkedMarriage) {
+				$objLinkedMarriage = new Marriage();
+				$objLinkedMarriage->LinkedMarriage = $this;
+				$objLinkedMarriage->Person = $this->MarriedToPerson;
+				$objLinkedMarriage->MarriedToPerson = $this->Person;
+			}
+
+			$objLinkedMarriage->DateStart = $this->DateStart;
+			$objLinkedMarriage->DateEnd = $this->DateEnd;
+			$objLinkedMarriage->MarriageStatusTypeId = $this->intMarriageStatusTypeId;
+			$objLinkedMarriage->Save();
+
+			if (!$this->intLinkedMarriageId) {
+				$this->intLinkedMarriageId = $objLinkedMarriage->Id;
+				$this->Save();
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
@@ -102,19 +145,6 @@
 /*
 		protected $strSomeNewProperty;
 
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {

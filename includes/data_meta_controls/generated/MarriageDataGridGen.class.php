@@ -274,6 +274,8 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "marriage".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::Marriage()->Id;
+				case 'LinkedMarriageId': return QQN::Marriage()->LinkedMarriageId;
+				case 'LinkedMarriage': return QQN::Marriage()->LinkedMarriage;
 				case 'PersonId': return QQN::Marriage()->PersonId;
 				case 'Person': return QQN::Marriage()->Person;
 				case 'MarriedToPersonId': return QQN::Marriage()->MarriedToPersonId;
@@ -281,6 +283,8 @@
 				case 'MarriageStatusTypeId': return QQN::Marriage()->MarriageStatusTypeId;
 				case 'DateStart': return QQN::Marriage()->DateStart;
 				case 'DateEnd': return QQN::Marriage()->DateEnd;
+				case 'MarriageAsLinked': return QQN::Marriage()->MarriageAsLinked;
+
 				default: throw new QCallerException('Simple Property not found in MarriageDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

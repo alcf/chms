@@ -24,6 +24,7 @@
 
 		// Controls for Marriage's Data Fields
 		protected $lblId;
+		protected $lstLinkedMarriage;
 		protected $lstPerson;
 		protected $lstMarriedToPerson;
 		protected $lstMarriageStatusType;
@@ -31,6 +32,7 @@
 		protected $calDateEnd;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+		protected $lstMarriageAsLinked;
 
 		// Other Controls
 		protected $btnSave;
@@ -56,11 +58,13 @@
 
 			// Call MetaControl's methods to create qcontrols based on Marriage's data fields
 			$this->lblId = $this->mctMarriage->lblId_Create();
+			$this->lstLinkedMarriage = $this->mctMarriage->lstLinkedMarriage_Create();
 			$this->lstPerson = $this->mctMarriage->lstPerson_Create();
 			$this->lstMarriedToPerson = $this->mctMarriage->lstMarriedToPerson_Create();
 			$this->lstMarriageStatusType = $this->mctMarriage->lstMarriageStatusType_Create();
 			$this->calDateStart = $this->mctMarriage->calDateStart_Create();
 			$this->calDateEnd = $this->mctMarriage->calDateEnd_Create();
+			$this->lstMarriageAsLinked = $this->mctMarriage->lstMarriageAsLinked_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

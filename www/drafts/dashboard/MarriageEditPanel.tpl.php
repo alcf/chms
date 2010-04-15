@@ -7,6 +7,8 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstLinkedMarriage->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstPerson->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstMarriedToPerson->RenderWithName(); ?>
@@ -16,6 +18,8 @@
 		<?php $_CONTROL->calDateStart->RenderWithName(); ?>
 
 		<?php $_CONTROL->calDateEnd->RenderWithName(); ?>
+
+		<?php $_CONTROL->lstMarriageAsLinked->RenderWithName(); ?>
 
 	</div>
 

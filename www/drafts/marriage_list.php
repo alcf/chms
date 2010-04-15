@@ -56,11 +56,13 @@
 			// Create the Other Columns (note that you can use strings for marriage's properties, or you
 			// can traverse down QQN::marriage() to display fields that are down the hierarchy)
 			$this->dtgMarriages->MetaAddColumn('Id');
+			$this->dtgMarriages->MetaAddColumn(QQN::Marriage()->LinkedMarriage);
 			$this->dtgMarriages->MetaAddColumn(QQN::Marriage()->Person);
 			$this->dtgMarriages->MetaAddColumn(QQN::Marriage()->MarriedToPerson);
 			$this->dtgMarriages->MetaAddTypeColumn('MarriageStatusTypeId', 'MarriageStatusType');
 			$this->dtgMarriages->MetaAddColumn('DateStart');
 			$this->dtgMarriages->MetaAddColumn('DateEnd');
+			$this->dtgMarriages->MetaAddColumn(QQN::Marriage()->MarriageAsLinked);
 		}
 	}
 

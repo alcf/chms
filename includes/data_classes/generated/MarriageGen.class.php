@@ -16,13 +16,16 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
+	 * @property integer $LinkedMarriageId the value for intLinkedMarriageId (Unique)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $MarriedToPersonId the value for intMarriedToPersonId 
 	 * @property integer $MarriageStatusTypeId the value for intMarriageStatusTypeId (Not Null)
 	 * @property QDateTime $DateStart the value for dttDateStart 
 	 * @property QDateTime $DateEnd the value for dttDateEnd 
+	 * @property Marriage $LinkedMarriage the value for the Marriage object referenced by intLinkedMarriageId (Unique)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Person $MarriedToPerson the value for the Person object referenced by intMarriedToPersonId 
+	 * @property Marriage $MarriageAsLinked the value for the Marriage object that uniquely references this Marriage
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class MarriageGen extends QBaseClass {
@@ -37,6 +40,14 @@
 		 */
 		protected $intId;
 		const IdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column marriage.linked_marriage_id
+		 * @var integer intLinkedMarriageId
+		 */
+		protected $intLinkedMarriageId;
+		const LinkedMarriageIdDefault = null;
 
 
 		/**
@@ -103,6 +114,16 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column marriage.linked_marriage_id.
+		 *
+		 * NOTE: Always use the LinkedMarriage property getter to correctly retrieve this Marriage object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Marriage objLinkedMarriage
+		 */
+		protected $objLinkedMarriage;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column marriage.person_id.
 		 *
 		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
@@ -120,6 +141,24 @@
 		 * @var Person objMarriedToPerson
 		 */
 		protected $objMarriedToPerson;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column marriage.linked_marriage_id.
+		 *
+		 * NOTE: Always use the MarriageAsLinked property getter to correctly retrieve this Marriage object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Marriage objMarriageAsLinked
+		 */
+		protected $objMarriageAsLinked;
+		
+		/**
+		 * Used internally to manage whether the adjoined MarriageAsLinked object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyMarriageAsLinked;
 
 
 
@@ -385,6 +424,7 @@
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
+			$objBuilder->AddSelectItem($strTableName, 'linked_marriage_id', $strAliasPrefix . 'linked_marriage_id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'married_to_person_id', $strAliasPrefix . 'married_to_person_id');
 			$objBuilder->AddSelectItem($strTableName, 'marriage_status_type_id', $strAliasPrefix . 'marriage_status_type_id');
@@ -423,6 +463,8 @@
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'linked_marriage_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'linked_marriage_id'] : $strAliasPrefix . 'linked_marriage_id';
+			$objToReturn->intLinkedMarriageId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'married_to_person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'married_to_person_id'] : $strAliasPrefix . 'married_to_person_id';
@@ -446,6 +488,12 @@
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'marriage__';
 
+			// Check for LinkedMarriage Early Binding
+			$strAlias = $strAliasPrefix . 'linked_marriage_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objLinkedMarriage = Marriage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'linked_marriage_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
 			// Check for Person Early Binding
 			$strAlias = $strAliasPrefix . 'person_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -458,6 +506,18 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objMarriedToPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'married_to_person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
+
+			// Check for MarriageAsLinked Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'marriageaslinked__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objMarriageAsLinked = Marriage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'marriageaslinked__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objMarriageAsLinked = false;
+			}
 
 
 
@@ -515,6 +575,18 @@
 		public static function LoadById($intId) {
 			return Marriage::QuerySingle(
 				QQ::Equal(QQN::Marriage()->Id, $intId)
+			);
+		}
+			
+		/**
+		 * Load a single Marriage object,
+		 * by LinkedMarriageId Index(es)
+		 * @param integer $intLinkedMarriageId
+		 * @return Marriage
+		*/
+		public static function LoadByLinkedMarriageId($intLinkedMarriageId) {
+			return Marriage::QuerySingle(
+				QQ::Equal(QQN::Marriage()->LinkedMarriageId, $intLinkedMarriageId)
 			);
 		}
 			
@@ -644,12 +716,14 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `marriage` (
+							`linked_marriage_id`,
 							`person_id`,
 							`married_to_person_id`,
 							`marriage_status_type_id`,
 							`date_start`,
 							`date_end`
 						) VALUES (
+							' . $objDatabase->SqlVariable($this->intLinkedMarriageId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intMarriedToPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intMarriageStatusTypeId) . ',
@@ -670,6 +744,7 @@
 						UPDATE
 							`marriage`
 						SET
+							`linked_marriage_id` = ' . $objDatabase->SqlVariable($this->intLinkedMarriageId) . ',
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`married_to_person_id` = ' . $objDatabase->SqlVariable($this->intMarriedToPersonId) . ',
 							`marriage_status_type_id` = ' . $objDatabase->SqlVariable($this->intMarriageStatusTypeId) . ',
@@ -680,6 +755,26 @@
 					');
 				}
 
+		
+		
+				// Update the adjoined MarriageAsLinked object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyMarriageAsLinked) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = Marriage::LoadByLinkedMarriageId($this->intId)) {
+						$objAssociated->LinkedMarriageId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objMarriageAsLinked) {
+						$this->objMarriageAsLinked->LinkedMarriageId = $this->intId;
+						$this->objMarriageAsLinked->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyMarriageAsLinked = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -704,6 +799,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = Marriage::GetDatabase();
 
+			
+			
+			// Update the adjoined MarriageAsLinked object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = Marriage::LoadByLinkedMarriageId($this->intId)) {
+				$objAssociated->LinkedMarriageId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -753,6 +858,7 @@
 			$objReloaded = Marriage::Load($this->intId);
 
 			// Update $this's local variables to match
+			$this->LinkedMarriageId = $objReloaded->LinkedMarriageId;
 			$this->PersonId = $objReloaded->PersonId;
 			$this->MarriedToPersonId = $objReloaded->MarriedToPersonId;
 			$this->MarriageStatusTypeId = $objReloaded->MarriageStatusTypeId;
@@ -783,6 +889,11 @@
 					// @return integer
 					return $this->intId;
 
+				case 'LinkedMarriageId':
+					// Gets the value for intLinkedMarriageId (Unique)
+					// @return integer
+					return $this->intLinkedMarriageId;
+
 				case 'PersonId':
 					// Gets the value for intPersonId (Not Null)
 					// @return integer
@@ -812,6 +923,18 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'LinkedMarriage':
+					// Gets the value for the Marriage object referenced by intLinkedMarriageId (Unique)
+					// @return Marriage
+					try {
+						if ((!$this->objLinkedMarriage) && (!is_null($this->intLinkedMarriageId)))
+							$this->objLinkedMarriage = Marriage::Load($this->intLinkedMarriageId);
+						return $this->objLinkedMarriage;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'Person':
 					// Gets the value for the Person object referenced by intPersonId (Not Null)
 					// @return Person
@@ -831,6 +954,24 @@
 						if ((!$this->objMarriedToPerson) && (!is_null($this->intMarriedToPersonId)))
 							$this->objMarriedToPerson = Person::Load($this->intMarriedToPersonId);
 						return $this->objMarriedToPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'MarriageAsLinked':
+					// Gets the value for the Marriage object that uniquely references this Marriage
+					// by objMarriageAsLinked (Unique)
+					// @return Marriage
+					try {
+						if ($this->objMarriageAsLinked === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objMarriageAsLinked)
+							$this->objMarriageAsLinked = Marriage::LoadByLinkedMarriageId($this->intId);
+						return $this->objMarriageAsLinked;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -869,6 +1010,18 @@
 				///////////////////
 				// Member Variables
 				///////////////////
+				case 'LinkedMarriageId':
+					// Sets the value for intLinkedMarriageId (Unique)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objLinkedMarriage = null;
+						return ($this->intLinkedMarriageId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'PersonId':
 					// Sets the value for intPersonId (Not Null)
 					// @param integer $mixValue
@@ -930,6 +1083,36 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'LinkedMarriage':
+					// Sets the value for the Marriage object referenced by intLinkedMarriageId (Unique)
+					// @param Marriage $mixValue
+					// @return Marriage
+					if (is_null($mixValue)) {
+						$this->intLinkedMarriageId = null;
+						$this->objLinkedMarriage = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Marriage object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Marriage');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Marriage object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved LinkedMarriage for this Marriage');
+
+						// Update Local Member Variables
+						$this->objLinkedMarriage = $mixValue;
+						$this->intLinkedMarriageId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				case 'Person':
 					// Sets the value for the Person object referenced by intPersonId (Not Null)
 					// @param Person $mixValue
@@ -990,6 +1173,43 @@
 					}
 					break;
 
+				case 'MarriageAsLinked':
+					// Sets the value for the Marriage object referenced by objMarriageAsLinked (Unique)
+					// @param Marriage $mixValue
+					// @return Marriage
+					if (is_null($mixValue)) {
+						$this->objMarriageAsLinked = null;
+
+						// Make sure we update the adjoined Marriage object the next time we call Save()
+						$this->blnDirtyMarriageAsLinked = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Marriage object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Marriage');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objMarriageAsLinked to a DIFFERENT $mixValue?
+						if ((!$this->MarriageAsLinked) || ($this->MarriageAsLinked->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined Marriage object the next time we call Save()
+							$this->blnDirtyMarriageAsLinked = true;
+
+							// Update Local Member Variable
+							$this->objMarriageAsLinked = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -1028,6 +1248,7 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="Marriage"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
+			$strToReturn .= '<element name="LinkedMarriage" type="xsd1:Marriage"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="MarriedToPerson" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="MarriageStatusTypeId" type="xsd:int"/>';
@@ -1041,6 +1262,7 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('Marriage', $strComplexTypeArray)) {
 				$strComplexTypeArray['Marriage'] = Marriage::GetSoapComplexTypeXml();
+				Marriage::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
@@ -1059,6 +1281,9 @@
 			$objToReturn = new Marriage();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
+			if ((property_exists($objSoapObject, 'LinkedMarriage')) &&
+				($objSoapObject->LinkedMarriage))
+				$objToReturn->LinkedMarriage = Marriage::GetObjectFromSoapObject($objSoapObject->LinkedMarriage);
 			if ((property_exists($objSoapObject, 'Person')) &&
 				($objSoapObject->Person))
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
@@ -1089,6 +1314,10 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
+			if ($objObject->objLinkedMarriage)
+				$objObject->objLinkedMarriage = Marriage::GetSoapObjectFromObject($objObject->objLinkedMarriage, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intLinkedMarriageId = null;
 			if ($objObject->objPerson)
 				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
 			else if (!$blnBindRelatedObjects)
@@ -1123,6 +1352,10 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'LinkedMarriageId':
+					return new QQNode('linked_marriage_id', 'LinkedMarriageId', 'integer', $this);
+				case 'LinkedMarriage':
+					return new QQNodeMarriage('linked_marriage_id', 'LinkedMarriage', 'integer', $this);
 				case 'PersonId':
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
@@ -1137,6 +1370,8 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
+				case 'MarriageAsLinked':
+					return new QQReverseReferenceNodeMarriage($this, 'marriageaslinked', 'reverse_reference', 'linked_marriage_id', 'MarriageAsLinked');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1159,6 +1394,10 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'LinkedMarriageId':
+					return new QQNode('linked_marriage_id', 'LinkedMarriageId', 'integer', $this);
+				case 'LinkedMarriage':
+					return new QQNodeMarriage('linked_marriage_id', 'LinkedMarriage', 'integer', $this);
 				case 'PersonId':
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
@@ -1173,6 +1412,8 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
+				case 'MarriageAsLinked':
+					return new QQReverseReferenceNodeMarriage($this, 'marriageaslinked', 'reverse_reference', 'linked_marriage_id', 'MarriageAsLinked');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
