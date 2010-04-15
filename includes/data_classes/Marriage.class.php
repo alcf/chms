@@ -61,7 +61,7 @@
 
 			// Update Statuses
 			$objPerson->RefreshMaritalStatusTypeId();
-			$objSpouse->RefreshMaritalStatusTypeId();
+			if ($objSpouse) $objSpouse->RefreshMaritalStatusTypeId();
 		}
 
 		/**

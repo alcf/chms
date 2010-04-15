@@ -8,6 +8,12 @@
 		public $dtxDateEnd;
 		public $calDateEnd;
 
+		public $lstStatus;
+
+		public $lblMarriedTo;
+		public $txtMarriedTo;
+		public $dtgMarriedTo;
+
 		public $btnDelete;
 
 		protected function SetupPanel() {
@@ -58,6 +64,23 @@
 
 			$this->dtxDateStart->RemoveAllActions(QClickEvent::EventName);
 			$this->dtxDateEnd->RemoveAllActions(QClickEvent::EventName);
+			
+			$this->lstStatus = new QListBox($this);
+			$this->lstStatus->Name = 'Status';
+			if (!$this->objMarriage->MarriageStatusTypeId) $this->lstStatus->AddItem('- Select One -', null);
+			$this->lstStatus->Required = true;
+			foreach (MarriageStatusType::$NameArray as $intId => $strName)
+				$this->lstStatus->AddItem($strName, $intId, $intId == $this->objMarriage->MarriageStatusTypeId);
+
+			// Create "Married To" Controls
+			if ($this->objMarriage->MarriedToPerson) {
+				$this->lblMarriedTo = new QLabel($this);
+				$this->lblMarriedTo->Name = 'Married To';
+				$this->lblMarriedTo->Text = $this->objMarriage->MarriedToPerson->Name;
+			} else {
+				$this->txtMarriedTo = new QTextBox($this);
+				$this->txtMarriedTo->Name = 'Married To';
+			}
 		}
 
 		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
@@ -73,14 +96,21 @@
 			$blnToReturn = parent::Validate();
 
 			// Validate proper datetimes
-			if ($this->dtxDateEnd->DateTime &&
+			if ($this->dtxDateEnd->DateTime && !$this->dtxDateStart->DateTime) {
+				$this->dtxDateStart->Warning = 'Cannot have an end date without a start date';
+				$blnToReturn = false;
+			}
+
+			// Validate proper datetimes
+			if ($this->dtxDateEnd->DateTime && $this->dtxDateStart->DateTime &&
 				($this->dtxDateEnd->DateTime->IsEarlierOrEqualTo($this->dtxDateStart->DateTime))) {
 				$this->dtxDateEnd->Warning = 'Must be later than Marriage Start Date';
 				$blnToReturn = false;
 			}
 
 			// Dates must be in the past (no future dates)
-			if ($this->dtxDateStart->DateTime->IsLaterThan(QDateTime::Now())) {
+			if ($this->dtxDateStart->DateTime &&
+				$this->dtxDateStart->DateTime->IsLaterThan(QDateTime::Now())) {
 				$this->dtxDateStart->Warning = 'Date cannot be in the future';
 				$blnToReturn = false;
 			}
@@ -98,6 +128,7 @@
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
 			$this->objMarriage->DateStart = $this->dtxDateStart->DateTime;
 			$this->objMarriage->DateEnd = $this->dtxDateEnd->DateTime;
+			$this->objMarriage->MarriageStatusTypeId = $this->lstStatus->SelectedValue;
 
 			// Check for conflicts
 //			if ($this->objMembership->IsDatesConflict()) {

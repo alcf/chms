@@ -19,7 +19,7 @@
 				case MaritalStatusType::NotSpecified:
 				case MaritalStatusType::Single:
 					$this->btnAdd = new QButton($this);
-					$this->btnAdd->Text = 'Add a New Marriage Entry';
+					$this->btnAdd->Text = 'Add a New Marriage Record';
 					$this->btnAdd->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAdd_Click'));
 					break;
 			}
