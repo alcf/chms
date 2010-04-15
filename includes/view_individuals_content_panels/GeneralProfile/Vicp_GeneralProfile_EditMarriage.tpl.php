@@ -9,9 +9,6 @@
 	$_CONTROL->dtxDateEnd->RenderWithName();
 ?>
 
-<?php $_CONTROL->lstTermination->RenderWithName(); ?>
-<?php $_CONTROL->txtTermination->RenderWithName(); ?>
-
 <br clear="all"/>
 <?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
 <?php if ($_CONTROL->btnDelete) $_CONTROL->btnDelete->Render(); ?>

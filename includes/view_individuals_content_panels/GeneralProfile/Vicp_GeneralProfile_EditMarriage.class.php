@@ -1,132 +1,81 @@
 <?php
 	class Vicp_GeneralProfile_EditMarriage extends Vicp_Base {
-		public $objMembership;
+		public $objMarriage;
 		public $blnEditMode;
 
 		public $dtxDateStart;
 		public $calDateStart;
 		public $dtxDateEnd;
 		public $calDateEnd;
-		public $lstTermination;
-		public $txtTermination;
 
 		public $btnDelete;
 
 		protected function SetupPanel() {
-			// Get and Validate the Membership Object
-			$this->objMembership = Membership::Load($this->strUrlHashArgument);
-			if (!$this->objMembership) {
-				// Trying to create a NEW membership
-				// Let's make sure this person doesn't have a current membership
-				if ($this->objPerson->CurrentMembershipInfo) {
-					return $this->ReturnTo('#general/view_membership');
+			// Get and Validate the Marriage Object
+			$this->objMarriage = Marriage::Load($this->strUrlHashArgument);
+
+			if (!$this->objMarriage) {
+				// Trying to create a NEW marriage
+				// Let's make sure this person doesn't have a current marriage
+				$this->objPerson->RefreshMaritalStatusTypeId();
+				switch ($this->objPerson->MaritalStatusTypeId) {
+					case MaritalStatusType::Married:
+					case MaritalStatusType::Separated:
+						return $this->ReturnTo('#general/view_marriage');
 				}
 
-				$this->objMembership = new Membership();
-				$this->objMembership->Person = $this->objPerson;
+				$this->objMarriage = new Marriage();
+				$this->objMarriage->Person = $this->objPerson;
 				$this->blnEditMode = false;
 				$this->btnSave->Text = 'Create';
 			} else {
 				// Ensure the Membership object belongs to the person
-				if ($this->objMembership->PersonId != $this->objPerson->Id) {
-					return $this->ReturnTo('#general/view_membership');
+				if ($this->objMarriage->PersonId != $this->objPerson->Id) {
+					return $this->ReturnTo('#general/view_marriage');
 				}
 				$this->blnEditMode = true;
 				$this->btnSave->Text = 'Update';
-				
+
 				$this->btnDelete = new QLinkButton($this);
 				$this->btnDelete->Text = 'Delete';
 				$this->btnDelete->ForeColor = '#666666';
 				$this->btnDelete->SetCustomStyle('margin-left', '200px');
-				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to permenantly DELETE this record?'));
+				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to permenantly DELETE this record?  (This should only be done if this record is a mistake/error.)'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 			}
-			
+
 			// Create Controls
 			$this->dtxDateStart = new QDateTimeTextBox($this);
-			$this->dtxDateStart->Name = 'Membership Started';
-			$this->dtxDateStart->Required = true;
-			$this->dtxDateStart->Text = ($this->objMembership->DateStart) ? $this->objMembership->DateStart->__toString() : null;
+			$this->dtxDateStart->Name = 'Marriage Started';
+			$this->dtxDateStart->Text = ($this->objMarriage->DateStart) ? $this->objMarriage->DateStart->__toString() : null;
 			$this->calDateStart = new QCalendar($this, $this->dtxDateStart);
 
 			$this->dtxDateEnd = new QDateTimeTextBox($this);
-			$this->dtxDateEnd->Name = 'Membership Ended';
-			$this->dtxDateEnd->Text = ($this->objMembership->DateEnd) ? $this->objMembership->DateEnd->__toString() : null;
-			$this->dtxDateEnd->AddAction(new QBlurEvent(), new QAjaxControlAction($this, 'dtxDateEnd_Blur'));
+			$this->dtxDateEnd->Name = 'Marriage Ended';
+			$this->dtxDateEnd->Text = ($this->objMarriage->DateEnd) ? $this->objMarriage->DateEnd->__toString() : null;
 			$this->calDateEnd = new QCalendar($this, $this->dtxDateEnd);
 
 			$this->dtxDateStart->RemoveAllActions(QClickEvent::EventName);
 			$this->dtxDateEnd->RemoveAllActions(QClickEvent::EventName);
-
-			$this->lstTermination = new QListBox($this);
-			$this->lstTermination->Name = 'Reason for Termination';
-			$this->lstTermination->AddItem('- Select One -', null);
-			if ($strTerminationReasons = Registry::GetValue('membership_termination_reason')) {
-				foreach (explode(',', $strTerminationReasons) as $strReason) {
-					$strReason = trim($strReason);
-					$this->lstTermination->AddItem($strReason, $strReason, strtolower($strReason) == strtolower($this->objMembership->TerminationReason));
-				}
-			}
-			$this->lstTermination->AddItem('- Other... -', -1);
-
-			// Setup "Other" textbox
-			$this->txtTermination = new QTextBox($this);
-			$this->txtTermination->Name = '&nbsp;';
-
-			// Pre-Select "Other" if applicable
-			if ($this->objMembership->TerminationReason && is_null($this->lstTermination->SelectedValue)) {
-				$this->lstTermination->SelectedValue = -1;
-				$this->txtTermination->Text = $this->objMembership->TerminationReason;
-			}
-
-			// Setup and Call Actions
-			$this->lstTermination->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtTermination_Refresh'));
-			$this->txtTermination_Refresh();
-			$this->dtxDateEnd_Blur();
-		}
-
-		public function dtxDateEnd_Blur() {
-			if ($this->dtxDateEnd->DateTime) {
-				if (!$this->lstTermination->Enabled) $this->lstTermination->Enabled = true;
-			} else {
-				if ($this->lstTermination->Enabled) {
-					$this->lstTermination->Enabled = false;
-					$this->lstTermination->SelectedIndex = 0;
-				}
-			}
-		}
-
-		public function txtTermination_Refresh() {
-			if ($this->lstTermination->SelectedValue == -1) {
-				$this->txtTermination->Visible = true;
-				$this->txtTermination->Required = true;
-			} else {
-				$this->txtTermination->Visible = false;
-				$this->txtTermination->Required = false;
-			}
 		}
 
 		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-			return $this->ReturnTo('#general/view_membership');
+			return $this->ReturnTo('#general/view_marriage');
 		}
-		
+
 		public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-			$this->objMembership->Delete();
-
-			// Important!  Remember to Update the Person's Membership STatus
-			$this->objPerson->RefreshMembershipStatusTypeId();
-
-			return $this->ReturnTo('#general/view_membership');
+			$this->objMarriage->DeleteThisAndLinked();
+			return $this->ReturnTo('#general/view_marriage');
 		}
-		
+
 		public function Validate() {
 			$blnToReturn = parent::Validate();
 
 			// Validate proper datetimes
 			if ($this->dtxDateEnd->DateTime &&
 				($this->dtxDateEnd->DateTime->IsEarlierOrEqualTo($this->dtxDateStart->DateTime))) {
-				$this->dtxDateEnd->Warning = 'Must be later than Membership Start Date';
+				$this->dtxDateEnd->Warning = 'Must be later than Marriage Start Date';
 				$blnToReturn = false;
 			}
 
@@ -147,31 +96,22 @@
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$this->objMembership->DateStart = $this->dtxDateStart->DateTime;
-			$this->objMembership->DateEnd = $this->dtxDateEnd->DateTime;
+			$this->objMarriage->DateStart = $this->dtxDateStart->DateTime;
+			$this->objMarriage->DateEnd = $this->dtxDateEnd->DateTime;
 
 			// Check for conflicts
-			if ($this->objMembership->IsDatesConflict()) {
-				$this->dtxDateStart->Warning = 'Dates conflict with another membership period';
-				return;
-			}
+//			if ($this->objMembership->IsDatesConflict()) {
+//				$this->dtxDateStart->Warning = 'Dates conflict with another membership period';
+//				return;
+//			}
 
-			if ($this->objMembership->DateEnd) {
-				if ($this->lstTermination->SelectedValue == -1) {
-					$this->objMembership->TerminationReason = trim($this->txtTermination->Text);
-				} else {
-					$this->objMembership->TerminationReason = $this->lstTermination->SelectedValue;
-				}
-			} else {
-				$this->objMembership->TerminationReason = null;
-			}
-			
-			$this->objMembership->Save();
-			
-			// Important!  Remember to Update the Person's Membership STatus
-			$this->objPerson->RefreshMembershipStatusTypeId();
+			$this->objMarriage->Save();
+			$this->objMarriage->UpdateLinkedMarriage();
 
-			return $this->ReturnTo('#general/view_membership');
+			$this->objPerson->RefreshMaritalStatusTypeId();
+			if ($this->objMarriage->MarriedToPerson) $this->objMarriage->MarriedToPerson->RefreshMaritalStatusTypeId();
+
+			return $this->ReturnTo('#general/view_marriage');
 		}
 	}
 ?>

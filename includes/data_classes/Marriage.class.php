@@ -42,6 +42,29 @@
 		}
 		
 		/**
+		 * This should be the method called to DELETE a marriage record from the application.
+		 * This will ensure any linked records are deleted, AND it will ensure to refresh marital statuses
+		 */
+		public function DeleteThisAndLinked() {
+			$objPerson = $this->Person;
+			$objSpouse = $this->MarriedToPerson;
+
+			// Unlink and delete linked (if applicable)
+			if ($objLinkedMarriage = $this->LinkedMarriage) {
+				$this->intLinkedMarriageId = null;
+				$this->Save();
+				$objLinkedMarriage->Delete();
+			}
+
+			// Delete THIS
+			$this->Delete();
+
+			// Update Statuses
+			$objPerson->RefreshMaritalStatusTypeId();
+			$objSpouse->RefreshMaritalStatusTypeId();
+		}
+
+		/**
 		 * Given this marriage record, this will update the "linked" marriage record with the same stats and details.
 		 * Only does anything if this marriage record has a MarriedToPerson object (otherwise, this does nothing).
 		 * 
