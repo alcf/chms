@@ -13,6 +13,7 @@
 		public $lblMarriedTo;
 		public $txtMarriedTo;
 		public $dtgMarriedTo;
+		public $pxyMarriedTo;
 
 		public $btnDelete;
 
@@ -80,6 +81,81 @@
 			} else {
 				$this->txtMarriedTo = new QTextBox($this);
 				$this->txtMarriedTo->Name = 'Married To';
+				$this->txtMarriedTo->AddAction(new QFocusEvent(), new QToggleEnableAction($this->btnSave));
+				$this->txtMarriedTo->AddAction(new QBlurEvent(), new QAjaxControlAction($this, 'txtMarriedTo_Blur'));
+				$this->txtMarriedTo->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtMarriedTo_Blur'));
+				
+				$this->dtgMarriedTo = new QDataGrid($this);
+				$this->dtgMarriedTo->Name = '&nbsp;';
+				$this->dtgMarriedTo->AlternateRowStyle->CssClass = 'alternate';
+				$this->dtgMarriedTo->AddColumn(new QDataGridColumn('Select', '<?= $_CONTROL->ParentControl->RenderSelect($_ITEM); ?>', 'HtmlEntities=false'));
+				$this->dtgMarriedTo->AddColumn(new QDataGridColumn('Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
+				$this->dtgMarriedTo->Visible = false;
+				$this->dtgMarriedTo->SetDataBinder('dtgMarriedTo_Bind', $this);
+
+				$this->pxyMarriedTo = new QControlProxy($this);
+				$this->pxyMarriedTo->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyMarriedTo_Click'));
+				$this->pxyMarriedTo->AddAction(new QClickEvent(), new QTerminateAction());
+			}
+		}
+
+		protected $intSelectedSpousePersonId = null;
+		public function RenderSelect(Person $objPerson) {
+			if ($objPerson->Id &&
+				($objPerson->Id == $this->intSelectedSpousePersonId)) {
+				return '<img src="/assets/images/icons/flag_green.png"/>';
+			} else if (!$objPerson->Id &&
+				  ($this->intSelectedSpousePersonId == -1)) {
+				return '<img src="/assets/images/icons/flag_green.png"/>';
+			} else {
+				return sprintf('<img src="/assets/images/icons/flag_white.png" style="cursor: pointer;" %s/>',
+					$this->pxyMarriedTo->RenderAsEvents($objPerson->Id, false));
+			}
+		}
+
+		public function pxyMarriedTo_Click($strFormId, $strControlId, $strParameter) {
+			if ($strParameter) $this->intSelectedSpousePersonId = $strParameter;
+			else $this->intSelectedSpousePersonId = -1;
+			$this->dtgMarriedTo->Refresh();
+		}
+
+		public function RenderName(Person $objPerson) {
+			if ($objPerson->Id)
+				return QApplication::HtmlEntities($objPerson->Name);
+			else
+				return '<em style="font-size: 11px; color: #666;">None of the above... create as new person</em>';
+		}
+
+		public function dtgMarriedTo_Bind() {
+			if ($this->dtgMarriedTo->Visible) {
+				$objPersonArray = Person::LoadArrayBySearch($this->txtMarriedTo->Text);
+				$objPersonArray[] = new Person();
+				$this->dtgMarriedTo->DataSource = $objPersonArray;
+
+				if ($this->intSelectedSpousePersonId > 0) {
+					$blnFound = false;
+					foreach ($objPersonArray as $objPerson) {
+						if ($objPerson->Id == $this->intSelectedSpousePersonId)
+							$blnFound = true;
+					}
+
+					if (!$blnFound) {
+						$this->intSelectedSpousePersonId = null;
+					}
+				}
+			} else {
+				$this->dtgMarriedTo->DataSource = array();
+				$this->intSelectedSpousePersonId = null;
+			}
+		}
+
+		public function txtMarriedTo_Blur() {
+			$this->btnSave->Enabled = true;
+
+			if (trim(strtolower($this->txtMarriedTo->Text))) {
+				$this->dtgMarriedTo->Visible = true;
+			} else {
+				$this->dtgMarriedTo->Visible = false;
 			}
 		}
 
@@ -121,6 +197,13 @@
 				$this->dtxDateEnd->Warning = 'Date cannot be in the future';
 				$blnToReturn = false;
 			}
+			
+			if ($this->dtgMarriedTo && $this->dtgMarriedTo->Visible) {
+				if (!$this->intSelectedSpousePersonId) {
+					$this->txtMarriedTo->Warning = 'You must select an option below';
+					$blnToReturn = false;
+				}
+			}
 
 			return $blnToReturn;
 		}
@@ -130,12 +213,15 @@
 			$this->objMarriage->DateEnd = $this->dtxDateEnd->DateTime;
 			$this->objMarriage->MarriageStatusTypeId = $this->lstStatus->SelectedValue;
 
-			// Check for conflicts
-//			if ($this->objMembership->IsDatesConflict()) {
-//				$this->dtxDateStart->Warning = 'Dates conflict with another membership period';
-//				return;
-//			}
-
+			if ($this->intSelectedSpousePersonId && !$this->objMarriage->MarriedToPerson) {
+				if ($this->intSelectedSpousePersonId == -1) {
+					// TODO: Implement add new person logic
+					QApplication::DisplayAlert('TODO: Implement add new person logic');
+					return;
+				} else {
+					$this->objMarriage->MarriedToPersonId = $this->intSelectedSpousePersonId;
+				}
+			}
 			$this->objMarriage->Save();
 			$this->objMarriage->UpdateLinkedMarriage();
 

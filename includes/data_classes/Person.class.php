@@ -329,6 +329,34 @@
 			return $objComment;
 		}
 
+		
+		
+		
+		
+		/**
+		 * Given a search term, this will try and match all similarly matched individuals.
+		 * This will utilize soundex and other indexing methodologies.
+		 * 
+		 * THIS IS TODO and the algorithm needs to be tuned.
+		 * 
+		 * @param string $strSearchTerm
+		 * @return Person[]
+		 */
+		public static function LoadArrayBySearch($strSearchTerm) {
+			$strSearchTerm = trim($strSearchTerm);
+			while (strpos($strSearchTerm, '  ') !== false) $strSearchTerm = str_replace('  ', ' ', $strSearchTerm);
+			$strArray = explode(' ', $strSearchTerm);
+			
+			$strClauseArray = array();
+			foreach ($strArray as $strItem) {
+				$strClauseArray[] = sprintf("(soundex(first_name) = soundex('%s') OR soundex(last_name) = soundex('%s'))",
+					mysql_escape_string($strItem), mysql_escape_string($strItem)); 
+			}
+
+			$strQuery = 'SELECT * FROM person WHERE ' . implode(' AND ', $strClauseArray) . ' ORDER BY last_name, first_name';
+			return Person::InstantiateDbResult(Person::GetDatabase()->Query($strQuery));
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
