@@ -7,6 +7,7 @@
 
 		protected $intSelectedSpousePersonId;
 		protected $blnAllowCreate = false;
+		protected $blnForceAsMaleFlag = null;
 
 		/**
 		 * If this control has validation rules, the logic to do so
@@ -137,16 +138,12 @@
 		/////////////////////////
 		public function __get($strName) {
 			switch ($strName) {
-				case 'AllowCreate':
-					return $this->blnAllowCreate;
-
+				case 'AllowCreate': return $this->blnAllowCreate;
+				case 'ForceAsMaleFlag': return $this->blnForceAsMaleFlag;
+				
 				case 'Person':
 					if ($this->blnAllowCreate && ($this->intSelectedSpousePersonId == -1)) {
-						$objPerson = new Person();
-						$objPerson->FirstName = trim($this->txtFirstName->Text);
-						$objPerson->LastName = trim($this->txtLastName->Text);
-						$objPerson->Save();
-						return $objPerson;
+						return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $this->blnForceAsMaleFlag);
 					}
 
 					if ($this->intSelectedSpousePersonId > 0) {
@@ -174,7 +171,12 @@
 						return ($this->blnAllowCreate = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }
 
-				default:
+				case 'ForceAsMaleFlag': 
+					try {
+						return ($this->blnForceAsMaleFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }
+
+					default:
 					try {
 						return (parent::__set($strName, $mixValue));
 					} catch (QCallerException $objExc) { $objExc->IncrementOffset(); throw $objExc; }

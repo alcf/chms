@@ -354,6 +354,43 @@
 			return Person::InstantiateDbResult(Person::GetDatabase()->Query($strQuery));
 		}
 
+		/**
+		 * Given some very limited information, this will create a Person record for it
+		 * @param string $strFirstName
+		 * @param string $strMiddle
+		 * @param string $strLastName
+		 * @param boolean $blnMaleFlag
+		 * @return Person
+		 */
+		public static function CreatePerson($strFirstName, $strMiddle, $strLastName, $blnMaleFlag) {
+			$strFirstName = trim($strFirstName);
+			$strMiddle = trim($strMiddle);
+			$strLastName = trim($strLastName);
+
+			switch (strlen($strMiddle)) {
+				case 1:
+					$strMiddle = strtoupper($strMiddle);
+					break;
+				case 2:
+					if (substr($strMiddle, 1, 1) == '.')
+						$strMiddle = strtoupper(substr($strMiddle, 0, 1));
+					break;
+			}
+
+			$objPerson = new Person();
+			$objPerson->FirstName = $strFirstName;
+			$objPerson->MiddleName = strlen($strMiddle) ? $strMiddle : null;
+			$objPerson->LastName = $strLastName;
+
+			$objPerson->RefreshMaritalStatusTypeId(false);
+			$objPerson->RefreshMembershipStatusTypeId(false);
+			$objPerson->MaleFlag = $blnMaleFlag;
+			$objPerson->DeceasedFlag = false;
+
+			$objPerson->Save();
+			return $objPerson;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
