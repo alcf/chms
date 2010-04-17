@@ -339,19 +339,16 @@
 		 * 
 		 * THIS IS TODO and the algorithm needs to be tuned.
 		 * 
-		 * @param string $strSearchTerm
+		 * @param string $strFirstName
+		 * @param string $strLastName
 		 * @return Person[]
 		 */
-		public static function LoadArrayBySearch($strSearchTerm) {
-			$strSearchTerm = trim($strSearchTerm);
-			while (strpos($strSearchTerm, '  ') !== false) $strSearchTerm = str_replace('  ', ' ', $strSearchTerm);
-			$strArray = explode(' ', $strSearchTerm);
-			
+		public static function LoadArrayBySearch($strFirstName, $strLastName) {
 			$strClauseArray = array();
-			foreach ($strArray as $strItem) {
-				$strClauseArray[] = sprintf("(soundex(first_name) = soundex('%s') OR soundex(last_name) = soundex('%s'))",
-					mysql_escape_string($strItem), mysql_escape_string($strItem)); 
-			}
+			if (strlen($strFirstName))
+				$strClauseArray[] = sprintf("(soundex(first_name) = soundex('%s') OR first_name LIKE '%s%%')", mysql_escape_string($strFirstName), mysql_escape_string($strFirstName));
+			if (strlen($strLastName))
+				$strClauseArray[] = sprintf("(soundex(last_name) = soundex('%s') OR last_name LIKE '%s%%')", mysql_escape_string($strLastName), mysql_escape_string($strLastName));
 
 			$strQuery = 'SELECT * FROM person WHERE ' . implode(' AND ', $strClauseArray) . ' ORDER BY last_name, first_name';
 			return Person::InstantiateDbResult(Person::GetDatabase()->Query($strQuery));
