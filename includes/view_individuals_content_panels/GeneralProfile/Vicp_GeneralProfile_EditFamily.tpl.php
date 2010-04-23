@@ -1,10 +1,17 @@
-<h3>Name Information</h3>
+<h3><?php _p($_CONTROL->blnEditMode ? 'Edit a' : 'Create New'); ?> Marriage Record</h3>
 
-<?php $_CONTROL->lstTitle->RenderWithName(); ?>
+<?php $_CONTROL->lstStatus->RenderWithName(); ?>
+
 <?php
-	$_CONTROL->dtxDateOfBirth->HtmlAfter = '&nbsp;' . $_CONTROL->calDateOfBirth->Render(false);
-	$_CONTROL->dtxDateOfBirth->RenderWithName();
-?>
-<?php $_CONTROL->txtFirstName->RenderWithName(); ?>
+	$_CONTROL->dtxDateStart->HtmlAfter = '&nbsp;' . $_CONTROL->calDateStart->Render(false);
+	$_CONTROL->dtxDateStart->RenderWithName();
 
+	$_CONTROL->dtxDateEnd->HtmlAfter = '&nbsp;' . $_CONTROL->calDateEnd->Render(false);
+	$_CONTROL->dtxDateEnd->RenderWithName();
+?>
+
+<?php if ($_CONTROL->lblMarriedTo) $_CONTROL->lblMarriedTo->RenderWithName(); else $_CONTROL->pnlMarriedTo->Render(); ?>
+
+<br clear="all"/>
 <?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
+<?php if ($_CONTROL->btnDelete) $_CONTROL->btnDelete->Render(); ?>

@@ -104,6 +104,17 @@
 ?>			<br/>
 		</div>
 		<br clear="all"/>
+
+		<br/>
+		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Family Members:</div>
+		<div style="float: left;">
+<?php
+			foreach ($_FORM->objPerson->GetRelationshipArray(QQ::OrderBy(QQN::Relationship()->RelatedToPerson->LastName, QQN::Relationship()->RelatedToPerson->FirstName)) as $objRelationship) {
+				printf('%s: %s<br/>', $objRelationship->Relation, QApplication::HtmlEntities($objRelationship->RelatedToPerson->Name));
+			}
+?>
+		</div>
+		<br clear="all"/>
 	</div>
 	<br clear="all"/>
 </div>

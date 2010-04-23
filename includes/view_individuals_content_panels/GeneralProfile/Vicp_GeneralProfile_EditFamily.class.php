@@ -1,155 +1,154 @@
 <?php
 	class Vicp_GeneralProfile_EditFamily extends Vicp_Base {
-		public $lstTitle;
-		public $txtFirstName;
-		public $txtMiddleName;
-		public $txtLastName;
-		public $lstSuffix;
-		public $txtNickname;
-		public $txtPriorLastNames;
-		public $txtMailingLabel;
-		public $lblMailingLabel;
+		public $objMarriage;
+		public $blnEditMode;
 
-		public $lstGender;
+		public $lstStatus;
 
-		private $strSuffixArray = array('Sr.', 'Jr.', 'III', 'PhD', 'MD');
+		public $dtxDateStart;
+		public $calDateStart;
+		public $dtxDateEnd;
+		public $calDateEnd;
 
-		public $dtxDateOfBirth;
-		public $calDateOfBirth;
-		public $chkDobApproximate;
-
-		public $chkDeceased;
-		public $dtxDateDeceased;
-		public $calDateDeceased;
+		public $lblMarriedTo;
+		public $pnlMarriedTo;
+		
+		public $btnDelete;
 
 		protected function SetupPanel() {
-			$this->lstTitle = new QListBox($this);
-			$this->lstTitle->Name = 'Marital Status:';
-			$this->lstTitle->AddItem('- None -', null);
-			$strTitleArray = array('Single', 'Married', 'Separated');
-			foreach ($strTitleArray as $strTitle)
-				$this->lstTitle->AddItem($strTitle, $strTitle, $this->objPerson->Title == $strTitle);
+			// Get and Validate the Marriage Object
+			$this->objMarriage = Marriage::Load($this->strUrlHashArgument);
 
-			$this->txtFirstName = new QTextBox($this);
-			$this->txtFirstName->Name = 'Married To:';
-			$this->txtFirstName->Text = $this->objPerson->FirstName;
-			$this->txtFirstName->Required = true;
+			if (!$this->objMarriage) {
+				// Trying to create a NEW marriage
+				// Let's make sure this person doesn't have a current marriage
+				$this->objPerson->RefreshMaritalStatusTypeId();
+				switch ($this->objPerson->MaritalStatusTypeId) {
+					case MaritalStatusType::Married:
+					case MaritalStatusType::Separated:
+						return $this->ReturnTo('#general/view_marriage');
+				}
 
-			$this->txtMiddleName = new QTextBox($this);
-			$this->txtMiddleName->Name = 'Middle Name or Initial';
-			$this->txtMiddleName->Text = $this->objPerson->MiddleName;
-
-			$this->txtLastName = new QTextBox($this);
-			$this->txtLastName->Name = 'Last Name';
-			$this->txtLastName->Text = $this->objPerson->LastName;
-			$this->txtLastName->Required = true;
-			
-			$this->lstSuffix = new QListBox($this);
-			$this->lstSuffix->Name = 'Suffix';
-			$this->lstSuffix->AddItem('- None -', null);
-			foreach ($this->strSuffixArray as $strSuffix)
-				$this->lstSuffix->AddItem($strSuffix, $strSuffix, $this->objPerson->Suffix == $strSuffix);
-
-			$this->txtNickname = new QTextBox($this);
-			$this->txtNickname->Name = 'Nickname';
-			$this->txtNickname->Text = $this->objPerson->Nickname;
-
-			$this->txtPriorLastNames = new QTextBox($this);
-			$this->txtPriorLastNames->Name = 'Prior Last Name(s)';
-			$this->txtPriorLastNames->Text = $this->objPerson->PriorLastNames;
-			$this->txtPriorLastNames->Instructions = 'Separate with Spaces';
-
-			$this->txtMailingLabel = new QTextBox($this);
-			$this->txtMailingLabel->Name = 'Mailing Label';
-			$this->txtMailingLabel->Text = $this->objPerson->MailingLabel;
-			
-			$this->lblMailingLabel = new QLabel($this);
-			$this->lblMailingLabel->Name = '&nbsp;';
-			$this->lblMailingLabel->HtmlEntities = false;
-			$this->lblMailingLabel->ForeColor = '#666666';
-			$this->lblMailingLabel->FontSize = '11px';
-			$this->lblMailingLabel->FontItalic = true;
-			
-			$this->lblMailingLabel_Refresh();
-			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblMailingLabel_Refresh'));
-			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblMailingLabel_Refresh'));
-			$this->txtNickname->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblMailingLabel_Refresh'));
-			
-			$this->lstGender = new QListBox($this);
-			$this->lstGender->Name = 'Gender';			
-			$this->lstGender->AddItem('Male', true, $this->objPerson->MaleFlag);
-			$this->lstGender->AddItem('Female', false, !$this->objPerson->MaleFlag);
-
-			$this->dtxDateOfBirth = new QDateTimeTextBox($this);
-			$this->dtxDateOfBirth->Name = "Married Since:";
-			$this->dtxDateOfBirth->Text = ($this->objPerson->DateOfBirth) ? $this->objPerson->DateOfBirth->__toString() : null; 
-
-			$this->calDateOfBirth = new QCalendar($this, $this->dtxDateOfBirth);
-			$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
-
-			$this->chkDobApproximate = new QCheckBox($this);
-			$this->chkDobApproximate->Name = 'DOB Year Approximate';
-			$this->chkDobApproximate->Text = 'Check if Year of Birth is approximate';
-			$this->chkDobApproximate->Checked = $this->objPerson->DobApproximateFlag;
-
-			$this->chkDeceased = new QCheckBox($this);
-			$this->chkDeceased->Name = 'Deceased';
-			$this->chkDeceased->Text = 'Check if person is deceased';
-			$this->chkDeceased->Checked = $this->objPerson->DeceasedFlag;
-
-			$this->dtxDateDeceased = new QDateTimeTextBox($this);
-			$this->dtxDateDeceased->Name = "Date Deceased";
-			$this->dtxDateDeceased->Text = ($this->objPerson->DateDeceased) ? $this->objPerson->DateDeceased->__toString() : null; 
-
-			$this->calDateDeceased = new QCalendar($this, $this->dtxDateDeceased);
-			$this->dtxDateDeceased->RemoveAllActions(QClickEvent::EventName);
-
-			$this->chkDeceased->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtxDateDeceased_Refresh'));
-			$this->dtxDateDeceased_Refresh();
-		}
-
-		public function dtxDateDeceased_Refresh() {
-			$this->dtxDateDeceased->Visible = $this->chkDeceased->Checked;
-		}
-
-		public function lblMailingLabel_Refresh() {
-			$this->lblMailingLabel->Instructions = null;
-			if ($this->txtFirstName->Text || $this->txtLastName->Text || $this->txtNickname->Text) {
-				$this->objPerson->FirstName = trim($this->txtFirstName->Text);
-				$this->objPerson->LastName = trim($this->txtLastName->Text);
-				$this->objPerson->Nickname = trim($this->txtNickname->Text);
-				$this->lblMailingLabel->Text = sprintf('To be used for emails, mailings, etc. If left blank, <strong>%s</strong> will be used.',
-					QApplication::HtmlEntities($this->objPerson->Name));
-			}
-		}
-
-		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$this->objPerson->Title = $this->lstTitle->SelectedValue;
-			$this->objPerson->FirstName = trim($this->txtFirstName->Text);
-			$this->objPerson->MiddleName = trim($this->txtMiddleName->Text);
-			$this->objPerson->LastName = trim($this->txtLastName->Text);
-			$this->objPerson->Suffix = $this->lstSuffix->SelectedValue;
-
-			$this->objPerson->Nickname = trim($this->txtNickname->Text);
-			$this->objPerson->PriorLastNames = trim($this->txtPriorLastNames->Text);
-			$this->objPerson->MailingLabel = trim($this->txtMailingLabel->Text);
-			
-			$this->objPerson->MaleFlag = trim($this->lstGender->SelectedValue);
-			$this->objPerson->DateOfBirth = $this->dtxDateOfBirth->DateTime;			
-			$this->objPerson->DobApproximateFlag = $this->objPerson->DateOfBirth && $this->chkDobApproximate->Checked;
-
-			if ($this->objPerson->DeceasedFlag = $this->chkDeceased->Checked) {
-				$this->objPerson->DateDeceased = $this->dtxDateDeceased->DateTime;
+				$this->objMarriage = new Marriage();
+				$this->objMarriage->Person = $this->objPerson;
+				$this->blnEditMode = false;
+				$this->btnSave->Text = 'Create';
 			} else {
-				$this->objPerson->DateDeceased = null;
+				// Ensure the Membership object belongs to the person
+				if ($this->objMarriage->PersonId != $this->objPerson->Id) {
+					return $this->ReturnTo('#general/view_marriage');
+				}
+				$this->blnEditMode = true;
+				$this->btnSave->Text = 'Update';
+
+				$this->btnDelete = new QLinkButton($this);
+				$this->btnDelete->Text = 'Delete';
+				$this->btnDelete->ForeColor = '#666666';
+				$this->btnDelete->SetCustomStyle('margin-left', '200px');
+				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to permenantly DELETE this record?  (This should only be done if this record is a mistake/error.)'));
+				$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
+				$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 			}
 
-			$this->objPerson->Save();
-			QApplication::ExecuteJavaScript('document.location = "#general";');
+			// Create Controls
+			$this->dtxDateStart = new QDateTimeTextBox($this);
+			$this->dtxDateStart->Name = 'Marriage Started';
+			$this->dtxDateStart->Text = ($this->objMarriage->DateStart) ? $this->objMarriage->DateStart->__toString() : null;
+			$this->calDateStart = new QCalendar($this, $this->dtxDateStart);
+
+			$this->dtxDateEnd = new QDateTimeTextBox($this);
+			$this->dtxDateEnd->Name = 'Marriage Ended';
+			$this->dtxDateEnd->Text = ($this->objMarriage->DateEnd) ? $this->objMarriage->DateEnd->__toString() : null;
+			$this->calDateEnd = new QCalendar($this, $this->dtxDateEnd);
+
+			$this->dtxDateStart->RemoveAllActions(QClickEvent::EventName);
+			$this->dtxDateEnd->RemoveAllActions(QClickEvent::EventName);
+			
+			$this->lstStatus = new QListBox($this);
+			$this->lstStatus->Name = 'Status';
+			if (!$this->objMarriage->MarriageStatusTypeId) $this->lstStatus->AddItem('- Select One -', null);
+			$this->lstStatus->Required = true;
+			foreach (MarriageStatusType::$NameArray as $intId => $strName)
+				$this->lstStatus->AddItem($strName, $intId, $intId == $this->objMarriage->MarriageStatusTypeId);
+
+			// Create "Married To" Controls
+			if ($this->objMarriage->MarriedToPerson) {
+				$this->lblMarriedTo = new QLabel($this);
+				$this->lblMarriedTo->Name = 'Married To';
+				$this->lblMarriedTo->Text = $this->objMarriage->MarriedToPerson->Name;
+			} else {
+				$this->pnlMarriedTo = new SelectPersonPanel($this);
+				$this->pnlMarriedTo->Name = 'Married To';
+				$this->pnlMarriedTo->AllowCreate = true;
+				$this->pnlMarriedTo->ForceAsMaleFlag = !$this->objPerson->MaleFlag;
+			}
 		}
 
 		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-			QApplication::ExecuteJavaScript('document.location = "#general";');
+			return $this->ReturnTo('#general/view_marriage');
+		}
+
+		public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
+			$this->objMarriage->DeleteThisAndLinked();
+			return $this->ReturnTo('#general/view_marriage');
+		}
+
+		public function Validate() {
+			$blnToReturn = parent::Validate();
+
+			// Validate proper datetimes
+			if ($this->dtxDateEnd->DateTime && !$this->dtxDateStart->DateTime) {
+				$this->dtxDateStart->Warning = 'Cannot have an end date without a start date';
+				$blnToReturn = false;
+			}
+
+			// Validate proper datetimes
+			if ($this->dtxDateEnd->DateTime && $this->dtxDateStart->DateTime &&
+				($this->dtxDateEnd->DateTime->IsEarlierOrEqualTo($this->dtxDateStart->DateTime))) {
+				$this->dtxDateEnd->Warning = 'Must be later than Marriage Start Date';
+				$blnToReturn = false;
+			}
+
+			// Dates must be in the past (no future dates)
+			if ($this->dtxDateStart->DateTime &&
+				$this->dtxDateStart->DateTime->IsLaterThan(QDateTime::Now())) {
+				$this->dtxDateStart->Warning = 'Date cannot be in the future';
+				$blnToReturn = false;
+			}
+			
+			// Dates must be in the past (no future dates)
+			if ($this->dtxDateEnd->DateTime &&
+				$this->dtxDateEnd->DateTime->IsLaterThan(QDateTime::Now())) {
+				$this->dtxDateEnd->Warning = 'Date cannot be in the future';
+				$blnToReturn = false;
+			}
+
+			// Any end date most not be a curent marriage
+			if ($this->dtxDateEnd->DateTime &&
+				($this->lstStatus->SelectedValue == MarriageStatusType::Married)) {
+				$this->dtxDateEnd->Warning = 'Current marriages cannot have an end date';
+				$blnToReturn = false;
+			}
+
+			return $blnToReturn;
+		}
+
+		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			$this->objMarriage->DateStart = $this->dtxDateStart->DateTime;
+			$this->objMarriage->DateEnd = $this->dtxDateEnd->DateTime;
+			$this->objMarriage->MarriageStatusTypeId = $this->lstStatus->SelectedValue;
+
+			if ($this->pnlMarriedTo) {
+				$this->objMarriage->MarriedToPerson = $this->pnlMarriedTo->Person;
+			}
+
+			$this->objMarriage->Save();
+			$this->objMarriage->UpdateLinkedMarriage();
+
+			$this->objPerson->RefreshMaritalStatusTypeId();
+			if ($this->objMarriage->MarriedToPerson) $this->objMarriage->MarriedToPerson->RefreshMaritalStatusTypeId();
+
+			return $this->ReturnTo('#general/view_marriage');
 		}
 	}
 ?>

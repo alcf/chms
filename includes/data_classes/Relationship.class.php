@@ -27,6 +27,30 @@
 			return sprintf('Relationship Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Relation':
+					switch ($this->intRelationshipTypeId) {
+						case RelationshipType::Child:
+							return $this->RelatedToPerson->MaleFlag ? 'Son' : 'Daughter';
+						case RelationshipType::Parental:
+							return $this->RelatedToPerson->MaleFlag ? 'Father' : 'Mother';
+						case RelationshipType::Sibling:
+							return $this->RelatedToPerson->MaleFlag ? 'Brother' : 'Sister';
+						default:
+							throw new QCallerException('Invalid intRelationshipTypeId');
+					}
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		 
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

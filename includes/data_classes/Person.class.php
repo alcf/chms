@@ -92,6 +92,9 @@
 					if (!$this->dttDateOfBirth) return null;
 					return QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;
 
+				case 'PrimaryAddress':
+					return 'TODO';
+
 				default:
 					try {
 						return parent::__get($strName);
