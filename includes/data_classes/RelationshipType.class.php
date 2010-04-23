@@ -17,4 +17,6 @@
 	 */
 	abstract class RelationshipType extends RelationshipTypeGen {
 	}
+	
+	RelationshipType::$NameArray[RelationshipType::Parental] = 'Parent';
 ?>
