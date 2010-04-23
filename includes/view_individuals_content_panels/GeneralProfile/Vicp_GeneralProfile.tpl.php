@@ -1,7 +1,7 @@
 <br/>
 
 <div style="background-color: #ccc; padding: 5px; ">
-	<div style="float: left; width: 50px;">
+	<div style="float: left; width: 75px;">
 		<a href="#general/edit_name">Edit</a>
 	</div>
 	<div style="float: left; width: 500px;">
@@ -45,7 +45,7 @@
 <br/>
 
 <div style="background-color: #ccc; padding: 5px; ">
-	<div style="float: left; width: 50px;">
+	<div style="float: left; width: 75px;">
 		<?php if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) { ?>
 			<a href="#general/view_membership">Edit</a>
 		<?php } else { ?>
@@ -70,9 +70,44 @@
 <br/>
 
 <div style="background-color: #ccc; padding: 5px; ">
-	<a href="#general/edit_family">Edit Family Information</a>
-	<a href="#general/view_marriage">View Marriage Information</a>
+	<div style="float: left; width: 75px;">
+		<a href="#general/view_marriage">Marriage Info</a><br/><br/>
+		<a href="#general/edit_family">Family Info</a>
+	</div>
+	<div style="float: left; width: 500px;">
+		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Marital Status:</div>
+		<div style="float: left;">
+<?php
+			_p($_FORM->objPerson->MaritalStatus);
+
+			switch ($_FORM->objPerson->MaritalStatusTypeId) {
+				case MaritalStatusType::Married:
+					$objMarriage = $_FORM->objPerson->GetMostRecentMarriage();
+					$strText = null;
+					if ($objMarriage->MarriedToPerson) $strText .= ' to ' . QApplication::HtmlEntities($objMarriage->MarriedToPerson->Name);
+					if ($objMarriage->DateStart) {
+						$strText .= ' on ' . $objMarriage->DateStart->__toString('MMMM D, YYYY');
+						$dtsDifference = QDateTime::Now()->Difference($objMarriage->DateStart);
+						$strText .= sprintf(' (%s year%s)', $dtsDifference->Years, ($dtsDifference->Years != 1) ? 's' : null);
+					}
+					
+					if ($strText) _p(', ' . trim($strText), false);
+					break;
+
+				case MaritalStatusType::Separated:
+					$objMarriage = $_FORM->objPerson->GetMostRecentMarriage();
+					$strText = null;
+					if ($objMarriage->MarriedToPerson) $strText .= ' from ' . QApplication::HtmlEntities($objMarriage->MarriedToPerson->Name);
+					if ($strText) _p(', ' . trim($strText), false);
+					break;
+			}
+?>			<br/>
+		</div>
+		<br clear="all"/>
+	</div>
+	<br clear="all"/>
 </div>
+
 <br/>
 <div style="background-color: #ccc; padding: 5px; ">
 	Household:

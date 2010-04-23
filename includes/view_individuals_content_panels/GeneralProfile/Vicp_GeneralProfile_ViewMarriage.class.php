@@ -1,7 +1,9 @@
 <?php
 	class Vicp_GeneralProfile_ViewMarriage extends Vicp_Base {
+		public $lblStatus;
 		public $dtgMarriages;
 		public $btnAdd;
+		public $btnToggleSingle;
 
 		protected function SetupPanel() {
 			$this->dtgMarriages = new QDataGrid($this);
@@ -14,6 +16,9 @@
 			$this->dtgMarriages->AddColumn(new QDataGridColumn('Status', '<?= $_ITEM->MarriageStatus; ?>'));
 			$this->dtgMarriages->SetDataBinder('dtgMarriages_Bind', $this);
 
+			$this->lblStatus = new QLabel($this);
+			$this->lblStatus->Text = $this->objPerson->MaritalStatus;
+
 			// Add a "Add a New Marriage" button if applicable
 			switch ($this->objPerson->MaritalStatusTypeId) {
 				case MaritalStatusType::NotSpecified:
@@ -21,7 +26,30 @@
 					$this->btnAdd = new QButton($this);
 					$this->btnAdd->Text = 'Add a New Marriage Record';
 					$this->btnAdd->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAdd_Click'));
+
+					if (!$this->objPerson->CountMarriages()) {
+						$this->btnToggleSingle = new QButton($this);
+						$this->btnToggleSingle_Refresh();
+						$this->btnToggleSingle->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnToggleSingle_Click'));
+					}
+
 					break;
+			}
+		}
+
+		public function btnToggleSingle_Refresh() {
+			$this->btnToggleSingle->Text = ($this->objPerson->MaritalStatusTypeId == MaritalStatusType::NotSpecified) ?
+				'Switch Status to Single' : 'Switch Status to Not Specified';
+		}
+
+		public function btnToggleSingle_Click() {
+			if (!$this->objPerson->CountMarriages()) {
+				$this->objPerson->MaritalStatusTypeId = ($this->objPerson->MaritalStatusTypeId == MaritalStatusType::NotSpecified) ?
+					MaritalStatusType::Single : MaritalStatusType::NotSpecified;
+				$this->objPerson->RefreshMaritalStatusTypeId(true);
+
+				$this->lblStatus->Text = $this->objPerson->MaritalStatus;
+				$this->btnToggleSingle_Refresh();
 			}
 		}
 

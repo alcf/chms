@@ -123,6 +123,13 @@
 				$blnToReturn = false;
 			}
 
+			// Any end date most not be a curent marriage
+			if ($this->dtxDateEnd->DateTime &&
+				($this->lstStatus->SelectedValue == MarriageStatusType::Married)) {
+				$this->dtxDateEnd->Warning = 'Current marriages cannot have an end date';
+				$blnToReturn = false;
+			}
+
 			return $blnToReturn;
 		}
 

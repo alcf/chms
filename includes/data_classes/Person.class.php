@@ -66,15 +66,15 @@
 				case 'MembershipStatus':
 					return MembershipStatusType::$NameArray[$this->intMembershipStatusTypeId];
 
-				case 'MaritalStatus':
-					return MaritalStatusType::$NameArray[$this->intMaritalStatusTypeId];
-
-					case 'CurrentMembershipInfo':
+				case 'CurrentMembershipInfo':
 					$objMembership = Membership::QuerySingle(QQ::Equal(QQN::Membership()->PersonId, $this->intId), QQ::OrderBy(QQN::Membership()->DateStart, false));
 					if (!$objMembership) return null;
 					if ($objMembership->DateEnd) return null;
 					$intYears = QDateTime::Now()->Difference($objMembership->DateStart)->Years;
 					return sprintf('since %s (%s year%s)', $objMembership->DateStart->__toString('MMMM D, YYYY'), $intYears, ($intYears == 1) ? '' : 's');
+
+				case 'MaritalStatus':
+					return MaritalStatusType::$NameArray[$this->intMaritalStatusTypeId];
 
 				case 'Gender':
 					return $this->blnMaleFlag ? 'Male' : 'Female';
@@ -225,7 +225,7 @@
 			}
 
 			// Pull the most recent Marriage
-			$objMarriage = Marriage::QuerySingle(QQ::Equal(QQN::Marriage()->PersonId, $this->intId), QQ::OrderBy(QQN::Marriage()->DateStart, false));
+			$objMarriage = $this->GetMostRecentMarriage();
 
 			// If no marriage
 			if (!$objMarriage) {
@@ -255,7 +255,15 @@
 			if ($blnSave) $this->Save();
 			return $this->intMaritalStatusTypeId;
 		}
-		
+
+		/**
+		 * Returns the most recent (or current) Marriage Record for this person
+		 * @return Marriage
+		 */
+		public function GetMostRecentMarriage() {
+			return Marriage::QuerySingle(QQ::Equal(QQN::Marriage()->PersonId, $this->intId), QQ::OrderBy(QQN::Marriage()->DateStart, false));			
+		}
+
 		/**
 		 * Creates a new Marriage record and refreshes the marrital status for both this person and the spouse
 		 * @param integer $intMarriageStatusTypeId (defaults to "Married")
