@@ -80,21 +80,15 @@
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$this->objMarriage->DateStart = $this->dtxDateStart->DateTime;
-			$this->objMarriage->DateEnd = $this->dtxDateEnd->DateTime;
-			$this->objMarriage->MarriageStatusTypeId = $this->lstStatus->SelectedValue;
-
-			if ($this->pnlMarriedTo) {
-				$this->objMarriage->MarriedToPerson = $this->pnlMarriedTo->Person;
+			if ($this->pnlRelatedTo) {
+				$this->objRelationship->RelatedToPerson = $this->pnlRelatedTo->Person;
 			}
 
-			$this->objMarriage->Save();
-			$this->objMarriage->UpdateLinkedMarriage();
+			$this->objRelationship->RelationshipTypeId = $this->lstRelation->SelectedValue;
+			$this->objRelationship->Save();
+			$this->objRelationship->UpdateLinkedRelationship();
 
-			$this->objPerson->RefreshMaritalStatusTypeId();
-			if ($this->objMarriage->MarriedToPerson) $this->objMarriage->MarriedToPerson->RefreshMaritalStatusTypeId();
-
-			return $this->ReturnTo('#general/view_marriage');
+			return $this->ReturnTo('#general/view_family');
 		}
 	}
 ?>

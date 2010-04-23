@@ -22,7 +22,7 @@
 		}
 
 		public function btnAdd_Click() {
-			return $this->ReturnTo('#general/edit_marriage');
+			return $this->ReturnTo('#general/edit_family');
 		}
 
 		public function RenderEdit(Relationship $objRelationship) {

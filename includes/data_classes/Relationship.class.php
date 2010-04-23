@@ -27,6 +27,58 @@
 			return sprintf('Relationship Object %s',  $this->intId);
 		}
 
+		/**
+		 * This should be the method called to DELETE a relationship record from the application.
+		 * This will ensure any linked records are deleted
+		 */
+		public function DeleteThisAndLinked() {
+			$objPerson = $this->Person;
+			$objRelatedPerson = $this->RelatedToPerson;
+
+			// Delete linked (if applicable)
+			if ($objLinkedRelationship = Relationship::LoadByPersonIdRelatedToPersonId($objRelatedPerson->Id, $objPerson->Id)) {
+				$objLinkedRelationship->Delete();
+			}
+
+			// Delete THIS
+			$this->Delete();
+		}
+
+		/**
+		 * Given this relationship record, this will update the "linked" relationship record with the same stats and details.
+		 * 
+		 * This will CREATE the Linked Relationship record if none yet exists.
+		 * 
+		 */
+		public function UpdateLinkedRelationship() {
+			$objPerson = $this->Person;
+			$objRelatedPerson = $this->RelatedToPerson;
+			$objLinkedRelationship = Relationship::LoadByPersonIdRelatedToPersonId($objRelatedPerson->Id, $objPerson->Id);
+
+			if (!$objLinkedRelationship) {
+				$objLinkedRelationship = new Relationship();
+				$objLinkedRelationship->Person = $objRelatedPerson;
+				$objLinkedRelationship->RelatedToPerson = $objPerson;
+			}
+
+			// Figure out the "Opposite" relationship to create
+			switch ($this->intRelationshipTypeId) {
+				case RelationshipType::Child:
+					$objLinkedRelationship->RelationshipTypeId = RelationshipType::Parental;
+					break;
+				case RelationshipType::Parental:
+					$objLinkedRelationship->RelationshipTypeId = RelationshipType::Child;
+					break;
+				case RelationshipType::Sibling:
+					$objLinkedRelationship->RelationshipTypeId = RelationshipType::Sibling;
+					break;
+				default:
+					throw new Exception('Invalid Relationship Type Id: ' . $intRelationshipTypeId);
+			}
+
+			$objLinkedRelationship->Save();
+		}
+
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Relation':
