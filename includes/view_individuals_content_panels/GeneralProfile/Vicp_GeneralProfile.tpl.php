@@ -72,7 +72,7 @@
 <div style="background-color: #ccc; padding: 5px; ">
 	<div style="float: left; width: 75px;">
 		<a href="#general/view_marriage">Marriage Info</a><br/><br/>
-		<a href="#general/edit_family">Family Info</a>
+		<a href="#general/view_family">Family Info</a>
 	</div>
 	<div style="float: left; width: 500px;">
 		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Marital Status:</div>
