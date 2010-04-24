@@ -352,10 +352,11 @@
 		 * 
 		 * @param string $strFirstName
 		 * @param string $strLastName
+		 * @param boolean $blnMaleFlag
 		 * @return Person[]
 		 */
-		public static function LoadArrayBySearch($strFirstName, $strLastName) {
-			$strClauseArray = array();
+		public static function LoadArrayBySearch($strFirstName, $strLastName, $blnMaleFlag) {
+			$strClauseArray = array('male_flag = ' . ($blnMaleFlag ? '1' : '0'));
 			if (strlen($strFirstName))
 				$strClauseArray[] = sprintf("(soundex(first_name) = soundex('%s') OR first_name LIKE '%s%%')", mysql_escape_string($strFirstName), mysql_escape_string($strFirstName));
 			if (strlen($strLastName))

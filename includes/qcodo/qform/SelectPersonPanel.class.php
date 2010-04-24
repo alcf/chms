@@ -2,10 +2,12 @@
 	class SelectPersonPanel extends QPanel {
 		public $txtFirstName;
 		public $txtLastName;
+		public $lstGender;
+
 		public $dtgResults;
 		public $pxySelect;
 
-		protected $intSelectedSpousePersonId;
+		protected $intSelectedPersonId;
 		protected $blnAllowCreate = false;
 		protected $blnForceAsMaleFlag = null;
 
@@ -16,20 +18,20 @@
 		 */
 		public function Validate() {
 			if ($this->blnRequired) {
-				if (!$this->intSelectedSpousePersonId) {
+				if (!$this->intSelectedPersonId) {
 					$this->txtFirstName->Warning = 'Required';
 					return false;
 				}
 			}
 
 			if ($this->dtgResults && $this->dtgResults->Visible) {
-				if (!$this->intSelectedSpousePersonId) {
+				if (!$this->intSelectedPersonId) {
 					$this->txtFirstName->Warning = 'You must select an option below';
 					return false;
 				}
 			}
 
-			if ($this->intSelectedSpousePersonId == -1) {
+			if ($this->intSelectedPersonId == -1) {
 				if (!strlen(trim($this->txtFirstName->Text)) || !strlen(trim($this->txtLastName->Text))) {
 					$this->txtFirstName->Warning = 'First and Last Names are required';
 					$this->txtLastName->Warning = 'First and Last Names are required';
@@ -57,10 +59,15 @@
 
 			$this->txtLastName = new QTextBox($this);
 
+			$this->lstGender = new QListBox($this);
+			$this->lstGender->AddItem('Male', true);
+			$this->lstGender->AddItem('Female', false);
+			
 			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
+			$this->lstGender->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 
 			$this->dtgResults = new QDataGrid($this);
 			$this->dtgResults->Name = '&nbsp;';
@@ -69,7 +76,7 @@
 			$this->dtgResults->AddColumn(new QDataGridColumn('Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgResults->Visible = false;
 			$this->dtgResults->SetDataBinder('dtgResults_Bind', $this);
-	
+
 			$this->pxySelect = new QControlProxy($this);
 			$this->pxySelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySelect_Click'));
 			$this->pxySelect->AddAction(new QClickEvent(), new QTerminateAction());
@@ -77,24 +84,28 @@
 
 		public function dtgResults_Bind() {
 			if ($this->dtgResults->Visible) {
-				$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text));
+				if (is_null($this->blnForceAsMaleFlag))
+					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), $this->lstGender->SelectedValue);
+				else
+					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), $this->blnForceAsMaleFlag);
+
 				if ($this->blnAllowCreate) $objPersonArray[] = new Person();
 				$this->dtgResults->DataSource = $objPersonArray;
 
-				if ($this->intSelectedSpousePersonId > 0) {
+				if ($this->intSelectedPersonId > 0) {
 					$blnFound = false;
 					foreach ($objPersonArray as $objPerson) {
-						if ($objPerson->Id == $this->intSelectedSpousePersonId)
+						if ($objPerson->Id == $this->intSelectedPersonId)
 							$blnFound = true;
 					}
 
 					if (!$blnFound) {
-						$this->intSelectedSpousePersonId = null;
+						$this->intSelectedPersonId = null;
 					}
 				}
 			} else {
 				$this->dtgResults->DataSource = array();
-				$this->intSelectedSpousePersonId = null;
+				$this->intSelectedPersonId = null;
 			}
 		}
 
@@ -108,8 +119,8 @@
 		}
 
 		public function pxySelect_Click($strFormId, $strControlId, $strParameter) {
-			if ($strParameter) $this->intSelectedSpousePersonId = $strParameter;
-			else $this->intSelectedSpousePersonId = -1;
+			if ($strParameter) $this->intSelectedPersonId = $strParameter;
+			else $this->intSelectedPersonId = -1;
 			$this->dtgResults->Refresh();
 		}
 
@@ -122,10 +133,10 @@
 
 		public function RenderSelect(Person $objPerson) {
 			if ($objPerson->Id &&
-				($objPerson->Id == $this->intSelectedSpousePersonId)) {
+				($objPerson->Id == $this->intSelectedPersonId)) {
 				return '<img src="/assets/images/icons/flag_green.png"/>';
 			} else if (!$objPerson->Id &&
-				  ($this->intSelectedSpousePersonId == -1)) {
+				  ($this->intSelectedPersonId == -1)) {
 				return '<img src="/assets/images/icons/flag_green.png"/>';
 			} else {
 				return sprintf('<img src="/assets/images/icons/flag_white.png" style="cursor: pointer;" %s/>',
@@ -142,12 +153,15 @@
 				case 'ForceAsMaleFlag': return $this->blnForceAsMaleFlag;
 				
 				case 'Person':
-					if ($this->blnAllowCreate && ($this->intSelectedSpousePersonId == -1)) {
-						return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $this->blnForceAsMaleFlag);
+					if ($this->blnAllowCreate && ($this->intSelectedPersonId == -1)) {
+						if (is_null($this->blnForceAsMaleFlag))
+							return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $this->lstGender->SelectedValue);
+						else
+							return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $this->blnForceAsMaleFlag);
 					}
 
-					if ($this->intSelectedSpousePersonId > 0) {
-						return Person::Load($this->intSelectedSpousePersonId);
+					if ($this->intSelectedPersonId > 0) {
+						return Person::Load($this->intSelectedPersonId);
 					} else
 						return null;
 
