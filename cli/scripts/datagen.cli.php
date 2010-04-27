@@ -198,6 +198,34 @@
 			}
 		}
 
+		protected static function GenerateAddressesForPerson(Person $objPerson) {
+			$intAddressCount = rand(0, 5);
+			for ($i = 0; $i < $intAddressCount; $i++) {
+				$objAddress = new Address();
+				$objAddress->AddressTypeId = QDataGen::GenerateFromArray(array_keys(AddressType::$NameArray));
+				$objAddress->Person = $objPerson;
+				$objAddress->Address1 = QDataGen::GenerateStreetAddress();
+				if (rand(0, 1)) $objAddress->Address2 = QDataGen::GenerateAddressLine2();
+				$objAddress->City = QDataGen::GenerateCity();
+				$objAddress->State = QDataGen::GenerateUsState();
+				$objAddress->ZipCode = rand(10000, 99999);
+				$objAddress->Country = 'US';
+				$objAddress->InvalidFlag = false;
+				switch ($objAddress->AddressTypeId) {
+					case AddressType::Temporary:
+						$objAddress->CurrentFlag = true;
+						$dttNextYear = QDateTime::Now();
+						$dttNextYear->Year++;
+						$objAddress->DateUntilWhen = QDataGen::GenerateDateTime(QDateTime::Now(), $dttNextYear);
+						break;
+					default:
+						$objAddress->CurrentFlag = rand(0, 1);
+						break;
+				}
+				$objAddress->Save();
+			}
+		}
+
 		/**
 		 * Generates a typical Single-Family household
 		 * @return Household
@@ -384,6 +412,9 @@
 
 				$objPerson->SaveComment($objLogin, $strComment, $intCommentPrivacyTypeId, $objCommentCategory->Id, $dttPostDate);
 			}
+
+			// Addresses
+			self::GenerateAddressesForPerson($objPerson);
 
 			return $objPerson;
 		}

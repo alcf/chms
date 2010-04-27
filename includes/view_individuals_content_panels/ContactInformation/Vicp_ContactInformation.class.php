@@ -4,6 +4,7 @@
 
 		protected function SetupPanel() {
 			$this->dtgPersonalAddresses = new QDataGrid($this);
+			$this->dtgPersonalAddresses->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderPersonalAddressType($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderPersonalAddress($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>'));
@@ -16,14 +17,21 @@
 		}
 
 		public function RenderPersonalAddressType(Address $objAddress) {
-			return AddressType::$NameArray[$objAddress->AddressTypeId];
+			$strToReturn = ($objAddress->CurrentFlag) ? 'Current ' : 'Previous ';
+			$strToReturn .= AddressType::$NameArray[$objAddress->AddressTypeId];
+			
+			if (($objAddress->AddressTypeId == AddressType::Temporary) && ($objAddress->DateUntilWhen)) {
+				$strToReturn .= '<br/>' . '(until ' . $objAddress->DateUntilWhen->__toString('MMMM D YYYY') . ')';
+			}
+
+			return $strToReturn;
 		}
 
 		public function RenderPersonalAddress(Address $objAddress) {
 			$strToReturn = $objAddress->Address1;
 			if ($objAddress->Address2) $strToReturn .= ', ' . $objAddress->Address2;
 			if ($objAddress->Address3) $strToReturn .= ', ' . $objAddress->Address3;
-			return $strToReturn;
+			return sprintf('<a href="#contact/edit_address/%s">%s</a>', $objAddress->Id, QApplication::HtmlEntities($strToReturn));
 		}
 	}
 ?>
