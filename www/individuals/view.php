@@ -25,6 +25,11 @@
 		 */
 		public $objPerson;
 
+		/**
+		 * @var Household
+		 */
+		public $objHousehold;
+
 		protected $pnlHouseholdSelector;
 		protected $pnlSubnavBar;
 		protected $pnlMainContent;
@@ -36,6 +41,17 @@
 		}
 
 		protected function Form_Create() {
+			$this->objHousehold = Household::Load(QApplication::PathInfo(1));
+			if ($this->objHousehold) {
+				if (!HouseholdParticipation::LoadByPersonIdHouseholdId($this->objPerson->Id, $this->objHousehold->Id)) {
+					QApplication::Redirect('/individuals/');
+				}
+			} else {
+				$objHouseholdParticipationArray = HouseholdParticipation::LoadArrayByPersonId($this->objPerson->Id);
+				if ($objHouseholdParticipationArray)
+					$this->objHousehold = $objHouseholdParticipationArray[0]->Household;
+			}
+
 			$this->strPageTitle .= $this->objPerson->Name;
 
 			$this->pnlHouseholdSelector = new HouseholdSelectorPanel($this);
