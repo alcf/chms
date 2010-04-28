@@ -1,8 +1,6 @@
 <?php
 	class Vicp_ContactInformation_EditAddress extends Vicp_Base {
-		public $objAddress;
-
-		public $blnEditMode;
+		public $mctAddress;
 		public $btnDelete;
 
 		public $lstAddressType;
@@ -15,20 +13,17 @@
 
 		protected function SetupPanel() {
 			// Get and Validate the Address Object
-			$this->objAddress = Address::Load($this->strUrlHashArgument);
+			$this->mctAddress = AddressMetaControl::Create($this, $this->strUrlHashArgument, QMetaControlCreateType::CreateOnRecordNotFound);
 
-			if (!$this->objAddress) {
+			if (!$this->mctAddress->EditMode) {
 				// Trying to create a NEW address
-				$this->objAddress = new Address();
-				$this->objAddress->Person = $this->objPerson;
-				$this->blnEditMode = false;
+				$this->mctAddress->Address->Person = $this->objPerson;
 				$this->btnSave->Text = 'Create';
 			} else {
 				// Ensure the Address object belongs to the person
-				if ($this->objAddress->PersonId != $this->objPerson->Id) {
+				if ($this->mctAddress->Address->PersonId != $this->objPerson->Id) {
 					return $this->ReturnTo('#contact');
 				}
-				$this->blnEditMode = true;
 				$this->btnSave->Text = 'Update';
 
 				$this->btnDelete = new QLinkButton($this);
@@ -41,14 +36,17 @@
 			}
 
 			// Create Controls
-			$this->txtAddress1 = new QTextBox($this);
-			$this->txtAddress1->Name = 'Address 1';
-			$this->txtAddress1->Required = true;
-			$this->txtAddress1->Text = $this->objAddress->Address1;
+			$this->txtAddress1 = $this->mctAddress->txtAddress1_Create();
+			$this->txtAddress2 = $this->mctAddress->txtAddress2_Create();
+			$this->txtAddress3 = $this->mctAddress->txtAddress3_Create();
+			$this->txtCity = $this->mctAddress->txtCity_Create();
+			$this->lstState = $this->mctAddress->lstState_Create();
+			$this->txtZipCode = $this->mctAddress->txtZipCode_Create();
 		}
 
 		public function btnSave_Click() {
-			
+			$this->mctAddress->SaveAddress();
+			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 
 		public function btnCancel_Click() {

@@ -19,5 +19,45 @@
 	 * @subpackage MetaControls
 	 */
 	class AddressMetaControl extends AddressMetaControlGen {
+		protected $lstState;
+
+		/**
+		 * Create and setup QListBox lstState
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstState_Create($strControlId = null) {
+			$this->lstState = new QListBox($this->objParentObject, $strControlId);
+			$this->lstState->Name = QApplication::Translate('State');
+			$this->lstState->AddItem(QApplication::Translate('- Select One -'), null);
+			foreach (UsState::LoadAll(QQ::OrderBy(QQN::UsState()->Name)) as $objUsState) {
+				$this->lstState->AddItem($objUsState->Name, $objUsState->Abbreviation, $this->objAddress->State == $objUsState->Abbreviation);
+			}
+			return $this->lstState;
+		}
+
+		public function SaveAddress() {
+			try {
+				if ($this->lstState) $this->objAddress->State = $this->lstState->SelectedValue;
+				parent::SaveAddress();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'StateListControl': return $this->lstState;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
 	}
 ?>
