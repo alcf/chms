@@ -11,11 +11,8 @@
 				throw $objExc;
 			}
 
-			$this->strTemplate = dirname(__FILE__) . '/HouseholdSelectorPanel.tpl.php';
 			$this->dtrHouseholdParticipation = new QDataRepeater($this);
-
 			$this->lstHouseholds = new QListBox($this);
-
 			$this->Refresh();
 		}
 
@@ -25,9 +22,10 @@
 			if ($this->objForm->objHousehold) {
 				$this->dtrHouseholdParticipation->DataSource = $this->objForm->objHousehold->GetHouseholdParticipationArray();
 				$this->dtrHouseholdParticipation->Template = dirname(__FILE__) . '/dtrHouseholdParticipation.tpl.php';
+				$this->strTemplate = dirname(__FILE__) . '/HouseholdSelectorPanel.tpl.php';
 			} else {
 				$this->dtrHouseholdParticipation->DataSource = null;
-				$this->dtrHouseholdParticipation->Template = dirname(__FILE__) . '/dtrHouseholdParticipation_Individual.tpl.php';
+				$this->strTemplate = dirname(__FILE__) . '/HouseholdSelectorPanel_Individual.tpl.php';
 			}
 
 			if (count($this->objForm->objPerson->CountHouseholdParticipations()) >= 2) {

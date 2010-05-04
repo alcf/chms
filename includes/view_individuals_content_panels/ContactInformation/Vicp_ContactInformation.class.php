@@ -13,13 +13,20 @@
 		}
 
 		public function dtgPersonalAddress_Bind() {
-			$this->dtgPersonalAddresses->DataSource = $this->objPerson->GetAddressArray();
+			$this->dtgPersonalAddresses->DataSource = $this->objPerson->GetAddressArray(QQ::OrderBy(QQN::Address()->CurrentFlag, false, QQN::Address()->AddressTypeId));
 		}
 
 		public function RenderPersonalAddressType(Address $objAddress) {
-			$strToReturn = ($objAddress->CurrentFlag) ? 'Current ' : 'Previous ';
-			$strToReturn .= AddressType::$NameArray[$objAddress->AddressTypeId];
-			
+			switch ($objAddress->AddressTypeId) {
+				case AddressType::Temporary:
+					$strToReturn = AddressType::$NameArray[$objAddress->AddressTypeId];
+					break;
+				default:
+					$strToReturn = ($objAddress->CurrentFlag) ? 'Current ' : 'Previous ';
+					$strToReturn .= AddressType::$NameArray[$objAddress->AddressTypeId];
+					break;
+			}
+
 			if (($objAddress->AddressTypeId == AddressType::Temporary) && ($objAddress->DateUntilWhen)) {
 				$strToReturn .= '<br/>' . '(until ' . $objAddress->DateUntilWhen->__toString('MMMM D YYYY') . ')';
 			}

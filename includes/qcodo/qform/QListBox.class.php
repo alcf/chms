@@ -19,5 +19,9 @@
 
 			return $strToReturn;
 		}
+
+		public function AddSelectOneOption() {
+			array_unshift($this->objItemsArray, new QListItem('- Select One -', null));
+		}
 	}
 ?>
