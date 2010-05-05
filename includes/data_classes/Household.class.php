@@ -76,6 +76,30 @@
 			if ($blnSave) $this->Save();
 		}
 
+
+		/**
+		 * Sets the address record as the "Current" address, and all others as "Previous"
+		 * Address MUST be associated with the household or this will throw an exception
+		 * @param Address $objCurrentAddress
+		 * @return void
+		 */
+		public function SetAsCurrentAddress(Address $objCurrentAddress) {
+			if ($objCurrentAddress->HouseholdId != $this->intId)
+				throw new QCallerException('Address does not belong to this Household');
+				
+			foreach ($this->GetAddressArray() as $objAddress) {
+				if (($objAddress->Id != $objCurrentAddress->Id) && $objAddress->CurrentFlag) {
+					$objAddress->CurrentFlag = false;
+					$objAddress->Save();
+				}
+			}
+
+			if (!$objCurrentAddress->CurrentFlag) {
+				$objCurrentAddress->CurrentFlag = true;
+				$objCurrentAddress->Save();
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
