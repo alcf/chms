@@ -5,4 +5,5 @@
 <?php } ?>
 
 <h3>Other Addresses for <?php _p($_FORM->objPerson->Name); ?></h3>
+<p><a href="#contact/edit_address">Add New</a></p>
 <?php $_CONTROL->dtgPersonalAddresses->Render(); ?>
