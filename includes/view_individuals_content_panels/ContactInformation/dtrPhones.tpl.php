@@ -9,7 +9,16 @@
 
 		$radPhone = new QRadioButton($_CONTROL, $strRadioControlId);
 		$radPhone->GroupName = 'phone';
-		$radPhone->Checked = $_ITEM->PrimaryFlag;
+		
+		if ($_CONTROL->ParentControl->mctAddress->Address->PrimaryPhoneId &&
+			($_CONTROL->ParentControl->mctAddress->Address->PrimaryPhoneId == $_ITEM->Id))
+			$radPhone->Checked = true;
+		else if (!$_CONTROL->ParentControl->mctAddress->Address->PrimaryPhoneId &&
+			($_CONTROL->CurrentItemIndex == 0))
+			$radPhone->Checked = true;
+		else
+			$radPhone->Checked = false;
+
 		$radPhone->AddAction(new QClickEvent(), new QAjaxControlAction($_CONTROL, 'Refresh'));
 		$radPhone->ActionParameter = $_CONTROL->CurrentItemIndex;
 	} else {

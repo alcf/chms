@@ -27,27 +27,43 @@
 			return sprintf('Phone Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			$this->UnassociateAllAddressesAsPrimary();
+			$this->UnassociateAllPeopleAsPrimary();
+
+			try {
+				parent::Delete();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
 		/**
 		 * This will set this phone object as the "primary" phone number for (if associated to an address) the address
 		 * or (if associated to a person) the person.
 		 * 
+		 * Alternatively, if the phone is associated with the address (e.g. a home phone), you can explicitly
+		 * pass in a Person in that house to set as "primary" for that person.
+		 * 
 		 * This will automatically UNSET as primary any current-primary phone (if applicable)
 		 * @return void
 		 */
-		public function SetAsPrimary() {
-			if ($this->Address) {
-				$objPhoneArray = $this->Address->GetPhoneArray();
+		public function SetAsPrimary(Person $objPerson = null) {
+			if ($objPerson) {
+				if (!$this->Address || !$this->Adddress->Household ||
+					!(HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Adddress->HouseholdId))) {
+					throw new QCallerException('Cannot set as primary phone for person not in the household for this address');
+				}
+				$objPerson->PrimaryPhone = $this;
+				$objPerson->Save();
+			} else if ($this->Address) {
+				$this->Address->PrimaryPhone = $this;
+				$this->Address->Save();
 			} else {
-				$objPhoneArray = $this->Person->GetPhoneArray();
+				$this->Person->PrimaryPhone = $this;
+				$this->Person->Save();
 			}
-			
-			foreach ($objPhoneArray as $objPhone) {
-				$objPhone->PrimaryFlag = null;
-				$objPhone->Save();
-			}
-
-			$this->PrimaryFlag = true;
-			$this->Save();
 		}
 
 		// Override or Create New Load/Count methods

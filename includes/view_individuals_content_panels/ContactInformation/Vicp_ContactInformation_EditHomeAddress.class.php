@@ -31,9 +31,9 @@
 
 				// Create Phone Numbers
 				$this->arrPhones = array();
-				$this->AddPhoneNumberField(true);
-				$this->AddPhoneNumberField(false);
-				$this->AddPhoneNumberField(false);
+				$this->AddPhoneNumberField();
+				$this->AddPhoneNumberField();
+				$this->AddPhoneNumberField();
 			} else {
 				// Ensure the Address object belongs to the household
 				if ($this->mctAddress->Address->HouseholdId != $this->objForm->objHousehold->Id) {
@@ -53,16 +53,24 @@
 				}
 
 				// Get Phone Numbers
-				$this->arrPhones = $this->mctAddress->Address->GetPhoneArray(QQ::OrderBy(QQN::Phone()->PrimaryFlag, false, QQN::Phone()->Id));
+				$arrPhones = $this->mctAddress->Address->GetPhoneArray(QQ::OrderBy(QQN::Phone()->Id));
+				if ($this->mctAddress->Address->PrimaryPhone) {
+					$this->arrPhones = array();
+					$this->arrPhones[] = $this->mctAddress->Address->PrimaryPhone;
+					foreach ($arrPhones as $objPhone) {
+						if ($objPhone->Id != $this->mctAddress->Address->PrimaryPhoneId)
+							$this->arrPhones[] = $objPhone;
+					}
+				} else {
+					$this->arrPhones = $arrPhones;
+				}
 
 				// Add one additional
 				if (count($this->arrPhones) < 3) {
-					while (count($this->arrPhones) < 3) $this->AddPhoneNumberField(false);
+					while (count($this->arrPhones) < 3) $this->AddPhoneNumberField();
 				} else {
-					$this->AddPhoneNumberField(false);
+					$this->AddPhoneNumberField();
 				}
-
-				$this->arrPhones[0]->PrimaryFlag = true;
 			}
 
 			// Create Controls
@@ -89,10 +97,9 @@
 			$this->dtrPhones->Refresh();
 		}
 
-		public function AddPhoneNumberField($blnPrimaryFlag = false) {
+		public function AddPhoneNumberField() {
 			$objPhone = new Phone();
 			$objPhone->PhoneTypeId = PhoneType::Home;
-			$objPhone->PrimaryFlag = $blnPrimaryFlag;
 			$this->arrPhones[] = $objPhone;
 		}
 
@@ -105,7 +112,6 @@
 			$this->mctAddress->SaveAddress();
 			
 			// Phone Numbers
-			$objPrimaryPhoneToSave = null;
 			for ($intIndex = 0; $intIndex < count($this->arrPhones); $intIndex++) {
 				$txtPhone = $this->objForm->GetControl('txtPhone' . $intIndex);
 				$radPhone = $this->objForm->GetControl('radPhone' . $intIndex);
@@ -113,19 +119,14 @@
 
 				if (trim($txtPhone->Text)) {
 					$objPhone->AddressId = $this->mctAddress->Address->Id;
-					$objPhone->PrimaryFlag = ($radPhone->Checked) ? true : null;
 					$objPhone->Number = trim($txtPhone->Text);
-					if (!$objPhone->PrimaryFlag)
-						$objPhone->Save();
-					else
-						$objPrimaryPhoneToSave = $objPhone;
+					$objPhone->Save();
+
+					if ($radPhone->Checked) $objPhone->SetAsPrimary();
 				} else if ($objPhone->Id) {
 					$objPhone->Delete();
 				}
 			}
-
-			// Save the "Primary Phone" if found
-			if ($objPrimaryPhoneToSave) $objPrimaryPhoneToSave->Save();
 
 			// If this addrss we are saving is "Current" then
 			// let's make sure all the other addresses are PREVIOUS

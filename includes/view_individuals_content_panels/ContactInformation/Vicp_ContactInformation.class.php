@@ -49,9 +49,7 @@
 		}
 
 		public function RenderHomePhone(Address $objAddress) {
-			if ($objPhone = Phone::LoadByAddressIdPrimaryFlag($objAddress->Id, true)) {
-				return $objPhone->Number;
-			}
+			if ($objAddress->PrimaryPhone) return $objAddress->PrimaryPhone->Number;
 		}
 
 		public function RenderHomeAddressType(Address $objAddress) {
