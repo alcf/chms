@@ -27,6 +27,10 @@
 			return sprintf('Email Object %s',  $this->intId);
 		}
 
+		public function SetAsPrimary() {
+			$this->Person->PrimaryEmail = $this;
+			$this->Person->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

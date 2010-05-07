@@ -240,6 +240,31 @@
 			if ($intPhoneCount && !rand(0, 2)) {
 				QDataGen::GenerateFromArray($objPhoneArray)->SetAsPrimary();
 			}
+
+			$intEmailCount = rand(0, 5);
+			$objEmailArray = array();
+			for ($i = 0; $i < $intEmailCount; $i++) {
+				$objEmail = new Email();
+				$objEmail->Address = QDataGen::GenerateEmail($objPerson->FirstName, $objPerson->LastName);
+				$objEmail->Person = $objPerson;
+				$objEmail->Save();
+				$objEmailArray[] = $objEmail;
+			}
+
+			if ($intEmailCount && !rand(0, 2)) {
+				QDataGen::GenerateFromArray($objEmailArray)->SetAsPrimary();
+			}
+
+			$intMaxId = OtherContactMethod::CountAll();
+			for ($intOtherContactMethodId = 1; $intOtherContactMethodId <= $intMaxId; $intOtherContactMethodId++) {
+				if (!rand(0, 2)) {
+					$objContactInfo = new OtherContactInfo();
+					$objContactInfo->Person = $objPerson;
+					$objContactInfo->OtherContactMethodId = $intOtherContactMethodId;
+					$objContactInfo->Value = QDataGen::GenerateUsername($objPerson->FirstName, $objPerson->LastName);
+					$objContactInfo->Save();
+				}
+			}
 		}
 
 		/**
