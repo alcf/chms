@@ -3,10 +3,13 @@
 		public $dtgPersonalAddresses;
 		public $dtgHomeAddresses;
 		public $dtgPhones;
-
+		public $dtgEmails;
+		public $dtgOthers;
+				
 		protected $pxySetCurrentHomeAddress;
 		protected $pxySetPrimaryPhone;
-
+		protected $pxySetPrimaryEmail;
+		
 		protected function SetupPanel() {
 			$this->dtgPersonalAddresses = new QDataGrid($this);
 			$this->dtgPersonalAddresses->AlternateRowStyle->CssClass = 'alternate';
@@ -40,10 +43,54 @@
 			$this->pxySetPrimaryPhone = new QControlProxy($this);
 			$this->pxySetPrimaryPhone->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySetPrimaryPhone_Click'));
 			$this->pxySetPrimaryPhone->AddAction(new QClickEvent(), new QTerminateAction());
+			
+			$this->dtgEmails = new QDataGrid($this);
+			$this->dtgEmails->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgEmails->AddColumn(new QDataGridColumn('Primary?', '<?= $_CONTROL->ParentControl->RenderEmailPrimary($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgEmails->AddColumn(new QDataGridColumn('Email', '<?= $_CONTROL->ParentControl->RenderEmailAddress($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgEmails->SetDataBinder('dtgEmails_Bind', $this);
+
+			$this->pxySetPrimaryEmail = new QControlProxy($this);
+			$this->pxySetPrimaryEmail->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySetPrimaryEmail_Click'));
+			$this->pxySetPrimaryEmail->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->dtgOthers = new QDataGrid($this);
+			$this->dtgOthers->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgOthers->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderOtherType($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgOthers->AddColumn(new QDataGridColumn('Value', '<?= $_CONTROL->ParentControl->RenderOtherValue($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgOthers->SetDataBinder('dtgOthers_Bind', $this);
 		}
 
 		public function dtgPhones_Bind() {
 			$this->dtgPhones->DataSource = $this->objPerson->GetAllAssociatedPhoneArray($this->objForm->objHousehold);
+		}
+		
+		public function dtgEmails_Bind() {
+			$this->dtgEmails->DataSource = $this->objPerson->GetEmailArray();
+		}
+		
+		public function dtgOthers_Bind() {
+			$this->dtgOthers->DataSource = $this->objPerson->GetOtherContactInfoArray();
+		}
+		
+		public function RenderEmailPrimary(Email $objEmail) {
+			if ($objEmail->Id == $this->objPerson->PrimaryEmailId) {
+				return 'Primary';
+			} else {
+				return sprintf('[<a href="" %s>set as primary</a>]', $this->pxySetPrimaryEmail->RenderAsEvents($objEmail->Id, false));
+			}
+		}
+
+		public function RenderEmailAddress(Email $objEmail) {
+			return sprintf('<a href="#contact/edit_email/%s">%s</a>', $objEmail->Id, QApplication::HtmlEntities($objEmail->Address));
+		}
+
+		public function RenderOtherType(OtherContactInfo $objOther) {
+			return sprintf('<a href="#contact/edit_other/%s">%s</a>', $objOther->Id, QApplication::HtmlEntities($objOther->OtherContactMethod->Name));
+		}
+
+		public function RenderOtherValue(OtherContactInfo $objOther) {
+			return sprintf('<a href="#contact/edit_email/%s">%s</a>', $objOther->Id, QApplication::HtmlEntities($objOther->Value));
 		}
 
 		public function RenderPhonePrimary(Phone $objPhone) {
@@ -74,7 +121,15 @@
 			$objPhone->SetAsPrimary($this->objPerson);
 			$this->dtgPhones->Refresh();
 		}
-
+		
+		public function pxySetPrimaryEmail_Click($strFormId, $strControlId, $strParameter) {
+			// Get and validate Email object
+			$objEmail= Email::Load($strParameter);
+			$objEmail->SetAsPrimary();
+			$this->objPerson->Reload();
+			$this->dtgEmails->Refresh();
+		}
+		
 		public function pxySetCurrentHomeAddress_Click($strFormId, $strControlId, $strParameter) {
 			// Get and validate Address object
 			$objAddress = Address::Load($strParameter);

@@ -11,3 +11,11 @@
 <h3>Phones for <?php _p($_FORM->objPerson->Name); ?></h3>
 <p><a href="#contact/edit_phone">Add New</a></p>
 <?php $_CONTROL->dtgPhones->Render(); ?>
+
+<h3>Emails for <?php _p($_FORM->objPerson->Name); ?></h3>
+<p><a href="#contact/edit_email">Add New</a></p>
+<?php $_CONTROL->dtgEmails->Render(); ?>
+
+<h3>Other Contact Info for <?php _p($_FORM->objPerson->Name); ?></h3>
+<p><a href="#contact/edit_other">Add New</a></p>
+<?php $_CONTROL->dtgOthers->Render(); ?>
