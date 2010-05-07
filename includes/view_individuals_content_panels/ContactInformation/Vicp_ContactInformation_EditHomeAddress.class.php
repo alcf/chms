@@ -56,7 +56,13 @@
 				$this->arrPhones = $this->mctAddress->Address->GetPhoneArray(QQ::OrderBy(QQN::Phone()->PrimaryFlag, false, QQN::Phone()->Id));
 
 				// Add one additional
-				$this->AddPhoneNumberField(false);
+				if (count($this->arrPhones) < 3) {
+					while (count($this->arrPhones) < 3) $this->AddPhoneNumberField(false);
+				} else {
+					$this->AddPhoneNumberField(false);
+				}
+
+				$this->arrPhones[0]->PrimaryFlag = true;
 			}
 
 			// Create Controls
