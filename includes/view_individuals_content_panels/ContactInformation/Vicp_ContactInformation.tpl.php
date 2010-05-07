@@ -9,5 +9,5 @@
 <?php $_CONTROL->dtgPersonalAddresses->Render(); ?>
 
 <h3>Phones for <?php _p($_FORM->objPerson->Name); ?></h3>
-<p><a href="#contact/edit_address">Add New</a></p>
+<p><a href="#contact/edit_phone">Add New</a></p>
 <?php $_CONTROL->dtgPhones->Render(); ?>
