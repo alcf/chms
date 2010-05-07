@@ -53,17 +53,7 @@
 				}
 
 				// Get Phone Numbers
-				$arrPhones = $this->mctAddress->Address->GetPhoneArray(QQ::OrderBy(QQN::Phone()->Id));
-				if ($this->mctAddress->Address->PrimaryPhone) {
-					$this->arrPhones = array();
-					$this->arrPhones[] = $this->mctAddress->Address->PrimaryPhone;
-					foreach ($arrPhones as $objPhone) {
-						if ($objPhone->Id != $this->mctAddress->Address->PrimaryPhoneId)
-							$this->arrPhones[] = $objPhone;
-					}
-				} else {
-					$this->arrPhones = $arrPhones;
-				}
+				$this->arrPhones = $this->mctAddress->Address->GetPhoneArray();
 
 				// Add one additional
 				if (count($this->arrPhones) < 3) {

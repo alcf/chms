@@ -5,6 +5,7 @@
 		public $dtgPhones;
 
 		protected $pxySetCurrentHomeAddress;
+		protected $pxySetPrimaryPhone;
 
 		protected function SetupPanel() {
 			$this->dtgPersonalAddresses = new QDataGrid($this);
@@ -28,6 +29,36 @@
 			$this->pxySetCurrentHomeAddress = new QControlProxy($this);
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySetCurrentHomeAddress_Click'));
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->dtgPhones = new QDataGrid($this);
+			$this->dtgPhones->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgPhones->AddColumn(new QDataGridColumn('Primary?', '<?= $_CONTROL->ParentControl->RenderPhoneType($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgPhones->AddColumn(new QDataGridColumn('Type', '<?= PhoneType::$NameArray[$_ITEM->PhoneTypeId]; ?>'));
+			$this->dtgPhones->AddColumn(new QDataGridColumn('Number', '<?= $_ITEM->Number; ?>'));
+			$this->dtgPhones->SetDataBinder('dtgPhones_Bind', $this);
+
+			$this->pxySetPrimaryPhone = new QControlProxy($this);
+			$this->pxySetPrimaryPhone->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySetPrimaryPhone_Click'));
+			$this->pxySetPrimaryPhone->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+
+		public function dtgPhones_Bind() {
+			$this->dtgPhones->DataSource = $this->objPerson->GetAllAssociatedPhoneArray($this->objForm->objHousehold);
+		}
+
+		public function RenderPhoneType(Phone $objPhone) {
+			if ($objPhone->Id == $this->objPerson->PrimaryPhoneId) {
+				return 'Primary';
+			} else {
+				return sprintf('[<a href="#" %s>set as primary</a>]', $this->pxySetPrimaryPhone->RenderAsEvents($objPhone->Id, false));
+			}
+		}
+
+		public function pxySetPrimaryPhone_Click($strFormId, $strControlId, $strParameter) {
+			// Get and validate Phone object
+			$objPhone = Phone::Load($strParameter);
+			$objPhone->SetAsPrimary($this->objPerson);
+			$this->dtgPhones->Refresh();
 		}
 
 		public function pxySetCurrentHomeAddress_Click($strFormId, $strControlId, $strParameter) {
@@ -38,6 +69,7 @@
 
 			$this->objForm->objHousehold->SetAsCurrentAddress($objAddress);
 			$this->dtgHomeAddresses->Refresh();
+			$this->dtgPhones->Refresh();
 		}
 
 		public function dtgPersonalAddresses_Bind() {

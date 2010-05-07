@@ -27,6 +27,29 @@
 			return sprintf('Address Object %s',  $this->intId);
 		}
 
+		/**
+		 * Overrides codegenned GetPhoneArray.  Since phones associated with addresses
+		 * are really only for Home addresses, since we always want the "primary" one to show up first
+		 * we will expliclty order it that way and return it.
+		 * @param QQClause[] $objOptionalClauses this parameter is IGNORED
+		 * @return Phone[] 
+		 */
+		public function GetPhoneArray($objOptionalClauses = null) {
+			$arrPhones = parent::GetPhoneArray(QQ::OrderBy(QQN::Phone()->Id));
+
+			if ($this->PrimaryPhone) {
+				$arrToReturn = array();
+				$arrToReturn[] = $this->PrimaryPhone;
+				foreach ($arrPhones as $objPhone) {
+					if ($objPhone->Id != $this->PrimaryPhoneId)
+						$arrToReturn[] = $objPhone;
+				}
+				return $arrToReturn;
+
+			} else {
+				return $arrPhones;
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -402,6 +402,38 @@
 			$objPerson->Save();
 			return $objPerson;
 		}
+		
+		/**
+		 * Similar to the codegenned GetPhoneArray -- however this will retrieve ALL current and associated
+		 * phones.  Not just personal phone numbers, but phone numbers attributed to the current home
+		 * of a given household.  You must specify the household as well.  If the household is invalid (e.g.
+		 * the participation doesn't exist), then this will throw.
+		 * 
+		 * If NO household is passed in (or NULL), then this will act just like GetPhoneArray, only retrieving
+		 * personal phone numbers.
+		 * 
+		 * @return Phone[]
+		 */
+		public function GetAllAssociatedPhoneArray(Household $objHousehold = null) {
+			$objToReturn = array();
+
+			if ($objHousehold) {
+				if (!HouseholdParticipation::LoadByPersonIdHouseholdId($this->intId, $objHousehold->Id))
+					throw new QCallerException('Person does not exist in this household');
+
+				if ($objAddress = $objHousehold->GetCurrentAddress()) {
+					foreach ($objAddress->GetPhoneArray() as $objPhone) {
+						$objToReturn[] = $objPhone;
+					}
+				}
+			}
+
+			foreach ($this->GetPhoneArray(QQ::OrderBy(QQN::Phone()->Id)) as $objPhone) {
+				$objToReturn[] = $objPhone;
+			}
+			
+			return $objToReturn;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

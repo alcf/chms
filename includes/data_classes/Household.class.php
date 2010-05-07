@@ -100,6 +100,12 @@
 			}
 		}
 
+		public function GetCurrentAddress() {
+			return Address::QuerySingle(QQ::AndCondition(
+				QQ::Equal(QQN::Address()->HouseholdId, $this->intId),
+				QQ::Equal(QQN::Address()->CurrentFlag, true)));
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
