@@ -19,5 +19,17 @@
 	 * @subpackage MetaControls
 	 */
 	class EmailMetaControl extends EmailMetaControlGen {
+		/**
+		 * Create and setup QTextBox txtAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtAddress_Create($strControlId = null) {
+			$this->txtAddress = new QEmailTextBox($this->objParentObject, $strControlId);
+			$this->txtAddress->Name = QApplication::Translate('Address');
+			$this->txtAddress->Text = $this->objEmail->Address;
+			$this->txtAddress->MaxLength = Email::AddressMaxLength;
+			return $this->txtAddress;
+		}
 	}
 ?>
