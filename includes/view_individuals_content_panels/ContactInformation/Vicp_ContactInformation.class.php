@@ -2,6 +2,7 @@
 	class Vicp_ContactInformation extends Vicp_Base {
 		public $dtgPersonalAddresses;
 		public $dtgHomeAddresses;
+		public $dtgPhones;
 
 		protected $pxySetCurrentHomeAddress;
 

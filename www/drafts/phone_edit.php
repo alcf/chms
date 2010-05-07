@@ -28,7 +28,6 @@
 		protected $lstAddress;
 		protected $lstPerson;
 		protected $txtNumber;
-		protected $chkPrimaryFlag;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -60,7 +59,6 @@
 			$this->lstAddress = $this->mctPhone->lstAddress_Create();
 			$this->lstPerson = $this->mctPhone->lstPerson_Create();
 			$this->txtNumber = $this->mctPhone->txtNumber_Create();
-			$this->chkPrimaryFlag = $this->mctPhone->chkPrimaryFlag_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

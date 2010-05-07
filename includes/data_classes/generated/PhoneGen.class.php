@@ -20,9 +20,12 @@
 	 * @property integer $AddressId the value for intAddressId 
 	 * @property integer $PersonId the value for intPersonId 
 	 * @property string $Number the value for strNumber 
-	 * @property boolean $PrimaryFlag the value for blnPrimaryFlag 
 	 * @property Address $Address the value for the Address object referenced by intAddressId 
 	 * @property Person $Person the value for the Person object referenced by intPersonId 
+	 * @property Address $_AddressAsPrimary the value for the private _objAddressAsPrimary (Read-Only) if set due to an expansion on the address.primary_phone_id reverse relationship
+	 * @property Address[] $_AddressAsPrimaryArray the value for the private _objAddressAsPrimaryArray (Read-Only) if set due to an ExpandAsArray on the address.primary_phone_id reverse relationship
+	 * @property Person $_PersonAsPrimary the value for the private _objPersonAsPrimary (Read-Only) if set due to an expansion on the person.primary_phone_id reverse relationship
+	 * @property Person[] $_PersonAsPrimaryArray the value for the private _objPersonAsPrimaryArray (Read-Only) if set due to an ExpandAsArray on the person.primary_phone_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class PhoneGen extends QBaseClass {
@@ -73,12 +76,36 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column phone.primary_flag
-		 * @var boolean blnPrimaryFlag
+		 * Private member variable that stores a reference to a single AddressAsPrimary object
+		 * (of type Address), if this Phone object was restored with
+		 * an expansion on the address association table.
+		 * @var Address _objAddressAsPrimary;
 		 */
-		protected $blnPrimaryFlag;
-		const PrimaryFlagDefault = null;
+		private $_objAddressAsPrimary;
 
+		/**
+		 * Private member variable that stores a reference to an array of AddressAsPrimary objects
+		 * (of type Address[]), if this Phone object was restored with
+		 * an ExpandAsArray on the address association table.
+		 * @var Address[] _objAddressAsPrimaryArray;
+		 */
+		private $_objAddressAsPrimaryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single PersonAsPrimary object
+		 * (of type Person), if this Phone object was restored with
+		 * an expansion on the person association table.
+		 * @var Person _objPersonAsPrimary;
+		 */
+		private $_objPersonAsPrimary;
+
+		/**
+		 * Private member variable that stores a reference to an array of PersonAsPrimary objects
+		 * (of type Person[]), if this Phone object was restored with
+		 * an ExpandAsArray on the person association table.
+		 * @var Person[] _objPersonAsPrimaryArray;
+		 */
+		private $_objPersonAsPrimaryArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -390,7 +417,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'address_id', $strAliasPrefix . 'address_id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'number', $strAliasPrefix . 'number');
-			$objBuilder->AddSelectItem($strTableName, 'primary_flag', $strAliasPrefix . 'primary_flag');
 		}
 
 
@@ -417,6 +443,52 @@
 			if (!$objDbRow)
 				return null;
 
+			// See if we're doing an array expansion on the previous item
+			$strAlias = $strAliasPrefix . 'id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (($strExpandAsArrayNodes) && ($objPreviousItem) &&
+				($objPreviousItem->intId == $objDbRow->GetColumn($strAliasName, 'Integer'))) {
+
+				// We are.  Now, prepare to check for ExpandAsArray clauses
+				$blnExpandedViaArray = false;
+				if (!$strAliasPrefix)
+					$strAliasPrefix = 'phone__';
+
+
+				$strAlias = $strAliasPrefix . 'addressasprimary__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objAddressAsPrimaryArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objAddressAsPrimaryArray[$intPreviousChildItemCount - 1];
+						$objChildItem = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'addressasprimary__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objAddressAsPrimaryArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objAddressAsPrimaryArray[] = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'addressasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'personasprimary__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objPersonAsPrimaryArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objPersonAsPrimaryArray[$intPreviousChildItemCount - 1];
+						$objChildItem = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personasprimary__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objPersonAsPrimaryArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objPersonAsPrimaryArray[] = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
+				if ($blnExpandedViaArray)
+					return false;
+				else if ($strAliasPrefix == 'phone__')
+					$strAliasPrefix = null;
+			}
 
 			// Create a new instance of the Phone object
 			$objToReturn = new Phone();
@@ -432,8 +504,6 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'number'] : $strAliasPrefix . 'number';
 			$objToReturn->strNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'primary_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_flag'] : $strAliasPrefix . 'primary_flag';
-			$objToReturn->blnPrimaryFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -461,6 +531,26 @@
 
 
 
+
+			// Check for AddressAsPrimary Virtual Binding
+			$strAlias = $strAliasPrefix . 'addressasprimary__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objAddressAsPrimaryArray[] = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'addressasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objAddressAsPrimary = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'addressasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for PersonAsPrimary Virtual Binding
+			$strAlias = $strAliasPrefix . 'personasprimary__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objPersonAsPrimaryArray[] = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objPersonAsPrimary = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			return $objToReturn;
 		}
@@ -516,38 +606,6 @@
 		public static function LoadById($intId) {
 			return Phone::QuerySingle(
 				QQ::Equal(QQN::Phone()->Id, $intId)
-			);
-		}
-			
-		/**
-		 * Load a single Phone object,
-		 * by AddressId, PrimaryFlag Index(es)
-		 * @param integer $intAddressId
-		 * @param boolean $blnPrimaryFlag
-		 * @return Phone
-		*/
-		public static function LoadByAddressIdPrimaryFlag($intAddressId, $blnPrimaryFlag) {
-			return Phone::QuerySingle(
-				QQ::AndCondition(
-				QQ::Equal(QQN::Phone()->AddressId, $intAddressId),
-				QQ::Equal(QQN::Phone()->PrimaryFlag, $blnPrimaryFlag)
-				)
-			);
-		}
-			
-		/**
-		 * Load a single Phone object,
-		 * by PersonId, PrimaryFlag Index(es)
-		 * @param integer $intPersonId
-		 * @param boolean $blnPrimaryFlag
-		 * @return Phone
-		*/
-		public static function LoadByPersonIdPrimaryFlag($intPersonId, $blnPrimaryFlag) {
-			return Phone::QuerySingle(
-				QQ::AndCondition(
-				QQ::Equal(QQN::Phone()->PersonId, $intPersonId),
-				QQ::Equal(QQN::Phone()->PrimaryFlag, $blnPrimaryFlag)
-				)
 			);
 		}
 			
@@ -712,14 +770,12 @@
 							`phone_type_id`,
 							`address_id`,
 							`person_id`,
-							`number`,
-							`primary_flag`
+							`number`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPhoneTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intAddressId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->strNumber) . ',
-							' . $objDatabase->SqlVariable($this->blnPrimaryFlag) . '
+							' . $objDatabase->SqlVariable($this->strNumber) . '
 						)
 					');
 
@@ -738,8 +794,7 @@
 							`phone_type_id` = ' . $objDatabase->SqlVariable($this->intPhoneTypeId) . ',
 							`address_id` = ' . $objDatabase->SqlVariable($this->intAddressId) . ',
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`number` = ' . $objDatabase->SqlVariable($this->strNumber) . ',
-							`primary_flag` = ' . $objDatabase->SqlVariable($this->blnPrimaryFlag) . '
+							`number` = ' . $objDatabase->SqlVariable($this->strNumber) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -822,7 +877,6 @@
 			$this->AddressId = $objReloaded->AddressId;
 			$this->PersonId = $objReloaded->PersonId;
 			$this->strNumber = $objReloaded->strNumber;
-			$this->blnPrimaryFlag = $objReloaded->blnPrimaryFlag;
 		}
 
 
@@ -868,11 +922,6 @@
 					// @return string
 					return $this->strNumber;
 
-				case 'PrimaryFlag':
-					// Gets the value for blnPrimaryFlag 
-					// @return boolean
-					return $this->blnPrimaryFlag;
-
 
 				///////////////////
 				// Member Objects
@@ -906,6 +955,30 @@
 				// Virtual Object References (Many to Many and Reverse References)
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
+
+				case '_AddressAsPrimary':
+					// Gets the value for the private _objAddressAsPrimary (Read-Only)
+					// if set due to an expansion on the address.primary_phone_id reverse relationship
+					// @return Address
+					return $this->_objAddressAsPrimary;
+
+				case '_AddressAsPrimaryArray':
+					// Gets the value for the private _objAddressAsPrimaryArray (Read-Only)
+					// if set due to an ExpandAsArray on the address.primary_phone_id reverse relationship
+					// @return Address[]
+					return (array) $this->_objAddressAsPrimaryArray;
+
+				case '_PersonAsPrimary':
+					// Gets the value for the private _objPersonAsPrimary (Read-Only)
+					// if set due to an expansion on the person.primary_phone_id reverse relationship
+					// @return Person
+					return $this->_objPersonAsPrimary;
+
+				case '_PersonAsPrimaryArray':
+					// Gets the value for the private _objPersonAsPrimaryArray (Read-Only)
+					// if set due to an ExpandAsArray on the person.primary_phone_id reverse relationship
+					// @return Person[]
+					return (array) $this->_objPersonAsPrimaryArray;
 
 
 				case '__Restored':
@@ -975,17 +1048,6 @@
 					// @return string
 					try {
 						return ($this->strNumber = QType::Cast($mixValue, QType::String));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'PrimaryFlag':
-					// Sets the value for blnPrimaryFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnPrimaryFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1082,6 +1144,306 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
+			
+		
+		// Related Objects' Methods for AddressAsPrimary
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated AddressesAsPrimary as an array of Address objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Address[]
+		*/ 
+		public function GetAddressAsPrimaryArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return Address::LoadArrayByPrimaryPhoneId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated AddressesAsPrimary
+		 * @return int
+		*/ 
+		public function CountAddressesAsPrimary() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return Address::CountByPrimaryPhoneId($this->intId);
+		}
+
+		/**
+		 * Associates a AddressAsPrimary
+		 * @param Address $objAddress
+		 * @return void
+		*/ 
+		public function AssociateAddressAsPrimary(Address $objAddress) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateAddressAsPrimary on this unsaved Phone.');
+			if ((is_null($objAddress->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateAddressAsPrimary on this Phone with an unsaved Address.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`address`
+				SET
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a AddressAsPrimary
+		 * @param Address $objAddress
+		 * @return void
+		*/ 
+		public function UnassociateAddressAsPrimary(Address $objAddress) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAddressAsPrimary on this unsaved Phone.');
+			if ((is_null($objAddress->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAddressAsPrimary on this Phone with an unsaved Address.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`address`
+				SET
+					`primary_phone_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . ' AND
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all AddressesAsPrimary
+		 * @return void
+		*/ 
+		public function UnassociateAllAddressesAsPrimary() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAddressAsPrimary on this unsaved Phone.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`address`
+				SET
+					`primary_phone_id` = null
+				WHERE
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated AddressAsPrimary
+		 * @param Address $objAddress
+		 * @return void
+		*/ 
+		public function DeleteAssociatedAddressAsPrimary(Address $objAddress) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAddressAsPrimary on this unsaved Phone.');
+			if ((is_null($objAddress->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAddressAsPrimary on this Phone with an unsaved Address.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`address`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . ' AND
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated AddressesAsPrimary
+		 * @return void
+		*/ 
+		public function DeleteAllAddressesAsPrimary() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAddressAsPrimary on this unsaved Phone.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`address`
+				WHERE
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for PersonAsPrimary
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated PeopleAsPrimary as an array of Person objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Person[]
+		*/ 
+		public function GetPersonAsPrimaryArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return Person::LoadArrayByPrimaryPhoneId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated PeopleAsPrimary
+		 * @return int
+		*/ 
+		public function CountPeopleAsPrimary() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return Person::CountByPrimaryPhoneId($this->intId);
+		}
+
+		/**
+		 * Associates a PersonAsPrimary
+		 * @param Person $objPerson
+		 * @return void
+		*/ 
+		public function AssociatePersonAsPrimary(Person $objPerson) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociatePersonAsPrimary on this unsaved Phone.');
+			if ((is_null($objPerson->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociatePersonAsPrimary on this Phone with an unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`person`
+				SET
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a PersonAsPrimary
+		 * @param Person $objPerson
+		 * @return void
+		*/ 
+		public function UnassociatePersonAsPrimary(Person $objPerson) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsPrimary on this unsaved Phone.');
+			if ((is_null($objPerson->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsPrimary on this Phone with an unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`person`
+				SET
+					`primary_phone_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all PeopleAsPrimary
+		 * @return void
+		*/ 
+		public function UnassociateAllPeopleAsPrimary() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsPrimary on this unsaved Phone.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`person`
+				SET
+					`primary_phone_id` = null
+				WHERE
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated PersonAsPrimary
+		 * @param Person $objPerson
+		 * @return void
+		*/ 
+		public function DeleteAssociatedPersonAsPrimary(Person $objPerson) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsPrimary on this unsaved Phone.');
+			if ((is_null($objPerson->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsPrimary on this Phone with an unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`person`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated PeopleAsPrimary
+		 * @return void
+		*/ 
+		public function DeleteAllPeopleAsPrimary() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsPrimary on this unsaved Phone.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`person`
+				WHERE
+					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1097,7 +1459,6 @@
 			$strToReturn .= '<element name="Address" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="Number" type="xsd:string"/>';
-			$strToReturn .= '<element name="PrimaryFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1134,8 +1495,6 @@
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if (property_exists($objSoapObject, 'Number'))
 				$objToReturn->strNumber = $objSoapObject->Number;
-			if (property_exists($objSoapObject, 'PrimaryFlag'))
-				$objToReturn->blnPrimaryFlag = $objSoapObject->PrimaryFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1196,8 +1555,10 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'Number':
 					return new QQNode('number', 'Number', 'string', $this);
-				case 'PrimaryFlag':
-					return new QQNode('primary_flag', 'PrimaryFlag', 'boolean', $this);
+				case 'AddressAsPrimary':
+					return new QQReverseReferenceNodeAddress($this, 'addressasprimary', 'reverse_reference', 'primary_phone_id');
+				case 'PersonAsPrimary':
+					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_phone_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1232,8 +1593,10 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'Number':
 					return new QQNode('number', 'Number', 'string', $this);
-				case 'PrimaryFlag':
-					return new QQNode('primary_flag', 'PrimaryFlag', 'boolean', $this);
+				case 'AddressAsPrimary':
+					return new QQReverseReferenceNodeAddress($this, 'addressasprimary', 'reverse_reference', 'primary_phone_id');
+				case 'PersonAsPrimary':
+					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_phone_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

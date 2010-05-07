@@ -26,8 +26,6 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QTextBox $NumberControl
 	 * property-read QLabel $NumberLabel
-	 * property QCheckBox $PrimaryFlagControl
-	 * property-read QLabel $PrimaryFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -45,14 +43,12 @@
 		protected $lstAddress;
 		protected $lstPerson;
 		protected $txtNumber;
-		protected $chkPrimaryFlag;
 
 		// Controls that allow the viewing of Phone's individual data fields
 		protected $lblPhoneTypeId;
 		protected $lblAddressId;
 		protected $lblPersonId;
 		protected $lblNumber;
-		protected $lblPrimaryFlag;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -280,30 +276,6 @@
 			return $this->lblNumber;
 		}
 
-		/**
-		 * Create and setup QCheckBox chkPrimaryFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
-		 */
-		public function chkPrimaryFlag_Create($strControlId = null) {
-			$this->chkPrimaryFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkPrimaryFlag->Name = QApplication::Translate('Primary Flag');
-			$this->chkPrimaryFlag->Checked = $this->objPhone->PrimaryFlag;
-			return $this->chkPrimaryFlag;
-		}
-
-		/**
-		 * Create and setup QLabel lblPrimaryFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblPrimaryFlag_Create($strControlId = null) {
-			$this->lblPrimaryFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPrimaryFlag->Name = QApplication::Translate('Primary Flag');
-			$this->lblPrimaryFlag->Text = ($this->objPhone->PrimaryFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblPrimaryFlag;
-		}
-
 
 
 		/**
@@ -349,9 +321,6 @@
 			if ($this->txtNumber) $this->txtNumber->Text = $this->objPhone->Number;
 			if ($this->lblNumber) $this->lblNumber->Text = $this->objPhone->Number;
 
-			if ($this->chkPrimaryFlag) $this->chkPrimaryFlag->Checked = $this->objPhone->PrimaryFlag;
-			if ($this->lblPrimaryFlag) $this->lblPrimaryFlag->Text = ($this->objPhone->PrimaryFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
 		}
 
 
@@ -379,7 +348,6 @@
 				if ($this->lstAddress) $this->objPhone->AddressId = $this->lstAddress->SelectedValue;
 				if ($this->lstPerson) $this->objPhone->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->txtNumber) $this->objPhone->Number = $this->txtNumber->Text;
-				if ($this->chkPrimaryFlag) $this->objPhone->PrimaryFlag = $this->chkPrimaryFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -452,12 +420,6 @@
 				case 'NumberLabel':
 					if (!$this->lblNumber) return $this->lblNumber_Create();
 					return $this->lblNumber;
-				case 'PrimaryFlagControl':
-					if (!$this->chkPrimaryFlag) return $this->chkPrimaryFlag_Create();
-					return $this->chkPrimaryFlag;
-				case 'PrimaryFlagLabel':
-					if (!$this->lblPrimaryFlag) return $this->lblPrimaryFlag_Create();
-					return $this->lblPrimaryFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -490,8 +452,6 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'NumberControl':
 						return ($this->txtNumber = QType::Cast($mixValue, 'QControl'));
-					case 'PrimaryFlagControl':
-						return ($this->chkPrimaryFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

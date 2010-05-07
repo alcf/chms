@@ -24,6 +24,7 @@
 		public $lstAddressType;
 		public $lstPerson;
 		public $lstHousehold;
+		public $lstPrimaryPhone;
 		public $txtAddress1;
 		public $txtAddress2;
 		public $txtAddress3;
@@ -67,6 +68,7 @@
 			$this->lstAddressType = $this->mctAddress->lstAddressType_Create();
 			$this->lstPerson = $this->mctAddress->lstPerson_Create();
 			$this->lstHousehold = $this->mctAddress->lstHousehold_Create();
+			$this->lstPrimaryPhone = $this->mctAddress->lstPrimaryPhone_Create();
 			$this->txtAddress1 = $this->mctAddress->txtAddress1_Create();
 			$this->txtAddress2 = $this->mctAddress->txtAddress2_Create();
 			$this->txtAddress3 = $this->mctAddress->txtAddress3_Create();

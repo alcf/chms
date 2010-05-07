@@ -54,12 +54,16 @@
 	 * property-read QLabel $MailingAddressIdLabel
 	 * property QListBox $StewardshipAddressIdControl
 	 * property-read QLabel $StewardshipAddressIdLabel
+	 * property QListBox $PrimaryPhoneIdControl
+	 * property-read QLabel $PrimaryPhoneIdLabel
+	 * property QListBox $PrimaryEmailIdControl
+	 * property-read QLabel $PrimaryEmailIdLabel
 	 * property QCheckBox $CanMailFlagControl
 	 * property-read QLabel $CanMailFlagLabel
-	 * property QCheckBox $CanEmailFlagControl
-	 * property-read QLabel $CanEmailFlagLabel
 	 * property QCheckBox $CanPhoneFlagControl
 	 * property-read QLabel $CanPhoneFlagLabel
+	 * property QCheckBox $CanEmailFlagControl
+	 * property-read QLabel $CanEmailFlagLabel
 	 * property QListBox $HouseholdAsHeadControl
 	 * property-read QLabel $HouseholdAsHeadLabel
 	 * property QListBox $CommunicationListControl
@@ -97,9 +101,11 @@
 		protected $lstCurrentHeadShot;
 		protected $lstMailingAddress;
 		protected $lstStewardshipAddress;
+		protected $lstPrimaryPhone;
+		protected $lstPrimaryEmail;
 		protected $chkCanMailFlag;
-		protected $chkCanEmailFlag;
 		protected $chkCanPhoneFlag;
+		protected $chkCanEmailFlag;
 
 		// Controls that allow the viewing of Person's individual data fields
 		protected $lblMembershipStatusTypeId;
@@ -120,9 +126,11 @@
 		protected $lblCurrentHeadShotId;
 		protected $lblMailingAddressId;
 		protected $lblStewardshipAddressId;
+		protected $lblPrimaryPhoneId;
+		protected $lblPrimaryEmailId;
 		protected $lblCanMailFlag;
-		protected $lblCanEmailFlag;
 		protected $lblCanPhoneFlag;
+		protected $lblCanEmailFlag;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstHouseholdAsHead;
@@ -720,6 +728,68 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstPrimaryPhone
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstPrimaryPhone_Create($strControlId = null) {
+			$this->lstPrimaryPhone = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPrimaryPhone->Name = QApplication::Translate('Primary Phone');
+			$this->lstPrimaryPhone->AddItem(QApplication::Translate('- Select One -'), null);
+			$objPrimaryPhoneArray = Phone::LoadAll();
+			if ($objPrimaryPhoneArray) foreach ($objPrimaryPhoneArray as $objPrimaryPhone) {
+				$objListItem = new QListItem($objPrimaryPhone->__toString(), $objPrimaryPhone->Id);
+				if (($this->objPerson->PrimaryPhone) && ($this->objPerson->PrimaryPhone->Id == $objPrimaryPhone->Id))
+					$objListItem->Selected = true;
+				$this->lstPrimaryPhone->AddItem($objListItem);
+			}
+			return $this->lstPrimaryPhone;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryPhoneId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryPhoneId_Create($strControlId = null) {
+			$this->lblPrimaryPhoneId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryPhoneId->Name = QApplication::Translate('Primary Phone');
+			$this->lblPrimaryPhoneId->Text = ($this->objPerson->PrimaryPhone) ? $this->objPerson->PrimaryPhone->__toString() : null;
+			return $this->lblPrimaryPhoneId;
+		}
+
+		/**
+		 * Create and setup QListBox lstPrimaryEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstPrimaryEmail_Create($strControlId = null) {
+			$this->lstPrimaryEmail = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPrimaryEmail->Name = QApplication::Translate('Primary Email');
+			$this->lstPrimaryEmail->AddItem(QApplication::Translate('- Select One -'), null);
+			$objPrimaryEmailArray = Email::LoadAll();
+			if ($objPrimaryEmailArray) foreach ($objPrimaryEmailArray as $objPrimaryEmail) {
+				$objListItem = new QListItem($objPrimaryEmail->__toString(), $objPrimaryEmail->Id);
+				if (($this->objPerson->PrimaryEmail) && ($this->objPerson->PrimaryEmail->Id == $objPrimaryEmail->Id))
+					$objListItem->Selected = true;
+				$this->lstPrimaryEmail->AddItem($objListItem);
+			}
+			return $this->lstPrimaryEmail;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryEmailId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryEmailId_Create($strControlId = null) {
+			$this->lblPrimaryEmailId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryEmailId->Name = QApplication::Translate('Primary Email');
+			$this->lblPrimaryEmailId->Text = ($this->objPerson->PrimaryEmail) ? $this->objPerson->PrimaryEmail->__toString() : null;
+			return $this->lblPrimaryEmailId;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkCanMailFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -744,30 +814,6 @@
 		}
 
 		/**
-		 * Create and setup QCheckBox chkCanEmailFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
-		 */
-		public function chkCanEmailFlag_Create($strControlId = null) {
-			$this->chkCanEmailFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkCanEmailFlag->Name = QApplication::Translate('Can Email Flag');
-			$this->chkCanEmailFlag->Checked = $this->objPerson->CanEmailFlag;
-			return $this->chkCanEmailFlag;
-		}
-
-		/**
-		 * Create and setup QLabel lblCanEmailFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblCanEmailFlag_Create($strControlId = null) {
-			$this->lblCanEmailFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblCanEmailFlag->Name = QApplication::Translate('Can Email Flag');
-			$this->lblCanEmailFlag->Text = ($this->objPerson->CanEmailFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblCanEmailFlag;
-		}
-
-		/**
 		 * Create and setup QCheckBox chkCanPhoneFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -789,6 +835,30 @@
 			$this->lblCanPhoneFlag->Name = QApplication::Translate('Can Phone Flag');
 			$this->lblCanPhoneFlag->Text = ($this->objPerson->CanPhoneFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 			return $this->lblCanPhoneFlag;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkCanEmailFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkCanEmailFlag_Create($strControlId = null) {
+			$this->chkCanEmailFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkCanEmailFlag->Name = QApplication::Translate('Can Email Flag');
+			$this->chkCanEmailFlag->Checked = $this->objPerson->CanEmailFlag;
+			return $this->chkCanEmailFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblCanEmailFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCanEmailFlag_Create($strControlId = null) {
+			$this->lblCanEmailFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCanEmailFlag->Name = QApplication::Translate('Can Email Flag');
+			$this->lblCanEmailFlag->Text = ($this->objPerson->CanEmailFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblCanEmailFlag;
 		}
 
 		/**
@@ -1002,14 +1072,40 @@
 			}
 			if ($this->lblStewardshipAddressId) $this->lblStewardshipAddressId->Text = ($this->objPerson->StewardshipAddress) ? $this->objPerson->StewardshipAddress->__toString() : null;
 
+			if ($this->lstPrimaryPhone) {
+					$this->lstPrimaryPhone->RemoveAllItems();
+				$this->lstPrimaryPhone->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPrimaryPhoneArray = Phone::LoadAll();
+				if ($objPrimaryPhoneArray) foreach ($objPrimaryPhoneArray as $objPrimaryPhone) {
+					$objListItem = new QListItem($objPrimaryPhone->__toString(), $objPrimaryPhone->Id);
+					if (($this->objPerson->PrimaryPhone) && ($this->objPerson->PrimaryPhone->Id == $objPrimaryPhone->Id))
+						$objListItem->Selected = true;
+					$this->lstPrimaryPhone->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPrimaryPhoneId) $this->lblPrimaryPhoneId->Text = ($this->objPerson->PrimaryPhone) ? $this->objPerson->PrimaryPhone->__toString() : null;
+
+			if ($this->lstPrimaryEmail) {
+					$this->lstPrimaryEmail->RemoveAllItems();
+				$this->lstPrimaryEmail->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPrimaryEmailArray = Email::LoadAll();
+				if ($objPrimaryEmailArray) foreach ($objPrimaryEmailArray as $objPrimaryEmail) {
+					$objListItem = new QListItem($objPrimaryEmail->__toString(), $objPrimaryEmail->Id);
+					if (($this->objPerson->PrimaryEmail) && ($this->objPerson->PrimaryEmail->Id == $objPrimaryEmail->Id))
+						$objListItem->Selected = true;
+					$this->lstPrimaryEmail->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPrimaryEmailId) $this->lblPrimaryEmailId->Text = ($this->objPerson->PrimaryEmail) ? $this->objPerson->PrimaryEmail->__toString() : null;
+
 			if ($this->chkCanMailFlag) $this->chkCanMailFlag->Checked = $this->objPerson->CanMailFlag;
 			if ($this->lblCanMailFlag) $this->lblCanMailFlag->Text = ($this->objPerson->CanMailFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
-			if ($this->chkCanEmailFlag) $this->chkCanEmailFlag->Checked = $this->objPerson->CanEmailFlag;
-			if ($this->lblCanEmailFlag) $this->lblCanEmailFlag->Text = ($this->objPerson->CanEmailFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
 			if ($this->chkCanPhoneFlag) $this->chkCanPhoneFlag->Checked = $this->objPerson->CanPhoneFlag;
 			if ($this->lblCanPhoneFlag) $this->lblCanPhoneFlag->Text = ($this->objPerson->CanPhoneFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
+			if ($this->chkCanEmailFlag) $this->chkCanEmailFlag->Checked = $this->objPerson->CanEmailFlag;
+			if ($this->lblCanEmailFlag) $this->lblCanEmailFlag->Text = ($this->objPerson->CanEmailFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
 			if ($this->lstHouseholdAsHead) {
 				$this->lstHouseholdAsHead->RemoveAllItems();
@@ -1132,9 +1228,11 @@
 				if ($this->lstCurrentHeadShot) $this->objPerson->CurrentHeadShotId = $this->lstCurrentHeadShot->SelectedValue;
 				if ($this->lstMailingAddress) $this->objPerson->MailingAddressId = $this->lstMailingAddress->SelectedValue;
 				if ($this->lstStewardshipAddress) $this->objPerson->StewardshipAddressId = $this->lstStewardshipAddress->SelectedValue;
+				if ($this->lstPrimaryPhone) $this->objPerson->PrimaryPhoneId = $this->lstPrimaryPhone->SelectedValue;
+				if ($this->lstPrimaryEmail) $this->objPerson->PrimaryEmailId = $this->lstPrimaryEmail->SelectedValue;
 				if ($this->chkCanMailFlag) $this->objPerson->CanMailFlag = $this->chkCanMailFlag->Checked;
-				if ($this->chkCanEmailFlag) $this->objPerson->CanEmailFlag = $this->chkCanEmailFlag->Checked;
 				if ($this->chkCanPhoneFlag) $this->objPerson->CanPhoneFlag = $this->chkCanPhoneFlag->Checked;
+				if ($this->chkCanEmailFlag) $this->objPerson->CanEmailFlag = $this->chkCanEmailFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstHouseholdAsHead) $this->objPerson->HouseholdAsHead = Household::Load($this->lstHouseholdAsHead->SelectedValue);
@@ -1296,24 +1394,36 @@
 				case 'StewardshipAddressIdLabel':
 					if (!$this->lblStewardshipAddressId) return $this->lblStewardshipAddressId_Create();
 					return $this->lblStewardshipAddressId;
+				case 'PrimaryPhoneIdControl':
+					if (!$this->lstPrimaryPhone) return $this->lstPrimaryPhone_Create();
+					return $this->lstPrimaryPhone;
+				case 'PrimaryPhoneIdLabel':
+					if (!$this->lblPrimaryPhoneId) return $this->lblPrimaryPhoneId_Create();
+					return $this->lblPrimaryPhoneId;
+				case 'PrimaryEmailIdControl':
+					if (!$this->lstPrimaryEmail) return $this->lstPrimaryEmail_Create();
+					return $this->lstPrimaryEmail;
+				case 'PrimaryEmailIdLabel':
+					if (!$this->lblPrimaryEmailId) return $this->lblPrimaryEmailId_Create();
+					return $this->lblPrimaryEmailId;
 				case 'CanMailFlagControl':
 					if (!$this->chkCanMailFlag) return $this->chkCanMailFlag_Create();
 					return $this->chkCanMailFlag;
 				case 'CanMailFlagLabel':
 					if (!$this->lblCanMailFlag) return $this->lblCanMailFlag_Create();
 					return $this->lblCanMailFlag;
-				case 'CanEmailFlagControl':
-					if (!$this->chkCanEmailFlag) return $this->chkCanEmailFlag_Create();
-					return $this->chkCanEmailFlag;
-				case 'CanEmailFlagLabel':
-					if (!$this->lblCanEmailFlag) return $this->lblCanEmailFlag_Create();
-					return $this->lblCanEmailFlag;
 				case 'CanPhoneFlagControl':
 					if (!$this->chkCanPhoneFlag) return $this->chkCanPhoneFlag_Create();
 					return $this->chkCanPhoneFlag;
 				case 'CanPhoneFlagLabel':
 					if (!$this->lblCanPhoneFlag) return $this->lblCanPhoneFlag_Create();
 					return $this->lblCanPhoneFlag;
+				case 'CanEmailFlagControl':
+					if (!$this->chkCanEmailFlag) return $this->chkCanEmailFlag_Create();
+					return $this->chkCanEmailFlag;
+				case 'CanEmailFlagLabel':
+					if (!$this->lblCanEmailFlag) return $this->lblCanEmailFlag_Create();
+					return $this->lblCanEmailFlag;
 				case 'HouseholdAsHeadControl':
 					if (!$this->lstHouseholdAsHead) return $this->lstHouseholdAsHead_Create();
 					return $this->lstHouseholdAsHead;
@@ -1392,12 +1502,16 @@
 						return ($this->lstMailingAddress = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipAddressIdControl':
 						return ($this->lstStewardshipAddress = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryPhoneIdControl':
+						return ($this->lstPrimaryPhone = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryEmailIdControl':
+						return ($this->lstPrimaryEmail = QType::Cast($mixValue, 'QControl'));
 					case 'CanMailFlagControl':
 						return ($this->chkCanMailFlag = QType::Cast($mixValue, 'QControl'));
-					case 'CanEmailFlagControl':
-						return ($this->chkCanEmailFlag = QType::Cast($mixValue, 'QControl'));
 					case 'CanPhoneFlagControl':
 						return ($this->chkCanPhoneFlag = QType::Cast($mixValue, 'QControl'));
+					case 'CanEmailFlagControl':
+						return ($this->chkCanEmailFlag = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':
 						return ($this->lstHouseholdAsHead = QType::Cast($mixValue, 'QControl'));
 					case 'CommunicationListControl':

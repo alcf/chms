@@ -24,6 +24,8 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QListBox $HouseholdIdControl
 	 * property-read QLabel $HouseholdIdLabel
+	 * property QListBox $PrimaryPhoneIdControl
+	 * property-read QLabel $PrimaryPhoneIdLabel
 	 * property QTextBox $Address1Control
 	 * property-read QLabel $Address1Label
 	 * property QTextBox $Address2Control
@@ -60,6 +62,7 @@
 		protected $lstAddressType;
 		protected $lstPerson;
 		protected $lstHousehold;
+		protected $lstPrimaryPhone;
 		protected $txtAddress1;
 		protected $txtAddress2;
 		protected $txtAddress3;
@@ -75,6 +78,7 @@
 		protected $lblAddressTypeId;
 		protected $lblPersonId;
 		protected $lblHouseholdId;
+		protected $lblPrimaryPhoneId;
 		protected $lblAddress1;
 		protected $lblAddress2;
 		protected $lblAddress3;
@@ -285,6 +289,37 @@
 			$this->lblHouseholdId->Name = QApplication::Translate('Household');
 			$this->lblHouseholdId->Text = ($this->objAddress->Household) ? $this->objAddress->Household->__toString() : null;
 			return $this->lblHouseholdId;
+		}
+
+		/**
+		 * Create and setup QListBox lstPrimaryPhone
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstPrimaryPhone_Create($strControlId = null) {
+			$this->lstPrimaryPhone = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPrimaryPhone->Name = QApplication::Translate('Primary Phone');
+			$this->lstPrimaryPhone->AddItem(QApplication::Translate('- Select One -'), null);
+			$objPrimaryPhoneArray = Phone::LoadAll();
+			if ($objPrimaryPhoneArray) foreach ($objPrimaryPhoneArray as $objPrimaryPhone) {
+				$objListItem = new QListItem($objPrimaryPhone->__toString(), $objPrimaryPhone->Id);
+				if (($this->objAddress->PrimaryPhone) && ($this->objAddress->PrimaryPhone->Id == $objPrimaryPhone->Id))
+					$objListItem->Selected = true;
+				$this->lstPrimaryPhone->AddItem($objListItem);
+			}
+			return $this->lstPrimaryPhone;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryPhoneId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryPhoneId_Create($strControlId = null) {
+			$this->lblPrimaryPhoneId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryPhoneId->Name = QApplication::Translate('Primary Phone');
+			$this->lblPrimaryPhoneId->Text = ($this->objAddress->PrimaryPhone) ? $this->objAddress->PrimaryPhone->__toString() : null;
+			return $this->lblPrimaryPhoneId;
 		}
 
 		/**
@@ -581,6 +616,19 @@
 			}
 			if ($this->lblHouseholdId) $this->lblHouseholdId->Text = ($this->objAddress->Household) ? $this->objAddress->Household->__toString() : null;
 
+			if ($this->lstPrimaryPhone) {
+					$this->lstPrimaryPhone->RemoveAllItems();
+				$this->lstPrimaryPhone->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPrimaryPhoneArray = Phone::LoadAll();
+				if ($objPrimaryPhoneArray) foreach ($objPrimaryPhoneArray as $objPrimaryPhone) {
+					$objListItem = new QListItem($objPrimaryPhone->__toString(), $objPrimaryPhone->Id);
+					if (($this->objAddress->PrimaryPhone) && ($this->objAddress->PrimaryPhone->Id == $objPrimaryPhone->Id))
+						$objListItem->Selected = true;
+					$this->lstPrimaryPhone->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPrimaryPhoneId) $this->lblPrimaryPhoneId->Text = ($this->objAddress->PrimaryPhone) ? $this->objAddress->PrimaryPhone->__toString() : null;
+
 			if ($this->txtAddress1) $this->txtAddress1->Text = $this->objAddress->Address1;
 			if ($this->lblAddress1) $this->lblAddress1->Text = $this->objAddress->Address1;
 
@@ -637,6 +685,7 @@
 				if ($this->lstAddressType) $this->objAddress->AddressTypeId = $this->lstAddressType->SelectedValue;
 				if ($this->lstPerson) $this->objAddress->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->lstHousehold) $this->objAddress->HouseholdId = $this->lstHousehold->SelectedValue;
+				if ($this->lstPrimaryPhone) $this->objAddress->PrimaryPhoneId = $this->lstPrimaryPhone->SelectedValue;
 				if ($this->txtAddress1) $this->objAddress->Address1 = $this->txtAddress1->Text;
 				if ($this->txtAddress2) $this->objAddress->Address2 = $this->txtAddress2->Text;
 				if ($this->txtAddress3) $this->objAddress->Address3 = $this->txtAddress3->Text;
@@ -713,6 +762,12 @@
 				case 'HouseholdIdLabel':
 					if (!$this->lblHouseholdId) return $this->lblHouseholdId_Create();
 					return $this->lblHouseholdId;
+				case 'PrimaryPhoneIdControl':
+					if (!$this->lstPrimaryPhone) return $this->lstPrimaryPhone_Create();
+					return $this->lstPrimaryPhone;
+				case 'PrimaryPhoneIdLabel':
+					if (!$this->lblPrimaryPhoneId) return $this->lblPrimaryPhoneId_Create();
+					return $this->lblPrimaryPhoneId;
 				case 'Address1Control':
 					if (!$this->txtAddress1) return $this->txtAddress1_Create();
 					return $this->txtAddress1;
@@ -803,6 +858,8 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdIdControl':
 						return ($this->lstHousehold = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryPhoneIdControl':
+						return ($this->lstPrimaryPhone = QType::Cast($mixValue, 'QControl'));
 					case 'Address1Control':
 						return ($this->txtAddress1 = QType::Cast($mixValue, 'QControl'));
 					case 'Address2Control':

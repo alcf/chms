@@ -22,8 +22,8 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QTextBox $AddressControl
 	 * property-read QLabel $AddressLabel
-	 * property QCheckBox $PrimaryFlagControl
-	 * property-read QLabel $PrimaryFlagLabel
+	 * property QListBox $PersonAsPrimaryControl
+	 * property-read QLabel $PersonAsPrimaryLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -39,16 +39,16 @@
 		protected $lblId;
 		protected $lstPerson;
 		protected $txtAddress;
-		protected $chkPrimaryFlag;
 
 		// Controls that allow the viewing of Email's individual data fields
 		protected $lblPersonId;
 		protected $lblAddress;
-		protected $lblPrimaryFlag;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+		protected $lstPersonAsPrimary;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+		protected $lblPersonAsPrimary;
 
 
 		/**
@@ -218,27 +218,34 @@
 		}
 
 		/**
-		 * Create and setup QCheckBox chkPrimaryFlag
+		 * Create and setup QListBox lstPersonAsPrimary
 		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
+		 * @return QListBox
 		 */
-		public function chkPrimaryFlag_Create($strControlId = null) {
-			$this->chkPrimaryFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkPrimaryFlag->Name = QApplication::Translate('Primary Flag');
-			$this->chkPrimaryFlag->Checked = $this->objEmail->PrimaryFlag;
-			return $this->chkPrimaryFlag;
+		public function lstPersonAsPrimary_Create($strControlId = null) {
+			$this->lstPersonAsPrimary = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPersonAsPrimary->Name = QApplication::Translate('Person As Primary');
+			$this->lstPersonAsPrimary->AddItem(QApplication::Translate('- Select One -'), null);
+			$objPersonArray = Person::LoadAll();
+			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+				if ($objPerson->PrimaryEmailId == $this->objEmail->Id)
+					$objListItem->Selected = true;
+				$this->lstPersonAsPrimary->AddItem($objListItem);
+			}
+			return $this->lstPersonAsPrimary;
 		}
 
 		/**
-		 * Create and setup QLabel lblPrimaryFlag
+		 * Create and setup QLabel lblPersonAsPrimary
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblPrimaryFlag_Create($strControlId = null) {
-			$this->lblPrimaryFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPrimaryFlag->Name = QApplication::Translate('Primary Flag');
-			$this->lblPrimaryFlag->Text = ($this->objEmail->PrimaryFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblPrimaryFlag;
+		public function lblPersonAsPrimary_Create($strControlId = null) {
+			$this->lblPersonAsPrimary = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPersonAsPrimary->Name = QApplication::Translate('Person As Primary');
+			$this->lblPersonAsPrimary->Text = ($this->objEmail->PersonAsPrimary) ? $this->objEmail->PersonAsPrimary->__toString() : null;
+			return $this->lblPersonAsPrimary;
 		}
 
 
@@ -271,8 +278,18 @@
 			if ($this->txtAddress) $this->txtAddress->Text = $this->objEmail->Address;
 			if ($this->lblAddress) $this->lblAddress->Text = $this->objEmail->Address;
 
-			if ($this->chkPrimaryFlag) $this->chkPrimaryFlag->Checked = $this->objEmail->PrimaryFlag;
-			if ($this->lblPrimaryFlag) $this->lblPrimaryFlag->Text = ($this->objEmail->PrimaryFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			if ($this->lstPersonAsPrimary) {
+				$this->lstPersonAsPrimary->RemoveAllItems();
+				$this->lstPersonAsPrimary->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPersonArray = Person::LoadAll();
+				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+					if ($objPerson->PrimaryEmailId == $this->objEmail->Id)
+						$objListItem->Selected = true;
+					$this->lstPersonAsPrimary->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPersonAsPrimary) $this->lblPersonAsPrimary->Text = ($this->objEmail->PersonAsPrimary) ? $this->objEmail->PersonAsPrimary->__toString() : null;
 
 		}
 
@@ -299,9 +316,9 @@
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objEmail->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->txtAddress) $this->objEmail->Address = $this->txtAddress->Text;
-				if ($this->chkPrimaryFlag) $this->objEmail->PrimaryFlag = $this->chkPrimaryFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstPersonAsPrimary) $this->objEmail->PersonAsPrimary = Person::Load($this->lstPersonAsPrimary->SelectedValue);
 
 				// Save the Email object
 				$this->objEmail->Save();
@@ -360,12 +377,12 @@
 				case 'AddressLabel':
 					if (!$this->lblAddress) return $this->lblAddress_Create();
 					return $this->lblAddress;
-				case 'PrimaryFlagControl':
-					if (!$this->chkPrimaryFlag) return $this->chkPrimaryFlag_Create();
-					return $this->chkPrimaryFlag;
-				case 'PrimaryFlagLabel':
-					if (!$this->lblPrimaryFlag) return $this->lblPrimaryFlag_Create();
-					return $this->lblPrimaryFlag;
+				case 'PersonAsPrimaryControl':
+					if (!$this->lstPersonAsPrimary) return $this->lstPersonAsPrimary_Create();
+					return $this->lstPersonAsPrimary;
+				case 'PersonAsPrimaryLabel':
+					if (!$this->lblPersonAsPrimary) return $this->lblPersonAsPrimary_Create();
+					return $this->lblPersonAsPrimary;
 				default:
 					try {
 						return parent::__get($strName);
@@ -394,8 +411,8 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'AddressControl':
 						return ($this->txtAddress = QType::Cast($mixValue, 'QControl'));
-					case 'PrimaryFlagControl':
-						return ($this->chkPrimaryFlag = QType::Cast($mixValue, 'QControl'));
+					case 'PersonAsPrimaryControl':
+						return ($this->lstPersonAsPrimary = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

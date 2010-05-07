@@ -60,7 +60,6 @@
 			$this->dtgPhones->MetaAddColumn(QQN::Phone()->Address);
 			$this->dtgPhones->MetaAddColumn(QQN::Phone()->Person);
 			$this->dtgPhones->MetaAddColumn('Number');
-			$this->dtgPhones->MetaAddColumn('PrimaryFlag');
 		}
 	}
 

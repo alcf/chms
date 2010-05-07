@@ -34,12 +34,16 @@
 	 * @property integer $CurrentHeadShotId the value for intCurrentHeadShotId (Unique)
 	 * @property integer $MailingAddressId the value for intMailingAddressId 
 	 * @property integer $StewardshipAddressId the value for intStewardshipAddressId 
+	 * @property integer $PrimaryPhoneId the value for intPrimaryPhoneId 
+	 * @property integer $PrimaryEmailId the value for intPrimaryEmailId (Unique)
 	 * @property boolean $CanMailFlag the value for blnCanMailFlag 
-	 * @property boolean $CanEmailFlag the value for blnCanEmailFlag 
 	 * @property boolean $CanPhoneFlag the value for blnCanPhoneFlag 
+	 * @property boolean $CanEmailFlag the value for blnCanEmailFlag 
 	 * @property HeadShot $CurrentHeadShot the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 	 * @property Address $MailingAddress the value for the Address object referenced by intMailingAddressId 
 	 * @property Address $StewardshipAddress the value for the Address object referenced by intStewardshipAddressId 
+	 * @property Phone $PrimaryPhone the value for the Phone object referenced by intPrimaryPhoneId 
+	 * @property Email $PrimaryEmail the value for the Email object referenced by intPrimaryEmailId (Unique)
 	 * @property Household $HouseholdAsHead the value for the Household object that uniquely references this Person
 	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the communicationlist_person_assn association table
 	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_person_assn association table
@@ -240,6 +244,22 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column person.primary_phone_id
+		 * @var integer intPrimaryPhoneId
+		 */
+		protected $intPrimaryPhoneId;
+		const PrimaryPhoneIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.primary_email_id
+		 * @var integer intPrimaryEmailId
+		 */
+		protected $intPrimaryEmailId;
+		const PrimaryEmailIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column person.can_mail_flag
 		 * @var boolean blnCanMailFlag
 		 */
@@ -248,19 +268,19 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column person.can_email_flag
-		 * @var boolean blnCanEmailFlag
-		 */
-		protected $blnCanEmailFlag;
-		const CanEmailFlagDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column person.can_phone_flag
 		 * @var boolean blnCanPhoneFlag
 		 */
 		protected $blnCanPhoneFlag;
 		const CanPhoneFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.can_email_flag
+		 * @var boolean blnCanEmailFlag
+		 */
+		protected $blnCanEmailFlag;
+		const CanEmailFlagDefault = null;
 
 
 		/**
@@ -554,6 +574,26 @@
 		 * @var Address objStewardshipAddress
 		 */
 		protected $objStewardshipAddress;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column person.primary_phone_id.
+		 *
+		 * NOTE: Always use the PrimaryPhone property getter to correctly retrieve this Phone object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Phone objPrimaryPhone
+		 */
+		protected $objPrimaryPhone;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column person.primary_email_id.
+		 *
+		 * NOTE: Always use the PrimaryEmail property getter to correctly retrieve this Email object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Email objPrimaryEmail
+		 */
+		protected $objPrimaryEmail;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -855,9 +895,11 @@
 			$objBuilder->AddSelectItem($strTableName, 'current_head_shot_id', $strAliasPrefix . 'current_head_shot_id');
 			$objBuilder->AddSelectItem($strTableName, 'mailing_address_id', $strAliasPrefix . 'mailing_address_id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_address_id', $strAliasPrefix . 'stewardship_address_id');
+			$objBuilder->AddSelectItem($strTableName, 'primary_phone_id', $strAliasPrefix . 'primary_phone_id');
+			$objBuilder->AddSelectItem($strTableName, 'primary_email_id', $strAliasPrefix . 'primary_email_id');
 			$objBuilder->AddSelectItem($strTableName, 'can_mail_flag', $strAliasPrefix . 'can_mail_flag');
-			$objBuilder->AddSelectItem($strTableName, 'can_email_flag', $strAliasPrefix . 'can_email_flag');
 			$objBuilder->AddSelectItem($strTableName, 'can_phone_flag', $strAliasPrefix . 'can_phone_flag');
+			$objBuilder->AddSelectItem($strTableName, 'can_email_flag', $strAliasPrefix . 'can_email_flag');
 		}
 
 
@@ -1155,12 +1197,16 @@
 			$objToReturn->intMailingAddressId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_address_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_address_id'] : $strAliasPrefix . 'stewardship_address_id';
 			$objToReturn->intStewardshipAddressId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'primary_phone_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_phone_id'] : $strAliasPrefix . 'primary_phone_id';
+			$objToReturn->intPrimaryPhoneId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'primary_email_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_email_id'] : $strAliasPrefix . 'primary_email_id';
+			$objToReturn->intPrimaryEmailId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'can_mail_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'can_mail_flag'] : $strAliasPrefix . 'can_mail_flag';
 			$objToReturn->blnCanMailFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'can_email_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'can_email_flag'] : $strAliasPrefix . 'can_email_flag';
-			$objToReturn->blnCanEmailFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'can_phone_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'can_phone_flag'] : $strAliasPrefix . 'can_phone_flag';
 			$objToReturn->blnCanPhoneFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'can_email_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'can_email_flag'] : $strAliasPrefix . 'can_email_flag';
+			$objToReturn->blnCanEmailFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -1191,6 +1237,18 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objStewardshipAddress = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_address_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for PrimaryPhone Early Binding
+			$strAlias = $strAliasPrefix . 'primary_phone_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objPrimaryPhone = Phone::InstantiateDbRow($objDbRow, $strAliasPrefix . 'primary_phone_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for PrimaryEmail Early Binding
+			$strAlias = $strAliasPrefix . 'primary_email_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objPrimaryEmail = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'primary_email_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 			// Check for HouseholdAsHead Unique ReverseReference Binding
@@ -1427,6 +1485,18 @@
 		}
 			
 		/**
+		 * Load a single Person object,
+		 * by PrimaryEmailId Index(es)
+		 * @param integer $intPrimaryEmailId
+		 * @return Person
+		*/
+		public static function LoadByPrimaryEmailId($intPrimaryEmailId) {
+			return Person::QuerySingle(
+				QQ::Equal(QQN::Person()->PrimaryEmailId, $intPrimaryEmailId)
+			);
+		}
+			
+		/**
 		 * Load an array of Person objects,
 		 * by MembershipStatusTypeId Index(es)
 		 * @param integer $intMembershipStatusTypeId
@@ -1553,6 +1623,38 @@
 				QQ::Equal(QQN::Person()->StewardshipAddressId, $intStewardshipAddressId)
 			);
 		}
+			
+		/**
+		 * Load an array of Person objects,
+		 * by PrimaryPhoneId Index(es)
+		 * @param integer $intPrimaryPhoneId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Person[]
+		*/
+		public static function LoadArrayByPrimaryPhoneId($intPrimaryPhoneId, $objOptionalClauses = null) {
+			// Call Person::QueryArray to perform the LoadArrayByPrimaryPhoneId query
+			try {
+				return Person::QueryArray(
+					QQ::Equal(QQN::Person()->PrimaryPhoneId, $intPrimaryPhoneId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count People
+		 * by PrimaryPhoneId Index(es)
+		 * @param integer $intPrimaryPhoneId
+		 * @return int
+		*/
+		public static function CountByPrimaryPhoneId($intPrimaryPhoneId) {
+			// Call Person::QueryCount to perform the CountByPrimaryPhoneId query
+			return Person::QueryCount(
+				QQ::Equal(QQN::Person()->PrimaryPhoneId, $intPrimaryPhoneId)
+			);
+		}
 
 
 
@@ -1664,9 +1766,11 @@
 							`current_head_shot_id`,
 							`mailing_address_id`,
 							`stewardship_address_id`,
+							`primary_phone_id`,
+							`primary_email_id`,
 							`can_mail_flag`,
-							`can_email_flag`,
-							`can_phone_flag`
+							`can_phone_flag`,
+							`can_email_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
@@ -1686,9 +1790,11 @@
 							' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
 							' . $objDatabase->SqlVariable($this->intMailingAddressId) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipAddressId) . ',
+							' . $objDatabase->SqlVariable($this->intPrimaryPhoneId) . ',
+							' . $objDatabase->SqlVariable($this->intPrimaryEmailId) . ',
 							' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
-							' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . ',
-							' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . '
+							' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . '
 						)
 					');
 
@@ -1722,9 +1828,11 @@
 							`current_head_shot_id` = ' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
 							`mailing_address_id` = ' . $objDatabase->SqlVariable($this->intMailingAddressId) . ',
 							`stewardship_address_id` = ' . $objDatabase->SqlVariable($this->intStewardshipAddressId) . ',
+							`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intPrimaryPhoneId) . ',
+							`primary_email_id` = ' . $objDatabase->SqlVariable($this->intPrimaryEmailId) . ',
 							`can_mail_flag` = ' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
-							`can_email_flag` = ' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . ',
-							`can_phone_flag` = ' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . '
+							`can_phone_flag` = ' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . ',
+							`can_email_flag` = ' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1850,9 +1958,11 @@
 			$this->CurrentHeadShotId = $objReloaded->CurrentHeadShotId;
 			$this->MailingAddressId = $objReloaded->MailingAddressId;
 			$this->StewardshipAddressId = $objReloaded->StewardshipAddressId;
+			$this->PrimaryPhoneId = $objReloaded->PrimaryPhoneId;
+			$this->PrimaryEmailId = $objReloaded->PrimaryEmailId;
 			$this->blnCanMailFlag = $objReloaded->blnCanMailFlag;
-			$this->blnCanEmailFlag = $objReloaded->blnCanEmailFlag;
 			$this->blnCanPhoneFlag = $objReloaded->blnCanPhoneFlag;
+			$this->blnCanEmailFlag = $objReloaded->blnCanEmailFlag;
 		}
 
 
@@ -1968,20 +2078,30 @@
 					// @return integer
 					return $this->intStewardshipAddressId;
 
+				case 'PrimaryPhoneId':
+					// Gets the value for intPrimaryPhoneId 
+					// @return integer
+					return $this->intPrimaryPhoneId;
+
+				case 'PrimaryEmailId':
+					// Gets the value for intPrimaryEmailId (Unique)
+					// @return integer
+					return $this->intPrimaryEmailId;
+
 				case 'CanMailFlag':
 					// Gets the value for blnCanMailFlag 
 					// @return boolean
 					return $this->blnCanMailFlag;
 
-				case 'CanEmailFlag':
-					// Gets the value for blnCanEmailFlag 
-					// @return boolean
-					return $this->blnCanEmailFlag;
-
 				case 'CanPhoneFlag':
 					// Gets the value for blnCanPhoneFlag 
 					// @return boolean
 					return $this->blnCanPhoneFlag;
+
+				case 'CanEmailFlag':
+					// Gets the value for blnCanEmailFlag 
+					// @return boolean
+					return $this->blnCanEmailFlag;
 
 
 				///////////////////
@@ -2018,6 +2138,30 @@
 						if ((!$this->objStewardshipAddress) && (!is_null($this->intStewardshipAddressId)))
 							$this->objStewardshipAddress = Address::Load($this->intStewardshipAddressId);
 						return $this->objStewardshipAddress;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PrimaryPhone':
+					// Gets the value for the Phone object referenced by intPrimaryPhoneId 
+					// @return Phone
+					try {
+						if ((!$this->objPrimaryPhone) && (!is_null($this->intPrimaryPhoneId)))
+							$this->objPrimaryPhone = Phone::Load($this->intPrimaryPhoneId);
+						return $this->objPrimaryPhone;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PrimaryEmail':
+					// Gets the value for the Email object referenced by intPrimaryEmailId (Unique)
+					// @return Email
+					try {
+						if ((!$this->objPrimaryEmail) && (!is_null($this->intPrimaryEmailId)))
+							$this->objPrimaryEmail = Email::Load($this->intPrimaryEmailId);
+						return $this->objPrimaryEmail;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2455,6 +2599,30 @@
 						throw $objExc;
 					}
 
+				case 'PrimaryPhoneId':
+					// Sets the value for intPrimaryPhoneId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objPrimaryPhone = null;
+						return ($this->intPrimaryPhoneId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PrimaryEmailId':
+					// Sets the value for intPrimaryEmailId (Unique)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objPrimaryEmail = null;
+						return ($this->intPrimaryEmailId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CanMailFlag':
 					// Sets the value for blnCanMailFlag 
 					// @param boolean $mixValue
@@ -2466,23 +2634,23 @@
 						throw $objExc;
 					}
 
-				case 'CanEmailFlag':
-					// Sets the value for blnCanEmailFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnCanEmailFlag = QType::Cast($mixValue, QType::Boolean));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'CanPhoneFlag':
 					// Sets the value for blnCanPhoneFlag 
 					// @param boolean $mixValue
 					// @return boolean
 					try {
 						return ($this->blnCanPhoneFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CanEmailFlag':
+					// Sets the value for blnCanEmailFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnCanEmailFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2576,6 +2744,66 @@
 						// Update Local Member Variables
 						$this->objStewardshipAddress = $mixValue;
 						$this->intStewardshipAddressId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'PrimaryPhone':
+					// Sets the value for the Phone object referenced by intPrimaryPhoneId 
+					// @param Phone $mixValue
+					// @return Phone
+					if (is_null($mixValue)) {
+						$this->intPrimaryPhoneId = null;
+						$this->objPrimaryPhone = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Phone object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Phone');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Phone object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved PrimaryPhone for this Person');
+
+						// Update Local Member Variables
+						$this->objPrimaryPhone = $mixValue;
+						$this->intPrimaryPhoneId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'PrimaryEmail':
+					// Sets the value for the Email object referenced by intPrimaryEmailId (Unique)
+					// @param Email $mixValue
+					// @return Email
+					if (is_null($mixValue)) {
+						$this->intPrimaryEmailId = null;
+						$this->objPrimaryEmail = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Email object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Email');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Email object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved PrimaryEmail for this Person');
+
+						// Update Local Member Variables
+						$this->objPrimaryEmail = $mixValue;
+						$this->intPrimaryEmailId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -4869,9 +5097,11 @@
 			$strToReturn .= '<element name="CurrentHeadShot" type="xsd1:HeadShot"/>';
 			$strToReturn .= '<element name="MailingAddress" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="StewardshipAddress" type="xsd1:Address"/>';
+			$strToReturn .= '<element name="PrimaryPhone" type="xsd1:Phone"/>';
+			$strToReturn .= '<element name="PrimaryEmail" type="xsd1:Email"/>';
 			$strToReturn .= '<element name="CanMailFlag" type="xsd:boolean"/>';
-			$strToReturn .= '<element name="CanEmailFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="CanPhoneFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="CanEmailFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -4883,6 +5113,8 @@
 				HeadShot::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Phone::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Email::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -4938,12 +5170,18 @@
 			if ((property_exists($objSoapObject, 'StewardshipAddress')) &&
 				($objSoapObject->StewardshipAddress))
 				$objToReturn->StewardshipAddress = Address::GetObjectFromSoapObject($objSoapObject->StewardshipAddress);
+			if ((property_exists($objSoapObject, 'PrimaryPhone')) &&
+				($objSoapObject->PrimaryPhone))
+				$objToReturn->PrimaryPhone = Phone::GetObjectFromSoapObject($objSoapObject->PrimaryPhone);
+			if ((property_exists($objSoapObject, 'PrimaryEmail')) &&
+				($objSoapObject->PrimaryEmail))
+				$objToReturn->PrimaryEmail = Email::GetObjectFromSoapObject($objSoapObject->PrimaryEmail);
 			if (property_exists($objSoapObject, 'CanMailFlag'))
 				$objToReturn->blnCanMailFlag = $objSoapObject->CanMailFlag;
-			if (property_exists($objSoapObject, 'CanEmailFlag'))
-				$objToReturn->blnCanEmailFlag = $objSoapObject->CanEmailFlag;
 			if (property_exists($objSoapObject, 'CanPhoneFlag'))
 				$objToReturn->blnCanPhoneFlag = $objSoapObject->CanPhoneFlag;
+			if (property_exists($objSoapObject, 'CanEmailFlag'))
+				$objToReturn->blnCanEmailFlag = $objSoapObject->CanEmailFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -4978,6 +5216,14 @@
 				$objObject->objStewardshipAddress = Address::GetSoapObjectFromObject($objObject->objStewardshipAddress, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intStewardshipAddressId = null;
+			if ($objObject->objPrimaryPhone)
+				$objObject->objPrimaryPhone = Phone::GetSoapObjectFromObject($objObject->objPrimaryPhone, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intPrimaryPhoneId = null;
+			if ($objObject->objPrimaryEmail)
+				$objObject->objPrimaryEmail = Email::GetSoapObjectFromObject($objObject->objPrimaryEmail, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intPrimaryEmailId = null;
 			return $objObject;
 		}
 
@@ -5096,12 +5342,20 @@
 					return new QQNode('stewardship_address_id', 'StewardshipAddressId', 'integer', $this);
 				case 'StewardshipAddress':
 					return new QQNodeAddress('stewardship_address_id', 'StewardshipAddress', 'integer', $this);
+				case 'PrimaryPhoneId':
+					return new QQNode('primary_phone_id', 'PrimaryPhoneId', 'integer', $this);
+				case 'PrimaryPhone':
+					return new QQNodePhone('primary_phone_id', 'PrimaryPhone', 'integer', $this);
+				case 'PrimaryEmailId':
+					return new QQNode('primary_email_id', 'PrimaryEmailId', 'integer', $this);
+				case 'PrimaryEmail':
+					return new QQNodeEmail('primary_email_id', 'PrimaryEmail', 'integer', $this);
 				case 'CanMailFlag':
 					return new QQNode('can_mail_flag', 'CanMailFlag', 'boolean', $this);
-				case 'CanEmailFlag':
-					return new QQNode('can_email_flag', 'CanEmailFlag', 'boolean', $this);
 				case 'CanPhoneFlag':
 					return new QQNode('can_phone_flag', 'CanPhoneFlag', 'boolean', $this);
+				case 'CanEmailFlag':
+					return new QQNode('can_email_flag', 'CanEmailFlag', 'boolean', $this);
 				case 'CommunicationList':
 					return new QQNodePersonCommunicationList($this);
 				case 'NameItem':
@@ -5198,12 +5452,20 @@
 					return new QQNode('stewardship_address_id', 'StewardshipAddressId', 'integer', $this);
 				case 'StewardshipAddress':
 					return new QQNodeAddress('stewardship_address_id', 'StewardshipAddress', 'integer', $this);
+				case 'PrimaryPhoneId':
+					return new QQNode('primary_phone_id', 'PrimaryPhoneId', 'integer', $this);
+				case 'PrimaryPhone':
+					return new QQNodePhone('primary_phone_id', 'PrimaryPhone', 'integer', $this);
+				case 'PrimaryEmailId':
+					return new QQNode('primary_email_id', 'PrimaryEmailId', 'integer', $this);
+				case 'PrimaryEmail':
+					return new QQNodeEmail('primary_email_id', 'PrimaryEmail', 'integer', $this);
 				case 'CanMailFlag':
 					return new QQNode('can_mail_flag', 'CanMailFlag', 'boolean', $this);
-				case 'CanEmailFlag':
-					return new QQNode('can_email_flag', 'CanEmailFlag', 'boolean', $this);
 				case 'CanPhoneFlag':
 					return new QQNode('can_phone_flag', 'CanPhoneFlag', 'boolean', $this);
+				case 'CanEmailFlag':
+					return new QQNode('can_email_flag', 'CanEmailFlag', 'boolean', $this);
 				case 'CommunicationList':
 					return new QQNodePersonCommunicationList($this);
 				case 'NameItem':

@@ -59,6 +59,7 @@
 			$this->dtgAddresses->MetaAddTypeColumn('AddressTypeId', 'AddressType');
 			$this->dtgAddresses->MetaAddColumn(QQN::Address()->Person);
 			$this->dtgAddresses->MetaAddColumn(QQN::Address()->Household);
+			$this->dtgAddresses->MetaAddColumn(QQN::Address()->PrimaryPhone);
 			$this->dtgAddresses->MetaAddColumn('Address1');
 			$this->dtgAddresses->MetaAddColumn('Address2');
 			$this->dtgAddresses->MetaAddColumn('Address3');

@@ -11,7 +11,7 @@
 
 		<?php $_CONTROL->txtAddress->RenderWithName(); ?>
 
-		<?php $_CONTROL->chkPrimaryFlag->RenderWithName(); ?>
+		<?php $_CONTROL->lstPersonAsPrimary->RenderWithName(); ?>
 
 	</div>
 

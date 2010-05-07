@@ -58,7 +58,7 @@
 			$this->dtgEmails->MetaAddColumn('Id');
 			$this->dtgEmails->MetaAddColumn(QQN::Email()->Person);
 			$this->dtgEmails->MetaAddColumn('Address');
-			$this->dtgEmails->MetaAddColumn('PrimaryFlag');
+			$this->dtgEmails->MetaAddColumn(QQN::Email()->PersonAsPrimary);
 		}
 	}
 

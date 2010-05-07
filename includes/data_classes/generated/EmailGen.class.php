@@ -18,8 +18,8 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property string $Address the value for strAddress 
-	 * @property boolean $PrimaryFlag the value for blnPrimaryFlag 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
+	 * @property Person $PersonAsPrimary the value for the Person object that uniquely references this Email
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class EmailGen extends QBaseClass {
@@ -54,14 +54,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column email.primary_flag
-		 * @var boolean blnPrimaryFlag
-		 */
-		protected $blnPrimaryFlag;
-		const PrimaryFlagDefault = null;
-
-
-		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -92,6 +84,24 @@
 		 * @var Person objPerson
 		 */
 		protected $objPerson;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column person.primary_email_id.
+		 *
+		 * NOTE: Always use the PersonAsPrimary property getter to correctly retrieve this Person object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Person objPersonAsPrimary
+		 */
+		protected $objPersonAsPrimary;
+		
+		/**
+		 * Used internally to manage whether the adjoined PersonAsPrimary object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyPersonAsPrimary;
 
 
 
@@ -359,7 +369,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'address', $strAliasPrefix . 'address');
-			$objBuilder->AddSelectItem($strTableName, 'primary_flag', $strAliasPrefix . 'primary_flag');
 		}
 
 
@@ -397,8 +406,6 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'address'] : $strAliasPrefix . 'address';
 			$objToReturn->strAddress = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'primary_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_flag'] : $strAliasPrefix . 'primary_flag';
-			$objToReturn->blnPrimaryFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -418,6 +425,18 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
+
+			// Check for PersonAsPrimary Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'personasprimary__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objPersonAsPrimary = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objPersonAsPrimary = false;
+			}
 
 
 
@@ -573,12 +592,10 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `email` (
 							`person_id`,
-							`address`,
-							`primary_flag`
+							`address`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->strAddress) . ',
-							' . $objDatabase->SqlVariable($this->blnPrimaryFlag) . '
+							' . $objDatabase->SqlVariable($this->strAddress) . '
 						)
 					');
 
@@ -595,13 +612,32 @@
 							`email`
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`address` = ' . $objDatabase->SqlVariable($this->strAddress) . ',
-							`primary_flag` = ' . $objDatabase->SqlVariable($this->blnPrimaryFlag) . '
+							`address` = ' . $objDatabase->SqlVariable($this->strAddress) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
 				}
 
+		
+		
+				// Update the adjoined PersonAsPrimary object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyPersonAsPrimary) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = Person::LoadByPrimaryEmailId($this->intId)) {
+						$objAssociated->PrimaryEmailId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objPersonAsPrimary) {
+						$this->objPersonAsPrimary->PrimaryEmailId = $this->intId;
+						$this->objPersonAsPrimary->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyPersonAsPrimary = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -626,6 +662,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = Email::GetDatabase();
 
+			
+			
+			// Update the adjoined PersonAsPrimary object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = Person::LoadByPrimaryEmailId($this->intId)) {
+				$objAssociated->PrimaryEmailId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -677,7 +723,6 @@
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
 			$this->strAddress = $objReloaded->strAddress;
-			$this->blnPrimaryFlag = $objReloaded->blnPrimaryFlag;
 		}
 
 
@@ -713,11 +758,6 @@
 					// @return string
 					return $this->strAddress;
 
-				case 'PrimaryFlag':
-					// Gets the value for blnPrimaryFlag 
-					// @return boolean
-					return $this->blnPrimaryFlag;
-
 
 				///////////////////
 				// Member Objects
@@ -729,6 +769,24 @@
 						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
 							$this->objPerson = Person::Load($this->intPersonId);
 						return $this->objPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'PersonAsPrimary':
+					// Gets the value for the Person object that uniquely references this Email
+					// by objPersonAsPrimary (Unique)
+					// @return Person
+					try {
+						if ($this->objPersonAsPrimary === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objPersonAsPrimary)
+							$this->objPersonAsPrimary = Person::LoadByPrimaryEmailId($this->intId);
+						return $this->objPersonAsPrimary;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -790,17 +848,6 @@
 						throw $objExc;
 					}
 
-				case 'PrimaryFlag':
-					// Sets the value for blnPrimaryFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnPrimaryFlag = QType::Cast($mixValue, QType::Boolean));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 
 				///////////////////
 				// Member Objects
@@ -829,6 +876,43 @@
 						// Update Local Member Variables
 						$this->objPerson = $mixValue;
 						$this->intPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'PersonAsPrimary':
+					// Sets the value for the Person object referenced by objPersonAsPrimary (Unique)
+					// @param Person $mixValue
+					// @return Person
+					if (is_null($mixValue)) {
+						$this->objPersonAsPrimary = null;
+
+						// Make sure we update the adjoined Person object the next time we call Save()
+						$this->blnDirtyPersonAsPrimary = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Person object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Person');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objPersonAsPrimary to a DIFFERENT $mixValue?
+						if ((!$this->PersonAsPrimary) || ($this->PersonAsPrimary->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined Person object the next time we call Save()
+							$this->blnDirtyPersonAsPrimary = true;
+
+							// Update Local Member Variable
+							$this->objPersonAsPrimary = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -875,7 +959,6 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="Address" type="xsd:string"/>';
-			$strToReturn .= '<element name="PrimaryFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -906,8 +989,6 @@
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if (property_exists($objSoapObject, 'Address'))
 				$objToReturn->strAddress = $objSoapObject->Address;
-			if (property_exists($objSoapObject, 'PrimaryFlag'))
-				$objToReturn->blnPrimaryFlag = $objSoapObject->PrimaryFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -958,8 +1039,8 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'Address':
 					return new QQNode('address', 'Address', 'string', $this);
-				case 'PrimaryFlag':
-					return new QQNode('primary_flag', 'PrimaryFlag', 'boolean', $this);
+				case 'PersonAsPrimary':
+					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_email_id', 'PersonAsPrimary');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -988,8 +1069,8 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'Address':
 					return new QQNode('address', 'Address', 'string', $this);
-				case 'PrimaryFlag':
-					return new QQNode('primary_flag', 'PrimaryFlag', 'boolean', $this);
+				case 'PersonAsPrimary':
+					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_email_id', 'PersonAsPrimary');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

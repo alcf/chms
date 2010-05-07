@@ -23,9 +23,9 @@
 		public $lblId;
 		public $lstPerson;
 		public $txtAddress;
-		public $chkPrimaryFlag;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+		public $lstPersonAsPrimary;
 
 		// Other Controls
 		public $btnSave;
@@ -56,7 +56,7 @@
 			$this->lblId = $this->mctEmail->lblId_Create();
 			$this->lstPerson = $this->mctEmail->lstPerson_Create();
 			$this->txtAddress = $this->mctEmail->txtAddress_Create();
-			$this->chkPrimaryFlag = $this->mctEmail->chkPrimaryFlag_Create();
+			$this->lstPersonAsPrimary = $this->mctEmail->lstPersonAsPrimary_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

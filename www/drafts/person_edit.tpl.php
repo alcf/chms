@@ -55,11 +55,15 @@
 
 		<?php $this->lstStewardshipAddress->RenderWithName(); ?>
 
+		<?php $this->lstPrimaryPhone->RenderWithName(); ?>
+
+		<?php $this->lstPrimaryEmail->RenderWithName(); ?>
+
 		<?php $this->chkCanMailFlag->RenderWithName(); ?>
 
-		<?php $this->chkCanEmailFlag->RenderWithName(); ?>
-
 		<?php $this->chkCanPhoneFlag->RenderWithName(); ?>
+
+		<?php $this->chkCanEmailFlag->RenderWithName(); ?>
 
 		<?php $this->lstHouseholdAsHead->RenderWithName(); ?>
 

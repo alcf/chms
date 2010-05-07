@@ -27,8 +27,6 @@
 
 		<?php $this->txtNumber->RenderWithName(); ?>
 
-		<?php $this->chkPrimaryFlag->RenderWithName(); ?>
-
 	</div>
 
 	<div id="formActions">

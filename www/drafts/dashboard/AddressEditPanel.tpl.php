@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->lstHousehold->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstPrimaryPhone->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtAddress1->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtAddress2->RenderWithName(); ?>

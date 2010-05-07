@@ -25,6 +25,8 @@
 
 		<?php $this->lstHousehold->RenderWithName(); ?>
 
+		<?php $this->lstPrimaryPhone->RenderWithName(); ?>
+
 		<?php $this->txtAddress1->RenderWithName(); ?>
 
 		<?php $this->txtAddress2->RenderWithName(); ?>

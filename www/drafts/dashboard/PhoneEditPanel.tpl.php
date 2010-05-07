@@ -15,8 +15,6 @@
 
 		<?php $_CONTROL->txtNumber->RenderWithName(); ?>
 
-		<?php $_CONTROL->chkPrimaryFlag->RenderWithName(); ?>
-
 	</div>
 
 	<div id="formActions">

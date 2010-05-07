@@ -84,9 +84,11 @@
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->CurrentHeadShot);
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->MailingAddress);
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->StewardshipAddress);
+			$this->dtgPeople->MetaAddColumn(QQN::Person()->PrimaryPhone);
+			$this->dtgPeople->MetaAddColumn(QQN::Person()->PrimaryEmail);
 			$this->dtgPeople->MetaAddColumn('CanMailFlag');
-			$this->dtgPeople->MetaAddColumn('CanEmailFlag');
 			$this->dtgPeople->MetaAddColumn('CanPhoneFlag');
+			$this->dtgPeople->MetaAddColumn('CanEmailFlag');
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->HouseholdAsHead);
 
 			// Setup the Create New button

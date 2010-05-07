@@ -277,7 +277,8 @@
 				case 'PersonId': return QQN::Email()->PersonId;
 				case 'Person': return QQN::Email()->Person;
 				case 'Address': return QQN::Email()->Address;
-				case 'PrimaryFlag': return QQN::Email()->PrimaryFlag;
+				case 'PersonAsPrimary': return QQN::Email()->PersonAsPrimary;
+
 				default: throw new QCallerException('Simple Property not found in EmailDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

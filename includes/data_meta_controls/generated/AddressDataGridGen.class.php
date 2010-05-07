@@ -279,6 +279,8 @@
 				case 'Person': return QQN::Address()->Person;
 				case 'HouseholdId': return QQN::Address()->HouseholdId;
 				case 'Household': return QQN::Address()->Household;
+				case 'PrimaryPhoneId': return QQN::Address()->PrimaryPhoneId;
+				case 'PrimaryPhone': return QQN::Address()->PrimaryPhone;
 				case 'Address1': return QQN::Address()->Address1;
 				case 'Address2': return QQN::Address()->Address2;
 				case 'Address3': return QQN::Address()->Address3;

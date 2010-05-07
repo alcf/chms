@@ -23,7 +23,7 @@
 
 		<?php $this->txtAddress->RenderWithName(); ?>
 
-		<?php $this->chkPrimaryFlag->RenderWithName(); ?>
+		<?php $this->lstPersonAsPrimary->RenderWithName(); ?>
 
 	</div>
 

@@ -43,11 +43,15 @@
 
 		<?php $_CONTROL->lstStewardshipAddress->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstPrimaryPhone->RenderWithName(); ?>
+
+		<?php $_CONTROL->lstPrimaryEmail->RenderWithName(); ?>
+
 		<?php $_CONTROL->chkCanMailFlag->RenderWithName(); ?>
 
-		<?php $_CONTROL->chkCanEmailFlag->RenderWithName(); ?>
-
 		<?php $_CONTROL->chkCanPhoneFlag->RenderWithName(); ?>
+
+		<?php $_CONTROL->chkCanEmailFlag->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstHouseholdAsHead->RenderWithName(); ?>
 

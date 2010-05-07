@@ -280,7 +280,6 @@
 				case 'PersonId': return QQN::Phone()->PersonId;
 				case 'Person': return QQN::Phone()->Person;
 				case 'Number': return QQN::Phone()->Number;
-				case 'PrimaryFlag': return QQN::Phone()->PrimaryFlag;
 				default: throw new QCallerException('Simple Property not found in PhoneDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
