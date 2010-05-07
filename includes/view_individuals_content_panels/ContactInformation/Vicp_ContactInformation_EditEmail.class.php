@@ -35,7 +35,7 @@
 
 			$this->txtAddress = $this->mctEmail->txtAddress_Create();
 			$this->txtAddress->Required = true;
-			
+
 			$this->txtAddress->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			$this->txtAddress->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtAddress->CausesValidation = $this->btnSave->CausesValidation;
