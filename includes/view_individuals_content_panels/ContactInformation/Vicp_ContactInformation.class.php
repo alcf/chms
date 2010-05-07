@@ -32,9 +32,9 @@
 
 			$this->dtgPhones = new QDataGrid($this);
 			$this->dtgPhones->AlternateRowStyle->CssClass = 'alternate';
-			$this->dtgPhones->AddColumn(new QDataGridColumn('Primary?', '<?= $_CONTROL->ParentControl->RenderPhoneType($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgPhones->AddColumn(new QDataGridColumn('Type', '<?= PhoneType::$NameArray[$_ITEM->PhoneTypeId]; ?>'));
-			$this->dtgPhones->AddColumn(new QDataGridColumn('Number', '<?= $_ITEM->Number; ?>'));
+			$this->dtgPhones->AddColumn(new QDataGridColumn('Primary?', '<?= $_CONTROL->ParentControl->RenderPhonePrimary($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgPhones->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderPhoneType($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgPhones->AddColumn(new QDataGridColumn('Number', '<?= $_CONTROL->ParentControl->RenderPhoneNumber($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgPhones->SetDataBinder('dtgPhones_Bind', $this);
 
 			$this->pxySetPrimaryPhone = new QControlProxy($this);
@@ -46,12 +46,26 @@
 			$this->dtgPhones->DataSource = $this->objPerson->GetAllAssociatedPhoneArray($this->objForm->objHousehold);
 		}
 
-		public function RenderPhoneType(Phone $objPhone) {
+		public function RenderPhonePrimary(Phone $objPhone) {
 			if ($objPhone->Id == $this->objPerson->PrimaryPhoneId) {
 				return 'Primary';
 			} else {
 				return sprintf('[<a href="#" %s>set as primary</a>]', $this->pxySetPrimaryPhone->RenderAsEvents($objPhone->Id, false));
 			}
+		}
+
+		public function RenderPhoneNumber(Phone $objPhone) {
+			if ($objPhone->Address)
+				return $objPhone->Number;
+			else
+				return sprintf('<a href="#contact/edit_phone/%s">%s</a>', $objPhone->Id, $objPhone->Number);
+		}
+		
+		public function RenderPhoneType(Phone $objPhone) {
+			if ($objPhone->Address)
+				return PhoneType::$NameArray[$objPhone->PhoneTypeId];
+			else
+				return sprintf('<a href="#contact/edit_phone/%s">%s</a>', $objPhone->Id, PhoneType::$NameArray[$objPhone->PhoneTypeId]);
 		}
 
 		public function pxySetPrimaryPhone_Click($strFormId, $strControlId, $strParameter) {

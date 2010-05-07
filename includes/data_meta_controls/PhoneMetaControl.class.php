@@ -19,5 +19,17 @@
 	 * @subpackage MetaControls
 	 */
 	class PhoneMetaControl extends PhoneMetaControlGen {
+		/**
+		 * Create and setup QTextBox txtNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtNumber_Create($strControlId = null) {
+			$this->txtNumber = new PhoneTextBox($this->objParentObject, $strControlId);
+			$this->txtNumber->Name = QApplication::Translate('Number');
+			$this->txtNumber->Text = $this->objPhone->Number;
+			$this->txtNumber->MaxLength = Phone::NumberMaxLength;
+			return $this->txtNumber;
+		}
 	}
 ?>
