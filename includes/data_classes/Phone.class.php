@@ -51,8 +51,9 @@
 		 */
 		public function SetAsPrimary(Person $objPerson = null) {
 			if ($objPerson) {
-				if (!$this->Address || !$this->Address->Household ||
-					!(HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Address->HouseholdId))) {
+				if (($this->PersonId != $objPerson->Id) &&
+					(!$this->Address || !$this->Address->Household ||
+					 !(HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Address->HouseholdId)))) {
 					throw new QCallerException('Cannot set as primary phone for person not in the household for this address');
 				}
 				$objPerson->PrimaryPhone = $this;

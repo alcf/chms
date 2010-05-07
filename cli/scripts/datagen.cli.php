@@ -198,7 +198,7 @@
 			}
 		}
 
-		protected static function GenerateAddressesForPerson(Person $objPerson) {
+		protected static function GenerateAddressesAndPhonesForPerson(Person $objPerson) {
 			$intAddressCount = rand(0, 5);
 			for ($i = 0; $i < $intAddressCount; $i++) {
 				$objAddress = new Address();
@@ -223,6 +223,22 @@
 						break;
 				}
 				$objAddress->Save();
+			}
+			
+			$intPhoneCount = rand(0, 5);
+			$objPhoneArray = array();
+			for ($i = 0; $i < $intPhoneCount; $i++) {
+				$objPhone = new Phone();
+				$objPhone->PhoneTypeId = QDataGen::GenerateFromArray(array_keys(PhoneType::$NameArray));
+				while ($objPhone->PhoneTypeId == PhoneType::Home) $objPhone->PhoneTypeId = QDataGen::GenerateFromArray(array_keys(PhoneType::$NameArray));
+				$objPhone->Number = QDataGen::GeneratePhone();
+				$objPhone->Person = $objPerson;
+				$objPhone->Save();
+				$objPhoneArray[] = $objPhone;
+			}
+			
+			if ($intPhoneCount && !rand(0, 2)) {
+				QDataGen::GenerateFromArray($objPhoneArray)->SetAsPrimary();
 			}
 		}
 
@@ -413,8 +429,8 @@
 				$objPerson->SaveComment($objLogin, $strComment, $intCommentPrivacyTypeId, $objCommentCategory->Id, $dttPostDate);
 			}
 
-			// Addresses
-			self::GenerateAddressesForPerson($objPerson);
+			// Addresses and Phone
+			self::GenerateAddressesAndPhonesForPerson($objPerson);
 
 			return $objPerson;
 		}
