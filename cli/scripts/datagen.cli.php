@@ -8,7 +8,8 @@
 		const UserCount = 50;
 		const IndividualCount = 100;
 		const HouseholdCount = 100;
-		
+		const CommunicationListCount = 100;
+
 		// Static Data
 		public static $MinistryArray = array(
 			'bc' => 'Biblical Counseling',
@@ -67,8 +68,43 @@
 			ChmsDataGen::GenerateMinistries();
 			ChmsDataGen::GenerateUsers();
 			ChmsDataGen::GenerateHouseholds();
+			ChmsDataGen::GenerateCommunicationLists();
 		}
 
+		public static function GenerateCommunicationLists() {
+			$objPersonArray = Person::LoadAll();
+			while (QDataGen::DisplayWhileTask('Generating Communication Lists', self::CommunicationListCount, false)) {
+				$objCommunicationList = new CommunicationList();
+				$objCommunicationList->EmailBroadcastTypeId = QDataGen::GenerateFromArray(array_keys(EmailBroadcastType::$NameArray));
+				$objCommunicationList->Ministry = QDataGen::GenerateFromArray(self::$MinistryArray);
+				$objCommunicationList->Name = QDataGen::GenerateTitle(1, 4);
+				$objCommunicationList->Token = strtolower(str_replace(' ', '_', $objCommunicationList->Name));
+				while (CommunicationList::LoadByToken($objCommunicationList->Token)) {
+					$objCommunicationList->Name = QDataGen::GenerateTitle(1, 4);
+					$objCommunicationList->Token = strtolower(str_replace(' ', '_', $objCommunicationList->Name));
+				}
+				$objCommunicationList->Save();
+
+				$intCount = rand(5, 100);
+				for ($i = 0; $i < $intCount; $i++) {
+					if (rand(0, 3)) {
+						$objPerson = QDataGen::GenerateFromArray($objPersonArray);
+						while ($objCommunicationList->IsPersonAssociated($objPerson))
+							$objPerson = QDataGen::GenerateFromArray($objPersonArray);
+						$objCommunicationList->AssociatePerson($objPerson);
+					} else {
+						$strFirstName = QDataGen::GenerateFirstName();
+						if (!rand(0, 5))
+							$strMiddleName = QDataGen::GenerateMiddleInitial() . '.';
+						else
+							$strMiddleName = null;
+						$strLastName = QDataGen::GenerateLastName();
+						$strEmail = QDataGen::GenerateEmail($strFirstName, $strLastName);
+						$objCommunicationList->AddEntry($strEmail, $strFirstName, $strMiddleName, $strLastName);
+					}
+				}
+			}
+		}
 
 		public static function GenerateMinistries() {
 			QDataGen::DisplayForEachTaskStart('Generating Minsitries', count(self::$MinistryArray));
@@ -81,6 +117,7 @@
 				$objMinistry->ActiveFlag = true;
 				$objMinistry->Save();
 			}
+			self::$MinistryArray = Ministry::LoadAll();
 			QDataGen::DisplayForEachTaskEnd('Generating Minsitries');
 		}
 
@@ -111,9 +148,9 @@
 				// Associate Random Ministries
 				$intMinistryCount = ($blnAdminGenerated) ? rand(1, 3) : 5;
 				for ($i = 0; $i < $intMinistryCount; $i++) {
-					$objMinistry = Ministry::LoadByToken(QDataGen::GenerateFromArray(array_keys(self::$MinistryArray)));
+					$objMinistry = QDataGen::GenerateFromArray(self::$MinistryArray);
 					while ($objLogin->IsMinistryAssociated($objMinistry))
-						$objMinistry = Ministry::LoadByToken(QDataGen::GenerateFromArray(array_keys(self::$MinistryArray)));
+						$objMinistry = QDataGen::GenerateFromArray(self::$MinistryArray);
 					$objLogin->AssociateMinistry($objMinistry);
 				}
 

@@ -27,7 +27,7 @@
 		public $txtToken;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		public $lstCommunicationListEntriesAsEntry;
+		public $lstCommunicationListEntries;
 		public $lstPeople;
 
 		// Other Controls
@@ -61,7 +61,7 @@
 			$this->lstMinistry = $this->mctCommunicationList->lstMinistry_Create();
 			$this->txtName = $this->mctCommunicationList->txtName_Create();
 			$this->txtToken = $this->mctCommunicationList->txtToken_Create();
-			$this->lstCommunicationListEntriesAsEntry = $this->mctCommunicationList->lstCommunicationListEntriesAsEntry_Create();
+			$this->lstCommunicationListEntries = $this->mctCommunicationList->lstCommunicationListEntries_Create();
 			$this->lstPeople = $this->mctCommunicationList->lstPeople_Create();
 
 			// Create Buttons and Actions on this Form

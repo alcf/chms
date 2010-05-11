@@ -27,6 +27,29 @@
 			return sprintf('CommunicationList Object %s',  $this->intId);
 		}
 
+		/**
+		 * Associates an Email/Name/Etc. to this communication list
+		 * @param string $strEmail
+		 * @param string $strFirstName
+		 * @param string $strMiddleName
+		 * @param string $strLastName
+		 * @return CommunicationListEntry
+		 */
+		public function AddEntry($strEmail, $strFirstName, $strMiddleName, $strLastName) {
+			$strEmail = strtolower($strEmail);
+			if (!($objEntry = CommunicationListEntry::LoadByEmail($strEmail))) {
+				$objEntry = new CommunicationListEntry();
+				$objEntry->Email = $strEmail;
+			}
+
+			$objEntry->FirstName = $strFirstName;
+			$objEntry->MiddleName = $strMiddleName;
+			$objEntry->LastName = $strLastName;
+			$objEntry->Save();
+
+			if (!$this->IsCommunicationListEntryAssociated($objEntry)) $this->AssociateCommunicationListEntry($objEntry);
+			return $objEntry;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

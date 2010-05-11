@@ -27,7 +27,7 @@
 		public $txtEmail;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		public $lstCommunicationListsAsEntry;
+		public $lstCommunicationLists;
 
 		// Other Controls
 		public $btnSave;
@@ -60,7 +60,7 @@
 			$this->txtMiddleName = $this->mctCommunicationListEntry->txtMiddleName_Create();
 			$this->txtLastName = $this->mctCommunicationListEntry->txtLastName_Create();
 			$this->txtEmail = $this->mctCommunicationListEntry->txtEmail_Create();
-			$this->lstCommunicationListsAsEntry = $this->mctCommunicationListEntry->lstCommunicationListsAsEntry_Create();
+			$this->lstCommunicationLists = $this->mctCommunicationListEntry->lstCommunicationLists_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

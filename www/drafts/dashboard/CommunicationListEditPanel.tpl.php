@@ -15,7 +15,7 @@
 
 		<?php $_CONTROL->txtToken->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstCommunicationListEntriesAsEntry->RenderWithName(true, "Rows=7"); ?>
+		<?php $_CONTROL->lstCommunicationListEntries->RenderWithName(true, "Rows=7"); ?>
 
 		<?php $_CONTROL->lstPeople->RenderWithName(true, "Rows=7"); ?>
 

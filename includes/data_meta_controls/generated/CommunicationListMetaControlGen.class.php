@@ -26,8 +26,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $TokenControl
 	 * property-read QLabel $TokenLabel
-	 * property QListBox $CommunicationListEntryAsEntryControl
-	 * property-read QLabel $CommunicationListEntryAsEntryLabel
+	 * property QListBox $CommunicationListEntryControl
+	 * property-read QLabel $CommunicationListEntryLabel
 	 * property QListBox $PersonControl
 	 * property-read QLabel $PersonLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -55,11 +55,11 @@
 		protected $lblToken;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
-		protected $lstCommunicationListEntriesAsEntry;
+		protected $lstCommunicationListEntries;
 		protected $lstPeople;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
-		protected $lblCommunicationListEntriesAsEntry;
+		protected $lblCommunicationListEntries;
 		protected $lblPeople;
 
 
@@ -284,15 +284,15 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstCommunicationListEntriesAsEntry
+		 * Create and setup QListBox lstCommunicationListEntries
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
 		 */
-		public function lstCommunicationListEntriesAsEntry_Create($strControlId = null) {
-			$this->lstCommunicationListEntriesAsEntry = new QListBox($this->objParentObject, $strControlId);
-			$this->lstCommunicationListEntriesAsEntry->Name = QApplication::Translate('Communication List Entries As Entry');
-			$this->lstCommunicationListEntriesAsEntry->SelectionMode = QSelectionMode::Multiple;
-			$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryAsEntryArray();
+		public function lstCommunicationListEntries_Create($strControlId = null) {
+			$this->lstCommunicationListEntries = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCommunicationListEntries->Name = QApplication::Translate('Communication List Entries');
+			$this->lstCommunicationListEntries->SelectionMode = QSelectionMode::Multiple;
+			$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryArray();
 			$objCommunicationListEntryArray = CommunicationListEntry::LoadAll();
 			if ($objCommunicationListEntryArray) foreach ($objCommunicationListEntryArray as $objCommunicationListEntry) {
 				$objListItem = new QListItem($objCommunicationListEntry->__toString(), $objCommunicationListEntry->Id);
@@ -300,27 +300,27 @@
 					if ($objAssociated->Id == $objCommunicationListEntry->Id)
 						$objListItem->Selected = true;
 				}
-				$this->lstCommunicationListEntriesAsEntry->AddItem($objListItem);
+				$this->lstCommunicationListEntries->AddItem($objListItem);
 			}
-			return $this->lstCommunicationListEntriesAsEntry;
+			return $this->lstCommunicationListEntries;
 		}
 
 		/**
-		 * Create and setup QLabel lblCommunicationListEntriesAsEntry
+		 * Create and setup QLabel lblCommunicationListEntries
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strGlue glue to display in between each associated object
 		 * @return QLabel
 		 */
-		public function lblCommunicationListEntriesAsEntry_Create($strControlId = null, $strGlue = ', ') {
-			$this->lblCommunicationListEntriesAsEntry = new QLabel($this->objParentObject, $strControlId);
-			$this->lstCommunicationListEntriesAsEntry->Name = QApplication::Translate('Communication List Entries As Entry');
+		public function lblCommunicationListEntries_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblCommunicationListEntries = new QLabel($this->objParentObject, $strControlId);
+			$this->lstCommunicationListEntries->Name = QApplication::Translate('Communication List Entries');
 			
-			$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryAsEntryArray();
+			$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryArray();
 			$strItems = array();
 			foreach ($objAssociatedArray as $objAssociated)
 				$strItems[] = $objAssociated->__toString();
-			$this->lblCommunicationListEntriesAsEntry->Text = implode($strGlue, $strItems);
-			return $this->lblCommunicationListEntriesAsEntry;
+			$this->lblCommunicationListEntries->Text = implode($strGlue, $strItems);
+			return $this->lblCommunicationListEntries;
 		}
 
 		/**
@@ -399,9 +399,9 @@
 			if ($this->txtToken) $this->txtToken->Text = $this->objCommunicationList->Token;
 			if ($this->lblToken) $this->lblToken->Text = $this->objCommunicationList->Token;
 
-			if ($this->lstCommunicationListEntriesAsEntry) {
-				$this->lstCommunicationListEntriesAsEntry->RemoveAllItems();
-				$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryAsEntryArray();
+			if ($this->lstCommunicationListEntries) {
+				$this->lstCommunicationListEntries->RemoveAllItems();
+				$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryArray();
 				$objCommunicationListEntryArray = CommunicationListEntry::LoadAll();
 				if ($objCommunicationListEntryArray) foreach ($objCommunicationListEntryArray as $objCommunicationListEntry) {
 					$objListItem = new QListItem($objCommunicationListEntry->__toString(), $objCommunicationListEntry->Id);
@@ -409,15 +409,15 @@
 						if ($objAssociated->Id == $objCommunicationListEntry->Id)
 							$objListItem->Selected = true;
 					}
-					$this->lstCommunicationListEntriesAsEntry->AddItem($objListItem);
+					$this->lstCommunicationListEntries->AddItem($objListItem);
 				}
 			}
-			if ($this->lblCommunicationListEntriesAsEntry) {
-				$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryAsEntryArray();
+			if ($this->lblCommunicationListEntries) {
+				$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryArray();
 				$strItems = array();
 				foreach ($objAssociatedArray as $objAssociated)
 					$strItems[] = $objAssociated->__toString();
-				$this->lblCommunicationListEntriesAsEntry->Text = implode($strGlue, $strItems);
+				$this->lblCommunicationListEntries->Text = implode($strGlue, $strItems);
 			}
 
 			if ($this->lstPeople) {
@@ -449,12 +449,12 @@
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
 
-		protected function lstCommunicationListEntriesAsEntry_Update() {
-			if ($this->lstCommunicationListEntriesAsEntry) {
-				$this->objCommunicationList->UnassociateAllCommunicationListEntriesAsEntry();
-				$objSelectedListItems = $this->lstCommunicationListEntriesAsEntry->SelectedItems;
+		protected function lstCommunicationListEntries_Update() {
+			if ($this->lstCommunicationListEntries) {
+				$this->objCommunicationList->UnassociateAllCommunicationListEntries();
+				$objSelectedListItems = $this->lstCommunicationListEntries->SelectedItems;
 				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
-					$this->objCommunicationList->AssociateCommunicationListEntryAsEntry(CommunicationListEntry::Load($objListItem->Value));
+					$this->objCommunicationList->AssociateCommunicationListEntry(CommunicationListEntry::Load($objListItem->Value));
 				}
 			}
 		}
@@ -495,7 +495,7 @@
 				$this->objCommunicationList->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
-				$this->lstCommunicationListEntriesAsEntry_Update();
+				$this->lstCommunicationListEntries_Update();
 				$this->lstPeople_Update();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -508,7 +508,7 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeleteCommunicationList() {
-			$this->objCommunicationList->UnassociateAllCommunicationListEntriesAsEntry();
+			$this->objCommunicationList->UnassociateAllCommunicationListEntries();
 			$this->objCommunicationList->UnassociateAllPeople();
 			$this->objCommunicationList->Delete();
 		}		
@@ -564,12 +564,12 @@
 				case 'TokenLabel':
 					if (!$this->lblToken) return $this->lblToken_Create();
 					return $this->lblToken;
-				case 'CommunicationListEntryAsEntryControl':
-					if (!$this->lstCommunicationListEntriesAsEntry) return $this->lstCommunicationListEntriesAsEntry_Create();
-					return $this->lstCommunicationListEntriesAsEntry;
-				case 'CommunicationListEntryAsEntryLabel':
-					if (!$this->lblCommunicationListEntriesAsEntry) return $this->lblCommunicationListEntriesAsEntry_Create();
-					return $this->lblCommunicationListEntriesAsEntry;
+				case 'CommunicationListEntryControl':
+					if (!$this->lstCommunicationListEntries) return $this->lstCommunicationListEntries_Create();
+					return $this->lstCommunicationListEntries;
+				case 'CommunicationListEntryLabel':
+					if (!$this->lblCommunicationListEntries) return $this->lblCommunicationListEntries_Create();
+					return $this->lblCommunicationListEntries;
 				case 'PersonControl':
 					if (!$this->lstPeople) return $this->lstPeople_Create();
 					return $this->lstPeople;
@@ -608,8 +608,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
-					case 'CommunicationListEntryAsEntryControl':
-						return ($this->lstCommunicationListEntriesAsEntry = QType::Cast($mixValue, 'QControl'));
+					case 'CommunicationListEntryControl':
+						return ($this->lstCommunicationListEntries = QType::Cast($mixValue, 'QControl'));
 					case 'PersonControl':
 						return ($this->lstPeople = QType::Cast($mixValue, 'QControl'));
 					default:

@@ -27,7 +27,7 @@
 
 		<?php $this->txtEmail->RenderWithName(); ?>
 
-		<?php $this->lstCommunicationListsAsEntry->RenderWithName(true, "Rows=7"); ?>
+		<?php $this->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

@@ -20,8 +20,8 @@
 	 * @property string $MiddleName the value for strMiddleName 
 	 * @property string $LastName the value for strLastName 
 	 * @property string $Email the value for strEmail (Unique)
-	 * @property CommunicationList $_CommunicationListAsEntry the value for the private _objCommunicationListAsEntry (Read-Only) if set due to an expansion on the communicationlist_entry_assn association table
-	 * @property CommunicationList[] $_CommunicationListAsEntryArray the value for the private _objCommunicationListAsEntryArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_entry_assn association table
+	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the communicationlist_communicationlistentry_assn association table
+	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_communicationlistentry_assn association table
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class CommunicationListEntryGen extends QBaseClass {
@@ -75,20 +75,20 @@
 
 
 		/**
-		 * Private member variable that stores a reference to a single CommunicationListAsEntry object
+		 * Private member variable that stores a reference to a single CommunicationList object
 		 * (of type CommunicationList), if this CommunicationListEntry object was restored with
-		 * an expansion on the communicationlist_entry_assn association table.
-		 * @var CommunicationList _objCommunicationListAsEntry;
+		 * an expansion on the communicationlist_communicationlistentry_assn association table.
+		 * @var CommunicationList _objCommunicationList;
 		 */
-		private $_objCommunicationListAsEntry;
+		private $_objCommunicationList;
 
 		/**
-		 * Private member variable that stores a reference to an array of CommunicationListAsEntry objects
+		 * Private member variable that stores a reference to an array of CommunicationList objects
 		 * (of type CommunicationList[]), if this CommunicationListEntry object was restored with
-		 * an ExpandAsArray on the communicationlist_entry_assn association table.
-		 * @var CommunicationList[] _objCommunicationListAsEntryArray;
+		 * an ExpandAsArray on the communicationlist_communicationlistentry_assn association table.
+		 * @var CommunicationList[] _objCommunicationListArray;
 		 */
-		private $_objCommunicationListAsEntryArray = array();
+		private $_objCommunicationListArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -417,17 +417,17 @@
 				if (!$strAliasPrefix)
 					$strAliasPrefix = 'communication_list_entry__';
 
-				$strAlias = $strAliasPrefix . 'communicationlistasentry__communication_list_id__id';
+				$strAlias = $strAliasPrefix . 'communicationlist__communication_list_id__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objCommunicationListAsEntryArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objCommunicationListAsEntryArray[$intPreviousChildItemCount - 1];
-						$objChildItem = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlistasentry__communication_list_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objCommunicationListArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objCommunicationListArray[$intPreviousChildItemCount - 1];
+						$objChildItem = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objCommunicationListAsEntryArray[] = $objChildItem;
+							$objPreviousItem->_objCommunicationListArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objCommunicationListAsEntryArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlistasentry__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objCommunicationListArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -468,14 +468,14 @@
 
 
 
-			// Check for CommunicationListAsEntry Virtual Binding
-			$strAlias = $strAliasPrefix . 'communicationlistasentry__communication_list_id__id';
+			// Check for CommunicationList Virtual Binding
+			$strAlias = $strAliasPrefix . 'communicationlist__communication_list_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objCommunicationListAsEntryArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlistasentry__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objCommunicationListArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objCommunicationListAsEntry = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlistasentry__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objCommunicationList = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 
@@ -554,17 +554,17 @@
 		// INDEX-BASED LOAD METHODS (Array via Many to Many)
 		////////////////////////////////////////////////////
 			/**
-		 * Load an array of CommunicationList objects for a given CommunicationListAsEntry
-		 * via the communicationlist_entry_assn table
+		 * Load an array of CommunicationList objects for a given CommunicationList
+		 * via the communicationlist_communicationlistentry_assn table
 		 * @param integer $intCommunicationListId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return CommunicationListEntry[]
 		*/
-		public static function LoadArrayByCommunicationListAsEntry($intCommunicationListId, $objOptionalClauses = null) {
-			// Call CommunicationListEntry::QueryArray to perform the LoadArrayByCommunicationListAsEntry query
+		public static function LoadArrayByCommunicationList($intCommunicationListId, $objOptionalClauses = null) {
+			// Call CommunicationListEntry::QueryArray to perform the LoadArrayByCommunicationList query
 			try {
 				return CommunicationListEntry::QueryArray(
-					QQ::Equal(QQN::CommunicationListEntry()->CommunicationListAsEntry->CommunicationListId, $intCommunicationListId),
+					QQ::Equal(QQN::CommunicationListEntry()->CommunicationList->CommunicationListId, $intCommunicationListId),
 					$objOptionalClauses
 				);
 			} catch (QCallerException $objExc) {
@@ -574,14 +574,14 @@
 		}
 
 		/**
-		 * Count CommunicationListEntries for a given CommunicationListAsEntry
-		 * via the communicationlist_entry_assn table
+		 * Count CommunicationListEntries for a given CommunicationList
+		 * via the communicationlist_communicationlistentry_assn table
 		 * @param integer $intCommunicationListId
 		 * @return int
 		*/
-		public static function CountByCommunicationListAsEntry($intCommunicationListId) {
+		public static function CountByCommunicationList($intCommunicationListId) {
 			return CommunicationListEntry::QueryCount(
-				QQ::Equal(QQN::CommunicationListEntry()->CommunicationListAsEntry->CommunicationListId, $intCommunicationListId)
+				QQ::Equal(QQN::CommunicationListEntry()->CommunicationList->CommunicationListId, $intCommunicationListId)
 			);
 		}
 
@@ -774,17 +774,17 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_CommunicationListAsEntry':
-					// Gets the value for the private _objCommunicationListAsEntry (Read-Only)
-					// if set due to an expansion on the communicationlist_entry_assn association table
+				case '_CommunicationList':
+					// Gets the value for the private _objCommunicationList (Read-Only)
+					// if set due to an expansion on the communicationlist_communicationlistentry_assn association table
 					// @return CommunicationList
-					return $this->_objCommunicationListAsEntry;
+					return $this->_objCommunicationList;
 
-				case '_CommunicationListAsEntryArray':
-					// Gets the value for the private _objCommunicationListAsEntryArray (Read-Only)
-					// if set due to an ExpandAsArray on the communicationlist_entry_assn association table
+				case '_CommunicationListArray':
+					// Gets the value for the private _objCommunicationListArray (Read-Only)
+					// if set due to an ExpandAsArray on the communicationlist_communicationlistentry_assn association table
 					// @return CommunicationList[]
-					return (array) $this->_objCommunicationListAsEntryArray;
+					return (array) $this->_objCommunicationListArray;
 
 
 				case '__Restored':
@@ -889,20 +889,20 @@
 		///////////////////////////////
 
 			
-		// Related Many-to-Many Objects' Methods for CommunicationListAsEntry
+		// Related Many-to-Many Objects' Methods for CommunicationList
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all many-to-many associated CommunicationListsAsEntry as an array of CommunicationList objects
+		 * Gets all many-to-many associated CommunicationLists as an array of CommunicationList objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return CommunicationList[]
 		*/ 
-		public function GetCommunicationListAsEntryArray($objOptionalClauses = null) {
+		public function GetCommunicationListArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return CommunicationList::LoadArrayByCommunicationListEntryAsEntry($this->intId, $objOptionalClauses);
+				return CommunicationList::LoadArrayByCommunicationListEntry($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -910,31 +910,31 @@
 		}
 
 		/**
-		 * Counts all many-to-many associated CommunicationListsAsEntry
+		 * Counts all many-to-many associated CommunicationLists
 		 * @return int
 		*/ 
-		public function CountCommunicationListsAsEntry() {
+		public function CountCommunicationLists() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return CommunicationList::CountByCommunicationListEntryAsEntry($this->intId);
+			return CommunicationList::CountByCommunicationListEntry($this->intId);
 		}
 
 		/**
-		 * Checks to see if an association exists with a specific CommunicationListAsEntry
+		 * Checks to see if an association exists with a specific CommunicationList
 		 * @param CommunicationList $objCommunicationList
 		 * @return bool
 		*/
-		public function IsCommunicationListAsEntryAssociated(CommunicationList $objCommunicationList) {
+		public function IsCommunicationListAssociated(CommunicationList $objCommunicationList) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call IsCommunicationListAsEntryAssociated on this unsaved CommunicationListEntry.');
+				throw new QUndefinedPrimaryKeyException('Unable to call IsCommunicationListAssociated on this unsaved CommunicationListEntry.');
 			if ((is_null($objCommunicationList->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call IsCommunicationListAsEntryAssociated on this CommunicationListEntry with an unsaved CommunicationList.');
+				throw new QUndefinedPrimaryKeyException('Unable to call IsCommunicationListAssociated on this CommunicationListEntry with an unsaved CommunicationList.');
 
 			$intRowCount = CommunicationListEntry::QueryCount(
 				QQ::AndCondition(
 					QQ::Equal(QQN::CommunicationListEntry()->Id, $this->intId),
-					QQ::Equal(QQN::CommunicationListEntry()->CommunicationListAsEntry->CommunicationListId, $objCommunicationList->Id)
+					QQ::Equal(QQN::CommunicationListEntry()->CommunicationList->CommunicationListId, $objCommunicationList->Id)
 				)
 			);
 
@@ -942,22 +942,22 @@
 		}
 
 		/**
-		 * Associates a CommunicationListAsEntry
+		 * Associates a CommunicationList
 		 * @param CommunicationList $objCommunicationList
 		 * @return void
 		*/ 
-		public function AssociateCommunicationListAsEntry(CommunicationList $objCommunicationList) {
+		public function AssociateCommunicationList(CommunicationList $objCommunicationList) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCommunicationListAsEntry on this unsaved CommunicationListEntry.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCommunicationList on this unsaved CommunicationListEntry.');
 			if ((is_null($objCommunicationList->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCommunicationListAsEntry on this CommunicationListEntry with an unsaved CommunicationList.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCommunicationList on this CommunicationListEntry with an unsaved CommunicationList.');
 
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
-				INSERT INTO `communicationlist_entry_assn` (
+				INSERT INTO `communicationlist_communicationlistentry_assn` (
 					`communication_list_entry_id`,
 					`communication_list_id`
 				) VALUES (
@@ -968,15 +968,15 @@
 		}
 
 		/**
-		 * Unassociates a CommunicationListAsEntry
+		 * Unassociates a CommunicationList
 		 * @param CommunicationList $objCommunicationList
 		 * @return void
 		*/ 
-		public function UnassociateCommunicationListAsEntry(CommunicationList $objCommunicationList) {
+		public function UnassociateCommunicationList(CommunicationList $objCommunicationList) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCommunicationListAsEntry on this unsaved CommunicationListEntry.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCommunicationList on this unsaved CommunicationListEntry.');
 			if ((is_null($objCommunicationList->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCommunicationListAsEntry on this CommunicationListEntry with an unsaved CommunicationList.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCommunicationList on this CommunicationListEntry with an unsaved CommunicationList.');
 
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
@@ -984,7 +984,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`communicationlist_entry_assn`
+					`communicationlist_communicationlistentry_assn`
 				WHERE
 					`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`communication_list_id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
@@ -992,12 +992,12 @@
 		}
 
 		/**
-		 * Unassociates all CommunicationListsAsEntry
+		 * Unassociates all CommunicationLists
 		 * @return void
 		*/ 
-		public function UnassociateAllCommunicationListsAsEntry() {
+		public function UnassociateAllCommunicationLists() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllCommunicationListAsEntryArray on this unsaved CommunicationListEntry.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllCommunicationListArray on this unsaved CommunicationListEntry.');
 
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
@@ -1005,7 +1005,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`communicationlist_entry_assn`
+					`communicationlist_communicationlistentry_assn`
 				WHERE
 					`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -1089,11 +1089,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeCommunicationListEntryCommunicationListAsEntry extends QQAssociationNode {
+	class QQNodeCommunicationListEntryCommunicationList extends QQAssociationNode {
 		protected $strType = 'association';
-		protected $strName = 'communicationlistasentry';
+		protected $strName = 'communicationlist';
 
-		protected $strTableName = 'communicationlist_entry_assn';
+		protected $strTableName = 'communicationlist_communicationlistentry_assn';
 		protected $strPrimaryKey = 'communication_list_entry_id';
 		protected $strClassName = 'CommunicationList';
 
@@ -1132,8 +1132,8 @@
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'Email':
 					return new QQNode('email', 'Email', 'string', $this);
-				case 'CommunicationListAsEntry':
-					return new QQNodeCommunicationListEntryCommunicationListAsEntry($this);
+				case 'CommunicationList':
+					return new QQNodeCommunicationListEntryCommunicationList($this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1164,8 +1164,8 @@
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'Email':
 					return new QQNode('email', 'Email', 'string', $this);
-				case 'CommunicationListAsEntry':
-					return new QQNodeCommunicationListEntryCommunicationListAsEntry($this);
+				case 'CommunicationList':
+					return new QQNodeCommunicationListEntryCommunicationList($this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
