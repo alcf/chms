@@ -113,9 +113,7 @@
 		public function IsChild() {
 			if (!$this->DateOfBirth) return false;
 
-			$dtt18YearsAgo = QDateTime::Now(false);
-			$dtt18YearsAgo->Year -= 18;
-			return $this->DateOfBirth->IsEarlierOrEqualTo($dtt18YearsAgo);
+			return ($this->Age < 18);
 		}
 
 		/**

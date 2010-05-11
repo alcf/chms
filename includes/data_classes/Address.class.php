@@ -51,6 +51,26 @@
 			}
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Label':
+					$strToReturn = ($this->blnCurrentFlag) ? 'Current ' : 'Previous ';
+					$strToReturn .= AddressType::$NameArray[$this->intAddressTypeId];
+					return $strToReturn;
+
+				case 'ShortName':
+					return $this->Address1;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

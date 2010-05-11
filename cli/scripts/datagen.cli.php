@@ -280,7 +280,6 @@
 			// Add a Spouse
 			if (rand(0, 6)) {
 				$objSpouse = self::GenerateIndividual(!$objHeadPerson->MaleFlag, true, $strLastName);
-				$objHousehold->AssociatePerson($objSpouse);
 				$intMinimumChildCount = 0;
 
 				$objHeadPerson->DeleteAllMarriages();
@@ -295,6 +294,8 @@
 				$dttStartDate = QDataGen::GenerateDateTime($dttStartDate, QDateTime::Now());
 
 				$objHeadPerson->CreateMarriageWith($objSpouse, $dttStartDate);
+
+				$objHousehold->AssociatePerson($objSpouse);
 			} else {
 				// If no spouse, we must have at least one child in order to be a "family"
 				$objSpouse = null;
@@ -306,7 +307,6 @@
 			$objChildArray = array();
 			for ($i = 0; $i < $intChildCount; $i++) {
 				$objChild = self::GenerateIndividual(rand(0, 1), false, $strLastName);
-				$objHousehold->AssociatePerson($objChild);
 
 				// Add the relationship
 				$objHeadPerson->AddRelationship($objChild, RelationshipType::Child);
@@ -316,6 +316,8 @@
 					$objChild->AddRelationship($objSibling, RelationshipType::Sibling);
 				}
 
+				$objHousehold->AssociatePerson($objChild);
+				
 				$objChildArray[] = $objChild;
 			}
 

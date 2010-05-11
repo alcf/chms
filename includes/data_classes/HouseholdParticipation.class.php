@@ -41,7 +41,21 @@
 				return;
 			}
 
-			// TODO: Calculate based on family relationships
+			// Calculate based on family relationships
+			// Married?
+			if (($objMarriage = $this->Person->GetMostRecentMarriage()) &&
+				($objMarriage->MarriageStatusTypeId == MarriageStatusType::Married) &&
+				($objMarriage->MarriedToPersonId == $objHeadPerson->Id)) {
+				$this->strRole = ($this->Person->MaleFlag ? 'Husband' : 'Wife');
+				if ($blnSave) $this->Save();
+				return;
+			}
+
+			if ($objRelationship = Relationship::LoadByPersonIdRelatedToPersonId($objHeadPerson->Id, $this->Person->Id)) {
+				$this->strRole = $objRelationship->Relation;
+				if ($blnSave) $this->Save();
+				return;
+			}
 
 			// Can't figure out any relationship -- simply specify as "Child" or "Adult"
 			if ($this->Person->IsChild()) {
