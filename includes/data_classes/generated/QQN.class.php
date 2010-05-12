@@ -61,6 +61,42 @@
 			return new QQNodeEmail('email', null, null);
 		}
 		/**
+		 * @return QQNodeGroup
+		 */
+		static public function Group() {
+			return new QQNodeGroup('group', null, null);
+		}
+		/**
+		 * @return QQNodeGroupParticipation
+		 */
+		static public function GroupParticipation() {
+			return new QQNodeGroupParticipation('group_participation', null, null);
+		}
+		/**
+		 * @return QQNodeGroupRole
+		 */
+		static public function GroupRole() {
+			return new QQNodeGroupRole('group_role', null, null);
+		}
+		/**
+		 * @return QQNodeGrowthGroup
+		 */
+		static public function GrowthGroup() {
+			return new QQNodeGrowthGroup('growth_group', null, null);
+		}
+		/**
+		 * @return QQNodeGrowthGroupLocation
+		 */
+		static public function GrowthGroupLocation() {
+			return new QQNodeGrowthGroupLocation('growth_group_location', null, null);
+		}
+		/**
+		 * @return QQNodeGrowthGroupStructure
+		 */
+		static public function GrowthGroupStructure() {
+			return new QQNodeGrowthGroupStructure('growth_group_structure', null, null);
+		}
+		/**
 		 * @return QQNodeHeadShot
 		 */
 		static public function HeadShot() {
@@ -143,6 +179,12 @@
 		 */
 		static public function Relationship() {
 			return new QQNodeRelationship('relationship', null, null);
+		}
+		/**
+		 * @return QQNodeSmartGroup
+		 */
+		static public function SmartGroup() {
+			return new QQNodeSmartGroup('smart_group', null, null);
 		}
 		/**
 		 * @return QQNodeUsState

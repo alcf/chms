@@ -25,6 +25,10 @@
 	 * @property Login[] $_LoginArray the value for the private _objLoginArray (Read-Only) if set due to an ExpandAsArray on the ministry_login_assn association table
 	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the communication_list.ministry_id reverse relationship
 	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the communication_list.ministry_id reverse relationship
+	 * @property Group $_Group the value for the private _objGroup (Read-Only) if set due to an expansion on the group.ministry_id reverse relationship
+	 * @property Group[] $_GroupArray the value for the private _objGroupArray (Read-Only) if set due to an ExpandAsArray on the group.ministry_id reverse relationship
+	 * @property GroupRole $_GroupRole the value for the private _objGroupRole (Read-Only) if set due to an expansion on the group_role.ministry_id reverse relationship
+	 * @property GroupRole[] $_GroupRoleArray the value for the private _objGroupRoleArray (Read-Only) if set due to an ExpandAsArray on the group_role.ministry_id reverse relationship
 	 * @property Ministry $_ChildMinistry the value for the private _objChildMinistry (Read-Only) if set due to an expansion on the ministry.parent_ministry_id reverse relationship
 	 * @property Ministry[] $_ChildMinistryArray the value for the private _objChildMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry.parent_ministry_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -108,6 +112,38 @@
 		 * @var CommunicationList[] _objCommunicationListArray;
 		 */
 		private $_objCommunicationListArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single Group object
+		 * (of type Group), if this Ministry object was restored with
+		 * an expansion on the group association table.
+		 * @var Group _objGroup;
+		 */
+		private $_objGroup;
+
+		/**
+		 * Private member variable that stores a reference to an array of Group objects
+		 * (of type Group[]), if this Ministry object was restored with
+		 * an ExpandAsArray on the group association table.
+		 * @var Group[] _objGroupArray;
+		 */
+		private $_objGroupArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single GroupRole object
+		 * (of type GroupRole), if this Ministry object was restored with
+		 * an expansion on the group_role association table.
+		 * @var GroupRole _objGroupRole;
+		 */
+		private $_objGroupRole;
+
+		/**
+		 * Private member variable that stores a reference to an array of GroupRole objects
+		 * (of type GroupRole[]), if this Ministry object was restored with
+		 * an ExpandAsArray on the group_role association table.
+		 * @var GroupRole[] _objGroupRoleArray;
+		 */
+		private $_objGroupRoleArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single ChildMinistry object
@@ -491,6 +527,34 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'group__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupArray[$intPreviousChildItemCount - 1];
+						$objChildItem = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupArray[] = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'grouprole__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupRoleArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupRoleArray[$intPreviousChildItemCount - 1];
+						$objChildItem = GroupRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'grouprole__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupRoleArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupRoleArray[] = GroupRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'grouprole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'childministry__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -566,6 +630,26 @@
 					$objToReturn->_objCommunicationListArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objCommunicationList = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for Group Virtual Binding
+			$strAlias = $strAliasPrefix . 'group__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupArray[] = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for GroupRole Virtual Binding
+			$strAlias = $strAliasPrefix . 'grouprole__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupRoleArray[] = GroupRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'grouprole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroupRole = GroupRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'grouprole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for ChildMinistry Virtual Binding
@@ -973,6 +1057,30 @@
 					// @return CommunicationList[]
 					return (array) $this->_objCommunicationListArray;
 
+				case '_Group':
+					// Gets the value for the private _objGroup (Read-Only)
+					// if set due to an expansion on the group.ministry_id reverse relationship
+					// @return Group
+					return $this->_objGroup;
+
+				case '_GroupArray':
+					// Gets the value for the private _objGroupArray (Read-Only)
+					// if set due to an ExpandAsArray on the group.ministry_id reverse relationship
+					// @return Group[]
+					return (array) $this->_objGroupArray;
+
+				case '_GroupRole':
+					// Gets the value for the private _objGroupRole (Read-Only)
+					// if set due to an expansion on the group_role.ministry_id reverse relationship
+					// @return GroupRole
+					return $this->_objGroupRole;
+
+				case '_GroupRoleArray':
+					// Gets the value for the private _objGroupRoleArray (Read-Only)
+					// if set due to an ExpandAsArray on the group_role.ministry_id reverse relationship
+					// @return GroupRole[]
+					return (array) $this->_objGroupRoleArray;
+
 				case '_ChildMinistry':
 					// Gets the value for the private _objChildMinistry (Read-Only)
 					// if set due to an expansion on the ministry.parent_ministry_id reverse relationship
@@ -1263,6 +1371,306 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`communication_list`
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for Group
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated Groups as an array of Group objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Group[]
+		*/ 
+		public function GetGroupArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return Group::LoadArrayByMinistryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated Groups
+		 * @return int
+		*/ 
+		public function CountGroups() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return Group::CountByMinistryId($this->intId);
+		}
+
+		/**
+		 * Associates a Group
+		 * @param Group $objGroup
+		 * @return void
+		*/ 
+		public function AssociateGroup(Group $objGroup) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroup on this unsaved Ministry.');
+			if ((is_null($objGroup->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroup on this Ministry with an unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group`
+				SET
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a Group
+		 * @param Group $objGroup
+		 * @return void
+		*/ 
+		public function UnassociateGroup(Group $objGroup) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this unsaved Ministry.');
+			if ((is_null($objGroup->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this Ministry with an unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group`
+				SET
+					`ministry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all Groups
+		 * @return void
+		*/ 
+		public function UnassociateAllGroups() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group`
+				SET
+					`ministry_id` = null
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated Group
+		 * @param Group $objGroup
+		 * @return void
+		*/ 
+		public function DeleteAssociatedGroup(Group $objGroup) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this unsaved Ministry.');
+			if ((is_null($objGroup->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this Ministry with an unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated Groups
+		 * @return void
+		*/ 
+		public function DeleteAllGroups() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group`
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for GroupRole
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated GroupRoles as an array of GroupRole objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupRole[]
+		*/ 
+		public function GetGroupRoleArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return GroupRole::LoadArrayByMinistryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated GroupRoles
+		 * @return int
+		*/ 
+		public function CountGroupRoles() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return GroupRole::CountByMinistryId($this->intId);
+		}
+
+		/**
+		 * Associates a GroupRole
+		 * @param GroupRole $objGroupRole
+		 * @return void
+		*/ 
+		public function AssociateGroupRole(GroupRole $objGroupRole) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupRole on this unsaved Ministry.');
+			if ((is_null($objGroupRole->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupRole on this Ministry with an unsaved GroupRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_role`
+				SET
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a GroupRole
+		 * @param GroupRole $objGroupRole
+		 * @return void
+		*/ 
+		public function UnassociateGroupRole(GroupRole $objGroupRole) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRole on this unsaved Ministry.');
+			if ((is_null($objGroupRole->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRole on this Ministry with an unsaved GroupRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_role`
+				SET
+					`ministry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all GroupRoles
+		 * @return void
+		*/ 
+		public function UnassociateAllGroupRoles() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRole on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_role`
+				SET
+					`ministry_id` = null
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated GroupRole
+		 * @param GroupRole $objGroupRole
+		 * @return void
+		*/ 
+		public function DeleteAssociatedGroupRole(GroupRole $objGroupRole) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRole on this unsaved Ministry.');
+			if ((is_null($objGroupRole->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRole on this Ministry with an unsaved GroupRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_role`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated GroupRoles
+		 * @return void
+		*/ 
+		public function DeleteAllGroupRoles() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRole on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_role`
 				WHERE
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -1674,6 +2082,10 @@
 					return new QQNodeMinistryLogin($this);
 				case 'CommunicationList':
 					return new QQReverseReferenceNodeCommunicationList($this, 'communicationlist', 'reverse_reference', 'ministry_id');
+				case 'Group':
+					return new QQReverseReferenceNodeGroup($this, 'group', 'reverse_reference', 'ministry_id');
+				case 'GroupRole':
+					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
 
@@ -1712,6 +2124,10 @@
 					return new QQNodeMinistryLogin($this);
 				case 'CommunicationList':
 					return new QQReverseReferenceNodeCommunicationList($this, 'communicationlist', 'reverse_reference', 'ministry_id');
+				case 'Group':
+					return new QQReverseReferenceNodeGroup($this, 'group', 'reverse_reference', 'ministry_id');
+				case 'GroupRole':
+					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
 

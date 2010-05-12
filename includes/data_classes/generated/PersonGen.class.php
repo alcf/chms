@@ -57,6 +57,8 @@
 	 * @property Comment[] $_CommentArray the value for the private _objCommentArray (Read-Only) if set due to an ExpandAsArray on the comment.person_id reverse relationship
 	 * @property Email $_Email the value for the private _objEmail (Read-Only) if set due to an expansion on the email.person_id reverse relationship
 	 * @property Email[] $_EmailArray the value for the private _objEmailArray (Read-Only) if set due to an ExpandAsArray on the email.person_id reverse relationship
+	 * @property GroupParticipation $_GroupParticipation the value for the private _objGroupParticipation (Read-Only) if set due to an expansion on the group_participation.person_id reverse relationship
+	 * @property GroupParticipation[] $_GroupParticipationArray the value for the private _objGroupParticipationArray (Read-Only) if set due to an ExpandAsArray on the group_participation.person_id reverse relationship
 	 * @property HeadShot $_HeadShot the value for the private _objHeadShot (Read-Only) if set due to an expansion on the head_shot.person_id reverse relationship
 	 * @property HeadShot[] $_HeadShotArray the value for the private _objHeadShotArray (Read-Only) if set due to an ExpandAsArray on the head_shot.person_id reverse relationship
 	 * @property HouseholdParticipation $_HouseholdParticipation the value for the private _objHouseholdParticipation (Read-Only) if set due to an expansion on the household_participation.person_id reverse relationship
@@ -378,6 +380,22 @@
 		 * @var Email[] _objEmailArray;
 		 */
 		private $_objEmailArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single GroupParticipation object
+		 * (of type GroupParticipation), if this Person object was restored with
+		 * an expansion on the group_participation association table.
+		 * @var GroupParticipation _objGroupParticipation;
+		 */
+		private $_objGroupParticipation;
+
+		/**
+		 * Private member variable that stores a reference to an array of GroupParticipation objects
+		 * (of type GroupParticipation[]), if this Person object was restored with
+		 * an ExpandAsArray on the group_participation association table.
+		 * @var GroupParticipation[] _objGroupParticipationArray;
+		 */
+		private $_objGroupParticipationArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single HeadShot object
@@ -1022,6 +1040,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'groupparticipation__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupParticipationArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupParticipationArray[$intPreviousChildItemCount - 1];
+						$objChildItem = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupParticipationArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupParticipationArray[] = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'headshot__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1323,6 +1355,16 @@
 					$objToReturn->_objEmailArray[] = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'email__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objEmail = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'email__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for GroupParticipation Virtual Binding
+			$strAlias = $strAliasPrefix . 'groupparticipation__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupParticipationArray[] = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroupParticipation = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for HeadShot Virtual Binding
@@ -2262,6 +2304,18 @@
 					// if set due to an ExpandAsArray on the email.person_id reverse relationship
 					// @return Email[]
 					return (array) $this->_objEmailArray;
+
+				case '_GroupParticipation':
+					// Gets the value for the private _objGroupParticipation (Read-Only)
+					// if set due to an expansion on the group_participation.person_id reverse relationship
+					// @return GroupParticipation
+					return $this->_objGroupParticipation;
+
+				case '_GroupParticipationArray':
+					// Gets the value for the private _objGroupParticipationArray (Read-Only)
+					// if set due to an ExpandAsArray on the group_participation.person_id reverse relationship
+					// @return GroupParticipation[]
+					return (array) $this->_objGroupParticipationArray;
 
 				case '_HeadShot':
 					// Gets the value for the private _objHeadShot (Read-Only)
@@ -3469,6 +3523,156 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`email`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for GroupParticipation
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated GroupParticipations as an array of GroupParticipation objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupParticipation[]
+		*/ 
+		public function GetGroupParticipationArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return GroupParticipation::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated GroupParticipations
+		 * @return int
+		*/ 
+		public function CountGroupParticipations() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return GroupParticipation::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a GroupParticipation
+		 * @param GroupParticipation $objGroupParticipation
+		 * @return void
+		*/ 
+		public function AssociateGroupParticipation(GroupParticipation $objGroupParticipation) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupParticipation on this unsaved Person.');
+			if ((is_null($objGroupParticipation->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupParticipation on this Person with an unsaved GroupParticipation.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_participation`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a GroupParticipation
+		 * @param GroupParticipation $objGroupParticipation
+		 * @return void
+		*/ 
+		public function UnassociateGroupParticipation(GroupParticipation $objGroupParticipation) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupParticipation on this unsaved Person.');
+			if ((is_null($objGroupParticipation->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupParticipation on this Person with an unsaved GroupParticipation.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_participation`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all GroupParticipations
+		 * @return void
+		*/ 
+		public function UnassociateAllGroupParticipations() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupParticipation on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_participation`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated GroupParticipation
+		 * @param GroupParticipation $objGroupParticipation
+		 * @return void
+		*/ 
+		public function DeleteAssociatedGroupParticipation(GroupParticipation $objGroupParticipation) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupParticipation on this unsaved Person.');
+			if ((is_null($objGroupParticipation->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupParticipation on this Person with an unsaved GroupParticipation.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_participation`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated GroupParticipations
+		 * @return void
+		*/ 
+		public function DeleteAllGroupParticipations() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupParticipation on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_participation`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -5368,6 +5572,8 @@
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
+				case 'GroupParticipation':
+					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'person_id');
 				case 'HeadShot':
 					return new QQReverseReferenceNodeHeadShot($this, 'headshot', 'reverse_reference', 'person_id');
 				case 'HouseholdAsHead':
@@ -5478,6 +5684,8 @@
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
+				case 'GroupParticipation':
+					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'person_id');
 				case 'HeadShot':
 					return new QQReverseReferenceNodeHeadShot($this, 'headshot', 'reverse_reference', 'person_id');
 				case 'HouseholdAsHead':

@@ -97,6 +97,22 @@ INSERT INTO email_broadcast_type VALUES(1, 'Public List');
 INSERT INTO email_broadcast_type VALUES(2, 'Private List');
 INSERT INTO email_broadcast_type VALUES(3, 'Announcement Only');
 
+INSERT INTO group_type VALUES (1, 'Regular Group');
+INSERT INTO group_type VALUES (2, 'Group Category');
+INSERT INTO group_type VALUES (3, 'Smart Group');
+INSERT INTO group_type VALUES (4, 'Growth Group');
+
+INSERT INTO group_role_type VALUES (1, 'Volunteer');
+INSERT INTO group_role_type VALUES (2, 'Participant');
+
+INSERT INTO growth_group_day_type VALUES (1, 'Monday');
+INSERT INTO growth_group_day_type VALUES (2, 'Tuesday');
+INSERT INTO growth_group_day_type VALUES (3, 'Wednesday');
+INSERT INTO growth_group_day_type VALUES (4, 'Thursday');
+INSERT INTO growth_group_day_type VALUES (5, 'Friday');
+INSERT INTO growth_group_day_type VALUES (6, 'Saturday');
+INSERT INTO growth_group_day_type VALUES (7, 'Sunday');
+
 INSERT INTO image_type VALUES(1, 'jpg');
 INSERT INTO image_type VALUES(2, 'png');
 INSERT INTO image_type VALUES(3, 'gif');
@@ -169,3 +185,18 @@ INSERT INTO attribute_option VALUES (null, 7, 'Electrical');
 INSERT INTO attribute_option VALUES (null, 7, 'Plumbing');
 INSERT INTO attribute_option VALUES (null, 7, 'Computers');
 INSERT INTO attribute_option VALUES (null, 7, 'Auto Mechanic');
+
+INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('SF to San Carlos', 37.64, -122.4, 11);
+INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('Redwood City to Mountain View', 37.41, -122.14, 12);
+INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('Sunnyvale to Los Gatos', 37.335, -122.0, 12);
+INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('San Jose (including Gilroy)', 37.313, -121.86, 12);
+INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('Union City to Milpitas (including Pleasanton, Tracy, Modesto)', 37.575, -121.94, 11);
+INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('Hayward to Oakland (including Clayton, Antioch)', 37.79, -122.1, 11);
+
+INSERT INTO growth_group_structure VALUES (null, 'Regular');
+INSERT INTO growth_group_structure VALUES (null, 'Women\'s');
+INSERT INTO growth_group_structure VALUES (null, 'Family-Friendly');
+INSERT INTO growth_group_structure VALUES (null, 'Living Lesson');
+INSERT INTO growth_group_structure VALUES (null, 'Spanish Speaking');
+INSERT INTO growth_group_structure VALUES (null, 'Young Adults');
+INSERT INTO growth_group_structure VALUES (null, 'Men\'s');

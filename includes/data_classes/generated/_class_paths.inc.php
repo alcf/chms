@@ -69,6 +69,48 @@
 		QApplicationBase::$ClassFile['emailmetacontrol'] = __DATA_META_CONTROLS__ . '/EmailMetaControl.class.php';
 		QApplicationBase::$ClassFile['emaildatagrid'] = __DATA_META_CONTROLS__ . '/EmailDataGrid.class.php';
 
+	// ClassPaths for the Group class
+		QApplicationBase::$ClassFile['group'] = __DATA_CLASSES__ . '/Group.class.php';
+		QApplicationBase::$ClassFile['qqnodegroup'] = __DATA_CLASSES__ . '/Group.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegroup'] = __DATA_CLASSES__ . '/Group.class.php';
+		QApplicationBase::$ClassFile['groupmetacontrol'] = __DATA_META_CONTROLS__ . '/GroupMetaControl.class.php';
+		QApplicationBase::$ClassFile['groupdatagrid'] = __DATA_META_CONTROLS__ . '/GroupDataGrid.class.php';
+
+	// ClassPaths for the GroupParticipation class
+		QApplicationBase::$ClassFile['groupparticipation'] = __DATA_CLASSES__ . '/GroupParticipation.class.php';
+		QApplicationBase::$ClassFile['qqnodegroupparticipation'] = __DATA_CLASSES__ . '/GroupParticipation.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegroupparticipation'] = __DATA_CLASSES__ . '/GroupParticipation.class.php';
+		QApplicationBase::$ClassFile['groupparticipationmetacontrol'] = __DATA_META_CONTROLS__ . '/GroupParticipationMetaControl.class.php';
+		QApplicationBase::$ClassFile['groupparticipationdatagrid'] = __DATA_META_CONTROLS__ . '/GroupParticipationDataGrid.class.php';
+
+	// ClassPaths for the GroupRole class
+		QApplicationBase::$ClassFile['grouprole'] = __DATA_CLASSES__ . '/GroupRole.class.php';
+		QApplicationBase::$ClassFile['qqnodegrouprole'] = __DATA_CLASSES__ . '/GroupRole.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegrouprole'] = __DATA_CLASSES__ . '/GroupRole.class.php';
+		QApplicationBase::$ClassFile['grouprolemetacontrol'] = __DATA_META_CONTROLS__ . '/GroupRoleMetaControl.class.php';
+		QApplicationBase::$ClassFile['grouproledatagrid'] = __DATA_META_CONTROLS__ . '/GroupRoleDataGrid.class.php';
+
+	// ClassPaths for the GrowthGroup class
+		QApplicationBase::$ClassFile['growthgroup'] = __DATA_CLASSES__ . '/GrowthGroup.class.php';
+		QApplicationBase::$ClassFile['qqnodegrowthgroup'] = __DATA_CLASSES__ . '/GrowthGroup.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegrowthgroup'] = __DATA_CLASSES__ . '/GrowthGroup.class.php';
+		QApplicationBase::$ClassFile['growthgroupmetacontrol'] = __DATA_META_CONTROLS__ . '/GrowthGroupMetaControl.class.php';
+		QApplicationBase::$ClassFile['growthgroupdatagrid'] = __DATA_META_CONTROLS__ . '/GrowthGroupDataGrid.class.php';
+
+	// ClassPaths for the GrowthGroupLocation class
+		QApplicationBase::$ClassFile['growthgrouplocation'] = __DATA_CLASSES__ . '/GrowthGroupLocation.class.php';
+		QApplicationBase::$ClassFile['qqnodegrowthgrouplocation'] = __DATA_CLASSES__ . '/GrowthGroupLocation.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegrowthgrouplocation'] = __DATA_CLASSES__ . '/GrowthGroupLocation.class.php';
+		QApplicationBase::$ClassFile['growthgrouplocationmetacontrol'] = __DATA_META_CONTROLS__ . '/GrowthGroupLocationMetaControl.class.php';
+		QApplicationBase::$ClassFile['growthgrouplocationdatagrid'] = __DATA_META_CONTROLS__ . '/GrowthGroupLocationDataGrid.class.php';
+
+	// ClassPaths for the GrowthGroupStructure class
+		QApplicationBase::$ClassFile['growthgroupstructure'] = __DATA_CLASSES__ . '/GrowthGroupStructure.class.php';
+		QApplicationBase::$ClassFile['qqnodegrowthgroupstructure'] = __DATA_CLASSES__ . '/GrowthGroupStructure.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegrowthgroupstructure'] = __DATA_CLASSES__ . '/GrowthGroupStructure.class.php';
+		QApplicationBase::$ClassFile['growthgroupstructuremetacontrol'] = __DATA_META_CONTROLS__ . '/GrowthGroupStructureMetaControl.class.php';
+		QApplicationBase::$ClassFile['growthgroupstructuredatagrid'] = __DATA_META_CONTROLS__ . '/GrowthGroupStructureDataGrid.class.php';
+
 	// ClassPaths for the HeadShot class
 		QApplicationBase::$ClassFile['headshot'] = __DATA_CLASSES__ . '/HeadShot.class.php';
 		QApplicationBase::$ClassFile['qqnodeheadshot'] = __DATA_CLASSES__ . '/HeadShot.class.php';
@@ -166,6 +208,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenoderelationship'] = __DATA_CLASSES__ . '/Relationship.class.php';
 		QApplicationBase::$ClassFile['relationshipmetacontrol'] = __DATA_META_CONTROLS__ . '/RelationshipMetaControl.class.php';
 		QApplicationBase::$ClassFile['relationshipdatagrid'] = __DATA_META_CONTROLS__ . '/RelationshipDataGrid.class.php';
+
+	// ClassPaths for the SmartGroup class
+		QApplicationBase::$ClassFile['smartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';
+		QApplicationBase::$ClassFile['qqnodesmartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesmartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';
+		QApplicationBase::$ClassFile['smartgroupmetacontrol'] = __DATA_META_CONTROLS__ . '/SmartGroupMetaControl.class.php';
+		QApplicationBase::$ClassFile['smartgroupdatagrid'] = __DATA_META_CONTROLS__ . '/SmartGroupDataGrid.class.php';
 
 	// ClassPaths for the UsState class
 		QApplicationBase::$ClassFile['usstate'] = __DATA_CLASSES__ . '/UsState.class.php';
