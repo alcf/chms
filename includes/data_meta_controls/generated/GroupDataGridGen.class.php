@@ -278,6 +278,7 @@
 				case 'MinistryId': return QQN::Group()->MinistryId;
 				case 'Ministry': return QQN::Group()->Ministry;
 				case 'Name': return QQN::Group()->Name;
+				case 'Description': return QQN::Group()->Description;
 				case 'ParentGroupId': return QQN::Group()->ParentGroupId;
 				case 'ParentGroup': return QQN::Group()->ParentGroup;
 				case 'ConfidentialFlag': return QQN::Group()->ConfidentialFlag;

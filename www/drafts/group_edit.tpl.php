@@ -25,6 +25,8 @@
 
 		<?php $this->txtName->RenderWithName(); ?>
 
+		<?php $this->txtDescription->RenderWithName(); ?>
+
 		<?php $this->lstParentGroup->RenderWithName(); ?>
 
 		<?php $this->chkConfidentialFlag->RenderWithName(); ?>

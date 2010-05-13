@@ -24,6 +24,8 @@
 	 * property-read QLabel $MinistryIdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
+	 * property QTextBox $DescriptionControl
+	 * property-read QLabel $DescriptionLabel
 	 * property QListBox $ParentGroupIdControl
 	 * property-read QLabel $ParentGroupIdLabel
 	 * property QCheckBox $ConfidentialFlagControl
@@ -52,6 +54,7 @@
 		protected $lstGroupType;
 		protected $lstMinistry;
 		protected $txtName;
+		protected $txtDescription;
 		protected $lstParentGroup;
 		protected $chkConfidentialFlag;
 		protected $lstEmailBroadcastType;
@@ -61,6 +64,7 @@
 		protected $lblGroupTypeId;
 		protected $lblMinistryId;
 		protected $lblName;
+		protected $lblDescription;
 		protected $lblParentGroupId;
 		protected $lblConfidentialFlag;
 		protected $lblEmailBroadcastTypeId;
@@ -266,6 +270,31 @@
 			$this->lblName->Name = QApplication::Translate('Name');
 			$this->lblName->Text = $this->objGroup->Name;
 			return $this->lblName;
+		}
+
+		/**
+		 * Create and setup QTextBox txtDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtDescription_Create($strControlId = null) {
+			$this->txtDescription = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtDescription->Name = QApplication::Translate('Description');
+			$this->txtDescription->Text = $this->objGroup->Description;
+			$this->txtDescription->TextMode = QTextMode::MultiLine;
+			return $this->txtDescription;
+		}
+
+		/**
+		 * Create and setup QLabel lblDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDescription_Create($strControlId = null) {
+			$this->lblDescription = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDescription->Name = QApplication::Translate('Description');
+			$this->lblDescription->Text = $this->objGroup->Description;
+			return $this->lblDescription;
 		}
 
 		/**
@@ -475,6 +504,9 @@
 			if ($this->txtName) $this->txtName->Text = $this->objGroup->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objGroup->Name;
 
+			if ($this->txtDescription) $this->txtDescription->Text = $this->objGroup->Description;
+			if ($this->lblDescription) $this->lblDescription->Text = $this->objGroup->Description;
+
 			if ($this->lstParentGroup) {
 					$this->lstParentGroup->RemoveAllItems();
 				$this->lstParentGroup->AddItem(QApplication::Translate('- Select One -'), null);
@@ -559,6 +591,7 @@
 				if ($this->lstGroupType) $this->objGroup->GroupTypeId = $this->lstGroupType->SelectedValue;
 				if ($this->lstMinistry) $this->objGroup->MinistryId = $this->lstMinistry->SelectedValue;
 				if ($this->txtName) $this->objGroup->Name = $this->txtName->Text;
+				if ($this->txtDescription) $this->objGroup->Description = $this->txtDescription->Text;
 				if ($this->lstParentGroup) $this->objGroup->ParentGroupId = $this->lstParentGroup->SelectedValue;
 				if ($this->chkConfidentialFlag) $this->objGroup->ConfidentialFlag = $this->chkConfidentialFlag->Checked;
 				if ($this->lstEmailBroadcastType) $this->objGroup->EmailBroadcastTypeId = $this->lstEmailBroadcastType->SelectedValue;
@@ -631,6 +664,12 @@
 				case 'NameLabel':
 					if (!$this->lblName) return $this->lblName_Create();
 					return $this->lblName;
+				case 'DescriptionControl':
+					if (!$this->txtDescription) return $this->txtDescription_Create();
+					return $this->txtDescription;
+				case 'DescriptionLabel':
+					if (!$this->lblDescription) return $this->lblDescription_Create();
+					return $this->lblDescription;
 				case 'ParentGroupIdControl':
 					if (!$this->lstParentGroup) return $this->lstParentGroup_Create();
 					return $this->lstParentGroup;
@@ -697,6 +736,8 @@
 						return ($this->lstMinistry = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
+					case 'DescriptionControl':
+						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'ParentGroupIdControl':
 						return ($this->lstParentGroup = QType::Cast($mixValue, 'QControl'));
 					case 'ConfidentialFlagControl':

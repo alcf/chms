@@ -27,6 +27,44 @@
 			return sprintf('Group Object %s',  $this->intId);
 		}
 
+		/**
+		 * Creates a new group for a ministry
+		 * @param Ministry $objMinistry
+		 * @param integer $intGroupTypeId
+		 * @param string $strName
+		 * @param string $strDescription
+		 * @param Group $objParentGroup optional parent group or NULL for none
+		 * @return Group
+		 */
+		public static function CreateGroupForMinistry(Ministry $objMinistry, $intGroupTypeId, $strName, $strDescription, Group $objParentGroup = null) {
+			if ($objParentGroup &&
+				($objParentGroup->MinistryId != $objMinistry->Id)) {
+				throw new QCallerException('Parent Group is in a different Ministry');
+			}
+
+			$objGroup = new Group();
+			$objGroup->Ministry = $objMinistry;
+			$objGroup->GroupTypeId = $intGroupTypeId;
+			$objGroup->Name = $strName;
+			$objGroup->Description = $strDescription;
+			$objGroup->ParentGroup = $objParentGroup;
+			$objGroup->Save();
+
+			switch ($intGroupTypeId) {
+				case GroupType::RegularGroup;
+					break;
+				case GroupType::GroupCategory:
+					break;
+				case GroupType::GrowthGroup:
+					break;
+				case GroupType::SmartGroup:
+					break;
+				default:
+					throw new QCallerException('Invalid Group Type Id: ' . $intGroupTypeId);
+			}
+
+			return $objGroup;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

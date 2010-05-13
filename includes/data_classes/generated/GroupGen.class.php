@@ -19,6 +19,7 @@
 	 * @property integer $GroupTypeId the value for intGroupTypeId (Not Null)
 	 * @property integer $MinistryId the value for intMinistryId (Not Null)
 	 * @property string $Name the value for strName 
+	 * @property string $Description the value for strDescription 
 	 * @property integer $ParentGroupId the value for intParentGroupId 
 	 * @property boolean $ConfidentialFlag the value for blnConfidentialFlag 
 	 * @property integer $EmailBroadcastTypeId the value for intEmailBroadcastTypeId 
@@ -70,6 +71,14 @@
 		protected $strName;
 		const NameMaxLength = 200;
 		const NameDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group.description
+		 * @var string strDescription
+		 */
+		protected $strDescription;
+		const DescriptionDefault = null;
 
 
 		/**
@@ -482,6 +491,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'group_type_id', $strAliasPrefix . 'group_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'ministry_id', $strAliasPrefix . 'ministry_id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
+			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'parent_group_id', $strAliasPrefix . 'parent_group_id');
 			$objBuilder->AddSelectItem($strTableName, 'confidential_flag', $strAliasPrefix . 'confidential_flag');
 			$objBuilder->AddSelectItem($strTableName, 'email_broadcast_type_id', $strAliasPrefix . 'email_broadcast_type_id');
@@ -571,6 +581,8 @@
 			$objToReturn->intMinistryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'name'] : $strAliasPrefix . 'name';
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
+			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'parent_group_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_group_id'] : $strAliasPrefix . 'parent_group_id';
 			$objToReturn->intParentGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'confidential_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'confidential_flag'] : $strAliasPrefix . 'confidential_flag';
@@ -881,6 +893,7 @@
 							`group_type_id`,
 							`ministry_id`,
 							`name`,
+							`description`,
 							`parent_group_id`,
 							`confidential_flag`,
 							`email_broadcast_type_id`,
@@ -889,6 +902,7 @@
 							' . $objDatabase->SqlVariable($this->intGroupTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
+							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->intParentGroupId) . ',
 							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
@@ -911,6 +925,7 @@
 							`group_type_id` = ' . $objDatabase->SqlVariable($this->intGroupTypeId) . ',
 							`ministry_id` = ' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
+							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`parent_group_id` = ' . $objDatabase->SqlVariable($this->intParentGroupId) . ',
 							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`email_broadcast_type_id` = ' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
@@ -1054,6 +1069,7 @@
 			$this->GroupTypeId = $objReloaded->GroupTypeId;
 			$this->MinistryId = $objReloaded->MinistryId;
 			$this->strName = $objReloaded->strName;
+			$this->strDescription = $objReloaded->strDescription;
 			$this->ParentGroupId = $objReloaded->ParentGroupId;
 			$this->blnConfidentialFlag = $objReloaded->blnConfidentialFlag;
 			$this->EmailBroadcastTypeId = $objReloaded->EmailBroadcastTypeId;
@@ -1097,6 +1113,11 @@
 					// Gets the value for strName 
 					// @return string
 					return $this->strName;
+
+				case 'Description':
+					// Gets the value for strDescription 
+					// @return string
+					return $this->strDescription;
 
 				case 'ParentGroupId':
 					// Gets the value for intParentGroupId 
@@ -1268,6 +1289,17 @@
 					// @return string
 					try {
 						return ($this->strName = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Description':
+					// Sets the value for strDescription 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strDescription = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1797,6 +1829,7 @@
 			$strToReturn .= '<element name="GroupTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Ministry" type="xsd1:Ministry"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
+			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="ParentGroup" type="xsd1:Group"/>';
 			$strToReturn .= '<element name="ConfidentialFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="EmailBroadcastTypeId" type="xsd:int"/>';
@@ -1834,6 +1867,8 @@
 				$objToReturn->Ministry = Ministry::GetObjectFromSoapObject($objSoapObject->Ministry);
 			if (property_exists($objSoapObject, 'Name'))
 				$objToReturn->strName = $objSoapObject->Name;
+			if (property_exists($objSoapObject, 'Description'))
+				$objToReturn->strDescription = $objSoapObject->Description;
 			if ((property_exists($objSoapObject, 'ParentGroup')) &&
 				($objSoapObject->ParentGroup))
 				$objToReturn->ParentGroup = Group::GetObjectFromSoapObject($objSoapObject->ParentGroup);
@@ -1899,6 +1934,8 @@
 					return new QQNodeMinistry('ministry_id', 'Ministry', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'Description':
+					return new QQNode('description', 'Description', 'string', $this);
 				case 'ParentGroupId':
 					return new QQNode('parent_group_id', 'ParentGroupId', 'integer', $this);
 				case 'ParentGroup':
@@ -1947,6 +1984,8 @@
 					return new QQNodeMinistry('ministry_id', 'Ministry', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'Description':
+					return new QQNode('description', 'Description', 'string', $this);
 				case 'ParentGroupId':
 					return new QQNode('parent_group_id', 'ParentGroupId', 'integer', $this);
 				case 'ParentGroup':

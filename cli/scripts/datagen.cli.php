@@ -9,6 +9,7 @@
 		const IndividualCount = 100;
 		const HouseholdCount = 100;
 		const CommunicationListCount = 100;
+		const GroupCount = 100;
 
 		// Static Data
 		public static $MinistryArray = array(
@@ -69,6 +70,7 @@
 			ChmsDataGen::GenerateUsers();
 			ChmsDataGen::GenerateHouseholds();
 			ChmsDataGen::GenerateCommunicationLists();
+			ChmsDataGen::GenerateGroups();
 		}
 
 		public static function GenerateCommunicationLists() {
@@ -102,6 +104,45 @@
 						$strEmail = QDataGen::GenerateEmail($strFirstName, $strLastName);
 						$objCommunicationList->AddEntry($strEmail, $strFirstName, $strMiddleName, $strLastName);
 					}
+				}
+			}
+		}
+
+		public static function GenerateGroups() {
+			QDataGen::DisplayForEachTaskStart('Generating groups for ministries', self::$MinistryArray);
+			foreach (self::$MinistryArray as $objMinistry) {
+				QDataGen::DisplayForEachTaskNext('Generating groups for ministries');
+
+				$intGroupCount = rand(1, 8);
+				for ($intCount = 0; $intCount < $intGroupCount; $intCount++) {
+					self::GenerateGroup($objMinistry, null);
+				}
+			}
+			QDataGen::DisplayForEachTaskEnd('Generating groups for ministries');
+		}
+
+		public static function GenerateGroup(Ministry $objMinistry, Group $objParentGroup = null) {
+			// Use Business Object to create the basic folder
+			$strName = QDataGen::GenerateTitle(1, 4);
+			$strDescription = QDataGen::GenerateContent(rand(0, 1), 5, 20);
+			$objGroup = Group::CreateGroupForMinistry($objMinistry, $intGroupTypeId, $strName, $strDescription, $objParentGroup);
+
+			// Set folder options
+			$objGroup->ConfidentialFlag = !rand(0, 8);
+
+			// Email
+			if (!rand(0, 3)) {
+				
+			}
+
+			$objGroup->Saev();
+
+			// Create Subgroups
+			if (!$objParentGroup || !$objParentGroup->ParentGroup) {
+				if (!rand(0, 3)) {
+					$intSubFolderCount = rand(1, 3);
+					for ($intCount = 0; $intCount < $intSubFolderCount; $intCount++)
+						self::GenerateGroup($objMinistry, $objGroup);
 				}
 			}
 		}

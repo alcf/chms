@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->txtName->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtDescription->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstParentGroup->RenderWithName(); ?>
 
 		<?php $_CONTROL->chkConfidentialFlag->RenderWithName(); ?>

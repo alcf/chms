@@ -27,6 +27,7 @@
 		protected $lstGroupType;
 		protected $lstMinistry;
 		protected $txtName;
+		protected $txtDescription;
 		protected $lstParentGroup;
 		protected $chkConfidentialFlag;
 		protected $lstEmailBroadcastType;
@@ -63,6 +64,7 @@
 			$this->lstGroupType = $this->mctGroup->lstGroupType_Create();
 			$this->lstMinistry = $this->mctGroup->lstMinistry_Create();
 			$this->txtName = $this->mctGroup->txtName_Create();
+			$this->txtDescription = $this->mctGroup->txtDescription_Create();
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 			$this->chkConfidentialFlag = $this->mctGroup->chkConfidentialFlag_Create();
 			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
