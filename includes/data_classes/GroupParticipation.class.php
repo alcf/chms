@@ -27,7 +27,25 @@
 			return sprintf('GroupParticipation Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Dates':
+					if ($this->dttDateEnd) {
+						return sprintf('%s - %s', $this->dttDateStart->__toString('MMM YYYY'), $this->dttDateEnd->__toString('MMM YYYY'));
+					} else {
+						return sprintf('%s - Present', $this->dttDateStart->__toString('MMM YYYY'));
+					}
 
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
@@ -102,19 +120,6 @@
 /*
 		protected $strSomeNewProperty;
 
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {

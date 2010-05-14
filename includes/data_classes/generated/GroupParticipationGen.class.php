@@ -694,6 +694,46 @@
 				QQ::Equal(QQN::GroupParticipation()->DateEnd, $dttDateEnd)
 			);
 		}
+			
+		/**
+		 * Load an array of GroupParticipation objects,
+		 * by PersonId, GroupId Index(es)
+		 * @param integer $intPersonId
+		 * @param integer $intGroupId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupParticipation[]
+		*/
+		public static function LoadArrayByPersonIdGroupId($intPersonId, $intGroupId, $objOptionalClauses = null) {
+			// Call GroupParticipation::QueryArray to perform the LoadArrayByPersonIdGroupId query
+			try {
+				return GroupParticipation::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
+					QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count GroupParticipations
+		 * by PersonId, GroupId Index(es)
+		 * @param integer $intPersonId
+		 * @param integer $intGroupId
+		 * @return int
+		*/
+		public static function CountByPersonIdGroupId($intPersonId, $intGroupId) {
+			// Call GroupParticipation::QueryCount to perform the CountByPersonIdGroupId query
+			return GroupParticipation::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
+				QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
+				)
+			);
+		}
 
 
 
