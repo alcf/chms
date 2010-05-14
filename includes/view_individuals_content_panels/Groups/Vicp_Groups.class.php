@@ -27,20 +27,42 @@
 		}
 
 		public function dtgGroups_Bind() {
-			$this->dtgGroups->DataSource = Group::QueryArray(
-				QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id),
-				QQ::Distinct()
-			);
+			$objClause = QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id);
+
+			// Admins can view anything
+			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
+				
+			} else {
+				// Non-Admins can only view non-confidential groups
+				// OR groups that they are associated with
+				$intMinistryIdArray = array();
+				foreach (QApplication::$Login->GetMinistryArray() as $objMinistry)
+					$intMinistryIdArray[] = $objMinistry->Id;
+				$objSubClause = QQ::OrCondition(
+					QQ::Equal(QQN::Group()->ConfidentialFlag, false),
+					QQ::In(QQN::Group()->MinistryId, $intMinistryIdArray));
+
+				$objClause = QQ::AndCondition($objClause, $objSubClause);
+			}
+
+			$this->dtgGroups->DataSource = Group::QueryArray($objClause, QQ::Distinct());
 		}
 
 		protected $objParticipationArray;
 
 		public function RenderGroupName(Group $objGroup) {
 			$intGroupId = $objGroup->Id;
+			if ($blnConfidentialFlag = $objGroup->ConfidentialFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->BackColor = '#999';
+				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, $objStyle);
+			} else {
+				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, null);
+			}
 			$strToReturn = QApplication::HtmlEntities($objGroup->Name);
 			while ($objGroup = $objGroup->ParentGroup)
 				$strToReturn = '<span style="font-size: 10px; color: #666;">' . QApplication::HtmlEntities($objGroup->Name) . ' &gt; </span>' . $strToReturn;
-			return sprintf('<a href="#groups/edit_participation/%s">%s</a>', $intGroupId, $strToReturn);
+			return sprintf('<a href="#groups/edit_participation/%s">%s</a> %s', $intGroupId, $strToReturn, ($blnConfidentialFlag ? '[CONFIDENTIAL]' : null));
 		}
 
 		public function RenderGroupRoles(Group $objGroup) {
