@@ -50,20 +50,42 @@
 			$objGroup->ParentGroup = $objParentGroup;
 			$objGroup->Save();
 
-			switch ($intGroupTypeId) {
-				case GroupType::RegularGroup;
-					break;
-				case GroupType::GroupCategory:
-					break;
-				case GroupType::GrowthGroup:
-					break;
-				case GroupType::SmartGroup:
-					break;
-				default:
-					throw new QCallerException('Invalid Group Type Id: ' . $intGroupTypeId);
-			}
+//			switch ($intGroupTypeId) {
+//				case GroupType::RegularGroup;
+//				case GroupType::GroupCategory:
+//					break;
+//					break;
+//				case GroupType::GrowthGroup:
+//					break;
+//				case GroupType::SmartGroup:
+//					break;
+//				default:
+//					throw new QCallerException('Invalid Group Type Id: ' . $intGroupTypeId);
+//			}
 
 			return $objGroup;
+		}
+
+		/**
+		 * Adds a Person to this Group as a Group Participation record.  Throws an exception
+		 * if the GroupRole doesn't exist in the Ministry that the group belongs to.
+		 * 
+		 * If StartDate is NULL, it will use Now()
+		 * 
+		 * @param Person $objPerson
+		 * @param integer $intGroupRoleId
+		 * @param QDateTime $dttDateStart
+		 * @param QDateTime $dttDateEnd
+		 * @return GroupParticipation
+		 */
+		public function AddPerson(Person $objPerson, $intGroupRoleId, QDateTime $dttDateStart = null, QDateTime $dttDateEnd = null) {
+			$objGroupParticipation = new GroupParticipation();
+			$objGroupParticipation->Person = $objPerson;
+			$objGroupParticipation->Group = $this;
+			$objGroupParticipation->GroupRoleId = $intGroupRoleId;
+			$objGroupParticipation->DateStart = ($dttDateStart ? $dttDateStart : QDateTime::Now());
+			$objGroupParticipation->DateEnd = $dttDateEnd;
+			$objGroupParticipation->Save();
 		}
 
 		// Override or Create New Load/Count methods
