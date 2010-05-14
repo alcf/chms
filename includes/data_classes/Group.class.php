@@ -88,6 +88,24 @@
 			$objGroupParticipation->Save();
 		}
 
+
+		/**
+		 * Can the Login view or edit this group information (based on Confidentiality rules)
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanView(Login $objLogin) {
+			// Administrators can always view
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+			
+			// Anyone can view non-confidential
+			if (!$this->blnConfidentialFlag) return true;
+			
+			// Otherwise, only ministry members can view
+			return $objLogin->IsMinistryAssociated($this->Ministry);
+		}
+
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
