@@ -126,8 +126,13 @@
 		}
 
 		public static function GenerateGroup(Ministry $objMinistry, Group $objParentGroup = null) {
-			// Use Business Object to create the basic folder
 			$strName = QDataGen::GenerateTitle(1, 4);
+			$strToken = strtolower(str_replace(' ', '_', $strName));
+			while (Group::LoadByToken($strToken)) {
+				$strName = QDataGen::GenerateTitle(1, 4);
+				$strToken = strtolower(str_replace(' ', '_', $strName));
+			}
+
 			$strDescription = QDataGen::GenerateContent(rand(0, 1), 5, 20);
 			$intGroupTypeId = QDataGen::GenerateFromArray(array_keys(GroupType::$NameArray));
 			$objGroup = Group::CreateGroupForMinistry($objMinistry, $intGroupTypeId, $strName, $strDescription, $objParentGroup);
@@ -138,7 +143,7 @@
 			// Email
 			if (!rand(0, 3)) {
 				$objGroup->EmailBroadcastTypeId = QDataGen::GenerateFromArray(array_keys(EmailBroadcastType::$NameArray));
-				$objGroup->Token = strtolower(str_replace(' ', '_', $strName));
+				$objGroup->Token = $strToken;
 			}
 
 			$objGroup->Save();
@@ -156,15 +161,13 @@
 					$objSmartGroup->Group = $objGroup;
 					$objSmartGroup->Save();
 					break;
-			}
 
-			// Create Subgroups
-			if (!$objParentGroup || !$objParentGroup->ParentGroup) {
-				if (!rand(0, 3)) {
-					$intSubFolderCount = rand(1, 3);
+				case GroupType::GroupCategory:
+					// Create Subgroups
+					$intSubFolderCount = rand(0, 5);
 					for ($intCount = 0; $intCount < $intSubFolderCount; $intCount++)
 						self::GenerateGroup($objMinistry, $objGroup);
-				}
+					break;
 			}
 
 			// Create Participants

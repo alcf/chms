@@ -27,6 +27,20 @@
 			return sprintf('Group Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Type': return GroupType::$NameArray[$this->intGroupTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		/**
 		 * Creates a new group for a ministry
 		 * @param Ministry $objMinistry
@@ -104,7 +118,37 @@
 			// Otherwise, only ministry members can view
 			return $objLogin->IsMinistryAssociated($this->Ministry);
 		}
+		
+		
+		/**
+		 * Gets an array of Groups for a given ministry, ordered in hierarchical order and name
+		 * @param integer $intMinistryId
+		 * @return Group[]
+		 */
+		public static function LoadOrderedArrayForMinistry($intMinistryId) {
+			$objGroupArray = Group::LoadArrayByMinistryId($intMinistryId, QQ::OrderBy(QQN::Group()->Name));
 
+			return self::LoadOrderedArrayForMinistryHelper($objGroupArray, null);
+		}
+
+		/**
+		 * Helper method to recurse through an array of ministries for LoadOrderedArrayForMinistry
+		 * @param Group[] $objGroupArray
+		 * @param integer $intParentGroupId
+		 * @return Group[]
+		 */
+		protected static function LoadOrderedArrayForMinistryHelper($objGroupArray, $intParentGroupId) {
+			$arrToReturn = array();
+			foreach ($objGroupArray as $objGroup) {
+				if (($objGroup->ParentGroupId == $intParentGroupId) ||
+					(is_null($objGroup->ParentGroupId) && is_null($intParentGroupId))) {
+					$arrToReturn[] = $objGroup;
+					$arrToReturn = array_merge($arrToReturn, self::LoadOrderedArrayForMinistryHelper($objGroupArray, $objGroup->Id));
+				}
+			}
+
+			return $arrToReturn;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
