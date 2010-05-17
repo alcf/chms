@@ -23,7 +23,7 @@
 
 		<?php $this->txtName->RenderWithName(); ?>
 
-		<?php $this->lstAttributeValuesAsOption->RenderWithName(true, "Rows=7"); ?>
+		<?php $this->lstAttributeValuesAsMultiple->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

@@ -22,8 +22,8 @@
 	 * property-read QLabel $AttributeIdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
-	 * property QListBox $AttributeValueAsOptionControl
-	 * property-read QLabel $AttributeValueAsOptionLabel
+	 * property QListBox $AttributeValueAsMultipleControl
+	 * property-read QLabel $AttributeValueAsMultipleLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -45,10 +45,10 @@
 		protected $lblName;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
-		protected $lstAttributeValuesAsOption;
+		protected $lstAttributeValuesAsMultiple;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
-		protected $lblAttributeValuesAsOption;
+		protected $lblAttributeValuesAsMultiple;
 
 
 		/**
@@ -218,15 +218,15 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstAttributeValuesAsOption
+		 * Create and setup QListBox lstAttributeValuesAsMultiple
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
 		 */
-		public function lstAttributeValuesAsOption_Create($strControlId = null) {
-			$this->lstAttributeValuesAsOption = new QListBox($this->objParentObject, $strControlId);
-			$this->lstAttributeValuesAsOption->Name = QApplication::Translate('Attribute Values As Option');
-			$this->lstAttributeValuesAsOption->SelectionMode = QSelectionMode::Multiple;
-			$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsOptionArray();
+		public function lstAttributeValuesAsMultiple_Create($strControlId = null) {
+			$this->lstAttributeValuesAsMultiple = new QListBox($this->objParentObject, $strControlId);
+			$this->lstAttributeValuesAsMultiple->Name = QApplication::Translate('Attribute Values As Multiple');
+			$this->lstAttributeValuesAsMultiple->SelectionMode = QSelectionMode::Multiple;
+			$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsMultipleArray();
 			$objAttributeValueArray = AttributeValue::LoadAll();
 			if ($objAttributeValueArray) foreach ($objAttributeValueArray as $objAttributeValue) {
 				$objListItem = new QListItem($objAttributeValue->__toString(), $objAttributeValue->Id);
@@ -234,27 +234,27 @@
 					if ($objAssociated->Id == $objAttributeValue->Id)
 						$objListItem->Selected = true;
 				}
-				$this->lstAttributeValuesAsOption->AddItem($objListItem);
+				$this->lstAttributeValuesAsMultiple->AddItem($objListItem);
 			}
-			return $this->lstAttributeValuesAsOption;
+			return $this->lstAttributeValuesAsMultiple;
 		}
 
 		/**
-		 * Create and setup QLabel lblAttributeValuesAsOption
+		 * Create and setup QLabel lblAttributeValuesAsMultiple
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strGlue glue to display in between each associated object
 		 * @return QLabel
 		 */
-		public function lblAttributeValuesAsOption_Create($strControlId = null, $strGlue = ', ') {
-			$this->lblAttributeValuesAsOption = new QLabel($this->objParentObject, $strControlId);
-			$this->lstAttributeValuesAsOption->Name = QApplication::Translate('Attribute Values As Option');
+		public function lblAttributeValuesAsMultiple_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblAttributeValuesAsMultiple = new QLabel($this->objParentObject, $strControlId);
+			$this->lstAttributeValuesAsMultiple->Name = QApplication::Translate('Attribute Values As Multiple');
 			
-			$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsOptionArray();
+			$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsMultipleArray();
 			$strItems = array();
 			foreach ($objAssociatedArray as $objAssociated)
 				$strItems[] = $objAssociated->__toString();
-			$this->lblAttributeValuesAsOption->Text = implode($strGlue, $strItems);
-			return $this->lblAttributeValuesAsOption;
+			$this->lblAttributeValuesAsMultiple->Text = implode($strGlue, $strItems);
+			return $this->lblAttributeValuesAsMultiple;
 		}
 
 
@@ -287,9 +287,9 @@
 			if ($this->txtName) $this->txtName->Text = $this->objAttributeOption->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objAttributeOption->Name;
 
-			if ($this->lstAttributeValuesAsOption) {
-				$this->lstAttributeValuesAsOption->RemoveAllItems();
-				$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsOptionArray();
+			if ($this->lstAttributeValuesAsMultiple) {
+				$this->lstAttributeValuesAsMultiple->RemoveAllItems();
+				$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsMultipleArray();
 				$objAttributeValueArray = AttributeValue::LoadAll();
 				if ($objAttributeValueArray) foreach ($objAttributeValueArray as $objAttributeValue) {
 					$objListItem = new QListItem($objAttributeValue->__toString(), $objAttributeValue->Id);
@@ -297,15 +297,15 @@
 						if ($objAssociated->Id == $objAttributeValue->Id)
 							$objListItem->Selected = true;
 					}
-					$this->lstAttributeValuesAsOption->AddItem($objListItem);
+					$this->lstAttributeValuesAsMultiple->AddItem($objListItem);
 				}
 			}
-			if ($this->lblAttributeValuesAsOption) {
-				$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsOptionArray();
+			if ($this->lblAttributeValuesAsMultiple) {
+				$objAssociatedArray = $this->objAttributeOption->GetAttributeValueAsMultipleArray();
 				$strItems = array();
 				foreach ($objAssociatedArray as $objAssociated)
 					$strItems[] = $objAssociated->__toString();
-				$this->lblAttributeValuesAsOption->Text = implode($strGlue, $strItems);
+				$this->lblAttributeValuesAsMultiple->Text = implode($strGlue, $strItems);
 			}
 
 		}
@@ -316,12 +316,12 @@
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
 
-		protected function lstAttributeValuesAsOption_Update() {
-			if ($this->lstAttributeValuesAsOption) {
-				$this->objAttributeOption->UnassociateAllAttributeValuesAsOption();
-				$objSelectedListItems = $this->lstAttributeValuesAsOption->SelectedItems;
+		protected function lstAttributeValuesAsMultiple_Update() {
+			if ($this->lstAttributeValuesAsMultiple) {
+				$this->objAttributeOption->UnassociateAllAttributeValuesAsMultiple();
+				$objSelectedListItems = $this->lstAttributeValuesAsMultiple->SelectedItems;
 				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
-					$this->objAttributeOption->AssociateAttributeValueAsOption(AttributeValue::Load($objListItem->Value));
+					$this->objAttributeOption->AssociateAttributeValueAsMultiple(AttributeValue::Load($objListItem->Value));
 				}
 			}
 		}
@@ -350,7 +350,7 @@
 				$this->objAttributeOption->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
-				$this->lstAttributeValuesAsOption_Update();
+				$this->lstAttributeValuesAsMultiple_Update();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -362,7 +362,7 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeleteAttributeOption() {
-			$this->objAttributeOption->UnassociateAllAttributeValuesAsOption();
+			$this->objAttributeOption->UnassociateAllAttributeValuesAsMultiple();
 			$this->objAttributeOption->Delete();
 		}		
 
@@ -405,12 +405,12 @@
 				case 'NameLabel':
 					if (!$this->lblName) return $this->lblName_Create();
 					return $this->lblName;
-				case 'AttributeValueAsOptionControl':
-					if (!$this->lstAttributeValuesAsOption) return $this->lstAttributeValuesAsOption_Create();
-					return $this->lstAttributeValuesAsOption;
-				case 'AttributeValueAsOptionLabel':
-					if (!$this->lblAttributeValuesAsOption) return $this->lblAttributeValuesAsOption_Create();
-					return $this->lblAttributeValuesAsOption;
+				case 'AttributeValueAsMultipleControl':
+					if (!$this->lstAttributeValuesAsMultiple) return $this->lstAttributeValuesAsMultiple_Create();
+					return $this->lstAttributeValuesAsMultiple;
+				case 'AttributeValueAsMultipleLabel':
+					if (!$this->lblAttributeValuesAsMultiple) return $this->lblAttributeValuesAsMultiple_Create();
+					return $this->lblAttributeValuesAsMultiple;
 				default:
 					try {
 						return parent::__get($strName);
@@ -439,8 +439,8 @@
 						return ($this->lstAttribute = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
-					case 'AttributeValueAsOptionControl':
-						return ($this->lstAttributeValuesAsOption = QType::Cast($mixValue, 'QControl'));
+					case 'AttributeValueAsMultipleControl':
+						return ($this->lstAttributeValuesAsMultiple = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

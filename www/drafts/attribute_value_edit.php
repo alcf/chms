@@ -29,10 +29,10 @@
 		protected $calDateValue;
 		protected $txtTextValue;
 		protected $chkBooleanValue;
-		protected $lstAttributeOption;
+		protected $lstSingleAttributeOption;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		protected $lstAttributeOptionsAsOption;
+		protected $lstAttributeOptionsAsMultiple;
 
 		// Other Controls
 		protected $btnSave;
@@ -63,8 +63,8 @@
 			$this->calDateValue = $this->mctAttributeValue->calDateValue_Create();
 			$this->txtTextValue = $this->mctAttributeValue->txtTextValue_Create();
 			$this->chkBooleanValue = $this->mctAttributeValue->chkBooleanValue_Create();
-			$this->lstAttributeOption = $this->mctAttributeValue->lstAttributeOption_Create();
-			$this->lstAttributeOptionsAsOption = $this->mctAttributeValue->lstAttributeOptionsAsOption_Create();
+			$this->lstSingleAttributeOption = $this->mctAttributeValue->lstSingleAttributeOption_Create();
+			$this->lstAttributeOptionsAsMultiple = $this->mctAttributeValue->lstAttributeOptionsAsMultiple_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

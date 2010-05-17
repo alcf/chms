@@ -436,12 +436,50 @@
 		/**
 		 * Sets an attribute value for this person.
 		 * Data Type of $mixValue is dependent on the Data Type for the attribute being set.
-		 * @param integer $intAttributeId
+		 * @param Attribute $objAttribute
 		 * @param mixed $mixValue
 		 * @return AttributeValue
 		 */
-		public function SetAttribute($intAttributeId, $mixValue) {
+		public function SetAttribute(Attribute $objAttribute, $mixValue) {
+			$objValue = AttributeValue::LoadByAttributeIdPersonId($objAttribute->Id, $this->intId);
+			if (!$objValue) {
+				$objValue = new AttributeValue();
+				$objValue->Attribute = $objAttribute;
+				$objValue->Person = $this;
+			}
+
+			switch($objAttribute->AttributeDataTypeId) {
+				case AttributeDataType::Text:
+					$objValue->TextValue = $mixValue;
+					break;
+				
+				case AttributeDataType::Checkbox:
+					$objValue->BooleanValue = $mixValue;
+					break;
+
+				case AttributeDataType::Date:
+					$objValue->DateValue = $mixValue;
+					break;
+
+				case AttributeDataType::ImmutableSingleDropdown:
+				case AttributeDataType::MutableSingleDropdown:
+					$objValue->SingleAttributeOption = $mixValue;
+					break;
+
+				case AttributeDataType::ImmutableMultipleDropdown:
+				case AttributeDataType::MutableMultipleDropdown:
+					$objValue->Save();
+					$objValue->UnassociateAllAttributeOptionsAsMultiple();
+					foreach ($mixValue as $objOption) {
+						$objValue->AssociateAttributeOptionAsMultiple($objOption);
+					}
+					break;
+				default:
+					throw new Exception('Unhandled Attribute Data Type');
+			}
 			
+			$objValue->Save();
+			return $objValue;
 		}
 
 		// Override or Create New Load/Count methods

@@ -292,37 +292,7 @@ CREATE TABLE `attribute_value`
 `date_value` DATE,
 `text_value` TEXT,
 `boolean_value` BOOLEAN,
-`attribute_option_id` INTEGER UNSIGNED,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `address`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`address_type_id` INTEGER UNSIGNED NOT NULL,
-`person_id` INTEGER UNSIGNED,
-`household_id` INTEGER UNSIGNED,
-`primary_phone_id` INTEGER UNSIGNED,
-`address_1` VARCHAR(200),
-`address_2` VARCHAR(200),
-`address_3` VARCHAR(200),
-`city` VARCHAR(100),
-`state` VARCHAR(100),
-`zip_code` VARCHAR(10),
-`country` VARCHAR(2),
-`current_flag` BOOLEAN,
-`invalid_flag` BOOLEAN,
-`date_until_when` DATE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `phone`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`phone_type_id` INTEGER UNSIGNED NOT NULL,
-`address_id` INTEGER UNSIGNED,
-`person_id` INTEGER UNSIGNED,
-`number` VARCHAR(20),
+`single_attribute_option_id` INTEGER UNSIGNED,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -352,6 +322,36 @@ CREATE TABLE `person`
 `can_mail_flag` BOOLEAN,
 `can_phone_flag` BOOLEAN,
 `can_email_flag` BOOLEAN,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `phone`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`phone_type_id` INTEGER UNSIGNED NOT NULL,
+`address_id` INTEGER UNSIGNED,
+`person_id` INTEGER UNSIGNED,
+`number` VARCHAR(20),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `address`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`address_type_id` INTEGER UNSIGNED NOT NULL,
+`person_id` INTEGER UNSIGNED,
+`household_id` INTEGER UNSIGNED,
+`primary_phone_id` INTEGER UNSIGNED,
+`address_1` VARCHAR(200),
+`address_2` VARCHAR(200),
+`address_3` VARCHAR(200),
+`city` VARCHAR(100),
+`state` VARCHAR(100),
+`zip_code` VARCHAR(10),
+`country` VARCHAR(2),
+`current_flag` BOOLEAN,
+`invalid_flag` BOOLEAN,
+`date_until_when` DATE,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -488,7 +488,7 @@ CREATE TABLE `growthgroupstructure_growthgroup_assn`
 PRIMARY KEY (`growth_group_structure_id`,`growth_group_id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `attributevalue_option_assn`
+CREATE TABLE `attributevalue_multipleattributeoption_assn`
 (
 `attribute_value_id` INTEGER UNSIGNED NOT NULL,
 `attribute_option_id` INTEGER UNSIGNED NOT NULL,
@@ -575,33 +575,11 @@ ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_id_idxfk_1 (`attribute_i
 CREATE INDEX `person_id_idx` ON `attribute_value`(`person_id`);
 ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk_8 (`person_id`) REFERENCES `person` (`id`);
 
-CREATE INDEX `attribute_option_id_idx` ON `attribute_value`(`attribute_option_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+CREATE INDEX `single_attribute_option_id_idx` ON `attribute_value`(`single_attribute_option_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY single_attribute_option_id_idxfk (`single_attribute_option_id`) REFERENCES `attribute_option` (`id`);
 
 CREATE UNIQUE INDEX `attribute_value_idx` ON `attribute_value` (`attribute_id`,`person_id`);
 
-CREATE INDEX `address_type_id_idx` ON `address`(`address_type_id`);
-ALTER TABLE `address` ADD FOREIGN KEY address_type_id_idxfk (`address_type_id`) REFERENCES `address_type` (`id`);
-
-CREATE INDEX `person_id_idx` ON `address`(`person_id`);
-ALTER TABLE `address` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `household_id_idx` ON `address`(`household_id`);
-ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_1 (`household_id`) REFERENCES `household` (`id`);
-
-CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
-ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
-
-CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY phone_type_id_idxfk (`phone_type_id`) REFERENCES `phone_type` (`id`);
-
-CREATE INDEX `address_id_idx` ON `phone`(`address_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `person_id_idx` ON `phone`(`person_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY person_id_idxfk_10 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `number_idx` ON `phone`(`number`);
 CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
 ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
 
@@ -617,9 +595,31 @@ CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
 ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
 
 CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
-ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
+ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
 
 ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
+
+CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY phone_type_id_idxfk (`phone_type_id`) REFERENCES `phone_type` (`id`);
+
+CREATE INDEX `address_id_idx` ON `phone`(`address_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `person_id_idx` ON `phone`(`person_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `number_idx` ON `phone`(`number`);
+CREATE INDEX `address_type_id_idx` ON `address`(`address_type_id`);
+ALTER TABLE `address` ADD FOREIGN KEY address_type_id_idxfk (`address_type_id`) REFERENCES `address_type` (`id`);
+
+CREATE INDEX `person_id_idx` ON `address`(`person_id`);
+ALTER TABLE `address` ADD FOREIGN KEY person_id_idxfk_10 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `household_id_idx` ON `address`(`household_id`);
+ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_1 (`household_id`) REFERENCES `household` (`id`);
+
+CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
+ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
 
 CREATE INDEX `role_type_id_idx` ON `login`(`role_type_id`);
 ALTER TABLE `login` ADD FOREIGN KEY role_type_id_idxfk (`role_type_id`) REFERENCES `role_type` (`id`);
@@ -694,6 +694,6 @@ ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group
 
 ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group_id_idxfk (`growth_group_id`) REFERENCES `growth_group` (`group_id`);
 
-ALTER TABLE `attributevalue_option_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
 
-ALTER TABLE `attributevalue_option_assn` ADD FOREIGN KEY attribute_option_id_idxfk_1 (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
