@@ -89,11 +89,23 @@
 			$this->btnEditDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnEditDelete_Click'));
 		}
 
+		public function DisplayGroupName() {
+			$objGroup = $this->objGroup;
+			$strToReturn = QApplication::HtmlEntities($objGroup->Name);
+			while ($objGroup = $objGroup->ParentGroup)
+				$strToReturn = '<span style="font-size: 10px; color: #666;">' . QApplication::HtmlEntities($objGroup->Name) . ' &gt; </span>' . $strToReturn;
+			return $strToReturn;
+		}
+
 		protected function lblCurrentRoles_Refresh() {
 			$strRoleArray = array();
 			foreach($this->objParticipationArray as $objParticipation)
 				if (!$objParticipation->DateEnd) $strRoleArray[] = QApplication::HtmlEntities($objParticipation->GroupRole->Name);
-			$this->lblCurrentRoles->Text = implode('<br/>', $strRoleArray);
+			
+			if (count($strRoleArray))
+				$this->lblCurrentRoles->Text = implode('<br/>', $strRoleArray);
+			else
+				$this->lblCurrentRoles->Text = '<span style="color: #666;">None</span>';
 		}
 		
 		protected $strRole;

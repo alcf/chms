@@ -1,4 +1,4 @@
-<h3>Ministry Participation </h3>
+<h3>Ministry Participation for <?php _p($_CONTROL->DisplayGroupName(), false); ?></h3>
 
 <?php if ($_CONTROL->objGroup->ConfidentialFlag) { ?><h4>CONFIDENTIAL</h4><?php } ?>
 
