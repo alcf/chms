@@ -180,6 +180,12 @@ INSERT INTO attribute VALUES (7, 7, 'Vocational Gifts');
 INSERT INTO attribute_option VALUES (null, 6, 'Healing');
 INSERT INTO attribute_option VALUES (null, 6, 'Prayer');
 INSERT INTO attribute_option VALUES (null, 6, 'Prophecy');
+INSERT INTO attribute_option VALUES (null, 6, 'Teaching');
+INSERT INTO attribute_option VALUES (null, 6, 'Administration');
+INSERT INTO attribute_option VALUES (null, 6, 'Evangelism');
+INSERT INTO attribute_option VALUES (null, 6, 'Encouragement');
+INSERT INTO attribute_option VALUES (null, 6, 'Giving');
+INSERT INTO attribute_option VALUES (null, 6, 'Leading');
 
 INSERT INTO attribute_option VALUES (null, 7, 'Electrical');
 INSERT INTO attribute_option VALUES (null, 7, 'Plumbing');

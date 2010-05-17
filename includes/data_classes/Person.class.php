@@ -433,6 +433,17 @@
 			return $objToReturn;
 		}
 
+		/**
+		 * Sets an attribute value for this person.
+		 * Data Type of $mixValue is dependent on the Data Type for the attribute being set.
+		 * @param integer $intAttributeId
+		 * @param mixed $mixValue
+		 * @return AttributeValue
+		 */
+		public function SetAttribute($intAttributeId, $mixValue) {
+			
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

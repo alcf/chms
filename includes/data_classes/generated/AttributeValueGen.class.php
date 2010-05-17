@@ -608,6 +608,22 @@
 		}
 			
 		/**
+		 * Load a single AttributeValue object,
+		 * by AttributeId, PersonId Index(es)
+		 * @param integer $intAttributeId
+		 * @param integer $intPersonId
+		 * @return AttributeValue
+		*/
+		public static function LoadByAttributeIdPersonId($intAttributeId, $intPersonId) {
+			return AttributeValue::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::AttributeValue()->AttributeId, $intAttributeId),
+				QQ::Equal(QQN::AttributeValue()->PersonId, $intPersonId)
+				)
+			);
+		}
+			
+		/**
 		 * Load an array of AttributeValue objects,
 		 * by AttributeId Index(es)
 		 * @param integer $intAttributeId

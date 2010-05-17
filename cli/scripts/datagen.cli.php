@@ -594,8 +594,50 @@
 
 			// Addresses and Phone
 			self::GenerateAddressesAndPhonesForPerson($objPerson);
+			
+			// Attributes
+			self::GenerateAttributesForPerson($objPerson);
 
 			return $objPerson;
+		}
+
+		protected static function GenerateAttributesForPerson($objPerson) {
+			foreach (Attribute::LoadAll() as $objAttribute) {
+				if (!rand(0, 3)) {
+					switch($objAttribute->AttributeDataTypeId) {
+						case AttributeDataType::Text:
+							$mixData = QDataGen::GenerateTitle(5, 25);
+							break;
+						
+						case AttributeDataType::Checkbox:
+							$mixData = rand(0, 1) ? true : false;
+							break;
+
+						case AttributeDataType::Date:
+							$mixData = QDataGen::GenerateDateTime(self::$LifeStartDate, QDateTime::Now());
+							break;
+
+						case AttributeDataType::ImmutableSingleDropdown:
+						case AttributeDataType::MutableSingleDropdown:
+							$mixData = QDataGen::GenerateFromArray($objAttribute->GetAttributeOptionArray());
+							break;
+
+						case AttributeDataType::ImmutableMultipleDropdown:
+						case AttributeDataType::MutableMultipleDropdown:
+							$mixData = array();
+							foreach ($objAttribute->GetAttributeOptionArray() as $objAttributeOption) {
+								if (rand(0, 1)) {
+									$mixData[] = $objAttributeOption;
+								}
+							}
+							break;
+						default:
+							throw new Exception('Unhandled Attribute Data Type');
+					}
+
+					$objPerson->SetAttribute($objAttribute->Id, $mixData);
+				}
+			}
 		}
 
 		protected static function GenerateMembershipsForIndividual(Person $objPerson, QDateTime $dttEarliestPossible, $intMembershipCount) {
