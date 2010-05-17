@@ -16,8 +16,9 @@
 		public $btnEditOkay;
 		public $btnEditCancel;
 		public $btnEditDelete;
-		
+
 		public $objParticipationArray;
+		protected $intEditParticipationIndex;
 
 		protected function SetupPanel() {
 			// Get the group and check for validity / authorization
@@ -61,8 +62,21 @@
 			foreach ($this->objGroup->Ministry->GetGroupRoleArray() as $objGroupRole)
 				$this->lstEditRole->AddItem($objGroupRole->Name, $objGroupRole->Id);
 
+			$this->dtxEditStart = new QDateTimeTextBox($this->dlgEdit);
+			$this->dtxEditStart->Name = 'Started';
+			$this->dtxEditStart->Required = true;
+			$this->calEditStart = new QCalendar($this->dlgEdit, $this->dtxEditStart);
+
+			$this->dtxEditEnd = new QDateTimeTextBox($this->dlgEdit);
+			$this->dtxEditEnd->Name = 'Ended';
+			$this->calEditEnd = new QCalendar($this->dlgEdit, $this->dtxEditEnd);
+
+			$this->dtxEditStart->RemoveAllActions(QClickEvent::EventName);
+			$this->dtxEditEnd->RemoveAllActions(QClickEvent::EventName);
+
 			$this->btnEditOkay = new QButton($this->dlgEdit);
 			$this->btnEditOkay->Text = 'Ok';
+			$this->btnEditOkay->CausesValidation = QCausesValidation::SiblingsAndChildren;
 			$this->btnEditOkay->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnEditOkay_Click'));
 
 			$this->btnEditCancel = new QButton($this->dlgEdit);
@@ -112,10 +126,53 @@
 
 		public function pxyEdit_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgEdit->ShowDialogBox();
+
+			if (strlen($strParameter)) {
+				$this->intEditParticipationIndex = intval($strParameter);
+				$objParticipation = $this->objParticipationArray[$this->intEditParticipationIndex];
+
+				$this->lstEditRole->SelectedValue = $objParticipation->GroupRoleId;
+				$this->dtxEditEnd->Text = ($objParticipation->DateEnd) ? $objParticipation->DateEnd->__toString() : null;
+				$this->dtxEditStart->Text = ($objParticipation->DateStart) ? $objParticipation->DateStart->__toString() : null;
+
+				$this->lstEditRole->Enabled = false;
+				$this->btnEditCancel->Visible = false;
+				$this->btnEditDelete->Visible = true;
+			} else {
+				$this->intEditParticipationIndex = null;
+
+				$this->lstEditRole->SelectedValue = null;
+				$this->dtxEditEnd->Text = null;
+				$this->dtxEditStart->Text = null;
+
+				$this->lstEditRole->Enabled = true;
+				$this->btnEditCancel->Visible = true;
+				$this->btnEditDelete->Visible = false;
+			}
 		}
-		
+
 		public function btnEditOkay_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgEdit->HideDialogBox();
+
+			if (!is_null($this->intEditParticipationIndex)) {
+				$objParticipation = $this->objParticipationArray[$this->intEditParticipationIndex];
+				$objParticipation->GroupRoleId = $this->lstEditRole->SelectedValue;
+				$objParticipation->DateStart = $this->dtxEditStart->DateTime;
+				$objParticipation->DateEnd = $this->dtxEditEnd->DateTime;
+			} else {
+				$objParticipation = new GroupParticipation();
+				$objParticipation->Person = $this->objPerson;
+				$objParticipation->Group = $this->objGroup;
+				$objParticipation->GroupRoleId = $this->lstEditRole->SelectedValue;
+				$objParticipation->DateStart = $this->dtxEditStart->DateTime;
+				$objParticipation->DateEnd = $this->dtxEditEnd->DateTime;
+
+				$this->objParticipationArray[] = $objParticipation;
+			}
+
+
+			$this->intEditParticipationIndex = null;
+			$this->dtgParticipations->Refresh();
 		}
 
 		public function btnEditCancel_Click($strFormId, $strControlId, $strParameter) {

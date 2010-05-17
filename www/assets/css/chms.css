@@ -43,7 +43,7 @@ div.renderWithName:after { content: "."; display: block; height: 0; clear: both;
 	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
 
 	/* QDialogBox */
-	div.dialogbox { border: 4px solid #333; background-color: #fff; padding: 20px; width: 400px; overflow: auto; }
+	div.dialogbox { border: 4px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; }
 
 	/* QDateTimePicker */
 	span.datetimepicker { }
