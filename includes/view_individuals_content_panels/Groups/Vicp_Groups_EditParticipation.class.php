@@ -28,14 +28,15 @@
 
 			$this->objParticipationArray = GroupParticipation::LoadArrayByPersonIdGroupId(
 				$this->objPerson->Id, $this->objGroup->Id,
-				QQ::OrderBy(QQN::GroupParticipation()->GroupRoleId, QQN::GroupParticipation()->DateStart)
+				QQ::OrderBy(QQN::GroupParticipation()->GroupRole->Name, QQN::GroupParticipation()->DateStart)
 			);
 			$this->lblCurrentRoles = new QLabel($this);
 			$this->lblCurrentRoles->Name = 'Current Roles';
 			$this->lblCurrentRoles->HtmlEntities = false;
 			$this->lblCurrentRoles_Refresh();
-			
+
 			$this->dtgParticipations = new QDataGrid($this);
+			$this->dtgParticipations->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Role', '<?= $_CONTROL->ParentControl->RenderRole($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Started', '<?= $_CONTROL->ParentControl->RenderDateStart($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Ended', '<?= $_CONTROL->ParentControl->RenderDateEnd($_ITEM); ?>', 'HtmlEntities=false'));
@@ -59,7 +60,7 @@
 			$this->lstEditRole->Name = 'Role';
 			$this->lstEditRole->Required = true;
 			$this->lstEditRole->AddItem('- Select One -');
-			foreach ($this->objGroup->Ministry->GetGroupRoleArray() as $objGroupRole)
+			foreach ($this->objGroup->Ministry->GetGroupRoleArray(QQ::OrderBy(QQN::GroupRole()->Name)) as $objGroupRole)
 				$this->lstEditRole->AddItem($objGroupRole->Name, $objGroupRole->Id);
 
 			$this->dtxEditStart = new QDateTimeTextBox($this->dlgEdit);
@@ -116,7 +117,7 @@
 				$strValue = $objParticipation->DateEnd->__toString('MMM D, YYYY');
 			else
 				$strValue = 'Enter a Date';
-			return sprintf('<a href="" %s>%s</a>', $this->pxyEdit->RenderAsEvents($this->dtgParticipations->CurrentRowIndex, false), $strValue);
+			return sprintf('<a href="" %s>%s</a>', $this->pxyEdit->RenderAsEvents($this->dtgParticipations->CurrentRowIndex . '_', false), $strValue);
 		}
 
 		public function dtgParticipations_Bind() {
@@ -126,7 +127,10 @@
 
 		public function pxyEdit_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgEdit->ShowDialogBox();
-
+			$this->lstEditRole->ValidationReset();
+			$this->dtxEditStart->ValidationReset();
+			$this->dtxEditEnd->ValidationReset();
+			
 			if (strlen($strParameter)) {
 				$this->intEditParticipationIndex = intval($strParameter);
 				$objParticipation = $this->objParticipationArray[$this->intEditParticipationIndex];
@@ -138,6 +142,12 @@
 				$this->lstEditRole->Enabled = false;
 				$this->btnEditCancel->Visible = false;
 				$this->btnEditDelete->Visible = true;
+				
+				if (strpos($strParameter, '_') !== false) {
+					$this->dtxEditEnd->Focus();
+				} else {
+					$this->dtxEditStart->Focus();
+				}
 			} else {
 				$this->intEditParticipationIndex = null;
 
@@ -148,17 +158,33 @@
 				$this->lstEditRole->Enabled = true;
 				$this->btnEditCancel->Visible = true;
 				$this->btnEditDelete->Visible = false;
+				
+				$this->lstEditRole->Focus();
 			}
 		}
 
 		public function btnEditOkay_Click($strFormId, $strControlId, $strParameter) {
-			$this->dlgEdit->HideDialogBox();
+			// Validate Date Range
+			$dttDateRangeArray = array();
+			foreach ($this->objParticipationArray as $intIndex => $objParticipation) {
+				if ((!($intIndex === $this->intEditParticipationIndex)) &&
+					($objParticipation->GroupRoleId == $this->lstEditRole->SelectedValue)) {
+					$dttDateRangeArray[] = array($objParticipation->DateStart, $objParticipation->DateEnd);
+				}
+			}
+			
+			$dttDateRangeArray[] = array($this->dtxEditStart->DateTime, $this->dtxEditEnd->DateTime);
+			usort($dttDateRangeArray, array($this, 'dttDateRangeArray_Sort'));
+			if (!$this->IsValidDates($dttDateRangeArray)) {
+				$this->dtxEditStart->Warning = 'Invalid Dates';
+				return;
+			}
 
 			if (!is_null($this->intEditParticipationIndex)) {
 				$objParticipation = $this->objParticipationArray[$this->intEditParticipationIndex];
 				$objParticipation->GroupRoleId = $this->lstEditRole->SelectedValue;
 				$objParticipation->DateStart = $this->dtxEditStart->DateTime;
-				$objParticipation->DateEnd = $this->dtxEditEnd->DateTime;
+				$objParticipation->DateEnd = $this->dtxEditEnd->DateTime;	
 			} else {
 				$objParticipation = new GroupParticipation();
 				$objParticipation->Person = $this->objPerson;
@@ -170,9 +196,40 @@
 				$this->objParticipationArray[] = $objParticipation;
 			}
 
-
+			usort($this->objParticipationArray, array($this, 'objParticipationArray_Sort'));
 			$this->intEditParticipationIndex = null;
 			$this->dtgParticipations->Refresh();
+			$this->lblCurrentRoles_Refresh();
+			$this->dlgEdit->HideDialogBox();
+		}
+
+		public function IsValidDates($dttDateArray) {
+			for ($intIndex = 0; $intIndex < count($dttDateArray); $intIndex++) {
+				// Start Date must be later than previous's Start Date and End Date
+				if ($intIndex > 0) {
+					if ($dttDateArray[$intIndex][0]->IsEarlierThan($dttDateArray[$intIndex-1][0])) return false;
+					if (!$dttDateArray[$intIndex-1][1]) return false;
+					if ($dttDateArray[$intIndex][0]->IsEarlierThan($dttDateArray[$intIndex-1][1])) return false;
+				}
+
+				// End Date must be later than start date (if applicable)
+				if ($dttDateArray[$intIndex][1]) {
+					if ($dttDateArray[$intIndex][0]->IsLaterThan($dttDateArray[$intIndex][1])) return false;
+				}
+			}
+
+			return true;
+		}
+
+		public function dttDateRangeArray_Sort($dttDate1Array, $dttDate2Array) {
+			if ($dttDate1Array[0]->IsEqualTo($dttDate2Array[0])) return 0;
+			return ($dttDate1Array[0]->IsEarlierThan($dttDate2Array[0])) ? - 1 : 1;
+		}
+
+		public function objParticipationArray_Sort(GroupParticipation $objParticipation1, GroupParticipation $objParticipation2) {
+			if ($objParticipation1->GroupRoleId != $objParticipation2->GroupRoleId)
+				return ord(QString::FirstCharacter($objParticipation1->GroupRole->Name)) < ord(QString::FirstCharacter($objParticipation2->GroupRole->Name)) ? -1 : 1;
+			return $objParticipation1->DateStart->IsEarlierThan($objParticipation2->DateStart) ? -1 : 1;
 		}
 
 		public function btnEditCancel_Click($strFormId, $strControlId, $strParameter) {
@@ -180,10 +237,32 @@
 		}
 
 		public function btnEditDelete_Click($strFormId, $strControlId, $strParameter) {
+			unset($this->objParticipationArray[$this->intEditParticipationIndex]);
+
+			usort($this->objParticipationArray, array($this, 'objParticipationArray_Sort'));
+			$this->intEditParticipationIndex = null;
+			$this->dtgParticipations->Refresh();
+			$this->lblCurrentRoles_Refresh();
 			$this->dlgEdit->HideDialogBox();
 		}
-		
+
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			$objArrayToDelete = array();
+			foreach (GroupParticipation::LoadArrayByPersonIdGroupId($this->objPerson->Id, $this->objGroup->Id) as $objParticipation) {
+				$objArrayToDelete[$objParticipation->Id] = $objParticipation;
+			}
+
+			// Save all the participation records
+			foreach ($this->objParticipationArray as $objParticipation) {
+				$objParticipation->Save();
+				if (array_key_exists($objParticipation->Id, $objArrayToDelete)) {
+					unset($objArrayToDelete[$objParticipation->Id]);
+				}
+			}
+
+			// Delete any that are supposed to be deleted
+			foreach ($objArrayToDelete as $objParticipation) $objParticipation->Delete();
+
 			QApplication::ExecuteJavaScript('document.location = "#groups";');
 		}
 

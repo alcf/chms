@@ -10,8 +10,8 @@
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Ministry', '<?= $_ITEM->Ministry->Name; ?>'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top));
 
 			$this->dtgCommunicationLists = new CommunicationListDataGrid($this);
 			$this->dtgCommunicationLists->AlternateRowStyle->CssClass = 'alternate';
@@ -67,18 +67,19 @@
 
 		public function RenderGroupRoles(Group $objGroup) {
 			$this->objParticipationArray = GroupParticipation::LoadArrayByPersonIdGroupId($this->objPerson->Id, $objGroup->Id, QQ::OrderBy(QQN::GroupParticipation()->GroupRole->Name, QQN::GroupParticipation()->DateStart));
-			$strToReturn = null;
 			$strCurrentRole = null;
+			
+			$strArray = array();
 			foreach ($this->objParticipationArray as $objParticipation) {
 				if ($strCurrentRole != $objParticipation->GroupRole->Name) {
 					$strCurrentRole = $objParticipation->GroupRole->Name;
-					$strToReturn .= QApplication::HtmlEntities($strCurrentRole) . '<br/>';
+					$strArray[] = QApplication::HtmlEntities($strCurrentRole);
 				} else {
-					$strToReturn .= '</br/>';
+					$strArray[] = '&nbsp;';
 				}
 			}
 
-			return $strToReturn;
+			return implode('<br/>', $strArray);
 		}
 
 		public function RenderGroupDates(Group $objGroup) {
