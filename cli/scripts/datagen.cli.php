@@ -635,7 +635,7 @@
 							throw new Exception('Unhandled Attribute Data Type');
 					}
 
-					$objPerson->SetAttribute($objAttribute->Id, $mixData);
+					$objPerson->SetAttribute($objAttribute, $mixData);
 				}
 			}
 		}
