@@ -19,7 +19,9 @@
 					// the includes/ directory with the contents "mike"
 					define ('__DOCROOT__', '/var/www/alcf/chms/www');
 					break;
-
+				case 'john':
+					define ('__DOCROOT__', 'C:/xampplite/htdocs/alcf/www');
+					break;
 				default:
 					// Default Development Configuration (unless otherwise overridden)
 					define ('__DOCROOT__', '/var/www/chms.alcf.dev/www');
