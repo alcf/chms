@@ -28,10 +28,10 @@
 	 * property-read QLabel $TextValueLabel
 	 * property QCheckBox $BooleanValueControl
 	 * property-read QLabel $BooleanValueLabel
-	 * property QListBox $AttributeOptionIdControl
-	 * property-read QLabel $AttributeOptionIdLabel
-	 * property QListBox $AttributeOptionAsOptionControl
-	 * property-read QLabel $AttributeOptionAsOptionLabel
+	 * property QListBox $SingleAttributeOptionIdControl
+	 * property-read QLabel $SingleAttributeOptionIdLabel
+	 * property QListBox $AttributeOptionAsMultipleControl
+	 * property-read QLabel $AttributeOptionAsMultipleLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -50,7 +50,7 @@
 		protected $calDateValue;
 		protected $txtTextValue;
 		protected $chkBooleanValue;
-		protected $lstAttributeOption;
+		protected $lstSingleAttributeOption;
 
 		// Controls that allow the viewing of AttributeValue's individual data fields
 		protected $lblAttributeId;
@@ -58,13 +58,13 @@
 		protected $lblDateValue;
 		protected $lblTextValue;
 		protected $lblBooleanValue;
-		protected $lblAttributeOptionId;
+		protected $lblSingleAttributeOptionId;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
-		protected $lstAttributeOptionsAsOption;
+		protected $lstAttributeOptionsAsMultiple;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
-		protected $lblAttributeOptionsAsOption;
+		protected $lblAttributeOptionsAsMultiple;
 
 
 		/**
@@ -321,46 +321,46 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstAttributeOption
+		 * Create and setup QListBox lstSingleAttributeOption
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
 		 */
-		public function lstAttributeOption_Create($strControlId = null) {
-			$this->lstAttributeOption = new QListBox($this->objParentObject, $strControlId);
-			$this->lstAttributeOption->Name = QApplication::Translate('Attribute Option');
-			$this->lstAttributeOption->AddItem(QApplication::Translate('- Select One -'), null);
-			$objAttributeOptionArray = AttributeOption::LoadAll();
-			if ($objAttributeOptionArray) foreach ($objAttributeOptionArray as $objAttributeOption) {
-				$objListItem = new QListItem($objAttributeOption->__toString(), $objAttributeOption->Id);
-				if (($this->objAttributeValue->AttributeOption) && ($this->objAttributeValue->AttributeOption->Id == $objAttributeOption->Id))
+		public function lstSingleAttributeOption_Create($strControlId = null) {
+			$this->lstSingleAttributeOption = new QListBox($this->objParentObject, $strControlId);
+			$this->lstSingleAttributeOption->Name = QApplication::Translate('Single Attribute Option');
+			$this->lstSingleAttributeOption->AddItem(QApplication::Translate('- Select One -'), null);
+			$objSingleAttributeOptionArray = AttributeOption::LoadAll();
+			if ($objSingleAttributeOptionArray) foreach ($objSingleAttributeOptionArray as $objSingleAttributeOption) {
+				$objListItem = new QListItem($objSingleAttributeOption->__toString(), $objSingleAttributeOption->Id);
+				if (($this->objAttributeValue->SingleAttributeOption) && ($this->objAttributeValue->SingleAttributeOption->Id == $objSingleAttributeOption->Id))
 					$objListItem->Selected = true;
-				$this->lstAttributeOption->AddItem($objListItem);
+				$this->lstSingleAttributeOption->AddItem($objListItem);
 			}
-			return $this->lstAttributeOption;
+			return $this->lstSingleAttributeOption;
 		}
 
 		/**
-		 * Create and setup QLabel lblAttributeOptionId
+		 * Create and setup QLabel lblSingleAttributeOptionId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblAttributeOptionId_Create($strControlId = null) {
-			$this->lblAttributeOptionId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblAttributeOptionId->Name = QApplication::Translate('Attribute Option');
-			$this->lblAttributeOptionId->Text = ($this->objAttributeValue->AttributeOption) ? $this->objAttributeValue->AttributeOption->__toString() : null;
-			return $this->lblAttributeOptionId;
+		public function lblSingleAttributeOptionId_Create($strControlId = null) {
+			$this->lblSingleAttributeOptionId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSingleAttributeOptionId->Name = QApplication::Translate('Single Attribute Option');
+			$this->lblSingleAttributeOptionId->Text = ($this->objAttributeValue->SingleAttributeOption) ? $this->objAttributeValue->SingleAttributeOption->__toString() : null;
+			return $this->lblSingleAttributeOptionId;
 		}
 
 		/**
-		 * Create and setup QListBox lstAttributeOptionsAsOption
+		 * Create and setup QListBox lstAttributeOptionsAsMultiple
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
 		 */
-		public function lstAttributeOptionsAsOption_Create($strControlId = null) {
-			$this->lstAttributeOptionsAsOption = new QListBox($this->objParentObject, $strControlId);
-			$this->lstAttributeOptionsAsOption->Name = QApplication::Translate('Attribute Options As Option');
-			$this->lstAttributeOptionsAsOption->SelectionMode = QSelectionMode::Multiple;
-			$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsOptionArray();
+		public function lstAttributeOptionsAsMultiple_Create($strControlId = null) {
+			$this->lstAttributeOptionsAsMultiple = new QListBox($this->objParentObject, $strControlId);
+			$this->lstAttributeOptionsAsMultiple->Name = QApplication::Translate('Attribute Options As Multiple');
+			$this->lstAttributeOptionsAsMultiple->SelectionMode = QSelectionMode::Multiple;
+			$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsMultipleArray();
 			$objAttributeOptionArray = AttributeOption::LoadAll();
 			if ($objAttributeOptionArray) foreach ($objAttributeOptionArray as $objAttributeOption) {
 				$objListItem = new QListItem($objAttributeOption->__toString(), $objAttributeOption->Id);
@@ -368,27 +368,27 @@
 					if ($objAssociated->Id == $objAttributeOption->Id)
 						$objListItem->Selected = true;
 				}
-				$this->lstAttributeOptionsAsOption->AddItem($objListItem);
+				$this->lstAttributeOptionsAsMultiple->AddItem($objListItem);
 			}
-			return $this->lstAttributeOptionsAsOption;
+			return $this->lstAttributeOptionsAsMultiple;
 		}
 
 		/**
-		 * Create and setup QLabel lblAttributeOptionsAsOption
+		 * Create and setup QLabel lblAttributeOptionsAsMultiple
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strGlue glue to display in between each associated object
 		 * @return QLabel
 		 */
-		public function lblAttributeOptionsAsOption_Create($strControlId = null, $strGlue = ', ') {
-			$this->lblAttributeOptionsAsOption = new QLabel($this->objParentObject, $strControlId);
-			$this->lstAttributeOptionsAsOption->Name = QApplication::Translate('Attribute Options As Option');
+		public function lblAttributeOptionsAsMultiple_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblAttributeOptionsAsMultiple = new QLabel($this->objParentObject, $strControlId);
+			$this->lstAttributeOptionsAsMultiple->Name = QApplication::Translate('Attribute Options As Multiple');
 			
-			$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsOptionArray();
+			$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsMultipleArray();
 			$strItems = array();
 			foreach ($objAssociatedArray as $objAssociated)
 				$strItems[] = $objAssociated->__toString();
-			$this->lblAttributeOptionsAsOption->Text = implode($strGlue, $strItems);
-			return $this->lblAttributeOptionsAsOption;
+			$this->lblAttributeOptionsAsMultiple->Text = implode($strGlue, $strItems);
+			return $this->lblAttributeOptionsAsMultiple;
 		}
 
 
@@ -441,22 +441,22 @@
 			if ($this->chkBooleanValue) $this->chkBooleanValue->Checked = $this->objAttributeValue->BooleanValue;
 			if ($this->lblBooleanValue) $this->lblBooleanValue->Text = ($this->objAttributeValue->BooleanValue) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
-			if ($this->lstAttributeOption) {
-					$this->lstAttributeOption->RemoveAllItems();
-				$this->lstAttributeOption->AddItem(QApplication::Translate('- Select One -'), null);
-				$objAttributeOptionArray = AttributeOption::LoadAll();
-				if ($objAttributeOptionArray) foreach ($objAttributeOptionArray as $objAttributeOption) {
-					$objListItem = new QListItem($objAttributeOption->__toString(), $objAttributeOption->Id);
-					if (($this->objAttributeValue->AttributeOption) && ($this->objAttributeValue->AttributeOption->Id == $objAttributeOption->Id))
+			if ($this->lstSingleAttributeOption) {
+					$this->lstSingleAttributeOption->RemoveAllItems();
+				$this->lstSingleAttributeOption->AddItem(QApplication::Translate('- Select One -'), null);
+				$objSingleAttributeOptionArray = AttributeOption::LoadAll();
+				if ($objSingleAttributeOptionArray) foreach ($objSingleAttributeOptionArray as $objSingleAttributeOption) {
+					$objListItem = new QListItem($objSingleAttributeOption->__toString(), $objSingleAttributeOption->Id);
+					if (($this->objAttributeValue->SingleAttributeOption) && ($this->objAttributeValue->SingleAttributeOption->Id == $objSingleAttributeOption->Id))
 						$objListItem->Selected = true;
-					$this->lstAttributeOption->AddItem($objListItem);
+					$this->lstSingleAttributeOption->AddItem($objListItem);
 				}
 			}
-			if ($this->lblAttributeOptionId) $this->lblAttributeOptionId->Text = ($this->objAttributeValue->AttributeOption) ? $this->objAttributeValue->AttributeOption->__toString() : null;
+			if ($this->lblSingleAttributeOptionId) $this->lblSingleAttributeOptionId->Text = ($this->objAttributeValue->SingleAttributeOption) ? $this->objAttributeValue->SingleAttributeOption->__toString() : null;
 
-			if ($this->lstAttributeOptionsAsOption) {
-				$this->lstAttributeOptionsAsOption->RemoveAllItems();
-				$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsOptionArray();
+			if ($this->lstAttributeOptionsAsMultiple) {
+				$this->lstAttributeOptionsAsMultiple->RemoveAllItems();
+				$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsMultipleArray();
 				$objAttributeOptionArray = AttributeOption::LoadAll();
 				if ($objAttributeOptionArray) foreach ($objAttributeOptionArray as $objAttributeOption) {
 					$objListItem = new QListItem($objAttributeOption->__toString(), $objAttributeOption->Id);
@@ -464,15 +464,15 @@
 						if ($objAssociated->Id == $objAttributeOption->Id)
 							$objListItem->Selected = true;
 					}
-					$this->lstAttributeOptionsAsOption->AddItem($objListItem);
+					$this->lstAttributeOptionsAsMultiple->AddItem($objListItem);
 				}
 			}
-			if ($this->lblAttributeOptionsAsOption) {
-				$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsOptionArray();
+			if ($this->lblAttributeOptionsAsMultiple) {
+				$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsMultipleArray();
 				$strItems = array();
 				foreach ($objAssociatedArray as $objAssociated)
 					$strItems[] = $objAssociated->__toString();
-				$this->lblAttributeOptionsAsOption->Text = implode($strGlue, $strItems);
+				$this->lblAttributeOptionsAsMultiple->Text = implode($strGlue, $strItems);
 			}
 
 		}
@@ -483,12 +483,12 @@
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
 
-		protected function lstAttributeOptionsAsOption_Update() {
-			if ($this->lstAttributeOptionsAsOption) {
-				$this->objAttributeValue->UnassociateAllAttributeOptionsAsOption();
-				$objSelectedListItems = $this->lstAttributeOptionsAsOption->SelectedItems;
+		protected function lstAttributeOptionsAsMultiple_Update() {
+			if ($this->lstAttributeOptionsAsMultiple) {
+				$this->objAttributeValue->UnassociateAllAttributeOptionsAsMultiple();
+				$objSelectedListItems = $this->lstAttributeOptionsAsMultiple->SelectedItems;
 				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
-					$this->objAttributeValue->AssociateAttributeOptionAsOption(AttributeOption::Load($objListItem->Value));
+					$this->objAttributeValue->AssociateAttributeOptionAsMultiple(AttributeOption::Load($objListItem->Value));
 				}
 			}
 		}
@@ -513,7 +513,7 @@
 				if ($this->calDateValue) $this->objAttributeValue->DateValue = $this->calDateValue->DateTime;
 				if ($this->txtTextValue) $this->objAttributeValue->TextValue = $this->txtTextValue->Text;
 				if ($this->chkBooleanValue) $this->objAttributeValue->BooleanValue = $this->chkBooleanValue->Checked;
-				if ($this->lstAttributeOption) $this->objAttributeValue->AttributeOptionId = $this->lstAttributeOption->SelectedValue;
+				if ($this->lstSingleAttributeOption) $this->objAttributeValue->SingleAttributeOptionId = $this->lstSingleAttributeOption->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -521,7 +521,7 @@
 				$this->objAttributeValue->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
-				$this->lstAttributeOptionsAsOption_Update();
+				$this->lstAttributeOptionsAsMultiple_Update();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -533,7 +533,7 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeleteAttributeValue() {
-			$this->objAttributeValue->UnassociateAllAttributeOptionsAsOption();
+			$this->objAttributeValue->UnassociateAllAttributeOptionsAsMultiple();
 			$this->objAttributeValue->Delete();
 		}		
 
@@ -594,18 +594,18 @@
 				case 'BooleanValueLabel':
 					if (!$this->lblBooleanValue) return $this->lblBooleanValue_Create();
 					return $this->lblBooleanValue;
-				case 'AttributeOptionIdControl':
-					if (!$this->lstAttributeOption) return $this->lstAttributeOption_Create();
-					return $this->lstAttributeOption;
-				case 'AttributeOptionIdLabel':
-					if (!$this->lblAttributeOptionId) return $this->lblAttributeOptionId_Create();
-					return $this->lblAttributeOptionId;
-				case 'AttributeOptionAsOptionControl':
-					if (!$this->lstAttributeOptionsAsOption) return $this->lstAttributeOptionsAsOption_Create();
-					return $this->lstAttributeOptionsAsOption;
-				case 'AttributeOptionAsOptionLabel':
-					if (!$this->lblAttributeOptionsAsOption) return $this->lblAttributeOptionsAsOption_Create();
-					return $this->lblAttributeOptionsAsOption;
+				case 'SingleAttributeOptionIdControl':
+					if (!$this->lstSingleAttributeOption) return $this->lstSingleAttributeOption_Create();
+					return $this->lstSingleAttributeOption;
+				case 'SingleAttributeOptionIdLabel':
+					if (!$this->lblSingleAttributeOptionId) return $this->lblSingleAttributeOptionId_Create();
+					return $this->lblSingleAttributeOptionId;
+				case 'AttributeOptionAsMultipleControl':
+					if (!$this->lstAttributeOptionsAsMultiple) return $this->lstAttributeOptionsAsMultiple_Create();
+					return $this->lstAttributeOptionsAsMultiple;
+				case 'AttributeOptionAsMultipleLabel':
+					if (!$this->lblAttributeOptionsAsMultiple) return $this->lblAttributeOptionsAsMultiple_Create();
+					return $this->lblAttributeOptionsAsMultiple;
 				default:
 					try {
 						return parent::__get($strName);
@@ -640,10 +640,10 @@
 						return ($this->txtTextValue = QType::Cast($mixValue, 'QControl'));
 					case 'BooleanValueControl':
 						return ($this->chkBooleanValue = QType::Cast($mixValue, 'QControl'));
-					case 'AttributeOptionIdControl':
-						return ($this->lstAttributeOption = QType::Cast($mixValue, 'QControl'));
-					case 'AttributeOptionAsOptionControl':
-						return ($this->lstAttributeOptionsAsOption = QType::Cast($mixValue, 'QControl'));
+					case 'SingleAttributeOptionIdControl':
+						return ($this->lstSingleAttributeOption = QType::Cast($mixValue, 'QControl'));
+					case 'AttributeOptionAsMultipleControl':
+						return ($this->lstAttributeOptionsAsMultiple = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

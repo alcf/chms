@@ -11,7 +11,7 @@
 
 		<?php $_CONTROL->txtName->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstAttributeValuesAsOption->RenderWithName(true, "Rows=7"); ?>
+		<?php $_CONTROL->lstAttributeValuesAsMultiple->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

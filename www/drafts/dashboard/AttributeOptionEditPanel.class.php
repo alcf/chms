@@ -25,7 +25,7 @@
 		public $txtName;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		public $lstAttributeValuesAsOption;
+		public $lstAttributeValuesAsMultiple;
 
 		// Other Controls
 		public $btnSave;
@@ -56,7 +56,7 @@
 			$this->lblId = $this->mctAttributeOption->lblId_Create();
 			$this->lstAttribute = $this->mctAttributeOption->lstAttribute_Create();
 			$this->txtName = $this->mctAttributeOption->txtName_Create();
-			$this->lstAttributeValuesAsOption = $this->mctAttributeOption->lstAttributeValuesAsOption_Create();
+			$this->lstAttributeValuesAsMultiple = $this->mctAttributeOption->lstAttributeValuesAsMultiple_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

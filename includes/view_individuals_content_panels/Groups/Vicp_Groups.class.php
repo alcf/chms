@@ -1,9 +1,18 @@
 <?php
 	class Vicp_Groups extends Vicp_Base {
+		public $dtgGroups;
 		public $dtgCommunicationLists;
 		public $pxyUnsubscribe;
 
 		protected function SetupPanel() {
+			$this->dtgGroups = new QDataGrid($this);
+			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Ministry', '<?= $_ITEM->Ministry->Name; ?>'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Group', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top));
+
 			$this->dtgCommunicationLists = new CommunicationListDataGrid($this);
 			$this->dtgCommunicationLists->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Unsubscribe', '<?= $_CONTROL->ParentControl->RenderUnsubscribe($_ITEM); ?>', 'HtmlEntities=false'));
@@ -15,6 +24,70 @@
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to unsubscribe ' . $this->objPerson->Name . ' from this list?'));
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyUnsubscribe_Click'));
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+
+		public function dtgGroups_Bind() {
+			$objClause = QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id);
+
+			// Admins can view anything
+			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
+				
+			} else {
+				// Non-Admins can only view non-confidential groups
+				// OR groups that they are associated with
+				$intMinistryIdArray = array();
+				foreach (QApplication::$Login->GetMinistryArray() as $objMinistry)
+					$intMinistryIdArray[] = $objMinistry->Id;
+				$objSubClause = QQ::OrCondition(
+					QQ::Equal(QQN::Group()->ConfidentialFlag, false),
+					QQ::In(QQN::Group()->MinistryId, $intMinistryIdArray));
+
+				$objClause = QQ::AndCondition($objClause, $objSubClause);
+			}
+
+			$this->dtgGroups->DataSource = Group::QueryArray($objClause, QQ::Distinct());
+		}
+
+		protected $objParticipationArray;
+
+		public function RenderGroupName(Group $objGroup) {
+			$intGroupId = $objGroup->Id;
+			if ($blnConfidentialFlag = $objGroup->ConfidentialFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->BackColor = '#999';
+				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, $objStyle);
+			} else {
+				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, null);
+			}
+			$strToReturn = QApplication::HtmlEntities($objGroup->Name);
+			while ($objGroup = $objGroup->ParentGroup)
+				$strToReturn = '<span style="font-size: 10px; color: #666;">' . QApplication::HtmlEntities($objGroup->Name) . ' &gt; </span>' . $strToReturn;
+			return sprintf('<a href="#groups/edit_participation/%s">%s</a> %s', $intGroupId, $strToReturn, ($blnConfidentialFlag ? '[CONFIDENTIAL]' : null));
+		}
+
+		public function RenderGroupRoles(Group $objGroup) {
+			$this->objParticipationArray = GroupParticipation::LoadArrayByPersonIdGroupId($this->objPerson->Id, $objGroup->Id, QQ::OrderBy(QQN::GroupParticipation()->GroupRole->Name, QQN::GroupParticipation()->DateStart));
+			$strCurrentRole = null;
+			
+			$strArray = array();
+			foreach ($this->objParticipationArray as $objParticipation) {
+				if ($strCurrentRole != $objParticipation->GroupRole->Name) {
+					$strCurrentRole = $objParticipation->GroupRole->Name;
+					$strArray[] = QApplication::HtmlEntities($strCurrentRole);
+				} else {
+					$strArray[] = '&nbsp;';
+				}
+			}
+
+			return implode('<br/>', $strArray);
+		}
+
+		public function RenderGroupDates(Group $objGroup) {
+			$strToReturn = null;
+			foreach ($this->objParticipationArray as $objParticipation) {
+				$strToReturn .= $objParticipation->Dates . '<br/>';
+			}
+			return $strToReturn;
 		}
 
 		public function dtgCommunicationLists_Bind() {

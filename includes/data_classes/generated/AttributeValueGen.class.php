@@ -21,12 +21,12 @@
 	 * @property QDateTime $DateValue the value for dttDateValue 
 	 * @property string $TextValue the value for strTextValue 
 	 * @property boolean $BooleanValue the value for blnBooleanValue 
-	 * @property integer $AttributeOptionId the value for intAttributeOptionId 
+	 * @property integer $SingleAttributeOptionId the value for intSingleAttributeOptionId 
 	 * @property Attribute $Attribute the value for the Attribute object referenced by intAttributeId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
-	 * @property AttributeOption $AttributeOption the value for the AttributeOption object referenced by intAttributeOptionId 
-	 * @property AttributeOption $_AttributeOptionAsOption the value for the private _objAttributeOptionAsOption (Read-Only) if set due to an expansion on the attributevalue_option_assn association table
-	 * @property AttributeOption[] $_AttributeOptionAsOptionArray the value for the private _objAttributeOptionAsOptionArray (Read-Only) if set due to an ExpandAsArray on the attributevalue_option_assn association table
+	 * @property AttributeOption $SingleAttributeOption the value for the AttributeOption object referenced by intSingleAttributeOptionId 
+	 * @property AttributeOption $_AttributeOptionAsMultiple the value for the private _objAttributeOptionAsMultiple (Read-Only) if set due to an expansion on the attributevalue_multipleattributeoption_assn association table
+	 * @property AttributeOption[] $_AttributeOptionAsMultipleArray the value for the private _objAttributeOptionAsMultipleArray (Read-Only) if set due to an ExpandAsArray on the attributevalue_multipleattributeoption_assn association table
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class AttributeValueGen extends QBaseClass {
@@ -84,28 +84,28 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column attribute_value.attribute_option_id
-		 * @var integer intAttributeOptionId
+		 * Protected member variable that maps to the database column attribute_value.single_attribute_option_id
+		 * @var integer intSingleAttributeOptionId
 		 */
-		protected $intAttributeOptionId;
-		const AttributeOptionIdDefault = null;
+		protected $intSingleAttributeOptionId;
+		const SingleAttributeOptionIdDefault = null;
 
 
 		/**
-		 * Private member variable that stores a reference to a single AttributeOptionAsOption object
+		 * Private member variable that stores a reference to a single AttributeOptionAsMultiple object
 		 * (of type AttributeOption), if this AttributeValue object was restored with
-		 * an expansion on the attributevalue_option_assn association table.
-		 * @var AttributeOption _objAttributeOptionAsOption;
+		 * an expansion on the attributevalue_multipleattributeoption_assn association table.
+		 * @var AttributeOption _objAttributeOptionAsMultiple;
 		 */
-		private $_objAttributeOptionAsOption;
+		private $_objAttributeOptionAsMultiple;
 
 		/**
-		 * Private member variable that stores a reference to an array of AttributeOptionAsOption objects
+		 * Private member variable that stores a reference to an array of AttributeOptionAsMultiple objects
 		 * (of type AttributeOption[]), if this AttributeValue object was restored with
-		 * an ExpandAsArray on the attributevalue_option_assn association table.
-		 * @var AttributeOption[] _objAttributeOptionAsOptionArray;
+		 * an ExpandAsArray on the attributevalue_multipleattributeoption_assn association table.
+		 * @var AttributeOption[] _objAttributeOptionAsMultipleArray;
 		 */
-		private $_objAttributeOptionAsOptionArray = array();
+		private $_objAttributeOptionAsMultipleArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -151,13 +151,13 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column attribute_value.attribute_option_id.
+		 * in the database column attribute_value.single_attribute_option_id.
 		 *
-		 * NOTE: Always use the AttributeOption property getter to correctly retrieve this AttributeOption object.
+		 * NOTE: Always use the SingleAttributeOption property getter to correctly retrieve this AttributeOption object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var AttributeOption objAttributeOption
+		 * @var AttributeOption objSingleAttributeOption
 		 */
-		protected $objAttributeOption;
+		protected $objSingleAttributeOption;
 
 
 
@@ -428,7 +428,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'date_value', $strAliasPrefix . 'date_value');
 			$objBuilder->AddSelectItem($strTableName, 'text_value', $strAliasPrefix . 'text_value');
 			$objBuilder->AddSelectItem($strTableName, 'boolean_value', $strAliasPrefix . 'boolean_value');
-			$objBuilder->AddSelectItem($strTableName, 'attribute_option_id', $strAliasPrefix . 'attribute_option_id');
+			$objBuilder->AddSelectItem($strTableName, 'single_attribute_option_id', $strAliasPrefix . 'single_attribute_option_id');
 		}
 
 
@@ -466,17 +466,17 @@
 				if (!$strAliasPrefix)
 					$strAliasPrefix = 'attribute_value__';
 
-				$strAlias = $strAliasPrefix . 'attributeoptionasoption__attribute_option_id__id';
+				$strAlias = $strAliasPrefix . 'attributeoptionasmultiple__attribute_option_id__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objAttributeOptionAsOptionArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objAttributeOptionAsOptionArray[$intPreviousChildItemCount - 1];
-						$objChildItem = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasoption__attribute_option_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objAttributeOptionAsMultipleArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objAttributeOptionAsMultipleArray[$intPreviousChildItemCount - 1];
+						$objChildItem = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasmultiple__attribute_option_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objAttributeOptionAsOptionArray[] = $objChildItem;
+							$objPreviousItem->_objAttributeOptionAsMultipleArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objAttributeOptionAsOptionArray[] = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasoption__attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objAttributeOptionAsMultipleArray[] = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasmultiple__attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -504,8 +504,8 @@
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'boolean_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'boolean_value'] : $strAliasPrefix . 'boolean_value';
 			$objToReturn->blnBooleanValue = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'attribute_option_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'attribute_option_id'] : $strAliasPrefix . 'attribute_option_id';
-			$objToReturn->intAttributeOptionId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'single_attribute_option_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'single_attribute_option_id'] : $strAliasPrefix . 'single_attribute_option_id';
+			$objToReturn->intSingleAttributeOptionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -531,22 +531,22 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for AttributeOption Early Binding
-			$strAlias = $strAliasPrefix . 'attribute_option_id__id';
+			// Check for SingleAttributeOption Early Binding
+			$strAlias = $strAliasPrefix . 'single_attribute_option_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objAttributeOption = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objSingleAttributeOption = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'single_attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
-			// Check for AttributeOptionAsOption Virtual Binding
-			$strAlias = $strAliasPrefix . 'attributeoptionasoption__attribute_option_id__id';
+			// Check for AttributeOptionAsMultiple Virtual Binding
+			$strAlias = $strAliasPrefix . 'attributeoptionasmultiple__attribute_option_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objAttributeOptionAsOptionArray[] = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasoption__attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objAttributeOptionAsMultipleArray[] = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasmultiple__attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objAttributeOptionAsOption = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasoption__attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objAttributeOptionAsMultiple = AttributeOption::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributeoptionasmultiple__attribute_option_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 
@@ -604,6 +604,22 @@
 		public static function LoadById($intId) {
 			return AttributeValue::QuerySingle(
 				QQ::Equal(QQN::AttributeValue()->Id, $intId)
+			);
+		}
+			
+		/**
+		 * Load a single AttributeValue object,
+		 * by AttributeId, PersonId Index(es)
+		 * @param integer $intAttributeId
+		 * @param integer $intPersonId
+		 * @return AttributeValue
+		*/
+		public static function LoadByAttributeIdPersonId($intAttributeId, $intPersonId) {
+			return AttributeValue::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::AttributeValue()->AttributeId, $intAttributeId),
+				QQ::Equal(QQN::AttributeValue()->PersonId, $intPersonId)
+				)
 			);
 		}
 			
@@ -673,16 +689,16 @@
 			
 		/**
 		 * Load an array of AttributeValue objects,
-		 * by AttributeOptionId Index(es)
-		 * @param integer $intAttributeOptionId
+		 * by SingleAttributeOptionId Index(es)
+		 * @param integer $intSingleAttributeOptionId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return AttributeValue[]
 		*/
-		public static function LoadArrayByAttributeOptionId($intAttributeOptionId, $objOptionalClauses = null) {
-			// Call AttributeValue::QueryArray to perform the LoadArrayByAttributeOptionId query
+		public static function LoadArrayBySingleAttributeOptionId($intSingleAttributeOptionId, $objOptionalClauses = null) {
+			// Call AttributeValue::QueryArray to perform the LoadArrayBySingleAttributeOptionId query
 			try {
 				return AttributeValue::QueryArray(
-					QQ::Equal(QQN::AttributeValue()->AttributeOptionId, $intAttributeOptionId),
+					QQ::Equal(QQN::AttributeValue()->SingleAttributeOptionId, $intSingleAttributeOptionId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -692,14 +708,14 @@
 
 		/**
 		 * Count AttributeValues
-		 * by AttributeOptionId Index(es)
-		 * @param integer $intAttributeOptionId
+		 * by SingleAttributeOptionId Index(es)
+		 * @param integer $intSingleAttributeOptionId
 		 * @return int
 		*/
-		public static function CountByAttributeOptionId($intAttributeOptionId) {
-			// Call AttributeValue::QueryCount to perform the CountByAttributeOptionId query
+		public static function CountBySingleAttributeOptionId($intSingleAttributeOptionId) {
+			// Call AttributeValue::QueryCount to perform the CountBySingleAttributeOptionId query
 			return AttributeValue::QueryCount(
-				QQ::Equal(QQN::AttributeValue()->AttributeOptionId, $intAttributeOptionId)
+				QQ::Equal(QQN::AttributeValue()->SingleAttributeOptionId, $intSingleAttributeOptionId)
 			);
 		}
 
@@ -709,17 +725,17 @@
 		// INDEX-BASED LOAD METHODS (Array via Many to Many)
 		////////////////////////////////////////////////////
 			/**
-		 * Load an array of AttributeOption objects for a given AttributeOptionAsOption
-		 * via the attributevalue_option_assn table
+		 * Load an array of AttributeOption objects for a given AttributeOptionAsMultiple
+		 * via the attributevalue_multipleattributeoption_assn table
 		 * @param integer $intAttributeOptionId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return AttributeValue[]
 		*/
-		public static function LoadArrayByAttributeOptionAsOption($intAttributeOptionId, $objOptionalClauses = null) {
-			// Call AttributeValue::QueryArray to perform the LoadArrayByAttributeOptionAsOption query
+		public static function LoadArrayByAttributeOptionAsMultiple($intAttributeOptionId, $objOptionalClauses = null) {
+			// Call AttributeValue::QueryArray to perform the LoadArrayByAttributeOptionAsMultiple query
 			try {
 				return AttributeValue::QueryArray(
-					QQ::Equal(QQN::AttributeValue()->AttributeOptionAsOption->AttributeOptionId, $intAttributeOptionId),
+					QQ::Equal(QQN::AttributeValue()->AttributeOptionAsMultiple->AttributeOptionId, $intAttributeOptionId),
 					$objOptionalClauses
 				);
 			} catch (QCallerException $objExc) {
@@ -729,14 +745,14 @@
 		}
 
 		/**
-		 * Count AttributeValues for a given AttributeOptionAsOption
-		 * via the attributevalue_option_assn table
+		 * Count AttributeValues for a given AttributeOptionAsMultiple
+		 * via the attributevalue_multipleattributeoption_assn table
 		 * @param integer $intAttributeOptionId
 		 * @return int
 		*/
-		public static function CountByAttributeOptionAsOption($intAttributeOptionId) {
+		public static function CountByAttributeOptionAsMultiple($intAttributeOptionId) {
 			return AttributeValue::QueryCount(
-				QQ::Equal(QQN::AttributeValue()->AttributeOptionAsOption->AttributeOptionId, $intAttributeOptionId)
+				QQ::Equal(QQN::AttributeValue()->AttributeOptionAsMultiple->AttributeOptionId, $intAttributeOptionId)
 			);
 		}
 
@@ -769,14 +785,14 @@
 							`date_value`,
 							`text_value`,
 							`boolean_value`,
-							`attribute_option_id`
+							`single_attribute_option_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intAttributeId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateValue) . ',
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
-							' . $objDatabase->SqlVariable($this->intAttributeOptionId) . '
+							' . $objDatabase->SqlVariable($this->intSingleAttributeOptionId) . '
 						)
 					');
 
@@ -797,7 +813,7 @@
 							`date_value` = ' . $objDatabase->SqlVariable($this->dttDateValue) . ',
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`boolean_value` = ' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
-							`attribute_option_id` = ' . $objDatabase->SqlVariable($this->intAttributeOptionId) . '
+							`single_attribute_option_id` = ' . $objDatabase->SqlVariable($this->intSingleAttributeOptionId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -881,7 +897,7 @@
 			$this->dttDateValue = $objReloaded->dttDateValue;
 			$this->strTextValue = $objReloaded->strTextValue;
 			$this->blnBooleanValue = $objReloaded->blnBooleanValue;
-			$this->AttributeOptionId = $objReloaded->AttributeOptionId;
+			$this->SingleAttributeOptionId = $objReloaded->SingleAttributeOptionId;
 		}
 
 
@@ -932,10 +948,10 @@
 					// @return boolean
 					return $this->blnBooleanValue;
 
-				case 'AttributeOptionId':
-					// Gets the value for intAttributeOptionId 
+				case 'SingleAttributeOptionId':
+					// Gets the value for intSingleAttributeOptionId 
 					// @return integer
-					return $this->intAttributeOptionId;
+					return $this->intSingleAttributeOptionId;
 
 
 				///////////////////
@@ -965,13 +981,13 @@
 						throw $objExc;
 					}
 
-				case 'AttributeOption':
-					// Gets the value for the AttributeOption object referenced by intAttributeOptionId 
+				case 'SingleAttributeOption':
+					// Gets the value for the AttributeOption object referenced by intSingleAttributeOptionId 
 					// @return AttributeOption
 					try {
-						if ((!$this->objAttributeOption) && (!is_null($this->intAttributeOptionId)))
-							$this->objAttributeOption = AttributeOption::Load($this->intAttributeOptionId);
-						return $this->objAttributeOption;
+						if ((!$this->objSingleAttributeOption) && (!is_null($this->intSingleAttributeOptionId)))
+							$this->objSingleAttributeOption = AttributeOption::Load($this->intSingleAttributeOptionId);
+						return $this->objSingleAttributeOption;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -983,17 +999,17 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_AttributeOptionAsOption':
-					// Gets the value for the private _objAttributeOptionAsOption (Read-Only)
-					// if set due to an expansion on the attributevalue_option_assn association table
+				case '_AttributeOptionAsMultiple':
+					// Gets the value for the private _objAttributeOptionAsMultiple (Read-Only)
+					// if set due to an expansion on the attributevalue_multipleattributeoption_assn association table
 					// @return AttributeOption
-					return $this->_objAttributeOptionAsOption;
+					return $this->_objAttributeOptionAsMultiple;
 
-				case '_AttributeOptionAsOptionArray':
-					// Gets the value for the private _objAttributeOptionAsOptionArray (Read-Only)
-					// if set due to an ExpandAsArray on the attributevalue_option_assn association table
+				case '_AttributeOptionAsMultipleArray':
+					// Gets the value for the private _objAttributeOptionAsMultipleArray (Read-Only)
+					// if set due to an ExpandAsArray on the attributevalue_multipleattributeoption_assn association table
 					// @return AttributeOption[]
-					return (array) $this->_objAttributeOptionAsOptionArray;
+					return (array) $this->_objAttributeOptionAsMultipleArray;
 
 
 				case '__Restored':
@@ -1079,13 +1095,13 @@
 						throw $objExc;
 					}
 
-				case 'AttributeOptionId':
-					// Sets the value for intAttributeOptionId 
+				case 'SingleAttributeOptionId':
+					// Sets the value for intSingleAttributeOptionId 
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objAttributeOption = null;
-						return ($this->intAttributeOptionId = QType::Cast($mixValue, QType::Integer));
+						$this->objSingleAttributeOption = null;
+						return ($this->intSingleAttributeOptionId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1155,13 +1171,13 @@
 					}
 					break;
 
-				case 'AttributeOption':
-					// Sets the value for the AttributeOption object referenced by intAttributeOptionId 
+				case 'SingleAttributeOption':
+					// Sets the value for the AttributeOption object referenced by intSingleAttributeOptionId 
 					// @param AttributeOption $mixValue
 					// @return AttributeOption
 					if (is_null($mixValue)) {
-						$this->intAttributeOptionId = null;
-						$this->objAttributeOption = null;
+						$this->intSingleAttributeOptionId = null;
+						$this->objSingleAttributeOption = null;
 						return null;
 					} else {
 						// Make sure $mixValue actually is a AttributeOption object
@@ -1174,11 +1190,11 @@
 
 						// Make sure $mixValue is a SAVED AttributeOption object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved AttributeOption for this AttributeValue');
+							throw new QCallerException('Unable to set an unsaved SingleAttributeOption for this AttributeValue');
 
 						// Update Local Member Variables
-						$this->objAttributeOption = $mixValue;
-						$this->intAttributeOptionId = $mixValue->Id;
+						$this->objSingleAttributeOption = $mixValue;
+						$this->intSingleAttributeOptionId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1213,20 +1229,20 @@
 		///////////////////////////////
 
 			
-		// Related Many-to-Many Objects' Methods for AttributeOptionAsOption
+		// Related Many-to-Many Objects' Methods for AttributeOptionAsMultiple
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all many-to-many associated AttributeOptionsAsOption as an array of AttributeOption objects
+		 * Gets all many-to-many associated AttributeOptionsAsMultiple as an array of AttributeOption objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return AttributeOption[]
 		*/ 
-		public function GetAttributeOptionAsOptionArray($objOptionalClauses = null) {
+		public function GetAttributeOptionAsMultipleArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return AttributeOption::LoadArrayByAttributeValueAsOption($this->intId, $objOptionalClauses);
+				return AttributeOption::LoadArrayByAttributeValueAsMultiple($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1234,31 +1250,31 @@
 		}
 
 		/**
-		 * Counts all many-to-many associated AttributeOptionsAsOption
+		 * Counts all many-to-many associated AttributeOptionsAsMultiple
 		 * @return int
 		*/ 
-		public function CountAttributeOptionsAsOption() {
+		public function CountAttributeOptionsAsMultiple() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return AttributeOption::CountByAttributeValueAsOption($this->intId);
+			return AttributeOption::CountByAttributeValueAsMultiple($this->intId);
 		}
 
 		/**
-		 * Checks to see if an association exists with a specific AttributeOptionAsOption
+		 * Checks to see if an association exists with a specific AttributeOptionAsMultiple
 		 * @param AttributeOption $objAttributeOption
 		 * @return bool
 		*/
-		public function IsAttributeOptionAsOptionAssociated(AttributeOption $objAttributeOption) {
+		public function IsAttributeOptionAsMultipleAssociated(AttributeOption $objAttributeOption) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call IsAttributeOptionAsOptionAssociated on this unsaved AttributeValue.');
+				throw new QUndefinedPrimaryKeyException('Unable to call IsAttributeOptionAsMultipleAssociated on this unsaved AttributeValue.');
 			if ((is_null($objAttributeOption->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call IsAttributeOptionAsOptionAssociated on this AttributeValue with an unsaved AttributeOption.');
+				throw new QUndefinedPrimaryKeyException('Unable to call IsAttributeOptionAsMultipleAssociated on this AttributeValue with an unsaved AttributeOption.');
 
 			$intRowCount = AttributeValue::QueryCount(
 				QQ::AndCondition(
 					QQ::Equal(QQN::AttributeValue()->Id, $this->intId),
-					QQ::Equal(QQN::AttributeValue()->AttributeOptionAsOption->AttributeOptionId, $objAttributeOption->Id)
+					QQ::Equal(QQN::AttributeValue()->AttributeOptionAsMultiple->AttributeOptionId, $objAttributeOption->Id)
 				)
 			);
 
@@ -1266,22 +1282,22 @@
 		}
 
 		/**
-		 * Associates a AttributeOptionAsOption
+		 * Associates a AttributeOptionAsMultiple
 		 * @param AttributeOption $objAttributeOption
 		 * @return void
 		*/ 
-		public function AssociateAttributeOptionAsOption(AttributeOption $objAttributeOption) {
+		public function AssociateAttributeOptionAsMultiple(AttributeOption $objAttributeOption) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateAttributeOptionAsOption on this unsaved AttributeValue.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateAttributeOptionAsMultiple on this unsaved AttributeValue.');
 			if ((is_null($objAttributeOption->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateAttributeOptionAsOption on this AttributeValue with an unsaved AttributeOption.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateAttributeOptionAsMultiple on this AttributeValue with an unsaved AttributeOption.');
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeValue::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
-				INSERT INTO `attributevalue_option_assn` (
+				INSERT INTO `attributevalue_multipleattributeoption_assn` (
 					`attribute_value_id`,
 					`attribute_option_id`
 				) VALUES (
@@ -1292,15 +1308,15 @@
 		}
 
 		/**
-		 * Unassociates a AttributeOptionAsOption
+		 * Unassociates a AttributeOptionAsMultiple
 		 * @param AttributeOption $objAttributeOption
 		 * @return void
 		*/ 
-		public function UnassociateAttributeOptionAsOption(AttributeOption $objAttributeOption) {
+		public function UnassociateAttributeOptionAsMultiple(AttributeOption $objAttributeOption) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAttributeOptionAsOption on this unsaved AttributeValue.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAttributeOptionAsMultiple on this unsaved AttributeValue.');
 			if ((is_null($objAttributeOption->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAttributeOptionAsOption on this AttributeValue with an unsaved AttributeOption.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAttributeOptionAsMultiple on this AttributeValue with an unsaved AttributeOption.');
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeValue::GetDatabase();
@@ -1308,7 +1324,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`attributevalue_option_assn`
+					`attributevalue_multipleattributeoption_assn`
 				WHERE
 					`attribute_value_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`attribute_option_id` = ' . $objDatabase->SqlVariable($objAttributeOption->Id) . '
@@ -1316,12 +1332,12 @@
 		}
 
 		/**
-		 * Unassociates all AttributeOptionsAsOption
+		 * Unassociates all AttributeOptionsAsMultiple
 		 * @return void
 		*/ 
-		public function UnassociateAllAttributeOptionsAsOption() {
+		public function UnassociateAllAttributeOptionsAsMultiple() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllAttributeOptionAsOptionArray on this unsaved AttributeValue.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllAttributeOptionAsMultipleArray on this unsaved AttributeValue.');
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeValue::GetDatabase();
@@ -1329,7 +1345,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`attributevalue_option_assn`
+					`attributevalue_multipleattributeoption_assn`
 				WHERE
 					`attribute_value_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -1350,7 +1366,7 @@
 			$strToReturn .= '<element name="DateValue" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="BooleanValue" type="xsd:boolean"/>';
-			$strToReturn .= '<element name="AttributeOption" type="xsd1:AttributeOption"/>';
+			$strToReturn .= '<element name="SingleAttributeOption" type="xsd1:AttributeOption"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1390,9 +1406,9 @@
 				$objToReturn->strTextValue = $objSoapObject->TextValue;
 			if (property_exists($objSoapObject, 'BooleanValue'))
 				$objToReturn->blnBooleanValue = $objSoapObject->BooleanValue;
-			if ((property_exists($objSoapObject, 'AttributeOption')) &&
-				($objSoapObject->AttributeOption))
-				$objToReturn->AttributeOption = AttributeOption::GetObjectFromSoapObject($objSoapObject->AttributeOption);
+			if ((property_exists($objSoapObject, 'SingleAttributeOption')) &&
+				($objSoapObject->SingleAttributeOption))
+				$objToReturn->SingleAttributeOption = AttributeOption::GetObjectFromSoapObject($objSoapObject->SingleAttributeOption);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1421,10 +1437,10 @@
 				$objObject->intPersonId = null;
 			if ($objObject->dttDateValue)
 				$objObject->dttDateValue = $objObject->dttDateValue->__toString(QDateTime::FormatSoap);
-			if ($objObject->objAttributeOption)
-				$objObject->objAttributeOption = AttributeOption::GetSoapObjectFromObject($objObject->objAttributeOption, false);
+			if ($objObject->objSingleAttributeOption)
+				$objObject->objSingleAttributeOption = AttributeOption::GetSoapObjectFromObject($objObject->objSingleAttributeOption, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intAttributeOptionId = null;
+				$objObject->intSingleAttributeOptionId = null;
 			return $objObject;
 		}
 
@@ -1439,11 +1455,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeAttributeValueAttributeOptionAsOption extends QQAssociationNode {
+	class QQNodeAttributeValueAttributeOptionAsMultiple extends QQAssociationNode {
 		protected $strType = 'association';
-		protected $strName = 'attributeoptionasoption';
+		protected $strName = 'attributeoptionasmultiple';
 
-		protected $strTableName = 'attributevalue_option_assn';
+		protected $strTableName = 'attributevalue_multipleattributeoption_assn';
 		protected $strPrimaryKey = 'attribute_value_id';
 		protected $strClassName = 'AttributeOption';
 
@@ -1488,12 +1504,12 @@
 					return new QQNode('text_value', 'TextValue', 'string', $this);
 				case 'BooleanValue':
 					return new QQNode('boolean_value', 'BooleanValue', 'boolean', $this);
-				case 'AttributeOptionId':
-					return new QQNode('attribute_option_id', 'AttributeOptionId', 'integer', $this);
-				case 'AttributeOption':
-					return new QQNodeAttributeOption('attribute_option_id', 'AttributeOption', 'integer', $this);
-				case 'AttributeOptionAsOption':
-					return new QQNodeAttributeValueAttributeOptionAsOption($this);
+				case 'SingleAttributeOptionId':
+					return new QQNode('single_attribute_option_id', 'SingleAttributeOptionId', 'integer', $this);
+				case 'SingleAttributeOption':
+					return new QQNodeAttributeOption('single_attribute_option_id', 'SingleAttributeOption', 'integer', $this);
+				case 'AttributeOptionAsMultiple':
+					return new QQNodeAttributeValueAttributeOptionAsMultiple($this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1530,12 +1546,12 @@
 					return new QQNode('text_value', 'TextValue', 'string', $this);
 				case 'BooleanValue':
 					return new QQNode('boolean_value', 'BooleanValue', 'boolean', $this);
-				case 'AttributeOptionId':
-					return new QQNode('attribute_option_id', 'AttributeOptionId', 'integer', $this);
-				case 'AttributeOption':
-					return new QQNodeAttributeOption('attribute_option_id', 'AttributeOption', 'integer', $this);
-				case 'AttributeOptionAsOption':
-					return new QQNodeAttributeValueAttributeOptionAsOption($this);
+				case 'SingleAttributeOptionId':
+					return new QQNode('single_attribute_option_id', 'SingleAttributeOptionId', 'integer', $this);
+				case 'SingleAttributeOption':
+					return new QQNodeAttributeOption('single_attribute_option_id', 'SingleAttributeOption', 'integer', $this);
+				case 'AttributeOptionAsMultiple':
+					return new QQNodeAttributeValueAttributeOptionAsMultiple($this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

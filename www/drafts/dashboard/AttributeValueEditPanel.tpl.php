@@ -17,9 +17,9 @@
 
 		<?php $_CONTROL->chkBooleanValue->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstAttributeOption->RenderWithName(); ?>
+		<?php $_CONTROL->lstSingleAttributeOption->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstAttributeOptionsAsOption->RenderWithName(true, "Rows=7"); ?>
+		<?php $_CONTROL->lstAttributeOptionsAsMultiple->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

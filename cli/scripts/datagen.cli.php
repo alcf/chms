@@ -45,6 +45,7 @@
 		public static $LifeStartDate;
 		public static $OldestChildBirthDate;
 		public static $UserArray;
+		public static $MaxPersonId;
 
 		// Cached Data
 		public static $CommentCategoryArray;
@@ -69,6 +70,9 @@
 			ChmsDataGen::GenerateMinistries();
 			ChmsDataGen::GenerateUsers();
 			ChmsDataGen::GenerateHouseholds();
+
+			self::$MaxPersonId = Person::CountAll();
+
 			ChmsDataGen::GenerateCommunicationLists();
 			ChmsDataGen::GenerateGroups();
 		}
@@ -122,9 +126,15 @@
 		}
 
 		public static function GenerateGroup(Ministry $objMinistry, Group $objParentGroup = null) {
-			// Use Business Object to create the basic folder
 			$strName = QDataGen::GenerateTitle(1, 4);
+			$strToken = strtolower(str_replace(' ', '_', $strName));
+			while (Group::LoadByToken($strToken)) {
+				$strName = QDataGen::GenerateTitle(1, 4);
+				$strToken = strtolower(str_replace(' ', '_', $strName));
+			}
+
 			$strDescription = QDataGen::GenerateContent(rand(0, 1), 5, 20);
+			$intGroupTypeId = QDataGen::GenerateFromArray(array_keys(GroupType::$NameArray));
 			$objGroup = Group::CreateGroupForMinistry($objMinistry, $intGroupTypeId, $strName, $strDescription, $objParentGroup);
 
 			// Set folder options
@@ -132,18 +142,51 @@
 
 			// Email
 			if (!rand(0, 3)) {
-				
+				$objGroup->EmailBroadcastTypeId = QDataGen::GenerateFromArray(array_keys(EmailBroadcastType::$NameArray));
+				$objGroup->Token = $strToken;
 			}
 
-			$objGroup->Saev();
+			$objGroup->Save();
 
-			// Create Subgroups
-			if (!$objParentGroup || !$objParentGroup->ParentGroup) {
-				if (!rand(0, 3)) {
-					$intSubFolderCount = rand(1, 3);
+			switch ($objGroup->GroupTypeId) {
+				case GroupType::GrowthGroup:
+					$objGrowthGroup = new GrowthGroup();
+					$objGrowthGroup->Group = $objGroup;
+					$objGrowthGroup->GrowthGroupLocationId = rand(1, GrowthGroupLocation::CountAll());
+					$objGrowthGroup->Save();
+					break;
+
+				case GroupType::SmartGroup:
+					$objSmartGroup = new SmartGroup();
+					$objSmartGroup->Group = $objGroup;
+					$objSmartGroup->Save();
+					break;
+
+				case GroupType::GroupCategory:
+					// Create Subgroups
+					$intSubFolderCount = rand(0, 5);
 					for ($intCount = 0; $intCount < $intSubFolderCount; $intCount++)
 						self::GenerateGroup($objMinistry, $objGroup);
-				}
+					break;
+			}
+
+			// Create Participants
+			$objGroupRoleArray = GroupRole::LoadArrayByMinistryId($objMinistry->Id);
+			switch ($objGroup->GroupTypeId) {
+				case GroupType::GrowthGroup:
+				case GroupType::RegularGroup:
+					$intParticipantCount = rand(1, 8);
+					for ($intIndex = 0; $intIndex < $intParticipantCount; $intIndex++) {
+						$dttStartDate = QDataGen::GenerateDateTime(self::$SystemStartDate, QDateTime::Now());
+						$dttEndDate = rand(0, 4) ? null : QDataGen::GenerateDateTime($dttStartDate, QDateTime::Now());
+						$objGroup->AddPerson(
+							Person::Load(rand(1, self::$MaxPersonId)),
+							QDataGen::GenerateFromArray($objGroupRoleArray)->Id,
+							$dttStartDate,
+							$dttEndDate
+						);
+					}
+					break;
 			}
 		}
 
@@ -157,6 +200,21 @@
 				$objMinistry->Name = $strMinistry;
 				$objMinistry->ActiveFlag = true;
 				$objMinistry->Save();
+
+				$strArray = array(
+					'Member' => GroupRoleType::Participant,
+					'Participant' => GroupRoleType::Participant,
+					'Volunteer' => GroupRoleType::Volunteer,
+					'Leader' => GroupRoleType::Volunteer
+				);
+
+				foreach ($strArray as $strName => $intGroupRoleTypeId) {
+					$objGroupRole = new GroupRole();
+					$objGroupRole->Ministry = $objMinistry;
+					$objGroupRole->Name = $strName;
+					$objGroupRole->GroupRoleTypeId = $intGroupRoleTypeId;
+					$objGroupRole->Save();
+				}
 			}
 			self::$MinistryArray = Ministry::LoadAll();
 			QDataGen::DisplayForEachTaskEnd('Generating Minsitries');
@@ -536,8 +594,52 @@
 
 			// Addresses and Phone
 			self::GenerateAddressesAndPhonesForPerson($objPerson);
+			
+			// Attributes
+			self::GenerateAttributesForPerson($objPerson);
 
 			return $objPerson;
+		}
+
+		protected static function GenerateAttributesForPerson($objPerson) {
+			foreach (Attribute::LoadAll() as $objAttribute) {
+				if (!rand(0, 3)) {
+					switch($objAttribute->AttributeDataTypeId) {
+						case AttributeDataType::Text:
+							$mixData = QDataGen::GenerateTitle(5, 25);
+							break;
+						
+						case AttributeDataType::Checkbox:
+							$mixData = rand(0, 1) ? true : false;
+							break;
+
+						case AttributeDataType::Date:
+							$mixData = QDataGen::GenerateDateTime(self::$LifeStartDate, QDateTime::Now());
+							break;
+
+						case AttributeDataType::ImmutableSingleDropdown:
+						case AttributeDataType::MutableSingleDropdown:
+							$mixData = QDataGen::GenerateFromArray($objAttribute->GetAttributeOptionArray());
+							break;
+
+						case AttributeDataType::ImmutableMultipleDropdown:
+						case AttributeDataType::MutableMultipleDropdown:
+							$mixData = array();
+							while (!count($mixData)) {
+								foreach ($objAttribute->GetAttributeOptionArray() as $objAttributeOption) {
+									if (rand(0, 1)) {
+										$mixData[] = $objAttributeOption;
+									}
+								}
+							}
+							break;
+						default:
+							throw new Exception('Unhandled Attribute Data Type');
+					}
+
+					$objPerson->SetAttribute($objAttribute, $mixData);
+				}
+			}
 		}
 
 		protected static function GenerateMembershipsForIndividual(Person $objPerson, QDateTime $dttEarliestPossible, $intMembershipCount) {

@@ -29,9 +29,9 @@
 
 		<?php $this->chkBooleanValue->RenderWithName(); ?>
 
-		<?php $this->lstAttributeOption->RenderWithName(); ?>
+		<?php $this->lstSingleAttributeOption->RenderWithName(); ?>
 
-		<?php $this->lstAttributeOptionsAsOption->RenderWithName(true, "Rows=7"); ?>
+		<?php $this->lstAttributeOptionsAsMultiple->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

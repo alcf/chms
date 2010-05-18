@@ -281,8 +281,8 @@
 				case 'DateValue': return QQN::AttributeValue()->DateValue;
 				case 'TextValue': return QQN::AttributeValue()->TextValue;
 				case 'BooleanValue': return QQN::AttributeValue()->BooleanValue;
-				case 'AttributeOptionId': return QQN::AttributeValue()->AttributeOptionId;
-				case 'AttributeOption': return QQN::AttributeValue()->AttributeOption;
+				case 'SingleAttributeOptionId': return QQN::AttributeValue()->SingleAttributeOptionId;
+				case 'SingleAttributeOption': return QQN::AttributeValue()->SingleAttributeOption;
 				default: throw new QCallerException('Simple Property not found in AttributeValueDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

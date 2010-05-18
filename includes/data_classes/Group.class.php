@@ -27,6 +27,20 @@
 			return sprintf('Group Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Type': return GroupType::$NameArray[$this->intGroupTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		/**
 		 * Creates a new group for a ministry
 		 * @param Ministry $objMinistry
@@ -50,20 +64,90 @@
 			$objGroup->ParentGroup = $objParentGroup;
 			$objGroup->Save();
 
-			switch ($intGroupTypeId) {
-				case GroupType::RegularGroup;
-					break;
-				case GroupType::GroupCategory:
-					break;
-				case GroupType::GrowthGroup:
-					break;
-				case GroupType::SmartGroup:
-					break;
-				default:
-					throw new QCallerException('Invalid Group Type Id: ' . $intGroupTypeId);
-			}
+//			switch ($intGroupTypeId) {
+//				case GroupType::RegularGroup;
+//				case GroupType::GroupCategory:
+//					break;
+//					break;
+//				case GroupType::GrowthGroup:
+//					break;
+//				case GroupType::SmartGroup:
+//					break;
+//				default:
+//					throw new QCallerException('Invalid Group Type Id: ' . $intGroupTypeId);
+//			}
 
 			return $objGroup;
+		}
+
+		/**
+		 * Adds a Person to this Group as a Group Participation record.  Throws an exception
+		 * if the GroupRole doesn't exist in the Ministry that the group belongs to.
+		 * 
+		 * If StartDate is NULL, it will use Now()
+		 * 
+		 * @param Person $objPerson
+		 * @param integer $intGroupRoleId
+		 * @param QDateTime $dttDateStart
+		 * @param QDateTime $dttDateEnd
+		 * @return GroupParticipation
+		 */
+		public function AddPerson(Person $objPerson, $intGroupRoleId, QDateTime $dttDateStart = null, QDateTime $dttDateEnd = null) {
+			$objGroupParticipation = new GroupParticipation();
+			$objGroupParticipation->Person = $objPerson;
+			$objGroupParticipation->Group = $this;
+			$objGroupParticipation->GroupRoleId = $intGroupRoleId;
+			$objGroupParticipation->DateStart = ($dttDateStart ? $dttDateStart : QDateTime::Now());
+			$objGroupParticipation->DateEnd = $dttDateEnd;
+			$objGroupParticipation->Save();
+		}
+
+
+		/**
+		 * Can the Login view or edit this group information (based on Confidentiality rules)
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanView(Login $objLogin) {
+			// Administrators can always view
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+			
+			// Anyone can view non-confidential
+			if (!$this->blnConfidentialFlag) return true;
+			
+			// Otherwise, only ministry members can view
+			return $objLogin->IsMinistryAssociated($this->Ministry);
+		}
+		
+		
+		/**
+		 * Gets an array of Groups for a given ministry, ordered in hierarchical order and name
+		 * @param integer $intMinistryId
+		 * @return Group[]
+		 */
+		public static function LoadOrderedArrayForMinistry($intMinistryId) {
+			$objGroupArray = Group::LoadArrayByMinistryId($intMinistryId, QQ::OrderBy(QQN::Group()->Name));
+
+			return self::LoadOrderedArrayForMinistryHelper($objGroupArray, null);
+		}
+
+		/**
+		 * Helper method to recurse through an array of ministries for LoadOrderedArrayForMinistry
+		 * @param Group[] $objGroupArray
+		 * @param integer $intParentGroupId
+		 * @return Group[]
+		 */
+		protected static function LoadOrderedArrayForMinistryHelper($objGroupArray, $intParentGroupId) {
+			$arrToReturn = array();
+			foreach ($objGroupArray as $objGroup) {
+				if (($objGroup->ParentGroupId == $intParentGroupId) ||
+					(is_null($objGroup->ParentGroupId) && is_null($intParentGroupId))) {
+					$arrToReturn[] = $objGroup;
+					$arrToReturn = array_merge($arrToReturn, self::LoadOrderedArrayForMinistryHelper($objGroupArray, $objGroup->Id));
+				}
+			}
+
+			return $arrToReturn;
 		}
 
 		// Override or Create New Load/Count methods
