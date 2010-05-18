@@ -55,7 +55,7 @@ PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
  * @author     Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @copyright  2002-2010 Sebastian Bergmann <sb@sebastian-bergmann.de>
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    Release: 3.4.11
+ * @version    Release: @package_version@
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 3.4.0
  */
@@ -110,8 +110,8 @@ class PHPUnit_Util_PHP
     public static function getPhpBinary()
     {
         if (self::$phpBinary === NULL) {
-            if (is_readable('/usr/local/bin/php')) {
-                self::$phpBinary = '/usr/local/bin/php';
+            if (is_readable('@php_bin@')) {
+                self::$phpBinary = '@php_bin@';
             }
 
             else if (PHP_SAPI == 'cli' && isset($_SERVER['_']) &&

@@ -202,10 +202,11 @@
 		// URL Hash Processing
 		////////////////////////////////////
 			this.processHashCurrent = null;
+			this.processHashIntervalId = null;
 
 			this.registerHashProcessor = function(strControlId, intPollingInterval) {
 				qc.processHashCurrent = null;
-				setInterval("qc.processHash('" + strControlId + "');", intPollingInterval);
+				this.processHashIntervalId = setInterval("qc.processHash('" + strControlId + "');", intPollingInterval);
 			};
 
 			this.processHash = function(strControlId) {
@@ -227,7 +228,7 @@
 					qc.pA(strFormId, strControlId, 'QClickEvent', strHashData, null);
 				};
 			};
-			
+
 			this.getHashContent = function() {
 				var intPosition = qc.processHashCurrent.indexOf('#');
 				var strHashData = "";
@@ -236,7 +237,26 @@
 				return strHashData;
 			};
 
+			this.clearHashProcessor = function() {
+				if (this.processHashIntervalId) {
+					clearInterval(this.processHashIntervalId);
+				}
+			};
 
+		////////////////////////////////////
+		// Polling Processing
+		////////////////////////////////////
+			this.registerPollingProcessor = function(strControlId, intPollingInterval) {
+				setTimeout("qc.processPolling('" + strControlId + "');", intPollingInterval);
+			};
+
+			this.processPolling = function(strControlId) {
+				// Get Info Needed for the Control Proxy call
+				var strFormId = document.getElementById("Qform__FormId").value;
+
+				// Make the callback
+				qc.pA(strFormId, strControlId, 'QClickEvent');
+			};
 
 		////////////////////////////////////
 		// Mouse Drag Handling Functionality
@@ -391,3 +411,5 @@
 	qc.initialize();
 	qc.regAL = qcodo.registerAssetLocations;
 	qc.regHP = qcodo.registerHashProcessor;
+	qc.clrHP = qcodo.clearHashProcessor;
+	qc.regPP = qcodo.registerPollingProcessor;

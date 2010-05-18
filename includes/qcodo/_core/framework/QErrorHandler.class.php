@@ -54,20 +54,26 @@
 			$intTimestamp = $strParts[1];
 			QErrorHandler::$DateTimeOfError = date('l, F j Y, g:i:s.' . $strMicrotime . ' A T', $intTimestamp);
 			QErrorHandler::$IsoDateTimeOfError = date('Y-m-d H:i:s T', $intTimestamp);
-			if (defined('ERROR_LOG_PATH') && ERROR_LOG_PATH && defined('ERROR_LOG_FLAG') && ERROR_LOG_FLAG)
+			if (defined('__ERROR_LOG__') && __ERROR_LOG__ && defined('ERROR_LOG_FLAG') && ERROR_LOG_FLAG)
 				QErrorHandler::$FileNameOfError = sprintf('qcodo_error_%s_%s.html', date('Y-m-d_His', $intTimestamp), $strMicrotime);
+
+			// Cleanup
+			unset($strMicrotime);
+			unset($strParts);
+			unset($strMicrotime);
+			unset($intTimestamp);
 
 			// Generate the Error Dump
 			if (!ob_get_level()) ob_start();
 			require(__QCODO_CORE__ . '/assets/error_dump.inc.php');
 
 			// Do We Log???
-			if (defined('ERROR_LOG_PATH') && ERROR_LOG_PATH && defined('ERROR_LOG_FLAG') && ERROR_LOG_FLAG) {
-				// Log to File in ERROR_LOG_PATH
+			if (defined('__ERROR_LOG__') && __ERROR_LOG__ && defined('ERROR_LOG_FLAG') && ERROR_LOG_FLAG) {
+				// Log to File in __ERROR_LOG__
 				$strContents = ob_get_contents();
 
-				QApplication::MakeDirectory(ERROR_LOG_PATH, 0777);
-				$strFileName = sprintf('%s/%s', ERROR_LOG_PATH, QErrorHandler::$FileNameOfError);
+				QApplication::MakeDirectory(__ERROR_LOG__, 0777);
+				$strFileName = sprintf('%s/%s', __ERROR_LOG__, QErrorHandler::$FileNameOfError);
 				file_put_contents($strFileName, $strContents);
 				@chmod($strFileName, 0666);
 			}
@@ -235,6 +241,30 @@
 			}
 
 			QErrorHandler::Run();
+		}
+		
+		/**
+		 * A modified version of var_export to use var_dump via the output buffer, which
+		 * can better handle recursive structures.
+		 * @param mixed $mixData
+		 * @param boolean $blnHtmlEntities
+		 * @return string
+		 */
+		public static function VarExport($mixData, $blnHtmlEntities = true) {
+			if (($mixData instanceof QForm) || ($mixData instanceof QControl))
+				$mixData->PrepForVarExport();
+			ob_start();
+			var_dump($mixData);
+			
+			$strToReturn = ob_get_clean();
+
+			if ($blnHtmlEntities) {
+				if (!extension_loaded('xdebug')) $strToReturn = htmlentities($strToReturn);
+			} else {
+				if (extension_loaded('xdebug')) $strToReturn = strip_tags(html_entity_decode($strToReturn));
+			}
+
+			return $strToReturn;
 		}
 	}
 

@@ -139,21 +139,30 @@
 		/**
 		 * Create and setup QListBox lstGroup
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGroup_Create($strControlId = null) {
+		public function lstGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroup->Name = QApplication::Translate('Group');
 			$this->lstGroup->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstGroup->AddItem(QApplication::Translate('- Select One -'), null);
-			$objGroupArray = Group::LoadAll();
-			if ($objGroupArray) foreach ($objGroupArray as $objGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroup = Group::InstantiateCursor($objGroupCursor)) {
 				$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
 				if (($this->objSmartGroup->Group) && ($this->objSmartGroup->Group->Id == $objGroup->Id))
 					$objListItem->Selected = true;
 				$this->lstGroup->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstGroup;
 		}
 

@@ -173,21 +173,30 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objComment->Person) && ($this->objComment->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 
@@ -207,21 +216,30 @@
 		/**
 		 * Create and setup QListBox lstPostedByLogin
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPostedByLogin_Create($strControlId = null) {
+		public function lstPostedByLogin_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPostedByLogin = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPostedByLogin->Name = QApplication::Translate('Posted By Login');
 			$this->lstPostedByLogin->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPostedByLogin->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPostedByLoginArray = Login::LoadAll();
-			if ($objPostedByLoginArray) foreach ($objPostedByLoginArray as $objPostedByLogin) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPostedByLoginCursor = Login::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPostedByLogin = Login::InstantiateCursor($objPostedByLoginCursor)) {
 				$objListItem = new QListItem($objPostedByLogin->__toString(), $objPostedByLogin->Id);
 				if (($this->objComment->PostedByLogin) && ($this->objComment->PostedByLogin->Id == $objPostedByLogin->Id))
 					$objListItem->Selected = true;
 				$this->lstPostedByLogin->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPostedByLogin;
 		}
 
@@ -268,21 +286,30 @@
 		/**
 		 * Create and setup QListBox lstCommentCategory
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstCommentCategory_Create($strControlId = null) {
+		public function lstCommentCategory_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstCommentCategory = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCommentCategory->Name = QApplication::Translate('Comment Category');
 			$this->lstCommentCategory->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstCommentCategory->AddItem(QApplication::Translate('- Select One -'), null);
-			$objCommentCategoryArray = CommentCategory::LoadAll();
-			if ($objCommentCategoryArray) foreach ($objCommentCategoryArray as $objCommentCategory) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCommentCategoryCursor = CommentCategory::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCommentCategory = CommentCategory::InstantiateCursor($objCommentCategoryCursor)) {
 				$objListItem = new QListItem($objCommentCategory->__toString(), $objCommentCategory->Id);
 				if (($this->objComment->CommentCategory) && ($this->objComment->CommentCategory->Id == $objCommentCategory->Id))
 					$objListItem->Selected = true;
 				$this->lstCommentCategory->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstCommentCategory;
 		}
 

@@ -43,15 +43,11 @@
  * @since      File available since Release 2.3.0
  */
 
-require_once 'PHPUnit/Util/InvalidArgumentHelper.php';
-require_once 'PHPUnit/Util/Filter.php';
-require_once 'PHPUnit/Util/Filesystem.php';
-require_once 'PHPUnit/Util/PHP.php';
-
-PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
+require_once 'PHPUnit/Framework/TestCase.php';
+require_once 'BankAccount.php';
 
 /**
- * Utility methods to load PHP sourcefiles.
+ * Tests for the BankAccount class.
  *
  * @category   Testing
  * @package    PHPUnit
@@ -62,88 +58,80 @@ PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');
  * @link       http://www.phpunit.de/
  * @since      Class available since Release 2.3.0
  */
-class PHPUnit_Util_Fileloader
+class BankAccountTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * Checks if a PHP sourcefile is readable and is optionally checked for
-     * syntax errors through the syntaxCheck() method. The sourcefile is
-     * loaded through the load() method.
-     *
-     * @param  string  $filename
-     * @param  boolean $syntaxCheck
-     * @throws RuntimeException
-     */
-    public static function checkAndLoad($filename, $syntaxCheck = FALSE)
+    protected $ba;
+
+    protected function setUp()
     {
-        if (!is_readable($filename)) {
-            $filename = './' . $filename;
-        }
-
-        if (!is_readable($filename)) {
-            throw new RuntimeException(
-              sprintf('Cannot open file "%s".' . "\n", $filename)
-            );
-        }
-
-        if ($syntaxCheck) {
-            self::syntaxCheck($filename);
-        }
-
-        self::load($filename);
+        $this->ba = new BankAccount;
     }
 
     /**
-     * Loads a PHP sourcefile.
-     *
-     * @param  string $filename
-     * @return mixed
-     * @since  Method available since Release 3.0.0
+     * @covers BankAccount::getBalance
+     * @group balanceIsInitiallyZero
+     * @group specification
      */
-    public static function load($filename)
+    public function testBalanceIsInitiallyZero()
     {
-        $filename = PHPUnit_Util_Filesystem::fileExistsInIncludePath(
-          $filename
-        );
-
-        $oldVariableNames = array_keys(get_defined_vars());
-
-        include_once $filename;
-
-        $newVariables     = get_defined_vars();
-        $newVariableNames = array_diff(
-                              array_keys($newVariables), $oldVariableNames
-                            );
-
-        foreach ($newVariableNames as $variableName) {
-            if ($variableName != 'oldVariableNames') {
-                $GLOBALS[$variableName] = $newVariables[$variableName];
-            }
-        }
-
-        return $filename;
+        $this->assertEquals(0, $this->ba->getBalance());
     }
 
     /**
-     * Uses a separate process to perform a syntax check on a PHP sourcefile.
-     *
-     * @param  string $filename
-     * @throws RuntimeException
-     * @since  Method available since Release 3.0.0
+     * @covers BankAccount::withdrawMoney
+     * @group balanceCannotBecomeNegative
+     * @group specification
      */
-    protected static function syntaxCheck($filename)
+    public function testBalanceCannotBecomeNegative()
     {
-        $command = PHPUnit_Util_PHP::getPhpBinary();
-
-        if (DIRECTORY_SEPARATOR == '\\') {
-            $command = escapeshellarg($command);
+        try {
+            $this->ba->withdrawMoney(1);
         }
 
-        $command .= ' -l ' . escapeshellarg($filename);
-        $output   = shell_exec($command);
+        catch (BankAccountException $e) {
+            $this->assertEquals(0, $this->ba->getBalance());
 
-        if (strpos($output, 'Errors parsing') !== FALSE) {
-            throw new RuntimeException($output);
+            return;
         }
+
+        $this->fail();
     }
+
+    /**
+     * @covers BankAccount::depositMoney
+     * @group balanceCannotBecomeNegative
+     * @group specification
+     */
+    public function testBalanceCannotBecomeNegative2()
+    {
+        try {
+            $this->ba->depositMoney(-1);
+        }
+
+        catch (BankAccountException $e) {
+            $this->assertEquals(0, $this->ba->getBalance());
+
+            return;
+        }
+
+        $this->fail();
+    }
+
+    /**
+     * @covers BankAccount::getBalance
+     * @covers BankAccount::depositMoney
+     * @covers BankAccount::withdrawMoney
+     * @group balanceCannotBecomeNegative
+     */
+/*
+    public function testDepositWithdrawMoney()
+    {
+        $this->assertEquals(0, $this->ba->getBalance());
+        $this->ba->depositMoney(1);
+        $this->assertEquals(1, $this->ba->getBalance());
+        $this->ba->withdrawMoney(1);
+        $this->assertEquals(0, $this->ba->getBalance());
+    }
+*/
 }
 ?>

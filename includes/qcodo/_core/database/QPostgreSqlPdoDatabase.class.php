@@ -307,8 +307,8 @@ class QPostgreSqlPdoDatabase extends QPdoDatabase {
             // Index 1: the list of columns that are the foreign key
             // Index 2: the table which this FK references
             // Index 3: the list of columns which this FK references
-            $strTokenArray = split('FOREIGN KEY ', $objRow->GetColumn('consrc'));
-            $strTokenArray[1] = split(' REFERENCES ', $strTokenArray[1]);
+            $strTokenArray = explode('FOREIGN KEY ', $objRow->GetColumn('consrc'));
+            $strTokenArray[1] = explode(' REFERENCES ', $strTokenArray[1]);
             $strTokenArray[2] = $strTokenArray[1][1];
             $strTokenArray[1] = $strTokenArray[1][0];
             $strTokenArray[2] = explode("(", $strTokenArray[2]);
@@ -413,8 +413,10 @@ class QPostgreSqlPdoDatabaseRow extends QDatabaseRowBase {
 
                 case QDatabaseFieldType::Date:
                 case QDatabaseFieldType::DateTime:
-                case QDatabaseFieldType::Time:
                     return new QDateTime($this->strColumnArray[$strColumnName]);
+
+				case QDatabaseFieldType::Time:
+					return QDateTime::FromTimeOnly($this->strColumnArray[$strColumnName]);
 
                 case QDatabaseFieldType::Float:
                     return QType::Cast($this->strColumnArray[$strColumnName], QType::Float);

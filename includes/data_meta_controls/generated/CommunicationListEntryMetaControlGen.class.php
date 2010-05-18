@@ -271,15 +271,24 @@
 		/**
 		 * Create and setup QListBox lstCommunicationLists
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstCommunicationLists_Create($strControlId = null) {
+		public function lstCommunicationLists_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstCommunicationLists = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCommunicationLists->Name = QApplication::Translate('Communication Lists');
 			$this->lstCommunicationLists->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objCommunicationListEntry->GetCommunicationListArray();
-			$objCommunicationListArray = CommunicationList::LoadAll();
-			if ($objCommunicationListArray) foreach ($objCommunicationListArray as $objCommunicationList) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCommunicationListCursor = CommunicationList::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCommunicationList = CommunicationList::InstantiateCursor($objCommunicationListCursor)) {
 				$objListItem = new QListItem($objCommunicationList->__toString(), $objCommunicationList->Id);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->Id == $objCommunicationList->Id)
@@ -287,6 +296,8 @@
 				}
 				$this->lstCommunicationLists->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstCommunicationLists;
 		}
 

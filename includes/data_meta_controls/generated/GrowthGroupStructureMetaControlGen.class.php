@@ -182,15 +182,24 @@
 		/**
 		 * Create and setup QListBox lstGrowthGroups
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGrowthGroups_Create($strControlId = null) {
+		public function lstGrowthGroups_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGrowthGroups = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGrowthGroups->Name = QApplication::Translate('Growth Groups');
 			$this->lstGrowthGroups->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objGrowthGroupStructure->GetGrowthGroupArray();
-			$objGrowthGroupArray = GrowthGroup::LoadAll();
-			if ($objGrowthGroupArray) foreach ($objGrowthGroupArray as $objGrowthGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGrowthGroupCursor = GrowthGroup::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGrowthGroup = GrowthGroup::InstantiateCursor($objGrowthGroupCursor)) {
 				$objListItem = new QListItem($objGrowthGroup->__toString(), $objGrowthGroup->GroupId);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->GroupId == $objGrowthGroup->GroupId)
@@ -198,6 +207,8 @@
 				}
 				$this->lstGrowthGroups->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstGrowthGroups;
 		}
 

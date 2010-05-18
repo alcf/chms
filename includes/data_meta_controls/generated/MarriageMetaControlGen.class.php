@@ -177,19 +177,28 @@
 		/**
 		 * Create and setup QListBox lstLinkedMarriage
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstLinkedMarriage_Create($strControlId = null) {
+		public function lstLinkedMarriage_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstLinkedMarriage = new QListBox($this->objParentObject, $strControlId);
 			$this->lstLinkedMarriage->Name = QApplication::Translate('Linked Marriage');
 			$this->lstLinkedMarriage->AddItem(QApplication::Translate('- Select One -'), null);
-			$objLinkedMarriageArray = Marriage::LoadAll();
-			if ($objLinkedMarriageArray) foreach ($objLinkedMarriageArray as $objLinkedMarriage) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objLinkedMarriageCursor = Marriage::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objLinkedMarriage = Marriage::InstantiateCursor($objLinkedMarriageCursor)) {
 				$objListItem = new QListItem($objLinkedMarriage->__toString(), $objLinkedMarriage->Id);
 				if (($this->objMarriage->LinkedMarriage) && ($this->objMarriage->LinkedMarriage->Id == $objLinkedMarriage->Id))
 					$objListItem->Selected = true;
 				$this->lstLinkedMarriage->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstLinkedMarriage;
 		}
 
@@ -208,21 +217,30 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objMarriage->Person) && ($this->objMarriage->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 
@@ -242,19 +260,28 @@
 		/**
 		 * Create and setup QListBox lstMarriedToPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstMarriedToPerson_Create($strControlId = null) {
+		public function lstMarriedToPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstMarriedToPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMarriedToPerson->Name = QApplication::Translate('Married To Person');
 			$this->lstMarriedToPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objMarriedToPersonArray = Person::LoadAll();
-			if ($objMarriedToPersonArray) foreach ($objMarriedToPersonArray as $objMarriedToPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objMarriedToPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objMarriedToPerson = Person::InstantiateCursor($objMarriedToPersonCursor)) {
 				$objListItem = new QListItem($objMarriedToPerson->__toString(), $objMarriedToPerson->Id);
 				if (($this->objMarriage->MarriedToPerson) && ($this->objMarriage->MarriedToPerson->Id == $objMarriedToPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstMarriedToPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstMarriedToPerson;
 		}
 
@@ -358,19 +385,28 @@
 		/**
 		 * Create and setup QListBox lstMarriageAsLinked
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstMarriageAsLinked_Create($strControlId = null) {
+		public function lstMarriageAsLinked_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstMarriageAsLinked = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMarriageAsLinked->Name = QApplication::Translate('Marriage As Linked');
 			$this->lstMarriageAsLinked->AddItem(QApplication::Translate('- Select One -'), null);
-			$objMarriageArray = Marriage::LoadAll();
-			if ($objMarriageArray) foreach ($objMarriageArray as $objMarriage) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objMarriageCursor = Marriage::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objMarriage = Marriage::InstantiateCursor($objMarriageCursor)) {
 				$objListItem = new QListItem($objMarriage->__toString(), $objMarriage->Id);
 				if ($objMarriage->LinkedMarriageId == $this->objMarriage->Id)
 					$objListItem->Selected = true;
 				$this->lstMarriageAsLinked->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstMarriageAsLinked;
 		}
 

@@ -477,15 +477,24 @@
 		/**
 		 * Create and setup QListBox lstMinistries
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstMinistries_Create($strControlId = null) {
+		public function lstMinistries_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstMinistries = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMinistries->Name = QApplication::Translate('Ministries');
 			$this->lstMinistries->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objLogin->GetMinistryArray();
-			$objMinistryArray = Ministry::LoadAll();
-			if ($objMinistryArray) foreach ($objMinistryArray as $objMinistry) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objMinistryCursor = Ministry::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objMinistry = Ministry::InstantiateCursor($objMinistryCursor)) {
 				$objListItem = new QListItem($objMinistry->__toString(), $objMinistry->Id);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->Id == $objMinistry->Id)
@@ -493,6 +502,8 @@
 				}
 				$this->lstMinistries->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstMinistries;
 		}
 

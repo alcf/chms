@@ -161,21 +161,30 @@
 		/**
 		 * Create and setup QListBox lstMinistry
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstMinistry_Create($strControlId = null) {
+		public function lstMinistry_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstMinistry = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMinistry->Name = QApplication::Translate('Ministry');
 			$this->lstMinistry->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstMinistry->AddItem(QApplication::Translate('- Select One -'), null);
-			$objMinistryArray = Ministry::LoadAll();
-			if ($objMinistryArray) foreach ($objMinistryArray as $objMinistry) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objMinistryCursor = Ministry::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objMinistry = Ministry::InstantiateCursor($objMinistryCursor)) {
 				$objListItem = new QListItem($objMinistry->__toString(), $objMinistry->Id);
 				if (($this->objGroupRole->Ministry) && ($this->objGroupRole->Ministry->Id == $objMinistry->Id))
 					$objListItem->Selected = true;
 				$this->lstMinistry->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstMinistry;
 		}
 

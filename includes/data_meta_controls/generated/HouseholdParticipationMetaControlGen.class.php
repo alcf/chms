@@ -161,21 +161,30 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objHouseholdParticipation->Person) && ($this->objHouseholdParticipation->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 
@@ -195,21 +204,30 @@
 		/**
 		 * Create and setup QListBox lstHousehold
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstHousehold_Create($strControlId = null) {
+		public function lstHousehold_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstHousehold = new QListBox($this->objParentObject, $strControlId);
 			$this->lstHousehold->Name = QApplication::Translate('Household');
 			$this->lstHousehold->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstHousehold->AddItem(QApplication::Translate('- Select One -'), null);
-			$objHouseholdArray = Household::LoadAll();
-			if ($objHouseholdArray) foreach ($objHouseholdArray as $objHousehold) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objHouseholdCursor = Household::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
 				$objListItem = new QListItem($objHousehold->__toString(), $objHousehold->Id);
 				if (($this->objHouseholdParticipation->Household) && ($this->objHouseholdParticipation->Household->Id == $objHousehold->Id))
 					$objListItem->Selected = true;
 				$this->lstHousehold->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstHousehold;
 		}
 

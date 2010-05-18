@@ -221,19 +221,28 @@
 		/**
 		 * Create and setup QListBox lstParentMinistry
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstParentMinistry_Create($strControlId = null) {
+		public function lstParentMinistry_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstParentMinistry = new QListBox($this->objParentObject, $strControlId);
 			$this->lstParentMinistry->Name = QApplication::Translate('Parent Ministry');
 			$this->lstParentMinistry->AddItem(QApplication::Translate('- Select One -'), null);
-			$objParentMinistryArray = Ministry::LoadAll();
-			if ($objParentMinistryArray) foreach ($objParentMinistryArray as $objParentMinistry) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objParentMinistryCursor = Ministry::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objParentMinistry = Ministry::InstantiateCursor($objParentMinistryCursor)) {
 				$objListItem = new QListItem($objParentMinistry->__toString(), $objParentMinistry->Id);
 				if (($this->objMinistry->ParentMinistry) && ($this->objMinistry->ParentMinistry->Id == $objParentMinistry->Id))
 					$objListItem->Selected = true;
 				$this->lstParentMinistry->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstParentMinistry;
 		}
 
@@ -276,15 +285,24 @@
 		/**
 		 * Create and setup QListBox lstLogins
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstLogins_Create($strControlId = null) {
+		public function lstLogins_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstLogins = new QListBox($this->objParentObject, $strControlId);
 			$this->lstLogins->Name = QApplication::Translate('Logins');
 			$this->lstLogins->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objMinistry->GetLoginArray();
-			$objLoginArray = Login::LoadAll();
-			if ($objLoginArray) foreach ($objLoginArray as $objLogin) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objLoginCursor = Login::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objLogin = Login::InstantiateCursor($objLoginCursor)) {
 				$objListItem = new QListItem($objLogin->__toString(), $objLogin->Id);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->Id == $objLogin->Id)
@@ -292,6 +310,8 @@
 				}
 				$this->lstLogins->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstLogins;
 		}
 

@@ -177,21 +177,30 @@
 		/**
 		 * Create and setup QListBox lstAttribute
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstAttribute_Create($strControlId = null) {
+		public function lstAttribute_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstAttribute = new QListBox($this->objParentObject, $strControlId);
 			$this->lstAttribute->Name = QApplication::Translate('Attribute');
 			$this->lstAttribute->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstAttribute->AddItem(QApplication::Translate('- Select One -'), null);
-			$objAttributeArray = Attribute::LoadAll();
-			if ($objAttributeArray) foreach ($objAttributeArray as $objAttribute) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objAttributeCursor = Attribute::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objAttribute = Attribute::InstantiateCursor($objAttributeCursor)) {
 				$objListItem = new QListItem($objAttribute->__toString(), $objAttribute->Id);
 				if (($this->objAttributeValue->Attribute) && ($this->objAttributeValue->Attribute->Id == $objAttribute->Id))
 					$objListItem->Selected = true;
 				$this->lstAttribute->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstAttribute;
 		}
 
@@ -211,21 +220,30 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objAttributeValue->Person) && ($this->objAttributeValue->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 
@@ -323,19 +341,28 @@
 		/**
 		 * Create and setup QListBox lstSingleAttributeOption
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstSingleAttributeOption_Create($strControlId = null) {
+		public function lstSingleAttributeOption_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstSingleAttributeOption = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSingleAttributeOption->Name = QApplication::Translate('Single Attribute Option');
 			$this->lstSingleAttributeOption->AddItem(QApplication::Translate('- Select One -'), null);
-			$objSingleAttributeOptionArray = AttributeOption::LoadAll();
-			if ($objSingleAttributeOptionArray) foreach ($objSingleAttributeOptionArray as $objSingleAttributeOption) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objSingleAttributeOptionCursor = AttributeOption::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objSingleAttributeOption = AttributeOption::InstantiateCursor($objSingleAttributeOptionCursor)) {
 				$objListItem = new QListItem($objSingleAttributeOption->__toString(), $objSingleAttributeOption->Id);
 				if (($this->objAttributeValue->SingleAttributeOption) && ($this->objAttributeValue->SingleAttributeOption->Id == $objSingleAttributeOption->Id))
 					$objListItem->Selected = true;
 				$this->lstSingleAttributeOption->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstSingleAttributeOption;
 		}
 
@@ -354,15 +381,24 @@
 		/**
 		 * Create and setup QListBox lstAttributeOptionsAsMultiple
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstAttributeOptionsAsMultiple_Create($strControlId = null) {
+		public function lstAttributeOptionsAsMultiple_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstAttributeOptionsAsMultiple = new QListBox($this->objParentObject, $strControlId);
 			$this->lstAttributeOptionsAsMultiple->Name = QApplication::Translate('Attribute Options As Multiple');
 			$this->lstAttributeOptionsAsMultiple->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objAttributeValue->GetAttributeOptionAsMultipleArray();
-			$objAttributeOptionArray = AttributeOption::LoadAll();
-			if ($objAttributeOptionArray) foreach ($objAttributeOptionArray as $objAttributeOption) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objAttributeOptionCursor = AttributeOption::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objAttributeOption = AttributeOption::InstantiateCursor($objAttributeOptionCursor)) {
 				$objListItem = new QListItem($objAttributeOption->__toString(), $objAttributeOption->Id);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->Id == $objAttributeOption->Id)
@@ -370,6 +406,8 @@
 				}
 				$this->lstAttributeOptionsAsMultiple->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstAttributeOptionsAsMultiple;
 		}
 

@@ -161,21 +161,30 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objOtherContactInfo->Person) && ($this->objOtherContactInfo->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 
@@ -195,21 +204,30 @@
 		/**
 		 * Create and setup QListBox lstOtherContactMethod
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstOtherContactMethod_Create($strControlId = null) {
+		public function lstOtherContactMethod_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstOtherContactMethod = new QListBox($this->objParentObject, $strControlId);
 			$this->lstOtherContactMethod->Name = QApplication::Translate('Other Contact Method');
 			$this->lstOtherContactMethod->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstOtherContactMethod->AddItem(QApplication::Translate('- Select One -'), null);
-			$objOtherContactMethodArray = OtherContactMethod::LoadAll();
-			if ($objOtherContactMethodArray) foreach ($objOtherContactMethodArray as $objOtherContactMethod) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objOtherContactMethodCursor = OtherContactMethod::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objOtherContactMethod = OtherContactMethod::InstantiateCursor($objOtherContactMethodCursor)) {
 				$objListItem = new QListItem($objOtherContactMethod->__toString(), $objOtherContactMethod->Id);
 				if (($this->objOtherContactInfo->OtherContactMethod) && ($this->objOtherContactInfo->OtherContactMethod->Id == $objOtherContactMethod->Id))
 					$objListItem->Selected = true;
 				$this->lstOtherContactMethod->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstOtherContactMethod;
 		}
 

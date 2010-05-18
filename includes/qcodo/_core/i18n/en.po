@@ -16,6 +16,12 @@ MsgStr "%s must have at least %s characters"
 MsgId "Must have at least %s characters"
 MsgStr "Must have at least %s characters"
 
+MsgId "%s must have at most %s characters"
+MsgStr "%s must have at most %s characters"
+
+MsgId "Must have at most %s characters"
+MsgStr "Must have at most %s characters"
+
 
 # For QWriteBox controls
 MsgId ""
@@ -57,6 +63,9 @@ MsgStr "Value must be less than %s"
 MsgId "Value must be greater than %s"
 MsgStr "Value must be greater than %s"
 
+MsgId "Invalid e-mail address"
+MsgStr "Invalid e-mail address"
+
 
 # For QDataGrid controls
 MsgId "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
@@ -79,6 +88,14 @@ MsgId "Next"
 MsgStr "Next"
 
 
+# For meta DataGrids
+MsgId "true"
+MsgStr "true"
+
+MsgId "false"
+MsgStr "false"
+
+
 # For the List FormDraft Include template
 MsgId "List All"
 MsgStr "List All"
@@ -88,6 +105,15 @@ MsgStr "Create a New"
 
 MsgId "Go to \"Form Drafts\""
 MsgStr "Go to \"Form Drafts\""
+
+MsgId "Go to \"Panel Drafts\""
+MsgStr "Go to \"Panel Drafts\""
+
+MsgId "Form Drafts"
+MsgStr "Form Drafts"
+
+MsgId "Panel Drafts"
+MsgStr "Panel Drafts"
 
 
 # For the Edit FormBase class template
@@ -120,16 +146,73 @@ MsgStr "View List"
 MsgId "Create New"
 MsgStr "Create New"
 
+MsgId "Go to Dashboard"
+MsgStr "Go to Dashboard"
 
-#For the QDateTimePicker control
+
+# For form_drafts/dashboard/index.php page
+MsgId "Select a Class to View/Edit"
+MsgStr "Select a Class to View/Edit"
+
+MsgId "AJAX Dashboard"
+MsgStr "AJAX Dashboard"
+
+
+#For the QDateTime class and QDateTimePicker control
 msgid "Jan"
 msgstr "Jan"
+msgid "January"
+msgstr "January"
+
+msgid "Feb"
+msgstr "Feb"
+msgid "February"
+msgstr "February"
+
+msgid "Mar"
+msgstr "Mar"
+msgid "March"
+msgstr "March"
 
 msgid "Apr"
 msgstr "Apr"
+msgid "April"
+msgstr "April"
+
+msgid "May"
+msgstr "May"
+
+msgid "Jun"
+msgstr "Jun"
+msgid "June"
+msgstr "June"
+
+msgid "Jul"
+msgstr "Jul"
+msgid "July"
+msgstr "July"
 
 msgid "Aug"
 msgstr "Aug"
+msgid "August"
+msgstr "August"
+
+msgid "Sep"
+msgstr "Sep"
+msgid "September"
+msgstr "September"
+
+msgid "Oct"
+msgstr "Oct"
+msgid "October"
+msgstr "October"
+
+msgid "Nov"
+msgstr "Nov"
+msgid "November"
+msgstr "November"
 
 msgid "Dec"
 msgstr "Dec"
+msgid "December"
+msgstr "December"

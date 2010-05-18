@@ -191,21 +191,30 @@
 		/**
 		 * Create and setup QListBox lstGroup
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGroup_Create($strControlId = null) {
+		public function lstGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroup->Name = QApplication::Translate('Group');
 			$this->lstGroup->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstGroup->AddItem(QApplication::Translate('- Select One -'), null);
-			$objGroupArray = Group::LoadAll();
-			if ($objGroupArray) foreach ($objGroupArray as $objGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroup = Group::InstantiateCursor($objGroupCursor)) {
 				$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
 				if (($this->objGrowthGroup->Group) && ($this->objGrowthGroup->Group->Id == $objGroup->Id))
 					$objListItem->Selected = true;
 				$this->lstGroup->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstGroup;
 		}
 
@@ -225,21 +234,30 @@
 		/**
 		 * Create and setup QListBox lstGrowthGroupLocation
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGrowthGroupLocation_Create($strControlId = null) {
+		public function lstGrowthGroupLocation_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGrowthGroupLocation = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGrowthGroupLocation->Name = QApplication::Translate('Growth Group Location');
 			$this->lstGrowthGroupLocation->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstGrowthGroupLocation->AddItem(QApplication::Translate('- Select One -'), null);
-			$objGrowthGroupLocationArray = GrowthGroupLocation::LoadAll();
-			if ($objGrowthGroupLocationArray) foreach ($objGrowthGroupLocationArray as $objGrowthGroupLocation) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGrowthGroupLocationCursor = GrowthGroupLocation::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGrowthGroupLocation = GrowthGroupLocation::InstantiateCursor($objGrowthGroupLocationCursor)) {
 				$objListItem = new QListItem($objGrowthGroupLocation->__toString(), $objGrowthGroupLocation->Id);
 				if (($this->objGrowthGroup->GrowthGroupLocation) && ($this->objGrowthGroup->GrowthGroupLocation->Id == $objGrowthGroupLocation->Id))
 					$objListItem->Selected = true;
 				$this->lstGrowthGroupLocation->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstGrowthGroupLocation;
 		}
 
@@ -566,15 +584,24 @@
 		/**
 		 * Create and setup QListBox lstGrowthGroupStructures
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGrowthGroupStructures_Create($strControlId = null) {
+		public function lstGrowthGroupStructures_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGrowthGroupStructures = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGrowthGroupStructures->Name = QApplication::Translate('Growth Group Structures');
 			$this->lstGrowthGroupStructures->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objGrowthGroup->GetGrowthGroupStructureArray();
-			$objGrowthGroupStructureArray = GrowthGroupStructure::LoadAll();
-			if ($objGrowthGroupStructureArray) foreach ($objGrowthGroupStructureArray as $objGrowthGroupStructure) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGrowthGroupStructureCursor = GrowthGroupStructure::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGrowthGroupStructure = GrowthGroupStructure::InstantiateCursor($objGrowthGroupStructureCursor)) {
 				$objListItem = new QListItem($objGrowthGroupStructure->__toString(), $objGrowthGroupStructure->Id);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->Id == $objGrowthGroupStructure->Id)
@@ -582,6 +609,8 @@
 				}
 				$this->lstGrowthGroupStructures->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstGrowthGroupStructures;
 		}
 

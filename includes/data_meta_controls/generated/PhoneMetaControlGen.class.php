@@ -192,19 +192,28 @@
 		/**
 		 * Create and setup QListBox lstAddress
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstAddress_Create($strControlId = null) {
+		public function lstAddress_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstAddress = new QListBox($this->objParentObject, $strControlId);
 			$this->lstAddress->Name = QApplication::Translate('Address');
 			$this->lstAddress->AddItem(QApplication::Translate('- Select One -'), null);
-			$objAddressArray = Address::LoadAll();
-			if ($objAddressArray) foreach ($objAddressArray as $objAddress) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objAddressCursor = Address::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objAddress = Address::InstantiateCursor($objAddressCursor)) {
 				$objListItem = new QListItem($objAddress->__toString(), $objAddress->Id);
 				if (($this->objPhone->Address) && ($this->objPhone->Address->Id == $objAddress->Id))
 					$objListItem->Selected = true;
 				$this->lstAddress->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstAddress;
 		}
 
@@ -223,19 +232,28 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objPhone->Person) && ($this->objPhone->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 

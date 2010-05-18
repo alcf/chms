@@ -67,6 +67,10 @@
 	define ('__FORM_DRAFTS__', __SUBDIRECTORY__ . '/drafts');
 	define ('__PANEL_DRAFTS__', __SUBDIRECTORY__ . '/drafts/dashboard');
 
+	define ('__ERROR_LOG__', __DOCROOT__ . '/../error_log');
+	define ('__QCODO_LOG__', __DOCROOT__ . '/../qcodo_log');
+	define ('__TEST_CASES__', __DOCROOT__ . '/../tests');
+
 	// Examples and Devtools are deprecated as of 0.4.0, but these constants are still here to
 	// support any QPM packages that may still want to use them
 	define ('__DEVTOOLS__', null);

@@ -216,21 +216,30 @@
 		/**
 		 * Create and setup QListBox lstMinistry
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstMinistry_Create($strControlId = null) {
+		public function lstMinistry_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstMinistry = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMinistry->Name = QApplication::Translate('Ministry');
 			$this->lstMinistry->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstMinistry->AddItem(QApplication::Translate('- Select One -'), null);
-			$objMinistryArray = Ministry::LoadAll();
-			if ($objMinistryArray) foreach ($objMinistryArray as $objMinistry) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objMinistryCursor = Ministry::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objMinistry = Ministry::InstantiateCursor($objMinistryCursor)) {
 				$objListItem = new QListItem($objMinistry->__toString(), $objMinistry->Id);
 				if (($this->objGroup->Ministry) && ($this->objGroup->Ministry->Id == $objMinistry->Id))
 					$objListItem->Selected = true;
 				$this->lstMinistry->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstMinistry;
 		}
 
@@ -300,19 +309,28 @@
 		/**
 		 * Create and setup QListBox lstParentGroup
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstParentGroup_Create($strControlId = null) {
+		public function lstParentGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstParentGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstParentGroup->Name = QApplication::Translate('Parent Group');
 			$this->lstParentGroup->AddItem(QApplication::Translate('- Select One -'), null);
-			$objParentGroupArray = Group::LoadAll();
-			if ($objParentGroupArray) foreach ($objParentGroupArray as $objParentGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objParentGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objParentGroup = Group::InstantiateCursor($objParentGroupCursor)) {
 				$objListItem = new QListItem($objParentGroup->__toString(), $objParentGroup->Id);
 				if (($this->objGroup->ParentGroup) && ($this->objGroup->ParentGroup->Id == $objParentGroup->Id))
 					$objListItem->Selected = true;
 				$this->lstParentGroup->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstParentGroup;
 		}
 
@@ -406,22 +424,32 @@
 		/**
 		 * Create and setup QListBox lstGrowthGroup
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGrowthGroup_Create($strControlId = null) {
+		public function lstGrowthGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGrowthGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGrowthGroup->Name = QApplication::Translate('Growth Group');
 			$this->lstGrowthGroup->AddItem(QApplication::Translate('- Select One -'), null);
-			$objGrowthGroupArray = GrowthGroup::LoadAll();
-			if ($objGrowthGroupArray) foreach ($objGrowthGroupArray as $objGrowthGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGrowthGroupCursor = GrowthGroup::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGrowthGroup = GrowthGroup::InstantiateCursor($objGrowthGroupCursor)) {
 				$objListItem = new QListItem($objGrowthGroup->__toString(), $objGrowthGroup->GroupId);
 				if ($objGrowthGroup->GroupId == $this->objGroup->Id)
 					$objListItem->Selected = true;
 				$this->lstGrowthGroup->AddItem($objListItem);
 			}
+
 			// Because GrowthGroup's GrowthGroup is not null, if a value is already selected, it cannot be changed.
 			if ($this->lstGrowthGroup->SelectedValue)
 				$this->lstGrowthGroup->Enabled = false;
+
+			// Return the QListBox
 			return $this->lstGrowthGroup;
 		}
 
@@ -440,22 +468,32 @@
 		/**
 		 * Create and setup QListBox lstSmartGroup
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstSmartGroup_Create($strControlId = null) {
+		public function lstSmartGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstSmartGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSmartGroup->Name = QApplication::Translate('Smart Group');
 			$this->lstSmartGroup->AddItem(QApplication::Translate('- Select One -'), null);
-			$objSmartGroupArray = SmartGroup::LoadAll();
-			if ($objSmartGroupArray) foreach ($objSmartGroupArray as $objSmartGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objSmartGroupCursor = SmartGroup::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objSmartGroup = SmartGroup::InstantiateCursor($objSmartGroupCursor)) {
 				$objListItem = new QListItem($objSmartGroup->__toString(), $objSmartGroup->GroupId);
 				if ($objSmartGroup->GroupId == $this->objGroup->Id)
 					$objListItem->Selected = true;
 				$this->lstSmartGroup->AddItem($objListItem);
 			}
+
 			// Because SmartGroup's SmartGroup is not null, if a value is already selected, it cannot be changed.
 			if ($this->lstSmartGroup->SelectedValue)
 				$this->lstSmartGroup->Enabled = false;
+
+			// Return the QListBox
 			return $this->lstSmartGroup;
 		}
 

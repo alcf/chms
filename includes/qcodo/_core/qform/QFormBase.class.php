@@ -26,7 +26,12 @@
 		private $strUrlHashMethod = null;
 		private $objUrlHashParentObject = null;
 		protected $strUrlHash;
-		
+
+		private $pxyPollingProxy = null;
+		private $intPollingInterval = null;
+		private $strPollingMethod = null;
+		private $objPollingParentObject = null;
+
 		protected $strPreviousRequestMode = false;
 		protected $strHtmlIncludeFilePath;
 		protected $strCssClass;
@@ -129,11 +134,9 @@
 		protected function Form_Validate() {return true;}
 		protected function Form_Exit() {}
 
-		public function VarExport($blnReturn = true) {
+		public function PrepForVarExport() {
 			if ($this->objControlArray) foreach ($this->objControlArray as $objControl)
-				$objControl->VarExport(false);
-			if ($blnReturn)
-				return var_export($this, true);
+				$objControl->PrepForVarExport();
 		}
 
 		public function IsCheckableControlRendered($strControlId) {
@@ -141,6 +144,8 @@
 		}
 
 		public static function Run($strFormId, $strAlternateHtmlFile = null) {
+			global $_FORM;
+
 			// Ensure strFormId is a class
 			$objClass = new $strFormId();
 
@@ -156,21 +161,20 @@
 				if ($strPostDataState)
 					// We might have a valid form state -- let's see by unserializing this object
 					$objClass = QForm::Unserialize($strPostDataState);
+
+				// If there is no QForm Class, then we have an Invalid Form State
+				if (!$objClass) throw new QInvalidFormStateException($strFormId);
 			}
 
 			if ($objClass) {
-				global $$strFormId;
-				$$strFormId = $objClass;
+				// Globalize
+				$_FORM = $objClass;
 
 				$objClass->strCallType = $_POST['Qform__FormCallType'];
 				$objClass->intFormStatus = QFormBase::FormStatusUnrendered;
 
 				if ($objClass->strCallType == QCallType::Ajax)
 					QApplication::$RequestMode = QRequestMode::Ajax;
-
-				// Globalize and Set Variable
-				global $$strFormId;
-				$$strFormId = $objClass;
 
 				// Iterate through all the control modifications
 				$strModificationArray = explode("\n", trim($_POST['Qform__FormUpdates']));
@@ -250,6 +254,9 @@
 				// We have no form state -- Create Brand New One
 				$objClass = new $strFormId();
 
+				// Globalize
+				$_FORM = $objClass;
+
 				// Setup HTML Include File Path, based on passed-in strAlternateHtmlFile (if any)
 				try {
 					$objClass->HtmlIncludeFilePath = $strAlternateHtmlFile;
@@ -257,9 +264,6 @@
 					$objExc->IncrementOffset();
 					throw $objExc;
 				}
-
-				global $$strFormId;
-				$$strFormId = $objClass;
 
 				// By default, this form is being created NOT via a PostBack
 				// So there is no CallType
@@ -269,10 +273,6 @@
 				$objClass->intFormStatus = QFormBase::FormStatusUnrendered;
 				$objClass->objControlArray = array();
 				$objClass->objGroupingArray = array();
-
-				// Globalize and Set Variable
-				global $$strFormId;
-				$$strFormId = $objClass;
 
 				// Trigger Run Event (if applicable)
 				$objClass->Form_Run();
@@ -639,6 +639,7 @@
 		public function EvaluateTemplate($strTemplate) {
 			global $_ITEM;
 			global $_CONTROL;
+			global $_FORM;
 
 			$_FORM = $this;
 
@@ -1192,7 +1193,7 @@
 				__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__,
 				__VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__);
 
-			// And lastly, add a Hash Processor (if any and if applicable)
+			// Add a Hash Processor (if any and if applicable)
 			if ($this->pxyUrlHashProxy && (QApplication::$RequestMode != QRequestMode::Ajax)) {
 				$strEndScript .= sprintf('qc.regHP("%s", %s); ', $this->pxyUrlHashProxy->ControlId, $this->intUrlHashPollingInterval);
 			}
@@ -1269,6 +1270,66 @@
 			$objObject = ($this->objUrlHashParentObject) ? $this->objUrlHashParentObject : $this;
 			$strMethod = $this->strUrlHashMethod;
 			$objObject->$strMethod(); 
+		}
+		
+		/**
+		 * Stops polling of URL hash processor
+		 * @return void
+		 */
+		public function ClearUrlHashProcessor() {
+			if ($this->pxyUrlHashProxy) {
+				QApplication::ExecuteJavaScript('qc.clrHP();');	
+			}
+		}
+
+		/**
+		 * Adds polling to the QForm
+		 * @param string $strMethodName name of the event handling method to be called 
+		 * @param object $objParentControl optional object that contains the method (uses the QForm if none is specified)
+		 * @param integer $intPollingInterval the interval (in ms) the polling will occur (optional, default is 2500ms)
+		 * @return void
+		 */
+		public function SetPollingProcessor($strMethodName, $objParentControl = null, $intPollingInterval = 2500) {
+			if (!$this->pxyPollingProxy)
+				$this->pxyPollingProxy = new QControlProxy($this, 'pxyPollingFor' . $this->strFormId);
+
+			// Setup Values
+			$this->intPollingInterval = $intPollingInterval;
+			$this->strPollingMethod = $strMethodName;
+			$this->objPollingParentObject = $objParentControl;
+
+			// Setup the Control Proxy
+			$this->pxyPollingProxy->RemoveAllActions(QClickEvent::EventName);
+			$this->pxyPollingProxy->AddAction(new QClickEvent(), new QAjaxAction('Polling_Process'));
+
+			// Make the JS Call
+			QApplication::ExecuteJavascript(sprintf('qc.regPP("%s", %s);', $this->pxyPollingProxy->ControlId, $this->intPollingInterval));
+		}
+
+		protected function Polling_Process($strFormId, $strControlId, $strParameter) {
+			if ($this->strPollingMethod) {
+				$objObject = ($this->objPollingParentObject) ? $this->objPollingParentObject : $this;
+				$strMethod = $this->strPollingMethod;
+				$objObject->$strMethod();
+				QApplication::ExecuteJavascript(sprintf('qc.regPP("%s", %s);', $this->pxyPollingProxy->ControlId, $this->intPollingInterval));
+			}
+		}
+
+		/**
+		 * Returns whether or not Polling is currently active
+		 * @return boolean
+		 */
+		public function IsPollingActive() {
+			return (!is_null($this->strPollingMethod));
+		}
+
+		/**
+		 * Stops polling of polling processor
+		 * @return void
+		 */
+		public function ClearPollingProcessor() {
+			$this->strPollingMethod = null;
+			$this->objPollingParentObject = null;
 		}
 	}
 

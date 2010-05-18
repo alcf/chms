@@ -3,7 +3,7 @@
 	    ini_set('xdebug.show_exception_trace', 0);
 	}
 
-	set_include_path('.' . PATH_SEPARATOR . __INCLUDES__ . PATH_SEPARATOR . get_include_path());
+	set_include_path('.' . PATH_SEPARATOR . __QCODO_CORE__ . PATH_SEPARATOR . get_include_path());
 
 	require_once 'PHPUnit/Util/Filter.php';
 	PHPUnit_Util_Filter::addFileToFilter(__FILE__, 'PHPUNIT');

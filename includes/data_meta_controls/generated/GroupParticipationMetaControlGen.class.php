@@ -169,21 +169,30 @@
 		/**
 		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPerson_Create($strControlId = null) {
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
 			$this->lstPerson->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				if (($this->objGroupParticipation->Person) && ($this->objGroupParticipation->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
 				$this->lstPerson->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPerson;
 		}
 
@@ -203,21 +212,30 @@
 		/**
 		 * Create and setup QListBox lstGroup
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGroup_Create($strControlId = null) {
+		public function lstGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroup->Name = QApplication::Translate('Group');
 			$this->lstGroup->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstGroup->AddItem(QApplication::Translate('- Select One -'), null);
-			$objGroupArray = Group::LoadAll();
-			if ($objGroupArray) foreach ($objGroupArray as $objGroup) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroup = Group::InstantiateCursor($objGroupCursor)) {
 				$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
 				if (($this->objGroupParticipation->Group) && ($this->objGroupParticipation->Group->Id == $objGroup->Id))
 					$objListItem->Selected = true;
 				$this->lstGroup->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstGroup;
 		}
 
@@ -237,21 +255,30 @@
 		/**
 		 * Create and setup QListBox lstGroupRole
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstGroupRole_Create($strControlId = null) {
+		public function lstGroupRole_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGroupRole = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroupRole->Name = QApplication::Translate('Group Role');
 			$this->lstGroupRole->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstGroupRole->AddItem(QApplication::Translate('- Select One -'), null);
-			$objGroupRoleArray = GroupRole::LoadAll();
-			if ($objGroupRoleArray) foreach ($objGroupRoleArray as $objGroupRole) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupRoleCursor = GroupRole::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroupRole = GroupRole::InstantiateCursor($objGroupRoleCursor)) {
 				$objListItem = new QListItem($objGroupRole->__toString(), $objGroupRole->Id);
 				if (($this->objGroupParticipation->GroupRole) && ($this->objGroupParticipation->GroupRole->Id == $objGroupRole->Id))
 					$objListItem->Selected = true;
 				$this->lstGroupRole->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstGroupRole;
 		}
 

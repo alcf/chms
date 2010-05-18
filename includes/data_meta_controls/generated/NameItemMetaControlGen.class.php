@@ -182,15 +182,24 @@
 		/**
 		 * Create and setup QListBox lstPeople
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPeople_Create($strControlId = null) {
+		public function lstPeople_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPeople = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPeople->Name = QApplication::Translate('People');
 			$this->lstPeople->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
 			$objAssociatedArray = $this->objNameItem->GetPersonArray();
-			$objPersonArray = Person::LoadAll();
-			if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
 				foreach ($objAssociatedArray as $objAssociated) {
 					if ($objAssociated->Id == $objPerson->Id)
@@ -198,6 +207,8 @@
 				}
 				$this->lstPeople->AddItem($objListItem);
 			}
+
+			// Return the QListControl
 			return $this->lstPeople;
 		}
 
