@@ -85,6 +85,21 @@
 					break;
 
 				case AttributeDataType::MutableSingleDropdown:
+					$this->lstValue = new QListBox($this);
+					$this->lstValue->Name = $this->objAttributeValue->Attribute->Name;
+					$this->lstValue->Required = true;
+					if (!$this->objAttributeValue->SingleAttributeOptionId)
+						$this->lstValue->AddItem('- Select One -');
+					foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
+						$this->lstValue->AddItem($objOption->Name, $objOption->Id, $objOption->Id == $this->objAttributeValue->SingleAttributeOptionId);
+					$this->lstValue->AddItem('- Other... -', -1);
+
+					$this->txtAddItem = new QTextBox($this);
+					$this->txtAddItem->Name = 'Add a Value';
+					$this->txtAddItem->Visible = false;
+
+					$this->lstValue->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstValue_Change'));
+					$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 					break;
 
 				case AttributeDataType::MutableMultipleDropdown:
@@ -105,7 +120,7 @@
 						$this->lstValue->AddItem($objOption->Name, $objOption->Id, array_key_exists($objOption->Id, $intSelectedIdArray));
 
 					$this->txtAddItem = new QTextBox($this);
-					$this->txtAddItem->Name = 'Add an Option';
+					$this->txtAddItem->Name = 'Add a Value';
 					$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtAddItem_Enter'));
 					$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 					break;
@@ -114,7 +129,20 @@
 					throw new Exception('Unhandled AttributeDataTypeId: ' . $this->objAttributeValue->Attribute->AttributeDataTypeId);
 			}
 		}
-	
+
+		public function lstValue_Change($strFormId, $strControlId, $strParameter) {
+			$this->txtAddItem->Text = null;
+
+			if ($this->lstValue->SelectedValue == -1) {
+				$this->txtAddItem->Required = true;
+				$this->txtAddItem->Visible = true;
+				$this->txtAddItem->Focus();
+			} else {
+				$this->txtAddItem->Required = false;
+				$this->txtAddItem->Visible = false;
+			}
+		}
+
 		public function txtAddItem_Enter($strFormId, $strControlId, $strParameter) {
 			if ($strName = trim($this->txtAddItem->Text)) {
 				$this->lstValue->AddItem($strName, -1 * count($this->lstValue->GetAllItems()), true);
@@ -164,6 +192,17 @@
 					break;
 
 				case AttributeDataType::MutableSingleDropdown:
+					if ($this->lstValue->SelectedValue == -1) {
+						$objAttributeOption = new AttributeOption();
+						$objAttributeOption->AttributeId = $this->objAttributeValue->AttributeId;
+						$objAttributeOption->Name = trim($this->txtAddItem->Text);
+						$objAttributeOption->Save();
+						$this->objAttributeValue->SingleAttributeOption = $objAttributeOption;
+						$this->objAttributeValue->Save();
+					} else {
+						$this->objAttributeValue->SingleAttributeOptionId = $this->lstValue->SelectedValue;
+						$this->objAttributeValue->Save();
+					}
 					break;
 
 				case AttributeDataType::MutableMultipleDropdown:
