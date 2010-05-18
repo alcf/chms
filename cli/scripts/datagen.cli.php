@@ -625,9 +625,11 @@
 						case AttributeDataType::ImmutableMultipleDropdown:
 						case AttributeDataType::MutableMultipleDropdown:
 							$mixData = array();
-							foreach ($objAttribute->GetAttributeOptionArray() as $objAttributeOption) {
-								if (rand(0, 1)) {
-									$mixData[] = $objAttributeOption;
+							while (!count($mixData)) {
+								foreach ($objAttribute->GetAttributeOptionArray() as $objAttributeOption) {
+									if (rand(0, 1)) {
+										$mixData[] = $objAttributeOption;
+									}
 								}
 							}
 							break;
