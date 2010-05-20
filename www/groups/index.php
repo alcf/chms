@@ -46,21 +46,7 @@
 		}
 
 		public function RenderName(Group $objGroup) {
-			switch ($objGroup->GroupTypeId) {
-				case GroupType::RegularGroup:
-				case GroupType::GrowthGroup:
-					$blnCanAdd = true;
-					break;
-				default:
-					$blnCanAdd = false;
-					break;
-			}
-
-			if ($blnCanAdd) {
-				$strName = sprintf('<a href="#groups/edit_participation/%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
-			} else {
-				$strName = QApplication::HtmlEntities($objGroup->Name);
-			}
+			$strName = sprintf('<a href="/groups/view.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
 
 			$strName = ($objGroup->ParentGroup) ? '&gt;&nbsp;' . $strName : $strName;
 

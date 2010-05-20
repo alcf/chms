@@ -1,0 +1,1 @@
+This folder contains any log files logged by th Qcodo Logger class, QLog.
