@@ -39,9 +39,9 @@
 		// Edit is only available for comments posted by the login user
 		public function RenderEdit(Comment $objComment) {
 			if ($objComment->PostedByLoginId == $this->objPerson->Id){
-				return sprintf('[<a href="#contact/edit_comment/%s">Edit</a>]', $objComment->Id);
+				return sprintf('[<a href="#Comments/edit_comment/%s">Edit</a>]', $objComment->Id);
 			} else {
-				return '[Edit]';
+				return 'Edit';
 			}
 		}		
 }		
