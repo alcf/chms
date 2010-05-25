@@ -17,6 +17,10 @@
 
 		<?php $_CONTROL->lstParentGroup->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtHierarchyLevel->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtHierarchyOrderNumber->RenderWithName(); ?>
+
 		<?php $_CONTROL->chkConfidentialFlag->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstEmailBroadcastType->RenderWithName(); ?>

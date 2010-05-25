@@ -21,6 +21,8 @@
 	 * @property string $Name the value for strName 
 	 * @property string $Description the value for strDescription 
 	 * @property integer $ParentGroupId the value for intParentGroupId 
+	 * @property integer $HierarchyLevel the value for intHierarchyLevel 
+	 * @property integer $HierarchyOrderNumber the value for intHierarchyOrderNumber 
 	 * @property boolean $ConfidentialFlag the value for blnConfidentialFlag 
 	 * @property integer $EmailBroadcastTypeId the value for intEmailBroadcastTypeId 
 	 * @property string $Token the value for strToken (Unique)
@@ -87,6 +89,22 @@
 		 */
 		protected $intParentGroupId;
 		const ParentGroupIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group.hierarchy_level
+		 * @var integer intHierarchyLevel
+		 */
+		protected $intHierarchyLevel;
+		const HierarchyLevelDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group.hierarchy_order_number
+		 * @var integer intHierarchyOrderNumber
+		 */
+		protected $intHierarchyOrderNumber;
+		const HierarchyOrderNumberDefault = null;
 
 
 		/**
@@ -518,6 +536,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'parent_group_id', $strAliasPrefix . 'parent_group_id');
+			$objBuilder->AddSelectItem($strTableName, 'hierarchy_level', $strAliasPrefix . 'hierarchy_level');
+			$objBuilder->AddSelectItem($strTableName, 'hierarchy_order_number', $strAliasPrefix . 'hierarchy_order_number');
 			$objBuilder->AddSelectItem($strTableName, 'confidential_flag', $strAliasPrefix . 'confidential_flag');
 			$objBuilder->AddSelectItem($strTableName, 'email_broadcast_type_id', $strAliasPrefix . 'email_broadcast_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
@@ -610,6 +630,10 @@
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'parent_group_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_group_id'] : $strAliasPrefix . 'parent_group_id';
 			$objToReturn->intParentGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'hierarchy_level', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'hierarchy_level'] : $strAliasPrefix . 'hierarchy_level';
+			$objToReturn->intHierarchyLevel = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'hierarchy_order_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'hierarchy_order_number'] : $strAliasPrefix . 'hierarchy_order_number';
+			$objToReturn->intHierarchyOrderNumber = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'confidential_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'confidential_flag'] : $strAliasPrefix . 'confidential_flag';
 			$objToReturn->blnConfidentialFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'email_broadcast_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email_broadcast_type_id'] : $strAliasPrefix . 'email_broadcast_type_id';
@@ -946,6 +970,8 @@
 							`name`,
 							`description`,
 							`parent_group_id`,
+							`hierarchy_level`,
+							`hierarchy_order_number`,
 							`confidential_flag`,
 							`email_broadcast_type_id`,
 							`token`
@@ -955,6 +981,8 @@
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->intParentGroupId) . ',
+							' . $objDatabase->SqlVariable($this->intHierarchyLevel) . ',
+							' . $objDatabase->SqlVariable($this->intHierarchyOrderNumber) . ',
 							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strToken) . '
@@ -978,6 +1006,8 @@
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`parent_group_id` = ' . $objDatabase->SqlVariable($this->intParentGroupId) . ',
+							`hierarchy_level` = ' . $objDatabase->SqlVariable($this->intHierarchyLevel) . ',
+							`hierarchy_order_number` = ' . $objDatabase->SqlVariable($this->intHierarchyOrderNumber) . ',
 							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`email_broadcast_type_id` = ' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . '
@@ -1122,6 +1152,8 @@
 			$this->strName = $objReloaded->strName;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->ParentGroupId = $objReloaded->ParentGroupId;
+			$this->intHierarchyLevel = $objReloaded->intHierarchyLevel;
+			$this->intHierarchyOrderNumber = $objReloaded->intHierarchyOrderNumber;
 			$this->blnConfidentialFlag = $objReloaded->blnConfidentialFlag;
 			$this->EmailBroadcastTypeId = $objReloaded->EmailBroadcastTypeId;
 			$this->strToken = $objReloaded->strToken;
@@ -1174,6 +1206,16 @@
 					// Gets the value for intParentGroupId 
 					// @return integer
 					return $this->intParentGroupId;
+
+				case 'HierarchyLevel':
+					// Gets the value for intHierarchyLevel 
+					// @return integer
+					return $this->intHierarchyLevel;
+
+				case 'HierarchyOrderNumber':
+					// Gets the value for intHierarchyOrderNumber 
+					// @return integer
+					return $this->intHierarchyOrderNumber;
 
 				case 'ConfidentialFlag':
 					// Gets the value for blnConfidentialFlag 
@@ -1363,6 +1405,28 @@
 					try {
 						$this->objParentGroup = null;
 						return ($this->intParentGroupId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'HierarchyLevel':
+					// Sets the value for intHierarchyLevel 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intHierarchyLevel = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'HierarchyOrderNumber':
+					// Sets the value for intHierarchyOrderNumber 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intHierarchyOrderNumber = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1882,6 +1946,8 @@
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="ParentGroup" type="xsd1:Group"/>';
+			$strToReturn .= '<element name="HierarchyLevel" type="xsd:int"/>';
+			$strToReturn .= '<element name="HierarchyOrderNumber" type="xsd:int"/>';
 			$strToReturn .= '<element name="ConfidentialFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="EmailBroadcastTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
@@ -1923,6 +1989,10 @@
 			if ((property_exists($objSoapObject, 'ParentGroup')) &&
 				($objSoapObject->ParentGroup))
 				$objToReturn->ParentGroup = Group::GetObjectFromSoapObject($objSoapObject->ParentGroup);
+			if (property_exists($objSoapObject, 'HierarchyLevel'))
+				$objToReturn->intHierarchyLevel = $objSoapObject->HierarchyLevel;
+			if (property_exists($objSoapObject, 'HierarchyOrderNumber'))
+				$objToReturn->intHierarchyOrderNumber = $objSoapObject->HierarchyOrderNumber;
 			if (property_exists($objSoapObject, 'ConfidentialFlag'))
 				$objToReturn->blnConfidentialFlag = $objSoapObject->ConfidentialFlag;
 			if (property_exists($objSoapObject, 'EmailBroadcastTypeId'))
@@ -1991,6 +2061,10 @@
 					return new QQNode('parent_group_id', 'ParentGroupId', 'integer', $this);
 				case 'ParentGroup':
 					return new QQNodeGroup('parent_group_id', 'ParentGroup', 'integer', $this);
+				case 'HierarchyLevel':
+					return new QQNode('hierarchy_level', 'HierarchyLevel', 'integer', $this);
+				case 'HierarchyOrderNumber':
+					return new QQNode('hierarchy_order_number', 'HierarchyOrderNumber', 'integer', $this);
 				case 'ConfidentialFlag':
 					return new QQNode('confidential_flag', 'ConfidentialFlag', 'boolean', $this);
 				case 'EmailBroadcastTypeId':
@@ -2041,6 +2115,10 @@
 					return new QQNode('parent_group_id', 'ParentGroupId', 'integer', $this);
 				case 'ParentGroup':
 					return new QQNodeGroup('parent_group_id', 'ParentGroup', 'integer', $this);
+				case 'HierarchyLevel':
+					return new QQNode('hierarchy_level', 'HierarchyLevel', 'integer', $this);
+				case 'HierarchyOrderNumber':
+					return new QQNode('hierarchy_order_number', 'HierarchyOrderNumber', 'integer', $this);
 				case 'ConfidentialFlag':
 					return new QQNode('confidential_flag', 'ConfidentialFlag', 'boolean', $this);
 				case 'EmailBroadcastTypeId':

@@ -61,6 +61,8 @@
 			$this->dtgGroups->MetaAddColumn('Name');
 			$this->dtgGroups->MetaAddColumn('Description');
 			$this->dtgGroups->MetaAddColumn(QQN::Group()->ParentGroup);
+			$this->dtgGroups->MetaAddColumn('HierarchyLevel');
+			$this->dtgGroups->MetaAddColumn('HierarchyOrderNumber');
 			$this->dtgGroups->MetaAddColumn('ConfidentialFlag');
 			$this->dtgGroups->MetaAddTypeColumn('EmailBroadcastTypeId', 'EmailBroadcastType');
 			$this->dtgGroups->MetaAddColumn('Token');

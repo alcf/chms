@@ -29,6 +29,10 @@
 
 		<?php $this->lstParentGroup->RenderWithName(); ?>
 
+		<?php $this->txtHierarchyLevel->RenderWithName(); ?>
+
+		<?php $this->txtHierarchyOrderNumber->RenderWithName(); ?>
+
 		<?php $this->chkConfidentialFlag->RenderWithName(); ?>
 
 		<?php $this->lstEmailBroadcastType->RenderWithName(); ?>

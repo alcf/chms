@@ -282,6 +282,8 @@
 				case 'Description': return QQN::Group()->Description;
 				case 'ParentGroupId': return QQN::Group()->ParentGroupId;
 				case 'ParentGroup': return QQN::Group()->ParentGroup;
+				case 'HierarchyLevel': return QQN::Group()->HierarchyLevel;
+				case 'HierarchyOrderNumber': return QQN::Group()->HierarchyOrderNumber;
 				case 'ConfidentialFlag': return QQN::Group()->ConfidentialFlag;
 				case 'EmailBroadcastTypeId': return QQN::Group()->EmailBroadcastTypeId;
 				case 'Token': return QQN::Group()->Token;

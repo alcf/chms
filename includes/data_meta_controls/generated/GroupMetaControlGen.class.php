@@ -28,6 +28,10 @@
 	 * property-read QLabel $DescriptionLabel
 	 * property QListBox $ParentGroupIdControl
 	 * property-read QLabel $ParentGroupIdLabel
+	 * property QIntegerTextBox $HierarchyLevelControl
+	 * property-read QLabel $HierarchyLevelLabel
+	 * property QIntegerTextBox $HierarchyOrderNumberControl
+	 * property-read QLabel $HierarchyOrderNumberLabel
 	 * property QCheckBox $ConfidentialFlagControl
 	 * property-read QLabel $ConfidentialFlagLabel
 	 * property QListBox $EmailBroadcastTypeIdControl
@@ -56,6 +60,8 @@
 		protected $txtName;
 		protected $txtDescription;
 		protected $lstParentGroup;
+		protected $txtHierarchyLevel;
+		protected $txtHierarchyOrderNumber;
 		protected $chkConfidentialFlag;
 		protected $lstEmailBroadcastType;
 		protected $txtToken;
@@ -66,6 +72,8 @@
 		protected $lblName;
 		protected $lblDescription;
 		protected $lblParentGroupId;
+		protected $lblHierarchyLevel;
+		protected $lblHierarchyOrderNumber;
 		protected $lblConfidentialFlag;
 		protected $lblEmailBroadcastTypeId;
 		protected $lblToken;
@@ -347,6 +355,58 @@
 		}
 
 		/**
+		 * Create and setup QIntegerTextBox txtHierarchyLevel
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtHierarchyLevel_Create($strControlId = null) {
+			$this->txtHierarchyLevel = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtHierarchyLevel->Name = QApplication::Translate('Hierarchy Level');
+			$this->txtHierarchyLevel->Text = $this->objGroup->HierarchyLevel;
+			return $this->txtHierarchyLevel;
+		}
+
+		/**
+		 * Create and setup QLabel lblHierarchyLevel
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblHierarchyLevel_Create($strControlId = null, $strFormat = null) {
+			$this->lblHierarchyLevel = new QLabel($this->objParentObject, $strControlId);
+			$this->lblHierarchyLevel->Name = QApplication::Translate('Hierarchy Level');
+			$this->lblHierarchyLevel->Text = $this->objGroup->HierarchyLevel;
+			$this->lblHierarchyLevel->Format = $strFormat;
+			return $this->lblHierarchyLevel;
+		}
+
+		/**
+		 * Create and setup QIntegerTextBox txtHierarchyOrderNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtHierarchyOrderNumber_Create($strControlId = null) {
+			$this->txtHierarchyOrderNumber = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtHierarchyOrderNumber->Name = QApplication::Translate('Hierarchy Order Number');
+			$this->txtHierarchyOrderNumber->Text = $this->objGroup->HierarchyOrderNumber;
+			return $this->txtHierarchyOrderNumber;
+		}
+
+		/**
+		 * Create and setup QLabel lblHierarchyOrderNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblHierarchyOrderNumber_Create($strControlId = null, $strFormat = null) {
+			$this->lblHierarchyOrderNumber = new QLabel($this->objParentObject, $strControlId);
+			$this->lblHierarchyOrderNumber->Name = QApplication::Translate('Hierarchy Order Number');
+			$this->lblHierarchyOrderNumber->Text = $this->objGroup->HierarchyOrderNumber;
+			$this->lblHierarchyOrderNumber->Format = $strFormat;
+			return $this->lblHierarchyOrderNumber;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkConfidentialFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -558,6 +618,12 @@
 			}
 			if ($this->lblParentGroupId) $this->lblParentGroupId->Text = ($this->objGroup->ParentGroup) ? $this->objGroup->ParentGroup->__toString() : null;
 
+			if ($this->txtHierarchyLevel) $this->txtHierarchyLevel->Text = $this->objGroup->HierarchyLevel;
+			if ($this->lblHierarchyLevel) $this->lblHierarchyLevel->Text = $this->objGroup->HierarchyLevel;
+
+			if ($this->txtHierarchyOrderNumber) $this->txtHierarchyOrderNumber->Text = $this->objGroup->HierarchyOrderNumber;
+			if ($this->lblHierarchyOrderNumber) $this->lblHierarchyOrderNumber->Text = $this->objGroup->HierarchyOrderNumber;
+
 			if ($this->chkConfidentialFlag) $this->chkConfidentialFlag->Checked = $this->objGroup->ConfidentialFlag;
 			if ($this->lblConfidentialFlag) $this->lblConfidentialFlag->Text = ($this->objGroup->ConfidentialFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -631,6 +697,8 @@
 				if ($this->txtName) $this->objGroup->Name = $this->txtName->Text;
 				if ($this->txtDescription) $this->objGroup->Description = $this->txtDescription->Text;
 				if ($this->lstParentGroup) $this->objGroup->ParentGroupId = $this->lstParentGroup->SelectedValue;
+				if ($this->txtHierarchyLevel) $this->objGroup->HierarchyLevel = $this->txtHierarchyLevel->Text;
+				if ($this->txtHierarchyOrderNumber) $this->objGroup->HierarchyOrderNumber = $this->txtHierarchyOrderNumber->Text;
 				if ($this->chkConfidentialFlag) $this->objGroup->ConfidentialFlag = $this->chkConfidentialFlag->Checked;
 				if ($this->lstEmailBroadcastType) $this->objGroup->EmailBroadcastTypeId = $this->lstEmailBroadcastType->SelectedValue;
 				if ($this->txtToken) $this->objGroup->Token = $this->txtToken->Text;
@@ -714,6 +782,18 @@
 				case 'ParentGroupIdLabel':
 					if (!$this->lblParentGroupId) return $this->lblParentGroupId_Create();
 					return $this->lblParentGroupId;
+				case 'HierarchyLevelControl':
+					if (!$this->txtHierarchyLevel) return $this->txtHierarchyLevel_Create();
+					return $this->txtHierarchyLevel;
+				case 'HierarchyLevelLabel':
+					if (!$this->lblHierarchyLevel) return $this->lblHierarchyLevel_Create();
+					return $this->lblHierarchyLevel;
+				case 'HierarchyOrderNumberControl':
+					if (!$this->txtHierarchyOrderNumber) return $this->txtHierarchyOrderNumber_Create();
+					return $this->txtHierarchyOrderNumber;
+				case 'HierarchyOrderNumberLabel':
+					if (!$this->lblHierarchyOrderNumber) return $this->lblHierarchyOrderNumber_Create();
+					return $this->lblHierarchyOrderNumber;
 				case 'ConfidentialFlagControl':
 					if (!$this->chkConfidentialFlag) return $this->chkConfidentialFlag_Create();
 					return $this->chkConfidentialFlag;
@@ -778,6 +858,10 @@
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'ParentGroupIdControl':
 						return ($this->lstParentGroup = QType::Cast($mixValue, 'QControl'));
+					case 'HierarchyLevelControl':
+						return ($this->txtHierarchyLevel = QType::Cast($mixValue, 'QControl'));
+					case 'HierarchyOrderNumberControl':
+						return ($this->txtHierarchyOrderNumber = QType::Cast($mixValue, 'QControl'));
 					case 'ConfidentialFlagControl':
 						return ($this->chkConfidentialFlag = QType::Cast($mixValue, 'QControl'));
 					case 'EmailBroadcastTypeIdControl':

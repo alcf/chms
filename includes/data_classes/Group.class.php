@@ -150,6 +150,29 @@
 			return $arrToReturn;
 		}
 
+		/**
+		 * Refreshes the hierarchy "Level" of this object based on where it is in the hierarchy.
+		 * 
+		 * Top-level groups for a ministry have a level of "0".
+		 * 
+		 * @param boolean $blnSaveFlag
+		 * @return integer
+		 */
+		public function RefreshHierarchyLevel($blnSaveFlag = true) {
+			$intLevel = 0;
+			$objGroup = $this;
+
+			while ($objParentGroup = $objGroup->ParentGroup) {
+				$intLevel++;
+				$objGroup = $objParentGroup;
+			}
+
+			$this->intHierarchyLevel = $intLevel;
+			if ($blnSaveFlag) $this->Save();
+
+			return $intLevel;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

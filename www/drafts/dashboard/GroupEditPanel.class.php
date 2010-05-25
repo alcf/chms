@@ -26,6 +26,8 @@
 		public $txtName;
 		public $txtDescription;
 		public $lstParentGroup;
+		public $txtHierarchyLevel;
+		public $txtHierarchyOrderNumber;
 		public $chkConfidentialFlag;
 		public $lstEmailBroadcastType;
 		public $txtToken;
@@ -66,6 +68,8 @@
 			$this->txtName = $this->mctGroup->txtName_Create();
 			$this->txtDescription = $this->mctGroup->txtDescription_Create();
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
+			$this->txtHierarchyLevel = $this->mctGroup->txtHierarchyLevel_Create();
+			$this->txtHierarchyOrderNumber = $this->mctGroup->txtHierarchyOrderNumber_Create();
 			$this->chkConfidentialFlag = $this->mctGroup->chkConfidentialFlag_Create();
 			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
 			$this->txtToken = $this->mctGroup->txtToken_Create();
