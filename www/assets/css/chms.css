@@ -34,6 +34,10 @@ ul.ministriesPanel { list-style: none; margin: 0; padding: 0; display: block; fl
 ul.ministriesPanel li a { display: block; width: 115px; padding: 1px; background-color: #999; cursor: pointer; font-weight: bold; color: #fff; text-decoration: none; border: 1px solid black; } 
 ul.ministriesPanel li.selected a { color: #000; background-color: #ff9; }
 
+ul.groupsPanel { list-style: none; margin: 0; padding: 0; display: block; float: left; }
+ul.groupsPanel li a { display: block; width: 115px; padding: 1px; background-color: #999; cursor: pointer; font-weight: bold; color: #fff; text-decoration: none; border: 1px solid black; } 
+ul.groupsPanel li.selected a { color: #000; background-color: #ff9; }
+
 table.groupList { float: left; margin-left: 20px; }
 
 
