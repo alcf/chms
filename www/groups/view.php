@@ -36,9 +36,18 @@
 			else {
 				$this->pnlGroups->Visible = true;
 
-				foreach (Group::LoadOrderedArrayForMinistry($this->objGroup->MinistryId) as $objGroup) {
+				foreach (Group::LoadArrayByMinistryId($this->objGroup->MinistryId, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber)) as $objGroup) {
 					$pnlGroup = new QPanel($this->pnlGroups, 'pnlGroup' . $objGroup->Id);
-					$pnlGroup->Text = sprintf('<a href="#%s">%s</a>', $objGroup->Id, $objGroup->Name);
+					
+					$strName = $objGroup->Name;
+
+					// Add Pointer
+					$strName = ($objGroup->HierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;
+
+					// Add Indent
+					$strPadding = 'padding-left: ' . (($objGroup->HierarchyLevel * 10) + 10) . 'px;';
+
+					$pnlGroup->Text = sprintf('<a href="#%s" style="%s">%s</a>', $objGroup->Id, $strPadding, $strName);
 					$pnlGroup->TagName = 'li';
 					$this->pnlGroup_Refresh($objGroup->Id);
 				}

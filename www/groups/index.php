@@ -41,7 +41,7 @@
 
 		public function dtgGroups_Bind() {
 			if ($this->intMinistryId)
-				$this->dtgGroups->DataSource = Group::LoadOrderedArrayForMinistry($this->intMinistryId);
+				$this->dtgGroups->DataSource = Group::LoadArrayByMinistryId($this->intMinistryId, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
 			else
 				$this->dtgGroups->DataSource = array();
 		}
@@ -49,12 +49,11 @@
 		public function RenderName(Group $objGroup) {
 			$strName = sprintf('<a href="/groups/view.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
 
-			$strName = ($objGroup->ParentGroup) ? '&gt;&nbsp;' . $strName : $strName;
+			// Add Pointer
+			$strName = ($objGroup->HierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;
 
-			$objGroupIterate = $objGroup;
-			while ($objGroupIterate = $objGroupIterate->ParentGroup) {
-				$strName = '&nbsp;&nbsp;&nbsp;' . $strName;
-			}
+			// Add Indent
+			$strName = str_repeat('&nbsp;&nbsp;&nbsp;', $objGroup->HierarchyLevel) . $strName;
 
 			return $strName;
 		}
