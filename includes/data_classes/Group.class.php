@@ -151,6 +151,20 @@
 		}
 
 		/**
+		 * Refreshes all the groups within a ministry with the correct HierarchOrderNumber
+		 * @param integer $intMinistryId
+		 * @return void
+		 */
+		public static function RefreshHierarchyOrderNumberForMinistry($intMinistryId) {
+			$intOrderNumber = 1;
+			foreach (Group::LoadOrderedArrayForMinistry($intMinistryId) as $objGroup) {
+				$objGroup->HierarchyOrderNumber = $intOrderNumber;
+				$objGroup->Save();
+				$intOrderNumber++;
+			}
+		}
+
+		/**
 		 * Refreshes the hierarchy "Level" of this object based on where it is in the hierarchy.
 		 * 
 		 * Top-level groups for a ministry have a level of "0".

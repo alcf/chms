@@ -113,7 +113,7 @@
 		}
 
 		public static function GenerateGroups() {
-			QDataGen::DisplayForEachTaskStart('Generating groups for ministries', self::$MinistryArray);
+			QDataGen::DisplayForEachTaskStart('Generating groups for ministries', count(self::$MinistryArray));
 			foreach (self::$MinistryArray as $objMinistry) {
 				QDataGen::DisplayForEachTaskNext('Generating groups for ministries');
 
@@ -121,6 +121,8 @@
 				for ($intCount = 0; $intCount < $intGroupCount; $intCount++) {
 					self::GenerateGroup($objMinistry, null);
 				}
+
+				Group::RefreshHierarchyOrderNumberForMinistry($objMinistry->Id);
 			}
 			QDataGen::DisplayForEachTaskEnd('Generating groups for ministries');
 		}
@@ -188,6 +190,8 @@
 					}
 					break;
 			}
+			
+			$objGroup->RefreshHierarchyLevel();
 		}
 
 		public static function GenerateMinistries() {
