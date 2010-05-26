@@ -128,9 +128,9 @@ INSERT INTO marriage_status_type VALUES(3, 'Divorced');
 INSERT INTO marriage_status_type VALUES(4, 'Widowed');
 
 INSERT INTO membership_status_type VALUES(1, 'Non-Member');
-INSERT INTO membership_status_type VALUES(2, 'Member');
-INSERT INTO membership_status_type VALUES(3, 'Child of Member');
-INSERT INTO membership_status_type VALUES(4, 'Former Member');
+INSERT INTO membership_status_type VALUES(2, 'Former Member');
+INSERT INTO membership_status_type VALUES(3, 'Member');
+INSERT INTO membership_status_type VALUES(4, 'Child Of Member');
 
 INSERT INTO permission_type VALUES(1, 'Edit Data');
 INSERT INTO permission_type VALUES(2, 'Access Stewardship');

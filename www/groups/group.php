@@ -88,15 +88,16 @@
 
 				switch (strtolower($strUrlHashTokens[1])) {
 					case 'view':
-						$strClassName = sprintf('CpGroup_View%s', GroupType::$TokenArray[$this->objGroup->GroupTypeId]);
+					case 'edit':
+						$strClassName = sprintf('CpGroup_%s%s', QString::ConvertToCamelCase($strUrlHashTokens[1]), GroupType::$TokenArray[$this->objGroup->GroupTypeId]);
 						break;
 
-					case 'edit':
-						$strClassName = sprintf('CpGroup_Edit%s', GroupType::$TokenArray[$this->objGroup->GroupTypeId]);
+					case 'edit_participation':
+						$strClassName = sprintf('CpGroup_%s', QString::ConvertToCamelCase($strUrlHashTokens[1]));
 						break;
 
 					default:
-						throw new Exception('Invalid command: ' . $strUrlHashTokens[1]);
+						QApplication::Redirect('/groups/');
 				}
 
 				new $strClassName($this->pnlContent, 'content', $this->objGroup, $strUrlHashArgument);
@@ -107,8 +108,6 @@
 			if ($this->objGroup &&
 				($this->lblGroup->Text != $this->objGroup->Name)) {
 				$this->lblGroup->Text = $this->objGroup->Name;
-			} else {
-				$this->lblGroup->Text = null;
 			}
 		}
 

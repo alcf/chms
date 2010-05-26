@@ -1,1 +1,1 @@
-View Regular Group
+<?php $_CONTROL->dtgMembers->Render(); ?>
