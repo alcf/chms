@@ -51,11 +51,11 @@
 			if (count($strArray))
 				return implode(' and ', $strArray);
 			else
-				return 'No current roles';
+				return '<span style="font-size: 10px; color: #999;">No current roles</span>';
 		}
 
 		public function dtgMembers_Bind() {
-			$objClauses = array();
+			$objClauses = array(QQ::Distinct());
 			if ($objClause = $this->dtgMembers->LimitClause) $objClauses[] = $objClause;
 			if ($objClause = $this->dtgMembers->OrderByClause) $objClauses[] = $objClause;
 

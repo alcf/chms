@@ -1,6 +1,7 @@
 <?php
-	class EditGroupParticipation extends QBaseClass {
+	class EditGroupParticipationDelegate extends QBaseClass {
 		protected $pnlContent;
+		protected $strReturnUrl;
 
 		public $lblCurrentRoles;
 		public $btnAddNewRole;
@@ -21,9 +22,11 @@
 		public $objParticipationArray;
 		protected $intEditParticipationIndex;
 
-		public function __construct(QPanel $pnlContent) {
+		public function __construct(QPanel $pnlContent, $strReturnUrl) {
 			$this->pnlContent = $pnlContent;
-			$this->pnlContent->Template = dirname(__FILE__) . '/EditGroupParticipation.tpl.php';
+			$this->pnlContent->Template = dirname(__FILE__) . '/EditGroupParticipationDelegate.tpl.php';
+
+			$this->strReturnUrl = $strReturnUrl;
 
 			$this->objParticipationArray = GroupParticipation::LoadArrayByPersonIdGroupId(
 				$this->pnlContent->objPerson->Id, $this->pnlContent->objGroup->Id,
@@ -274,11 +277,11 @@
 			// Delete any that are supposed to be deleted
 			foreach ($objArrayToDelete as $objParticipation) $objParticipation->Delete();
 
-			QApplication::ExecuteJavaScript('document.location = "#groups";');
+			$this->pnlContent->ReturnTo($this->strReturnUrl);
 		}
 
 		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-			QApplication::ExecuteJavaScript('document.location = "#groups";');
+			$this->pnlContent->ReturnTo($this->strReturnUrl);
 		}
 	}
 ?>
