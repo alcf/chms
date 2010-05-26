@@ -26,6 +26,9 @@
 					$strTokens = explode('_', $strClassName);
 					$strFile = sprintf('%s/view_individuals_content_panels/%s/%s.class.php', __INCLUDES__, $strTokens[1], $strClassName);
 					if (is_file($strFile)) require($strFile);
+				} else if (substr($strClassName, 0, 8) == 'CpGroup_') {
+					$strFile = sprintf('%s/content_panels/group/%s.class.php', __INCLUDES__, $strClassName);
+					if (is_file($strFile)) require($strFile);
 				}
 			}
 		}

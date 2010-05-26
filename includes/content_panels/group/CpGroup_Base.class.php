@@ -1,9 +1,9 @@
 <?php
-	abstract class Vicp_Base extends QPanel {
+	abstract class CpGroup_Base extends QPanel {
 		/**
-		 * @var Person
+		 * @var Group
 		 */
-		public $objPerson;
+		public $objGroup;
 
 		/**
 		 * @var string
@@ -20,7 +20,7 @@
 		 */
 		public $btnCancel;
 
-		public function __construct($objParentObject, $strControlId = null, Person $objPerson = null, $strUrlHashArgument) {
+		public function __construct($objParentObject, $strControlId = null, Group $objGroup = null, $strUrlHashArgument) {
 			try {
 				parent::__construct($objParentObject, $strControlId);
 			} catch (QCallerException $objExc) {
@@ -28,8 +28,8 @@
 				throw $objExc;
 			}
 
-			$this->strTemplate = dirname(__FILE__) . '/../' . $this->objForm->strSubNavItemArray[$this->objForm->strSubNavItemToken][1] . '/' . get_class($this) . '.tpl.php';
-			$this->objPerson = $objPerson;
+			$this->strTemplate = dirname(__FILE__) . '/' . get_class($this) . '.tpl.php';
+			$this->objGroup = $objGroup;
 			$this->strUrlHashArgument = $strUrlHashArgument;
 
 			$this->btnSave = new QButton($this);

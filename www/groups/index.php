@@ -47,7 +47,7 @@
 		}
 
 		public function RenderName(Group $objGroup) {
-			$strName = sprintf('<a href="/groups/view.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
+			$strName = sprintf('<a href="/groups/group.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
 
 			// Add Pointer
 			$strName = ($objGroup->HierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;

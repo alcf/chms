@@ -8,9 +8,8 @@
 
 		public $objGroup;
 		protected $lblGroup;
-
 		protected $pnlGroups;
-		protected $pxyGroup;
+		protected $pnlContent;
 
 		protected function Form_Create() {
 			$this->pnlGroups = new QPanel($this);
@@ -18,12 +17,11 @@
 			$this->pnlGroups->CssClass = 'groupsPanel';
 			$this->pnlGroups->AutoRenderChildren = true;
 
-			$this->pxyGroup = new QControlProxy($this);
-			$this->pxyGroup->AddAction(new QClickEvent(), new QAjaxAction('pxyGroup_Click'));
-			$this->pxyGroup->AddAction(new QClickEvent(), new QTerminateAction());
-
 			$this->lblGroup = new QLabel($this);
 			$this->lblGroup->TagName = 'h2';
+
+			$this->pnlContent = new QPanel($this);
+			$this->pnlContent->AutoRenderChildren = true;
 
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
@@ -63,19 +61,46 @@
 			$objGroup = Group::Load($strUrlHashTokens[0]);
 			if (!$objGroup) QApplication::Redirect('/groups/');
 
-			if (!$this->objGroup ||
-				($this->objGroup->Id != $objGroup->Id)) {
-				$intOldGroupId = ($this->objGroup) ? $this->objGroup->Id : null;
-				$blnRefreshGroupsPanel = (!$this->objGroup || ($this->objGroup->MinistryId != $objGroup->MinistryId)) ? true : false;
+			$intOldGroupId = ($this->objGroup) ? $this->objGroup->Id : null;
+			$blnRefreshGroupsPanel = (!$this->objGroup || ($this->objGroup->MinistryId != $objGroup->MinistryId)) ? true : false;
 
-				$this->objGroup = $objGroup;
-				$this->pnlGroup_Refresh($this->objGroup->Id);
+			$this->objGroup = $objGroup;
+			$this->pnlGroup_Refresh($this->objGroup->Id);
 
-				if ($intOldGroupId) $this->pnlGroup_Refresh($intOldGroupId);
-				if ($blnRefreshGroupsPanel) $this->pnlGroups_Refresh();
-			}
+			if ($intOldGroupId) $this->pnlGroup_Refresh($intOldGroupId);
+			if ($blnRefreshGroupsPanel) $this->pnlGroups_Refresh();
 
 			$this->lblGroup_Refresh();
+			$this->pnlContent_Refresh($strUrlHashTokens);
+		}
+
+		protected function pnlContent_Refresh($strUrlHashTokens) {
+			$this->pnlContent->RemoveChildControls(true);
+
+			if ($this->objGroup) {
+				if (!array_key_exists(1, $strUrlHashTokens)) $strUrlHashTokens[1] = 'view';
+
+				// Setup the UrlHash Argument
+				if (array_key_exists(2, $strUrlHashTokens))
+					$strUrlHashArgument = $strUrlHashTokens[2];
+				else
+					$strUrlHashArgument = null;
+
+				switch (strtolower($strUrlHashTokens[1])) {
+					case 'view':
+						$strClassName = sprintf('CpGroup_View%s', GroupType::$TokenArray[$this->objGroup->GroupTypeId]);
+						break;
+
+					case 'edit':
+						$strClassName = sprintf('CpGroup_Edit%s', GroupType::$TokenArray[$this->objGroup->GroupTypeId]);
+						break;
+
+					default:
+						throw new Exception('Invalid command: ' . $strUrlHashTokens[1]);
+				}
+
+				new $strClassName($this->pnlContent, 'content', $this->objGroup, $strUrlHashArgument);
+			}
 		}
 
 		protected function lblGroup_Refresh() {
