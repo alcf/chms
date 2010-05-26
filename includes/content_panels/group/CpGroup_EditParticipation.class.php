@@ -4,12 +4,18 @@
 		 * @var Person
 		 */
 		public $objPerson;
-	
+
+		/**
+		 * @var EditGroupParticipation
+		 */
+		public $objDelegate;
+
 		protected function SetupPanel() {
+			// Get the group and check for validity / authorization
 			$this->objPerson = Person::Load($this->strUrlHashArgument);
-			if (!$this->objPerson) {
-				$this->ReturnTo('#' . $this->objGroup->Id);
-			}
+			if (!$this->objPerson) return $this->ReturnTo('#' . $this->objGroup->Id);
+
+			$this->objDelegate = new EditGroupParticipation($this);
 		}
 	}
 ?>
