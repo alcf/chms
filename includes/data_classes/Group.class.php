@@ -31,6 +31,23 @@
 			switch ($strName) {
 				case 'Type': return GroupType::$NameArray[$this->intGroupTypeId];
 
+				case 'EmailTypeHtml':
+					switch ($this->EmailBroadcastTypeId) {
+						case EmailBroadcastType::PrivateList:
+						case EmailBroadcastType::PublicList:
+						case EmailBroadcastType::AnnouncementOnly:
+							return sprintf('%s - <a href="mailto:%s@groups.alcf.net">%s@groups.alcf.net</a>',
+								EmailBroadcastType::$NameArray[$this->EmailBroadcastTypeId],
+								QApplication::HtmlEntities($this->Token),
+								QApplication::HtmlEntities($this->Token));
+
+						case null:
+							return '<span style="color: #999; font-size: 10px; ">None</span>';
+
+						default:
+							throw new Exception('Invalid EmailBroadcastTypeId: ' . $this->EmailBroadcastTypeId);
+					}
+
 				default:
 					try {
 						return parent::__get($strName);
@@ -118,8 +135,25 @@
 			// Otherwise, only ministry members can view
 			return $objLogin->IsMinistryAssociated($this->Ministry);
 		}
-		
-		
+
+		/**
+		 * Returns the hierarchy of the group, returning any/all parents and ancestors as an a string-based array, indexed by group_id
+		 * 
+		 * The array itself is ordered, from oldest parent first to immediate parent, last.
+		 * 
+		 * The array will return an emtpy array if this group is a top-level group (e.g. no parents or ancestors)
+		 * @return string[]
+		 */
+		public function GetGroupNameHierarchyArray() {
+			$strArrayToReturn = array();
+			$objGroup = $this;
+			while ($objParent = $objGroup->ParentGroup) {
+				$strArrayToReturn[$objGroup->ParentGroup->Id] = $objGroup->ParentGroup->Name;
+				$objGroup = $objParent;
+			}
+			return array_reverse($strArrayToReturn, true);
+		}
+
 		/**
 		 * Gets an array of Groups for a given ministry, ordered in hierarchical order and name
 		 * @param integer $intMinistryId

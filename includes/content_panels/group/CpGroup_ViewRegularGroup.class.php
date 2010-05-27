@@ -5,18 +5,29 @@
 		 */
 		public $dtgMembers;
 
+		public $lblMinistry;
+		public $lblConfidential;
+		public $lblCategory;
+		public $lblEmail;
+
 		protected function SetupPanel() {
 			$this->dtgMembers = new PersonDataGrid($this);
 			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false');
 			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false');
-			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address);
+			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email');
 			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>');
 			$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
+			
+			$this->lblMinistry_Create();
+			$this->lblConfidential_Create();
+			$this->lblCategory_Create();
+			$this->lblEmail_Create();
 		}
 
+		
 		public function RenderEdit(Person $objPerson) {
 			return sprintf('<a href="#%s/edit_participation/%s">Edit</a>', $this->objGroup->Id, $objPerson->Id);
 		}

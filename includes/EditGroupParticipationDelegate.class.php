@@ -93,10 +93,15 @@
 
 		public function DisplayGroupName() {
 			$objGroup = $this->pnlContent->objGroup;
-			$strToReturn = QApplication::HtmlEntities($objGroup->Name);
-			while ($objGroup = $objGroup->ParentGroup)
-				$strToReturn = '<span style="font-size: 10px; color: #666;">' . QApplication::HtmlEntities($objGroup->Name) . ' &gt; </span>' . $strToReturn;
-			return $strToReturn;
+			$strAncestryArray = $objGroup->GetGroupNameHierarchyArray();
+
+			if (count($strAncestryArray)) {
+				return sprintf('<span style="font-size: 10px; color: #666;">%s</span> %s',
+					QApplication::HtmlEntities(implode(' > ', $strAncestryArray)),
+					QApplication::HtmlEntities($objGroup->Name));
+			} else {
+				return QApplication::HtmlEntities($objGroup->Name);
+			}
 		}
 
 		protected function lblCurrentRoles_Refresh() {

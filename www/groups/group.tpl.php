@@ -5,7 +5,7 @@
 	<div style="float: left;">
 		<?php $this->pnlGroups->Render(); ?>
 	</div>
-	<div style="float: left;">
+	<div style="float: left; margin-left: 15px;">
 		<?php $this->pnlContent->Render(); ?>
 	</div>
 

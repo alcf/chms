@@ -58,6 +58,60 @@
 			return null;
 		}
 
+
+		public function lblMinistry_Create() {
+			$this->lblMinistry = new QLabel($this);
+			$this->lblMinistry->Name = 'Ministry';
+			$this->lblMinistry->FontBold = true;
+			$this->lblMinistry_Refresh();
+		}
+
+		public function lblMinistry_Refresh() {
+			$this->lblMinistry->Text = $this->objGroup->Ministry->Name;
+		}
+		
+		public function lblEmail_Create() {
+			$this->lblEmail = new QLabel($this);
+			$this->lblEmail->Name = 'Email';
+			$this->lblEmail->FontBold = true;
+			$this->lblEmail_Refresh();
+			$this->lblEmail->HtmlEntities = false;
+		}
+
+		public function lblEmail_Refresh() {
+			$this->lblEmail->Text = $this->objGroup->EmailTypeHtml;
+		}
+		
+		public function lblConfidential_Create() {
+			$this->lblConfidential = new QLabel($this);
+			$this->lblConfidential->Name = 'Confidential?';
+			$this->lblConfidential->FontBold = true;
+			$this->lblConfidential->Text = 'This Group is a CONFIDENTIAL Group';
+			$this->lblConfidential_Refresh();
+		}
+
+		public function lblConfidential_Refresh() {
+			$this->lblConfidential->Visible = $this->objGroup->ConfidentialFlag;
+		}
+
+		public function lblCategory_Create() {
+			$this->lblCategory = new QLabel($this);
+			$this->lblCategory->Name = 'Parent Category';
+			$this->lblCategory->FontBold = true;
+			$this->lblCategory->HtmlEntities = false;
+			$this->lblCategory_Refresh();
+		}
+
+		public function lblCategory_Refresh() {
+			$strAncestryArray = $this->objGroup->GetGroupNameHierarchyArray();
+
+			if (count($strAncestryArray)) {
+				$this->lblCategory->Text = QApplication::HtmlEntities(implode(' > ', $strAncestryArray));
+			} else {
+				$this->lblCategory->Text = '<span style="font-size: 10px; color: #666;">Top Level Group</span>';
+			}
+		}
+
 		abstract protected function SetupPanel();
 	}
 ?>

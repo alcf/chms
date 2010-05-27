@@ -35,7 +35,7 @@
 			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_FORM->RenderEmail($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false'));
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind');
 		}
 
@@ -56,24 +56,6 @@
 			$strName = str_repeat('&nbsp;&nbsp;&nbsp;', $objGroup->HierarchyLevel) . $strName;
 
 			return $strName;
-		}
-
-		public function RenderEmail(Group $objGroup) {
-			switch ($objGroup->EmailBroadcastTypeId) {
-				case EmailBroadcastType::PrivateList:
-				case EmailBroadcastType::PublicList:
-				case EmailBroadcastType::AnnouncementOnly:
-					return sprintf('%s - <a href="mailto:%s@groups.alcf.net">%s@groups.alcf.net</a>',
-						EmailBroadcastType::$NameArray[$objGroup->EmailBroadcastTypeId],
-						QApplication::HtmlEntities($objGroup->Token),
-						QApplication::HtmlEntities($objGroup->Token));
-
-				case null:
-					return '<span style="color: #999; font-size: 10px; ">None</span>';
-
-				default:
-					throw new Exception('Invalid EmailBroadcastTypeId: ' . $objGroup->EmailBroadcastTypeId);
-			}
 		}
 
 		protected function pnlMinistry_Refresh($intMinistryId) {
