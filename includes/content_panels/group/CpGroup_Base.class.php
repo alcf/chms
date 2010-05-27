@@ -71,6 +71,7 @@
 			$this->mctGroup = new GroupMetaControl($this, $this->objGroup);
 
 			$this->txtName = $this->mctGroup->txtName_Create();
+			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 		}
 
 		/**

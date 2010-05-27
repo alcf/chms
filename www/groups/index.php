@@ -40,10 +40,7 @@
 		}
 
 		public function dtgGroups_Bind() {
-			if ($this->intMinistryId)
-				$this->dtgGroups->DataSource = Group::LoadArrayByMinistryId($this->intMinistryId, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
-			else
-				$this->dtgGroups->DataSource = array();
+			$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryId($this->intMinistryId);
 		}
 
 		public function RenderName(Group $objGroup) {

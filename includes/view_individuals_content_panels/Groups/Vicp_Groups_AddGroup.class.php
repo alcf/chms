@@ -21,7 +21,7 @@
 
 		public function dtgGroups_Bind() {
 			if ($this->lstMinistries->SelectedValue)
-				$this->dtgGroups->DataSource = Group::LoadOrderedArrayForMinistry($this->lstMinistries->SelectedValue);
+				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryId($this->lstMinistries->SelectedValue);
 			else
 				$this->dtgGroups->DataSource = array();
 		}

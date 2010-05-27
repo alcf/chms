@@ -155,11 +155,22 @@
 		}
 
 		/**
-		 * Gets an array of Groups for a given ministry, ordered in hierarchical order and name
+		 * Assuming that the cached heirarchy values are set up correctly, this will return an array of group items
+		 * correctly ordered for a hierarchical-listing of groups for a given ministry
 		 * @param integer $intMinistryId
 		 * @return Group[]
 		 */
-		public static function LoadOrderedArrayForMinistry($intMinistryId) {
+		public static function LoadOrderedArrayByMinistryId($intMinistryId) {
+			return Group::LoadArrayByMinistryId($intMinistryId, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
+		}
+
+		/**
+		 * Gets an array of Groups for a given ministry, ordered in hierarchical order and name
+		 * Only used internally by this class to perform RefreshHierarchyOrderNumberForMinistry
+		 * @param integer $intMinistryId
+		 * @return Group[]
+		 */
+		protected static function LoadOrderedArrayForMinistry($intMinistryId) {
 			$objGroupArray = Group::LoadArrayByMinistryId($intMinistryId, QQ::OrderBy(QQN::Group()->Name));
 
 			return self::LoadOrderedArrayForMinistryHelper($objGroupArray, null);
