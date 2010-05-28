@@ -31,16 +31,32 @@
 			$this->lstParentGroup = new QListBox($this->objParentObject, $strControlId);
 			$this->lstParentGroup->Name = QApplication::Translate('Parent Group');
 			$this->lstParentGroup->AddItem(QApplication::Translate('- None -'), null);
+			$this->lstParentGroup->HtmlEntities = false;
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
 			$objParentGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
 
+			$intLevelToSkipUntil = null;
 			foreach (Group::LoadOrderedArrayByMinistryId($this->objGroup->MinistryId) as $objGroup) {
-				$objListItem = new QListItem($objGroup->Name, $objGroup->Id);
-				if (($this->objGroup->ParentGroup) && ($this->objGroup->ParentGroup->Id == $objGroup->Id))
-					$objListItem->Selected = true;
-				$this->lstParentGroup->AddItem($objListItem);
+				if ($objGroup->Id == $this->objGroup->Id) {
+					$intLevelToSkipUntil = $objGroup->HierarchyLevel;
+				} else if (!is_null($intLevelToSkipUntil) &&
+							($objGroup->HierarchyLevel <= $intLevelToSkipUntil)) {
+					$intLevelToSkipUntil = null;
+				}
+
+				if (is_null($intLevelToSkipUntil)) {
+					$strName = $objGroup->Name;
+					if ($objGroup->HierarchyLevel) {
+						$strName = str_repeat('&nbsp;', $objGroup->HierarchyLevel * 3) . '&gt; ' . QApplication::HtmlEntities($strName);
+					}
+
+					$objListItem = new QListItem($strName, $objGroup->Id);
+					if (($this->objGroup->ParentGroup) && ($this->objGroup->ParentGroup->Id == $objGroup->Id))
+						$objListItem->Selected = true;
+					$this->lstParentGroup->AddItem($objListItem);
+				}
 			}
 
 			// Return the QListBox
