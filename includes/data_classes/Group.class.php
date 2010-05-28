@@ -121,18 +121,31 @@
 
 
 		/**
-		 * Can the Login view or edit this group information (based on Confidentiality rules)
+		 * Can the Login view this group information (based on Confidentiality rules)
 		 * @param Login $objLogin
 		 * @return boolean
 		 */
 		public function IsLoginCanView(Login $objLogin) {
 			// Administrators can always view
 			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
-			
+
 			// Anyone can view non-confidential
 			if (!$this->blnConfidentialFlag) return true;
-			
+
 			// Otherwise, only ministry members can view
+			return $objLogin->IsMinistryAssociated($this->Ministry);
+		}
+
+		/**
+		 * Can the Login edit this group information (based on Login roles / ministry assignments)
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanEdit(Login $objLogin) {
+			// Administrators can always view
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+
+			// Otherwise, only ministry members can edit
 			return $objLogin->IsMinistryAssociated($this->Ministry);
 		}
 
@@ -158,15 +171,21 @@
 		 * Assuming that the cached heirarchy values are set up correctly, this will return an array of group items
 		 * correctly ordered for a hierarchical-listing of groups for a given ministry
 		 * @param integer $intMinistryId
+		 * @param boolean $blnIncludeConfidential
 		 * @return Group[]
 		 */
-		public static function LoadOrderedArrayByMinistryId($intMinistryId) {
-			return Group::LoadArrayByMinistryId($intMinistryId, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
+		public static function LoadOrderedArrayByMinistryIdAndConfidentiality($intMinistryId, $blnIncludeConfidential) {
+			$objCondition = QQ::Equal(QQN::Group()->MinistryId, $intMinistryId);
+
+			if (!$blnIncludeConfidential)
+				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::Group()->ConfidentialFlag, false));
+
+			return Group::QueryArray($objCondition, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
 		}
 
 		/**
 		 * Gets an array of Groups for a given ministry, ordered in hierarchical order and name
-		 * Only used internally by this class to perform RefreshHierarchyOrderNumberForMinistry
+		 * Only used internally by this class to perform RefreshHierarchyDataForMinistry
 		 * @param integer $intMinistryId
 		 * @return Group[]
 		 */
@@ -200,11 +219,11 @@
 		 * @param integer $intMinistryId
 		 * @return void
 		 */
-		public static function RefreshHierarchyOrderNumberForMinistry($intMinistryId) {
+		public static function RefreshHierarchyDataForMinistry($intMinistryId) {
 			$intOrderNumber = 1;
 			foreach (Group::LoadOrderedArrayForMinistry($intMinistryId) as $objGroup) {
 				$objGroup->HierarchyOrderNumber = $intOrderNumber;
-				$objGroup->Save();
+				$objGroup->RefreshHierarchyLevel();
 				$intOrderNumber++;
 			}
 		}
@@ -217,7 +236,7 @@
 		 * @param boolean $blnSaveFlag
 		 * @return integer
 		 */
-		public function RefreshHierarchyLevel($blnSaveFlag = true) {
+		protected function RefreshHierarchyLevel($blnSaveFlag = true) {
 			$intLevel = 0;
 			$objGroup = $this;
 

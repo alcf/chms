@@ -34,7 +34,7 @@
 		public $lstParentGroup;
 		public $chkConfidentialFlag;
 		public $lstMinistry;
-		public $lstEmailBroadcastTypeId;
+		public $lstEmailBroadcastType;
 		public $txtToken;
 
 		public function __construct($objParentObject, $strControlId = null, Group $objGroup = null, $strUrlHashArgument) {
@@ -72,6 +72,47 @@
 
 			$this->txtName = $this->mctGroup->txtName_Create();
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
+			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
+			$this->txtToken = $this->mctGroup->txtToken_Create();
+
+			$this->chkConfidentialFlag = $this->mctGroup->chkConfidentialFlag_Create();
+			$this->chkConfidentialFlag->Name = 'Confidential?';
+			$this->chkConfidentialFlag->Text = 'Check if this group is considered a "Confidential" group';
+
+			// Confidentiality not for Group Categories
+			if ($this->mctGroup->Group->GroupTypeId == GroupType::GroupCategory) {
+				$this->chkConfidentialFlag->Visible = false;
+				$this->chkConfidentialFlag->Checked = false;
+			}
+
+			// Setup Ministry with Rules			
+			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
+				$this->lstMinistry = $this->mctGroup->lstMinistry_Create(null, null, QQ::OrderBy(QQN::Ministry()->Name));
+			} else {
+				$intMinistryIdArray = array();
+				foreach (QApplication::$Login->GetMinistryArray() as $objMinistry) $intMinistryIdArray[] = $objMinistry->Id;
+
+				$this->lstMinistry = $this->mctGroup->lstMinistry_Create(null, QQ::In(QQN::Ministry()->Id, $intMinistryIdArray), QQ::OrderBy(QQN::Ministry()->Name));
+			}
+
+			if ($this->mctGroup->EditMode) $this->lstMinistry->Enabled = false;
+
+			// Setup EmailBroadcast-related controls
+			$this->lstEmailBroadcastType->GetItem(0)->Name = '- None -';
+			$this->lstEmailBroadcastType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtToken_Refresh'));
+			$this->txtToken_Refresh();
+		}
+
+		public function txtToken_Refresh() {
+			if ($this->lstEmailBroadcastType->SelectedValue) { 
+				$this->txtToken->Visible = true;
+				$this->txtToken->Required = true;
+				$this->txtToken->Text = GroupMetaControl::Foo; // $this->mctGroup->Group->Token;
+			} else {
+				$this->txtToken->Visible = false;
+				$this->txtToken->Required = false;
+				$this->txtToken->Text = null;
+			}
 		}
 
 		/**

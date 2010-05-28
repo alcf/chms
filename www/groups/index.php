@@ -40,7 +40,12 @@
 		}
 
 		public function dtgGroups_Bind() {
-			$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryId($this->intMinistryId);
+			if ($this->intMinistryId)
+				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryIdAndConfidentiality(
+					$this->intMinistryId,
+					Ministry::Load($this->intMinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
+			else
+				$this->dtgGroups->DataSource = null;
 		}
 
 		public function RenderName(Group $objGroup) {

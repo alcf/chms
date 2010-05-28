@@ -46,7 +46,8 @@
 					$intLevelToSkipUntil = null;
 				}
 
-				if (is_null($intLevelToSkipUntil)) {
+				if (is_null($intLevelToSkipUntil) &&
+					($objGroup->GroupTypeId == GroupType::GroupCategory)) {
 					$strName = $objGroup->Name;
 					if ($objGroup->HierarchyLevel) {
 						$strName = str_repeat('&nbsp;', $objGroup->HierarchyLevel * 3) . '&gt; ' . QApplication::HtmlEntities($strName);

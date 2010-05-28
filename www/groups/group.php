@@ -26,7 +26,7 @@
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
 		
-		protected function pnlGroups_Refresh() {
+		public function pnlGroups_Refresh() {
 			$this->pnlGroups->RemoveChildControls(true);
 
 			if (!$this->objGroup)
@@ -34,9 +34,13 @@
 			else {
 				$this->pnlGroups->Visible = true;
 
-				foreach (Group::LoadArrayByMinistryId($this->objGroup->MinistryId, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber)) as $objGroup) {
+				$objGroups = Group::LoadOrderedArrayByMinistryIdAndConfidentiality(
+					$this->objGroup->MinistryId,
+					Ministry::Load($this->objGroup->MinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
+
+				foreach ($objGroups as $objGroup) {
 					$pnlGroup = new QPanel($this->pnlGroups, 'pnlGroup' . $objGroup->Id);
-					
+
 					$strName = $objGroup->Name;
 
 					// Add Pointer
@@ -104,14 +108,14 @@
 			}
 		}
 
-		protected function lblGroup_Refresh() {
+		public function lblGroup_Refresh() {
 			if ($this->objGroup &&
 				($this->lblGroup->Text != $this->objGroup->Name)) {
 				$this->lblGroup->Text = $this->objGroup->Name;
 			}
 		}
 
-		protected function pnlGroup_Refresh($intGroupId) {
+		public function pnlGroup_Refresh($intGroupId) {
 			$pnlGroup = $this->GetControl('pnlGroup' . $intGroupId);
 			if ($pnlGroup) {
 				if ($this->objGroup &&

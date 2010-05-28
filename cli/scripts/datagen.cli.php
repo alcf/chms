@@ -122,7 +122,7 @@
 					self::GenerateGroup($objMinistry, null);
 				}
 
-				Group::RefreshHierarchyOrderNumberForMinistry($objMinistry->Id);
+				Group::RefreshHierarchyDataForMinistry($objMinistry->Id);
 			}
 			QDataGen::DisplayForEachTaskEnd('Generating groups for ministries');
 		}
@@ -190,8 +190,6 @@
 					}
 					break;
 			}
-			
-			$objGroup->RefreshHierarchyLevel();
 		}
 
 		public static function GenerateMinistries() {

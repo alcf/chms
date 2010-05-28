@@ -24,9 +24,27 @@
 		 * @return string a nicely formatted string representation of this object
 		 */
 		public function __toString() {
-			return sprintf('Ministry Object %s',  $this->intId);
+			return $this->strName;
 		}
 
+		/**
+		 * In short, does this login have privileges to administrate this ministry?
+		 * The login does if the login is an overall ChMS Administrator OR if the login is
+		 * part of the Ministry.
+		 * 
+		 * If you can administrate it, you can do things like add/remove groups, alter participation roles for the ministry,
+		 * view confidential groups, etc.
+		 * 
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanAdminMinistry(Login $objLogin) {
+			// Administrators can always administrate
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+
+			// Otherwise, only ministry members can edit
+			return $objLogin->IsMinistryAssociated($this);
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

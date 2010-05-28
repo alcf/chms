@@ -6,6 +6,8 @@
 		public $dtgMembers;
 
 		protected function SetupPanel() {
+			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
+
 			$this->dtgMembers = new PersonDataGrid($this);
 			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
