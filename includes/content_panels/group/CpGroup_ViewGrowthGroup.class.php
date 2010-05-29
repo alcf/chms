@@ -5,6 +5,11 @@
 		 */
 		public $dtgMembers;
 
+		public $lblRegion;
+		public $lblMeeting;
+		public $lblAddress;
+		public $lblStructure;
+
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
 
@@ -17,6 +22,23 @@
 			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>');
 			$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
+
+			$this->lblRegion = new QLabel($this);
+			$this->lblRegion->Name = 'Growth Group Region';
+			$this->lblRegion->Text = $this->objGroup->GrowthGroup->GrowthGroupLocation->Location;
+
+			$this->lblMeeting = new QLabel($this);
+			$this->lblMeeting->Name = 'Meeting Information';
+			$this->lblMeeting->Text = $this->objGroup->GrowthGroup->MeetingInfo;
+
+			$this->lblAddress = new QLabel($this);
+			$this->lblAddress->Name = 'Address';
+			$this->lblAddress->Text = $this->objGroup->GrowthGroup->AddressInfo;
+			
+			$this->lblStructure = new QLabel($this);
+			$this->lblStructure->Name = 'Structure';
+			$this->lblStructure->Text = $this->objGroup->GrowthGroup->StructuresHtml;
+			$this->lblStructure->HtmlEntities = false;
 
 			$this->SetupViewControls();
 		}
