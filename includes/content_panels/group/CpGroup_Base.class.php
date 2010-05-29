@@ -107,7 +107,7 @@
 			if ($this->lstEmailBroadcastType->SelectedValue) { 
 				$this->txtToken->Visible = true;
 				$this->txtToken->Required = true;
-				$this->txtToken->Text = GroupMetaControl::Foo; // $this->mctGroup->Group->Token;
+				$this->txtToken->Text = $this->mctGroup->Group->Token;
 			} else {
 				$this->txtToken->Visible = false;
 				$this->txtToken->Required = false;

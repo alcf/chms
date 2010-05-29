@@ -97,6 +97,7 @@
 						break;
 
 					case 'edit_participation':
+					case 'add_participation':
 						$strClassName = sprintf('CpGroup_%s', QString::ConvertToCamelCase($strUrlHashTokens[1]));
 						break;
 

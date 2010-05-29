@@ -194,7 +194,7 @@
 			
 			$dttDateRangeArray[] = array($this->dtxEditStart->DateTime, $this->dtxEditEnd->DateTime);
 			usort($dttDateRangeArray, array($this, 'dttDateRangeArray_Sort'));
-			if (!$this->IsValidDates($dttDateRangeArray)) {
+			if (!GroupParticipation::IsValidDates($dttDateRangeArray)) {
 				$this->dtxEditStart->Warning = 'Invalid Dates';
 				return;
 			}
@@ -220,24 +220,6 @@
 			$this->dtgParticipations->Refresh();
 			$this->lblCurrentRoles_Refresh();
 			$this->dlgEdit->HideDialogBox();
-		}
-
-		public function IsValidDates($dttDateArray) {
-			for ($intIndex = 0; $intIndex < count($dttDateArray); $intIndex++) {
-				// Start Date must be later than previous's Start Date and End Date
-				if ($intIndex > 0) {
-					if ($dttDateArray[$intIndex][0]->IsEarlierThan($dttDateArray[$intIndex-1][0])) return false;
-					if (!$dttDateArray[$intIndex-1][1]) return false;
-					if ($dttDateArray[$intIndex][0]->IsEarlierThan($dttDateArray[$intIndex-1][1])) return false;
-				}
-
-				// End Date must be later than start date (if applicable)
-				if ($dttDateArray[$intIndex][1]) {
-					if ($dttDateArray[$intIndex][0]->IsLaterThan($dttDateArray[$intIndex][1])) return false;
-				}
-			}
-
-			return true;
 		}
 
 		public function dttDateRangeArray_Sort($dttDate1Array, $dttDate2Array) {

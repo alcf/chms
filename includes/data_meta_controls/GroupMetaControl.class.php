@@ -38,7 +38,7 @@
 			$objParentGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
 
 			$intLevelToSkipUntil = null;
-			foreach (Group::LoadOrderedArrayByMinistryId($this->objGroup->MinistryId) as $objGroup) {
+			foreach (Group::LoadOrderedArrayByMinistryIdAndConfidentiality($this->objGroup->MinistryId, false) as $objGroup) {
 				if ($objGroup->Id == $this->objGroup->Id) {
 					$intLevelToSkipUntil = $objGroup->HierarchyLevel;
 				} else if (!is_null($intLevelToSkipUntil) &&

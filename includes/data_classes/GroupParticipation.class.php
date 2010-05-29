@@ -45,7 +45,63 @@
 					}
 			}
 		}
-		
+
+		/**
+		 * Given an array of start and end dates (ordered by start date)
+		 * 
+		 * Parameter is an array of array of dates:
+		 * 	array(
+		 *		array(StartDateForFirstParticipation-1, EndDateForParticipation-1),
+		 *		array(StartDateForFirstParticipation-2, EndDateForParticipation-2),
+		 *		array(StartDateForFirstParticipation-3, EndDateForParticipation-3),
+		 *		array(StartDateForFirstParticipation-N, EndDateForParticipation-N)
+		 * 	);
+		 * 
+		 * @param QDateTime[][] $dttDateArray
+		 * @return boolean
+		 */
+		public static function IsValidDates($dttDateArray) {
+			for ($intIndex = 0; $intIndex < count($dttDateArray); $intIndex++) {
+				// Start Date must be later than previous's Start Date and End Date
+				if ($intIndex > 0) {
+					if ($dttDateArray[$intIndex][0]->IsEarlierThan($dttDateArray[$intIndex-1][0])) return false;
+					if (!$dttDateArray[$intIndex-1][1]) return false;
+					if ($dttDateArray[$intIndex][0]->IsEarlierThan($dttDateArray[$intIndex-1][1])) return false;
+				}
+
+				// End Date must be later than start date (if applicable)
+				if ($dttDateArray[$intIndex][1]) {
+					if ($dttDateArray[$intIndex][0]->IsLaterThan($dttDateArray[$intIndex][1])) return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * Retrieves an array of array of dates (which can be used for IsValidDates for a given
+		 * Person, Group and GroupRole
+		 * 
+		 * @param integer $intPersonId
+		 * @param integer $intGroupId
+		 * @param integer $intGroupRoleId
+		 * @return QDateTime[][]
+		 */
+		public static function GetParticipationDatesArrayForPersonIdGroupIdGroupRoleId($intPersonId, $intGroupId, $intGroupRoleId) {
+			$objParticipationArray = GroupParticipation::QueryArray(QQ::AndCondition(
+				QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
+				QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId),
+				QQ::Equal(QQN::GroupParticipation()->GroupRoleId, $intGroupRoleId)
+			), QQ::OrderBy(QQN::GroupParticipation()->DateStart));
+
+			$dttArrayToReturn = array();
+			foreach ($objParticipationArray as $objParticipation) {
+				$dttArrayToReturn[] = array($objParticipation->DateStart, $objParticipation->DateEnd);
+			}
+
+			return $dttArrayToReturn;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

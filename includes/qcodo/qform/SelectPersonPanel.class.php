@@ -11,6 +11,10 @@
 		protected $blnAllowCreate = false;
 		protected $blnForceAsMaleFlag = null;
 
+		public $txtEmail;
+		public $txtPhone;
+		public $lstPhone;
+
 		/**
 		 * If this control has validation rules, the logic to do so
 		 * will be performed in this method.
@@ -80,6 +84,21 @@
 			$this->pxySelect = new QControlProxy($this);
 			$this->pxySelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySelect_Click'));
 			$this->pxySelect->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->txtEmail = new QEmailTextBox($this);
+			$this->txtEmail->Name = 'Email';
+			$this->txtEmail->Visible = false;
+
+			$this->txtPhone = new PhoneTextBox($this);
+			$this->txtPhone->Name = 'Phone';
+			$this->txtPhone->Visible = false;
+			
+			$this->lstPhone = new QListBox($this);
+			$this->lstPhone->Name = '&nbsp;';
+			$this->lstPhone->Visible = false;
+			foreach (PhoneType::$NameArray as $intPhoneTypeId => $strLabel) {
+				$this->lstPhone->AddItem($strLabel, $intPhoneTypeId);
+			}
 		}
 
 		public function dtgResults_Bind() {
@@ -119,8 +138,17 @@
 		}
 
 		public function pxySelect_Click($strFormId, $strControlId, $strParameter) {
-			if ($strParameter) $this->intSelectedPersonId = $strParameter;
-			else $this->intSelectedPersonId = -1;
+			if ($strParameter) {
+				$this->intSelectedPersonId = $strParameter;
+				$this->txtEmail->Visible = false;
+				$this->txtPhone->Visible = false;
+				$this->lstPhone->Visible = false;
+			} else {
+				$this->intSelectedPersonId = -1;
+				$this->txtEmail->Visible = true;
+				$this->txtPhone->Visible = true;
+				$this->lstPhone->Visible = true;
+			}
 			$this->dtgResults->Refresh();
 		}
 
@@ -154,15 +182,15 @@
 				
 				case 'Person':
 					if ($this->blnAllowCreate && ($this->intSelectedPersonId == -1)) {
-						if (is_null($this->blnForceAsMaleFlag))
-							return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $this->lstGender->SelectedValue);
-						else
-							return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $this->blnForceAsMaleFlag);
-					}
+						$blnGender = is_null($this->blnForceAsMaleFlag) ? $this->lstGender->SelectedValue : $this->blnForceAsMaleFlag;
+						$strEmail = trim(strtolower($this->txtEmail->Text));
+						$strPhone = trim(strtolower($this->txtPhone->Text));
+						$intPhoneTypeId = ($strPhone) ? $this->lstPhone->SelectedValue : null;
 
-					if ($this->intSelectedPersonId > 0) {
+						return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $blnGender, $strEmail, $strPhone, $intPhoneTypeId);
+					} else if ($this->intSelectedPersonId > 0)
 						return Person::Load($this->intSelectedPersonId);
-					} else
+					else
 						return null;
 
 				default:

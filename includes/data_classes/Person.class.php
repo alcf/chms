@@ -370,9 +370,12 @@
 		 * @param string $strMiddle
 		 * @param string $strLastName
 		 * @param boolean $blnMaleFlag
+		 * @param string $strEmail optional
+		 * @param string $strPhone optional
+		 * @param integer $intPhoneTypeId optional unless $strPhone has been specified
 		 * @return Person
 		 */
-		public static function CreatePerson($strFirstName, $strMiddle, $strLastName, $blnMaleFlag) {
+		public static function CreatePerson($strFirstName, $strMiddle, $strLastName, $blnMaleFlag, $strEmail = null, $strPhone = null, $intPhoneTypeId = null) {
 			$strFirstName = trim($strFirstName);
 			$strMiddle = trim($strMiddle);
 			$strLastName = trim($strLastName);
@@ -398,9 +401,36 @@
 			$objPerson->DeceasedFlag = false;
 
 			$objPerson->Save();
+
+			// Create Primary Contact Info (if applicable)
+			$blnSaveAgain = false;
+
+			if ($strEmail) {
+				$objEmail = new Email();
+				$objEmail->Person = $objPerson;
+				$objEmail->Address = $strEmail;
+				$objEmail->Save();
+
+				$objPerson->PrimaryEmail = $objEmail;
+				$blnSaveAgain = true;
+			}
+
+			if ($strPhone) {
+				$objPhone = new Phone();
+				$objPhone->Person = $objPerson;
+				$objPhone->PhoneTypeId = $intPhoneTypeId;
+				$objPhone->Number = $strPhone;
+				$objPhone->Save();
+
+				$objPerson->PrimaryPhone = $objPhone;
+				$blnSaveAgain = true;
+			}
+
+			if ($blnSaveAgain) $objPerson->Save();
+
 			return $objPerson;
 		}
-		
+
 		/**
 		 * Similar to the codegenned GetPhoneArray -- however this will retrieve ALL current and associated
 		 * phones.  Not just personal phone numbers, but phone numbers attributed to the current home

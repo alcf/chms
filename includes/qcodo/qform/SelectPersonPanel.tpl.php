@@ -8,3 +8,7 @@
 ?>
 <?php $_CONTROL->txtFirstName->RenderWithName(); ?>
 <?php $_CONTROL->dtgResults->RenderWithName(); ?>
+
+<?php $_CONTROL->txtEmail->RenderWithName(); ?>
+<?php $_CONTROL->txtPhone->RenderWithName(); ?>
+<?php $_CONTROL->lstPhone->RenderWithName(); ?>
