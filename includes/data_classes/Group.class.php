@@ -81,19 +81,6 @@
 			$objGroup->ParentGroup = $objParentGroup;
 			$objGroup->Save();
 
-//			switch ($intGroupTypeId) {
-//				case GroupType::RegularGroup;
-//				case GroupType::GroupCategory:
-//					break;
-//					break;
-//				case GroupType::GrowthGroup:
-//					break;
-//				case GroupType::SmartGroup:
-//					break;
-//				default:
-//					throw new QCallerException('Invalid Group Type Id: ' . $intGroupTypeId);
-//			}
-
 			return $objGroup;
 		}
 
@@ -147,6 +134,21 @@
 
 			// Otherwise, only ministry members can edit
 			return $objLogin->IsMinistryAssociated($this->Ministry);
+		}
+
+		public function IsGroupCanHaveExplicitlyDefinedParticipants() {
+			switch ($this->intGroupTypeId) {
+				case GroupType::RegularGroup:
+				case GroupType::GrowthGroup:
+					return true;
+
+				case GroupType::GroupCategory:
+				case GroupType::SmartGroup:
+					return false;
+
+				default:
+					throw new QCallerException('Invalid GroupTypeId to Check: ' . $this->intGroupTypeId);
+			}
 		}
 
 		/**

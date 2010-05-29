@@ -26,6 +26,10 @@
 			$this->pnlContent = $pnlContent;
 			$this->pnlContent->Template = dirname(__FILE__) . '/EditGroupParticipationDelegate.tpl.php';
 
+			// Throw Exception if Group Cannot have Explicitly Defined Participants
+			if (!$this->pnlContent->objGroup->IsGroupCanHaveExplicitlyDefinedParticipants())
+				throw new Exception('Group Cannot have Explicitly Defined Participants');
+
 			$this->strReturnUrl = $strReturnUrl;
 
 			$this->objParticipationArray = GroupParticipation::LoadArrayByPersonIdGroupId(

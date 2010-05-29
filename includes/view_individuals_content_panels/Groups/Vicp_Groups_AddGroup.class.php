@@ -27,17 +27,7 @@
 		}
 		
 		public function RenderName(Group $objGroup) {
-			switch ($objGroup->GroupTypeId) {
-				case GroupType::RegularGroup:
-				case GroupType::GrowthGroup:
-					$blnCanAdd = true;
-					break;
-				default:
-					$blnCanAdd = false;
-					break;
-			}
-
-			if ($blnCanAdd) {
+			if ($objGroup->IsGroupCanHaveExplicitlyDefinedParticipants()) {
 				$strName = sprintf('<a href="#groups/edit_participation/%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
 			} else {
 				$strName = QApplication::HtmlEntities($objGroup->Name);

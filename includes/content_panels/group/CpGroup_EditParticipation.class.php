@@ -16,9 +16,14 @@
 		public $strReturnUrl;
 
 		protected function SetupPanel() {
+			if (!$this->objGroup->IsLoginCanEdit(QApplication::$Login)) $this->ReturnTo('/groups/');
+
 			// Get the person and check for validity / authorization
 			$this->objPerson = Person::Load($this->strUrlHashArgument);
 			if (!$this->objPerson) return $this->ReturnTo('#' . $this->objGroup->Id);
+
+			// See if Group can have Explicitly Defined Participants
+			if (!$this->objGroup->IsGroupCanHaveExplicitlyDefinedParticipants()) return $this->ReturnTo('#' . $this->objGroup->Id);
 
 			$this->objDelegate = new EditGroupParticipationDelegate($this, '#' . $this->objGroup->Id);
 		}

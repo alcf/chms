@@ -12,6 +12,9 @@
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanEdit(QApplication::$Login)) $this->ReturnTo('/groups/');
 
+			// See if Group can have Explicitly Defined Participants
+			if (!$this->objGroup->IsGroupCanHaveExplicitlyDefinedParticipants()) return $this->ReturnTo('#' . $this->objGroup->Id);
+
 			$this->pnlPerson = new SelectPersonPanel($this);
 			$this->pnlPerson->Name = 'Participant';
 			$this->pnlPerson->AllowCreate = true;
