@@ -1,9 +1,9 @@
 <?php
 	class CpGroup_ViewGroupCategory extends CpGroup_Base {
 		/**
-		 * @var PersonDataGrid
+		 * @var QDataGrid
 		 */
-		public $dtgMembers;
+		public $dtgGroups;
 
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
@@ -15,6 +15,28 @@
 
 			$this->SetupViewControls(false, true);
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
+
+			$this->dtgGroups = new QDataGrid($this);
+			$this->dtgGroups->CssClass = 'groupList datagrid';
+			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false'));
+			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
+		}
+
+		public function RenderGroupName(Group $objGroup) {
+			$strName = sprintf('<a href="/groups/group.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
+
+			// Add Pointer
+			$intHierarchyLevel = $objGroup->HierarchyLevel - $this->objGroup->HierarchyLevel - 1;
+
+			$strName = ($intHierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;
+
+			// Add Indent
+			$strName = str_repeat('&nbsp;&nbsp;&nbsp;', $intHierarchyLevel) . $strName;
+
+			return $strName;
 		}
 
 		public function dtgMembers_Bind() {
@@ -23,6 +45,13 @@
 			if ($objClause = $this->dtgMembers->OrderByClause) $objClauses[] = $objClause;
 
 			$this->dtgMembers->DataSource = Person::QueryArray(QQ::In(QQN::Person()->GroupParticipation->GroupId, $this->intGroupIdArray), $objClauses);
+		}
+
+		public function dtgGroups_Bind() {
+			$objGroupArray = $this->objGroupArray;
+			array_shift($objGroupArray);
+			$this->dtgGroups->DataSource = $objGroupArray;
+			
 		}
 	}
 ?>

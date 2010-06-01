@@ -7,5 +7,9 @@
 	<p><a href="#<?php _p($_CONTROL->objGroup->Id); ?>/edit">Edit This Group</a></p>
 <?php } ?>
 
-<br clear="all"/>
+<br/><br clear="all"/><br/>
+<h3>Subgroups within the <?php _p($this->objGroup->Name); ?> Category</h3>
+<?php $_CONTROL->dtgGroups->Render(); ?>
+
+<br/><br clear="all"/><br/>
 <?php $_CONTROL->dtgMembers->Render(); ?>

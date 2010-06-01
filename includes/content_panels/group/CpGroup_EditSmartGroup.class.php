@@ -31,7 +31,6 @@
 			$this->mctGroup->SaveGroup();
 
 			// Delegate "Save" processing to the SmartGroupMetaControl
-			$this->btnRefresh_Click();
 			$this->mctSmartGroup->SaveSmartGroup();
 
 			// Refresh

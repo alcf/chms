@@ -22,6 +22,11 @@
 
 		// View-Related Controls
 
+		/**
+		 * @var PersonDataGrid
+		 */
+		public $dtgMembers;
+
 		public $lblMinistry;
 		public $lblConfidential;
 		public $lblCategory;

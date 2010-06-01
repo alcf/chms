@@ -1,10 +1,5 @@
 <?php
 	class CpGroup_ViewSmartGroup extends CpGroup_Base {
-		/**
-		 * @var PersonDataGrid
-		 */
-		public $dtgMembers;
-
 		public $lblQuery;
 
 		protected function SetupPanel() {

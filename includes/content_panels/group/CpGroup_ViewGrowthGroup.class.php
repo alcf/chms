@@ -1,10 +1,5 @@
 <?php
 	class CpGroup_ViewGrowthGroup extends CpGroup_Base {
-		/**
-		 * @var PersonDataGrid
-		 */
-		public $dtgMembers;
-
 		public $lblRegion;
 		public $lblMeeting;
 		public $lblAddress;

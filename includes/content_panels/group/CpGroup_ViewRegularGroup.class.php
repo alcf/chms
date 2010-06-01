@@ -1,10 +1,5 @@
 <?php
 	class CpGroup_ViewRegularGroup extends CpGroup_Base {
-		/**
-		 * @var PersonDataGrid
-		 */
-		public $dtgMembers;
-
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
 
