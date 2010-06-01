@@ -37,6 +37,9 @@
 		public $lstEmailBroadcastType;
 		public $txtToken;
 
+		public $objGroupArray;
+		public $intGroupIdArray;
+
 		public function __construct($objParentObject, $strControlId = null, Group $objGroup = null, $strUrlHashArgument) {
 			try {
 				parent::__construct($objParentObject, $strControlId);
@@ -117,9 +120,11 @@
 
 		/**
 		 * Basic setup of view-related QControls for a Group to be used for all group types
+		 * @param boolean $blnDisplayEditParticipantColumn
+		 * @param boolean $blnDisplayGroupsColumn
 		 * @return void
 		 */
-		protected function SetupViewControls() {
+		protected function SetupViewControls($blnDisplayEditParticipantColumn, $blnDisplayGroupsColumn) {
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->Name = 'Ministry';
 			$this->lblMinistry->FontBold = true;
@@ -142,6 +147,90 @@
 			$this->lblCategory->FontBold = true;
 			$this->lblCategory->HtmlEntities = false;
 			$this->lblCategory_Refresh();
+
+			$this->dtgMembers = new PersonDataGrid($this);
+			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
+			if ($blnDisplayEditParticipantColumn)
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email');
+			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>');
+			if ($blnDisplayGroupsColumn) {
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Group(s)', '<?= $_CONTROL->ParentControl->RenderCurrentGroups($_ITEM); ?>', 'HtmlEntities=false'));
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRolesForAllGroups($_ITEM); ?>', 'HtmlEntities=false'));
+			} else {
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false'));
+			}
+		}
+
+		public function RenderEdit(Person $objPerson) {
+			return sprintf('<a href="#%s/edit_participation/%s">Edit</a>', $this->objGroup->Id, $objPerson->Id);
+		}
+
+		public function RenderFirstName(Person $objPerson) {
+			return sprintf('<a href="/individuals/view.php/%s#general">%s</a>', $objPerson->Id, QApplication::HtmlEntities($objPerson->FirstName));
+		}
+		
+		public function RenderLastName(Person $objPerson) {
+			return sprintf('<a href="/individuals/view.php/%s#general">%s</a>', $objPerson->Id, QApplication::HtmlEntities($objPerson->LastName));
+		}
+
+		public function RenderMember(Person $objPerson) {
+			switch ($objPerson->MembershipStatusTypeId) {
+				case MembershipStatusType::Member:
+				case MembershipStatusType::ChildOfMember:
+					return 'Y';
+				default:
+					return 'N';
+			}
+		}
+
+		public function RenderCurrentRoles(Person $objPerson) {
+			$objParticipations = GroupParticipation::LoadArrayByPersonIdGroupId($objPerson->Id, $this->objGroup->Id, array(
+				QQ::OrderBy(QQN::GroupParticipation()->GroupRole->Name),
+				QQ::Expand(QQN::GroupParticipation()->GroupRole->Name)));
+
+			$strArray = array();
+			foreach ($objParticipations as $objParticipation)
+				if (!$objParticipation->DateEnd) $strArray[] = $objParticipation->GroupRole->Name;
+
+			if (count($strArray))
+				return implode(' and ', $strArray);
+			else
+				return '<span style="font-size: 10px; color: #999;">No current roles</span>';
+		}
+
+		protected $objParticipations;
+		public function RenderCurrentRolesForAllGroups(Person $objPerson) {
+			// Assume we have a cached copy for THIS row already
+			$strArray = array();
+			foreach ($this->objParticipations as $objParticipation)
+				$strArray[] = $objParticipation->GroupRole->Name;
+
+			if (count($strArray))
+				return implode(' and ', $strArray);
+			else
+				return '<span style="font-size: 10px; color: #999;">No current roles</span>';
+		}
+
+		public function RenderCurrentGroups(Person $objPerson) {
+			$this->objParticipations = GroupParticipation::QueryArray(QQ::AndCondition(
+				QQ::Equal(QQN::GroupParticipation()->PersonId, $objPerson->Id),
+				QQ::IsNull(QQN::GroupParticipation()->DateEnd),
+				QQ::In(QQN::GroupParticipation()->GroupId, $this->intGroupIdArray)
+			), QQ::Clause(
+				QQ::OrderBy(QQN::GroupParticipation()->Group->Name),
+				QQ::Expand(QQN::GroupParticipation()->Group->Name)));
+
+			$strArray = array();
+			foreach ($this->objParticipations as $objParticipation)
+				$strArray[] = $objParticipation->Group->Name;
+
+			if (count($strArray))
+				return implode(' and ', $strArray);
+			else
+				return '<span style="font-size: 10px; color: #999;">No current groups</span>';
 		}
 
 		/**
@@ -183,5 +272,19 @@
 		}
 
 		abstract protected function SetupPanel();
+
+		public function Validate() {
+			$blnToReturn = parent::Validate();
+
+			if ($this->txtToken && $this->txtToken->Visible) {
+				$strToken = trim(strtolower($this->txtToken->Text));
+				if ($strToken && ($objGroup = Group::LoadByToken($strToken)) && ($objGroup->Id != $this->objGroup->Id)) {
+					$this->txtToken->Warning = 'Email name is already taken';
+					$blnToReturn = false;
+				}
+			}
+
+			return $blnToReturn;
+		}
 	}
 ?>

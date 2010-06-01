@@ -1,4 +1,4 @@
-<h3>Edit Regular Group</h3>
+<h3>Edit Growth Group</h3>
 
 <?php $_CONTROL->txtName->RenderWithName(); ?>
 <?php $_CONTROL->lstParentGroup->RenderWithName(); ?>

@@ -1,20 +1,21 @@
 <?php
-	class CpGroup_ViewGroupCategory extends CpGroup_Base {
+	class CpGroup_ViewSmartGroup extends CpGroup_Base {
 		/**
 		 * @var PersonDataGrid
 		 */
 		public $dtgMembers;
 
+		public $lblQuery;
+
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
 
-			// Setup Group Array
-			$this->objGroupArray = $this->objGroup->GetThisAndChildren();
-			$this->intGroupIdArray = array();
-			foreach ($this->objGroupArray as $objGroup) $this->intGroupIdArray[] = $objGroup->Id;
-
-			$this->SetupViewControls(false, true);
+			$this->SetupViewControls(false, false);
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
+
+			$this->lblQuery = new QLabel($this);
+			$this->lblQuery->Name = 'Query Info';
+			$this->lblQuery->Text = $this->objGroup->SmartGroup->Query;
 		}
 
 		public function dtgMembers_Bind() {
@@ -22,7 +23,7 @@
 			if ($objClause = $this->dtgMembers->LimitClause) $objClauses[] = $objClause;
 			if ($objClause = $this->dtgMembers->OrderByClause) $objClauses[] = $objClause;
 
-			$this->dtgMembers->DataSource = Person::QueryArray(QQ::In(QQN::Person()->GroupParticipation->GroupId, $this->intGroupIdArray), $objClauses);
+			$this->dtgMembers->DataSource = Person::QueryArray(QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id), $objClauses);
 		}
 	}
 ?>

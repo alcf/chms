@@ -57,7 +57,30 @@
 					}
 			}
 		}
-		
+
+		/**
+		 * Retruns an array of groups containing this group and all its children and decendents
+		 * Uses Cached Hierarchy Data
+		 * @return Group[]
+		 */
+		public function GetThisAndChildren() {
+			$objGroupArray = Group::QueryArray(QQ::AndCondition(
+				QQ::Equal(QQN::Group()->MinistryId, $this->intMinistryId),
+				QQ::GreaterOrEqual(QQN::Group()->HierarchyOrderNumber, $this->intHierarchyOrderNumber)
+			), QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
+
+			$objToReturn = array($objGroupArray[0]);
+			for ($intIndex = 1; $intIndex < count($objGroupArray); $intIndex++) {
+				if ($objGroupArray[$intIndex]->HierarchyLevel > $this->intHierarchyLevel) {
+					$objToReturn[] = $objGroupArray[$intIndex];
+				} else {
+					return $objToReturn;
+				}
+			}
+
+			return $objToReturn;
+		}
+
 		/**
 		 * Creates a new group for a ministry
 		 * @param Ministry $objMinistry
