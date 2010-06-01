@@ -11,6 +11,8 @@
 		protected $pnlGroups;
 		protected $pnlContent;
 
+		protected $lstGroupType;
+
 		protected function Form_Create() {
 			$this->pnlGroups = new QPanel($this);
 			$this->pnlGroups->TagName = 'ul';
@@ -23,9 +25,22 @@
 			$this->pnlContent = new QPanel($this);
 			$this->pnlContent->AutoRenderChildren = true;
 
+			$this->lstGroupType = new QListBox($this);
+			$this->lstGroupType->AddItem('- Create New... -');
+			foreach (GroupType::$NameArray as $intId => $strName)
+				$this->lstGroupType->AddItem($strName, $intId);
+			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
+
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
-		
+
+		public function lstGroupType_Change($strFormId, $strControlId, $strParameter) {
+			QApplication::ExecuteJavaScript(sprintf('document.location = "#new/%s/%s";',
+				strtolower(str_replace(' ', '_', GroupType::$NameArray[$this->lstGroupType->SelectedIndex])),
+				$this->objGroup->MinistryId));
+			$this->lstGroupType->SelectedIndex = 0;
+		}
+
 		public function pnlGroups_Refresh() {
 			$this->pnlGroups->RemoveChildControls(true);
 
@@ -61,9 +76,28 @@
 			$strUrlHash = trim(strtolower($this->strUrlHash));
 			$strUrlHashTokens = explode('/', $strUrlHash);
 
-			// Get the Group from the Hash and Refresh the Label
-			$objGroup = Group::Load($strUrlHashTokens[0]);
-			if (!$objGroup) QApplication::Redirect('/groups/');
+			// Create a New Group?
+			if ($strUrlHashTokens[0] == 'new') {
+				if (count($strUrlHashTokens) != 3) QApplication::Redirect('/groups/');
+
+				// Validate the GroupType
+				$strConstantName = QString::ConvertToCamelCase($strUrlHashTokens[1]);
+				if (!defined('GroupType::' . $strConstantName)) QApplication::Redirect('/groups/');
+
+				// Validate the Ministry
+				$objMinistry = Ministry::Load($strUrlHashTokens[2]);
+				if (!$objMinistry) QApplication::Redirect('/groups/');
+				if (!$objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) QApplication::Redirect('/groups/');
+
+				// Create the Group Object
+				$objGroup = new Group();
+				$objGroup->GroupTypeId = constant('GroupType::' . $strConstantName);
+				$objGroup->Ministry = $objMinistry;
+			} else {
+				// Get the Group from the Hash and Refresh the Label
+				$objGroup = Group::Load($strUrlHashTokens[0]);
+				if (!$objGroup) QApplication::Redirect('/groups/');
+			}
 
 			$intOldGroupId = ($this->objGroup) ? $this->objGroup->Id : null;
 			$blnRefreshGroupsPanel = (!$this->objGroup || ($this->objGroup->MinistryId != $objGroup->MinistryId)) ? true : false;
@@ -90,7 +124,9 @@
 				else
 					$strUrlHashArgument = null;
 
-				switch (strtolower($strUrlHashTokens[1])) {
+				if ($strUrlHashTokens[0] == 'new') {
+					$strClassName = sprintf('CpGroup_Edit%s', QString::ConvertToCamelCase($strUrlHashTokens[1]));
+				} else switch (strtolower($strUrlHashTokens[1])) {
 					case 'view':
 					case 'edit':
 						$strClassName = sprintf('CpGroup_%s%s', QString::ConvertToCamelCase($strUrlHashTokens[1]), GroupType::$TokenArray[$this->objGroup->GroupTypeId]);

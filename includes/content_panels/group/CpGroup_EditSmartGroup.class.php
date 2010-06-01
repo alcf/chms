@@ -15,7 +15,7 @@
 			if ($this->mctGroup->EditMode) {
 				$this->mctSmartGroup = new SmartGroupMetaControl($this, $this->mctGroup->Group->SmartGroup);
 			} else {
-				// TODO: Implement "Create New" Smart Group
+				$this->mctSmartGroup = new SmartGroupMetaControl($this, new SmartGroup());
 			}
 			$this->SetupChildEditControls();
 		}
@@ -31,6 +31,7 @@
 			$this->mctGroup->SaveGroup();
 
 			// Delegate "Save" processing to the SmartGroupMetaControl
+			if (!$this->mctSmartGroup->EditMode) $this->mctSmartGroup->SmartGroup->Group = $this->mctGroup->Group;
 			$this->mctSmartGroup->SaveSmartGroup();
 
 			// Refresh

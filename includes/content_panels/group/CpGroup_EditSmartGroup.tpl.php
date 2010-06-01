@@ -1,4 +1,4 @@
-<h3>Edit Smart Group</h3>
+<h3><?php _p($_CONTROL->mctGroup->EditMode ? 'Edit' : 'Create New'); ?> Smart Group</h3>
 
 <?php $_CONTROL->txtName->RenderWithName(); ?>
 <?php $_CONTROL->lstParentGroup->RenderWithName(); ?>

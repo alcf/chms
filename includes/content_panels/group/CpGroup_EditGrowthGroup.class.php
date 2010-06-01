@@ -30,7 +30,7 @@
 			if ($this->mctGroup->EditMode) {
 				$this->mctGrowthGroup = new GrowthGroupMetaControl($this, $this->mctGroup->Group->GrowthGroup);
 			} else {
-				// TODO: Implement "Create New" Growth Group
+				$this->mctGrowthGroup = new GrowthGroupMetaControl($this, new GrowthGroup());
 			}
 			$this->SetupChildEditControls();
 		}
@@ -100,6 +100,7 @@
 
 			// Delegate "Save" processing to the GrowthGroupMetaControl
 			$this->btnRefresh_Click();
+			if (!$this->mctGrowthGroup->EditMode) $this->mctGrowthGroup->GrowthGroup->Group = $this->mctGroup->Group;
 			$this->mctGrowthGroup->SaveGrowthGroup();
 
 			// Refresh

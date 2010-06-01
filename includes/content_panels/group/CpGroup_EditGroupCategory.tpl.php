@@ -1,4 +1,4 @@
-<h3>Edit Group Category</h3>
+<h3><?php _p($_CONTROL->mctGroup->EditMode ? 'Edit' : 'Create New'); ?> Group Category</h3>
 
 <?php $_CONTROL->txtName->RenderWithName(); ?>
 <?php $_CONTROL->lstParentGroup->RenderWithName(); ?>
