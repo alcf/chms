@@ -6,6 +6,8 @@
 		<?php $this->pnlGroups->Render(); ?>
 		<br/><br clear="all"/><br/>
 		<?php $this->lstGroupType->Render(); ?>
+		<br/><br clear="all"/><br/>
+		<?php $this->btnViewRoles->Render(); ?>
 	</div>
 	<div style="float: left; margin-left: 15px;">
 		<?php $this->pnlContent->Render(); ?>

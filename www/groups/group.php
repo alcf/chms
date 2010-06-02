@@ -12,6 +12,7 @@
 		protected $pnlContent;
 
 		protected $lstGroupType;
+		protected $btnViewRoles;
 
 		protected function Form_Create() {
 			$this->pnlGroups = new QPanel($this);
@@ -31,7 +32,20 @@
 				$this->lstGroupType->AddItem($strName, $intId);
 			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
 
+			$this->btnViewRoles = new QLinkButton($this);
+			$this->btnViewRoles->Text = 'View Roles';
+			$this->btnViewRoles->AddAction(new QClickEvent(), new QAjaxAction('btnViewRoles_Click'));
+			$this->btnViewRoles->AddAction(new QClickEvent(), new QTerminateAction());
+			
 			$this->SetUrlHashProcessor('Form_ProcessHash');
+		}
+
+		protected function btnViewRoles_Click() {
+			QApplication::Redirect('/groups/roles.php/' . $this->objGroup->MinistryId);
+		}
+
+		protected function btnViewRoles_Refresh() {
+			$this->btnViewRoles->Visible = $this->objGroup->Ministry->IsLoginCanAdminMinistry(QApplication::$Login);
 		}
 
 		public function lstGroupType_Change($strFormId, $strControlId, $strParameter) {
@@ -106,7 +120,10 @@
 			$this->pnlGroup_Refresh($this->objGroup->Id);
 
 			if ($intOldGroupId) $this->pnlGroup_Refresh($intOldGroupId);
-			if ($blnRefreshGroupsPanel) $this->pnlGroups_Refresh();
+			if ($blnRefreshGroupsPanel) {
+				$this->pnlGroups_Refresh();
+				$this->btnViewRoles_Refresh();
+			}
 
 			$this->lblGroup_Refresh();
 			$this->pnlContent_Refresh($strUrlHashTokens);
