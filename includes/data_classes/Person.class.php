@@ -95,6 +95,12 @@
 				case 'PrimaryAddress':
 					return 'TODO';
 
+				case 'LinkUrl':
+					return sprintf('/individuals/view.php/%s#general', $this->intId);
+
+				case 'LinkHtml':
+					return sprintf('<a href="%s">%s</a>', $this->LinkUrl, QApplication::HtmlEntities($this->Name));
+
 				default:
 					try {
 						return parent::__get($strName);
