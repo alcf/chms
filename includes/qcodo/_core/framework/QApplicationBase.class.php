@@ -205,12 +205,13 @@
 
 		/**
 		 * Called by QApplication::Initialize() to setup error and exception handling
-		 * to use the Qcodo Error/Exception handler.  Only called for non-CLI calls.
+		 * to use the Qcodo Error/Exception handler.
 		 * @return void
 		 */
 		protected static function InitializeErrorHandling() {
-			set_error_handler('__qcodo_handle_error', error_reporting());
-			set_exception_handler('__qcodo_handle_exception');
+			QErrorHandler::$CliMode = QApplication::$CliMode;
+			set_error_handler(array('QErrorHandler', 'HandleError'), error_reporting());
+			set_exception_handler(array('QErrorHandler', 'HandleException'));
 		}
 
 		/**
@@ -388,6 +389,7 @@
 			// Basic Initailization Routines
 			QApplication::InitializeEnvironment();
 			QApplication::InitializeScriptInfo();
+			QApplication::InitializeErrorHandling();
 
 			// Perform Initialization for CLI
 			if (QApplication::$CliMode) {
@@ -395,7 +397,6 @@
 
 			// *OR* Perform Initializations for WebApp
 			} else {
-				QApplication::InitializeErrorHandling();
 				QApplication::InitializeOutputBuffering();
 				QApplication::InitializeServerAddress();
 				QApplication::InitializeRequestUri();
@@ -457,9 +458,9 @@
 		}
 
 		protected static function InitializeOutputBuffering() {
-			ob_start('__qcodo_ob_callback');
+			ob_start(array('QApplication', 'OutputPage'));
 		}
-		
+
 		protected static function InitializePhpSession() {
 			// Go ahead and start the PHP session if we have set EnableSession to true
 			if (QApplication::$EnableSession) session_start();
@@ -599,7 +600,7 @@
 				throw new QCallerException('Error handler is already currently overridden.  Cannot override twice.  Call RestoreErrorHandler before calling SetErrorHandler again.');
 			if (!$strName) {
 				// No Error Handling is wanted -- simulate a "On Error, Resume" type of functionality
-				set_error_handler('__qcodo_handle_error', 0);
+				set_error_handler(array('QErrorHandler', 'HandleError'), 0);
 				QApplication::$intStoredErrorLevel = error_reporting(0);
 			} else {
 				set_error_handler($strName, $intLevel);

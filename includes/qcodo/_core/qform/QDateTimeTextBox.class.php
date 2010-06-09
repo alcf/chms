@@ -61,7 +61,7 @@
 					$dttTest = QDateTimeTextBox::ParseForDateTimeValue($this->strText);
 
 					if (!$dttTest) {
-						$this->strValidationError = $this->strLabelForInvalid;
+						$this->strValidationError = QApplication::Translate($this->strLabelForInvalid);
 						return false;
 					}
 
