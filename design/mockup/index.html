@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>ALCF ChMS</title>
+<style type="text/css">
+	/*****  Base Styles
+		STYLE ROWS:
+		BACKGROUND background, background-color, background-image
+		BORDER border, border-image
+		BOX position, float, clear, top, bottom, left, right, display, margin, padding, width
+		LAYOUT: float, clear, position, display
+		TYPE font, font-family, color, text-shadow, letter-spacing, text-decoration
+		OTHER cursor, text-align, vertical-align, z-index, etcå
+	*****/
+
+	body { margin: 0; padding: 0; }
+	a { color: inherit; }
+	a:hover { text-decoration: none; }
+	
+	ul.navbar { list-style: none; width: 980px; margin: 0 auto; padding: 0; }
+	ul.navbar li { margin: 0; padding: 0; float: left; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; font-size: 14px; color: #fff; font-weight: bold; width: 196px; text-align: center; }
+	ul.navbar li.selected { background: url(images/navbar_background_selected.png); }
+	ul.navbar li a { height: 32px; display: block; text-decoration: none; color: #fff; line-height: 31px;} 
+	ul.navbar li a:hover {background: url(images/navbar_background_hover.png); color: #4a3f5d; }
+</style>
+</head><body>
+
+	<div style="width: 100%; position: absolute;">
+		<div style="float: left; background-color: #eeeef2; width: 50%; height: 80px;">&nbsp;</div>
+		<div style="float: right; background-color: #deeaee; width: 50%; height: 80px;">&nbsp;</div>
+	</div>
+	<div style="width: 980px; height: 80px; background: url(images/header.png); margin: 0 auto; position: relative;">
+		<div style="text-align: right; padding-right: 40px; padding-top: 42px; font: 11px arial; color: #4a3f5d;">
+			Welcome, <strong>Joe User</strong>
+			&nbsp;|&nbsp;
+			<a href="#">My Profile</a>
+			&nbsp;|&nbsp;
+			<a href="#">Logout</a>
+			<br/>
+			<span style="font-size: 10px; color: #5a768e;">You are logged in as an <strong>Administrator</strong></span><br/>
+		</div>
+	</div>
+
+	<div style="background: url(images/navbar_background.png); width: 100%; height: 32px;">
+		<ul class="navbar">
+			<li><a href="#">PEOPLE</a></li>
+			<li class="selected"><a href="#">HOUSEHOLDS</a></li>
+			<li><a href="#">GROUPS</a></li>
+			<li><a href="#">COMMUNICATIONS</a></li>
+			<li><a href="#">ADMINISTRATION</a></li>
+		</ul>
+	</div>
+	
+	<div style="width: 100%; background: url(images/main_content_background.png); height: 500px;">
+		<div style="width: 980px; margin: 0 auto; padding-top: 10px;">
+			<span style="font-size: 20px; font-family: verdana; color: #333;">
+				<strong>John Smith Household</strong>
+			</span>
+			<span style="font-size: 13px; font-family: verdana; color: #555;">
+				&nbsp;/&nbsp;
+				425 Western Ave, Sunnyvale
+			</span>
+		</div>
+	</div>
+</body></html>
