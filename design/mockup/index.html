@@ -6,61 +6,153 @@
 <style type="text/css">
 	/*****  Base Styles
 		STYLE ROWS:
-		BACKGROUND background, background-color, background-image
-		BORDER border, border-image
-		BOX position, float, clear, top, bottom, left, right, display, margin, padding, width
-		LAYOUT: float, clear, position, display
-		TYPE font, font-family, color, text-shadow, letter-spacing, text-decoration
-		OTHER cursor, text-align, vertical-align, z-index, etcå
+		BOX					width, height, margin, padding
+		BACKGROUND/BORDER	background, background-color, background-image, background-repeat,
+								border, border-width, border-style, border-color
+		LAYOUT				float, clear, position, display, z-index
+		TYPE				font, font-family, font-size, color, font-weight, font-style, text-decoration, text-shadow,
+								text-shadow, letter-spacing, line-height, text-align
+		OTHER				cursor, vertical-align, list-style, etc.
 	*****/
 
 	body { margin: 0; padding: 0; }
 	a { color: inherit; }
 	a:hover { text-decoration: none; }
-	
+
+	div.headerBackground { width: 100%; position: absolute; font-size: 1px; }
+		div.headerBackground div.left { width: 50%; height: 80px; background-color: #eeeef2; float: left; }
+		div.headerBackground div.right { width: 50%; height: 80px; background-color: #deeaee; float: right; }
+
+	div.footer {
+		width: 980px; padding: 12px 0;
+		font-family: arial, helvetica; font-size: 10px; color: #4a3f5d; text-align: center;
+	}
+
+	div.header {
+		width: 980px; height: 80px; margin: 0 auto;
+		background: url(images/header.png);
+		position: relative;
+	}
+
+	div.header div.status {
+		padding-right: 40px; padding-top: 42px;
+		font: 11px arial; color: #4a3f5d;
+		text-align: right;
+	}
+
+	div.header div.status span.subhead { font-size: 10px; color: #5a768e; }
+
+	div.navbar { background: url(images/navbar_background.png); width: 100%; height: 32px; }
 	ul.navbar { list-style: none; width: 980px; margin: 0 auto; padding: 0; }
 	ul.navbar li { margin: 0; padding: 0; float: left; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; font-size: 14px; color: #fff; font-weight: bold; width: 196px; text-align: center; }
-	ul.navbar li.selected { background: url(images/navbar_background_selected.png); }
 	ul.navbar li a { height: 32px; display: block; text-decoration: none; color: #fff; line-height: 31px;} 
-	ul.navbar li a:hover {background: url(images/navbar_background_hover.png); color: #4a3f5d; }
+	ul.navbar li a.selected { background: url(images/navbar_background_selected.png); }
+	ul.navbar li a:hover { background: url(images/navbar_background_hover.png); color: #4a3f5d; }
+
+	div.contentBackground { width: 100%; background: url(images/main_content_background.png); height: 500px; }
+	div.content { width: 980px; margin: 0 auto; padding-top: 10px; }
+
+	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
+	h1 span.subhead { font-size: 13px; font-family: verdana; color: #555; font-weight: normal; }
+
+	ul.subnavTop { list-style: none; width: 810px; margin: 0 0 0 170px; padding: 0; }
+	ul.subnavTop li {
+		margin: 0 3px 0 0; 
+		float: left;
+		font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; font-size: 13px; color: #fff; font-weight: bold; text-align: center; }
+	ul.subnavTop li a {
+		background-color: #5a768e; background-image: url(images/topsubnav_background.png); background-repeat: no-repeat;
+		width: 140px; height: 40px; padding: 10px 0 0 0 ; 
+		display: block; text-decoration: none; color: #fff; }
+	ul.subnavTop li a.selected { background-color: #fff; background-image: url(images/topsubnav_background_selected.png); background-repeat: no-repeat; color: #000; }
+	ul.subnavTop li a:hover { background-color: #fff; background-image: url(images/topsubnav_background_hover.png); background-repeat: no-repeat; color: #5a768e;  }
+	ul.subnavTop li a span.subhead { display: block; font-size: 11px; font-weight: normal; font-style: italic; }
+
+	ul.subnavSide { list-style: none; width: 170px; margin: 0; padding: 0; float: left;}
+	ul.subnavSide li a { 
+		font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
+		font-size: 13px;
+		color: #ddd;
+		height: 24px; display: block; border-color: #859da9; border-style: solid; border-width: 1px 0 0 1px; background-color: #5a768e; text-decoration: none; padding-left: 12px; padding-top: 8px;}
+	ul.subnavSide li a.selected { background-color: #fff; border-color: #fff; 
+		font-style: italic;
+		font-weight: bold; 
+		color: #00679c;
+	}
+	ul.sidesubnavbar li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; }
+	
+	div.subnavContent { background: url(images/content_background.png); height: 500px; border: 1px solid #fff; width: 808px; float: left; }
 </style>
 </head><body>
 
-	<div style="width: 100%; position: absolute;">
-		<div style="float: left; background-color: #eeeef2; width: 50%; height: 80px;">&nbsp;</div>
-		<div style="float: right; background-color: #deeaee; width: 50%; height: 80px;">&nbsp;</div>
+	<div class="headerBackground">
+		<div class="left">&nbsp;</div>
+		<div class="right">&nbsp;</div>
 	</div>
-	<div style="width: 980px; height: 80px; background: url(images/header.png); margin: 0 auto; position: relative;">
-		<div style="text-align: right; padding-right: 40px; padding-top: 42px; font: 11px arial; color: #4a3f5d;">
+
+	<div class="header">
+		<div class="status">
 			Welcome, <strong>Joe User</strong>
 			&nbsp;|&nbsp;
 			<a href="#">My Profile</a>
 			&nbsp;|&nbsp;
 			<a href="#">Logout</a>
 			<br/>
-			<span style="font-size: 10px; color: #5a768e;">You are logged in as an <strong>Administrator</strong></span><br/>
+			<span class="subhead">You are logged in as an <strong>Administrator</strong></span><br/>
 		</div>
 	</div>
 
-	<div style="background: url(images/navbar_background.png); width: 100%; height: 32px;">
+	<div class="navbar">
 		<ul class="navbar">
 			<li><a href="#">PEOPLE</a></li>
-			<li class="selected"><a href="#">HOUSEHOLDS</a></li>
+			<li><a href="#" class="selected">HOUSEHOLDS</a></li>
 			<li><a href="#">GROUPS</a></li>
 			<li><a href="#">COMMUNICATIONS</a></li>
 			<li><a href="#">ADMINISTRATION</a></li>
 		</ul>
 	</div>
 	
-	<div style="width: 100%; background: url(images/main_content_background.png); height: 500px;">
-		<div style="width: 980px; margin: 0 auto; padding-top: 10px;">
-			<span style="font-size: 20px; font-family: verdana; color: #333;">
-				<strong>John Smith Household</strong>
-			</span>
-			<span style="font-size: 13px; font-family: verdana; color: #555;">
-				&nbsp;/&nbsp;
-				425 Western Ave, Sunnyvale
-			</span>
-		</div>
-	</div>
+	<div class="contentBackground"><div class="content">
+
+			<h1>John Smith Household
+				<span class="subhead">&nbsp;/&nbsp; 425 Western Ave, Sunnyvale</span>
+			</h1>
+
+			<ul class="subnavTop">
+				<li><a href="#">Keri Brown
+					<span class="subhead">Wife</span></a></li>
+				<li><a href="#">John Smith
+					<span class="subhead">Head</span></a></li>
+				<li><a href="#" class="selected">Jane Smith
+					<span class="subhead">Daughter</span></a></li>
+				<li><a href="#">Johnathan Smi...
+					<span class="subhead">Son</span></a></li>
+				<li><a href="#">John Smith, Jr.
+					<span class="subhead">Son</span></a></li>
+			</ul>
+			<br clear="all"/>
+
+			<ul class="subnavSide">
+				<li><a href="#" class="selected">General Profile</a></li>
+				<li><a href="#">Contact Information</a></li>
+				<li><a href="#">Groups</a></li>
+				<li><a href="#">Comments</a></li>
+				<li><a href="#">Attributes</a></li>
+			</ul>
+
+			<div class="subnavContent">
+				Testing
+			</div>
+			<br clear="all"/>
+
+			<div class="footer">
+				Developed and Maintained by the <strong>ALCF Web Development Team</strong>
+				<br/>
+				Copyright &copy; 2010
+				&nbsp;&bull;&nbsp;
+				<strong>Abundant Life Christian Fellowship</strong>, 2581 Leghorn Street, Mountain View, CA 94043
+				&nbsp;&bull;&nbsp;
+				<a href="http://www.biblegateway.com/passage/?search=Romans%2012:1-8&version=31" target="_blank">Soli Deo Gloria</a>
+			</div>
+	</div></div>
 </body></html>
