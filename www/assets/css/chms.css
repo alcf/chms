@@ -22,6 +22,14 @@
 
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
 
+	button.primary {
+		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
+		font-size: 12px; font-family: arial; color: #fff;
+		text-transform: uppercase;
+	}
+	button.primary:hover { background-image: url(/assets/images/button_primary_hover.png); }
+
+
 
 	/*** TYPOGRAPHY ***/
 
@@ -111,7 +119,37 @@
 
 	/*** SUBNAV-CONTENT ***/
 
-	div.subnavContent { background: url(/assets/images/content_background.png); min-height: 500px; border: 1px solid #fff; width: 808px; float: left; }
+	div.subnavContent { background: url(/assets/images/content_background.png); min-height: 500px; border: 1px solid #fff; width: 788px; float: left; padding: 10px; }
+
+
+
+	/*** Label/Value Pair ***/
+
+	div.lvp { clear: both; margin-bottom: 10px; }
+	div.lvp div.left { float: left; text-align: right; width: 180px; color: #5a768e; font-size: 12px; font-style: italic; font-family: trebuchet ms; position: relative; top: 2px; }
+	div.lvp div.right { margin-left: 10px; float: left; font-family: arial, helvetica; font-size: 15px; }
+
+
+	
+	/*** OTHER ***/
+
+	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; }
+	div.lastSection { margin-bottom: 0; }
+	div.section div.sectionButtons { height: 1px; text-align: right; }
+
+	div.indivGenProfPhoto div.photo { float: left; width: 160px; }
+		div.indivGenProfPhoto div.photo button { margin-top: 4px; }
+	div.indivGenProfPhoto div.content { float: left; width: 608px; }
+	div.indivGenProfPhoto div.content div.lvp div.left { width: 120px; }
+
+
+
+
+
+
+
+	/*** OLD ***/
+
 
 div.titleBar { background-color: #240; height: 32px; }
 	div.titleBar div.content { width: 980px; margin: 0 auto; }

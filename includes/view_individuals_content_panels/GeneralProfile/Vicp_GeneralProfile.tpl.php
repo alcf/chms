@@ -1,82 +1,90 @@
-<br/>
 
-<div style="background-color: #ccc; padding: 5px; ">
-	<div style="float: left; width: 75px;">
-		<a href="#general/edit_name">Edit</a>
+<div class="section indivGenProfPhoto">
+	<div class="photo">
+		<?php $_CONTROL->imgHeadShot->Render(); ?>
+		<button class="primary" onclick="document.location=''; return false;">Edit Photo</button>
 	</div>
-	<div style="float: left; width: 500px;">
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Name:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->Name); ?></div>
-		<br clear="all"/>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Formal Name:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->FormalName); ?></div>
-		<br clear="all"/>
+	<div class="content">
+		<div class="sectionButtons"><button class="primary" onclick="document.location='#general/edit_name'; return false;" href="#">Edit</button></div>
+
+		<div class="lvp">
+			<div class="left">Name</div>
+			<div class="right"><?php _p($_FORM->objPerson->Name); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
+
+		<div class="lvp">
+			<div class="left">Formal Name</div>
+			<div class="right"><?php _p($_FORM->objPerson->FormalName); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 <?php if ($_FORM->objPerson->MailingLabel) { ?>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Mailing Label:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->MailingLabel); ?></div>
-		<br clear="all"/>
+		<div class="lvp">
+			<div class="left">Mailing Label</div>
+			<div class="right"><?php _p($_FORM->objPerson->MailingLabel); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 <?php } ?>
 <?php if ($_FORM->objPerson->PriorLastNames) { ?>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Prior Last Names:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->PriorLastNames); ?></div>
-		<br clear="all"/>
+		<div class="lvp">
+			<div class="left">Prior Last Names</div>
+			<div class="right"><?php _p($_FORM->objPerson->PriorLastNames); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 <?php } ?>
 
-		<br/>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Gender:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->Gender); ?></div>
-		<br clear="all"/>
+		<div class="lvp">
+			<div class="left">Gender</div>
+			<div class="right"><?php _p($_FORM->objPerson->Gender); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 
 <?php if ($_FORM->objPerson->Birthdate) { ?>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Birthdate:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->Birthdate); ?></div>
-		<br clear="all"/>
+		<div class="lvp">
+			<div class="left">Birthdate</div>
+			<div class="right"><?php _p($_FORM->objPerson->Birthdate); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 <?php } ?>
 
 <?php if ($_FORM->objPerson->DeceasedFlag) { ?>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Deceased:</div>
-		<div style="float: left;"><?php _p($_FORM->objPerson->DateDeceased ? $_FORM->objPerson->DateDeceased->__toString('MMMM D, YYYY') : 'Yes'); ?></div>
-		<br clear="all"/>
+		<div class="lvp">
+			<div class="left">Deceased</div>
+			<div class="right"><?php _p($_FORM->objPerson->DateDeceased ? $_FORM->objPerson->DateDeceased->__toString('MMMM D, YYYY') : 'Yes'); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 <?php } ?>
 	</div>
-	<br clear="all"/>
+	<div class="cleaner">&nbsp;</div>
 </div>
 
-<br/>
+<div class="section">
+	<?php if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) { ?>
+		<div class="sectionButtons"><button class="primary" onclick="document.location='#general/view_membership'; return false;" href="#">Edit</button></div>
+	<?php } ?>
 
-<div style="background-color: #ccc; padding: 5px; ">
-	<div style="float: left; width: 75px;">
-		<?php if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) { ?>
-			<a href="#general/view_membership">Edit</a>
-		<?php } else { ?>
-			&nbsp;
-		<?php } ?>
-	</div>
-	<div style="float: left; width: 500px;">
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Membership Status:</div>
-		
-		<div style="float: left;">
+	<div class="lvp">
+		<div class="left">Membership Status</div>
+		<div class="right">
 <?php
 			_p($_FORM->objPerson->MembershipStatus);
 			if ($strInfo = $_FORM->objPerson->CurrentMembershipInfo) _p(', ' . $strInfo);
 			if ($strPriors = $_CONTROL->GetPriorMembershipText()) _p('<br/>' . $strPriors, false);
 ?>
 		</div>
-		<br clear="all"/>
+		<div class="cleaner">&nbsp;</div>
 	</div>
-	<br clear="all"/>
 </div>
 
-<br/>
-
-<div style="background-color: #ccc; padding: 5px; ">
-	<div style="float: left; width: 75px;">
-		<a href="#general/view_marriage">Marriage Info</a><br/><br/>
-		<a href="#general/view_family">Family Info</a>
+<div class="section">
+	<div class="sectionButtons">
+		<button class="primary" onclick="document.location='#general/view_marriage'; return false;" href="#">Marriage Info</button><br/>
+		<button class="primary" onclick="document.location='#general/view_family'; return false;" style="margin-top: 4px;" href="#">Family Info</button>
 	</div>
-	<div style="float: left; width: 500px;">
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Marital Status:</div>
-		<div style="float: left;">
+
+	<div class="lvp">
+		<div class="left">Marital Status</div>
+		<div class="right">
 <?php
 			_p($_FORM->objPerson->MaritalStatus);
 
@@ -101,23 +109,25 @@
 					if ($strText) _p(', ' . trim($strText), false);
 					break;
 			}
-?>			<br/>
+?>
 		</div>
-		<br clear="all"/>
+		<div class="cleaner">&nbsp;</div>
+	</div>
 
-		<br/>
-		<div style="float: left; font-weight: bold; width: 120px; text-align: right; margin-right: 10px;">Family Members:</div>
-		<div style="float: left;">
+	<div class="lvp">
+		<div class="left">Family Members</div>
+		<div class="right">
 <?php
 			foreach ($_FORM->objPerson->GetRelationshipArray(QQ::OrderBy(QQN::Relationship()->RelatedToPerson->LastName, QQN::Relationship()->RelatedToPerson->FirstName)) as $objRelationship) {
 				printf('%s: %s<br/>', $objRelationship->Relation, QApplication::HtmlEntities($objRelationship->RelatedToPerson->Name));
 			}
 ?>
 		</div>
-		<br clear="all"/>
+		<div class="cleaner">&nbsp;</div>
 	</div>
-	<br clear="all"/>
 </div>
+
+
 
 <br/>
 <div style="background-color: #ccc; padding: 5px; ">
