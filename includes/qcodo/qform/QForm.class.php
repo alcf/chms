@@ -12,7 +12,7 @@
 		 *
 		 * @var string EncryptionKey the key to use, or NULL if no encryption is required
 		 */
-		public static $EncryptionKey = null;
+		public static $EncryptionKey = 'A1cF//@Hm$\\';
 
 		/**
 		 * The QFormStateHandler to use to handle the actual serialized form.  By default,
@@ -22,7 +22,7 @@
 		 *
 		 * @var string FormStateHandler the classname of the FormState handler to use
 		 */
-		public static $FormStateHandler = 'QFormStateHandler';
+		public static $FormStateHandler = 'QSessionFormStateHandler';
 
 		/**
 		 * These are the list of core QForm JavaScript files, or JavaScript files needed by
@@ -46,8 +46,7 @@
 		 *
 		 * @var array
 		 */
-		protected $strIgnoreJavaScriptFileArray = array();
-//		protected $strIgnoreJavaScriptFileArray = array('_core');
+		protected $strIgnoreJavaScriptFileArray = array('_core');
 
 		/**
 		 * This should be very rarely used.

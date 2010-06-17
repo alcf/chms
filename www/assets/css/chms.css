@@ -37,6 +37,7 @@
 
 	div.footer {
 		width: 980px; padding: 12px 0;
+		clear: both;
 		font-family: arial, helvetica; font-size: 10px; color: #4a3f5d; text-align: center;
 	}
 

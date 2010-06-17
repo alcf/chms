@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>ALCF ChMS<?php _p($this->strPageTitle ? ' - ' . $this->strPageTitle : null); ?></title>
 <style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/chms.css");</style>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/_core/_qc_packed.js"></script>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/chms.js"></script>
 </head><body>
 <?php $this->RenderBegin(); ?>
