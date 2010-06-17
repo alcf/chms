@@ -6,36 +6,38 @@
 <style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/chms.css");</style>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/chms.js"></script>
 </head><body>
-
 <?php $this->RenderBegin(); ?>
 
-<div class="titleBar">
-	<div class="content">
-		<div class="left"><a href="/main/" title="Back to Main Menu">ALCF Church Management System</a></div>
-		<div class="right">
-			&nbsp;
+<div class="headerBackground">
+<div class="left">&nbsp;</div>
+<div class="right">&nbsp;</div>
+</div>
+
+<div class="header">
 <?php if (QApplication::$Login) { ?>
-			<strong><?php _p(QApplication::$Login->Name); ?></strong> &bull; <?php _p(QApplication::$Login->Type); ?>
-<?php } ?>
-		</div>
+	<div class="status">
+		Welcome, <strong><?php _p(QApplication::$Login->Name); ?></strong>
+		&nbsp;|&nbsp;
+		<a href="#">My Profile</a>
+		&nbsp;|&nbsp;
+		<a href="/logout/">Logout</a>
+		<br/>
+		<span class="subhead">You are logged in as a <strong><?php _p(QApplication::$Login->Type); ?></strong></span><br/>
 	</div>
+<?php } ?>
 </div>
 
 <?php if (QApplication::$Login) { ?>
-<div class="navBar">
-	<div class="content">
-		<ul>
+	<div class="navbar"><ul class="navbar">
 <?php
-			foreach (ChmsForm::$NavSectionArray as $intNavSectionId => $strNavSectionArray) {
-				$strClassName = ($intNavSectionId == $this->intNavSectionId) ? 'current' : null;
-				$strClassName .= ($intNavSectionId == count(ChmsForm::$NavSectionArray)) ? ' last' : null;
+		foreach (ChmsForm::$NavSectionArray as $intNavSectionId => $strNavSectionArray) {
+			$strClassInfo = ($intNavSectionId == $this->intNavSectionId) ? 'class="selected"' : null;
+			printf('<li><a href="%s" %s title="%s">%s</a></li>',
+				$strNavSectionArray[1], $strClassInfo, $strNavSectionArray[0], strtoupper($strNavSectionArray[0])
+			);
+		}
 ?>
-			<li class="<?php _p($strClassName); ?>"><a href="<?php _p($strNavSectionArray[1]); ?>"><?php _p($strNavSectionArray[0]); ?></a></li>
-<?php } ?>
-			<li class="right last"><a href="/logout/">Logout</a></li>
-		</ul>
-	</div>
-</div>
+	</ul></div>
 <?php } ?>
 
-<div class="mainSection">
+<div class="contentBackground"><div class="content">
