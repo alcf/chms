@@ -30,6 +30,9 @@
 		 */
 		public $objHousehold;
 
+		protected $lblHeading;
+		protected $lblSubheading;
+
 		protected $pnlHouseholdSelector;
 		protected $pnlSubnavBar;
 		protected $pnlMainContent;
@@ -54,13 +57,28 @@
 
 			$this->strPageTitle .= $this->objPerson->Name;
 
+			$this->lblHeading = new QLabel($this);
+			$this->lblSubheading = new QLabel($this);
+			$this->lblSubheading->CssClass = 'subhead';
+			$this->lblSubheading->HtmlEntities = false;
+
 			$this->pnlHouseholdSelector = new HouseholdSelectorPanel($this);
 			$this->pnlSubnavBar = new ViewIndividualSubNavPanel($this);
 
 			$this->pnlMainContent = new QPanel($this);
 			$this->pnlMainContent->AutoRenderChildren = true;
+			$this->pnlMainContent->CssClass = 'subnavContent';
 
 			$this->SetUrlHashProcessor('Form_ProcessHash');
+			$this->lblHeading_Refresh();
+		}
+
+		protected function lblHeading_Refresh() {
+			$this->lblHeading->Text = $this->objPerson->Name;
+			if ($this->objHousehold)
+				$this->lblSubheading->Text = ' &nbsp;/&nbsp; ' . QApplication::HtmlEntities($this->objHousehold->Name);
+			else
+				$this->lblSubheading->Text = ' &nbsp;/&nbsp; Individual';
 		}
 
 		protected function Form_Validate() {
@@ -119,6 +137,9 @@
 				$this->strUrlHashArgument = $strUrlHashTokens[2];
 			else
 				$this->strUrlHashArgument = null;
+
+			// Refresh the SidePanel
+			$this->pnlSubnavBar->Refresh();
 
 			// Update the Main Content Panel
 			$this->pnlMainContent->RemoveChildControls(true);

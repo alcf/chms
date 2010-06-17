@@ -20,6 +20,7 @@
 	a:hover { text-decoration: none; }
 	img { border: 0; }
 
+	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
 
 
 	/*** TYPOGRAPHY ***/

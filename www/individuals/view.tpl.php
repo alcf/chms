@@ -1,16 +1,11 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<h2>Individual: <?php _p($this->objPerson->Name); ?></h2>
+	<h1><?php $this->lblHeading->Render(); ?><?php $this->lblSubheading->Render(); ?></h1>
 
-	<div style="float: left; width: 200px; height: 500px; background-color: #ccc; ">
-		<?php $this->pnlHouseholdSelector->Render(); ?>
-	</div>
-	<div style="float: left; width: 760px; margin-left: 20px; ">
-		<div style="width: 760px; height: 50px; background-color: #aaa; ">
-			<?php $this->pnlSubnavBar->Render(); ?>
-		</div>
-		<div style="width: 740px; height: 450px; background-color: #eee; overflow: auto; padding: 0px 10px; ">
-			<?php $this->pnlMainContent->Render(); ?>
-		</div>
-	</div>
+	<?php $this->pnlHouseholdSelector->Render(); ?>
+	<div class="cleaner">&nbsp;</div>
+
+	<?php $this->pnlSubnavBar->Render(); ?>
+	<?php $this->pnlMainContent->Render(); ?>
+
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

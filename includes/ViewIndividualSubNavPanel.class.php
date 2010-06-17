@@ -8,7 +8,6 @@
 				throw $objExc;
 			}
 
-			$this->strCssClass = 'viewIndividualSubnavPanel';
 			$this->strTemplate = dirname(__FILE__) . '/ViewIndividualSubNavPanel.tpl.php';
 		}
 	}

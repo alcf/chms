@@ -12,6 +12,8 @@
 			}
 
 			$this->dtrHouseholdParticipation = new QDataRepeater($this);
+			$this->dtrHouseholdParticipation->TagName = 'ul';
+			$this->dtrHouseholdParticipation->CssClass = 'subnavTop';
 			$this->lstHouseholds = new QListBox($this);
 			$this->Refresh();
 		}
