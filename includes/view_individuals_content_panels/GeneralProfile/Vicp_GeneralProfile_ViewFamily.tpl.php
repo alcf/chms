@@ -1,7 +1,5 @@
-<h3>Family Relationships</h3>
+<h3>Family Relationships<?php $_CONTROL->btnAdd->Render('CssClass=primary','Text=Add Relationship'); ?></h3>
 
-<?php $_CONTROL->btnAdd->Render(); ?>
-
-<br/><br/>
-
+<div class="section">
 <?php $_CONTROL->dtgRelationships->Render();?>
+</div>

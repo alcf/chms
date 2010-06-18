@@ -9,11 +9,11 @@
 			$this->dtgMarriages = new QDataGrid($this);
 			$this->dtgMarriages->AlternateRowStyle->CssClass = 'alternate';
 
-			$this->dtgMarriages->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgMarriages->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=50px'));
 
-			$this->dtgMarriages->AddColumn(new QDataGridColumn('Married To', '<?= $_CONTROL->ParentControl->RenderMarriedTo($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgMarriages->AddColumn(new QDataGridColumn('Married On', '<?= $_CONTROL->ParentControl->RenderMarriedOn($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgMarriages->AddColumn(new QDataGridColumn('Status', '<?= $_ITEM->MarriageStatus; ?>'));
+			$this->dtgMarriages->AddColumn(new QDataGridColumn('Married To', '<?= $_CONTROL->ParentControl->RenderMarriedTo($_ITEM); ?>', 'HtmlEntities=false', 'Width=200px'));
+			$this->dtgMarriages->AddColumn(new QDataGridColumn('Married On', '<?= $_CONTROL->ParentControl->RenderMarriedOn($_ITEM); ?>', 'HtmlEntities=false', 'Width=250px'));
+			$this->dtgMarriages->AddColumn(new QDataGridColumn('Status', '<?= $_ITEM->MarriageStatus; ?>', 'Width=100px'));
 			$this->dtgMarriages->SetDataBinder('dtgMarriages_Bind', $this);
 
 			$this->lblStatus = new QLabel($this);
@@ -24,7 +24,6 @@
 				case MaritalStatusType::NotSpecified:
 				case MaritalStatusType::Single:
 					$this->btnAdd = new QButton($this);
-					$this->btnAdd->Text = 'Add a New Marriage Record';
 					$this->btnAdd->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAdd_Click'));
 
 					if (!$this->objPerson->CountMarriages()) {
@@ -39,7 +38,7 @@
 
 		public function btnToggleSingle_Refresh() {
 			$this->btnToggleSingle->Text = ($this->objPerson->MaritalStatusTypeId == MaritalStatusType::NotSpecified) ?
-				'Switch Status to Single' : 'Switch Status to Not Specified';
+				'Set Status: Single' : 'Set Status: Not Specified';
 		}
 
 		public function btnToggleSingle_Click() {

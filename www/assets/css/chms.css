@@ -48,8 +48,8 @@
 	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
 	h1 span.subhead { font-size: 13px; font-family: verdana; color: #555; font-weight: normal; }
 	h3 { color: #636; font-family: verdana; font-size: 14px; padding: 0; margin: 4px 0 14px 0; }
-	h3 button.primary { float: right; }
-	h3 input.primary { float: right; }
+	h3 button.primary { float: right; margin-left: 10px; }
+	h3 input.primary { float: right; margin-left: 10px; }
 
 
 
@@ -158,6 +158,7 @@
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
 	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
 	div.renderWithName div.right label { font-size: 12px; }
+	div.renderWithName div.right span { font-size: 14px; color: #444; }
 
 
 

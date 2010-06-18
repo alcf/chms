@@ -73,6 +73,9 @@
 			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 			$this->lstGender->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 
+			$this->txtFirstName->Width = '200px';
+			$this->txtLastName->Width = '200px';
+			
 			$this->dtgResults = new QDataGrid($this);
 			$this->dtgResults->Name = '&nbsp;';
 			$this->dtgResults->AlternateRowStyle->CssClass = 'alternate';

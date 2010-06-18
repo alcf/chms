@@ -1,5 +1,6 @@
 <h3><?php _p($_CONTROL->blnEditMode ? 'Edit a' : 'Create New'); ?> Marriage Record</h3>
 
+<div class="section">
 <?php $_CONTROL->lstStatus->RenderWithName(); ?>
 
 <?php
@@ -11,7 +12,9 @@
 ?>
 
 <?php if ($_CONTROL->lblMarriedTo) $_CONTROL->lblMarriedTo->RenderWithName(); else $_CONTROL->pnlMarriedTo->Render(); ?>
+</div>
 
-<br clear="all"/>
-<?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
+<div class="buttonBar">
+<?php $_CONTROL->btnSave->Render('CssClass=primary'); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
 <?php if ($_CONTROL->btnDelete) $_CONTROL->btnDelete->Render(); ?>
+</div>

@@ -13,7 +13,6 @@
 			$this->dtgRelationships->SetDataBinder('dtgRelationships_Bind', $this);
 
 			$this->btnAdd = new QButton($this);
-			$this->btnAdd->Text = 'Add a New Relationship';
 			$this->btnAdd->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAdd_Click'));
 		}
 

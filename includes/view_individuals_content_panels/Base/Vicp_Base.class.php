@@ -34,6 +34,7 @@
 
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
+			$this->btnSave->CssClass = 'primary';
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			$this->btnSave->CausesValidation = $this;
 
