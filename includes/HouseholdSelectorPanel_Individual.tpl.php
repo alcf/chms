@@ -1,1 +1,3 @@
-<div style="background-color: black; color: white;">Individual</div>
+<ul class="subnavTop">
+	<li><a href="#" onclick="return false;" class="selected"><?php _p($_FORM->objPerson->Name); ?></a></li>
+</ul>

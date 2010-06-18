@@ -30,6 +30,6 @@
 ?>
 </div>
 <br/>
-<div class="saveCancel">
+<div class="buttonBar">
 <?php $_CONTROL->btnSave->Render('CssClass=primary'); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
 </div>
