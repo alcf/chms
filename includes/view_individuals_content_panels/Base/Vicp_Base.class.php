@@ -39,7 +39,7 @@
 
 			$this->btnCancel = new QLinkButton($this);
 			$this->btnCancel->Text = 'Cancel';
-			$this->btnCancel->ForeColor = '#666666';
+			$this->btnCancel->CssClass = 'cancel';
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 

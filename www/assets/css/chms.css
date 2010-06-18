@@ -21,31 +21,35 @@
 	img { border: 0; }
 
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
+	span.na { color: #aaa; font-style: italic; }
 
 	button.primary {
 		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
 		font-size: 12px; font-family: arial; color: #fff;
 		text-transform: uppercase;
 	}
-	button.primary:hover { background-image: url(/assets/images/button_primary_hover.png); }
+	button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
 
 	input.primary {
 		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
 		font-size: 12px; font-family: arial; color: #fff;
 		text-transform: uppercase;
 	}
-	input.primary:hover { background-image: url(/assets/images/button_primary_hover.png); }
+	input.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
 
-	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; }
+	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; }
 	input.textbox:focus { background-color: #fff; }
 	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
+	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
 
 	/*** TYPOGRAPHY ***/
 
 	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
 	h1 span.subhead { font-size: 13px; font-family: verdana; color: #555; font-weight: normal; }
-	h3 { color: #662d91; font-family: verdana; font-size: 14px; padding: 0; margin: 4px 0 14px 10px; }
+	h3 { color: #636; font-family: verdana; font-size: 14px; padding: 0; margin: 4px 0 14px 0; }
+	h3 button.primary { float: right; }
+	h3 input.primary { float: right; }
 
 
 
@@ -138,7 +142,8 @@
 
 	div.lvp { clear: both; margin-bottom: 10px; }
 	div.lvp div.left { float: left; text-align: right; width: 180px; color: #5a768e; font-size: 12px; font-style: italic; font-family: trebuchet ms; position: relative; top: 2px; }
-	div.lvp div.right { margin-left: 10px; float: left; font-family: arial, helvetica; font-size: 15px; }
+	div.lvp div.right { margin-left: 10px; float: left; font-family: arial, helvetica; font-size: 15px; color: #444; }
+	div.lvp div.right ul { margin: 0; padding-left: 14px; }
 
 
 	
@@ -152,13 +157,19 @@
 	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
 	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
+	div.renderWithName div.right label { font-size: 12px; }
 
 
 
 	/*** OTHER ***/
 
 	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; }
+	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
+	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
+
 	div.buttonBar { font-family: arial; font-size: 13px; text-align: right; }
+	div.buttonBar a.delete { margin-left: 25px; color: #966; font-size: 11px; }
+	div.buttonBar a.cancel { color: #666; }
 	div.lastSection { margin-bottom: 0; }
 	div.section div.sectionButtons { height: 1px; text-align: right; }
 

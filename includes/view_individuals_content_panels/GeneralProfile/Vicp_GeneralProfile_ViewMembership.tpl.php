@@ -1,9 +1,6 @@
-<h3>Membership Information</h3>
+<h1>Membership Information</h1>
 
-<p>Membership Status: <strong><?php _p($_FORM->objPerson->MembershipStatus); ?></strong></p>
+<h3><span style="font-weight: normal;">Membership Status:</span> <?php _p($_FORM->objPerson->MembershipStatus); ?>
+	<?php if ($_CONTROL->btnAdd) $_CONTROL->btnAdd->Render('CssClass=primary','Text=Add New Membership'); ?></h3>
 
-<?php if ($_CONTROL->btnAdd) $_CONTROL->btnAdd->Render(); ?>
-
-<br/><br/>
-
-<?php $_CONTROL->dtgMemberships->Render();?>
+<div class="section"><?php $_CONTROL->dtgMemberships->Render();?></div>

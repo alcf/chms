@@ -26,7 +26,6 @@
 			if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus) &&
 				(!$this->objPerson->CurrentMembershipInfo)) {
 				$this->btnAdd = new QButton($this);
-				$this->btnAdd->Text = 'Add a New Membership Entry';
 				$this->btnAdd->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAdd_Click'));
 			}
 		}
