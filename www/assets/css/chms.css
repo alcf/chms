@@ -29,12 +29,23 @@
 	}
 	button.primary:hover { background-image: url(/assets/images/button_primary_hover.png); }
 
+	input.primary {
+		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
+		font-size: 12px; font-family: arial; color: #fff;
+		text-transform: uppercase;
+	}
+	input.primary:hover { background-image: url(/assets/images/button_primary_hover.png); }
 
+	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; }
+	input.textbox:focus { background-color: #fff; }
+	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
+	select.listbox:focus { background-color: #fff; }
 
 	/*** TYPOGRAPHY ***/
 
 	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
 	h1 span.subhead { font-size: 13px; font-family: verdana; color: #555; font-weight: normal; }
+	h3 { color: #662d91; font-family: verdana; font-size: 14px; padding: 0; margin: 4px 0 14px 10px; }
 
 
 
@@ -131,9 +142,23 @@
 
 
 	
+	/*** CONTROL RENDERERS ***/
+
+	div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
+	div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
+	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #5a768e; font-size: 12px; font-style: italic; font-family: trebuchet ms; position: relative; top: 2px; }
+	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; }
+	div.renderWithName div.required:after {content: " *"; } 
+	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
+	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
+	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
+
+
+
 	/*** OTHER ***/
 
 	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; }
+	div.saveCancel { font-family: arial; font-size: 13px; }
 	div.lastSection { margin-bottom: 0; }
 	div.section div.sectionButtons { height: 1px; text-align: right; }
 
@@ -192,14 +217,6 @@ ul.groupsPanel li.selected a { color: #000; background-color: #ff9; }
 table.groupList { float: left; margin-left: 20px; }
 
 
-div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
-div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-	div.renderWithName div.left { float: left; width: 200px; margin-right: 25px; }
-	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; }
-	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
-
-	div.renderWithName div.right { float: left; }
-	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
 
 	/* QDialogBox */
 	div.dialogbox { border: 4px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; }

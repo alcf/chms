@@ -1,5 +1,6 @@
-<h3>Name Information</h3>
+<h3>Edit Name Information</h3>
 
+<div class="section">
 <?php $_CONTROL->lstTitle->RenderWithName(); ?>
 <?php $_CONTROL->txtFirstName->RenderWithName(); ?>
 <?php $_CONTROL->txtMiddleName->RenderWithName(); ?>
@@ -10,9 +11,12 @@
 <?php $_CONTROL->txtPriorLastNames->RenderWithName(); ?>
 <?php $_CONTROL->txtMailingLabel->RenderWithName(); ?>
 <?php $_CONTROL->lblMailingLabel->RenderWithName(); ?>
+</div>
+<br/>
 
-<h3>Biographical Information</h3>
+<h3>Edit Biographical Information</h3>
 
+<div class="section">
 <?php $_CONTROL->lstGender->RenderWithName(); ?>
 <?php
 	$_CONTROL->dtxDateOfBirth->HtmlAfter = '&nbsp;' . $_CONTROL->calDateOfBirth->Render(false);
@@ -24,7 +28,8 @@
 	$_CONTROL->dtxDateDeceased->HtmlAfter = '&nbsp;' . $_CONTROL->calDateDeceased->Render(false);
 	$_CONTROL->dtxDateDeceased->RenderWithName();
 ?>
-
-<br clear="all"/>
-
-<?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
+</div>
+<br/>
+<div class="saveCancel">
+<?php $_CONTROL->btnSave->Render('CssClass=primary'); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
+</div>
