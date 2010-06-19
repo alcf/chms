@@ -31,6 +31,6 @@
 		$txtPhone->Name = 'Alternate Home Phone';
 	}
 ?>
-<div style="float: left; width: 420px;"><?php $txtPhone->RenderWithName(); ?></div>
+<div style="float: left; width: 420px;"><?php $txtPhone->RenderWithName('Width=200px'); ?></div>
 <div style="float: left; padding-top: 4px;"><?php $radPhone->Render(); ?></div>
 <br clear="all"/>

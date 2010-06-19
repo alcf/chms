@@ -4,6 +4,7 @@
 	Home Address
 </h3>
 
+<div class="section">
 <?php $_CONTROL->txtAddress1->RenderWithName('Required=true'); ?>
 <?php $_CONTROL->txtAddress2->RenderWithName(); ?>
 <?php $_CONTROL->txtAddress3->RenderWithName(); ?>
@@ -12,13 +13,15 @@
 <?php $_CONTROL->txtZipCode->RenderWithName(); ?>
 <br/>
 <?php $_CONTROL->chkInvalidFlag->RenderWithName('Name=Invalid?','Text=Check if this is an INVALID address'); ?>
+</div>
 
-<h3>Phone Numbers</h3>
-<?php $_CONTROL->dtrPhones->Render(); ?>
+<h3>Phone Number(s) for Home Address</h3>
+<div class="section">
+	<div class="sectionButtons"><button class="primary" <?php $_CONTROL->pxyAddPhone->RenderAsEvents(); ?>>Add Another</button></div>
+	<?php $_CONTROL->dtrPhones->Render(); ?>
+</div>
 
-<a href="" <?php $_CONTROL->pxyAddPhone->RenderAsEvents(); ?>>Add Another</a>
-<br/>
-
-<br clear="all"/>
-<?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
+<div class="buttonBar">
+<?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
 <?php if ($_CONTROL->btnDelete) $_CONTROL->btnDelete->Render(); ?>
+</div>

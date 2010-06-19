@@ -1,5 +1,6 @@
-<h3><?php _p($_CONTROL->mctAddress->EditMode ? 'Edit a' : 'Create New'); ?> Address Record</h3>
+<h3><?php _p($_CONTROL->mctAddress->EditMode ? 'Edit an' : 'Create New'); ?> Address Record</h3>
 
+<div class="section">
 <?php _p($_CONTROL->lstAddressType->RenderWithName('Name=Type')); ?>
 <?php _p($_CONTROL->calDateUntilWhen->RenderWithName('Name=Until')); ?>
 <?php _p($_CONTROL->chkCurrentFlag->RenderWithName('Name=Current?','Text=Check if this is a current address')); ?>
@@ -10,7 +11,9 @@
 <?php _p($_CONTROL->txtCity->RenderWithName('Required=true')); ?>
 <?php _p($_CONTROL->lstState->RenderWithName('Required=true')); ?>
 <?php _p($_CONTROL->txtZipCode->RenderWithName()); ?>
+</div>
 
-<br clear="all"/>
+<div class="buttonBar">
 <?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
 <?php if ($_CONTROL->btnDelete) $_CONTROL->btnDelete->Render(); ?>
+</div>

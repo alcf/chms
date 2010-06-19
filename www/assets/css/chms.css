@@ -48,8 +48,10 @@
 	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
 	h1 span.subhead { font-size: 13px; font-family: verdana; color: #555; font-weight: normal; }
 	h3 { color: #636; font-family: verdana; font-size: 14px; padding: 0; margin: 4px 0 14px 0; }
+	h3 span.subhead { font-size: 11px; font-weight: normal; color: #555; }
 	h3 button.primary { float: right; margin-left: 10px; }
 	h3 input.primary { float: right; margin-left: 10px; }
+	h3 .moveUp { margin-top: -16px; }
 
 
 
@@ -195,6 +197,7 @@
 		table.datagrid td { padding: 5px; }
 			table.datagrid td a { color: #000; }
 			table.datagrid td a:hover { color: #000; text-decoration: none; }
+			table.datagrid td span.subtext { color: #666; font-style: italic; }
 		table.datagrid tfoot { } 
 
 
@@ -250,8 +253,10 @@ table.groupList { float: left; margin-left: 20px; }
 
 	/* QDateTimePicker */
 	span.datetimepicker { }
-		span.datetimepicker select { font: 12px 'Arial', 'Helvetica'; background-color: #eef; border: 1px solid #aaf; }
-		span.datetimepicker select:focus { background-color: #fff; border-color: #aaf; }
+		span.datetimepicker select { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
+		span.datetimepicker select:enabled { color: #444; }
+		span.datetimepicker select:focus { background-color: #fff; }
+
 		span.datetimepicker select.month { width: 55px; }
 		span.datetimepicker select.day { width: 45px; margin-left: 8px; }
 		span.datetimepicker select.year { width: 60px; margin-left: 8px; }

@@ -18,7 +18,7 @@
 		<div class="left">Stewardship Receipt Address</div>
 		<div class="right">
 <?php
-	if ($_CONTROL->objPerson->MailingAddress)
+	if ($_CONTROL->objPerson->StewardshipAddress)
 		_p($_CONTROL->objPerson->StewardshipAddress->Label . ' (' .$_CONTROL->objPerson->StewardshipAddress->ShortName . ')');
 	else
 		_p('<span class="na">None Specified</span>', false);
@@ -42,8 +42,9 @@
 <br/>
 
 <?php if ($_FORM->objHousehold) { ?>
-	<h3>Home Addresses/Phone Information for <?php _p($_FORM->objHousehold->Name); ?>
-		<button class="primary" onclick="document.location='#contact/edit_home_address'; return false;">Add New</button></h3>
+	<h3><?php _p($_FORM->objHousehold->Name); ?> Contact Information
+		<br/><span class="subhead">Changes to household-wide contact information will affect the entire household</span>
+		<button class="primary moveUp" onclick="document.location='#contact/edit_home_address'; return false;">Add New</button></h3>
 	<div class="section">
 		<?php $_CONTROL->dtgHomeAddresses->Render(); ?>
 	</div>

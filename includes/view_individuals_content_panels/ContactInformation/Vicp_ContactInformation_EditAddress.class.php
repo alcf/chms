@@ -31,8 +31,7 @@
 
 				$this->btnDelete = new QLinkButton($this);
 				$this->btnDelete->Text = 'Delete';
-				$this->btnDelete->ForeColor = '#666666';
-				$this->btnDelete->SetCustomStyle('margin-left', '200px');
+				$this->btnDelete->CssClass = 'delete';
 				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to permenantly DELETE this record?'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
