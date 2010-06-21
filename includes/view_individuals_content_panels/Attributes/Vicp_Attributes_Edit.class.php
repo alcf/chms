@@ -19,10 +19,12 @@
 				$this->objAttributeValue->AttributeId = $this->strUrlHashArgument;
 				$this->objAttributeValue->Person = $this->objPerson;
 			} else {
-				$this->btnDelete = new QButton($this);
+				$this->btnDelete = new QLinkButton($this);
 				$this->btnDelete->Text = 'Delete';
+				$this->btnDelete->CssClass = 'delete';
 				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to DELETE this attribute?'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
+				$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 			}
 
 			switch ($this->objAttributeValue->Attribute->AttributeDataTypeId) {

@@ -1,4 +1,6 @@
-<h3>Attributes</h3>
+<h3>Other Fields and Attributes
+	<button class="primary" onclick="document.location='#attributes/add'; return false;">Add</button></h3>
 
-<p><a href="#attributes/add">Add a New Attribute</a></p>
+<div class="section">
 <?php $_CONTROL->dtgAttributes->Render(); ?>
+</div>
