@@ -43,9 +43,9 @@
 
 			$this->dtgParticipations = new QDataGrid($this->pnlContent);
 			$this->dtgParticipations->AlternateRowStyle->CssClass = 'alternate';
-			$this->dtgParticipations->AddColumn(new QDataGridColumn('Role', '<?= $_CONTROL->ParentControl->objDelegate->RenderRole($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Started', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateStart($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Ended', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateEnd($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgParticipations->AddColumn(new QDataGridColumn('Role', '<?= $_CONTROL->ParentControl->objDelegate->RenderRole($_ITEM); ?>', 'HtmlEntities=false', 'Width=100px'));
+			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Started', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateStart($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
+			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Ended', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateEnd($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgParticipations->SetDataBinder('dtgParticipations_Bind', $this);
 
 			$this->pxyEdit = new QControlProxy($this->pnlContent);
@@ -85,14 +85,18 @@
 			$this->btnEditOkay->Text = 'Ok';
 			$this->btnEditOkay->CausesValidation = QCausesValidation::SiblingsAndChildren;
 			$this->btnEditOkay->AddAction(new QClickEvent(), new QAjaxControlAction($this->pnlContent, 'btnEditOkay_Click'));
+			$this->btnEditOkay->AddAction(new QClickEvent(), new QTerminateAction());
 
-			$this->btnEditCancel = new QButton($this->dlgEdit);
+			$this->btnEditCancel = new QLinkButton($this->dlgEdit);
 			$this->btnEditCancel->Text = 'Cancel';
 			$this->btnEditCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this->pnlContent, 'btnEditCancel_Click'));
+			$this->btnEditCancel->AddAction(new QClickEvent(), new QTerminateAction());
 
-			$this->btnEditDelete = new QButton($this->dlgEdit);
+			$this->btnEditDelete = new QLinkButton($this->dlgEdit);
 			$this->btnEditDelete->Text = 'Delete';
+			$this->btnEditDelete->SetCustomStyle('margin-left', '0');
 			$this->btnEditDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this->pnlContent, 'btnEditDelete_Click'));
+			$this->btnEditDelete->AddAction(new QClickEvent(), new QTerminateAction());
 		}
 
 		public function DisplayGroupName() {
@@ -100,7 +104,7 @@
 			$strAncestryArray = $objGroup->GetGroupNameHierarchyArray();
 
 			if (count($strAncestryArray)) {
-				return sprintf('<span style="font-size: 10px; color: #666;">%s</span> %s',
+				return sprintf('%s &gt; <strong>%s</strong>',
 					QApplication::HtmlEntities(implode(' > ', $strAncestryArray)),
 					QApplication::HtmlEntities($objGroup->Name));
 			} else {

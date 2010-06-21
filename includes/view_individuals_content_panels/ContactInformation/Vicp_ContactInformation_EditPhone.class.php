@@ -23,8 +23,7 @@
 
 				$this->btnDelete = new QLinkButton($this);
 				$this->btnDelete->Text = 'Delete';
-				$this->btnDelete->ForeColor = '#666666';
-				$this->btnDelete->SetCustomStyle('margin-left', '200px');
+				$this->btnDelete->CssClass = 'delete';
 				if ($this->objPerson->PrimaryPhoneId == $this->mctPhone->Phone->Id) {
 					$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('You are about to delete the PRIMARY phone nubmer.  Are you SURE you want to permenantly DELETE this record?'));
 				} else {

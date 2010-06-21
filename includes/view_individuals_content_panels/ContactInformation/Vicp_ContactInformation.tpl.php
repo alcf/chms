@@ -65,8 +65,8 @@
 	<h3>Email Addresses<button class="primary" onclick="document.location='#contact/edit_email'; return false;">Add Email</button></h3>
 	<div class="section"><?php $_CONTROL->dtgEmails->Render(); ?></div>	
 </div>
-
 <div class="cleaner">&nbsp;</div>
+<br/>
 
 <h3>Other Contact Info for <?php _p($_FORM->objPerson->Name); ?>
 	<button class="primary" onclick="document.location='#contact/edit_other'; return false;">Add New</button></h3>

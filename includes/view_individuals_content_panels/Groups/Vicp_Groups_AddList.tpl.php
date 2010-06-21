@@ -1,4 +1,9 @@
 <h3>Add <?php _p($_FORM->objPerson->Name); ?> to a Communication Lists</h3>
-<?php $_CONTROL->lstCommunicationLists->RenderWithName(); ?>
 
-<p><?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?></p>
+<div class="section">
+<?php $_CONTROL->lstCommunicationLists->RenderWithName(); ?>
+</div>
+
+<div class="buttonBar">
+<?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
+</div>

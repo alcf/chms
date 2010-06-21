@@ -8,6 +8,11 @@
 	$_CONTROL->ParentControl->objDelegate->dtxEditEnd->RenderWithName();
 ?>
 
-<?php $_CONTROL->ParentControl->objDelegate->btnEditOkay->Render(); ?>
-<?php $_CONTROL->ParentControl->objDelegate->btnEditCancel->Render(); ?>
-<?php $_CONTROL->ParentControl->objDelegate->btnEditDelete->Render(); ?>
+<div class="buttonBar">
+<?php $_CONTROL->ParentControl->objDelegate->btnEditOkay->Render('CssClass=primary'); ?>
+
+&nbsp;or&nbsp;
+
+<?php $_CONTROL->ParentControl->objDelegate->btnEditCancel->Render('CssClass=cancel'); ?>
+<?php $_CONTROL->ParentControl->objDelegate->btnEditDelete->Render('CssClass=delete'); ?>
+</div>

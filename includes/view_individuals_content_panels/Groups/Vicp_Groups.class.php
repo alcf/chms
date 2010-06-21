@@ -8,16 +8,16 @@
 			$this->dtgGroups = new QDataGrid($this);
 			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Ministry', '<?= $_ITEM->Ministry->Name; ?>'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Group', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Ministry', '<?= $_ITEM->Ministry->Name; ?>', 'Width=150px'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Group', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false', 'Width=300px'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=125px'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=155px'));
 
 			$this->dtgCommunicationLists = new CommunicationListDataGrid($this);
 			$this->dtgCommunicationLists->AlternateRowStyle->CssClass = 'alternate';
-			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Unsubscribe', '<?= $_CONTROL->ParentControl->RenderUnsubscribe($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgCommunicationLists->MetaAddColumn('Name');
-			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->Token; ?>@groups.alcf.net'));
+			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Unsubscribe', '<?= $_CONTROL->ParentControl->RenderUnsubscribe($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px'));
+			$this->dtgCommunicationLists->MetaAddColumn('Name', 'Width=250px');
+			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->Token; ?>@groups.alcf.net', 'Width=370px'));
 			$this->dtgCommunicationLists->SetDataBinder('dtgCommunicationLists_Bind', $this);
 
 			$this->pxyUnsubscribe = new QControlProxy($this);
@@ -52,17 +52,13 @@
 
 		public function RenderGroupName(Group $objGroup) {
 			$intGroupId = $objGroup->Id;
-			if ($blnConfidentialFlag = $objGroup->ConfidentialFlag) {
-				$objStyle = new QDataGridRowStyle();
-				$objStyle->BackColor = '#999';
-				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, $objStyle);
-			} else {
-				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, null);
-			}
 			$strToReturn = QApplication::HtmlEntities($objGroup->Name);
+			$blnConfidentialFlag = $objGroup->ConfidentialFlag;
 			while ($objGroup = $objGroup->ParentGroup)
 				$strToReturn = '<span style="font-size: 10px; color: #666;">' . QApplication::HtmlEntities($objGroup->Name) . ' &gt; </span>' . $strToReturn;
-			return sprintf('<a href="#groups/edit_participation/%s">%s</a> %s', $intGroupId, $strToReturn, ($blnConfidentialFlag ? '[CONFIDENTIAL]' : null));
+			return sprintf('<a href="#groups/edit_participation/%s">%s</a> %s',
+				$intGroupId, $strToReturn,
+				($blnConfidentialFlag ? '<img src="/assets/images/confidential.png" title="Confidential Group" style="width: 89px; height: 13px; position: relative; top: 2px;"/>' : null));
 		}
 
 		public function RenderGroupRoles(Group $objGroup) {

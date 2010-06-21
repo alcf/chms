@@ -11,6 +11,7 @@
 				$this->lstMinistries->AddItem($objMinistry->Name, $objMinistry->Id);
 
 			$this->dtgGroups = new QDataGrid($this);
+			$this->dtgGroups->Name = '&nbsp;';
 			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>'));
@@ -21,7 +22,7 @@
 
 		public function dtgGroups_Bind() {
 			if ($this->lstMinistries->SelectedValue)
-				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryId($this->lstMinistries->SelectedValue);
+				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryIdAndConfidentiality($this->lstMinistries->SelectedValue, true);
 			else
 				$this->dtgGroups->DataSource = array();
 		}
