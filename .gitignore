@@ -7,3 +7,4 @@ configuration.local
 /file_assets/head_shots
 /mybin
 /qcodo_log/*.log.txt
+/error_log

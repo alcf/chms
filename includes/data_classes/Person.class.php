@@ -313,11 +313,16 @@
 			return $objHeadShot;
 		}
 
-		public function SetCurrentHeadShot(HeadShot $objHeadShot) {
-			if ($objHeadShot->PersonId != $this->intId)
-				throw new QCallerException('Cannot set Current headshot for a headshot that does not belong to this person');
-			$this->CurrentHeadShot = $objHeadShot;
-			$this->Save();
+		public function SetCurrentHeadShot(HeadShot $objHeadShot = null) {
+			if (!$objHeadShot) {
+				$this->CurrentHeadShotId = null;
+				$this->Save();
+			} else {
+				if ($objHeadShot->PersonId != $this->intId)
+					throw new QCallerException('Cannot set Current headshot for a headshot that does not belong to this person');
+				$this->CurrentHeadShot = $objHeadShot;
+				$this->Save();
+			}
 		}
 
 		/**
