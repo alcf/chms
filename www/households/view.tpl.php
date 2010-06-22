@@ -1,8 +1,9 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-<h2>Household: <?php _p($this->objHousehold->Name); ?></h2>
+<h1><?php _p($this->objHousehold->Name); ?></h1>
 
-<h3>Household Members</h3>
-<p><a href="/households/edit_roles.php/<?php _p($this->objHousehold->Id); ?>">Edit Household Roles</a></p>
-<?php $this->dtgMembers->Render(); ?>
+<h3>Household Members
+	<button class="primary" onclick="document.location = '/households/edit_roles.php/<?php _p($this->objHousehold->Id); ?>'; return false;" title="Edit Roles">Edit Roles</button></h3>
+<div class="section"><?php $this->dtgMembers->Render(); ?></div>
+
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

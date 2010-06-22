@@ -14,7 +14,7 @@
 			$this->dtgHouseholds->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgHouseholds->ItemsPerPage = 25;
 			$this->dtgHouseholds->MetaAddColumn('Name','Html=<?=$_FORM->RenderHouseholdName($_ITEM); ?>', 'HtmlEntities=false', 'Width=280px');
-			$this->dtgHouseholds->MetaAddColumn('Members', 'Width=280px');
+			$this->dtgHouseholds->MetaAddColumn('Members', 'Width=650px');
 		}
 		
 		public function RenderHouseholdName(Household $objHousehold) {

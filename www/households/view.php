@@ -22,10 +22,10 @@
 
 			// Setup DataGrids
 			$this->dtgMembers = new HouseholdParticipationDataGrid($this);
-			$this->dtgMembers->MetaAddColumn('Role');
-			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'HtmlEntities=false');
-			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryEmail->Address, 'Name=Email');
-			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryPhone->Number, 'Name=Phone');
+			$this->dtgMembers->MetaAddColumn('Role', 'Width=80px');
+			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'HtmlEntities=false', 'Width=300px');
+			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryEmail->Address, 'Name=Email', 'Width=250px');
+			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryPhone->Number, 'Name=Phone', 'Width=290px');
 			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind');
 		}
