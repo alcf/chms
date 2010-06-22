@@ -28,6 +28,7 @@
 		public $dtgMembers;
 
 		public $lblMinistry;
+		public $lblType;
 		public $lblConfidential;
 		public $lblCategory;
 		public $lblEmail;
@@ -135,6 +136,10 @@
 			$this->lblMinistry->Name = 'Ministry';
 			$this->lblMinistry_Refresh();
 
+			$this->lblType = new QLabel($this);
+			$this->lblType->Name = 'Group Type';
+			$this->lblType_Refresh();
+
 			$this->lblEmail = new QLabel($this);
 			$this->lblEmail->Name = 'Email';
 			$this->lblEmail_Refresh();
@@ -152,6 +157,8 @@
 			$this->lblCategory_Refresh();
 
 			$this->dtgMembers = new PersonDataGrid($this);
+			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
+			$this->dtgMembers->ItemsPerPage = 80;
 			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
 			if ($blnDisplayEditParticipantColumn)
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
@@ -250,6 +257,10 @@
 
 		public function lblMinistry_Refresh() {
 			$this->lblMinistry->Text = $this->objGroup->Ministry->Name;
+		}
+
+		public function lblType_Refresh() {
+			$this->lblType->Text = GroupType::$NameArray[$this->objGroup->GroupTypeId];
 		}
 
 		public function lblEmail_Refresh() {

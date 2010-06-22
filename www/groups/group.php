@@ -7,7 +7,7 @@
 		protected $intNavSectionId = ChmsForm::NavSectionGroups;
 
 		public $objGroup;
-		protected $lblGroup;
+		protected $lblMinistry;
 		protected $pnlGroups;
 		protected $pnlContent;
 
@@ -20,8 +20,8 @@
 			$this->pnlGroups->CssClass = 'subnavSide';
 			$this->pnlGroups->AutoRenderChildren = true;
 
-			$this->lblGroup = new QLabel($this);
-			$this->lblGroup->TagName = 'h2';
+			$this->lblMinistry = new QLabel($this);
+			$this->lblMinistry->TagName = 'h1';
 
 			$this->pnlContent = new QPanel($this);
 			$this->pnlContent->AutoRenderChildren = true;
@@ -115,7 +115,7 @@
 				$this->btnViewRoles_Refresh();
 			}
 
-			$this->lblGroup_Refresh();
+			$this->lblMinistry_Refresh();
 			$this->pnlContent_Refresh($strUrlHashTokens);
 		}
 
@@ -152,10 +152,10 @@
 			}
 		}
 
-		public function lblGroup_Refresh() {
+		public function lblMinistry_Refresh() {
 			if ($this->objGroup &&
-				($this->lblGroup->Text != $this->objGroup->Name)) {
-				$this->lblGroup->Text = $this->objGroup->Name;
+				($this->lblMinistry->Text != $this->objGroup->Ministry->Name)) {
+				$this->lblMinistry->Text = $this->objGroup->Ministry->Name;
 			}
 		}
 

@@ -1,15 +1,22 @@
-<?php $_CONTROL->lblMinistry->RenderWithName(); ?>
-<?php $_CONTROL->lblCategory->RenderWithName(); ?>
-<?php $_CONTROL->lblConfidential->RenderWithName(); ?>
-<?php $_CONTROL->lblEmail->RenderWithName(); ?>
+<h3>
+	<?php _p($_CONTROL->objGroup->Name); ?>
+	<?php if ($_CONTROL->objGroup->IsLoginCanEdit(QApplication::$Login)) {?>
+		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/edit'; return false;">Edit Details</button>
+	<?php } ?>
+</h3>
 
-<?php if ($_CONTROL->objGroup->IsLoginCanEdit(QApplication::$Login)) {?>
-	<p><a href="#<?php _p($_CONTROL->objGroup->Id); ?>/edit">Edit This Group</a></p>
-<?php } ?>
+<div class="section">
+	<?php $_CONTROL->lblMinistry->RenderWithName(); ?>
+	<?php $_CONTROL->lblType->RenderWithName(); ?>
+	<?php $_CONTROL->lblCategory->RenderWithName(); ?>
+	<?php $_CONTROL->lblConfidential->RenderWithName(); ?>
+	<?php $_CONTROL->lblEmail->RenderWithName(); ?>
+</div>
+<br/>
 
-<br/><br clear="all"/><br/>
 <h3>Subgroups within the <?php _p($this->objGroup->Name); ?> Category</h3>
-<?php $_CONTROL->dtgGroups->Render(); ?>
+<div class="section"><?php $_CONTROL->dtgGroups->Render(); ?></div>
+<br/>
 
-<br/><br clear="all"/><br/>
-<?php $_CONTROL->dtgMembers->Render(); ?>
+<h3>Members within All Subgroups</h3>
+<div class="section"><?php $_CONTROL->dtgMembers->Render(); ?></div>

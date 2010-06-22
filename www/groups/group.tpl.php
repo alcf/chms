@@ -1,6 +1,6 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<?php $this->lblGroup->Render(); ?>
+	<?php $this->lblMinistry->Render(); ?>
 
 	<div style="float: left;">
 		<?php $this->pnlGroups->Render(); ?>
