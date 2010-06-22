@@ -21,7 +21,4 @@
 		<?php $this->pnlContent->Render(); ?>
 	</div>
 
-	<div style="float: left;">
-	</div>
-
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
