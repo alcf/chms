@@ -14,15 +14,12 @@
 			$this->dtgHouseholds->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgHouseholds->ItemsPerPage = 25;
 			$this->dtgHouseholds->MetaAddColumn('Name','Html=<?=$_FORM->RenderHouseholdName($_ITEM); ?>', 'HtmlEntities=false', 'Width=280px');
-			$this->dtgHouseholds->AddColumn(new QDataGridColumn('Members','<?=$_FORM->RenderMembers($_ITEM); ?>', 'HtmlEntities=false', 'Width=650px'));
+			$this->dtgHouseholds->MetaAddColumn('Members', 'Width=280px');
 		}
 		
 		public function RenderHouseholdName(Household $objHousehold) {
 			return sprintf('<a href="/households/view.php/%s">%s</a>', $objHousehold->Id, QApplication::HtmlEntities($objHousehold->Name));
 		}		
-		
-		public function RenderMembers(Household $objHousehold) {
-		}
 	}
 
 	SearchIndividualsForm::Run('SearchIndividualsForm');

@@ -64,6 +64,26 @@
 				$objHouseholdParticipation->RefreshRole(false);
 			}
 			$objHouseholdParticipation->Save();
+
+			$this->RefreshMembers();
+		}
+
+		/**
+		 * Refreshes the Members field based on the members / household participants in this household.
+		 * @param boolean $blnSave whether or not to call save after updating
+		 * @return void
+		 */
+		public function RefreshMembers($blnSave = true) {
+			$strMemberArray = array();
+			$strMemberArray[] = $this->HeadPerson->Name;
+			foreach ($this->GetHouseholdParticipationArray(QQ::Expand(QQN::HouseholdParticipation()->Person->Id), QQ::OrderBy(QQN::HouseholdParticipation()->Person->FirstName)) as $objHouseholdParticipant) {
+				if ($objHouseholdParticipant->PersonId != $this->HeadPersonId) {
+					$strMemberArray[] = $objHouseholdParticipant->Person->Name;
+				}
+			}
+			
+			$this->strMembers = implode(', ', $strMemberArray);
+			if ($blnSave) $this->Save();
 		}
 
 		/**
