@@ -58,6 +58,7 @@
 			$this->dtgHouseholds->MetaAddColumn('Id');
 			$this->dtgHouseholds->MetaAddColumn('Name');
 			$this->dtgHouseholds->MetaAddColumn(QQN::Household()->HeadPerson);
+			$this->dtgHouseholds->MetaAddColumn('Members');
 		}
 	}
 

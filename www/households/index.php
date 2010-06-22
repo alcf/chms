@@ -4,7 +4,7 @@
 
 	class SearchIndividualsForm extends ChmsForm {
 		protected $strPageTitle = 'Search for a Household';
-		protected $intNavSectionId = ChmsForm::NavSectionPeople;
+		protected $intNavSectionId = ChmsForm::NavSectionHouseholds;
 
 		protected $dtgHouseholds;
 
@@ -12,14 +12,17 @@
 			$this->dtgHouseholds = new HouseholdDataGrid($this);
 			$this->dtgHouseholds->Paginator = new QPaginator($this->dtgHouseholds);
 			$this->dtgHouseholds->AlternateRowStyle->CssClass = 'alternate';
-			$this->dtgHouseholds->MetaAddColumn('Name','Html=<?=$_FORM->RenderHouseholdName($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgHouseholds->ItemsPerPage = 25;
+			$this->dtgHouseholds->MetaAddColumn('Name','Html=<?=$_FORM->RenderHouseholdName($_ITEM); ?>', 'HtmlEntities=false', 'Width=280px');
+			$this->dtgHouseholds->AddColumn(new QDataGridColumn('Members','<?=$_FORM->RenderMembers($_ITEM); ?>', 'HtmlEntities=false', 'Width=650px'));
 		}
 		
 		public function RenderHouseholdName(Household $objHousehold) {
 			return sprintf('<a href="/households/view.php/%s">%s</a>', $objHousehold->Id, QApplication::HtmlEntities($objHousehold->Name));
 		}		
 		
-		
+		public function RenderMembers(Household $objHousehold) {
+		}
 	}
 
 	SearchIndividualsForm::Run('SearchIndividualsForm');

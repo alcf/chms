@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Name the value for strName 
 	 * @property integer $HeadPersonId the value for intHeadPersonId (Unique)
+	 * @property string $Members the value for strMembers 
 	 * @property Person $HeadPerson the value for the Person object referenced by intHeadPersonId (Unique)
 	 * @property Address $_Address the value for the private _objAddress (Read-Only) if set due to an expansion on the address.household_id reverse relationship
 	 * @property Address[] $_AddressArray the value for the private _objAddressArray (Read-Only) if set due to an ExpandAsArray on the address.household_id reverse relationship
@@ -54,6 +55,15 @@
 		 */
 		protected $intHeadPersonId;
 		const HeadPersonIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column household.members
+		 * @var string strMembers
+		 */
+		protected $strMembers;
+		const MembersMaxLength = 255;
+		const MembersDefault = null;
 
 
 		/**
@@ -411,6 +421,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'head_person_id', $strAliasPrefix . 'head_person_id');
+			$objBuilder->AddSelectItem($strTableName, 'members', $strAliasPrefix . 'members');
 		}
 
 
@@ -494,6 +505,8 @@
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'head_person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'head_person_id'] : $strAliasPrefix . 'head_person_id';
 			$objToReturn->intHeadPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'members', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'members'] : $strAliasPrefix . 'members';
+			$objToReturn->strMembers = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -662,10 +675,12 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `household` (
 							`name`,
-							`head_person_id`
+							`head_person_id`,
+							`members`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strName) . ',
-							' . $objDatabase->SqlVariable($this->intHeadPersonId) . '
+							' . $objDatabase->SqlVariable($this->intHeadPersonId) . ',
+							' . $objDatabase->SqlVariable($this->strMembers) . '
 						)
 					');
 
@@ -682,7 +697,8 @@
 							`household`
 						SET
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
-							`head_person_id` = ' . $objDatabase->SqlVariable($this->intHeadPersonId) . '
+							`head_person_id` = ' . $objDatabase->SqlVariable($this->intHeadPersonId) . ',
+							`members` = ' . $objDatabase->SqlVariable($this->strMembers) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -763,6 +779,7 @@
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
 			$this->HeadPersonId = $objReloaded->HeadPersonId;
+			$this->strMembers = $objReloaded->strMembers;
 		}
 
 
@@ -797,6 +814,11 @@
 					// Gets the value for intHeadPersonId (Unique)
 					// @return integer
 					return $this->intHeadPersonId;
+
+				case 'Members':
+					// Gets the value for strMembers 
+					// @return string
+					return $this->strMembers;
 
 
 				///////////////////
@@ -889,6 +911,17 @@
 					try {
 						$this->objHeadPerson = null;
 						return ($this->intHeadPersonId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Members':
+					// Sets the value for strMembers 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strMembers = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1268,6 +1301,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="HeadPerson" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="Members" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1298,6 +1332,8 @@
 			if ((property_exists($objSoapObject, 'HeadPerson')) &&
 				($objSoapObject->HeadPerson))
 				$objToReturn->HeadPerson = Person::GetObjectFromSoapObject($objSoapObject->HeadPerson);
+			if (property_exists($objSoapObject, 'Members'))
+				$objToReturn->strMembers = $objSoapObject->Members;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1348,6 +1384,8 @@
 					return new QQNode('head_person_id', 'HeadPersonId', 'integer', $this);
 				case 'HeadPerson':
 					return new QQNodePerson('head_person_id', 'HeadPerson', 'integer', $this);
+				case 'Members':
+					return new QQNode('members', 'Members', 'string', $this);
 				case 'Address':
 					return new QQReverseReferenceNodeAddress($this, 'address', 'reverse_reference', 'household_id');
 				case 'HouseholdParticipation':
@@ -1380,6 +1418,8 @@
 					return new QQNode('head_person_id', 'HeadPersonId', 'integer', $this);
 				case 'HeadPerson':
 					return new QQNodePerson('head_person_id', 'HeadPerson', 'integer', $this);
+				case 'Members':
+					return new QQNode('members', 'Members', 'string', $this);
 				case 'Address':
 					return new QQReverseReferenceNodeAddress($this, 'address', 'reverse_reference', 'household_id');
 				case 'HouseholdParticipation':

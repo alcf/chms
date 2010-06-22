@@ -23,6 +23,8 @@
 
 		<?php $this->lstHeadPerson->RenderWithName(); ?>
 
+		<?php $this->txtMembers->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

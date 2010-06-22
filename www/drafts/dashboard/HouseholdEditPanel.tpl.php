@@ -11,6 +11,8 @@
 
 		<?php $_CONTROL->lstHeadPerson->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtMembers->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

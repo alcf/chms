@@ -22,6 +22,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QListBox $HeadPersonIdControl
 	 * property-read QLabel $HeadPersonIdLabel
+	 * property QTextBox $MembersControl
+	 * property-read QLabel $MembersLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -37,10 +39,12 @@
 		protected $lblId;
 		protected $txtName;
 		protected $lstHeadPerson;
+		protected $txtMembers;
 
 		// Controls that allow the viewing of Household's individual data fields
 		protected $lblName;
 		protected $lblHeadPersonId;
+		protected $lblMembers;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -222,6 +226,31 @@
 			return $this->lblHeadPersonId;
 		}
 
+		/**
+		 * Create and setup QTextBox txtMembers
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtMembers_Create($strControlId = null) {
+			$this->txtMembers = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtMembers->Name = QApplication::Translate('Members');
+			$this->txtMembers->Text = $this->objHousehold->Members;
+			$this->txtMembers->MaxLength = Household::MembersMaxLength;
+			return $this->txtMembers;
+		}
+
+		/**
+		 * Create and setup QLabel lblMembers
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblMembers_Create($strControlId = null) {
+			$this->lblMembers = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMembers->Name = QApplication::Translate('Members');
+			$this->lblMembers->Text = $this->objHousehold->Members;
+			return $this->lblMembers;
+		}
+
 
 
 		/**
@@ -252,6 +281,9 @@
 			}
 			if ($this->lblHeadPersonId) $this->lblHeadPersonId->Text = ($this->objHousehold->HeadPerson) ? $this->objHousehold->HeadPerson->__toString() : null;
 
+			if ($this->txtMembers) $this->txtMembers->Text = $this->objHousehold->Members;
+			if ($this->lblMembers) $this->lblMembers->Text = $this->objHousehold->Members;
+
 		}
 
 
@@ -277,6 +309,7 @@
 				// Update any fields for controls that have been created
 				if ($this->txtName) $this->objHousehold->Name = $this->txtName->Text;
 				if ($this->lstHeadPerson) $this->objHousehold->HeadPersonId = $this->lstHeadPerson->SelectedValue;
+				if ($this->txtMembers) $this->objHousehold->Members = $this->txtMembers->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -337,6 +370,12 @@
 				case 'HeadPersonIdLabel':
 					if (!$this->lblHeadPersonId) return $this->lblHeadPersonId_Create();
 					return $this->lblHeadPersonId;
+				case 'MembersControl':
+					if (!$this->txtMembers) return $this->txtMembers_Create();
+					return $this->txtMembers;
+				case 'MembersLabel':
+					if (!$this->lblMembers) return $this->lblMembers_Create();
+					return $this->lblMembers;
 				default:
 					try {
 						return parent::__get($strName);
@@ -365,6 +404,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'HeadPersonIdControl':
 						return ($this->lstHeadPerson = QType::Cast($mixValue, 'QControl'));
+					case 'MembersControl':
+						return ($this->txtMembers = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}
