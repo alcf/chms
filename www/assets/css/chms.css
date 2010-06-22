@@ -32,7 +32,7 @@
 
 	input.alternate, button.alternate {
 		background-image: url(/assets/images/button_alternate.png); border: 1px solid #859da9; height: 24px; -moz-border-radius: 5px; 
-		font-size: 12px; font-family: arial; color: #ddd;
+		font-size: 11px; font-family: arial; color: #ddd;
 		text-transform: uppercase;
 	}
 	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
@@ -116,7 +116,7 @@
 
 	/*** SUBNAV-SIDE ***/
 
-	ul.subnavSide { list-style: none; width: 170px; margin: 0; padding: 0; float: left; }
+	ul.subnavSide { list-style: none; width: 170px; margin: 0; padding: 0; float: left; margin-bottom: 12px; }
 	ul.subnavSide li a { 
 		font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
 		font-size: 13px;
@@ -141,7 +141,7 @@
 
 	/*** SUBNAV-SIDE CONTENT ***/
 
-	div.subnavSideContent { background-color: #5a768e; width: 150px; margin-top: 12px; padding: 10px; -moz-border-radius: 5px 0 0 5px;}
+	div.subnavSideContent { background-color: #5a768e; width: 150px; margin-bottom: 12px; padding: 10px; -moz-border-radius: 5px 0 0 5px;}
 	div.subnavSideContent h4 { color: #ddd; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
 		font-size: 13px;
 		color: #ddd;
