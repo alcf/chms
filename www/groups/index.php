@@ -6,6 +6,7 @@
 		protected $strPageTitle = 'View Groups';
 		protected $intNavSectionId = ChmsForm::NavSectionGroups;
 
+		protected $lblMinistry;
 		protected $pnlMinistries;
 		protected $pxyMinistry;
 		protected $intMinistryId;
@@ -15,7 +16,7 @@
 		protected function Form_Create() {
 			$this->pnlMinistries = new QPanel($this);
 			$this->pnlMinistries->TagName = 'ul';
-			$this->pnlMinistries->CssClass = 'ministriesPanel';
+			$this->pnlMinistries->CssClass = 'subnavSide';
 			$this->pnlMinistries->AutoRenderChildren = true;
 
 			$this->pxyMinistry = new QControlProxy($this);
@@ -24,18 +25,21 @@
 
 			foreach (Ministry::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::Ministry()->Name)) as $objMinistry) {
 				$pnlMinistry = new QPanel($this->pnlMinistries, 'pnlMinistry' . $objMinistry->Id);
-				$pnlMinistry->Text = sprintf('<a href="" %s>%s</a>', $this->pxyMinistry->RenderAsEvents($objMinistry->Id, false), $objMinistry->Name);
 				$pnlMinistry->TagName = 'li';
 				$pnlMinistry->ActionParameter = $objMinistry->Id;
-				$this->pnlMinistry_Refresh($objMinistry->Id);
+				$this->pnlMinistry_Refresh($objMinistry);
 			}
+			
+			$this->lblMinistry = new QLabel($this);
+			$this->lblMinistry->TagName = 'h3';
+			$this->lblMinistry_Refresh();
 
 			$this->dtgGroups = new QDataGrid($this);
-			$this->dtgGroups->CssClass = 'groupList datagrid';
+			$this->dtgGroups->CssClass = 'datagrid';
 			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>'));
-			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=260px'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=120px'));
+			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false', 'Width=350px'));
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind');
 		}
 
@@ -60,14 +64,31 @@
 			return $strName;
 		}
 
-		protected function pnlMinistry_Refresh($intMinistryId) {
+		protected function pnlMinistry_Refresh($mixMinistry) {
+			if ($mixMinistry instanceof Ministry) {
+				$objMinistry = $mixMinistry;
+				$intMinistryId = $objMinistry->Id;
+			} else {
+				$intMinistryId = $mixMinistry;
+				$objMinistry = Ministry::Load($intMinistryId);
+			}
+
 			$pnlMinistry = $this->GetControl('pnlMinistry' . $intMinistryId);
 			if ($pnlMinistry) {
-				if ($this->intMinistryId == $intMinistryId) {
-					$pnlMinistry->AddCssClass('selected');
-				} else {
-					$pnlMinistry->RemoveCssClass('selected');
-				}
+				$pnlMinistry->Text = sprintf('<a href="" %s %s>%s</a>',
+					$this->pxyMinistry->RenderAsEvents($objMinistry->Id, false),
+					($intMinistryId == $this->intMinistryId) ? 'class="selected"' : null,
+					$objMinistry->Name);
+			}
+		}
+		
+		protected function lblMinistry_Refresh() {
+			$objMinistry = Ministry::Load($this->intMinistryId);
+			if ($objMinistry) {
+				$this->lblMinistry->Visible = true;
+				$this->lblMinistry->Text = 'Groups in ' . $objMinistry->Name;
+			} else {
+				$this->lblMinistry->Visible = false;
 			}
 		}
 
@@ -77,7 +98,7 @@
 				$this->intMinistryId = $strParameter;
 				$this->pnlMinistry_Refresh($intOldMinistryId);
 				$this->pnlMinistry_Refresh($this->intMinistryId);
-
+				$this->lblMinistry_Refresh();
 				$this->dtgGroups->Refresh();
 			}
 		}

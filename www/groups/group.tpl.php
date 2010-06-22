@@ -4,14 +4,21 @@
 
 	<div style="float: left;">
 		<?php $this->pnlGroups->Render(); ?>
-		<br/><br clear="all"/><br/>
+		<br clear="all"/>
+		
+		<br/>
 		<?php $this->lstGroupType->Render(); ?>
-		<br/><br clear="all"/><br/>
-		<?php $this->btnViewRoles->Render(); ?>
+		<br/>
+		<br/>
+
+		<div class="buttonBar buttonBarLeft"><?php $this->btnViewRoles->Render('CssClass=cancel'); ?></div>
 	</div>
-	<div style="float: left; margin-left: 15px;">
+
+	<div class="subnavContent">
 		<?php $this->pnlContent->Render(); ?>
 	</div>
 
-	<br clear="all"/>
+	<div style="float: left;">
+	</div>
+
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

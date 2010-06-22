@@ -1,3 +1,6 @@
+<h3>Add a Participant to <?php _p($_CONTROL->objGroup->Name); ?></h3>
+
+<div class="section">
 <?php $_CONTROL->pnlPerson->Render(); ?>
 
 <br/>
@@ -10,6 +13,9 @@
 	$_CONTROL->dtxDateEnd->HtmlAfter = '&nbsp;' . $_CONTROL->calDateEnd->Render(false);
 	$_CONTROL->dtxDateEnd->RenderWithName();
 ?>
+</div>
 
-<br clear="all"/>
-<?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?>
+
+<div class="buttonBar">
+<?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
+</div>

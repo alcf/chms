@@ -36,7 +36,7 @@
 						case EmailBroadcastType::PrivateList:
 						case EmailBroadcastType::PublicList:
 						case EmailBroadcastType::AnnouncementOnly:
-							return sprintf('%s - <a href="mailto:%s@groups.alcf.net">%s@groups.alcf.net</a>',
+							return sprintf('%s &nbsp;|&nbsp; <a href="mailto:%s@groups.alcf.net">%s@groups.alcf.net</a>',
 								EmailBroadcastType::$NameArray[$this->EmailBroadcastTypeId],
 								QApplication::HtmlEntities($this->Token),
 								QApplication::HtmlEntities($this->Token));

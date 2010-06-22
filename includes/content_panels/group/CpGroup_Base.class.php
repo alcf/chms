@@ -59,12 +59,13 @@
 
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
+			$this->btnSave->CssClass = 'primary';
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			$this->btnSave->CausesValidation = $this;
 
 			$this->btnCancel = new QLinkButton($this);
 			$this->btnCancel->Text = 'Cancel';
-			$this->btnCancel->ForeColor = '#666666';
+			$this->btnCancel->CssClass = 'cancel';
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 
@@ -132,40 +133,37 @@
 		protected function SetupViewControls($blnDisplayEditParticipantColumn, $blnDisplayGroupsColumn) {
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->Name = 'Ministry';
-			$this->lblMinistry->FontBold = true;
 			$this->lblMinistry_Refresh();
 
 			$this->lblEmail = new QLabel($this);
 			$this->lblEmail->Name = 'Email';
-			$this->lblEmail->FontBold = true;
 			$this->lblEmail_Refresh();
 			$this->lblEmail->HtmlEntities = false;
 
 			$this->lblConfidential = new QLabel($this);
 			$this->lblConfidential->Name = 'Confidential?';
-			$this->lblConfidential->FontBold = true;
-			$this->lblConfidential->Text = 'This Group is a CONFIDENTIAL Group';
+			$this->lblConfidential->HtmlEntities = false;
+			$this->lblConfidential->Text = '<img src="/assets/images/confidential.png"/>';
 			$this->lblConfidential_Refresh();
 
 			$this->lblCategory = new QLabel($this);
 			$this->lblCategory->Name = 'Parent Category';
-			$this->lblCategory->FontBold = true;
 			$this->lblCategory->HtmlEntities = false;
 			$this->lblCategory_Refresh();
 
 			$this->dtgMembers = new PersonDataGrid($this);
 			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
 			if ($blnDisplayEditParticipantColumn)
-				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false');
-			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false');
-			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email');
-			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>');
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
+			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px');
+			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px');
+			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email', 'Width=180px');
+			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>', 'Width=60px');
 			if ($blnDisplayGroupsColumn) {
-				$this->dtgMembers->AddColumn(new QDataGridColumn('Group(s)', '<?= $_CONTROL->ParentControl->RenderCurrentGroups($_ITEM); ?>', 'HtmlEntities=false'));
-				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRolesForAllGroups($_ITEM); ?>', 'HtmlEntities=false'));
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Group(s)', '<?= $_CONTROL->ParentControl->RenderCurrentGroups($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRolesForAllGroups($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
 			} else {
-				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false'));
+				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false', 'Width=180px'));
 			}
 		}
 

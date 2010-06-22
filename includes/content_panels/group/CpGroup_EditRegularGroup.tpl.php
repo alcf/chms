@@ -1,5 +1,6 @@
 <h3><?php _p($_CONTROL->mctGroup->EditMode ? 'Edit' : 'Create New'); ?> Regular Group</h3>
 
+<div class="section">
 <?php $_CONTROL->txtName->RenderWithName(); ?>
 <?php $_CONTROL->lstParentGroup->RenderWithName(); ?>
 
@@ -8,5 +9,8 @@
 <?php $_CONTROL->txtToken->RenderWithName(); ?>
 
 <?php $_CONTROL->chkConfidentialFlag->RenderWithName(); ?>
+</div>
 
-<p><?php $_CONTROL->btnSave->Render(); ?> or <?php $_CONTROL->btnCancel->Render(); ?></p>
+<div class="buttonBar">
+<?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
+</div>

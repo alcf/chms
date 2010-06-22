@@ -17,7 +17,7 @@
 		protected function Form_Create() {
 			$this->pnlGroups = new QPanel($this);
 			$this->pnlGroups->TagName = 'ul';
-			$this->pnlGroups->CssClass = 'groupsPanel';
+			$this->pnlGroups->CssClass = 'subnavSide';
 			$this->pnlGroups->AutoRenderChildren = true;
 
 			$this->lblGroup = new QLabel($this);
@@ -69,18 +69,8 @@
 
 				foreach ($objGroups as $objGroup) {
 					$pnlGroup = new QPanel($this->pnlGroups, 'pnlGroup' . $objGroup->Id);
-
-					$strName = $objGroup->Name;
-
-					// Add Pointer
-					$strName = ($objGroup->HierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;
-
-					// Add Indent
-					$strPadding = 'padding-left: ' . (($objGroup->HierarchyLevel * 10) + 10) . 'px;';
-
-					$pnlGroup->Text = sprintf('<a href="#%s" style="%s">%s</a>', $objGroup->Id, $strPadding, $strName);
 					$pnlGroup->TagName = 'li';
-					$this->pnlGroup_Refresh($objGroup->Id);
+					$this->pnlGroup_Refresh($objGroup);
 				}
 			}
 		}
@@ -117,7 +107,7 @@
 			$blnRefreshGroupsPanel = (!$this->objGroup || ($this->objGroup->MinistryId != $objGroup->MinistryId)) ? true : false;
 
 			$this->objGroup = $objGroup;
-			$this->pnlGroup_Refresh($this->objGroup->Id);
+			$this->pnlGroup_Refresh($this->objGroup);
 
 			if ($intOldGroupId) $this->pnlGroup_Refresh($intOldGroupId);
 			if ($blnRefreshGroupsPanel) {
@@ -169,9 +159,31 @@
 			}
 		}
 
-		public function pnlGroup_Refresh($intGroupId) {
+		public function pnlGroup_Refresh($mixGroup) {
+			if ($mixGroup instanceof Group) {
+				$objGroup = $mixGroup;
+				$intGroupId = $objGroup->Id;
+			} else {
+				$intGroupId = $mixGroup;
+				$objGroup = Group::Load($intGroupId);
+			}
+
 			$pnlGroup = $this->GetControl('pnlGroup' . $intGroupId);
 			if ($pnlGroup) {
+				$strName = $objGroup->Name;
+
+				// Add Pointer
+				$strName = ($objGroup->HierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;
+
+				// Add Indent
+				$strPadding = 'padding-left: ' . (($objGroup->HierarchyLevel * 10) + 10) . 'px;';
+
+				$pnlGroup->Text = sprintf('<a href="#%s" style="%s" %s>%s</a>',
+					$objGroup->Id,
+					$strPadding,
+					($this->objGroup && ($this->objGroup->Id == $intGroupId)) ? 'class="selected"' : null,
+					$strName);
+				
 				if ($this->objGroup &&
 					($this->objGroup->Id == $intGroupId)) {
 					$pnlGroup->AddCssClass('selected');

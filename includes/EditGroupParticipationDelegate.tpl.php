@@ -1,4 +1,4 @@
-<h3>Ministry Participation <span class="subhead"><br/><?php _p($_CONTROL->objDelegate->DisplayGroupName(), false); ?></span>
+<h3><?php _p($_CONTROL->objPerson->Name); ?>'s Ministry Participation <span class="subhead"><br/><?php _p($_CONTROL->objDelegate->DisplayGroupName(), false); ?></span>
 <?php if ($_CONTROL->objGroup->ConfidentialFlag) { ?><img src="/assets/images/confidential.png" style="width: 89px; height: 13px; float: right;"/><?php } ?>
 </h3>
 
