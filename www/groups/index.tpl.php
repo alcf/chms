@@ -6,7 +6,7 @@
 		<?php $this->lblMinistry->Render(); ?>
 		<div class="section">
 			<?php $this->dtgGroups->Render(); ?>
-		<div class="cleaner">&nbsp;</div>
+			<?php $this->lblStartText->Render(); ?>
 		</div>
 	</div>
 	<br clear="all"/>

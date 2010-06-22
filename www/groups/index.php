@@ -12,6 +12,7 @@
 		protected $intMinistryId;
 
 		protected $dtgGroups;
+		protected $lblStartText;
 
 		protected function Form_Create() {
 			$this->pnlMinistries = new QPanel($this);
@@ -48,15 +49,26 @@
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=120px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false', 'Width=350px'));
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind');
+			
+//			$this->dtgGroups->Visible = false;
+
+			$this->lblStartText = new QLabel($this);
+			$this->lblStartText->Text = '<h3>Groups and Ministries</h3><p>Please select an ministry from the list on the right.</p>';
+			$this->lblStartText->HtmlEntities = false;
 		}
 
 		public function dtgGroups_Bind() {
-			if ($this->intMinistryId)
+			if ($this->intMinistryId) {
 				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryIdAndConfidentiality(
 					$this->intMinistryId,
 					Ministry::Load($this->intMinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
-			else
+				$this->dtgGroups->Visible = true;
+			} else {
 				$this->dtgGroups->DataSource = null;
+				$this->dtgGroups->Visible = false;
+			}
+
+			$this->lblStartText->Visible = !$this->dtgGroups->Visible;
 		}
 
 		public function RenderName(Group $objGroup) {
