@@ -11,7 +11,6 @@
 		protected function Form_Create() {
 			$this->dtgPeople = new PersonDataGrid($this);
 			$this->dtgPeople->Paginator = new QPaginator($this->dtgPeople);
-			$this->dtgPeople->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgPeople->MetaAddColumn('FirstName','Html=<?=$_FORM->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
 			$this->dtgPeople->MetaAddColumn('LastName','Html=<?=$_FORM->RenderLastName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
 			$this->dtgPeople->MetaAddTypeColumn('MembershipStatusTypeId', 'MembershipStatusType', 'Name=Membership Status', 'Width=150px');

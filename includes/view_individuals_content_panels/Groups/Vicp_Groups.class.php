@@ -6,7 +6,6 @@
 
 		protected function SetupPanel() {
 			$this->dtgGroups = new QDataGrid($this);
-			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Ministry', '<?= $_ITEM->Ministry->Name; ?>', 'Width=150px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false', 'Width=300px'));
@@ -14,7 +13,6 @@
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=155px'));
 
 			$this->dtgCommunicationLists = new CommunicationListDataGrid($this);
-			$this->dtgCommunicationLists->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Unsubscribe', '<?= $_CONTROL->ParentControl->RenderUnsubscribe($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px'));
 			$this->dtgCommunicationLists->MetaAddColumn('Name', 'Width=250px');
 			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->Token; ?>@groups.alcf.net', 'Width=370px'));

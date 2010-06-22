@@ -11,7 +11,6 @@
 		protected function Form_Create() {
 			$this->dtgHouseholds = new HouseholdDataGrid($this);
 			$this->dtgHouseholds->Paginator = new QPaginator($this->dtgHouseholds);
-			$this->dtgHouseholds->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgHouseholds->ItemsPerPage = 25;
 			$this->dtgHouseholds->MetaAddColumn('Name','Html=<?=$_FORM->RenderHouseholdName($_ITEM); ?>', 'HtmlEntities=false', 'Width=280px');
 			$this->dtgHouseholds->MetaAddColumn('Members', 'Width=650px');

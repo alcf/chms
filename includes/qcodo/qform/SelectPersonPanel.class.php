@@ -78,7 +78,6 @@
 			
 			$this->dtgResults = new QDataGrid($this);
 			$this->dtgResults->Name = '&nbsp;';
-			$this->dtgResults->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgResults->AddColumn(new QDataGridColumn('Select', '<?= $_CONTROL->ParentControl->RenderSelect($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgResults->AddColumn(new QDataGridColumn('Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgResults->Visible = false;

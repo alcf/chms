@@ -12,7 +12,6 @@
 
 			$this->dtgGroups = new QDataGrid($this);
 			$this->dtgGroups->Name = '&nbsp;';
-			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>'));
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);

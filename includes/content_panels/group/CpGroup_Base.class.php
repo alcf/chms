@@ -159,7 +159,6 @@
 			$this->dtgMembers = new PersonDataGrid($this);
 			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
 			$this->dtgMembers->ItemsPerPage = 80;
-			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
 			if ($blnDisplayEditParticipantColumn)
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
 			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px');

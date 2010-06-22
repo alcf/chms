@@ -42,7 +42,6 @@
 			$this->lblCurrentRoles_Refresh();
 
 			$this->dtgParticipations = new QDataGrid($this->pnlContent);
-			$this->dtgParticipations->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Role', '<?= $_CONTROL->ParentControl->objDelegate->RenderRole($_ITEM); ?>', 'HtmlEntities=false', 'Width=100px'));
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Started', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateStart($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Ended', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateEnd($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));

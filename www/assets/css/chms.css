@@ -212,6 +212,7 @@
 			table.datagrid span.left { float: left; font-size: 10px; display: block; }
 			table.datagrid span.right { float: right; font-size: 10px; display: block; }
 		table.datagrid tr { }
+			table.datagrid tr.alternate { background-color: #e3e3e3; }
 			table.datagrid tr td { border-style: solid; border-width: 1px 0 0 0; border-color: #cec0ce; }
 			table.datagrid tr:hover {background-color: #eee3ee;}
 		table.datagrid th { background: url(/assets/images/datagrid_header_background.png); padding: 5px 5px 5px 5px; text-align: left; font-family: trebuchet ms; }

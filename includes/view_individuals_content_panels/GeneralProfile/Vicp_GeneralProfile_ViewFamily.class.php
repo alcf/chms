@@ -5,7 +5,6 @@
 
 		protected function SetupPanel() {
 			$this->dtgRelationships = new QDataGrid($this);
-			$this->dtgRelationships->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgRelationships->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgRelationships->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->RelatedToPerson->Name; ?>'));
 			$this->dtgRelationships->AddColumn(new QDataGridColumn('Address', '<?= $_ITEM->RelatedToPerson->PrimaryAddress; ?>'));

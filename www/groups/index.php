@@ -44,7 +44,6 @@
 
 			$this->dtgGroups = new QDataGrid($this);
 			$this->dtgGroups->CssClass = 'datagrid';
-			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=260px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=120px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false', 'Width=350px'));

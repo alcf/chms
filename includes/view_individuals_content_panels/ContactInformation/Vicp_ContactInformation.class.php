@@ -12,7 +12,6 @@
 		
 		protected function SetupPanel() {
 			$this->dtgPersonalAddresses = new QDataGrid($this);
-			$this->dtgPersonalAddresses->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderPersonalAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderPersonalAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=300px'));
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=150px'));
@@ -20,7 +19,6 @@
 			$this->dtgPersonalAddresses->SetDataBinder('dtgPersonalAddresses_Bind', $this);
 
 			$this->dtgHomeAddresses = new QDataGrid($this);
-			$this->dtgHomeAddresses->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderHomeAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
 			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderHomeAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=220px'));
 			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=150px'));
@@ -34,7 +32,6 @@
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QTerminateAction());
 
 			$this->dtgPhones = new QDataGrid($this);
-			$this->dtgPhones->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgPhones->AddColumn(new QDataGridColumn('Primary?', '<?= $_CONTROL->ParentControl->RenderPhonePrimary($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
 			$this->dtgPhones->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderPhoneType($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
 			$this->dtgPhones->AddColumn(new QDataGridColumn('Number', '<?= $_CONTROL->ParentControl->RenderPhoneNumber($_ITEM); ?>', 'HtmlEntities=false', 'Width=170px'));
@@ -45,7 +42,6 @@
 			$this->pxySetPrimaryPhone->AddAction(new QClickEvent(), new QTerminateAction());
 			
 			$this->dtgEmails = new QDataGrid($this);
-			$this->dtgEmails->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgEmails->AddColumn(new QDataGridColumn('Primary?', '<?= $_CONTROL->ParentControl->RenderEmailPrimary($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
 			$this->dtgEmails->AddColumn(new QDataGridColumn('Email', '<?= $_CONTROL->ParentControl->RenderEmailAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=260px'));
 			$this->dtgEmails->SetDataBinder('dtgEmails_Bind', $this);
@@ -55,7 +51,6 @@
 			$this->pxySetPrimaryEmail->AddAction(new QClickEvent(), new QTerminateAction());
 
 			$this->dtgOthers = new QDataGrid($this);
-			$this->dtgOthers->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgOthers->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderOtherType($_ITEM); ?>', 'HtmlEntities=false', 'Width=140px'));
 			$this->dtgOthers->AddColumn(new QDataGridColumn('Value', '<?= $_CONTROL->ParentControl->RenderOtherValue($_ITEM); ?>', 'HtmlEntities=false', 'Width=610px'));
 			$this->dtgOthers->SetDataBinder('dtgOthers_Bind', $this);

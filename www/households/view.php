@@ -26,13 +26,17 @@
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'HtmlEntities=false', 'Width=300px');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryEmail->Address, 'Name=Email', 'Width=250px');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryPhone->Number, 'Name=Phone', 'Width=290px');
-			$this->dtgMembers->AlternateRowStyle->CssClass = 'alternate';
+			
+			$this->dtgMembers->GetColumn(0)->OrderByClause = null;
+			$this->dtgMembers->GetColumn(1)->OrderByClause = null;
+			$this->dtgMembers->GetColumn(2)->OrderByClause = null;
+			$this->dtgMembers->GetColumn(3)->OrderByClause = null;
+
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind');
 		}
 
 		public function dtgMembers_Bind() {
-			$objCondition = QQ::Equal(QQN::HouseholdParticipation()->HouseholdId, $this->objHousehold->Id);
-			$this->dtgMembers->MetaDataBinder($objCondition);
+			$this->dtgMembers->DataSource = $this->objHousehold->GetOrderedParticipantArray();
 		}
 	}
 

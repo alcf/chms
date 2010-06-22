@@ -33,7 +33,7 @@
 		 * @param boolean $blnSave whether or not to call save after updating role value
 		 * @return void
 		 */
-		public function RefreshRole($blnSave) {
+		public function RefreshRole($blnSave = true) {
 			$objHeadPerson = $this->Household->HeadPerson;
 			if ($this->PersonId == $objHeadPerson->Id) {
 				$this->strRole = 'Head';

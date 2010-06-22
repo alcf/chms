@@ -48,6 +48,22 @@
 		}
 
 		/**
+		 * Sets the Person as the HeadPerson for this household.  Person must already be associated to this Household
+		 * or this will throw an Exception
+		 * @param Person $objHeadPerson
+		 * @return void
+		 */
+		public function SetAsHeadPerson(Person $objHeadPerson) {
+			if (!HouseholdParticipation::LoadByPersonIdHouseholdId($objHeadPerson->Id, $this->Id))
+				throw new QCallerException('Person is not currently associated with this Household');
+
+			$this->HeadPerson = $objHeadPerson;
+			$this->RefreshMembers(false);
+			$this->RefreshName(false);
+			$this->Save();
+		}
+
+		/**
 		 * Associates a Person into this Household, and an optional role can be specified.  If no role is specified,
 		 * then the role is calculated.
 		 * @param Person $objPerson
@@ -84,6 +100,24 @@
 			
 			$this->strMembers = implode(', ', $strMemberArray);
 			if ($blnSave) $this->Save();
+		}
+
+		/**
+		 * Returns an array of HouseholdParticipant records WITH early-bound person records for this household,
+		 * ordered by Head FIRST and then everyone else in alphabetical order
+		 * @return HouseholdParticipant[]
+		 */
+		public function GetOrderedParticipantArray() {
+			$objArray = array();
+			$objArrayToReturn = array();
+			foreach ($this->GetHouseholdParticipationArray(QQ::Expand(QQN::HouseholdParticipation()->Person->Id), QQ::OrderBy(QQN::HouseholdParticipation()->Person->FirstName)) as $objHouseholdParticipant) {
+				if ($objHouseholdParticipant->PersonId == $this->HeadPersonId)
+					$objArrayToReturn[] = $objHouseholdParticipant;
+				else
+					$objArray[] = $objHouseholdParticipant;
+			}
+
+			return array_merge($objArrayToReturn, $objArray);
 		}
 
 		/**

@@ -11,7 +11,6 @@
 			}
 
 			$this->dtgMemberships = new QDataGrid($this);
-			$this->dtgMemberships->AlternateRowStyle->CssClass = 'alternate';
 			
 			if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) {
 				$this->dtgMemberships->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));

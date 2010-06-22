@@ -7,7 +7,6 @@
 
 		protected function SetupPanel() {
 			$this->dtgMarriages = new QDataGrid($this);
-			$this->dtgMarriages->AlternateRowStyle->CssClass = 'alternate';
 
 			$this->dtgMarriages->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=50px'));
 

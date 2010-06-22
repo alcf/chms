@@ -17,7 +17,6 @@
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
 
 			$this->dtgGroups = new QDataGrid($this);
-			$this->dtgGroups->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Name', '<?= $_CONTROL->ParentControl->RenderGroupName($_ITEM); ?>', 'HtmlEntities=false', 'Width=250px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=130px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false', 'Width=360px'));

@@ -24,7 +24,6 @@
 			if (!$this->objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) QApplication::Redirect('/groups/');
 
 			$this->dtgRoles = new QDataGrid($this);
-			$this->dtgRoles->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgRoles->SetDataBinder('dtgRoles_Bind');
 			$this->dtgRoles->AddColumn(new QDataGridColumn('Edit', '<?= $_FORM->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=50px'));
 			$this->dtgRoles->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->Name; ?>', 'Width=200px'));

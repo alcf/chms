@@ -4,7 +4,6 @@
 
 		protected function SetupPanel() {
 			$this->dtgComments = new QDataGrid($this);
-			$this->dtgComments->AlternateRowStyle->CssClass = 'alternate';
 			              
 			$objPaginator = new QPaginator($this->dtgComments);
 			$this->dtgComments->Paginator = $objPaginator;

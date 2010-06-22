@@ -3,7 +3,6 @@
 		public $dtgAttributes;
 		protected function SetupPanel() {
 			$this->dtgAttributes = new QDataGrid($this);
-			$this->dtgAttributes->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgAttributes->AddColumn(new QDataGridColumn('Attribute', '<a href="#attributes/edit/<?= $_ITEM->AttributeId; ?>"><?= QApplication::HtmlEntities($_ITEM->Attribute->Name); ?></a>', 'HtmlEntities=false', 'Width=180px;'));
 			$this->dtgAttributes->AddColumn(new QDataGridColumn('Value', '<?= $_CONTROL->ParentControl->RenderValue($_ITEM); ?>', 'HtmlEntities=false', 'Width=570px'));
 			
