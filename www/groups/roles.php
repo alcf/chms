@@ -26,9 +26,9 @@
 			$this->dtgRoles = new QDataGrid($this);
 			$this->dtgRoles->AlternateRowStyle->CssClass = 'alternate';
 			$this->dtgRoles->SetDataBinder('dtgRoles_Bind');
-			$this->dtgRoles->AddColumn(new QDataGridColumn('Edit', '<?= $_FORM->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgRoles->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->Name; ?>'));
-			$this->dtgRoles->AddColumn(new QDataGridColumn('Type', '<?= GroupRoleType::$NameArray[$_ITEM->GroupRoleTypeId]; ?>'));
+			$this->dtgRoles->AddColumn(new QDataGridColumn('Edit', '<?= $_FORM->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=50px'));
+			$this->dtgRoles->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->Name; ?>', 'Width=200px'));
+			$this->dtgRoles->AddColumn(new QDataGridColumn('Type', '<?= GroupRoleType::$NameArray[$_ITEM->GroupRoleTypeId]; ?>', 'Width=530px'));
 
 			$this->pxyEditRole = new QControlProxy($this);
 			$this->pxyEditRole->AddAction(new QClickEvent(), new QAjaxAction('pxyEditRole_Click'));

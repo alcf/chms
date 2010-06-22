@@ -6,7 +6,7 @@
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$blnRefreshGroups = $this->mctGroup->EditMode || ($this->mctGroup->Group->ParentGroupId != $this->lstParentGroup->SelectedValue);
+			$blnRefreshGroups = !$this->mctGroup->EditMode || ($this->mctGroup->Group->ParentGroupId != $this->lstParentGroup->SelectedValue);
 
 			$this->mctGroup->SaveGroup();
 			
