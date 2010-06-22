@@ -16,19 +16,26 @@
 		protected function Form_Create() {
 			$this->pnlMinistries = new QPanel($this);
 			$this->pnlMinistries->TagName = 'ul';
-			$this->pnlMinistries->CssClass = 'subnavSide';
+			$this->pnlMinistries->CssClass = 'subnavSide subnavSideSmall';
 			$this->pnlMinistries->AutoRenderChildren = true;
 
 			$this->pxyMinistry = new QControlProxy($this);
 			$this->pxyMinistry->AddAction(new QClickEvent(), new QAjaxAction('pxyMinistry_Click'));
 			$this->pxyMinistry->AddAction(new QClickEvent(), new QTerminateAction());
 
+			$blnFirst = true;
 			foreach (Ministry::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::Ministry()->Name)) as $objMinistry) {
 				$pnlMinistry = new QPanel($this->pnlMinistries, 'pnlMinistry' . $objMinistry->Id);
 				$pnlMinistry->TagName = 'li';
 				$pnlMinistry->ActionParameter = $objMinistry->Id;
+				if ($blnFirst) {
+					$blnFirst = false;
+					$pnlMinistry->CssClass = 'first';
+				}
 				$this->pnlMinistry_Refresh($objMinistry);
 			}
+			// Last
+			$pnlMinistry->CssClass = 'last';
 			
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->TagName = 'h3';

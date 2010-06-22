@@ -23,19 +23,19 @@
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
 	span.na { color: #aaa; font-style: italic; }
 
-	button.primary {
+	input.primary, button.primary {
 		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
 		font-size: 12px; font-family: arial; color: #fff;
 		text-transform: uppercase;
 	}
-	button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
+	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
 
-	input.primary {
-		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
-		font-size: 12px; font-family: arial; color: #fff;
+	input.alternate, button.alternate {
+		background-image: url(/assets/images/button_alternate.png); border: 1px solid #859da9; height: 24px; -moz-border-radius: 5px; 
+		font-size: 12px; font-family: arial; color: #ddd;
 		text-transform: uppercase;
 	}
-	input.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
+	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
 
 	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; }
 	input.textbox:focus { background-color: #fff; }
@@ -52,7 +52,6 @@
 	h3 button.primary { float: right; margin-left: 10px; }
 	h3 input.primary { float: right; margin-left: 10px; }
 	h3 .moveUp { margin-top: -16px; }
-
 
 
 	/*** PAGE STRUCTURE ***/
@@ -116,13 +115,16 @@
 
 	/*** SUBNAV-SIDE ***/
 
-	ul.subnavSide { list-style: none; width: 170px; margin: 0; padding: 0; float: left;}
+	ul.subnavSide { list-style: none; width: 170px; margin: 0; padding: 0; float: left; }
 	ul.subnavSide li a { 
 		font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
 		font-size: 13px;
 		color: #ddd;
 		display: block; border-color: #859da9; border-style: solid; border-width: 1px 0 0 1px; background-color: #5a768e; text-decoration: none; padding: 8px 12px 8px 12px;
 		text-shadow: 1px 1px #444;
+	}
+	ul.subnavSideSmall li a {
+		font-size: 12px; padding: 2px 4px;
 	}
 	ul.subnavSide li a.selected { background-color: #fff; border-color: #fff; 
 		font-style: italic;
@@ -132,11 +134,26 @@
 	}
 	ul.subnavSide li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; text-shadow: 1px 1px #9ab; }
 
+	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; }
+	ul.subnavSide li.last a { -moz-border-radius: 0 0 0 5px; }
+
+
+	/*** SUBNAV-SIDE CONTENT ***/
+
+	div.subnavSideContent { background-color: #5a768e; width: 150px; margin-top: 12px; padding: 10px; -moz-border-radius: 5px 0 0 5px;}
+	div.subnavSideContent h4 { color: #ddd; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
+		font-size: 13px;
+		color: #ddd;
+		text-shadow: 1px 1px #444;
+		padding: 0; margin: 0; margin-bottom: 10px; font-weight: normal; }
+	div.subnavSideContent a { color: #ddd; }
 
 
 	/*** SUBNAV-CONTENT ***/
 
-	div.subnavContent { background: url(/assets/images/content_background.png); min-height: 500px; border: 1px solid #fff; width: 788px; float: left; padding: 10px; }
+	div.subnavContent { background: url(/assets/images/content_background.png); min-height: 500px; border: 1px solid #fff; width: 788px; float: left; padding: 10px;
+		-moz-border-radius: 0 5px 5px 5px;
+	}
 
 
 
@@ -166,7 +183,7 @@
 
 	/*** OTHER ***/
 
-	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; }
+	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 

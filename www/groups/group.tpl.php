@@ -6,12 +6,15 @@
 		<?php $this->pnlGroups->Render(); ?>
 		<br clear="all"/>
 		
-		<br/>
-		<?php $this->lstGroupType->Render(); ?>
-		<br/>
-		<br/>
-
-		<div class="buttonBar buttonBarLeft"><?php $this->btnViewRoles->Render('CssClass=cancel'); ?></div>
+		<div class="subnavSideContent">
+			<h4>Create a New Group</h4>
+			<?php $this->lstGroupType->Render(); ?>
+		</div>
+		
+		<div class="subnavSideContent">
+			<h4>Manage Roles</h4>
+			<?php $this->btnViewRoles->Render('CssClass=alternate'); ?>
+		</div>
 	</div>
 
 	<div class="subnavContent">

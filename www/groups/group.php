@@ -17,7 +17,7 @@
 		protected function Form_Create() {
 			$this->pnlGroups = new QPanel($this);
 			$this->pnlGroups->TagName = 'ul';
-			$this->pnlGroups->CssClass = 'subnavSide';
+			$this->pnlGroups->CssClass = 'subnavSide subnavSideSmall';
 			$this->pnlGroups->AutoRenderChildren = true;
 
 			$this->lblMinistry = new QLabel($this);
@@ -32,7 +32,7 @@
 				$this->lstGroupType->AddItem($strName, $intId);
 			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
 
-			$this->btnViewRoles = new QLinkButton($this);
+			$this->btnViewRoles = new QButton($this);
 			$this->btnViewRoles->Text = 'View Roles';
 			$this->btnViewRoles->AddAction(new QClickEvent(), new QAjaxAction('btnViewRoles_Click'));
 			$this->btnViewRoles->AddAction(new QClickEvent(), new QTerminateAction());
@@ -67,11 +67,22 @@
 					$this->objGroup->MinistryId,
 					Ministry::Load($this->objGroup->MinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
 
+				$blnFirst = true;
 				foreach ($objGroups as $objGroup) {
 					$pnlGroup = new QPanel($this->pnlGroups, 'pnlGroup' . $objGroup->Id);
 					$pnlGroup->TagName = 'li';
+					
+					if ($blnFirst) {
+						$blnFirst = false;
+						$pnlGroup->CssClass = 'first';
+					} else {
+						$pnlGroup->CssClass = null;
+					}
 					$this->pnlGroup_Refresh($objGroup);
 				}
+
+				// Last
+				$pnlGroup->CssClass = 'last';
 			}
 		}
 

@@ -16,7 +16,9 @@
 
 <h3>
 	Group Participants
-	<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/add_participation'; return false;">Add Participant</button>
+	<?php if ($_CONTROL->objGroup->IsLoginCanEdit(QApplication::$Login)) {?>
+		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/add_participation'; return false;">Add Participant</button>
+	<?php } ?>
 </h3>
 <div class="section">
 	<?php $_CONTROL->dtgMembers->Render(); ?>

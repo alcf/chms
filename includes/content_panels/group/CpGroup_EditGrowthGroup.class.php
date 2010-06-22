@@ -53,7 +53,7 @@
 			$this->txtAccuracy->Instructions = 'as reported by Google Maps -- this should ideally be 7';
 
 			$this->btnRefresh = new QButton($this);
-			$this->btnRefresh->Text = 'Refresh from Google Maps';
+			$this->btnRefresh->Text = 'Lookup Using Google Maps';
 			$this->btnRefresh->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnRefresh));
 			$this->btnRefresh->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click'));
 
