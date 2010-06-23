@@ -66,6 +66,8 @@
 		clear: both;
 		font-family: arial, helvetica; font-size: 10px; color: #4a3f5d; text-align: center;
 	}
+	div.footer a.footerLink { font-weight: bold; text-decoration: none; }
+	div.footer a.footerLink:hover { text-decoration: underline; }
 
 	div.header {
 		width: 980px; height: 80px; margin: 0 auto;

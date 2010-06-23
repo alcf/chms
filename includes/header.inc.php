@@ -19,7 +19,7 @@
 	<div class="status">
 		Welcome, <strong><?php _p(QApplication::$Login->Name); ?></strong>
 		&nbsp;|&nbsp;
-		<a href="#">My Profile</a>
+		<?php _p(QDateTime::Now()->ToString('DDDD, MMMM D YYYY')); ?>
 		&nbsp;|&nbsp;
 		<a href="/logout/">Logout</a>
 		<br/>
