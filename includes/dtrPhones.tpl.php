@@ -10,10 +10,10 @@
 		$radPhone = new QRadioButton($_CONTROL, $strRadioControlId);
 		$radPhone->GroupName = 'phone';
 		
-		if ($_CONTROL->ParentControl->mctAddress->Address->PrimaryPhoneId &&
-			($_CONTROL->ParentControl->mctAddress->Address->PrimaryPhoneId == $_ITEM->Id))
+		if ($_CONTROL->ParentControl->objDelegate->mctAddress->Address->PrimaryPhoneId &&
+			($_CONTROL->ParentControl->objDelegate->mctAddress->Address->PrimaryPhoneId == $_ITEM->Id))
 			$radPhone->Checked = true;
-		else if (!$_CONTROL->ParentControl->mctAddress->Address->PrimaryPhoneId &&
+		else if (!$_CONTROL->ParentControl->objDelegate->mctAddress->Address->PrimaryPhoneId &&
 			($_CONTROL->CurrentItemIndex == 0))
 			$radPhone->Checked = true;
 		else
