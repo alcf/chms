@@ -27,6 +27,20 @@
 			return sprintf('Address Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			try {
+				if ($this->PrimaryPhone) {
+					$this->PrimaryPhone = null;
+					$this->Save();
+				}
+				$this->DeleteAllPhones();
+				parent::Delete();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
 		/**
 		 * Overrides codegenned GetPhoneArray.  Since phones associated with addresses
 		 * are really only for Home addresses, since we always want the "primary" one to show up first

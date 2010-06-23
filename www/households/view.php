@@ -80,7 +80,7 @@
 			$strToReturn = $objAddress->Address1;
 			if ($objAddress->Address2) $strToReturn .= ', ' . $objAddress->Address2;
 			if ($objAddress->Address3) $strToReturn .= ', ' . $objAddress->Address3;
-			return sprintf('<a href="#contact/edit_home_address/%s">%s</a>', $objAddress->Id, QApplication::HtmlEntities($strToReturn));
+			return sprintf('<a href="/households/edit_home_address.php/%s/%s">%s</a>', $this->objHousehold->Id, $objAddress->Id, QApplication::HtmlEntities($strToReturn));
 		}
 
 		public function dtgMembers_Bind() {

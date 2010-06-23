@@ -44,7 +44,7 @@
 			} else {
 				// Ensure the Address object belongs to the household
 				if ($this->mctAddress->Address->HouseholdId != $this->pnlContent->Form->objHousehold->Id) {
-					return $this->pnlContent->ReturnTo('#contact');
+					return $this->pnlContent->ReturnTo($this->strReturnUrl);
 				}
 				$this->pnlContent->btnSave->Text = 'Update';
 
@@ -128,15 +128,16 @@
 			// let's make sure all the other addresses are PREVIOUS
 			if ($this->mctAddress->Address->CurrentFlag) $this->pnlContent->Form->objHousehold->SetAsCurrentAddress($this->mctAddress->Address);
 
-			QApplication::ExecuteJavaScript('document.location="#contact";');
+			return $this->pnlContent->ReturnTo($this->strReturnUrl);
 		}
 
 		public function btnCancel_Click() {
-			QApplication::ExecuteJavaScript('document.location="#contact";');
+			return $this->pnlContent->ReturnTo($this->strReturnUrl);
 		}
 	
 		public function btnDelete_Click() {
-			
+			$this->mctAddress->Address->Delete();
+			return $this->pnlContent->ReturnTo($this->strReturnUrl);
 		}
 
 		public function Validate() {
