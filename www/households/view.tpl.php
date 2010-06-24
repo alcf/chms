@@ -5,14 +5,14 @@
 <div style="float: left;">
 	<div class="subnavSideContent">
 		<h4>Manage Individuals</h4>
-		<button class="alternate" onclick="document.location = '#'; return false;">Add Individual</button>
-		<button class="alternate" onclick="document.location = '#'; return false;" style="margin-top: 8px;">Remove Individual</button>
+		<button class="alternate" onclick="document.location = '/households/add.php/<?php _p($this->objHousehold->Id); ?>'; return false;">Add Individual</button>
+		<button class="alternate" onclick="document.location = '/households/remove.php/<?php _p($this->objHousehold->Id); ?>'; return false;" style="margin-top: 8px;">Remove Individual</button>
 	</div>
 	
 	<div class="subnavSideContent">
 		<h4>Split/Combine Households</h4>
-		<button class="alternate" onclick="document.location = '#'; return false;">Split Household</button>
-		<button class="alternate" onclick="document.location = '#'; return false;" style="margin-top: 8px;">Merge Households</button>
+		<button class="alternate" onclick="document.location = '/households/split.php/<?php _p($this->objHousehold->Id); ?>'; return false;">Split Household</button>
+		<button class="alternate" onclick="document.location = '/households/merge.php/<?php _p($this->objHousehold->Id); ?>'; return false;" style="margin-top: 8px;">Merge Households</button>
 	</div>
 </div>
 
