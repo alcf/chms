@@ -60,13 +60,23 @@
 
 		/**
 		 * Sets the Person as the HeadPerson for this household.  Person must already be associated to this Household
-		 * or this will throw an Exception
+		 * or this will throw an Exception.  Person must not be a HeadOfHousehold elsewhere or this will throw as well.
 		 * @param Person $objHeadPerson
 		 * @return void
 		 */
 		public function SetAsHeadPerson(Person $objHeadPerson) {
-			if (!HouseholdParticipation::LoadByPersonIdHouseholdId($objHeadPerson->Id, $this->Id))
+			if (!HouseholdParticipation::LoadByPersonIdHouseholdId($objHeadPerson->Id, $this->Id)) {
 				throw new QCallerException('Person is not currently associated with this Household');
+			}
+
+			if ($objHeadPerson->CountHouseholdParticipations() > 1) {
+				throw new QCallerException('Cannot SetAsHead a Person who is a member of other household(s)');
+			}
+
+			if ($objHeadPerson->HouseholdAsHead &&
+				($objHeadPerson->HouseholdAsHead->Id != $this->Id)) {
+				throw new QCallerException('Cannot SetAsHead a Person who is already head of another household');
+			}
 
 			$this->HeadPerson = $objHeadPerson;
 			$this->RefreshMembers(false);
@@ -78,6 +88,7 @@
 		 * Associates a Person into this Household, and an optional role can be specified.  If no role is specified,
 		 * then the role is calculated.
 		 * 
+		 * If this person is Head of another household, this will throw an exception
 		 * If a record already exists, no new record will be created.  If a Role is specified, it will use it.  Otherwise,
 		 * it will update the role using RefreshRole() calculation.
 		 * 
@@ -86,9 +97,13 @@
 		 * @return void
 		 */
 		public function AssociatePerson(Person $objPerson, $strRole = null) {
-			$objHouseholdParticipation = HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Id);
+			if ($objPerson->HouseholdAsHead &&
+				($objPerson->HouseholdAsHead->Id != $this->Id)) {
+				throw new QCallerException('Cannot associate a person who is already head of another household');
+			}
 
 			// Create if doesn't exist
+			$objHouseholdParticipation = HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Id);
 			if (!$objHouseholdParticipation) {
 				$objHouseholdParticipation = new HouseholdParticipation();
 				$objHouseholdParticipation->Person = $objPerson;
@@ -123,21 +138,24 @@
 				throw new QCallerException('Specified HeadPerson of this newly merged Household not a member of either household');
 			}
 
-			// Each Person in the Merging Household will be Associated with This Household
-			foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
-				$this->AssociatePerson($objParticipation->Person, 'none');
-			}
+			// Get all the members of the Merging Hosuehold
+			$objParticipationArray = $objHousehold->GetHouseholdParticipationArray();
 
 			// Each Home Address in the Merging Household will be set as a Prior Home address for each member
 			$objAddressArray = $objHousehold->GetAddressArray();
-			foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
+			foreach ($objParticipationArray as $objParticipation) {
 				foreach ($objAddressArray as $objAddress) {
-					$objAddress->CopyForPerson($objPerson, AddressType::Home, false);
+					$objAddress->CopyForPerson($objParticipation->Person, AddressType::Home, false);
 				}
 			}
 
-			// Delete the merging household.
+			// Delete the merging household object, itself
 			$objHousehold->Delete();
+
+			// Each Person in the Merging Household will be now be associated with This Household
+			foreach ($objParticipationArray as $objParticipation) {
+				$this->AssociatePerson($objParticipation->Person, 'none');
+			}
 
 			// Setup the New Head and Refresh Data
 			$this->HeadPerson = $objNewHeadPerson;
