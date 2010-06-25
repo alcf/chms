@@ -85,6 +85,38 @@
 			}
 		}
 
+		/**
+		 * Given an Address record -- copy it and assign it to the specified Person.
+		 * 
+		 * This is typically used to take a HomeAddress record for a Household and to resassign it
+		 * as a previous home address for each member of a household that is being merged with another household.
+		 * 
+		 * ANY LINKED PHONE NUMBERS WILL BE LOST. 
+		 * 
+		 * This will return the new address record that is now linked to the Person.
+		 * @param Person $objPerson 
+		 * @param integer $intAddressTypeId
+		 * @param boolean $blnCurrentFlag
+		 * @return Address
+		 */
+		public function CopyForPerson(Person $objPerson, $intAddressTypeId, $blnCurrentFlag) {
+			$objAddress = new Address();
+			$objAddress->AddressTypeId = $intAddressTypeId;
+			$objAddress->Person = $objPerson;
+			$objAddress->Address1 = $this->Address1;
+			$objAddress->Address2 = $this->Address2;
+			$objAddress->Address3 = $this->Address3;
+			$objAddress->City = $this->City;
+			$objAddress->State = $this->State;
+			$objAddress->ZipCode = $this->ZipCode;
+			$objAddress->Country = $this->Country;
+			$objAddress->CurrentFlag = $blnCurrentFlag;
+			$objAddress->InvalidFlag = $this->InvalidFlag;
+			$objAddress->Save();
+
+			return $objAddress;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

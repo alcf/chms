@@ -10,7 +10,6 @@
 
 <h3>Add a Person to This Household</h3>
 <div class="section">
-	<?php $this->lstRole->RenderWithName(); ?>
 	<?php $this->txtRole->RenderWithName(); ?>
 	<?php $this->pnlPerson->Render(); ?>
 </div>

@@ -14,7 +14,6 @@
 		protected $dtgMembers;
 		protected $pnlPerson;
 
-		protected $lstRole;
 		protected $txtRole;
 
 		protected $btnSave;
@@ -41,17 +40,9 @@
 			$this->dtgMembers->DataSource = $this->objHousehold->GetOrderedParticipantArray();
 
 			// Setup Controls
-			$this->lstRole = new QListBox($this);
-			$this->lstRole->Name = 'Role';
-			$this->lstRole->Required = true;
-			$this->lstRole->AddItem('Head', true, true);
-			$this->lstRole->AddItem('Other...', false);
-			$this->lstRole->AddAction(new QChangeEvent(), new QAjaxAction('lstRole_Change'));
-
 			$this->txtRole = new QTextBox($this);
-			$this->txtRole->Name = '&nbsp;';
-			
-			$this->lstRole_Change(null, null, null);
+			$this->txtRole->Name = 'Role';
+			$this->txtRole->Instruction = 'Optional';
 
 			$this->pnlPerson = new SelectPersonPanel($this);
 			$this->pnlPerson->Name = 'Person to Add';
@@ -75,25 +66,12 @@
 			$this->pnlPerson->txtFirstName->Focus();
 		}
 
-		protected function lstRole_Change($strFormId, $strControlId, $strParameter) {
-			if ($this->lstRole->SelectedValue) {
-				$this->txtRole->Text = null;
-				$this->txtRole->Visible = false;
-				$this->txtRole->Required = false;
-			} else {
-				$this->txtRole->Visible = true;
-				$this->txtRole->Required = true;
-				$this->txtRole->Focus();
-			}
-		}
-
 		/**
 		 * @var Person
 		 */
 		protected $objPersonToAdd;
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
 			$this->objPersonToAdd = $this->pnlPerson->Person;
-			$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
 
 			if (HouseholdParticipation::LoadByPersonIdHouseholdId($this->objPersonToAdd->Id, $this->objHousehold->Id)) {
 				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is already part of this household.',
@@ -103,80 +81,103 @@
 			 	return;
 			}
 
-			if (Household::LoadByHeadPersonId($this->objPersonToAdd->Id)) {
-				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is Head of another household and thus cannot be added to this one.',
-					QApplication::HtmlEntities($this->objPersonToAdd->Name));
-				$this->dlgMessage->RemoveAllButtons(true);
-				$this->dlgMessage->ShowDialogBox();
-				return;
+			$this->dlgMessage->RemoveAllButtons(true);
+
+			switch ($this->objPersonToAdd->GetHouseholdStatus()) {
+				case Person::HouseholdStatusNone:
+					$this->AddToHousehold();
+					return;
+
+				case Person::HouseholdStatusHeadOfOne:
+					$this->MergeHouseholds();
+					return;
+
+				case Person::HouseholdStatusHeadOfFamily:
+					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is Head of another household and thus cannot be added to this one.',
+						QApplication::HtmlEntities($this->objPersonToAdd->Name));
+					break;
+
+				case Person::HouseholdStatusMemberOfOne:
+					$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
+					$objHousehold = $objParticipationArray[0]->Household;
+
+					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of the <strong>%s</strong>.<br/><br/>Is %s <strong>moving</strong> to this household, or is %s <strong>adding</strong> this as an <em>additional</em> household?',
+						QApplication::HtmlEntities($this->objPersonToAdd->Name),
+						QApplication::HtmlEntities($objHousehold->Name),
+						($this->objPersonToAdd->MaleFlag ? 'he' : 'she'),
+						($this->objPersonToAdd->MaleFlag ? 'he' : 'she'));
+					$this->dlgMessage->AddButton('Moving', MessageDialog::ButtonPrimary, 'MoveHouseholds');
+					$this->dlgMessage->AddButton('Adding', MessageDialog::ButtonPrimary, 'AddToHousehold');
+					$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
+					break;
+
+				case Person::HouseholdStatusMemberOfMultiple:
+					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of <strong>multiple households</strong>.<br/><br/>Are you sure you want to add %s to this household?',
+						QApplication::HtmlEntities($this->objPersonToAdd->Name),
+						($this->objPersonToAdd->MaleFlag ? 'him' : 'her'));
+					$this->dlgMessage->AddButton('Yes', MessageDialog::ButtonPrimary, 'AddToHousehold');
+					$this->dlgMessage->AddButton('No', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
+					break;
+
+				case Person::HouseholdStatusError:
+				default:
+					$this->dlgMessage->MessageHtml = sprintf('An unknown data error occurred while trying to add <strong>%s</strong> to this "%s" household.  Please contact a ChMS Administrator to report the issue.',
+						QApplication::HtmlEntities($this->objPersonToAdd->Name), QApplication::HtmlEntities($this->objHousehold->Name));
+					break;
 			}
 
-			// No other households -- automatically add person to this household
-			if (count($objParticipationArray) == 0) {
-				$this->AddToHousehold();
-				return;
-			}
-
-			// Part of 1+ households.  Ensure NOT trying to add as HEAD
-			if ($this->lstRole->SelectedValue) {
-				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of <strong>%s</strong> and thus cannot be added as the Head of this household.',
-					QApplication::HtmlEntities($this->objPersonToAdd->Name),
-					(count($objParticipationArray) == 1) ? QApplication::HtmlEntities($this->objHousehold->Name) : 'multiple households');
-				$this->dlgMessage->RemoveAllButtons(true);
-				$this->dlgMessage->ShowDialogBox();
-				return;
-			}
-
-			// Part of one other household
-			if (count($objParticipationArray) == 1) {
-				// Action dependent on whether the household has multiple members
-				$objHousehold = $objParticipationArray[0]->Household;
-				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of the <strong>%s</strong>.<br/><br/>Is %s <strong>moving</strong> to this household, or is %s <strong>adding</strong> this as an <em>additional</em> household?',
-					QApplication::HtmlEntities($this->objPersonToAdd->Name),
-					QApplication::HtmlEntities($objHousehold->Name),
-					($this->objPersonToAdd->MaleFlag ? 'he' : 'she'),
-					($this->objPersonToAdd->MaleFlag ? 'he' : 'she'));
-				$this->dlgMessage->RemoveAllButtons(false);
-				$this->dlgMessage->AddButton('Moving', MessageDialog::ButtonPrimary, 'MoveHouseholds');
-				$this->dlgMessage->AddButton('Adding', MessageDialog::ButtonPrimary, 'AddToHousehold');
-				$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
-				$this->dlgMessage->ShowDialogBox();
-				return;
-			}
-
-			// Currently part of multiple households -- Make sure this is the right person
-			$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of <strong>multiple households</strong>.<br/><br/>Are you sure you want to add %s to this household?',
-				QApplication::HtmlEntities($this->objPersonToAdd->Name),
-				($this->objPersonToAdd->MaleFlag ? 'him' : 'her'));
-			$this->dlgMessage->RemoveAllButtons(false);
-			$this->dlgMessage->AddButton('Yes', MessageDialog::ButtonPrimary, 'AddToHousehold');
-			$this->dlgMessage->AddButton('No', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
 			$this->dlgMessage->ShowDialogBox();
-			return;
 		}
 
+		/**
+		 * Really should only be called as a selection in the MessageDialog for folks that are HouseholdStatusHeadOfOne
+		 * This will THROW an exception if the person is not a HouseholdStatusHeadOfOne.
+		 * 
+		 * This calls to Merge Households and then redirects
+		 * @return void
+		 */
+		protected function MergeHouseholds(Household $objWithHousehold) {
+			if ($this->objPersonToAdd->GetHouseholdStatus() != Person::HouseholdStatusHeadOfOne)
+				throw new Exception('Cannot MergeHouseholds on a Person of HouseholdStatusHeadOfOne');
+
+			// Merge the Households
+			$this->objHousehold->MergeHousehold($this->objPersonToAdd->HouseholdAsHead, $this->objHousehold->HeadPerson);
+
+			$this->RedirectToViewPage();
+		}
+
+		/**
+		 * Really should only be called as a selection in the MessageDialog for folks that are HouseholdStatusMemberOfOne
+		 * This will THROW an exception if the person is not a HouseholdStatusMemberOfOne.
+		 * 
+		 * This basically deletes the current household participation record and then calls AddToHousehold() for the person.
+		 * @return void
+		 */
 		protected function MoveHouseholds() {
+			if ($this->objPersonToAdd->GetHouseholdStatus() != Person::HouseholdStatusMemberOfOne)
+				throw new Exception('Cannot MergeHouseholds on a Person of HouseholdStatusMemberOfOne');
+
+			// Get the Household
 			$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
 			$objHousehold = $objParticipationArray[0]->Household;
-			if (count($objHousehold->CountHouseholdParticipations()) == 1) {
-				// TODO: Perform a MERGE
-			} else {
-				// REMOVE from Current Household
-				$objHousehold->UnassociatePerson($this->objPersonToAdd);
-			}
+
+			// REMOVE from Current Household
+			$objHousehold->UnassociatePerson($this->objPersonToAdd);
+
+			// Add to Household
 			$this->AddToHousehold();
 		}
 
 		protected function AddToHousehold() {
 			$this->objHousehold->AssociatePerson($this->objPersonToAdd, trim($this->txtRole->Text));
-			if ($this->lstRole->SelectedValue) {
-				$this->objHousehold->SetAsHeadPerson($this->objPersonToAdd);
-			}
-
-			QApplication::Redirect('/households/view.php/' . $this->objHousehold->Id);
+			$this->RedirectToViewPage();
 		}
 
 		protected function btnCancel_Click($strFormId, $strControlId, $strParameter) {
+			$this->RedirectToViewPage();
+		}
+
+		protected function RedirectToViewPage() {
 			QApplication::Redirect('/households/view.php/' . $this->objHousehold->Id);
 		}
 	}

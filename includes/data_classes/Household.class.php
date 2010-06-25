@@ -27,6 +27,17 @@
 			return sprintf('Household Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			try {
+				$this->DeleteAllAddresses();
+				$this->DeleteAllHouseholdParticipations();
+				parent::Delete();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
 		/**
 		 * Creates a new Household record, and sets the HeadPerson as the Head of Household and HouseholdParticipant for this household
 		 * 
@@ -66,14 +77,24 @@
 		/**
 		 * Associates a Person into this Household, and an optional role can be specified.  If no role is specified,
 		 * then the role is calculated.
+		 * 
+		 * If a record already exists, no new record will be created.  If a Role is specified, it will use it.  Otherwise,
+		 * it will update the role using RefreshRole() calculation.
+		 * 
 		 * @param Person $objPerson
 		 * @param string $strRole
 		 * @return void
 		 */
 		public function AssociatePerson(Person $objPerson, $strRole = null) {
-			$objHouseholdParticipation = new HouseholdParticipation();
-			$objHouseholdParticipation->Person = $objPerson;
-			$objHouseholdParticipation->Household = $this;
+			$objHouseholdParticipation = HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Id);
+
+			// Create if doesn't exist
+			if (!$objHouseholdParticipation) {
+				$objHouseholdParticipation = new HouseholdParticipation();
+				$objHouseholdParticipation->Person = $objPerson;
+				$objHouseholdParticipation->Household = $this;
+			}
+
 			if ($strRole) {
 				$objHouseholdParticipation->Role = $strRole;
 			} else {
@@ -82,6 +103,50 @@
 			$objHouseholdParticipation->Save();
 
 			$this->RefreshMembers();
+		}
+
+		/**
+		 * This will marge the specified household into this household.  The passed in household will be DELETED.
+		 * All members of either household will be part of the merged household.
+		 * 
+		 * The New HeadPerson must be a member of either household, or else an exception will be thrown
+		 * 
+		 * All "Roles" will be reset by calling RefreshRole() on each HouseholdParticipation record.
+		 * @param Household $objHousehold
+		 * @param Person $objNewHeadPerson
+		 * @return void
+		 */
+		public function MergeHousehold(Household $objHousehold, Person $objNewHeadPerson) {
+			// Ensure the specified HeadPerson is part of either household
+			if (!HouseholdParticipation::LoadByPersonIdHouseholdId($objNewHeadPerson->Id, $this->Id) &&
+				!HouseholdParticipation::LoadByPersonIdHouseholdId($objNewHeadPerson->Id, $objHousehold->Id)) {
+				throw new QCallerException('Specified HeadPerson of this newly merged Household not a member of either household');
+			}
+
+			// Each Person in the Merging Household will be Associated with This Household
+			foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
+				$this->AssociatePerson($objParticipation->Person, 'none');
+			}
+
+			// Each Home Address in the Merging Household will be set as a Prior Home address for each member
+			$objAddressArray = $objHousehold->GetAddressArray();
+			foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
+				foreach ($objAddressArray as $objAddress) {
+					$objAddress->CopyForPerson($objPerson, AddressType::Home, false);
+				}
+			}
+
+			// Delete the merging household.
+			$objHousehold->Delete();
+
+			// Setup the New Head and Refresh Data
+			$this->HeadPerson = $objNewHeadPerson;
+			$this->RefreshMembers(false);
+			$this->RefreshName(false);
+			$this->Save();
+
+			// Refresh Roles of All Members
+			foreach ($this->GetHouseholdParticipationArray() as $objParticipation) $objParticipation->RefreshRole();
 		}
 
 		/**

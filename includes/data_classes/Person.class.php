@@ -122,6 +122,47 @@
 			return ($this->Age < 18);
 		}
 
+		const HouseholdStatusNone = 1;
+		const HouseholdStatusHeadOfOne = 2;
+		const HouseholdStatusHeadOfFamily = 3;
+		const HouseholdStatusMemberOfOne = 4;
+		const HouseholdStatusMemberOfMultiple = 5;
+		const HouseholdStatusError = 10;
+
+		/**
+		 * Gives the HouseholdStatus constant for this person, based on this person's role(s) in households.
+		 * @return integer
+		 */
+		public function GetHouseholdStatus() {
+			$intHouseholdParticipationCount = $this->CountHouseholdParticipations();
+
+			// Not part of any households
+			if (!$intHouseholdParticipationCount) {
+				if ($this->HouseholdAsHead) return self::HouseholdStatusError;
+				return self::HouseholdStatusNone;
+			}
+
+			// Head of a Household
+			if ($this->HouseholdAsHead) {
+				if ($intHouseholdParticipationCount > 1) return self::HouseholdStatusError;
+
+				if ($this->HouseholdAsHead->CountHouseholdParticipations() == 1) {
+					return self::HouseholdStatusHeadOfOne;
+				} else {
+					return self::HouseholdStatusHeadOfFamily;
+				}
+			}
+
+			// Member of 1 or more households, head of none
+			if ($intHouseholdParticipationCount == 1)
+				return self::HouseholdStatusMemberOfOne;
+			else
+				return self::HouseholdStatusMemberOfMultiple;
+
+			// We should never be here
+			return self::HouseholdStatusError;
+		}
+
 		/**
 		 * Given a Person to be related to an a RelationshipTypeId, this will create BOTH ends of
 		 * the relationship (e.g. TWO relationship records).
