@@ -275,7 +275,8 @@ table.groupList { float: left; margin-left: 20px; }
 
 
 	/* QDialogBox */
-	div.dialogbox { border: 4px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; }
+	div.dialogbox { border: 5px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; font-size: 16px; font-family: arial, helvetica, sans-serif; color: #333; -moz-border-radius: 10px; }
+	div.dialogbox div.buttonBar { margin-top: 24px; }
 
 	/* QDateTimePicker */
 	span.datetimepicker { }

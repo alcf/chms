@@ -87,21 +87,71 @@
 			}
 		}
 
+		/**
+		 * @var Person
+		 */
+		protected $objPersonToAdd;
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$objPerson = $this->pnlPerson->Person;
+			$this->objPersonToAdd = $this->pnlPerson->Person;
 
-			if (Household::LoadByHeadPersonId($objPerson->Id)) {
-				$this->dlgMessage->RemoveAllButtons();
-				$this->dlgMessage->MessageHtml = 'Cannot add someone who is already the Head of another household.';
+			if (HouseholdParticipation::LoadByPersonIdHouseholdId($this->objPersonToAdd->Id, $this->objHousehold->Id)) {
+				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is already part of this household.',
+					QApplication::HtmlEntities($this->objPersonToAdd->Name));
+				$this->dlgMessage->RemoveAllButtons(true);
+				$this->dlgMessage->ShowDialogBox();
+			 	return;
+			}
+
+			if (Household::LoadByHeadPersonId($this->objPersonToAdd->Id)) {
+				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is Head of another household and thus cannot be added to this one.',
+					QApplication::HtmlEntities($this->objPersonToAdd->Name));
+				$this->dlgMessage->RemoveAllButtons(true);
 				$this->dlgMessage->ShowDialogBox();
 				return;
 			}
 
-			if (HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->objHousehold->Id)) {
-				$this->dlgMessage->RemoveAllButtons();
-				$this->dlgMessage->MessageHtml = 'This person is already part of the household.';
+			$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
+			if (count($objParticipationArray) == 0) {
+				// No other households -- automatically add person to this household
+				$this->AddToHousehold();
+			} else if (count($objParticipationArray) == 1) {
+				// TODO: Ensure they are trying to add as HEAD
+
+				// Action dependent on whether the household has multiple members
+				$objHousehold = $objParticipationArray[0]->Household;
+				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of the <strong>%s</strong>.<br/><br/>Is %s <strong>moving</strong> to this household, or is %s <strong>adding</strong> this as an <em>additional</em> household?',
+					QApplication::HtmlEntities($this->objPersonToAdd->Name),
+					QApplication::HtmlEntities($objHousehold->Name),
+					($this->objPersonToAdd->MaleFlag ? 'he' : 'she'),
+					($this->objPersonToAdd->MaleFlag ? 'he' : 'she'));
+				$this->dlgMessage->RemoveAllButtons(false);
+				$this->dlgMessage->AddButton('Moving', MessageDialog::ButtonPrimary, 'MoveHouseholds');
+				$this->dlgMessage->AddButton('Adding', MessageDialog::ButtonPrimary, 'AddToHousehold');
+				$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
 				$this->dlgMessage->ShowDialogBox();
-			 	return;
+			} else {
+				// TODO: Ensure they are trying to add as HEAD
+
+				// Currently part of multiple households -- Make sure this is the right person
+				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of multiple households.<br/><br/>Are you sure you want to add %s to this household?',
+					QApplication::HtmlEntities($this->objPersonToAdd->Name),
+					($this->objPersonToAdd->MaleFlag ? 'him' : 'her'));
+				$this->dlgMessage->MessageHtml = 'This person is already part of multiple other households.<br/><br/>Are you SURE you want to add this person to this household?';
+				$this->dlgMessage->RemoveAllButtons(true);
+				$this->dlgMessage->AddButton('Yes', MessageDialog::ButtonPrimary, 'AddToHousehold');
+				$this->dlgMessage->AddButton('No', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
+				$this->dlgMessage->ShowDialogBox();
+			}
+		}
+
+		protected function MoveHouseholds() {
+			
+		}
+
+		protected function AddToHousehold() {
+			$this->objHousehold->AssociatePerson($this->objPersonToAdd, trim($this->txtRole->Text));
+			if ($this->lstRole->SelectedValue) {
+				$this->objHousehold->SetAsHeadPerson($this->objPersonToAdd);
 			}
 
 			QApplication::Redirect('/households/view.php/' . $this->objHousehold->Id);

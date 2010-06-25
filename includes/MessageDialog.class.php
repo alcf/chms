@@ -16,10 +16,16 @@
 			$this->HideDialogBox();
 		}
 
-		public function RemoveAllButtons() {
+		public function RemoveAllButtons($blnAddCloseOnly = false) {
 			$this->blnMatteClickable = true;
 			foreach ($this->btnButtonArray as $btnButton) {
 				$this->RemoveChildControl($btnButton->ControlId, true);
+			}
+			$this->btnButtonArray = array();
+
+			if ($blnAddCloseOnly) {
+				$this->AddButton('Okay', self::ButtonPrimary, 'HideDialogBox', $this);
+				$this->blnMatteClickable = true;
 			}
 		}
 
@@ -45,6 +51,7 @@
 				$btnButton->AddAction(new QClickEvent(), new QAjaxAction($strOnClickMethodName));
 			$btnButton->AddAction(new QClickEvent(), new QTerminateAction());
 
+			$this->btnButtonArray[] = $btnButton;
 			return $btnButton;
 		}
 
