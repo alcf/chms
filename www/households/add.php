@@ -42,7 +42,7 @@
 			// Setup Controls
 			$this->txtRole = new QTextBox($this);
 			$this->txtRole->Name = 'Role';
-			$this->txtRole->Instruction = 'Optional';
+			$this->txtRole->Instructions = 'Optional';
 
 			$this->pnlPerson = new SelectPersonPanel($this);
 			$this->pnlPerson->Name = 'Person to Add';

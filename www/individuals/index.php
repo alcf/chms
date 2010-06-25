@@ -21,11 +21,11 @@
 		}
 		
 		public function RenderFirstName(Person $objPerson) {
-			return sprintf('<a href="/individuals/view.php/%s">%s</a>', $objPerson->Id, QApplication::HtmlEntities($objPerson->FirstName));
+			return sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->FirstName));
 		}
 		
 		public function RenderLastName(Person $objPerson) {
-			return sprintf('<a href="/individuals/view.php/%s">%s</a>', $objPerson->Id, QApplication::HtmlEntities($objPerson->LastName));
+			return sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->LastName));
 		}
 		
 		public function dtgPeople_Bind() {
