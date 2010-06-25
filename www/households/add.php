@@ -93,6 +93,7 @@
 		protected $objPersonToAdd;
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
 			$this->objPersonToAdd = $this->pnlPerson->Person;
+			$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
 
 			if (HouseholdParticipation::LoadByPersonIdHouseholdId($this->objPersonToAdd->Id, $this->objHousehold->Id)) {
 				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is already part of this household.',
@@ -110,13 +111,24 @@
 				return;
 			}
 
-			$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
+			// No other households -- automatically add person to this household
 			if (count($objParticipationArray) == 0) {
-				// No other households -- automatically add person to this household
 				$this->AddToHousehold();
-			} else if (count($objParticipationArray) == 1) {
-				// TODO: Ensure they are trying to add as HEAD
+				return;
+			}
 
+			// Part of 1+ households.  Ensure NOT trying to add as HEAD
+			if ($this->lstRole->SelectedValue) {
+				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of <strong>%s</strong> and thus cannot be added as the Head of this household.',
+					QApplication::HtmlEntities($this->objPersonToAdd->Name),
+					(count($objParticipationArray) == 1) ? QApplication::HtmlEntities($this->objHousehold->Name) : 'multiple households');
+				$this->dlgMessage->RemoveAllButtons(true);
+				$this->dlgMessage->ShowDialogBox();
+				return;
+			}
+
+			// Part of one other household
+			if (count($objParticipationArray) == 1) {
 				// Action dependent on whether the household has multiple members
 				$objHousehold = $objParticipationArray[0]->Household;
 				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of the <strong>%s</strong>.<br/><br/>Is %s <strong>moving</strong> to this household, or is %s <strong>adding</strong> this as an <em>additional</em> household?',
@@ -129,23 +141,30 @@
 				$this->dlgMessage->AddButton('Adding', MessageDialog::ButtonPrimary, 'AddToHousehold');
 				$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
 				$this->dlgMessage->ShowDialogBox();
-			} else {
-				// TODO: Ensure they are trying to add as HEAD
-
-				// Currently part of multiple households -- Make sure this is the right person
-				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of multiple households.<br/><br/>Are you sure you want to add %s to this household?',
-					QApplication::HtmlEntities($this->objPersonToAdd->Name),
-					($this->objPersonToAdd->MaleFlag ? 'him' : 'her'));
-				$this->dlgMessage->MessageHtml = 'This person is already part of multiple other households.<br/><br/>Are you SURE you want to add this person to this household?';
-				$this->dlgMessage->RemoveAllButtons(true);
-				$this->dlgMessage->AddButton('Yes', MessageDialog::ButtonPrimary, 'AddToHousehold');
-				$this->dlgMessage->AddButton('No', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
-				$this->dlgMessage->ShowDialogBox();
+				return;
 			}
+
+			// Currently part of multiple households -- Make sure this is the right person
+			$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of <strong>multiple households</strong>.<br/><br/>Are you sure you want to add %s to this household?',
+				QApplication::HtmlEntities($this->objPersonToAdd->Name),
+				($this->objPersonToAdd->MaleFlag ? 'him' : 'her'));
+			$this->dlgMessage->RemoveAllButtons(false);
+			$this->dlgMessage->AddButton('Yes', MessageDialog::ButtonPrimary, 'AddToHousehold');
+			$this->dlgMessage->AddButton('No', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
+			$this->dlgMessage->ShowDialogBox();
+			return;
 		}
 
 		protected function MoveHouseholds() {
-			
+			$objParticipationArray = $this->objPersonToAdd->GetHouseholdParticipationArray();
+			$objHousehold = $objParticipationArray[0]->Household;
+			if (count($objHousehold->CountHouseholdParticipations()) == 1) {
+				// TODO: Perform a MERGE
+			} else {
+				// REMOVE from Current Household
+				$objHousehold->UnassociatePerson($this->objPersonToAdd);
+			}
+			$this->AddToHousehold();
 		}
 
 		protected function AddToHousehold() {

@@ -85,6 +85,26 @@
 		}
 
 		/**
+		 * Attempts to remove the person from the household.  This will throw an exception if:
+		 *  - This person is not currently part of the household
+		 * 	- This person is the only person in the household
+		 *  - This person is the head of the household
+		 * @param Person $objPerson
+		 * @return void
+		 */
+		public function UnassociatePerson(Person $objPerson) {
+			$objParticipation = HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Id);
+			if (!$objParticipation)
+				throw new QCallerException('Person does not exist in the household');
+			if ($this->CountHouseholdParticipations() == 1)
+				throw new QCallerException('Person is the only member of this household and thus cannot be removed');
+			if ($this->HeadPersonId == $objPerson->Id)
+				throw new QCallerException('Person is the Head of this household and thus cannot be removed');
+			$objParticipation->Delete();
+			$this->RefreshMembers();
+		}
+
+		/**
 		 * Refreshes the Members field based on the members / household participants in this household.
 		 * @param boolean $blnSave whether or not to call save after updating
 		 * @return void
