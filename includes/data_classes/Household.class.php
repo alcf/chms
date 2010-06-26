@@ -192,8 +192,18 @@
 				throw new QCallerException('Person is the only member of this household and thus cannot be removed');
 			if ($this->HeadPersonId == $objPerson->Id)
 				throw new QCallerException('Person is the Head of this household and thus cannot be removed');
-			$objParticipation->Delete();
-			$this->RefreshMembers();
+
+			self::GetDatabase()->TransactionBegin();
+			try {
+				foreach ($this->GetAddressArray() as $objAddress)
+					$objAddress->CopyForPerson($objPerson, AddressType::Home, false);
+				$objParticipation->Delete();
+				$this->RefreshMembers();
+			} catch (Exception $objExc) {
+				self::GetDatabase()->TransactionRollBack();
+				throw $objExc;
+			}
+			self::GetDatabase()->TransactionCommit();
 		}
 
 		/**
