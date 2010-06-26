@@ -19,6 +19,9 @@
 					// the includes/ directory with the contents "mike"
 					define ('__DOCROOT__', '/var/www/alcf/chms/www');
 					break;
+				case 'harris':
+					define ('__DOCROOT__', 'c:/chms/www');
+					break;
 				case 'john':
 					define ('__DOCROOT__', 'C:/xampplite/htdocs/alcf/www');
 					break;
