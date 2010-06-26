@@ -121,7 +121,8 @@
 		}
 	
 		public function btnDelete_Click() {
-			
+			$this->mctAddress->Address->Delete();
+			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 	}
 ?>

@@ -16,21 +16,28 @@
 			$this->HideDialogBox();
 		}
 
-		public function RemoveAllButtons($blnAddCloseOnly = false) {
-			$this->blnMatteClickable = true;
+		public function RemoveAllButtons() {
+			// Remove all buttons
 			foreach ($this->btnButtonArray as $btnButton) {
 				$this->RemoveChildControl($btnButton->ControlId, true);
 			}
 			$this->btnButtonArray = array();
 
-			if ($blnAddCloseOnly) {
-				$this->AddButton('Okay', self::ButtonPrimary, 'HideDialogBox', $this);
-				$this->blnMatteClickable = true;
-			}
+			// Setup with just a single button
+			$this->AddButton('Okay', self::ButtonPrimary, 'HideDialogBox', $this);
+			$this->blnMatteClickable = true;
 		}
 
 		public function AddButton($strButtonText, $intButtonTypeId, $strOnClickMethodName, QControl $objOnClickMethodObject = null) {
-			$this->blnMatteClickable = false;
+			// If just a single button right now, we need to get rid of it
+			if ($this->blnMatteClickable) {
+				$this->blnMatteClickable = false;
+				foreach ($this->btnButtonArray as $btnButton) {
+					$this->RemoveChildControl($btnButton->ControlId, true);
+				}
+				$this->btnButtonArray = array();
+			}
+
 			switch ($intButtonTypeId) {
 				case MessageDialog::ButtonPrimary:
 					$btnButton = new QButton($this);

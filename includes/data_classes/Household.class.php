@@ -29,7 +29,7 @@
 
 		public function Delete() {
 			try {
-				$this->DeleteAllAddresses();
+				foreach ($this->GetAddressArray() as $objAddress) $objAddress->Delete();
 				$this->DeleteAllHouseholdParticipations();
 				parent::Delete();
 			} catch (QCallerException $objExc) {
@@ -138,33 +138,42 @@
 				throw new QCallerException('Specified HeadPerson of this newly merged Household not a member of either household');
 			}
 
-			// Get all the members of the Merging Hosuehold
-			$objParticipationArray = $objHousehold->GetHouseholdParticipationArray();
+			self::GetDatabase()->TransactionBegin();
 
-			// Each Home Address in the Merging Household will be set as a Prior Home address for each member
-			$objAddressArray = $objHousehold->GetAddressArray();
-			foreach ($objParticipationArray as $objParticipation) {
-				foreach ($objAddressArray as $objAddress) {
-					$objAddress->CopyForPerson($objParticipation->Person, AddressType::Home, false);
+			try {
+				// Get all the members of the Merging Hosuehold
+				$objParticipationArray = $objHousehold->GetHouseholdParticipationArray();
+
+				// Each Home Address in the Merging Household will be set as a Prior Home address for each member
+				$objAddressArray = $objHousehold->GetAddressArray();
+				foreach ($objParticipationArray as $objParticipation) {
+					foreach ($objAddressArray as $objAddress) {
+						$objAddress->CopyForPerson($objParticipation->Person, AddressType::Home, false);
+					}
 				}
+
+				// Delete the merging household object, itself
+				$objHousehold->Delete();
+
+				// Each Person in the Merging Household will be now be associated with This Household
+				foreach ($objParticipationArray as $objParticipation) {
+					$this->AssociatePerson($objParticipation->Person, 'none');
+				}
+
+				// Setup the New Head and Refresh Data
+				$this->HeadPerson = $objNewHeadPerson;
+				$this->RefreshMembers(false);
+				$this->RefreshName(false);
+				$this->Save();
+
+				// Refresh Roles of All Members
+				foreach ($this->GetHouseholdParticipationArray() as $objParticipation) $objParticipation->RefreshRole();
+			} catch (Exception $objExc) {
+				self::GetDatabase()->TransactionRollBack();
+				throw $objExc;
 			}
 
-			// Delete the merging household object, itself
-			$objHousehold->Delete();
-
-			// Each Person in the Merging Household will be now be associated with This Household
-			foreach ($objParticipationArray as $objParticipation) {
-				$this->AssociatePerson($objParticipation->Person, 'none');
-			}
-
-			// Setup the New Head and Refresh Data
-			$this->HeadPerson = $objNewHeadPerson;
-			$this->RefreshMembers(false);
-			$this->RefreshName(false);
-			$this->Save();
-
-			// Refresh Roles of All Members
-			foreach ($this->GetHouseholdParticipationArray() as $objParticipation) $objParticipation->RefreshRole();
+			self::GetDatabase()->TransactionCommit();
 		}
 
 		/**

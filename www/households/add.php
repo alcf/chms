@@ -74,14 +74,14 @@
 			$this->objPersonToAdd = $this->pnlPerson->Person;
 
 			if (HouseholdParticipation::LoadByPersonIdHouseholdId($this->objPersonToAdd->Id, $this->objHousehold->Id)) {
+				$this->dlgMessage->RemoveAllButtons();
 				$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is already part of this household.',
 					QApplication::HtmlEntities($this->objPersonToAdd->Name));
-				$this->dlgMessage->RemoveAllButtons(true);
 				$this->dlgMessage->ShowDialogBox();
 			 	return;
 			}
 
-			$this->dlgMessage->RemoveAllButtons(true);
+			$this->dlgMessage->RemoveAllButtons();
 
 			switch ($this->objPersonToAdd->GetHouseholdStatus()) {
 				case Person::HouseholdStatusNone:
@@ -136,7 +136,7 @@
 		 * This calls to Merge Households and then redirects
 		 * @return void
 		 */
-		protected function MergeHouseholds(Household $objWithHousehold) {
+		protected function MergeHouseholds() {
 			if ($this->objPersonToAdd->GetHouseholdStatus() != Person::HouseholdStatusHeadOfOne)
 				throw new Exception('Cannot MergeHouseholds on a Person of HouseholdStatusHeadOfOne');
 

@@ -33,7 +33,7 @@
 					$this->PrimaryPhone = null;
 					$this->Save();
 				}
-				$this->DeleteAllPhones();
+				foreach ($this->GetPhoneArray() as $objPhone) $objPhone->Delete();
 				parent::Delete();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
