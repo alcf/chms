@@ -61,7 +61,7 @@
 		return $strSql;
 	}
 
-	$objOdbc = odbc_connect("DBISAM ACS", null, null);
+	$objOdbc = odbc_connect(ACS_ODBC, null, null);
 	$objDirectory = opendir(ACS_DATA_PATH);
 
 	$strSql = null;
@@ -75,7 +75,7 @@
 
 	if (trim(strtolower($objParameters->GetDefaultValue('output_path'))) == 'run') {
 		$strConnectionArray = unserialize(DB_CONNECTION_2);
-		$objMySql = new MySqli('chms.alcf.dev', $strConnectionArray['username']);
+		$objMySql = new MySqli($strConnectionArray['server'], $strConnectionArray['username']);
 		$objMySql->select_db('mysql');
 		$objMySql->query('DROP DATABASE IF EXISTS `' . $strConnectionArray['database'] . '`;');
 		$objMySql->query('CREATE DATABASE `' . $strConnectionArray['database'] . '`;');

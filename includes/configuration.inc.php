@@ -26,7 +26,7 @@
 
 					define('DB_CONNECTION_2', serialize(array(
 						'adapter' => 'MySqli5',
-						'server' => 'localhost',
+						'server' => 'chms.alcf.dev',
 						'port' => null,
 						'database' => 'alcf_acs',
 						'username' => 'root',
