@@ -21,6 +21,17 @@
 					break;
 				case 'harris':
 					define ('__DOCROOT__', 'c:/chms/www');
+					define('ACS_DATA_PATH', 'c:/ACSNET/ACSDATA');
+					define('ACS_ODBC', 'DBISAM ACS');
+
+					define('DB_CONNECTION_2', serialize(array(
+						'adapter' => 'MySqli5',
+						'server' => 'localhost',
+						'port' => null,
+						'database' => 'alcf_acs',
+						'username' => 'root',
+						'password' => '',
+						'profiling' => false)));
 					break;
 				case 'john':
 					define ('__DOCROOT__', 'C:/xampplite/htdocs/alcf/www');
@@ -31,7 +42,7 @@
 					break;
 			}
 			unset($strLocalConfiguration);
-			
+
 			define('DB_CONNECTION_1', serialize(array(
 				'adapter' => 'MySqli5',
 				'server' => 'localhost',
