@@ -132,8 +132,10 @@
 			$this->UnassociatePerson($objNewHeadPerson);
 			$objNewHousehold = Household::CreateHousehold($objNewHeadPerson);
 			foreach ($objPersonArray as $objPerson) {
-				if ($objPerson->Id != $objNewHeadPerson->Id)
+				if ($objPerson->Id != $objNewHeadPerson->Id) {
+					$this->UnassociatePerson($objPerson);
 					$objNewHousehold->AssociatePerson($objPerson);
+				}
 			}
 			return $objNewHousehold;
 		}
