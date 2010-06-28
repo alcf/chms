@@ -137,6 +137,14 @@
 					$objNewHousehold->AssociatePerson($objPerson);
 				}
 			}
+
+			// Log it
+			$objHouseholdSplit = new HouseholdSplit();
+			$objHouseholdSplit->Household = $this;
+			$objHouseholdSplit->SplitHousehold = $objNewHousehold;
+			$objHouseholdSplit->DateSplit = QDateTime::Now();
+			$objHouseholdSplit->Save();
+
 			return $objNewHousehold;
 		}
 
