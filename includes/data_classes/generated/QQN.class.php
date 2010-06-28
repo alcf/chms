@@ -115,6 +115,12 @@
 			return new QQNodeHouseholdParticipation('household_participation', null, null);
 		}
 		/**
+		 * @return QQNodeHouseholdSplit
+		 */
+		static public function HouseholdSplit() {
+			return new QQNodeHouseholdSplit('household_split', null, null);
+		}
+		/**
 		 * @return QQNodeLogin
 		 */
 		static public function Login() {

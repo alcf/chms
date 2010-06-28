@@ -1,36 +1,36 @@
 <?php
 	/**
-	 * The abstract MembershipGen class defined here is
+	 * The abstract HouseholdSplitGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the Membership subclass which
-	 * extends this MembershipGen class.
+	 * To use, you should use the HouseholdSplit subclass which
+	 * extends this HouseholdSplitGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the Membership class.
+	 * in the HouseholdSplit class.
 	 * 
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
-	 * @property integer $PersonId the value for intPersonId (Not Null)
-	 * @property QDateTime $DateStart the value for dttDateStart (Not Null)
-	 * @property QDateTime $DateEnd the value for dttDateEnd 
-	 * @property string $TerminationReason the value for strTerminationReason 
-	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
+	 * @property integer $HouseholdId the value for intHouseholdId (Not Null)
+	 * @property integer $SplitHouseholdId the value for intSplitHouseholdId (Not Null)
+	 * @property QDateTime $DateSplit the value for dttDateSplit 
+	 * @property Household $Household the value for the Household object referenced by intHouseholdId (Not Null)
+	 * @property Household $SplitHousehold the value for the Household object referenced by intSplitHouseholdId (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
-	class MembershipGen extends QBaseClass {
+	class HouseholdSplitGen extends QBaseClass {
 
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK Identity column membership.id
+		 * Protected member variable that maps to the database PK Identity column household_split.id
 		 * @var integer intId
 		 */
 		protected $intId;
@@ -38,35 +38,27 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column membership.person_id
-		 * @var integer intPersonId
+		 * Protected member variable that maps to the database column household_split.household_id
+		 * @var integer intHouseholdId
 		 */
-		protected $intPersonId;
-		const PersonIdDefault = null;
+		protected $intHouseholdId;
+		const HouseholdIdDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column membership.date_start
-		 * @var QDateTime dttDateStart
+		 * Protected member variable that maps to the database column household_split.split_household_id
+		 * @var integer intSplitHouseholdId
 		 */
-		protected $dttDateStart;
-		const DateStartDefault = null;
+		protected $intSplitHouseholdId;
+		const SplitHouseholdIdDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column membership.date_end
-		 * @var QDateTime dttDateEnd
+		 * Protected member variable that maps to the database column household_split.date_split
+		 * @var QDateTime dttDateSplit
 		 */
-		protected $dttDateEnd;
-		const DateEndDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column membership.termination_reason
-		 * @var string strTerminationReason
-		 */
-		protected $strTerminationReason;
-		const TerminationReasonDefault = null;
+		protected $dttDateSplit;
+		const DateSplitDefault = null;
 
 
 		/**
@@ -93,13 +85,23 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column membership.person_id.
+		 * in the database column household_split.household_id.
 		 *
-		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
+		 * NOTE: Always use the Household property getter to correctly retrieve this Household object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Person objPerson
+		 * @var Household objHousehold
 		 */
-		protected $objPerson;
+		protected $objHousehold;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column household_split.split_household_id.
+		 *
+		 * NOTE: Always use the SplitHousehold property getter to correctly retrieve this Household object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Household objSplitHousehold
+		 */
+		protected $objSplitHousehold;
 
 
 
@@ -118,26 +120,26 @@
 		}
 
 		/**
-		 * Load a Membership from PK Info
+		 * Load a HouseholdSplit from PK Info
 		 * @param integer $intId
-		 * @return Membership
+		 * @return HouseholdSplit
 		 */
 		public static function Load($intId) {
 			// Use QuerySingle to Perform the Query
-			return Membership::QuerySingle(
-				QQ::Equal(QQN::Membership()->Id, $intId)
+			return HouseholdSplit::QuerySingle(
+				QQ::Equal(QQN::HouseholdSplit()->Id, $intId)
 			);
 		}
 
 		/**
-		 * Load all Memberships
+		 * Load all HouseholdSplits
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Membership[]
+		 * @return HouseholdSplit[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
-			// Call Membership::QueryArray to perform the LoadAll query
+			// Call HouseholdSplit::QueryArray to perform the LoadAll query
 			try {
-				return Membership::QueryArray(QQ::All(), $objOptionalClauses);
+				return HouseholdSplit::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -145,12 +147,12 @@
 		}
 
 		/**
-		 * Count all Memberships
+		 * Count all HouseholdSplits
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call Membership::QueryCount to perform the CountAll query
-			return Membership::QueryCount(QQ::All());
+			// Call HouseholdSplit::QueryCount to perform the CountAll query
+			return HouseholdSplit::QueryCount(QQ::All());
 		}
 
 
@@ -172,12 +174,12 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = Membership::GetDatabase();
+			$objDatabase = HouseholdSplit::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with Membership-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'membership');
-			Membership::GetSelectFields($objQueryBuilder);
-			$objQueryBuilder->AddFromItem('membership');
+			// Create/Build out the QueryBuilder object with HouseholdSplit-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'household_split');
+			HouseholdSplit::GetSelectFields($objQueryBuilder);
+			$objQueryBuilder->AddFromItem('household_split');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -224,39 +226,39 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a single Membership object.
+		 * Static Qcodo Query method to query for a single HouseholdSplit object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return Membership the queried object
+		 * @return HouseholdSplit the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = Membership::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = HouseholdSplit::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new Membership object
+			// Perform the Query, Get the First Row, and Instantiate a new HouseholdSplit object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return Membership::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
+			return HouseholdSplit::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
-		 * Static Qcodo Query method to query for an array of Membership objects.
+		 * Static Qcodo Query method to query for an array of HouseholdSplit objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return Membership[] the queried objects as an array
+		 * @return HouseholdSplit[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = Membership::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = HouseholdSplit::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -264,7 +266,7 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return Membership::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
+			return HouseholdSplit::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
@@ -278,7 +280,7 @@
 		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the query statement
 			try {
-				$strQuery = Membership::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = HouseholdSplit::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -293,7 +295,7 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a count of Membership objects.
+		 * Static Qcodo Query method to query for a count of HouseholdSplit objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -303,7 +305,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = Membership::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = HouseholdSplit::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -334,15 +336,15 @@
 
 /*		public static function QueryArrayCached($strConditions, $mixParameterArray = null) {
 			// Get the Database Object for this Class
-			$objDatabase = Membership::GetDatabase();
+			$objDatabase = HouseholdSplit::GetDatabase();
 
 			// Lookup the QCache for This Query Statement
-			$objCache = new QCache('query', 'membership_' . serialize($strConditions));
+			$objCache = new QCache('query', 'household_split_' . serialize($strConditions));
 			if (!($strQuery = $objCache->GetData())) {
-				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with Membership-specific fields
+				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with HouseholdSplit-specific fields
 				$objQueryBuilder = new QQueryBuilder($objDatabase);
-				Membership::GetSelectFields($objQueryBuilder);
-				Membership::GetFromFields($objQueryBuilder);
+				HouseholdSplit::GetSelectFields($objQueryBuilder);
+				HouseholdSplit::GetFromFields($objQueryBuilder);
 
 				// Ensure the Passed-in Conditions is a string
 				try {
@@ -372,11 +374,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return Membership::InstantiateDbResult($objDbResult);
+			return HouseholdSplit::InstantiateDbResult($objDbResult);
 		}*/
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this Membership
+		 * Updates a QQueryBuilder with the SELECT fields for this HouseholdSplit
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -385,15 +387,14 @@
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
 			} else {
-				$strTableName = 'membership';
+				$strTableName = 'household_split';
 				$strAliasPrefix = '';
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
-			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
-			$objBuilder->AddSelectItem($strTableName, 'date_start', $strAliasPrefix . 'date_start');
-			$objBuilder->AddSelectItem($strTableName, 'date_end', $strAliasPrefix . 'date_end');
-			$objBuilder->AddSelectItem($strTableName, 'termination_reason', $strAliasPrefix . 'termination_reason');
+			$objBuilder->AddSelectItem($strTableName, 'household_id', $strAliasPrefix . 'household_id');
+			$objBuilder->AddSelectItem($strTableName, 'split_household_id', $strAliasPrefix . 'split_household_id');
+			$objBuilder->AddSelectItem($strTableName, 'date_split', $strAliasPrefix . 'date_split');
 		}
 
 
@@ -404,16 +405,16 @@
 		///////////////////////////////
 
 		/**
-		 * Instantiate a Membership from a Database Row.
+		 * Instantiate a HouseholdSplit from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this Membership::InstantiateDbRow in order to perform
+		 * is calling this HouseholdSplit::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param QDatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
 		 * @param string $strExpandAsArrayNodes
 		 * @param QBaseClass $objPreviousItem
 		 * @param string[] $strColumnAliasArray
-		 * @return Membership
+		 * @return HouseholdSplit
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null, $strColumnAliasArray = array()) {
 			// If blank row, return null
@@ -421,20 +422,18 @@
 				return null;
 
 
-			// Create a new instance of the Membership object
-			$objToReturn = new Membership();
+			// Create a new instance of the HouseholdSplit object
+			$objToReturn = new HouseholdSplit();
 			$objToReturn->__blnRestored = true;
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
-			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_start', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_start'] : $strAliasPrefix . 'date_start';
-			$objToReturn->dttDateStart = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_end', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_end'] : $strAliasPrefix . 'date_end';
-			$objToReturn->dttDateEnd = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'termination_reason', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'termination_reason'] : $strAliasPrefix . 'termination_reason';
-			$objToReturn->strTerminationReason = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'household_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'household_id'] : $strAliasPrefix . 'household_id';
+			$objToReturn->intHouseholdId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'split_household_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'split_household_id'] : $strAliasPrefix . 'split_household_id';
+			$objToReturn->intSplitHouseholdId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_split', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_split'] : $strAliasPrefix . 'date_split';
+			$objToReturn->dttDateSplit = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -446,13 +445,19 @@
 
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'membership__';
+				$strAliasPrefix = 'household_split__';
 
-			// Check for Person Early Binding
-			$strAlias = $strAliasPrefix . 'person_id__id';
+			// Check for Household Early Binding
+			$strAlias = $strAliasPrefix . 'household_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objHousehold = Household::InstantiateDbRow($objDbRow, $strAliasPrefix . 'household_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for SplitHousehold Early Binding
+			$strAlias = $strAliasPrefix . 'split_household_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objSplitHousehold = Household::InstantiateDbRow($objDbRow, $strAliasPrefix . 'split_household_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -461,11 +466,11 @@
 		}
 
 		/**
-		 * Instantiate an array of Memberships from a Database Result
+		 * Instantiate an array of HouseholdSplits from a Database Result
 		 * @param QDatabaseResultBase $objDbResult
 		 * @param string $strExpandAsArrayNodes
 		 * @param string[] $strColumnAliasArray
-		 * @return Membership[]
+		 * @return HouseholdSplit[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
@@ -481,7 +486,7 @@
 			if ($strExpandAsArrayNodes) {
 				$objLastRowItem = null;
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = Membership::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
+					$objItem = HouseholdSplit::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
 					if ($objItem) {
 						$objToReturn[] = $objItem;
 						$objLastRowItem = $objItem;
@@ -489,18 +494,18 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					$objToReturn[] = Membership::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
+					$objToReturn[] = HouseholdSplit::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
 		}
 
 		/**
-		 * Instantiate a single Membership object from a query cursor (e.g. a DB ResultSet).
+		 * Instantiate a single HouseholdSplit object from a query cursor (e.g. a DB ResultSet).
 		 * Cursor is automatically moved to the "next row" of the result set.
 		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
 		 * @param QDatabaseResultBase $objDbResult cursor resource
-		 * @return Membership next row resulting from the query
+		 * @return HouseholdSplit next row resulting from the query
 		 */
 		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
 			// If blank resultset, then return empty result
@@ -518,7 +523,7 @@
 			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
 
 			// Load up the return result with a row and return it
-			return Membership::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			return HouseholdSplit::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
 		}
 
 
@@ -529,33 +534,29 @@
 		///////////////////////////////////////////////////
 			
 		/**
-		 * Load a single Membership object,
+		 * Load a single HouseholdSplit object,
 		 * by Id Index(es)
 		 * @param integer $intId
-		 * @return Membership
+		 * @return HouseholdSplit
 		*/
 		public static function LoadById($intId) {
-			return Membership::QuerySingle(
-				QQ::Equal(QQN::Membership()->Id, $intId)
+			return HouseholdSplit::QuerySingle(
+				QQ::Equal(QQN::HouseholdSplit()->Id, $intId)
 			);
 		}
 			
 		/**
-		 * Load an array of Membership objects,
-		 * by PersonId, DateEnd Index(es)
-		 * @param integer $intPersonId
-		 * @param QDateTime $dttDateEnd
+		 * Load an array of HouseholdSplit objects,
+		 * by HouseholdId Index(es)
+		 * @param integer $intHouseholdId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Membership[]
+		 * @return HouseholdSplit[]
 		*/
-		public static function LoadArrayByPersonIdDateEnd($intPersonId, $dttDateEnd, $objOptionalClauses = null) {
-			// Call Membership::QueryArray to perform the LoadArrayByPersonIdDateEnd query
+		public static function LoadArrayByHouseholdId($intHouseholdId, $objOptionalClauses = null) {
+			// Call HouseholdSplit::QueryArray to perform the LoadArrayByHouseholdId query
 			try {
-				return Membership::QueryArray(
-					QQ::AndCondition(
-					QQ::Equal(QQN::Membership()->PersonId, $intPersonId),
-					QQ::Equal(QQN::Membership()->DateEnd, $dttDateEnd)
-					),
+				return HouseholdSplit::QueryArray(
+					QQ::Equal(QQN::HouseholdSplit()->HouseholdId, $intHouseholdId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -564,34 +565,30 @@
 		}
 
 		/**
-		 * Count Memberships
-		 * by PersonId, DateEnd Index(es)
-		 * @param integer $intPersonId
-		 * @param QDateTime $dttDateEnd
+		 * Count HouseholdSplits
+		 * by HouseholdId Index(es)
+		 * @param integer $intHouseholdId
 		 * @return int
 		*/
-		public static function CountByPersonIdDateEnd($intPersonId, $dttDateEnd) {
-			// Call Membership::QueryCount to perform the CountByPersonIdDateEnd query
-			return Membership::QueryCount(
-				QQ::AndCondition(
-				QQ::Equal(QQN::Membership()->PersonId, $intPersonId),
-				QQ::Equal(QQN::Membership()->DateEnd, $dttDateEnd)
-				)
+		public static function CountByHouseholdId($intHouseholdId) {
+			// Call HouseholdSplit::QueryCount to perform the CountByHouseholdId query
+			return HouseholdSplit::QueryCount(
+				QQ::Equal(QQN::HouseholdSplit()->HouseholdId, $intHouseholdId)
 			);
 		}
 			
 		/**
-		 * Load an array of Membership objects,
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
+		 * Load an array of HouseholdSplit objects,
+		 * by SplitHouseholdId Index(es)
+		 * @param integer $intSplitHouseholdId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Membership[]
+		 * @return HouseholdSplit[]
 		*/
-		public static function LoadArrayByPersonId($intPersonId, $objOptionalClauses = null) {
-			// Call Membership::QueryArray to perform the LoadArrayByPersonId query
+		public static function LoadArrayBySplitHouseholdId($intSplitHouseholdId, $objOptionalClauses = null) {
+			// Call HouseholdSplit::QueryArray to perform the LoadArrayBySplitHouseholdId query
 			try {
-				return Membership::QueryArray(
-					QQ::Equal(QQN::Membership()->PersonId, $intPersonId),
+				return HouseholdSplit::QueryArray(
+					QQ::Equal(QQN::HouseholdSplit()->SplitHouseholdId, $intSplitHouseholdId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -600,47 +597,15 @@
 		}
 
 		/**
-		 * Count Memberships
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
+		 * Count HouseholdSplits
+		 * by SplitHouseholdId Index(es)
+		 * @param integer $intSplitHouseholdId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
-			// Call Membership::QueryCount to perform the CountByPersonId query
-			return Membership::QueryCount(
-				QQ::Equal(QQN::Membership()->PersonId, $intPersonId)
-			);
-		}
-			
-		/**
-		 * Load an array of Membership objects,
-		 * by DateStart Index(es)
-		 * @param QDateTime $dttDateStart
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Membership[]
-		*/
-		public static function LoadArrayByDateStart($dttDateStart, $objOptionalClauses = null) {
-			// Call Membership::QueryArray to perform the LoadArrayByDateStart query
-			try {
-				return Membership::QueryArray(
-					QQ::Equal(QQN::Membership()->DateStart, $dttDateStart),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count Memberships
-		 * by DateStart Index(es)
-		 * @param QDateTime $dttDateStart
-		 * @return int
-		*/
-		public static function CountByDateStart($dttDateStart) {
-			// Call Membership::QueryCount to perform the CountByDateStart query
-			return Membership::QueryCount(
-				QQ::Equal(QQN::Membership()->DateStart, $dttDateStart)
+		public static function CountBySplitHouseholdId($intSplitHouseholdId) {
+			// Call HouseholdSplit::QueryCount to perform the CountBySplitHouseholdId query
+			return HouseholdSplit::QueryCount(
+				QQ::Equal(QQN::HouseholdSplit()->SplitHouseholdId, $intSplitHouseholdId)
 			);
 		}
 
@@ -658,14 +623,14 @@
 		//////////////////////////
 
 		/**
-		 * Save this Membership
+		 * Save this HouseholdSplit
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
 		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = Membership::GetDatabase();
+			$objDatabase = HouseholdSplit::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -673,21 +638,19 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `membership` (
-							`person_id`,
-							`date_start`,
-							`date_end`,
-							`termination_reason`
+						INSERT INTO `household_split` (
+							`household_id`,
+							`split_household_id`,
+							`date_split`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-							' . $objDatabase->SqlVariable($this->strTerminationReason) . '
+							' . $objDatabase->SqlVariable($this->intHouseholdId) . ',
+							' . $objDatabase->SqlVariable($this->intSplitHouseholdId) . ',
+							' . $objDatabase->SqlVariable($this->dttDateSplit) . '
 						)
 					');
 
 					// Update Identity column and return its value
-					$mixToReturn = $this->intId = $objDatabase->InsertId('membership', 'id');
+					$mixToReturn = $this->intId = $objDatabase->InsertId('household_split', 'id');
 				} else {
 					// Perform an UPDATE query
 
@@ -696,12 +659,11 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`membership`
+							`household_split`
 						SET
-							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`date_start` = ' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-							`termination_reason` = ' . $objDatabase->SqlVariable($this->strTerminationReason) . '
+							`household_id` = ' . $objDatabase->SqlVariable($this->intHouseholdId) . ',
+							`split_household_id` = ' . $objDatabase->SqlVariable($this->intSplitHouseholdId) . ',
+							`date_split` = ' . $objDatabase->SqlVariable($this->dttDateSplit) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -721,69 +683,68 @@
 		}
 
 		/**
-		 * Delete this Membership
+		 * Delete this HouseholdSplit
 		 * @return void
 		 */
 		public function Delete() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this Membership with an unset primary key.');
+				throw new QUndefinedPrimaryKeyException('Cannot delete this HouseholdSplit with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = Membership::GetDatabase();
+			$objDatabase = HouseholdSplit::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`membership`
+					`household_split`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 		}
 
 		/**
-		 * Delete all Memberships
+		 * Delete all HouseholdSplits
 		 * @return void
 		 */
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = Membership::GetDatabase();
+			$objDatabase = HouseholdSplit::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`membership`');
+					`household_split`');
 		}
 
 		/**
-		 * Truncate membership table
+		 * Truncate household_split table
 		 * @return void
 		 */
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = Membership::GetDatabase();
+			$objDatabase = HouseholdSplit::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `membership`');
+				TRUNCATE `household_split`');
 		}
 
 		/**
-		 * Reload this Membership from the database.
+		 * Reload this HouseholdSplit from the database.
 		 * @return void
 		 */
 		public function Reload() {
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
-				throw new QCallerException('Cannot call Reload() on a new, unsaved Membership object.');
+				throw new QCallerException('Cannot call Reload() on a new, unsaved HouseholdSplit object.');
 
 			// Reload the Object
-			$objReloaded = Membership::Load($this->intId);
+			$objReloaded = HouseholdSplit::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->PersonId = $objReloaded->PersonId;
-			$this->dttDateStart = $objReloaded->dttDateStart;
-			$this->dttDateEnd = $objReloaded->dttDateEnd;
-			$this->strTerminationReason = $objReloaded->strTerminationReason;
+			$this->HouseholdId = $objReloaded->HouseholdId;
+			$this->SplitHouseholdId = $objReloaded->SplitHouseholdId;
+			$this->dttDateSplit = $objReloaded->dttDateSplit;
 		}
 
 
@@ -809,37 +770,44 @@
 					// @return integer
 					return $this->intId;
 
-				case 'PersonId':
-					// Gets the value for intPersonId (Not Null)
+				case 'HouseholdId':
+					// Gets the value for intHouseholdId (Not Null)
 					// @return integer
-					return $this->intPersonId;
+					return $this->intHouseholdId;
 
-				case 'DateStart':
-					// Gets the value for dttDateStart (Not Null)
+				case 'SplitHouseholdId':
+					// Gets the value for intSplitHouseholdId (Not Null)
+					// @return integer
+					return $this->intSplitHouseholdId;
+
+				case 'DateSplit':
+					// Gets the value for dttDateSplit 
 					// @return QDateTime
-					return $this->dttDateStart;
-
-				case 'DateEnd':
-					// Gets the value for dttDateEnd 
-					// @return QDateTime
-					return $this->dttDateEnd;
-
-				case 'TerminationReason':
-					// Gets the value for strTerminationReason 
-					// @return string
-					return $this->strTerminationReason;
+					return $this->dttDateSplit;
 
 
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Person':
-					// Gets the value for the Person object referenced by intPersonId (Not Null)
-					// @return Person
+				case 'Household':
+					// Gets the value for the Household object referenced by intHouseholdId (Not Null)
+					// @return Household
 					try {
-						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
-							$this->objPerson = Person::Load($this->intPersonId);
-						return $this->objPerson;
+						if ((!$this->objHousehold) && (!is_null($this->intHouseholdId)))
+							$this->objHousehold = Household::Load($this->intHouseholdId);
+						return $this->objHousehold;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SplitHousehold':
+					// Gets the value for the Household object referenced by intSplitHouseholdId (Not Null)
+					// @return Household
+					try {
+						if ((!$this->objSplitHousehold) && (!is_null($this->intSplitHouseholdId)))
+							$this->objSplitHousehold = Household::Load($this->intSplitHouseholdId);
+						return $this->objSplitHousehold;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -878,46 +846,36 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'PersonId':
-					// Sets the value for intPersonId (Not Null)
+				case 'HouseholdId':
+					// Sets the value for intHouseholdId (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objPerson = null;
-						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
+						$this->objHousehold = null;
+						return ($this->intHouseholdId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'DateStart':
-					// Sets the value for dttDateStart (Not Null)
+				case 'SplitHouseholdId':
+					// Sets the value for intSplitHouseholdId (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objSplitHousehold = null;
+						return ($this->intSplitHouseholdId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateSplit':
+					// Sets the value for dttDateSplit 
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
-						return ($this->dttDateStart = QType::Cast($mixValue, QType::DateTime));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'DateEnd':
-					// Sets the value for dttDateEnd 
-					// @param QDateTime $mixValue
-					// @return QDateTime
-					try {
-						return ($this->dttDateEnd = QType::Cast($mixValue, QType::DateTime));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'TerminationReason':
-					// Sets the value for strTerminationReason 
-					// @param string $mixValue
-					// @return string
-					try {
-						return ($this->strTerminationReason = QType::Cast($mixValue, QType::String));
+						return ($this->dttDateSplit = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -927,30 +885,60 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Person':
-					// Sets the value for the Person object referenced by intPersonId (Not Null)
-					// @param Person $mixValue
-					// @return Person
+				case 'Household':
+					// Sets the value for the Household object referenced by intHouseholdId (Not Null)
+					// @param Household $mixValue
+					// @return Household
 					if (is_null($mixValue)) {
-						$this->intPersonId = null;
-						$this->objPerson = null;
+						$this->intHouseholdId = null;
+						$this->objHousehold = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a Person object
+						// Make sure $mixValue actually is a Household object
 						try {
-							$mixValue = QType::Cast($mixValue, 'Person');
+							$mixValue = QType::Cast($mixValue, 'Household');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						} 
 
-						// Make sure $mixValue is a SAVED Person object
+						// Make sure $mixValue is a SAVED Household object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Person for this Membership');
+							throw new QCallerException('Unable to set an unsaved Household for this HouseholdSplit');
 
 						// Update Local Member Variables
-						$this->objPerson = $mixValue;
-						$this->intPersonId = $mixValue->Id;
+						$this->objHousehold = $mixValue;
+						$this->intHouseholdId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'SplitHousehold':
+					// Sets the value for the Household object referenced by intSplitHouseholdId (Not Null)
+					// @param Household $mixValue
+					// @return Household
+					if (is_null($mixValue)) {
+						$this->intSplitHouseholdId = null;
+						$this->objSplitHousehold = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Household object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Household');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Household object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved SplitHousehold for this HouseholdSplit');
+
+						// Update Local Member Variables
+						$this->objSplitHousehold = $mixValue;
+						$this->intSplitHouseholdId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -993,21 +981,21 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="Membership"><sequence>';
+			$strToReturn = '<complexType name="HouseholdSplit"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
-			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
-			$strToReturn .= '<element name="DateStart" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="DateEnd" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="TerminationReason" type="xsd:string"/>';
+			$strToReturn .= '<element name="Household" type="xsd1:Household"/>';
+			$strToReturn .= '<element name="SplitHousehold" type="xsd1:Household"/>';
+			$strToReturn .= '<element name="DateSplit" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('Membership', $strComplexTypeArray)) {
-				$strComplexTypeArray['Membership'] = Membership::GetSoapComplexTypeXml();
-				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
+			if (!array_key_exists('HouseholdSplit', $strComplexTypeArray)) {
+				$strComplexTypeArray['HouseholdSplit'] = HouseholdSplit::GetSoapComplexTypeXml();
+				Household::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Household::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1015,24 +1003,23 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, Membership::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, HouseholdSplit::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new Membership();
+			$objToReturn = new HouseholdSplit();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
-			if ((property_exists($objSoapObject, 'Person')) &&
-				($objSoapObject->Person))
-				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
-			if (property_exists($objSoapObject, 'DateStart'))
-				$objToReturn->dttDateStart = new QDateTime($objSoapObject->DateStart);
-			if (property_exists($objSoapObject, 'DateEnd'))
-				$objToReturn->dttDateEnd = new QDateTime($objSoapObject->DateEnd);
-			if (property_exists($objSoapObject, 'TerminationReason'))
-				$objToReturn->strTerminationReason = $objSoapObject->TerminationReason;
+			if ((property_exists($objSoapObject, 'Household')) &&
+				($objSoapObject->Household))
+				$objToReturn->Household = Household::GetObjectFromSoapObject($objSoapObject->Household);
+			if ((property_exists($objSoapObject, 'SplitHousehold')) &&
+				($objSoapObject->SplitHousehold))
+				$objToReturn->SplitHousehold = Household::GetObjectFromSoapObject($objSoapObject->SplitHousehold);
+			if (property_exists($objSoapObject, 'DateSplit'))
+				$objToReturn->dttDateSplit = new QDateTime($objSoapObject->DateSplit);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1045,20 +1032,22 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, Membership::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, HouseholdSplit::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objPerson)
-				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
+			if ($objObject->objHousehold)
+				$objObject->objHousehold = Household::GetSoapObjectFromObject($objObject->objHousehold, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intPersonId = null;
-			if ($objObject->dttDateStart)
-				$objObject->dttDateStart = $objObject->dttDateStart->__toString(QDateTime::FormatSoap);
-			if ($objObject->dttDateEnd)
-				$objObject->dttDateEnd = $objObject->dttDateEnd->__toString(QDateTime::FormatSoap);
+				$objObject->intHouseholdId = null;
+			if ($objObject->objSplitHousehold)
+				$objObject->objSplitHousehold = Household::GetSoapObjectFromObject($objObject->objSplitHousehold, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intSplitHouseholdId = null;
+			if ($objObject->dttDateSplit)
+				$objObject->dttDateSplit = $objObject->dttDateSplit->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1073,24 +1062,24 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeMembership extends QQNode {
-		protected $strTableName = 'membership';
+	class QQNodeHouseholdSplit extends QQNode {
+		protected $strTableName = 'household_split';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'Membership';
+		protected $strClassName = 'HouseholdSplit';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'PersonId':
-					return new QQNode('person_id', 'PersonId', 'integer', $this);
-				case 'Person':
-					return new QQNodePerson('person_id', 'Person', 'integer', $this);
-				case 'DateStart':
-					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
-				case 'DateEnd':
-					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
-				case 'TerminationReason':
-					return new QQNode('termination_reason', 'TerminationReason', 'string', $this);
+				case 'HouseholdId':
+					return new QQNode('household_id', 'HouseholdId', 'integer', $this);
+				case 'Household':
+					return new QQNodeHousehold('household_id', 'Household', 'integer', $this);
+				case 'SplitHouseholdId':
+					return new QQNode('split_household_id', 'SplitHouseholdId', 'integer', $this);
+				case 'SplitHousehold':
+					return new QQNodeHousehold('split_household_id', 'SplitHousehold', 'integer', $this);
+				case 'DateSplit':
+					return new QQNode('date_split', 'DateSplit', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1105,24 +1094,24 @@
 		}
 	}
 
-	class QQReverseReferenceNodeMembership extends QQReverseReferenceNode {
-		protected $strTableName = 'membership';
+	class QQReverseReferenceNodeHouseholdSplit extends QQReverseReferenceNode {
+		protected $strTableName = 'household_split';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'Membership';
+		protected $strClassName = 'HouseholdSplit';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'PersonId':
-					return new QQNode('person_id', 'PersonId', 'integer', $this);
-				case 'Person':
-					return new QQNodePerson('person_id', 'Person', 'integer', $this);
-				case 'DateStart':
-					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
-				case 'DateEnd':
-					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
-				case 'TerminationReason':
-					return new QQNode('termination_reason', 'TerminationReason', 'string', $this);
+				case 'HouseholdId':
+					return new QQNode('household_id', 'HouseholdId', 'integer', $this);
+				case 'Household':
+					return new QQNodeHousehold('household_id', 'Household', 'integer', $this);
+				case 'SplitHouseholdId':
+					return new QQNode('split_household_id', 'SplitHouseholdId', 'integer', $this);
+				case 'SplitHousehold':
+					return new QQNodeHousehold('split_household_id', 'SplitHousehold', 'integer', $this);
+				case 'DateSplit':
+					return new QQNode('date_split', 'DateSplit', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

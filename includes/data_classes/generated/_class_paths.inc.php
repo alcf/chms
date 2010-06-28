@@ -132,6 +132,13 @@
 		QApplicationBase::$ClassFile['householdparticipationmetacontrol'] = __DATA_META_CONTROLS__ . '/HouseholdParticipationMetaControl.class.php';
 		QApplicationBase::$ClassFile['householdparticipationdatagrid'] = __DATA_META_CONTROLS__ . '/HouseholdParticipationDataGrid.class.php';
 
+	// ClassPaths for the HouseholdSplit class
+		QApplicationBase::$ClassFile['householdsplit'] = __DATA_CLASSES__ . '/HouseholdSplit.class.php';
+		QApplicationBase::$ClassFile['qqnodehouseholdsplit'] = __DATA_CLASSES__ . '/HouseholdSplit.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodehouseholdsplit'] = __DATA_CLASSES__ . '/HouseholdSplit.class.php';
+		QApplicationBase::$ClassFile['householdsplitmetacontrol'] = __DATA_META_CONTROLS__ . '/HouseholdSplitMetaControl.class.php';
+		QApplicationBase::$ClassFile['householdsplitdatagrid'] = __DATA_META_CONTROLS__ . '/HouseholdSplitDataGrid.class.php';
+
 	// ClassPaths for the Login class
 		QApplicationBase::$ClassFile['login'] = __DATA_CLASSES__ . '/Login.class.php';
 		QApplicationBase::$ClassFile['qqnodelogin'] = __DATA_CLASSES__ . '/Login.class.php';
