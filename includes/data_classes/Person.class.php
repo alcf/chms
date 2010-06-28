@@ -27,6 +27,34 @@
 			return sprintf('Person Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			self::GetDatabase()->TransactionBegin();
+			try {
+				$this->PrimaryPhoneId = null;
+				$this->PrimaryEmailId = null;
+				$this->CurrentHeadShotId = null;
+				$this->MailingAddressId = null;
+				$this->StewardshipAddressId = null;
+				$this->Save();
+
+				$this->DeleteAllAddresses();
+				$this->DeleteAllEmails();
+				$this->DeleteAllOtherContactInfos();
+				$this->DeleteAllPhones();
+
+				foreach ($this->GetHeadShotArray() as $objHeadShot) {
+					$objHeadShot->Delete();
+				}
+
+				parent::Delete();
+			} catch (QCallerException $objExc) {
+				self::GetDatabase()->TransactionRollBack();
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+			self::GetDatabase()->TransactionCommit();
+		}
+
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Name':

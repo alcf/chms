@@ -21,7 +21,9 @@
 	<?php $_CONTROL->objDelegate->dtrPhones->Render(); ?>
 </div>
 
-<div class="buttonBar">
-<?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
-<?php if ($_CONTROL->objDelegate->btnDelete) $_CONTROL->objDelegate->btnDelete->Render(); ?>
-</div>
+<?php if ($_CONTROL->objDelegate->blnDisplayButtons) { ?>
+	<div class="buttonBar">
+	<?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
+	<?php if ($_CONTROL->objDelegate->btnDelete) $_CONTROL->objDelegate->btnDelete->Render(); ?>
+	</div>
+<?php } ?>

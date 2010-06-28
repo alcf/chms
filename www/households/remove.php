@@ -12,7 +12,7 @@
 		protected $objHousehold;
 
 		protected $dtgMembers;
-		protected $radSelectArray;
+		protected $radSelectArray = array();
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -103,7 +103,7 @@
 			$this->objPersonToRemove = $objParticipation->Person;
 			switch ($this->objPersonToRemove->GetHouseholdStatus()) {
 				case Person::HouseholdStatusMemberOfOne:
-					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> does not belong to any other households.  Make %s an individual with no households, or delete %s record altogether?',
+					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> does not belong to any other household records.  Make %s an individual with no household records, or delete %s record altogether?',
 						QApplication::HtmlEntities($this->objPersonToRemove->Name), 
 						($this->objPersonToRemove->MaleFlag ? 'him' : 'her'),
 						($this->objPersonToRemove->MaleFlag ? 'his' : 'her'));
@@ -144,7 +144,8 @@
 		}
 
 		protected function DeletePerson() {
-			// TODO: Write Delete Functionality
+			$this->objHousehold->UnassociatePerson($this->objPersonToRemove);
+			$this->objPersonToRemove->Delete();
 			$this->RedirectToViewPage();
 		}
 

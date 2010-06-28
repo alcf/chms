@@ -17,11 +17,14 @@
 		public $txtCity;
 		public $lstState;
 		public $txtZipCode;
+		
+		public $blnDisplayButtons;
 
-		public function __construct(QPanel $pnlContent, $strReturnUrl, $intAddressId) {
+		public function __construct(QPanel $pnlContent, $strReturnUrl, $intAddressId, $blnDisplayButtons = true) {
 			$this->pnlContent = $pnlContent;
 			$this->pnlContent->Template = dirname(__FILE__) . '/EditHomeAddressDelegate.tpl.php';
 			$this->strReturnUrl = $strReturnUrl;
+			$this->blnDisplayButtons = $blnDisplayButtons;
 
 			// We need to have a household!
 			if (!$this->pnlContent->Form->objHousehold) return $this->pnlContent->ReturnTo($strReturnUrl);
@@ -126,7 +129,7 @@
 
 			// If this addrss we are saving is "Current" then
 			// let's make sure all the other addresses are PREVIOUS
-			if ($this->mctAddress->Address->CurrentFlag) $this->pnlContent->Form->objHousehold->SetAsCurrentAddress($this->mctAddress->Address);
+			if ($this->mctAddress->Address->CurrentFlag) $this->mctAddress->Address->Household->SetAsCurrentAddress($this->mctAddress->Address);
 
 			return $this->pnlContent->ReturnTo($this->strReturnUrl);
 		}

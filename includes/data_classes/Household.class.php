@@ -121,6 +121,24 @@
 		}
 
 		/**
+		 * Split this household into two.  Move PersonArray into the new household and assign $objNewHeadPerson
+		 * as the head of the new household.
+		 * 
+		 * @param Person[] $objPersonArray
+		 * @param Person $objNewHeadPerson
+		 * @return Household
+		 */
+		public function SplitHousehold($objPersonArray, Person $objNewHeadPerson) {
+			$this->UnassociatePerson($objNewHeadPerson);
+			$objNewHousehold = Household::CreateHousehold($objNewHeadPerson);
+			foreach ($objPersonArray as $objPerson) {
+				if ($objPerson->Id != $objNewHeadPerson->Id)
+					$objNewHousehold->AssociatePerson($objPerson);
+			}
+			return $objNewHousehold;
+		}
+
+		/**
 		 * This will marge the specified household into this household.  The passed in household will be DELETED.
 		 * All members of either household will be part of the merged household.
 		 * 

@@ -186,7 +186,7 @@
 
 	/*** OTHER ***/
 
-	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; }
+	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 	
