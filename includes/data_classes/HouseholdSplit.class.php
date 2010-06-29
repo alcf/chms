@@ -27,6 +27,24 @@
 			return sprintf('HouseholdSplit Object %s',  $this->intId);
 		}
 
+		/**
+		 * Given a household object, this gets the split household (e.g. the household that
+		 * is NOT the one that is being passed in).
+		 * 
+		 * If the household is NOT part of this split, this will throw an exception.
+		 * 
+		 * @param Household $objHousehold
+		 * @return Household
+		 */
+		public function GetSplitHousehold(Household $objHousehold) {
+			if ($this->intHouseholdId == $objHousehold->Id) {
+				return $this->SplitHousehold;
+			} else if ($this->intSplitHouseholdId == $objHousehold->Id) {
+				return $this->Household;
+			} else {
+				throw new Exception('Household passed in is not part of this HouseholdSplit record');
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

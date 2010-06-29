@@ -147,6 +147,18 @@
 
 			return $objNewHousehold;
 		}
+		
+		/**
+		 * Get an ordered lists of householdsplit objects for this household
+		 * in reverse chronological order.
+		 * @return HouseholdSplit[]
+		 */
+		public function GetSplitArray() {
+			return HouseholdSplit::QueryArray(QQ::OrCondition(
+				QQ::Equal(QQN::HouseholdSplit()->HouseholdId, $this->Id),
+				QQ::Equal(QQN::HouseholdSplit()->SplitHouseholdId, $this->Id)),
+				QQ::OrderBy(QQN::HouseholdSplit()->DateSplit, false));
+		}
 
 		/**
 		 * This will marge the specified household into this household.  The passed in household will be DELETED.
@@ -177,6 +189,24 @@
 				foreach ($objParticipationArray as $objParticipation) {
 					foreach ($objAddressArray as $objAddress) {
 						$objAddress->CopyForPerson($objParticipation->Person, AddressType::Home, false);
+					}
+				}
+
+				// Combine any household Splits
+				foreach ($objHousehold->GetHouseholdSplitArray() as $objSplit) {
+					if ($objSplit->SplitHouseholdId == $this->Id)
+						$objSplit->Delete();
+					else {
+						$objSplit->Household = $this;
+						$objSplit->Save();
+					}
+				}
+				foreach ($objHousehold->GetHouseholdSplitAsSplitArray() as $objSplit) {
+					if ($objSplit->HouseholdId == $this->Id)
+						$objSplit->Delete();
+					else {
+						$objSplit->SplitHousehold = $this;
+						$objSplit->Save();
 					}
 				}
 
@@ -308,6 +338,36 @@
 			return Address::QuerySingle(QQ::AndCondition(
 				QQ::Equal(QQN::Address()->HouseholdId, $this->intId),
 				QQ::Equal(QQN::Address()->CurrentFlag, true)));
+		}
+
+		/**
+		 * Given a search term, this will try and match all similarly matched households based on
+		 * hopuseholdparticipation indivudal match.
+		 * This will utilize soundex and other indexing methodologies.
+		 * 
+		 * THIS IS TODO and the algorithm needs to be tuned.
+		 * 
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @param integer $intNotHouseholdId HouseholdId NOT to include
+		 * @return Household[]
+		 */
+		public static function LoadArrayBySearch($strFirstName, $strLastName, $intNotHouseholdId = null) {
+			$strClauseArray = array();
+			
+			$strClauseArray[] = '(household_participation.household_id = household.id)';
+			$strClauseArray[] = '(household_participation.person_id = person.id)';
+
+			if (strlen($strFirstName))
+				$strClauseArray[] = sprintf("(soundex(person.first_name) = soundex('%s') OR person.first_name LIKE '%s%%')", mysql_escape_string($strFirstName), mysql_escape_string($strFirstName));
+			if (strlen($strLastName))
+				$strClauseArray[] = sprintf("(soundex(person.last_name) = soundex('%s') OR person.last_name LIKE '%s%%')", mysql_escape_string($strLastName), mysql_escape_string($strLastName));
+			if ($intNotHouseholdId)
+				$strClauseArray[] = sprintf("(household.id != %s)", mysql_escape_string($intNotHouseholdId));
+
+			$strQuery = 'SELECT DISTINCT household.* FROM household, household_participation, person WHERE ' .
+				implode(' AND ', $strClauseArray) . ' ORDER BY household.name';
+			return Household::InstantiateDbResult(Household::GetDatabase()->Query($strQuery));
 		}
 
 		// Override or Create New Load/Count methods
