@@ -121,6 +121,8 @@
 		}
 
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			$this->objHousehold->MergeHousehold($this->objSelectedHousehold, Person::Load($this->lstHead->SelectedValue));
+			$this->RedirectToViewPage();
 		}
 
 		protected function btnCancel_Click($strFormId, $strControlId, $strParameter) {
