@@ -126,12 +126,3 @@
 		<div class="cleaner">&nbsp;</div>
 	</div>
 </div>
-
-
-
-<br/>
-<div style="background-color: #ccc; padding: 5px; ">
-	Household:
-	<br/>
-	<a href="#contact">Details</a>Primary Contact Info
-</div>
