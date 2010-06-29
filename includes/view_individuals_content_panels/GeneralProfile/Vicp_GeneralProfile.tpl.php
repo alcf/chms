@@ -4,7 +4,7 @@
 		<?php $_CONTROL->imgHeadShot->Render(); ?>
 		<button class="primary" onclick="document.location='#general/view_head_shots'; return false;">Manage Photos</button>
 	</div>
-	<div class="content">
+	<div class="photoRightContent">
 		<div class="sectionButtons"><button class="primary" onclick="document.location='#general/edit_name'; return false;" href="#">Edit</button></div>
 
 		<div class="lvp">

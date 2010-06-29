@@ -32,6 +32,7 @@
 
 		protected $lblHeading;
 		protected $lblSubheading;
+		protected $lstHouseholdSwitcher;
 
 		protected $pnlHouseholdSelector;
 		protected $pnlSubnavBar;
@@ -61,6 +62,12 @@
 			$this->lblSubheading = new QLabel($this);
 			$this->lblSubheading->CssClass = 'subhead';
 			$this->lblSubheading->HtmlEntities = false;
+			
+			$this->lstHouseholdSwitcher = new QListBox($this);
+			$this->lstHouseholdSwitcher->SetCustomStyle('float', 'right');
+			$this->lstHouseholdSwitcher->SetCustomStyle('margin-top', '8px;');
+			$this->lstHouseholdSwitcher->Visible = false;
+			$this->lstHouseholdSwitcher->AddAction(new QChangeEvent(), new QAjaxAction('lstHouseholdSwitcher_Change'));
 
 			$this->pnlHouseholdSelector = new HouseholdSelectorPanel($this);
 			$this->pnlSubnavBar = new ViewIndividualSubNavPanel($this);
@@ -71,12 +78,31 @@
 
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 			$this->lblHeading_Refresh();
+			$this->lstHouseholdSwitcher_Refresh();
+		}
+
+		protected function lstHouseholdSwitcher_Refresh() {
+			$objHouseholdParticipationArray = $this->objPerson->GetHouseholdParticipationArray();
+			if (count($objHouseholdParticipationArray) > 1) {
+				foreach ($objHouseholdParticipationArray as $objParticipation) {
+					$this->lstHouseholdSwitcher->AddItem($objParticipation->Household->Name, $objParticipation->Household->Id, $this->objHousehold->Id == $objParticipation->Household->Id);
+				}
+				$this->lstHouseholdSwitcher->Visible = true;
+			} else {
+				$this->lstHouseholdSwitcher->Visible = false;
+			}
+		}
+
+		protected function lstHouseholdSwitcher_Change() {
+			QApplication::ExecuteJavaScript(sprintf('document.location = "/individuals/view.php/%s/%s#" + qc.getHashContent();',
+				$this->objPerson->Id, $this->lstHouseholdSwitcher->SelectedValue));
 		}
 
 		protected function lblHeading_Refresh() {
 			$this->lblHeading->Text = $this->objPerson->Name;
 			if ($this->objHousehold)
-				$this->lblSubheading->Text = ' &nbsp;/&nbsp; ' . QApplication::HtmlEntities($this->objHousehold->Name);
+				$this->lblSubheading->Text = sprintf(' &nbsp;/&nbsp; <a href="/households/view.php/%s">%s</a>',
+					$this->objHousehold->Id, QApplication::HtmlEntities($this->objHousehold->Name));
 			else
 				$this->lblSubheading->Text = ' &nbsp;/&nbsp; Individual';
 		}
