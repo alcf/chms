@@ -32,7 +32,7 @@
 
 	<h3>List Manifest
 <?php if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
-		<button class="primary" onclick="document.location = '/communications/add_person.php/<?php _p($this->objList->Id); ?>'; return false;">Add to List</button>
+		<button class="primary" onclick="document.location = '/communications/add.php/<?php _p($this->objList->Id); ?>'; return false;">Add to List</button>
 <?php } ?>
 	</h3>
 	<div class="section">

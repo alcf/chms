@@ -85,15 +85,7 @@
 				$strArrayToReturn[] = array($objEntry->FirstName, $objEntry->MiddleName, $objEntry->LastName, $objEntry->Email, null, $objEntry->Id);
 			}
 			foreach ($this->GetPersonArray() as $objPerson) {
-				if ($objPerson->PrimaryEmail)
-					$strEmail = $objPerson->PrimaryEmail->Address;
-				else {
-					$objArray = $objPerson->GetEmailArray(QQ::OrderBy(QQN::Email()->Id));
-					if (count($objArray))
-						$strEmail = $objArray[0]->Address;
-					else
-						$strEmail = null;
-				}
+				$strEmail = $objPerson->GetEmailToUseForCommLists();
 				$strArrayToReturn[] = array($objPerson->FirstName, $objPerson->MiddleName, $objPerson->LastName, $strEmail, $objPerson->Id, null);
 			}
 

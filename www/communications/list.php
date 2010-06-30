@@ -25,6 +25,11 @@
 			$this->dtgMembers->AddColumn(new QDataGridColumn('Last Name', '<?= $_ITEM[2]; ?>', 'Width=170px','SortByCommand=2,0','ReverseSortByCommand=2,1'));
 			$this->dtgMembers->AddColumn(new QDataGridColumn('Email', '<a href="mailto:<?= QApplication::HtmlEntities($_ITEM[3]); ?>"><?= QApplication::HtmlEntities($_ITEM[3]); ?></a>', 'HtmlEntities=false', 'Width=310px','SortByCommand=3,0','ReverseSortByCommand=3,1'));
 
+			if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
+				$this->dtgMembers->SortColumnIndex = 3;
+			else
+				$this->dtgMembers->SortColumnIndex = 2;
+
 			$this->pxyUnsubscribeEntry = new QControlProxy($this);
 			$this->pxyUnsubscribeEntry->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to unsubscribe this person from the list?'));
 			$this->pxyUnsubscribeEntry->AddAction(new QClickEvent(), new QAjaxAction('pxyUnsubscribeEntry_Click'));

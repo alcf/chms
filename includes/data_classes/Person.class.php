@@ -592,6 +592,31 @@
 			return $objValue;
 		}
 
+		/**
+		 * This will return the email "to use" for COmmunication/Email lists.
+		 * Typically, we will use a Person's PrimaryEmail address if s/he is
+		 * associated with a CommunicationList.  However, if no primary is defined,
+		 * then we will try and pull the emial address with the
+		 * lowest ID.
+		 * 
+		 * Note that it IS POSSIBLE for this to return NULL if the person has absoultely
+		 * no email addresses associated with him/her.
+		 * @return string
+		 */
+		public function GetEmailToUseForCommLists() {
+			if ($this->PrimaryEmail)
+				$strEmail = $this->PrimaryEmail->Address;
+			else {
+				$objArray = $this->GetEmailArray(QQ::OrderBy(QQN::Email()->Id));
+				if (count($objArray))
+					$strEmail = $objArray[0]->Address;
+				else
+					$strEmail = null;
+			}
+			
+			return $strEmail;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
