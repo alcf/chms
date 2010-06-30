@@ -27,6 +27,17 @@
 			return sprintf('CommunicationList Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			try {
+				$this->UnassociateAllPeople();
+				$this->UnassociateAllCommunicationListEntries();
+				parent::Delete();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+		
 		/**
 		 * Associates an Email/Name/Etc. to this communication list
 		 * @param string $strEmail

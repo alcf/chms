@@ -154,6 +154,19 @@
 			QApplication::Redirect('/index.php/1');
 		}
 
+		/**
+		 * This will "tokenize" an email token (for groups and comm lists) to all lower case
+		 * alphanumeric/underscore characters.
+		 * 
+		 * TODO need to implement logic
+		 * 
+		 * @param string $strString
+		 * @return string
+		 */
+		public static function Tokenize($strString) {
+			return trim(strtolower($strString));
+		}
+
 		////////////////////////////
 		// Additional Static Methods
 		////////////////////////////
