@@ -75,8 +75,8 @@
 		 *  3 - Email
 		 *  4 - PersonId (if the record is actually linked to a Person ID)
 		 *  5 - EntryId (if the record is simply a CommunicationListEntry)
-		 * @param string $strOrderByColumn
-		 * @param string $strLimitInfo
+		 * @param string $strOrderByColumn as column_index,descending_flag
+		 * @param string $strLimitInfo as offset,items_per_page
 		 * @return string[][]
 		 */
 		public function GetMemberAsArray($strOrderByColumn = null, $strLimitInfo = null) {
@@ -98,10 +98,12 @@
 			}
 
 			if ($strOrderByColumn) {
-				// TODO implement
-				throw new Exception('TODO');
+				$strArray = explode(',', $strOrderByColumn);
+				$this->intColumnIndex = $strArray[0];
+				$this->blnDescendingFlag = $strArray[1];
+				usort($strArrayToReturn, array($this, 'SortMemberArray'));
 			}
-			
+
 			if ($strLimitInfo) {
 				$intArray = explode(',', $strLimitInfo);
 				$intOffset = $intArray[0];
@@ -110,6 +112,15 @@
 			} else {
 				return $strArrayToReturn;
 			}
+		}
+
+		protected $intColumnIndex;
+		protected $blnDescendingFlag;
+		public function SortMemberArray($arrMember1, $arrMember2) {
+			if (!$this->blnDescendingFlag)
+				return strcmp($arrMember1[$this->intColumnIndex], $arrMember2[$this->intColumnIndex]);
+			else
+				return strcmp($arrMember2[$this->intColumnIndex], $arrMember1[$this->intColumnIndex]);
 		}
 
 		// Override or Create New Load/Count methods

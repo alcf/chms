@@ -20,10 +20,10 @@
 			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
 			if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_FORM->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=140px', 'FontSize=10px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('First Name', '<?= $_ITEM[0]; ?>', 'Width=170px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Middle Name', '<?= $_ITEM[1]; ?>', 'Width=100px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Last Name', '<?= $_ITEM[2]; ?>', 'Width=170px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Email', '<a href="mailto:<?= QApplication::HtmlEntities($_ITEM[3]); ?>"><?= QApplication::HtmlEntities($_ITEM[3]); ?></a>', 'HtmlEntities=false', 'Width=310px'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('First Name', '<?= $_ITEM[0]; ?>', 'Width=170px','SortByCommand=0,0','ReverseSortByCommand=0,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Middle Name', '<?= $_ITEM[1]; ?>', 'Width=100px','SortByCommand=1,0','ReverseSortByCommand=1,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Last Name', '<?= $_ITEM[2]; ?>', 'Width=170px','SortByCommand=2,0','ReverseSortByCommand=2,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Email', '<a href="mailto:<?= QApplication::HtmlEntities($_ITEM[3]); ?>"><?= QApplication::HtmlEntities($_ITEM[3]); ?></a>', 'HtmlEntities=false', 'Width=310px','SortByCommand=3,0','ReverseSortByCommand=3,1'));
 
 			$this->pxyUnsubscribeEntry = new QControlProxy($this);
 			$this->pxyUnsubscribeEntry->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to unsubscribe this person from the list?'));
@@ -53,7 +53,7 @@
 
 		public function dtgMembers_Bind() {
 			$this->dtgMembers->TotalItemCount = $this->objList->CountMembers();
-			$this->dtgMembers->DataSource = $this->objList->GetMemberAsArray(null, $this->dtgMembers->LimitInfo);
+			$this->dtgMembers->DataSource = $this->objList->GetMemberAsArray($this->dtgMembers->SortInfo, $this->dtgMembers->LimitInfo);
 		}
 
 		public function pxyUnsubscribeEntry_Click($strFormId, $strControlId, $strParameter) {
