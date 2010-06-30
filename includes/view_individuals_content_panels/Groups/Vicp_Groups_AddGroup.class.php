@@ -7,8 +7,10 @@
 			$this->lstMinistries = new QListBox($this);
 			$this->lstMinistries->Name = 'Select a Ministry';
 			$this->lstMinistries->AddItem('- Select One -');
-			foreach (Ministry::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::Ministry()->Name)) as $objMinistry)
-				$this->lstMinistries->AddItem($objMinistry->Name, $objMinistry->Id);
+			foreach (Ministry::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::Ministry()->Name)) as $objMinistry) {
+				if ($objMinistry->IsLoginCanAdminMinistry(QApplication::$Login))
+					$this->lstMinistries->AddItem($objMinistry->Name, $objMinistry->Id);
+			}
 
 			$this->dtgGroups = new QDataGrid($this);
 			$this->dtgGroups->Name = '&nbsp;';

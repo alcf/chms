@@ -5,7 +5,7 @@
 	<div style="float: left;">
 		<?php $this->pnlGroups->Render(); ?>
 		<br clear="all"/>
-		
+
 		<div class="subnavSideContent">
 			<h4>Create a New Group</h4>
 			<?php $this->lstGroupType->Render(); ?>
