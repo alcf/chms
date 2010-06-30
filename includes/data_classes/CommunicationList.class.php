@@ -62,6 +62,56 @@
 			return $objEntry;
 		}
 
+		public function CountMembers() {
+			return $this->CountCommunicationListEntries() + $this->CountPeople();
+		}
+
+		/**
+		 * This returnas an Array of Arrays representing the membership for this communication list.
+		 * Each array item is an array with the following indexes:
+		 * 	0 - FirstName
+		 * 	1 - MiddleName
+		 *  2 - LastName
+		 *  3 - Email
+		 *  4 - PersonId (if the record is actually linked to a Person ID)
+		 *  5 - EntryId (if the record is simply a CommunicationListEntry)
+		 * @param string $strOrderByColumn
+		 * @param string $strLimitInfo
+		 * @return string[][]
+		 */
+		public function GetMemberAsArray($strOrderByColumn = null, $strLimitInfo = null) {
+			$strArrayToReturn = array();
+			foreach ($this->GetCommunicationListEntryArray() as $objEntry) {
+				$strArrayToReturn[] = array($objEntry->FirstName, $objEntry->MiddleName, $objEntry->LastName, $objEntry->Email, null, $objEntry->Id);
+			}
+			foreach ($this->GetPersonArray() as $objPerson) {
+				if ($objPerson->PrimaryEmail)
+					$strEmail = $objPerson->PrimaryEmail->Address;
+				else {
+					$objArray = $objPerson->GetEmailArray(QQ::OrderBy(QQN::Email()->Id));
+					if (count($objArray))
+						$strEmail = $objArray[0]->Address;
+					else
+						$strEmail = null;
+				}
+				$strArrayToReturn[] = array($objPerson->FirstName, $objPerson->MiddleName, $objPerson->LastName, $strEmail, $objPerson->Id, null);
+			}
+
+			if ($strOrderByColumn) {
+				// TODO implement
+				throw new Exception('TODO');
+			}
+			
+			if ($strLimitInfo) {
+				$intArray = explode(',', $strLimitInfo);
+				$intOffset = $intArray[0];
+				$intItemsPerPage = $intArray[1];
+				return array_slice($strArrayToReturn, $intOffset, $intItemsPerPage);
+			} else {
+				return $strArrayToReturn;
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
