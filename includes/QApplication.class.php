@@ -164,7 +164,30 @@
 		 * @return string
 		 */
 		public static function Tokenize($strString) {
-			return trim(strtolower($strString));
+			$strString = trim(strtolower($strString));
+			$strToReturn = null;
+			while (strlen($strString)) {
+				$chr = QString::FirstCharacter($strString);
+				$intOrd = ord($chr);
+
+				if (($intOrd >= ord('a')) && ($intOrd <= ord('z'))) {
+					$strToReturn .= $chr;
+				} else if (($intOrd >= ord('0')) && ($intOrd <= ord('9'))) {
+					$strToReturn .= $chr;
+				} else {
+					$strToReturn .= '_';
+				}
+				$strString = substr($strString, 1);
+			}
+
+			// Cleanup Doubles
+			while (strpos($strToReturn, '__') !== false) $strToReturn = str_replace('__', '_', $strToReturn);
+
+			// Perform a "trim"
+			if (QString::FirstCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 1);
+			if (QString::LastCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 0, strlen($strToReturn) - 1);
+
+			return $strToReturn;
 		}
 
 		////////////////////////////

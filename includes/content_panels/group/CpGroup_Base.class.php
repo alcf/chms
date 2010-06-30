@@ -84,7 +84,9 @@
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
 			$this->txtToken = $this->mctGroup->txtToken_Create();
-
+			$this->txtToken->Name = 'Email Address';
+			$this->txtToken->HtmlAfter= '<span> @ groups.alcf.net</span>';
+			
 			$this->chkConfidentialFlag = $this->mctGroup->chkConfidentialFlag_Create();
 			$this->chkConfidentialFlag->Name = 'Confidential?';
 			$this->chkConfidentialFlag->Text = 'Check if this group is considered a "Confidential" group';
@@ -122,6 +124,23 @@
 				$this->txtToken->Visible = false;
 				$this->txtToken->Required = false;
 				$this->txtToken->Text = null;
+			}
+		}
+
+		public function ValidateToken() {
+			$strToken = QApplication::Tokenize($this->txtToken->Text);
+			if (strlen($strToken)) {
+				if (CommunicationList::LoadByToken($strToken) ||
+					(($objGroup = Group::LoadByToken($strToken)) &&
+					 ($objGroup->Id != $this->mctGroup->Group->Id))) {
+					$this->txtToken->Warning = 'Email Address is already taken';
+					return false;
+				} else {
+					$this->txtToken->Text = $strToken;
+					return true;
+				}
+			} else {
+				return true;
 			}
 		}
 
@@ -288,15 +307,7 @@
 
 		public function Validate() {
 			$blnToReturn = parent::Validate();
-
-			if ($this->txtToken && $this->txtToken->Visible) {
-				$strToken = trim(strtolower($this->txtToken->Text));
-				if ($strToken && ($objGroup = Group::LoadByToken($strToken)) && ($objGroup->Id != $this->objGroup->Id)) {
-					$this->txtToken->Warning = 'Email name is already taken';
-					$blnToReturn = false;
-				}
-			}
-
+			if (!$this->ValidateToken()) $blnToReturn = false;
 			return $blnToReturn;
 		}
 	}
