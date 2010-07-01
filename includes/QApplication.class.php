@@ -84,16 +84,24 @@
 			if (array_key_exists('intLoginId', $_SESSION)) {
 				QApplication::$Login = Login::Load($_SESSION['intLoginId']);
 
+				// If NO object, update session
+				if (!QApplication::$Login) {
+					$_SESSION['intLoginId'] = null;
+					unset($_SESSION['intLoginId']);
+					return;
+				}
+
 				// Make sure this Login is allowed to use Chms
-				if (QApplication::$Login && !QApplication::$Login->IsAllowedToUseChms()) {
+				if (!QApplication::$Login->IsAllowedToUseChms()) {
 					$_SESSION['intLoginId'] = null;
 					unset($_SESSION['intLoginId']);
 					QApplication::$Login = null;
+				} else {
+					QApplication::$Login->RefreshDateLastLogin();
 				}
 
 				// Update the NavBar based on Login
-				if (QApplication::$Login &&
-					(QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator)) {
+				if (QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator) {
 					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
 				}
 			}

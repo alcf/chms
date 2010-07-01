@@ -21,7 +21,6 @@
 	img { border: 0; }
 
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
-	span.na { color: #aaa; font-style: italic; }
 
 	input.primary, button.primary {
 		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
@@ -54,7 +53,6 @@
 
 	h1 button.primary, h3 button.primary { float: right; margin-left: 10px; }
 	h1 input.primary, h3 input.primary { float: right; margin-left: 10px; }
-
 
 	/*** PAGE STRUCTURE ***/
 
@@ -184,7 +182,7 @@
 	div.renderWithName div.right label { font-size: 12px; position: relative; top: 2px; left: 2px; color: #333;}
 	div.renderWithName div.right span { font-size: 14px; color: #444; }
 
-
+	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; }
 
 	/*** OTHER ***/
 
@@ -214,7 +212,10 @@
 	div.householdSplit { color: #ddd; font-family: arial, helvetica, sans-serif; font-size: 11px; }
 	div.householdSplit ul { padding: 0 0 0 12px; margin: 0; font-size: 10px; }
 
-/* QDataGrid */
+
+
+
+	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }
 		table.datagrid caption, table.datagrid tfoot { padding-bottom: 4px; overflow: auto; }
 			table.datagrid span.left { float: left; font-size: 10px; display: block; }
@@ -232,52 +233,10 @@
 			table.datagrid td span.subtext { color: #666; font-style: italic; }
 		table.datagrid tfoot { } 
 
-
-
-
-	/*** OLD ***/
-
-
-div.titleBar { background-color: #240; height: 32px; }
-	div.titleBar div.content { width: 980px; margin: 0 auto; }
-		div.titleBar div.content div.left { width: 490px; float: left; padding-top: 2px; font-size: 22px; font-family: arial, helvetica, sans-serif; font-weight: bold; }
-			div.titleBar div.content div.left a { color: #fff; text-decoration: none; }
-		div.titleBar div.content div.right { width: 490px; float: right; text-align: right; padding-top: 12px; font-size: 10px; font-family: verdana, arial, helvetica, sans-serif; color: #fff; }
-
-div.navBar { background-color: #240; height: 20px; border-bottom: 1px solid #fff; border-top: 1px solid #fff; }
-	div.navBar div.content { width: 980px; margin: 0 auto; }
-	div.navBar div.content ul { list-style: none; margin: 0; padding: 0; display: block; }
-	div.navBar div.content ul li { float: left; }
-	div.navBar div.content ul li a { display: block; width: 150px; padding: 3px; text-align: center; background-color: #240; color: #fff; text-decoration: none; font-size: 12px; font-family: arial, helvetica, sans-serif; font-weight: bold;
-					border-color: #efd; border-style: solid; border-width: 0 0 0 1px; }
-	div.navBar div.content ul li.right {float: right; }
-	div.navBar div.content ul li.current a { background-color: #dda; color: #442; }
-	div.navBar div.content ul li.last a { border-right-width: 1px; }
-	div.navBar div.content ul li a:hover { color: #240; background-color: #efd; }
-
-div.mainSection { width: 980px; margin: 0 auto; }
-
-
-
-div.viewIndividualSubnavPanel ul { list-style: none; margin: 0; padding: 0; display: block; }
-div.viewIndividualSubnavPanel ul li { float: left; }
-div.viewIndividualSubnavPanel ul li a { display: block; width: 115px; padding: 1px; text-align: center; background-color: #999; color: #fff; text-decoration: none; font-size: 11px; font-family: arial, helvetica, sans-serif; margin-right: 1px; }
-div.viewIndividualSubnavPanel ul li.right {float: right; }
-div.viewIndividualSubnavPanel ul li.current a { background-color: #dda; color: #442; }
-div.viewIndividualSubnavPanel ul li.last a { border-right-width: 1px; }
-div.viewIndividualSubnavPanel ul li a:hover { color: #240; background-color: #efd; }
-
-
-ul.ministriesPanel { list-style: none; margin: 0; padding: 0; display: block; float: left; }
-ul.ministriesPanel li a { display: block; width: 115px; padding: 1px; background-color: #999; cursor: pointer; font-weight: bold; color: #fff; text-decoration: none; border: 1px solid black; } 
-ul.ministriesPanel li.selected a { color: #000; background-color: #ff9; }
-
-ul.groupsPanel { list-style: none; margin: 0; padding: 0; display: block; float: left; }
-ul.groupsPanel li a { display: block; width: 115px; padding: 1px; background-color: #999; cursor: pointer; font-weight: bold; color: #fff; text-decoration: none; border: 1px solid black; } 
-ul.groupsPanel li.selected a { color: #000; background-color: #ff9; }
-
-table.groupList { float: left; margin-left: 20px; }
-
+		
+		
+		
+		
 
 
 	/* QDialogBox */

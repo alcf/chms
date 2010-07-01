@@ -48,6 +48,15 @@
 			}
 		}
 
+		public function RefreshDateLastLogin() {
+			$this->dttDateLastLogin = QDateTime::Now();
+			$this->Save();
+		}
+
+		public function IsPermissionAllowed($intPermissionId) {
+			return $this->intPermissionBitmap & $intPermissionId;
+		}
+
 		/**
 		 * Given a username/email and a password, this will attempt to load the valid Login object.
 		 * 
