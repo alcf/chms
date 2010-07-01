@@ -16,7 +16,7 @@
 
 		protected function Form_Create() {
 			$this->mctAttribute = AttributeMetaControl::Create($this, QApplication::PathInfo(0));
-			$this->strPageTitle = 'Administration - ' . (($this->mctAttribute->EditMode) ? 'Edit' : 'Create New' . ' Attribute');
+			$this->strPageTitle = 'Administration - ' . (($this->mctAttribute->EditMode) ? 'Edit' : 'Create New') . ' Attribute';
 			
 			$this->txtName = $this->mctAttribute->txtName_Create();
 			$this->txtName->Required = true;

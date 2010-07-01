@@ -17,10 +17,6 @@
 		public function RenderName(Attribute $objAttribute) {
 			return sprintf('<a href="/admin/attributes/edit.php/%s">%s</a>', $objAttribute->Id, QApplication::HtmlEntities($objAttribute->Name));
 		}
-
-		protected function btnButton_Click($strFormId, $strControlId, $strParameter) {
-			$this->lblMessage->Text = 'Hello, World!';
-		}
 	}
 
 	AdminMainForm::Run('AdminMainForm');
