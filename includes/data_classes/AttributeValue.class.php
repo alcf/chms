@@ -27,7 +27,16 @@
 			return sprintf('AttributeValue Object %s',  $this->intId);
 		}
 
-
+		public function Delete() {
+			try {
+				$this->UnassociateAllAttributeOptionsAsMultiple();
+				parent::Delete();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
