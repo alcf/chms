@@ -74,6 +74,7 @@
 		width: 980px; height: 80px; margin: 0 auto;
 		background: url(/assets/images/header.png);
 		position: relative;
+		cursor: pointer;
 	}
 
 	div.header div.status {

@@ -14,14 +14,14 @@
 <div class="right">&nbsp;</div>
 </div>
 
-<div class="header">
+<div class="header" title="ALCF ChMS" onclick="document.location='/';">
 <?php if (QApplication::$Login) { ?>
 	<div class="status">
 		Welcome, <strong><?php _p(QApplication::$Login->Name); ?></strong>
 		&nbsp;|&nbsp;
 		<?php _p(QDateTime::Now()->ToString('DDDD, MMMM D YYYY')); ?>
 		&nbsp;|&nbsp;
-		<a href="/logout/">Logout</a>
+		<a href="/logout/" title="Log Out of ALCF ChMS">Logout</a>
 		<br/>
 		<span class="subhead">You are logged in as a <strong><?php _p(QApplication::$Login->Type); ?></strong></span><br/>
 	</div>
