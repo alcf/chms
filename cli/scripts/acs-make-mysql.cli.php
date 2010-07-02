@@ -55,6 +55,14 @@
 			$strFieldName = str_replace('/', '_', $strFieldName);
 			$strFieldName = str_replace('-', '_', $strFieldName);
 			$strFieldName = str_replace(' ', '_', $strFieldName);
+			$strFieldName = str_replace('#', '_', $strFieldName);
+			
+			// Cleanup Doubles
+			while (strpos($strFieldName, '__') !== false) $strFieldName = str_replace('__', '_', $strFieldName);
+
+			// Perform a "trim"
+			if (QString::FirstCharacter($strFieldName) == '_') $strFieldName = substr($strFieldName, 1);
+			if (QString::LastCharacter($strFieldName) == '_') $strFieldName = substr($strFieldName, 0, strlen($strFieldName) - 1);
 
 			$strSql .= sprintf("    `%s%s` %s,\r\n",
 				$strPrefix,
