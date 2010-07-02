@@ -206,6 +206,7 @@ INSERT INTO other_contact_method VALUES(null, 'Yahoo! Messenger');
 
 INSERT INTO attribute VALUES (1, 3, 'ACS Individual Number');
 INSERT INTO attribute VALUES (2, 3, 'ACS Family Number');
+INSERT INTO attribute VALUES (3, 3, 'ACS Family Position');
 
 INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('SF to San Carlos', 37.64, -122.4, 11);
 INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('Redwood City to Mountain View', 37.41, -122.14, 12);
