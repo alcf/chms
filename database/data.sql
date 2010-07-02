@@ -169,40 +169,43 @@ INSERT INTO other_contact_method VALUES(null, 'MySpace');
 INSERT INTO other_contact_method VALUES(null, 'AOL Instant Messenger');
 INSERT INTO other_contact_method VALUES(null, 'Yahoo! Messenger');
 
-INSERT INTO attribute VALUES (1, 2, 'Date Accepted Christ');
-INSERT INTO attribute VALUES (2, 3, 'Ministry Consultant');
-INSERT INTO attribute VALUES (3, 2, 'Ministry Consultant Meeting');
-INSERT INTO attribute VALUES (4, 2, 'Date Baptized');
-INSERT INTO attribute VALUES (5, 1, 'Baptized at ALCF');
-INSERT INTO attribute VALUES (6, 5, 'Spiritual Gifts');
-INSERT INTO attribute VALUES (7, 7, 'Vocational Gifts');
-INSERT INTO attribute VALUES (8, 6, 'Mutable Single Drop Down');
-INSERT INTO attribute VALUES (9, 4, 'Immutable Single Drop Down');
+# INSERT INTO attribute VALUES (1, 2, 'Date Accepted Christ');
+# INSERT INTO attribute VALUES (2, 3, 'Ministry Consultant');
+# INSERT INTO attribute VALUES (3, 2, 'Ministry Consultant Meeting');
+# INSERT INTO attribute VALUES (4, 2, 'Date Baptized');
+# INSERT INTO attribute VALUES (5, 1, 'Baptized at ALCF');
+# INSERT INTO attribute VALUES (6, 5, 'Spiritual Gifts');
+# INSERT INTO attribute VALUES (7, 7, 'Vocational Gifts');
+# INSERT INTO attribute VALUES (8, 6, 'Mutable Single Drop Down');
+# INSERT INTO attribute VALUES (9, 4, 'Immutable Single Drop Down');
+#
+#INSERT INTO attribute_option VALUES (null, 6, 'Healing');
+#INSERT INTO attribute_option VALUES (null, 6, 'Prayer');
+#INSERT INTO attribute_option VALUES (null, 6, 'Prophecy');
+#INSERT INTO attribute_option VALUES (null, 6, 'Teaching');
+#INSERT INTO attribute_option VALUES (null, 6, 'Administration');
+#INSERT INTO attribute_option VALUES (null, 6, 'Evangelism');
+#INSERT INTO attribute_option VALUES (null, 6, 'Encouragement');
+#INSERT INTO attribute_option VALUES (null, 6, 'Giving');
+#INSERT INTO attribute_option VALUES (null, 6, 'Leading');
+#
+#INSERT INTO attribute_option VALUES (null, 7, 'Electrical');
+#INSERT INTO attribute_option VALUES (null, 7, 'Plumbing');
+#INSERT INTO attribute_option VALUES (null, 7, 'Computers');
+#INSERT INTO attribute_option VALUES (null, 7, 'Auto Mechanic');
+#
+#INSERT INTO attribute_option VALUES (null, 8, 'A');
+#INSERT INTO attribute_option VALUES (null, 8, 'B');
+#INSERT INTO attribute_option VALUES (null, 8, 'C');
+#INSERT INTO attribute_option VALUES (null, 8, 'D');
+#
+#INSERT INTO attribute_option VALUES (null, 9, 'Immutable A');
+#INSERT INTO attribute_option VALUES (null, 9, 'Immutable B');
+#INSERT INTO attribute_option VALUES (null, 9, 'Immutable C');
+#INSERT INTO attribute_option VALUES (null, 9, 'Immutable D');
 
-INSERT INTO attribute_option VALUES (null, 6, 'Healing');
-INSERT INTO attribute_option VALUES (null, 6, 'Prayer');
-INSERT INTO attribute_option VALUES (null, 6, 'Prophecy');
-INSERT INTO attribute_option VALUES (null, 6, 'Teaching');
-INSERT INTO attribute_option VALUES (null, 6, 'Administration');
-INSERT INTO attribute_option VALUES (null, 6, 'Evangelism');
-INSERT INTO attribute_option VALUES (null, 6, 'Encouragement');
-INSERT INTO attribute_option VALUES (null, 6, 'Giving');
-INSERT INTO attribute_option VALUES (null, 6, 'Leading');
-
-INSERT INTO attribute_option VALUES (null, 7, 'Electrical');
-INSERT INTO attribute_option VALUES (null, 7, 'Plumbing');
-INSERT INTO attribute_option VALUES (null, 7, 'Computers');
-INSERT INTO attribute_option VALUES (null, 7, 'Auto Mechanic');
-
-INSERT INTO attribute_option VALUES (null, 8, 'A');
-INSERT INTO attribute_option VALUES (null, 8, 'B');
-INSERT INTO attribute_option VALUES (null, 8, 'C');
-INSERT INTO attribute_option VALUES (null, 8, 'D');
-
-INSERT INTO attribute_option VALUES (null, 9, 'Immutable A');
-INSERT INTO attribute_option VALUES (null, 9, 'Immutable B');
-INSERT INTO attribute_option VALUES (null, 9, 'Immutable C');
-INSERT INTO attribute_option VALUES (null, 9, 'Immutable D');
+INSERT INTO attribute VALUES (1, 3, 'ACS Individual Number');
+INSERT INTO attribute VALUES (2, 3, 'ACS Family Number');
 
 INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('SF to San Carlos', 37.64, -122.4, 11);
 INSERT INTO growth_group_location(location, latitude, longitude, zoom) VALUES ('Redwood City to Mountain View', 37.41, -122.14, 12);
@@ -218,3 +221,5 @@ INSERT INTO growth_group_structure VALUES (null, 'Living Lesson');
 INSERT INTO growth_group_structure VALUES (null, 'Spanish Speaking');
 INSERT INTO growth_group_structure VALUES (null, 'Young Adults');
 INSERT INTO growth_group_structure VALUES (null, 'Men\'s');
+
+INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
