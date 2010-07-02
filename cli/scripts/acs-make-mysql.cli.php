@@ -51,9 +51,14 @@
 			if (odbc_field_name($objResult, $intFieldNumber) == 'Family_Number')
 				$strType = 'INT';
 
+			$strFieldName = strtolower(odbc_field_name($objResult, $intFieldNumber));
+			$strFieldName = str_replace('/', '_', $strFieldName);
+			$strFieldName = str_replace('-', '_', $strFieldName);
+			$strFieldName = str_replace(' ', '_', $strFieldName);
+
 			$strSql .= sprintf("    `%s%s` %s,\r\n",
 				$strPrefix,
-				strtolower(odbc_field_name($objResult, $intFieldNumber)),
+				$strFieldName,
 				$strType);
 		}
 

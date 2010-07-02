@@ -20,8 +20,8 @@
 				else
 					$strValues .= ', NULL';
 			}
-			$strSql = sprintf('INSERT INTO `%s` (%s) VALUES (%s);',
-				strtolower($strTableName), $strColumns, $strValues);
+			$strSql = sprintf('INSERT INTO `%s` VALUES (%s);',
+				strtolower($strTableName), $strValues);
 
 			$objMySql->query($strSql);
 		}
