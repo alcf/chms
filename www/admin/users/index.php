@@ -11,15 +11,16 @@
 
 		protected function Form_Create() {
 			$this->dtgStaff = new LoginDataGrid($this);
-			$this->dtgStaff->Width = '960px';
+			$this->dtgStaff->FontSize = 11;
 			$this->dtgStaff->AddColumn(new QDataGridColumn('View', '<?= $_FORM->RenderView($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
 			$this->dtgStaff->MetaAddColumn(QQN::Login()->Username, 'Width=80px');
-			$this->dtgStaff->MetaAddColumn(QQN::Login()->FirstName, 'Width=90px');
-			$this->dtgStaff->MetaAddColumn(QQN::Login()->LastName, 'Width=90px');
-			$this->dtgStaff->MetaAddColumn(QQN::Login()->DomainActiveFlag, 'Name=Domain Active', 'Width=52px');
-			$this->dtgStaff->MetaAddColumn(QQN::Login()->LoginActiveFlag, 'Name=Login Active', 'Width=52px');
-			$this->dtgStaff->MetaAddTypeColumn('RoleTypeId', 'RoleType', 'Name=Role');
-			$this->dtgStaff->FontSize = 11;
+			$this->dtgStaff->MetaAddColumn(QQN::Login()->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Name; ?>', 'Width=150px');
+			$this->dtgStaff->AddColumn(new QDataGridColumn('Acct Disabled', '<?= (!$_ITEM->DomainActiveFlag || !$_ITEM->LoginActiveFlag) ? "Disabled":""; ?>', 'Width=60px'));
+			$this->dtgStaff->MetaAddTypeColumn('RoleTypeId', 'RoleType', 'Name=Role', 'Width=140px');
+
+			foreach (PermissionType::$NameArray as $intId => $strName) {
+				$this->dtgStaff->AddColumn(new QDataGridColumn($strName, '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=72px'));
+			}
 
 			$this->dtgStaff->SetDataBinder('dtgStaff_Bind');
 			$this->dtgStaff->SortColumnIndex = 1;
@@ -56,6 +57,10 @@
 		protected function dtgStaff_Refresh() {
 			$this->dtgStaff->PageNumber = 1;
 			$this->dtgStaff->Refresh();
+		}
+		
+		public function RenderPermission($intPermissionId, Login $objLogin) {
+			if ($objLogin->IsPermissionAllowed($intPermissionId)) return 'Yes';
 		}
 		
 		public function dtgStaff_Bind() {
