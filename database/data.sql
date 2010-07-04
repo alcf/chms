@@ -158,11 +158,10 @@ INSERT INTO role_type VALUES(3, 'ChMS Administrator');
 # Starter Data
 ##############
 
-INSERT INTO comment_category VALUES(null, 1, 'Imported from ACS');
-INSERT INTO comment_category VALUES(null, 2, 'Membership');
-INSERT INTO comment_category VALUES(null, 3, 'Ministry Involvement');
-INSERT INTO comment_category VALUES(null, 4, 'Benevolence');
-INSERT INTO comment_category VALUES(null, 5, 'Other');
+#INSERT INTO comment_category VALUES(null, 1, 'Membership');
+#INSERT INTO comment_category VALUES(null, 2, 'Ministry Involvement');
+#INSERT INTO comment_category VALUES(null, 3, 'Benevolence');
+#INSERT INTO comment_category VALUES(null, 4, 'Other');
 
 INSERT INTO other_contact_method VALUES(null, 'Twitter');
 INSERT INTO other_contact_method VALUES(null, 'Facebook');
