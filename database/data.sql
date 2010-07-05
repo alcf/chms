@@ -205,10 +205,9 @@ INSERT INTO other_contact_method VALUES(null, 'Yahoo! Messenger');
 #INSERT INTO attribute_option VALUES (null, 9, 'Immutable C');
 #INSERT INTO attribute_option VALUES (null, 9, 'Immutable D');
 
-INSERT INTO attribute VALUES (1, 4, 'ACS Individual Number');
-INSERT INTO attribute VALUES (2, 4, 'ACS Family Number');
-INSERT INTO attribute VALUES (3, 4, 'ACS Family Position');
-
+INSERT INTO attribute VALUES (null, 4, 'ACS Individual Number');
+INSERT INTO attribute VALUES (null, 4, 'ACS Family Number');
+INSERT INTO attribute VALUES (null, 4, 'ACS Family Position');
 INSERT INTO attribute VALUES (null, 5, 'Method of Joining ALCF');
 INSERT INTO attribute VALUES (null, 6, 'Spritual Gifts');
 INSERT INTO attribute VALUES (null, 7, 'Ministry Involvement - Assigned Interviewer');
@@ -217,7 +216,7 @@ INSERT INTO attribute VALUES (null, 3, 'Ministry Involvement - Scheduled Intervi
 INSERT INTO attribute VALUES (null, 5, 'Ministry Involvement - Status');
 INSERT INTO attribute VALUES (null, 5, 'Ministry Involvement - Status of Letter');
 INSERT INTO attribute VALUES (null, 2, 'Date Baptized');
-INSERT INTO attribute VALUES (null, 2, 'Date Born Again');
+INSERT INTO attribute VALUES (null, 2, 'Date Accepted Christ');
 INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
