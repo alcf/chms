@@ -620,6 +620,22 @@
 		}
 			
 		/**
+		 * Load a single AttributeOption object,
+		 * by AttributeId, Name Index(es)
+		 * @param integer $intAttributeId
+		 * @param string $strName
+		 * @return AttributeOption
+		*/
+		public static function LoadByAttributeIdName($intAttributeId, $strName) {
+			return AttributeOption::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::AttributeOption()->AttributeId, $intAttributeId),
+				QQ::Equal(QQN::AttributeOption()->Name, $strName)
+				)
+			);
+		}
+			
+		/**
 		 * Load an array of AttributeOption objects,
 		 * by AttributeId Index(es)
 		 * @param integer $intAttributeId
