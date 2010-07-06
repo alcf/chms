@@ -37,10 +37,15 @@
 					break;
 
 				case AttributeDataType::Date:
+				case AttributeDataType::DateTime:
 					$this->dtxValue = new QDateTimeTextBox($this);
 					$this->dtxValue->Name = $this->objAttributeValue->Attribute->Name;
 					$this->dtxValue->Required = true;
-					$this->dtxValue->Text = ($this->objAttributeValue->DateValue) ? $this->objAttributeValue->DateValue->__toString() : null;
+					if ($this->objAttributeValue->Attribute->AttributeDataTypeId == AttributeDataType::Date) {
+						$this->dtxValue->Text = ($this->objAttributeValue->DateValue) ? $this->objAttributeValue->DateValue->ToString() : null;
+					} else {
+						$this->dtxValue->Text = ($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->DatetimeValue->ToString() : null;
+					}
 					$this->calValue = new QCalendar($this, $this->dtxValue);
 
 					$this->dtxValue->RemoveAllActions(QClickEvent::EventName);

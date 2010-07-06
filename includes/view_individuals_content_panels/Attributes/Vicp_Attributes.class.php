@@ -18,9 +18,12 @@
 					return $objValue->BooleanValue ? 'Yes' : 'No';
 
 				case AttributeDataType::Date:
-					return $objValue->DateValue->__toString('MMMM D, YYYY');
+					return $objValue->DateValue->ToString('MMMM D, YYYY');
 
-				case AttributeDataType::ImmutableSingleDropdown:
+				case AttributeDataType::DateTime:
+					return $objValue->DateValue->ToString('MMMM D, YYYY') . ' at ' . $objValue->DateValue->ToString('h:mmz');
+
+					case AttributeDataType::ImmutableSingleDropdown:
 				case AttributeDataType::MutableSingleDropdown:
 					return QApplication::HtmlEntities($objValue->SingleAttributeOption->Name);
 

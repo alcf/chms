@@ -3,6 +3,8 @@
 	<div class="section">
 		<?php $this->txtName->RenderWithName(); ?>
 		<?php $this->lstAttributeDataType->RenderWithName(); ?>
+		<?php if ($this->pnlAttributeOptions) $this->pnlAttributeOptions->Render(); ?>
+		<?php if ($this->btnAddMore) $this->btnAddMore->RenderWithName(); ?>
 	</div>
 	<div class="buttonBar">
 		<?php $this->btnSave->Render(); ?>
