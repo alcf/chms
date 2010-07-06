@@ -180,6 +180,11 @@
 					$this->objAttributeValue->Save();
 					break;
 
+				case AttributeDataType::DateTime:
+					$this->objAttributeValue->DatetimeValue = $this->dtxValue->DateTime;
+					$this->objAttributeValue->Save();
+					break;
+
 				case AttributeDataType::Text:
 					$this->objAttributeValue->TextValue = trim($this->txtValue->Text);
 					$this->objAttributeValue->Save();
