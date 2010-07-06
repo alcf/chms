@@ -30,7 +30,7 @@
 		public function Delete() {
 			$this->UnassociateAllAddressesAsPrimary();
 			$this->UnassociateAllPeopleAsPrimary();
-
+			if ($this->Person) $this->Person->RefreshPrimaryContactInfo();
 			try {
 				parent::Delete();
 			} catch (QCallerException $objExc) {

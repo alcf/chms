@@ -46,6 +46,7 @@
 
 		public function btnSave_Click() {
 			$this->mctPhone->SavePhone();
+			$this->objPerson->RefreshPrimaryContactInfo();
 			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 
