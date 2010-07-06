@@ -7,7 +7,7 @@
 		public $lstCanPhone;
 
 		protected function SetupPanel() {
-			$objAddresses = null;
+			$objAddresses = array();
 			if ($this->objForm->objHousehold && ($objAddress = $this->objForm->objHousehold->GetCurrentAddress())) {
 				$objAddresses[] = $objAddress;
 			}

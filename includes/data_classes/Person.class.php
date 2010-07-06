@@ -143,10 +143,7 @@
 
 				case 'Age':
 					if (!$this->dttDateOfBirth) return null;
-					return QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;
-
-				case 'PrimaryAddress':
-					return 'TODO';
+					return QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;					
 
 				case 'LinkUrl':
 					return sprintf('/individuals/view.php/%s#general', $this->intId);
