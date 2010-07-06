@@ -304,7 +304,7 @@
 				case 'Nickname': return QQN::Person()->Nickname;
 				case 'Title': return QQN::Person()->Title;
 				case 'Suffix': return QQN::Person()->Suffix;
-				case 'MaleFlag': return QQN::Person()->MaleFlag;
+				case 'Gender': return QQN::Person()->Gender;
 				case 'DateOfBirth': return QQN::Person()->DateOfBirth;
 				case 'DobApproximateFlag': return QQN::Person()->DobApproximateFlag;
 				case 'DeceasedFlag': return QQN::Person()->DeceasedFlag;

@@ -27,7 +27,7 @@
 
 		<?php $_CONTROL->txtSuffix->RenderWithName(); ?>
 
-		<?php $_CONTROL->chkMaleFlag->RenderWithName(); ?>
+		<?php $_CONTROL->txtGender->RenderWithName(); ?>
 
 		<?php $_CONTROL->calDateOfBirth->RenderWithName(); ?>
 

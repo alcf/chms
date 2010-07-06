@@ -34,7 +34,7 @@
 		protected $txtNickname;
 		protected $txtTitle;
 		protected $txtSuffix;
-		protected $chkMaleFlag;
+		protected $txtGender;
 		protected $calDateOfBirth;
 		protected $chkDobApproximateFlag;
 		protected $chkDeceasedFlag;
@@ -87,7 +87,7 @@
 			$this->txtNickname = $this->mctPerson->txtNickname_Create();
 			$this->txtTitle = $this->mctPerson->txtTitle_Create();
 			$this->txtSuffix = $this->mctPerson->txtSuffix_Create();
-			$this->chkMaleFlag = $this->mctPerson->chkMaleFlag_Create();
+			$this->txtGender = $this->mctPerson->txtGender_Create();
 			$this->calDateOfBirth = $this->mctPerson->calDateOfBirth_Create();
 			$this->chkDobApproximateFlag = $this->mctPerson->chkDobApproximateFlag_Create();
 			$this->chkDeceasedFlag = $this->mctPerson->chkDeceasedFlag_Create();

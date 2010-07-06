@@ -39,7 +39,7 @@
 
 		<?php $this->txtSuffix->RenderWithName(); ?>
 
-		<?php $this->chkMaleFlag->RenderWithName(); ?>
+		<?php $this->txtGender->RenderWithName(); ?>
 
 		<?php $this->calDateOfBirth->RenderWithName(); ?>
 

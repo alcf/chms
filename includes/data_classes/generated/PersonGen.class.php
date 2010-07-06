@@ -26,7 +26,7 @@
 	 * @property string $Nickname the value for strNickname 
 	 * @property string $Title the value for strTitle 
 	 * @property string $Suffix the value for strSuffix 
-	 * @property boolean $MaleFlag the value for blnMaleFlag (Not Null)
+	 * @property string $Gender the value for strGender 
 	 * @property QDateTime $DateOfBirth the value for dttDateOfBirth 
 	 * @property boolean $DobApproximateFlag the value for blnDobApproximateFlag 
 	 * @property boolean $DeceasedFlag the value for blnDeceasedFlag (Not Null)
@@ -182,11 +182,12 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column person.male_flag
-		 * @var boolean blnMaleFlag
+		 * Protected member variable that maps to the database column person.gender
+		 * @var string strGender
 		 */
-		protected $blnMaleFlag;
-		const MaleFlagDefault = null;
+		protected $strGender;
+		const GenderMaxLength = 1;
+		const GenderDefault = null;
 
 
 		/**
@@ -930,7 +931,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'nickname', $strAliasPrefix . 'nickname');
 			$objBuilder->AddSelectItem($strTableName, 'title', $strAliasPrefix . 'title');
 			$objBuilder->AddSelectItem($strTableName, 'suffix', $strAliasPrefix . 'suffix');
-			$objBuilder->AddSelectItem($strTableName, 'male_flag', $strAliasPrefix . 'male_flag');
+			$objBuilder->AddSelectItem($strTableName, 'gender', $strAliasPrefix . 'gender');
 			$objBuilder->AddSelectItem($strTableName, 'date_of_birth', $strAliasPrefix . 'date_of_birth');
 			$objBuilder->AddSelectItem($strTableName, 'dob_approximate_flag', $strAliasPrefix . 'dob_approximate_flag');
 			$objBuilder->AddSelectItem($strTableName, 'deceased_flag', $strAliasPrefix . 'deceased_flag');
@@ -1238,8 +1239,8 @@
 			$objToReturn->strTitle = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'suffix', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suffix'] : $strAliasPrefix . 'suffix';
 			$objToReturn->strSuffix = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'male_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'male_flag'] : $strAliasPrefix . 'male_flag';
-			$objToReturn->blnMaleFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'gender', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'gender'] : $strAliasPrefix . 'gender';
+			$objToReturn->strGender = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_of_birth', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_of_birth'] : $strAliasPrefix . 'date_of_birth';
 			$objToReturn->dttDateOfBirth = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAliasName = array_key_exists($strAliasPrefix . 'dob_approximate_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'dob_approximate_flag'] : $strAliasPrefix . 'dob_approximate_flag';
@@ -1851,7 +1852,7 @@
 							`nickname`,
 							`title`,
 							`suffix`,
-							`male_flag`,
+							`gender`,
 							`date_of_birth`,
 							`dob_approximate_flag`,
 							`deceased_flag`,
@@ -1875,7 +1876,7 @@
 							' . $objDatabase->SqlVariable($this->strNickname) . ',
 							' . $objDatabase->SqlVariable($this->strTitle) . ',
 							' . $objDatabase->SqlVariable($this->strSuffix) . ',
-							' . $objDatabase->SqlVariable($this->blnMaleFlag) . ',
+							' . $objDatabase->SqlVariable($this->strGender) . ',
 							' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
 							' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
@@ -1913,7 +1914,7 @@
 							`nickname` = ' . $objDatabase->SqlVariable($this->strNickname) . ',
 							`title` = ' . $objDatabase->SqlVariable($this->strTitle) . ',
 							`suffix` = ' . $objDatabase->SqlVariable($this->strSuffix) . ',
-							`male_flag` = ' . $objDatabase->SqlVariable($this->blnMaleFlag) . ',
+							`gender` = ' . $objDatabase->SqlVariable($this->strGender) . ',
 							`date_of_birth` = ' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
 							`dob_approximate_flag` = ' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
 							`deceased_flag` = ' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
@@ -2043,7 +2044,7 @@
 			$this->strNickname = $objReloaded->strNickname;
 			$this->strTitle = $objReloaded->strTitle;
 			$this->strSuffix = $objReloaded->strSuffix;
-			$this->blnMaleFlag = $objReloaded->blnMaleFlag;
+			$this->strGender = $objReloaded->strGender;
 			$this->dttDateOfBirth = $objReloaded->dttDateOfBirth;
 			$this->blnDobApproximateFlag = $objReloaded->blnDobApproximateFlag;
 			$this->blnDeceasedFlag = $objReloaded->blnDeceasedFlag;
@@ -2131,10 +2132,10 @@
 					// @return string
 					return $this->strSuffix;
 
-				case 'MaleFlag':
-					// Gets the value for blnMaleFlag (Not Null)
-					// @return boolean
-					return $this->blnMaleFlag;
+				case 'Gender':
+					// Gets the value for strGender 
+					// @return string
+					return $this->strGender;
 
 				case 'DateOfBirth':
 					// Gets the value for dttDateOfBirth 
@@ -2613,12 +2614,12 @@
 						throw $objExc;
 					}
 
-				case 'MaleFlag':
-					// Sets the value for blnMaleFlag (Not Null)
-					// @param boolean $mixValue
-					// @return boolean
+				case 'Gender':
+					// Sets the value for strGender 
+					// @param string $mixValue
+					// @return string
 					try {
-						return ($this->blnMaleFlag = QType::Cast($mixValue, QType::Boolean));
+						return ($this->strGender = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -5344,7 +5345,7 @@
 			$strToReturn .= '<element name="Nickname" type="xsd:string"/>';
 			$strToReturn .= '<element name="Title" type="xsd:string"/>';
 			$strToReturn .= '<element name="Suffix" type="xsd:string"/>';
-			$strToReturn .= '<element name="MaleFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="Gender" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateOfBirth" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DobApproximateFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DeceasedFlag" type="xsd:boolean"/>';
@@ -5406,8 +5407,8 @@
 				$objToReturn->strTitle = $objSoapObject->Title;
 			if (property_exists($objSoapObject, 'Suffix'))
 				$objToReturn->strSuffix = $objSoapObject->Suffix;
-			if (property_exists($objSoapObject, 'MaleFlag'))
-				$objToReturn->blnMaleFlag = $objSoapObject->MaleFlag;
+			if (property_exists($objSoapObject, 'Gender'))
+				$objToReturn->strGender = $objSoapObject->Gender;
 			if (property_exists($objSoapObject, 'DateOfBirth'))
 				$objToReturn->dttDateOfBirth = new QDateTime($objSoapObject->DateOfBirth);
 			if (property_exists($objSoapObject, 'DobApproximateFlag'))
@@ -5575,8 +5576,8 @@
 					return new QQNode('title', 'Title', 'string', $this);
 				case 'Suffix':
 					return new QQNode('suffix', 'Suffix', 'string', $this);
-				case 'MaleFlag':
-					return new QQNode('male_flag', 'MaleFlag', 'boolean', $this);
+				case 'Gender':
+					return new QQNode('gender', 'Gender', 'string', $this);
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
 				case 'DobApproximateFlag':
@@ -5687,8 +5688,8 @@
 					return new QQNode('title', 'Title', 'string', $this);
 				case 'Suffix':
 					return new QQNode('suffix', 'Suffix', 'string', $this);
-				case 'MaleFlag':
-					return new QQNode('male_flag', 'MaleFlag', 'boolean', $this);
+				case 'Gender':
+					return new QQNode('gender', 'Gender', 'string', $this);
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
 				case 'DobApproximateFlag':

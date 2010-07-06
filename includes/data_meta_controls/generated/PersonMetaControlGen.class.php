@@ -38,8 +38,8 @@
 	 * property-read QLabel $TitleLabel
 	 * property QTextBox $SuffixControl
 	 * property-read QLabel $SuffixLabel
-	 * property QCheckBox $MaleFlagControl
-	 * property-read QLabel $MaleFlagLabel
+	 * property QTextBox $GenderControl
+	 * property-read QLabel $GenderLabel
 	 * property QDateTimePicker $DateOfBirthControl
 	 * property-read QLabel $DateOfBirthLabel
 	 * property QCheckBox $DobApproximateFlagControl
@@ -93,7 +93,7 @@
 		protected $txtNickname;
 		protected $txtTitle;
 		protected $txtSuffix;
-		protected $chkMaleFlag;
+		protected $txtGender;
 		protected $calDateOfBirth;
 		protected $chkDobApproximateFlag;
 		protected $chkDeceasedFlag;
@@ -118,7 +118,7 @@
 		protected $lblNickname;
 		protected $lblTitle;
 		protected $lblSuffix;
-		protected $lblMaleFlag;
+		protected $lblGender;
 		protected $lblDateOfBirth;
 		protected $lblDobApproximateFlag;
 		protected $lblDeceasedFlag;
@@ -505,27 +505,28 @@
 		}
 
 		/**
-		 * Create and setup QCheckBox chkMaleFlag
+		 * Create and setup QTextBox txtGender
 		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
+		 * @return QTextBox
 		 */
-		public function chkMaleFlag_Create($strControlId = null) {
-			$this->chkMaleFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkMaleFlag->Name = QApplication::Translate('Male Flag');
-			$this->chkMaleFlag->Checked = $this->objPerson->MaleFlag;
-			return $this->chkMaleFlag;
+		public function txtGender_Create($strControlId = null) {
+			$this->txtGender = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtGender->Name = QApplication::Translate('Gender');
+			$this->txtGender->Text = $this->objPerson->Gender;
+			$this->txtGender->MaxLength = Person::GenderMaxLength;
+			return $this->txtGender;
 		}
 
 		/**
-		 * Create and setup QLabel lblMaleFlag
+		 * Create and setup QLabel lblGender
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblMaleFlag_Create($strControlId = null) {
-			$this->lblMaleFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblMaleFlag->Name = QApplication::Translate('Male Flag');
-			$this->lblMaleFlag->Text = ($this->objPerson->MaleFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblMaleFlag;
+		public function lblGender_Create($strControlId = null) {
+			$this->lblGender = new QLabel($this->objParentObject, $strControlId);
+			$this->lblGender->Name = QApplication::Translate('Gender');
+			$this->lblGender->Text = $this->objPerson->Gender;
+			return $this->lblGender;
 		}
 
 		/**
@@ -1095,8 +1096,8 @@
 			if ($this->txtSuffix) $this->txtSuffix->Text = $this->objPerson->Suffix;
 			if ($this->lblSuffix) $this->lblSuffix->Text = $this->objPerson->Suffix;
 
-			if ($this->chkMaleFlag) $this->chkMaleFlag->Checked = $this->objPerson->MaleFlag;
-			if ($this->lblMaleFlag) $this->lblMaleFlag->Text = ($this->objPerson->MaleFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			if ($this->txtGender) $this->txtGender->Text = $this->objPerson->Gender;
+			if ($this->lblGender) $this->lblGender->Text = $this->objPerson->Gender;
 
 			if ($this->calDateOfBirth) $this->calDateOfBirth->DateTime = $this->objPerson->DateOfBirth;
 			if ($this->lblDateOfBirth) $this->lblDateOfBirth->Text = sprintf($this->objPerson->DateOfBirth) ? $this->objPerson->__toString($this->strDateOfBirthDateTimeFormat) : null;
@@ -1297,7 +1298,7 @@
 				if ($this->txtNickname) $this->objPerson->Nickname = $this->txtNickname->Text;
 				if ($this->txtTitle) $this->objPerson->Title = $this->txtTitle->Text;
 				if ($this->txtSuffix) $this->objPerson->Suffix = $this->txtSuffix->Text;
-				if ($this->chkMaleFlag) $this->objPerson->MaleFlag = $this->chkMaleFlag->Checked;
+				if ($this->txtGender) $this->objPerson->Gender = $this->txtGender->Text;
 				if ($this->calDateOfBirth) $this->objPerson->DateOfBirth = $this->calDateOfBirth->DateTime;
 				if ($this->chkDobApproximateFlag) $this->objPerson->DobApproximateFlag = $this->chkDobApproximateFlag->Checked;
 				if ($this->chkDeceasedFlag) $this->objPerson->DeceasedFlag = $this->chkDeceasedFlag->Checked;
@@ -1423,12 +1424,12 @@
 				case 'SuffixLabel':
 					if (!$this->lblSuffix) return $this->lblSuffix_Create();
 					return $this->lblSuffix;
-				case 'MaleFlagControl':
-					if (!$this->chkMaleFlag) return $this->chkMaleFlag_Create();
-					return $this->chkMaleFlag;
-				case 'MaleFlagLabel':
-					if (!$this->lblMaleFlag) return $this->lblMaleFlag_Create();
-					return $this->lblMaleFlag;
+				case 'GenderControl':
+					if (!$this->txtGender) return $this->txtGender_Create();
+					return $this->txtGender;
+				case 'GenderLabel':
+					if (!$this->lblGender) return $this->lblGender_Create();
+					return $this->lblGender;
 				case 'DateOfBirthControl':
 					if (!$this->calDateOfBirth) return $this->calDateOfBirth_Create();
 					return $this->calDateOfBirth;
@@ -1563,8 +1564,8 @@
 						return ($this->txtTitle = QType::Cast($mixValue, 'QControl'));
 					case 'SuffixControl':
 						return ($this->txtSuffix = QType::Cast($mixValue, 'QControl'));
-					case 'MaleFlagControl':
-						return ($this->chkMaleFlag = QType::Cast($mixValue, 'QControl'));
+					case 'GenderControl':
+						return ($this->txtGender = QType::Cast($mixValue, 'QControl'));
 					case 'DateOfBirthControl':
 						return ($this->calDateOfBirth = QType::Cast($mixValue, 'QControl'));
 					case 'DobApproximateFlagControl':

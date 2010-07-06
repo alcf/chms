@@ -76,7 +76,7 @@
 			$this->dtgPeople->MetaAddColumn('Nickname');
 			$this->dtgPeople->MetaAddColumn('Title');
 			$this->dtgPeople->MetaAddColumn('Suffix');
-			$this->dtgPeople->MetaAddColumn('MaleFlag');
+			$this->dtgPeople->MetaAddColumn('Gender');
 			$this->dtgPeople->MetaAddColumn('DateOfBirth');
 			$this->dtgPeople->MetaAddColumn('DobApproximateFlag');
 			$this->dtgPeople->MetaAddColumn('DeceasedFlag');
