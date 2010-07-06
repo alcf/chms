@@ -104,8 +104,33 @@
 				case 'MaritalStatus':
 					return MaritalStatusType::$NameArray[$this->intMaritalStatusTypeId];
 
+				case 'PronounSubject':
+					switch ($this->strGender) {
+						case 'M':	return 'he';
+						case 'F':	return 'she';
+						default:	return 'he/she';
+					}
+
+				case 'PronounIndirectObject':
+					switch ($this->strGender) {
+						case 'M':	return 'him';
+						case 'F':	return 'her';
+						default:	return 'him/her';
+					}
+
+				case 'PronounAdjective':
+					switch ($this->strGender) {
+						case 'M':	return 'his';
+						case 'F':	return 'her';
+						default:	return 'his/her';
+					}
+
 				case 'GenderLabel':
-					return $this->blnMaleFlag ? 'Male' : 'Female';
+					switch ($this->strGender) {
+						case 'M':	return 'Male';
+						case 'F':	return 'Female';
+						default:	return 'Not Specified';
+					}
 
 				case 'Birthdate':
 					if (!$this->dttDateOfBirth) return null;
@@ -430,11 +455,20 @@
 		 * 
 		 * @param string $strFirstName
 		 * @param string $strLastName
-		 * @param boolean $blnMaleFlag
+		 * @param string $strGender
 		 * @return Person[]
 		 */
-		public static function LoadArrayBySearch($strFirstName, $strLastName, $blnMaleFlag) {
-			$strClauseArray = array('male_flag = ' . ($blnMaleFlag ? '1' : '0'));
+		public static function LoadArrayBySearch($strFirstName, $strLastName, $strGender) {
+			$strClauseArray = array();
+
+			// Needs to capture both the requested gender AND any unspecified
+			if ($strGender == 'M') {
+				$strClauseArray[] = "gender != 'F'";
+			} else if ($strGender == 'F') {
+				$strClauseArray[] = "gender != 'M'";
+			}
+
+			// First or Last Name Requested
 			if (strlen($strFirstName))
 				$strClauseArray[] = sprintf("(soundex(first_name) = soundex('%s') OR first_name LIKE '%s%%')", mysql_escape_string($strFirstName), mysql_escape_string($strFirstName));
 			if (strlen($strLastName))
@@ -477,7 +511,7 @@
 
 			$objPerson->RefreshMaritalStatusTypeId(false);
 			$objPerson->RefreshMembershipStatusTypeId(false);
-			$objPerson->MaleFlag = $blnMaleFlag;
+			$objPerson->Gender = ($blnMaleFlag) ? 'M' : 'F';
 			$objPerson->DeceasedFlag = false;
 
 			$objPerson->Save();

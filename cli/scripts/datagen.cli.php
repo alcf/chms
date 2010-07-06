@@ -55,6 +55,15 @@
 		 * @return void
 		 */
 		public static function Run() {
+			// Run "Fake Data" SQL Script
+			$strFakeDataSql = file_get_contents(__DOCROOT__ . '/../database/fake_data.sql');
+			foreach (explode("\n", $strFakeDataSql) as $strSql) {
+				$strSql = trim($strSql);
+				if (strlen($strSql) && (substr($strSql, 0, 1) != '#')) {
+					Person::GetDatabase()->NonQuery($strSql);
+				}
+			}
+
 			self::$SystemStartDate = new QDateTime('1990-01-01');
 			self::$LifeStartDate = new QDateTime('1930-01-01');
 			self::$OldestChildBirthDate = QDateTime::Now(false);
@@ -417,7 +426,7 @@
 
 			// Add a Spouse
 			if (rand(0, 6)) {
-				$objSpouse = self::GenerateIndividual(!$objHeadPerson->MaleFlag, true, $strLastName);
+				$objSpouse = self::GenerateIndividual(($objHeadPerson->Gender == 'M') ? false : true, true, $strLastName);
 				$intMinimumChildCount = 0;
 
 				$objHeadPerson->DeleteAllMarriages();
@@ -471,7 +480,7 @@
 		 */
 		protected static function GenerateIndividual($blnMaleFlag, $blnAdultFlag, $strLastName = null) {
 			$objPerson = new Person();
-			$objPerson->MaleFlag = $blnMaleFlag;
+			$objPerson->Gender = ($blnMaleFlag ? 'M' : 'F');
 
 			// Generate the name
 			$objPerson->FirstName = ($blnMaleFlag) ? QDataGen::GenerateMaleFirstName() : QDataGen::GenerateFemaleFirstName();
@@ -532,7 +541,7 @@
 			$objHeadShotArray = array();
 			$intHeadShotCount = rand(0, 3);
 			for ($i = 0; $i < $intHeadShotCount; $i++) {
-				$objHeadShotArray[] = $objPerson->SaveHeadShot(self::GetRandomHeadShot($objPerson->MaleFlag), QDataGen::GenerateDateTime(self::$SystemStartDate, QDateTime::Now()));
+				$objHeadShotArray[] = $objPerson->SaveHeadShot(self::GetRandomHeadShot($objPerson->Gender == 'M'), QDataGen::GenerateDateTime(self::$SystemStartDate, QDateTime::Now()));
 			}
 			if (count($objHeadShotArray)) {
 				$objPerson->SetCurrentHeadShot(QDataGen::GenerateFromArray($objHeadShotArray));

@@ -77,8 +77,8 @@
 			
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';			
-			$this->lstGender->AddItem('Male', true, $this->objPerson->MaleFlag);
-			$this->lstGender->AddItem('Female', false, !$this->objPerson->MaleFlag);
+			$this->lstGender->AddItem('Male', 'M', $this->objPerson->Gender == 'M');
+			$this->lstGender->AddItem('Female', 'F', !$this->objPerson->Gender == 'F');
 
 			$this->dtxDateOfBirth = new QDateTimeTextBox($this);
 			$this->dtxDateOfBirth->Name = "Date of Birth";
@@ -134,7 +134,7 @@
 			$this->objPerson->PriorLastNames = trim($this->txtPriorLastNames->Text);
 			$this->objPerson->MailingLabel = trim($this->txtMailingLabel->Text);
 			
-			$this->objPerson->MaleFlag = trim($this->lstGender->SelectedValue);
+			$this->objPerson->Gender = trim($this->lstGender->SelectedValue);
 			$this->objPerson->DateOfBirth = $this->dtxDateOfBirth->DateTime;			
 			$this->objPerson->DobApproximateFlag = $this->objPerson->DateOfBirth && $this->chkDobApproximate->Checked;
 

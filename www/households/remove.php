@@ -105,8 +105,8 @@
 				case Person::HouseholdStatusMemberOfOne:
 					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> does not belong to any other household records.  Make %s an individual with no household records, or delete %s record altogether?',
 						QApplication::HtmlEntities($this->objPersonToRemove->Name), 
-						($this->objPersonToRemove->MaleFlag ? 'him' : 'her'),
-						($this->objPersonToRemove->MaleFlag ? 'his' : 'her'));
+						($this->objPersonToRemove->PronounIndirectObject ? 'him' : 'her'),
+						($this->objPersonToRemove->PronounAdjective ? 'his' : 'her'));
 					$this->dlgMessage->AddButton('Make Individual', MessageDialog::ButtonPrimary, 'RemoveFromHousehold');
 					$this->dlgMessage->AddButton('Delete Record', MessageDialog::ButtonPrimary, 'DeletePerson');
 					$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
@@ -119,9 +119,9 @@
 						$this->dlgMessage->MessageHtml = '<strong>%s</strong> belongs to other households.  After removing %s from the %s, %s will still be a member of these other households.';
 					$this->dlgMessage->MessageHtml = sprintf($this->dlgMessage->MessageHtml,
 						QApplication::HtmlEntities($this->objPersonToRemove->Name), 
-						($this->objPersonToRemove->MaleFlag ? 'him' : 'her'),
+						($this->objPersonToRemove->PronounIndirectObject ? 'him' : 'her'),
 						QApplication::HtmlEntities($this->objHousehold->Name), 
-						($this->objPersonToRemove->MaleFlag ? 'he' : 'she'));
+						($this->objPersonToRemove->PronounSubject ? 'he' : 'she'));
 					$this->dlgMessage->AddButton('Okay', MessageDialog::ButtonPrimary, 'RemoveFromHousehold');
 					$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
 					break;

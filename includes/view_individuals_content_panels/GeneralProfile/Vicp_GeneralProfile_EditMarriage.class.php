@@ -79,7 +79,11 @@
 				$this->pnlMarriedTo = new SelectPersonPanel($this);
 				$this->pnlMarriedTo->Name = 'Married To';
 				$this->pnlMarriedTo->AllowCreate = true;
-				$this->pnlMarriedTo->ForceAsMaleFlag = !$this->objPerson->MaleFlag;
+				switch ($this->objPerson->Gender) {
+					case 'M':	$this->pnlMarriedTo->ForceAsMaleFlag = false;
+					case 'F':	$this->pnlMarriedTo->ForceAsMaleFlag = true;
+					default:	$this->pnlMarriedTo->ForceAsMaleFlag = null;
+				}
 			}
 		}
 

@@ -84,11 +84,26 @@
 				case 'Relation':
 					switch ($this->intRelationshipTypeId) {
 						case RelationshipType::Child:
-							return $this->RelatedToPerson->MaleFlag ? 'Son' : 'Daughter';
+							switch ($this->RelatedToPerson->Gender) {
+								case 'M':	return 'Son';
+								case 'F':	return 'Daughter';
+								default:	return 'Child';
+							}
+
 						case RelationshipType::Parental:
-							return $this->RelatedToPerson->MaleFlag ? 'Father' : 'Mother';
+							switch ($this->RelatedToPerson->Gender) {
+								case 'M':	return 'Father';
+								case 'F':	return 'Mother';
+								default:	return 'Parent';
+							}
+
 						case RelationshipType::Sibling:
-							return $this->RelatedToPerson->MaleFlag ? 'Brother' : 'Sister';
+							switch ($this->RelatedToPerson->Gender) {
+								case 'M':	return 'Brother';
+								case 'F':	return 'Sister';
+								default:	return 'Sibling';
+							}
+
 						default:
 							throw new QCallerException('Invalid intRelationshipTypeId');
 					}

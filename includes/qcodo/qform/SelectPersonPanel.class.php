@@ -64,8 +64,8 @@
 			$this->txtLastName = new QTextBox($this);
 
 			$this->lstGender = new QListBox($this);
-			$this->lstGender->AddItem('Male', true);
-			$this->lstGender->AddItem('Female', false);
+			$this->lstGender->AddItem('Male', 'M');
+			$this->lstGender->AddItem('Female', 'F');
 			
 			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
 			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
@@ -108,7 +108,7 @@
 				if (is_null($this->blnForceAsMaleFlag))
 					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), $this->lstGender->SelectedValue);
 				else
-					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), $this->blnForceAsMaleFlag);
+					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), ($this->blnForceAsMaleFlag) ? 'M' : 'F');
 
 				if ($this->blnAllowCreate) $objPersonArray[] = new Person();
 				$this->dtgResults->DataSource = $objPersonArray;
@@ -184,7 +184,7 @@
 				
 				case 'Person':
 					if ($this->blnAllowCreate && ($this->intSelectedPersonId == -1)) {
-						$blnGender = is_null($this->blnForceAsMaleFlag) ? $this->lstGender->SelectedValue : $this->blnForceAsMaleFlag;
+						$blnGender = is_null($this->blnForceAsMaleFlag) ? ($this->lstGender->SelectedValue == 'M') : $this->blnForceAsMaleFlag;
 						$strEmail = trim(strtolower($this->txtEmail->Text));
 						$strPhone = trim(strtolower($this->txtPhone->Text));
 						$intPhoneTypeId = ($strPhone) ? $this->lstPhone->SelectedValue : null;

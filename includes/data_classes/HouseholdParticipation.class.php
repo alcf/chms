@@ -46,7 +46,11 @@
 			if (($objMarriage = $this->Person->GetMostRecentMarriage()) &&
 				($objMarriage->MarriageStatusTypeId == MarriageStatusType::Married) &&
 				($objMarriage->MarriedToPersonId == $objHeadPerson->Id)) {
-				$this->strRole = ($this->Person->MaleFlag ? 'Husband' : 'Wife');
+				switch ($this->Person->Gender) {
+					case 'M':	$this->strRole = 'Husband';
+					case 'F':	$this->strRole = 'Wife';
+					default:	$this->strRole = 'Spouse';
+				}
 				if ($blnSave) $this->Save();
 				return;
 			}
