@@ -58,6 +58,48 @@
 	<div class="cleaner">&nbsp;</div>
 </div>
 
+<h3>Primary Contact Information</h3>
+<div class="section">
+	<div class="sectionButtons"><button class="primary" onclick="document.location='#contact'; return false;" href="#">View Details</button></div>
+	<div class="lvp">
+		<div class="left">Primary Address</div>
+		<div class="right">
+<?php 
+	if ($_FORM->objPerson->PrimaryAddressText && $_FORM->objPerson->PrimaryCityText)
+		_p($_FORM->objPerson->PrimaryAddressText . ', ' . $_FORM->objPerson->PrimaryCityText);
+	else if ($_FORM->objPerson->PrimaryAddressText)
+		_p($_FORM->objPerson->PrimaryAddressText);
+	else if ($_FORM->objPerson->PrimaryCityText)
+		_p($_FORM->objPerson->PrimaryCityText);
+	else
+		_p('<span class="na">Not Specified</span>', false);
+?>
+		</div>
+		<div class="cleaner">&nbsp;</div>
+	</div>
+	<div class="lvp">
+		<div class="left">Primary Phone</div>
+		<div class="right">
+<?php 
+	if ($_FORM->objPerson->PrimaryPhoneText) _p($_FORM->objPerson->PrimaryPhoneText);
+	else _p('<span class="na">Not Specified</span>', false);
+?>
+		</div>
+		<div class="cleaner">&nbsp;</div>
+	</div>
+	<div class="lvp">
+		<div class="left">Primary Email</div>
+		<div class="right">
+<?php 
+	if ($objEmail = $_FORM->objPerson->PrimaryEmail) _p(sprintf('<a href="mailto:%s">%s</a>', $strEmail = QApplication::HtmlEntities($objEmail->Address), $strEmail), false);
+	else _p('<span class="na">Not Specified</span>', false);
+?>
+		</div>
+		<div class="cleaner">&nbsp;</div>
+	</div>
+</div>
+
+<h3>Membership at ALCF</h3>
 <div class="section">
 	<?php if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) { ?>
 		<div class="sectionButtons"><button class="primary" onclick="document.location='#general/view_membership'; return false;" href="#">Edit</button></div>
@@ -76,6 +118,7 @@
 	</div>
 </div>
 
+<h3>Marriage and Family</h3>
 <div class="section">
 	<div class="sectionButtons">
 		<button class="primary" onclick="document.location='#general/view_marriage'; return false;" href="#">Marriage Info</button><br/>
