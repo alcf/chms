@@ -43,7 +43,7 @@
 		}
 
 		public function RenderAction(HouseholdParticipation $objHouseholdParticipation) {
-			return sprintf('document.location = "/individuals/view.php/%s/%s#" + qc.getHashContent(); return false;',
+			return sprintf('document.location = "/individuals/view.php/%s/%s#" + HouseholdSelectorHashContent(); return false;',
 				$objHouseholdParticipation->PersonId, $objHouseholdParticipation->HouseholdId);
 		}
 	}

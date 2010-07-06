@@ -5,10 +5,10 @@
 
 		protected function SetupPanel() {
 			$this->dtgRelationships = new QDataGrid($this);
-			$this->dtgRelationships->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgRelationships->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->RelatedToPerson->Name; ?>'));
-			$this->dtgRelationships->AddColumn(new QDataGridColumn('Address', '<?= $_ITEM->RelatedToPerson->PrimaryAddress; ?>'));
-			$this->dtgRelationships->AddColumn(new QDataGridColumn('Relationship', '<?= $_ITEM->Relation; ?>'));
+			$this->dtgRelationships->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
+			$this->dtgRelationships->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->RelatedToPerson->Name; ?>', 'Width=200px'));
+			$this->dtgRelationships->AddColumn(new QDataGridColumn('Relationship', '<?= $_ITEM->Relation; ?>', 'Width=100px'));
+			$this->dtgRelationships->AddColumn(new QDataGridColumn('Address', '<?= $_ITEM->RelatedToPerson->PrimaryAddressText; ?>, <?= $_ITEM->RelatedToPerson->PrimaryCityText; ?>', 'Width=380px'));
 			$this->dtgRelationships->SetDataBinder('dtgRelationships_Bind', $this);
 
 			$this->btnAdd = new QButton($this);

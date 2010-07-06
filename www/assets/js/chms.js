@@ -18,3 +18,13 @@ function EveryOtherClicked() {
 		document.getElementById("days[4]").disabled = false;
 	};
 };
+
+function HouseholdSelectorHashContent() {
+	var strToReturn = new String(qc.getHashContent());
+
+	if (strToReturn.indexOf('/') > -1) {
+		strToReturn = strToReturn.substring(0, strToReturn.indexOf('/'));
+	};
+
+	return strToReturn;
+};
