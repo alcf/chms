@@ -69,6 +69,7 @@
 			$this->dtgAttributeValues->MetaAddColumn(QQN::AttributeValue()->Attribute);
 			$this->dtgAttributeValues->MetaAddColumn(QQN::AttributeValue()->Person);
 			$this->dtgAttributeValues->MetaAddColumn('DateValue');
+			$this->dtgAttributeValues->MetaAddColumn('DatetimeValue');
 			$this->dtgAttributeValues->MetaAddColumn('TextValue');
 			$this->dtgAttributeValues->MetaAddColumn('BooleanValue');
 			$this->dtgAttributeValues->MetaAddColumn(QQN::AttributeValue()->SingleAttributeOption);

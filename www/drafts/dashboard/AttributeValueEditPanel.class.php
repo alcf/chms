@@ -24,6 +24,7 @@
 		public $lstAttribute;
 		public $lstPerson;
 		public $calDateValue;
+		public $calDatetimeValue;
 		public $txtTextValue;
 		public $chkBooleanValue;
 		public $lstSingleAttributeOption;
@@ -61,6 +62,7 @@
 			$this->lstAttribute = $this->mctAttributeValue->lstAttribute_Create();
 			$this->lstPerson = $this->mctAttributeValue->lstPerson_Create();
 			$this->calDateValue = $this->mctAttributeValue->calDateValue_Create();
+			$this->calDatetimeValue = $this->mctAttributeValue->calDatetimeValue_Create();
 			$this->txtTextValue = $this->mctAttributeValue->txtTextValue_Create();
 			$this->chkBooleanValue = $this->mctAttributeValue->chkBooleanValue_Create();
 			$this->lstSingleAttributeOption = $this->mctAttributeValue->lstSingleAttributeOption_Create();

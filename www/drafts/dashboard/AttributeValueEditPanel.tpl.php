@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->calDateValue->RenderWithName(); ?>
 
+		<?php $_CONTROL->calDatetimeValue->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtTextValue->RenderWithName(); ?>
 
 		<?php $_CONTROL->chkBooleanValue->RenderWithName(); ?>

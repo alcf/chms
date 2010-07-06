@@ -299,6 +299,7 @@
 				case 'PersonId': return QQN::AttributeValue()->PersonId;
 				case 'Person': return QQN::AttributeValue()->Person;
 				case 'DateValue': return QQN::AttributeValue()->DateValue;
+				case 'DatetimeValue': return QQN::AttributeValue()->DatetimeValue;
 				case 'TextValue': return QQN::AttributeValue()->TextValue;
 				case 'BooleanValue': return QQN::AttributeValue()->BooleanValue;
 				case 'SingleAttributeOptionId': return QQN::AttributeValue()->SingleAttributeOptionId;

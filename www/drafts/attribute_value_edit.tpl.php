@@ -25,6 +25,8 @@
 
 		<?php $this->calDateValue->RenderWithName(); ?>
 
+		<?php $this->calDatetimeValue->RenderWithName(); ?>
+
 		<?php $this->txtTextValue->RenderWithName(); ?>
 
 		<?php $this->chkBooleanValue->RenderWithName(); ?>

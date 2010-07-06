@@ -23,8 +23,12 @@
 			
 			$this->txtName = $this->mctAttribute->txtName_Create();
 			$this->txtName->Required = true;
+
 			$this->lstAttributeDataType = $this->mctAttribute->lstAttributeDataType_Create();
-			
+			if ($this->mctAttribute->EditMode) {
+				$this->lstAttributeDataType->Enabled = false;
+			}
+
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = ($this->mctAttribute->EditMode ? 'Update' : 'Create');
 			$this->btnSave->CssClass = 'primary';

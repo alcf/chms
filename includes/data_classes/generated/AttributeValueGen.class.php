@@ -19,6 +19,7 @@
 	 * @property integer $AttributeId the value for intAttributeId (Not Null)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property QDateTime $DateValue the value for dttDateValue 
+	 * @property QDateTime $DatetimeValue the value for dttDatetimeValue 
 	 * @property string $TextValue the value for strTextValue 
 	 * @property boolean $BooleanValue the value for blnBooleanValue 
 	 * @property integer $SingleAttributeOptionId the value for intSingleAttributeOptionId 
@@ -65,6 +66,14 @@
 		 */
 		protected $dttDateValue;
 		const DateValueDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column attribute_value.datetime_value
+		 * @var QDateTime dttDatetimeValue
+		 */
+		protected $dttDatetimeValue;
+		const DatetimeValueDefault = null;
 
 
 		/**
@@ -451,6 +460,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'attribute_id', $strAliasPrefix . 'attribute_id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_value', $strAliasPrefix . 'date_value');
+			$objBuilder->AddSelectItem($strTableName, 'datetime_value', $strAliasPrefix . 'datetime_value');
 			$objBuilder->AddSelectItem($strTableName, 'text_value', $strAliasPrefix . 'text_value');
 			$objBuilder->AddSelectItem($strTableName, 'boolean_value', $strAliasPrefix . 'boolean_value');
 			$objBuilder->AddSelectItem($strTableName, 'single_attribute_option_id', $strAliasPrefix . 'single_attribute_option_id');
@@ -525,6 +535,8 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_value'] : $strAliasPrefix . 'date_value';
 			$objToReturn->dttDateValue = $objDbRow->GetColumn($strAliasName, 'Date');
+			$strAliasName = array_key_exists($strAliasPrefix . 'datetime_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'datetime_value'] : $strAliasPrefix . 'datetime_value';
+			$objToReturn->dttDatetimeValue = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'text_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_value'] : $strAliasPrefix . 'text_value';
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'boolean_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'boolean_value'] : $strAliasPrefix . 'boolean_value';
@@ -834,6 +846,7 @@
 							`attribute_id`,
 							`person_id`,
 							`date_value`,
+							`datetime_value`,
 							`text_value`,
 							`boolean_value`,
 							`single_attribute_option_id`
@@ -841,6 +854,7 @@
 							' . $objDatabase->SqlVariable($this->intAttributeId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateValue) . ',
+							' . $objDatabase->SqlVariable($this->dttDatetimeValue) . ',
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
 							' . $objDatabase->SqlVariable($this->intSingleAttributeOptionId) . '
@@ -862,6 +876,7 @@
 							`attribute_id` = ' . $objDatabase->SqlVariable($this->intAttributeId) . ',
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`date_value` = ' . $objDatabase->SqlVariable($this->dttDateValue) . ',
+							`datetime_value` = ' . $objDatabase->SqlVariable($this->dttDatetimeValue) . ',
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`boolean_value` = ' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
 							`single_attribute_option_id` = ' . $objDatabase->SqlVariable($this->intSingleAttributeOptionId) . '
@@ -946,6 +961,7 @@
 			$this->AttributeId = $objReloaded->AttributeId;
 			$this->PersonId = $objReloaded->PersonId;
 			$this->dttDateValue = $objReloaded->dttDateValue;
+			$this->dttDatetimeValue = $objReloaded->dttDatetimeValue;
 			$this->strTextValue = $objReloaded->strTextValue;
 			$this->blnBooleanValue = $objReloaded->blnBooleanValue;
 			$this->SingleAttributeOptionId = $objReloaded->SingleAttributeOptionId;
@@ -988,6 +1004,11 @@
 					// Gets the value for dttDateValue 
 					// @return QDateTime
 					return $this->dttDateValue;
+
+				case 'DatetimeValue':
+					// Gets the value for dttDatetimeValue 
+					// @return QDateTime
+					return $this->dttDatetimeValue;
 
 				case 'TextValue':
 					// Gets the value for strTextValue 
@@ -1119,6 +1140,17 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateValue = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DatetimeValue':
+					// Sets the value for dttDatetimeValue 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDatetimeValue = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1415,6 +1447,7 @@
 			$strToReturn .= '<element name="Attribute" type="xsd1:Attribute"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="DateValue" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DatetimeValue" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="BooleanValue" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="SingleAttributeOption" type="xsd1:AttributeOption"/>';
@@ -1453,6 +1486,8 @@
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if (property_exists($objSoapObject, 'DateValue'))
 				$objToReturn->dttDateValue = new QDateTime($objSoapObject->DateValue);
+			if (property_exists($objSoapObject, 'DatetimeValue'))
+				$objToReturn->dttDatetimeValue = new QDateTime($objSoapObject->DatetimeValue);
 			if (property_exists($objSoapObject, 'TextValue'))
 				$objToReturn->strTextValue = $objSoapObject->TextValue;
 			if (property_exists($objSoapObject, 'BooleanValue'))
@@ -1488,6 +1523,8 @@
 				$objObject->intPersonId = null;
 			if ($objObject->dttDateValue)
 				$objObject->dttDateValue = $objObject->dttDateValue->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDatetimeValue)
+				$objObject->dttDatetimeValue = $objObject->dttDatetimeValue->__toString(QDateTime::FormatSoap);
 			if ($objObject->objSingleAttributeOption)
 				$objObject->objSingleAttributeOption = AttributeOption::GetSoapObjectFromObject($objObject->objSingleAttributeOption, false);
 			else if (!$blnBindRelatedObjects)
@@ -1551,6 +1588,8 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'DateValue':
 					return new QQNode('date_value', 'DateValue', 'QDateTime', $this);
+				case 'DatetimeValue':
+					return new QQNode('datetime_value', 'DatetimeValue', 'QDateTime', $this);
 				case 'TextValue':
 					return new QQNode('text_value', 'TextValue', 'string', $this);
 				case 'BooleanValue':
@@ -1593,6 +1632,8 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'DateValue':
 					return new QQNode('date_value', 'DateValue', 'QDateTime', $this);
+				case 'DatetimeValue':
+					return new QQNode('datetime_value', 'DatetimeValue', 'QDateTime', $this);
 				case 'TextValue':
 					return new QQNode('text_value', 'TextValue', 'string', $this);
 				case 'BooleanValue':

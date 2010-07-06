@@ -24,6 +24,8 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QDateTimePicker $DateValueControl
 	 * property-read QLabel $DateValueLabel
+	 * property QDateTimePicker $DatetimeValueControl
+	 * property-read QLabel $DatetimeValueLabel
 	 * property QTextBox $TextValueControl
 	 * property-read QLabel $TextValueLabel
 	 * property QCheckBox $BooleanValueControl
@@ -48,6 +50,7 @@
 		protected $lstAttribute;
 		protected $lstPerson;
 		protected $calDateValue;
+		protected $calDatetimeValue;
 		protected $txtTextValue;
 		protected $chkBooleanValue;
 		protected $lstSingleAttributeOption;
@@ -56,6 +59,7 @@
 		protected $lblAttributeId;
 		protected $lblPersonId;
 		protected $lblDateValue;
+		protected $lblDatetimeValue;
 		protected $lblTextValue;
 		protected $lblBooleanValue;
 		protected $lblSingleAttributeOptionId;
@@ -290,6 +294,35 @@
 		protected $strDateValueDateTimeFormat;
 
 		/**
+		 * Create and setup QDateTimePicker calDatetimeValue
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDatetimeValue_Create($strControlId = null) {
+			$this->calDatetimeValue = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDatetimeValue->Name = QApplication::Translate('Datetime Value');
+			$this->calDatetimeValue->DateTime = $this->objAttributeValue->DatetimeValue;
+			$this->calDatetimeValue->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDatetimeValue;
+		}
+
+		/**
+		 * Create and setup QLabel lblDatetimeValue
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDatetimeValue_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDatetimeValue = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDatetimeValue->Name = QApplication::Translate('Datetime Value');
+			$this->strDatetimeValueDateTimeFormat = $strDateTimeFormat;
+			$this->lblDatetimeValue->Text = sprintf($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->DatetimeValue->__toString($this->strDatetimeValueDateTimeFormat) : null;
+			return $this->lblDatetimeValue;
+		}
+
+		protected $strDatetimeValueDateTimeFormat;
+
+		/**
 		 * Create and setup QTextBox txtTextValue
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -473,6 +506,9 @@
 			if ($this->calDateValue) $this->calDateValue->DateTime = $this->objAttributeValue->DateValue;
 			if ($this->lblDateValue) $this->lblDateValue->Text = sprintf($this->objAttributeValue->DateValue) ? $this->objAttributeValue->__toString($this->strDateValueDateTimeFormat) : null;
 
+			if ($this->calDatetimeValue) $this->calDatetimeValue->DateTime = $this->objAttributeValue->DatetimeValue;
+			if ($this->lblDatetimeValue) $this->lblDatetimeValue->Text = sprintf($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->__toString($this->strDatetimeValueDateTimeFormat) : null;
+
 			if ($this->txtTextValue) $this->txtTextValue->Text = $this->objAttributeValue->TextValue;
 			if ($this->lblTextValue) $this->lblTextValue->Text = $this->objAttributeValue->TextValue;
 
@@ -549,6 +585,7 @@
 				if ($this->lstAttribute) $this->objAttributeValue->AttributeId = $this->lstAttribute->SelectedValue;
 				if ($this->lstPerson) $this->objAttributeValue->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->calDateValue) $this->objAttributeValue->DateValue = $this->calDateValue->DateTime;
+				if ($this->calDatetimeValue) $this->objAttributeValue->DatetimeValue = $this->calDatetimeValue->DateTime;
 				if ($this->txtTextValue) $this->objAttributeValue->TextValue = $this->txtTextValue->Text;
 				if ($this->chkBooleanValue) $this->objAttributeValue->BooleanValue = $this->chkBooleanValue->Checked;
 				if ($this->lstSingleAttributeOption) $this->objAttributeValue->SingleAttributeOptionId = $this->lstSingleAttributeOption->SelectedValue;
@@ -620,6 +657,12 @@
 				case 'DateValueLabel':
 					if (!$this->lblDateValue) return $this->lblDateValue_Create();
 					return $this->lblDateValue;
+				case 'DatetimeValueControl':
+					if (!$this->calDatetimeValue) return $this->calDatetimeValue_Create();
+					return $this->calDatetimeValue;
+				case 'DatetimeValueLabel':
+					if (!$this->lblDatetimeValue) return $this->lblDatetimeValue_Create();
+					return $this->lblDatetimeValue;
 				case 'TextValueControl':
 					if (!$this->txtTextValue) return $this->txtTextValue_Create();
 					return $this->txtTextValue;
@@ -674,6 +717,8 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'DateValueControl':
 						return ($this->calDateValue = QType::Cast($mixValue, 'QControl'));
+					case 'DatetimeValueControl':
+						return ($this->calDatetimeValue = QType::Cast($mixValue, 'QControl'));
 					case 'TextValueControl':
 						return ($this->txtTextValue = QType::Cast($mixValue, 'QControl'));
 					case 'BooleanValueControl':
