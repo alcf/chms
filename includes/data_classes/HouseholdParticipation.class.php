@@ -47,9 +47,9 @@
 				($objMarriage->MarriageStatusTypeId == MarriageStatusType::Married) &&
 				($objMarriage->MarriedToPersonId == $objHeadPerson->Id)) {
 				switch ($this->Person->Gender) {
-					case 'M':	$this->strRole = 'Husband';
-					case 'F':	$this->strRole = 'Wife';
-					default:	$this->strRole = 'Spouse';
+					case 'M':	$this->strRole = 'Husband'; break;
+					case 'F':	$this->strRole = 'Wife'; break;
+					default:	$this->strRole = 'Spouse'; break;
 				}
 				if ($blnSave) $this->Save();
 				return;

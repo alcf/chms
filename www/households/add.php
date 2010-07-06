@@ -104,8 +104,8 @@
 					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of the <strong>%s</strong>.<br/><br/>Is %s <strong>moving</strong> to this household, or is %s <strong>adding</strong> this as an <em>additional</em> household?',
 						QApplication::HtmlEntities($this->objPersonToAdd->Name),
 						QApplication::HtmlEntities($objHousehold->Name),
-						($this->objPersonToAdd->PronounSubject ? 'he' : 'she'),
-						($this->objPersonToAdd->PronounSubject ? 'he' : 'she'));
+						$this->objPersonToAdd->PronounSubject,
+						$this->objPersonToAdd->PronounSubject);
 					$this->dlgMessage->AddButton('Moving', MessageDialog::ButtonPrimary, 'MoveHouseholds');
 					$this->dlgMessage->AddButton('Adding', MessageDialog::ButtonPrimary, 'AddToHousehold');
 					$this->dlgMessage->AddButton('Cancel', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
@@ -114,7 +114,7 @@
 				case Person::HouseholdStatusMemberOfMultiple:
 					$this->dlgMessage->MessageHtml = sprintf('<strong>%s</strong> is currently part of <strong>multiple households</strong>.<br/><br/>Are you sure you want to add %s to this household?',
 						QApplication::HtmlEntities($this->objPersonToAdd->Name),
-						($this->objPersonToAdd->PronounIndirectObject ? 'him' : 'her'));
+						$this->objPersonToAdd->PronounIndirectObject);
 					$this->dlgMessage->AddButton('Yes', MessageDialog::ButtonPrimary, 'AddToHousehold');
 					$this->dlgMessage->AddButton('No', MessageDialog::ButtonSecondary, 'HideDialogBox', $this->dlgMessage);
 					break;
