@@ -35,7 +35,7 @@
 
 		<div class="lvp">
 			<div class="left">Gender</div>
-			<div class="right"><?php _p($_FORM->objPerson->Gender); ?></div>
+			<div class="right"><?php _p($_FORM->objPerson->GenderLabel); ?></div>
 			<div class="cleaner">&nbsp;</div>
 		</div>
 

@@ -104,7 +104,7 @@
 				case 'MaritalStatus':
 					return MaritalStatusType::$NameArray[$this->intMaritalStatusTypeId];
 
-				case 'Gender':
+				case 'GenderLabel':
 					return $this->blnMaleFlag ? 'Male' : 'Female';
 
 				case 'Birthdate':
