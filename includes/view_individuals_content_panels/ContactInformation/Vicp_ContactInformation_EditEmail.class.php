@@ -42,6 +42,7 @@
 
 		public function btnSave_Click() {
 			$this->mctEmail->SaveEmail();
+			$this->objPerson->RefreshPrimaryContactInfo();
 			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 

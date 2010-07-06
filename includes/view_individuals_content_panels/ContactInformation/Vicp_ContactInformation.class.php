@@ -132,8 +132,9 @@
 			if ($objAddress->HouseholdId != $this->objForm->objHousehold->Id) return;
 
 			$this->objForm->objHousehold->SetAsCurrentAddress($objAddress);
-			$this->dtgHomeAddresses->Refresh();
-			$this->dtgPhones->Refresh();
+			$this->objForm->objPerson = Person::Load($this->objForm->objPerson->Id);
+			$this->objPerson = $this->objForm->objPerson;
+			$this->Refresh();
 		}
 
 		public function dtgPersonalAddresses_Bind() {
@@ -168,7 +169,7 @@
 			}
 
 			if (($objAddress->AddressTypeId == AddressType::Temporary) && ($objAddress->DateUntilWhen)) {
-				$strToReturn .= '<br/><span class="subtext">' . '(until ' . $objAddress->DateUntilWhen->__toString('MMM D YYYY') . ')</span>';
+				$strToReturn .= '<br/><span class="subtext">' . 'until ' . $objAddress->DateUntilWhen->__toString('MMM D YYYY') . '</span>';
 			}
 
 			return $strToReturn;

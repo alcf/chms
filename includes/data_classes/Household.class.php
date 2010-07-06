@@ -320,8 +320,10 @@
 		public function SetAsCurrentAddress(Address $objCurrentAddress) {
 			if ($objCurrentAddress->HouseholdId != $this->intId)
 				throw new QCallerException('Address does not belong to this Household');
-				
+
+			$intAddressIdArray = array();
 			foreach ($this->GetAddressArray() as $objAddress) {
+				$intAddressIdArray[$objAddress->Id] = true;
 				if (($objAddress->Id != $objCurrentAddress->Id) && $objAddress->CurrentFlag) {
 					$objAddress->CurrentFlag = false;
 					$objAddress->Save();
@@ -331,6 +333,15 @@
 			if (!$objCurrentAddress->CurrentFlag) {
 				$objCurrentAddress->CurrentFlag = true;
 				$objCurrentAddress->Save();
+			}
+
+			// Update "MailingAddress" and "StewardshipAddress" info for HouseholdParticipants
+			// Update "PrimaryAddressText" info for HouseholdParticipants
+			foreach ($this->GetHouseholdParticipationArray(QQ::Expand(QQN::HouseholdParticipation()->Person->Id)) as $objHouseholdParticipation) {
+				$objPerson = $objHouseholdParticipation->Person;
+				if (array_key_exists($objPerson->MailingAddressId, $intAddressIdArray)) $objPerson->MailingAddress = $objCurrentAddress;
+				if (array_key_exists($objPerson->StewardshipAddressId, $intAddressIdArray)) $objPerson->StewardshipAddress = $objCurrentAddress;
+				$objPerson->RefreshPrimaryContactInfo();
 			}
 		}
 

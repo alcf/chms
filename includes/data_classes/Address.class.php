@@ -34,7 +34,50 @@
 					$this->Save();
 				}
 				foreach ($this->GetPhoneArray() as $objPhone) $objPhone->Delete();
+
+				// Get PersonIdArray to Refresh Info for
+				$intPersonIdArray = array();
+				if ($this->intPersonId) $intPersonIdArray[$this->intPersonId] = true;
+				foreach ($this->GetPersonAsMailingArray() as $objPerson) $intPersonIdArray[$objPerson->Id] = true;
+
+				if ($this->Household) {
+					foreach ($this->Household->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+						$intPersonIdArray[$objHouseholdParticipation->PersonId] = true;
+					}
+				}
+
+				$this->UnassociateAllPeopleAsMailing();
+				$this->UnassociateAllPeopleAsStewardship();
+
+				foreach ($intPersonIdArray as $intPersonId => $blnValue) {
+					Person::Load($intPersonId)->RefreshPrimaryContactInfo();
+				}
+
 				parent::Delete();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+			try {
+				parent::Save($blnForceInsert, $blnForceUpdate);
+
+				// Get PersonIdArray to Refresh Info for
+				$intPersonIdArray = array();
+				if ($this->intPersonId) $intPersonIdArray[$this->intPersonId] = true;
+				foreach ($this->GetPersonAsMailingArray() as $objPerson) $intPersonIdArray[$objPerson->Id] = true;
+
+				if ($this->Household) {
+					foreach ($this->Household->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+						$intPersonIdArray[$objHouseholdParticipation->PersonId] = true;
+					}
+				}
+
+				foreach ($intPersonIdArray as $intPersonId => $blnValue) {
+					Person::Load($intPersonId)->RefreshPrimaryContactInfo();
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;

@@ -27,9 +27,24 @@
 			return sprintf('Email Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			try {
+				$objPerson = $this->Person;
+				$this->PersonAsPrimary = null;
+				$this->Save();
+
+				parent::Delete();
+				if ($objPerson) $objPerson->RefreshPrimaryContactInfo();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
 		public function SetAsPrimary() {
 			$this->Person->PrimaryEmail = $this;
 			$this->Person->Save();
+			$this->Person->RefreshPrimaryContactInfo();
 		}
 
 		// Override or Create New Load/Count methods

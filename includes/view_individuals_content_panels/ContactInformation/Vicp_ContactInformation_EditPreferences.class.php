@@ -62,6 +62,7 @@
 			$this->objPerson->CanPhoneFlag = $this->lstCanPhone->SelectedValue;
 
 			$this->objPerson->Save();
+			$this->objPerson->RefreshPrimaryContactInfo();
 			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 
