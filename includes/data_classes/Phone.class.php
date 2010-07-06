@@ -58,12 +58,14 @@
 				}
 				$objPerson->PrimaryPhone = $this;
 				$objPerson->Save();
+				$objPerson->RefreshPrimaryContactInfo();
 			} else if ($this->Address) {
 				$this->Address->PrimaryPhone = $this;
 				$this->Address->Save();
 			} else {
 				$this->Person->PrimaryPhone = $this;
 				$this->Person->Save();
+				$this->Person->RefreshPrimaryContactInfo();
 			}
 		}
 
