@@ -57,6 +57,15 @@
 			break;
 
 		case 'stage':
+			define ('__DOCROOT__', '/var/www/stage.chms.alcf.net/www');
+			define('DB_CONNECTION_1', serialize(array(
+				'adapter' => 'MySqli5',
+				'server' => 'localhost',
+				'port' => null,
+				'database' => 'alcf_chms',
+				'username' => 'root',
+				'password' => '',
+				'profiling' => false)));
 			break;
 
 		case 'prod':
