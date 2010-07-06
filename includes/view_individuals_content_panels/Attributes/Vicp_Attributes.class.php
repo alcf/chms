@@ -21,7 +21,7 @@
 					return $objValue->DateValue->ToString('MMMM D, YYYY');
 
 				case AttributeDataType::DateTime:
-					return $objValue->DateValue->ToString('MMMM D, YYYY') . ' at ' . $objValue->DateValue->ToString('h:mmz');
+					return $objValue->DatetimeValue->ToString('MMMM D, YYYY') . ' at ' . $objValue->DatetimeValue->ToString('h:mmz');
 
 					case AttributeDataType::ImmutableSingleDropdown:
 				case AttributeDataType::MutableSingleDropdown:
