@@ -53,6 +53,12 @@
 
 		<?php $_CONTROL->chkCanEmailFlag->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtPrimaryAddressText->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtPrimaryCityText->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtPrimaryPhoneText->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstHouseholdAsHead->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>

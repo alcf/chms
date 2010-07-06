@@ -322,6 +322,9 @@
 				case 'CanMailFlag': return QQN::Person()->CanMailFlag;
 				case 'CanPhoneFlag': return QQN::Person()->CanPhoneFlag;
 				case 'CanEmailFlag': return QQN::Person()->CanEmailFlag;
+				case 'PrimaryAddressText': return QQN::Person()->PrimaryAddressText;
+				case 'PrimaryCityText': return QQN::Person()->PrimaryCityText;
+				case 'PrimaryPhoneText': return QQN::Person()->PrimaryPhoneText;
 				case 'HouseholdAsHead': return QQN::Person()->HouseholdAsHead;
 
 				default: throw new QCallerException('Simple Property not found in PersonDataGrid content: ' . $mixContent);

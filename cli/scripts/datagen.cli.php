@@ -310,6 +310,11 @@
 				// Address and Phone for Household
 				if ($objHousehold) {
 					self::GenerateAddressesForHousehold($objHousehold);
+					foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
+						$objParticipation->Person->RefreshPrimaryContactInfo();
+					}
+				} else {
+					$objPerson->RefreshPrimaryContactInfo();
 				}
 			}
 		}

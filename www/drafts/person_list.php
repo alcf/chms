@@ -79,6 +79,9 @@
 			$this->dtgPeople->MetaAddColumn('CanMailFlag');
 			$this->dtgPeople->MetaAddColumn('CanPhoneFlag');
 			$this->dtgPeople->MetaAddColumn('CanEmailFlag');
+			$this->dtgPeople->MetaAddColumn('PrimaryAddressText');
+			$this->dtgPeople->MetaAddColumn('PrimaryCityText');
+			$this->dtgPeople->MetaAddColumn('PrimaryPhoneText');
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->HouseholdAsHead);
 		}
 	}

@@ -39,6 +39,9 @@
 	 * @property boolean $CanMailFlag the value for blnCanMailFlag 
 	 * @property boolean $CanPhoneFlag the value for blnCanPhoneFlag 
 	 * @property boolean $CanEmailFlag the value for blnCanEmailFlag 
+	 * @property string $PrimaryAddressText the value for strPrimaryAddressText 
+	 * @property string $PrimaryCityText the value for strPrimaryCityText 
+	 * @property string $PrimaryPhoneText the value for strPrimaryPhoneText 
 	 * @property HeadShot $CurrentHeadShot the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 	 * @property Address $MailingAddress the value for the Address object referenced by intMailingAddressId 
 	 * @property Address $StewardshipAddress the value for the Address object referenced by intStewardshipAddressId 
@@ -284,6 +287,33 @@
 		 */
 		protected $blnCanEmailFlag;
 		const CanEmailFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.primary_address_text
+		 * @var string strPrimaryAddressText
+		 */
+		protected $strPrimaryAddressText;
+		const PrimaryAddressTextMaxLength = 255;
+		const PrimaryAddressTextDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.primary_city_text
+		 * @var string strPrimaryCityText
+		 */
+		protected $strPrimaryCityText;
+		const PrimaryCityTextMaxLength = 100;
+		const PrimaryCityTextDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.primary_phone_text
+		 * @var string strPrimaryPhoneText
+		 */
+		protected $strPrimaryPhoneText;
+		const PrimaryPhoneTextMaxLength = 20;
+		const PrimaryPhoneTextDefault = null;
 
 
 		/**
@@ -944,6 +974,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'can_mail_flag', $strAliasPrefix . 'can_mail_flag');
 			$objBuilder->AddSelectItem($strTableName, 'can_phone_flag', $strAliasPrefix . 'can_phone_flag');
 			$objBuilder->AddSelectItem($strTableName, 'can_email_flag', $strAliasPrefix . 'can_email_flag');
+			$objBuilder->AddSelectItem($strTableName, 'primary_address_text', $strAliasPrefix . 'primary_address_text');
+			$objBuilder->AddSelectItem($strTableName, 'primary_city_text', $strAliasPrefix . 'primary_city_text');
+			$objBuilder->AddSelectItem($strTableName, 'primary_phone_text', $strAliasPrefix . 'primary_phone_text');
 		}
 
 
@@ -1265,6 +1298,12 @@
 			$objToReturn->blnCanPhoneFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'can_email_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'can_email_flag'] : $strAliasPrefix . 'can_email_flag';
 			$objToReturn->blnCanEmailFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'primary_address_text', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_address_text'] : $strAliasPrefix . 'primary_address_text';
+			$objToReturn->strPrimaryAddressText = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'primary_city_text', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_city_text'] : $strAliasPrefix . 'primary_city_text';
+			$objToReturn->strPrimaryCityText = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'primary_phone_text', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_phone_text'] : $strAliasPrefix . 'primary_phone_text';
+			$objToReturn->strPrimaryPhoneText = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -1864,7 +1903,10 @@
 							`primary_email_id`,
 							`can_mail_flag`,
 							`can_phone_flag`,
-							`can_email_flag`
+							`can_email_flag`,
+							`primary_address_text`,
+							`primary_city_text`,
+							`primary_phone_text`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
@@ -1888,7 +1930,10 @@
 							' . $objDatabase->SqlVariable($this->intPrimaryEmailId) . ',
 							' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . ',
-							' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . '
+							' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . ',
+							' . $objDatabase->SqlVariable($this->strPrimaryAddressText) . ',
+							' . $objDatabase->SqlVariable($this->strPrimaryCityText) . ',
+							' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . '
 						)
 					');
 
@@ -1926,7 +1971,10 @@
 							`primary_email_id` = ' . $objDatabase->SqlVariable($this->intPrimaryEmailId) . ',
 							`can_mail_flag` = ' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
 							`can_phone_flag` = ' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . ',
-							`can_email_flag` = ' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . '
+							`can_email_flag` = ' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . ',
+							`primary_address_text` = ' . $objDatabase->SqlVariable($this->strPrimaryAddressText) . ',
+							`primary_city_text` = ' . $objDatabase->SqlVariable($this->strPrimaryCityText) . ',
+							`primary_phone_text` = ' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -2057,6 +2105,9 @@
 			$this->blnCanMailFlag = $objReloaded->blnCanMailFlag;
 			$this->blnCanPhoneFlag = $objReloaded->blnCanPhoneFlag;
 			$this->blnCanEmailFlag = $objReloaded->blnCanEmailFlag;
+			$this->strPrimaryAddressText = $objReloaded->strPrimaryAddressText;
+			$this->strPrimaryCityText = $objReloaded->strPrimaryCityText;
+			$this->strPrimaryPhoneText = $objReloaded->strPrimaryPhoneText;
 		}
 
 
@@ -2196,6 +2247,21 @@
 					// Gets the value for blnCanEmailFlag 
 					// @return boolean
 					return $this->blnCanEmailFlag;
+
+				case 'PrimaryAddressText':
+					// Gets the value for strPrimaryAddressText 
+					// @return string
+					return $this->strPrimaryAddressText;
+
+				case 'PrimaryCityText':
+					// Gets the value for strPrimaryCityText 
+					// @return string
+					return $this->strPrimaryCityText;
+
+				case 'PrimaryPhoneText':
+					// Gets the value for strPrimaryPhoneText 
+					// @return string
+					return $this->strPrimaryPhoneText;
 
 
 				///////////////////
@@ -2757,6 +2823,39 @@
 					// @return boolean
 					try {
 						return ($this->blnCanEmailFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PrimaryAddressText':
+					// Sets the value for strPrimaryAddressText 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strPrimaryAddressText = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PrimaryCityText':
+					// Sets the value for strPrimaryCityText 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strPrimaryCityText = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PrimaryPhoneText':
+					// Sets the value for strPrimaryPhoneText 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strPrimaryPhoneText = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -5358,6 +5457,9 @@
 			$strToReturn .= '<element name="CanMailFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="CanPhoneFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="CanEmailFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="PrimaryAddressText" type="xsd:string"/>';
+			$strToReturn .= '<element name="PrimaryCityText" type="xsd:string"/>';
+			$strToReturn .= '<element name="PrimaryPhoneText" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -5438,6 +5540,12 @@
 				$objToReturn->blnCanPhoneFlag = $objSoapObject->CanPhoneFlag;
 			if (property_exists($objSoapObject, 'CanEmailFlag'))
 				$objToReturn->blnCanEmailFlag = $objSoapObject->CanEmailFlag;
+			if (property_exists($objSoapObject, 'PrimaryAddressText'))
+				$objToReturn->strPrimaryAddressText = $objSoapObject->PrimaryAddressText;
+			if (property_exists($objSoapObject, 'PrimaryCityText'))
+				$objToReturn->strPrimaryCityText = $objSoapObject->PrimaryCityText;
+			if (property_exists($objSoapObject, 'PrimaryPhoneText'))
+				$objToReturn->strPrimaryPhoneText = $objSoapObject->PrimaryPhoneText;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -5612,6 +5720,12 @@
 					return new QQNode('can_phone_flag', 'CanPhoneFlag', 'boolean', $this);
 				case 'CanEmailFlag':
 					return new QQNode('can_email_flag', 'CanEmailFlag', 'boolean', $this);
+				case 'PrimaryAddressText':
+					return new QQNode('primary_address_text', 'PrimaryAddressText', 'string', $this);
+				case 'PrimaryCityText':
+					return new QQNode('primary_city_text', 'PrimaryCityText', 'string', $this);
+				case 'PrimaryPhoneText':
+					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
 				case 'CommunicationList':
 					return new QQNodePersonCommunicationList($this);
 				case 'NameItem':
@@ -5724,6 +5838,12 @@
 					return new QQNode('can_phone_flag', 'CanPhoneFlag', 'boolean', $this);
 				case 'CanEmailFlag':
 					return new QQNode('can_email_flag', 'CanEmailFlag', 'boolean', $this);
+				case 'PrimaryAddressText':
+					return new QQNode('primary_address_text', 'PrimaryAddressText', 'string', $this);
+				case 'PrimaryCityText':
+					return new QQNode('primary_city_text', 'PrimaryCityText', 'string', $this);
+				case 'PrimaryPhoneText':
+					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
 				case 'CommunicationList':
 					return new QQNodePersonCommunicationList($this);
 				case 'NameItem':

@@ -47,6 +47,9 @@
 		protected $chkCanMailFlag;
 		protected $chkCanPhoneFlag;
 		protected $chkCanEmailFlag;
+		protected $txtPrimaryAddressText;
+		protected $txtPrimaryCityText;
+		protected $txtPrimaryPhoneText;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 		protected $lstHouseholdAsHead;
@@ -100,6 +103,9 @@
 			$this->chkCanMailFlag = $this->mctPerson->chkCanMailFlag_Create();
 			$this->chkCanPhoneFlag = $this->mctPerson->chkCanPhoneFlag_Create();
 			$this->chkCanEmailFlag = $this->mctPerson->chkCanEmailFlag_Create();
+			$this->txtPrimaryAddressText = $this->mctPerson->txtPrimaryAddressText_Create();
+			$this->txtPrimaryCityText = $this->mctPerson->txtPrimaryCityText_Create();
+			$this->txtPrimaryPhoneText = $this->mctPerson->txtPrimaryPhoneText_Create();
 			$this->lstHouseholdAsHead = $this->mctPerson->lstHouseholdAsHead_Create();
 			$this->lstCommunicationLists = $this->mctPerson->lstCommunicationLists_Create();
 			$this->lstNameItems = $this->mctPerson->lstNameItems_Create();

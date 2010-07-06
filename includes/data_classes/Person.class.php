@@ -162,6 +162,61 @@
 		}
 
 		/**
+		 * This single method will refresh all the denormalized PrimaryFooText fields for Address, Phone and City.
+		 * (Note that PrimaryEmailText does not exist -- it simply uses the PrimaryEmail object)
+		 * @param boolean $blnSave
+		 * @return void
+		 */
+		public function RefreshPrimaryContactInfo($blnSave = true) {
+			// Get the Address Object
+			$objAddress = null;
+
+			if ($this->MailingAddress) {
+				$objAddress = $this->MailingAddress;
+			} else {
+				$objHouseholdParticipationArray = $this->GetHouseholdParticipationArray();
+				if (count($objHouseholdParticipationArray) > 1) {
+					$objAddress = false;
+				} else if (count($objHouseholdParticipationArray) == 1) {
+					$objHouseholdParticipation = $objHouseholdParticipationArray[0];
+					$objAddressArray = Address::LoadArrayByHouseholdIdCurrentFlag($objHouseholdParticipation->HouseholdId, true);
+					foreach ($objAddressArray as $objAddressToTest) {
+						if (!$objAddressToTest->InvalidFlag) $objAddress = $objAddressToTest;
+					}
+				}
+			}
+
+			// Update PrimaryAddress and PrimaryCity
+			if ($objAddress === false) {
+				$this->strPrimaryAddressText = 'Multiple Households';
+				$this->strPrimaryCityText = 'Multiple Households';
+			} else if ($objAddress) {
+				$this->strPrimaryAddressText = trim($objAddress->Address1);
+				if ($objAddress->Address2) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address2);
+				if ($objAddress->Address3) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address3);
+				$this->strPrimaryCityText = trim($objAddress->City);
+			} else {
+				$this->strPrimaryAddressText = null;
+				$this->strPrimaryCityText = null;
+			}
+
+			// Update PrimaryPhone
+			if ($this->PrimaryPhone) {
+				$this->strPrimaryPhoneText = $this->PrimaryPhone->Number;
+			} else {
+				if ($objAddress === false) {
+					$this->strPrimaryPhoneText = 'Multiple Households';
+				} else if ($objAddress && $objAddress->PrimaryPhone) {
+					$this->strPrimaryPhoneText = $objAddress->PrimaryPhone->Number;
+				} else {
+					$this->strPrimaryPhoneText = null;
+				}
+			}
+
+			if ($blnSave) $this->Save();
+		}
+
+		/**
 		 * Calcluates based on this person's birthdate whether or not the person is less than 18 years old.
 		 * If the person is 18 or older, OR if no birthdate is specified, then this will return false.
 		 * @return boolean whether or not the person is a child

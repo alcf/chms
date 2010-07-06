@@ -65,6 +65,12 @@
 
 		<?php $this->chkCanEmailFlag->RenderWithName(); ?>
 
+		<?php $this->txtPrimaryAddressText->RenderWithName(); ?>
+
+		<?php $this->txtPrimaryCityText->RenderWithName(); ?>
+
+		<?php $this->txtPrimaryPhoneText->RenderWithName(); ?>
+
 		<?php $this->lstHouseholdAsHead->RenderWithName(); ?>
 
 		<?php $this->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>

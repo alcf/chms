@@ -847,6 +847,46 @@
 			
 		/**
 		 * Load an array of Address objects,
+		 * by HouseholdId, CurrentFlag Index(es)
+		 * @param integer $intHouseholdId
+		 * @param boolean $blnCurrentFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Address[]
+		*/
+		public static function LoadArrayByHouseholdIdCurrentFlag($intHouseholdId, $blnCurrentFlag, $objOptionalClauses = null) {
+			// Call Address::QueryArray to perform the LoadArrayByHouseholdIdCurrentFlag query
+			try {
+				return Address::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::Address()->HouseholdId, $intHouseholdId),
+					QQ::Equal(QQN::Address()->CurrentFlag, $blnCurrentFlag)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Addresses
+		 * by HouseholdId, CurrentFlag Index(es)
+		 * @param integer $intHouseholdId
+		 * @param boolean $blnCurrentFlag
+		 * @return int
+		*/
+		public static function CountByHouseholdIdCurrentFlag($intHouseholdId, $blnCurrentFlag) {
+			// Call Address::QueryCount to perform the CountByHouseholdIdCurrentFlag query
+			return Address::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::Address()->HouseholdId, $intHouseholdId),
+				QQ::Equal(QQN::Address()->CurrentFlag, $blnCurrentFlag)
+				)
+			);
+		}
+			
+		/**
+		 * Load an array of Address objects,
 		 * by AddressTypeId Index(es)
 		 * @param integer $intAddressTypeId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query

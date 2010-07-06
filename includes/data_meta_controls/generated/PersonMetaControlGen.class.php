@@ -64,6 +64,12 @@
 	 * property-read QLabel $CanPhoneFlagLabel
 	 * property QCheckBox $CanEmailFlagControl
 	 * property-read QLabel $CanEmailFlagLabel
+	 * property QTextBox $PrimaryAddressTextControl
+	 * property-read QLabel $PrimaryAddressTextLabel
+	 * property QTextBox $PrimaryCityTextControl
+	 * property-read QLabel $PrimaryCityTextLabel
+	 * property QTextBox $PrimaryPhoneTextControl
+	 * property-read QLabel $PrimaryPhoneTextLabel
 	 * property QListBox $HouseholdAsHeadControl
 	 * property-read QLabel $HouseholdAsHeadLabel
 	 * property QListBox $CommunicationListControl
@@ -106,6 +112,9 @@
 		protected $chkCanMailFlag;
 		protected $chkCanPhoneFlag;
 		protected $chkCanEmailFlag;
+		protected $txtPrimaryAddressText;
+		protected $txtPrimaryCityText;
+		protected $txtPrimaryPhoneText;
 
 		// Controls that allow the viewing of Person's individual data fields
 		protected $lblMembershipStatusTypeId;
@@ -131,6 +140,9 @@
 		protected $lblCanMailFlag;
 		protected $lblCanPhoneFlag;
 		protected $lblCanEmailFlag;
+		protected $lblPrimaryAddressText;
+		protected $lblPrimaryCityText;
+		protected $lblPrimaryPhoneText;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstHouseholdAsHead;
@@ -908,6 +920,81 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtPrimaryAddressText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtPrimaryAddressText_Create($strControlId = null) {
+			$this->txtPrimaryAddressText = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtPrimaryAddressText->Name = QApplication::Translate('Primary Address Text');
+			$this->txtPrimaryAddressText->Text = $this->objPerson->PrimaryAddressText;
+			$this->txtPrimaryAddressText->MaxLength = Person::PrimaryAddressTextMaxLength;
+			return $this->txtPrimaryAddressText;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryAddressText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryAddressText_Create($strControlId = null) {
+			$this->lblPrimaryAddressText = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryAddressText->Name = QApplication::Translate('Primary Address Text');
+			$this->lblPrimaryAddressText->Text = $this->objPerson->PrimaryAddressText;
+			return $this->lblPrimaryAddressText;
+		}
+
+		/**
+		 * Create and setup QTextBox txtPrimaryCityText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtPrimaryCityText_Create($strControlId = null) {
+			$this->txtPrimaryCityText = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtPrimaryCityText->Name = QApplication::Translate('Primary City Text');
+			$this->txtPrimaryCityText->Text = $this->objPerson->PrimaryCityText;
+			$this->txtPrimaryCityText->MaxLength = Person::PrimaryCityTextMaxLength;
+			return $this->txtPrimaryCityText;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryCityText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryCityText_Create($strControlId = null) {
+			$this->lblPrimaryCityText = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryCityText->Name = QApplication::Translate('Primary City Text');
+			$this->lblPrimaryCityText->Text = $this->objPerson->PrimaryCityText;
+			return $this->lblPrimaryCityText;
+		}
+
+		/**
+		 * Create and setup QTextBox txtPrimaryPhoneText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtPrimaryPhoneText_Create($strControlId = null) {
+			$this->txtPrimaryPhoneText = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtPrimaryPhoneText->Name = QApplication::Translate('Primary Phone Text');
+			$this->txtPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
+			$this->txtPrimaryPhoneText->MaxLength = Person::PrimaryPhoneTextMaxLength;
+			return $this->txtPrimaryPhoneText;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryPhoneText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryPhoneText_Create($strControlId = null) {
+			$this->lblPrimaryPhoneText = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryPhoneText->Name = QApplication::Translate('Primary Phone Text');
+			$this->lblPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
+			return $this->lblPrimaryPhoneText;
+		}
+
+		/**
 		 * Create and setup QListBox lstHouseholdAsHead
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -1185,6 +1272,15 @@
 			if ($this->chkCanEmailFlag) $this->chkCanEmailFlag->Checked = $this->objPerson->CanEmailFlag;
 			if ($this->lblCanEmailFlag) $this->lblCanEmailFlag->Text = ($this->objPerson->CanEmailFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->txtPrimaryAddressText) $this->txtPrimaryAddressText->Text = $this->objPerson->PrimaryAddressText;
+			if ($this->lblPrimaryAddressText) $this->lblPrimaryAddressText->Text = $this->objPerson->PrimaryAddressText;
+
+			if ($this->txtPrimaryCityText) $this->txtPrimaryCityText->Text = $this->objPerson->PrimaryCityText;
+			if ($this->lblPrimaryCityText) $this->lblPrimaryCityText->Text = $this->objPerson->PrimaryCityText;
+
+			if ($this->txtPrimaryPhoneText) $this->txtPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
+			if ($this->lblPrimaryPhoneText) $this->lblPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
+
 			if ($this->lstHouseholdAsHead) {
 				$this->lstHouseholdAsHead->RemoveAllItems();
 				$this->lstHouseholdAsHead->AddItem(QApplication::Translate('- Select One -'), null);
@@ -1311,6 +1407,9 @@
 				if ($this->chkCanMailFlag) $this->objPerson->CanMailFlag = $this->chkCanMailFlag->Checked;
 				if ($this->chkCanPhoneFlag) $this->objPerson->CanPhoneFlag = $this->chkCanPhoneFlag->Checked;
 				if ($this->chkCanEmailFlag) $this->objPerson->CanEmailFlag = $this->chkCanEmailFlag->Checked;
+				if ($this->txtPrimaryAddressText) $this->objPerson->PrimaryAddressText = $this->txtPrimaryAddressText->Text;
+				if ($this->txtPrimaryCityText) $this->objPerson->PrimaryCityText = $this->txtPrimaryCityText->Text;
+				if ($this->txtPrimaryPhoneText) $this->objPerson->PrimaryPhoneText = $this->txtPrimaryPhoneText->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstHouseholdAsHead) $this->objPerson->HouseholdAsHead = Household::Load($this->lstHouseholdAsHead->SelectedValue);
@@ -1502,6 +1601,24 @@
 				case 'CanEmailFlagLabel':
 					if (!$this->lblCanEmailFlag) return $this->lblCanEmailFlag_Create();
 					return $this->lblCanEmailFlag;
+				case 'PrimaryAddressTextControl':
+					if (!$this->txtPrimaryAddressText) return $this->txtPrimaryAddressText_Create();
+					return $this->txtPrimaryAddressText;
+				case 'PrimaryAddressTextLabel':
+					if (!$this->lblPrimaryAddressText) return $this->lblPrimaryAddressText_Create();
+					return $this->lblPrimaryAddressText;
+				case 'PrimaryCityTextControl':
+					if (!$this->txtPrimaryCityText) return $this->txtPrimaryCityText_Create();
+					return $this->txtPrimaryCityText;
+				case 'PrimaryCityTextLabel':
+					if (!$this->lblPrimaryCityText) return $this->lblPrimaryCityText_Create();
+					return $this->lblPrimaryCityText;
+				case 'PrimaryPhoneTextControl':
+					if (!$this->txtPrimaryPhoneText) return $this->txtPrimaryPhoneText_Create();
+					return $this->txtPrimaryPhoneText;
+				case 'PrimaryPhoneTextLabel':
+					if (!$this->lblPrimaryPhoneText) return $this->lblPrimaryPhoneText_Create();
+					return $this->lblPrimaryPhoneText;
 				case 'HouseholdAsHeadControl':
 					if (!$this->lstHouseholdAsHead) return $this->lstHouseholdAsHead_Create();
 					return $this->lstHouseholdAsHead;
@@ -1590,6 +1707,12 @@
 						return ($this->chkCanPhoneFlag = QType::Cast($mixValue, 'QControl'));
 					case 'CanEmailFlagControl':
 						return ($this->chkCanEmailFlag = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryAddressTextControl':
+						return ($this->txtPrimaryAddressText = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryCityTextControl':
+						return ($this->txtPrimaryCityText = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryPhoneTextControl':
+						return ($this->txtPrimaryPhoneText = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':
 						return ($this->lstHouseholdAsHead = QType::Cast($mixValue, 'QControl'));
 					case 'CommunicationListControl':
