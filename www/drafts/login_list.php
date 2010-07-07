@@ -60,6 +60,7 @@
 			$this->dtgLogins->MetaAddColumn('PermissionBitmap');
 			$this->dtgLogins->MetaAddColumn('Username');
 			$this->dtgLogins->MetaAddColumn('PasswordCache');
+			$this->dtgLogins->MetaAddColumn('PasswordLastSet');
 			$this->dtgLogins->MetaAddColumn('DateLastLogin');
 			$this->dtgLogins->MetaAddColumn('DomainActiveFlag');
 			$this->dtgLogins->MetaAddColumn('LoginActiveFlag');

@@ -298,6 +298,7 @@
 				case 'PermissionBitmap': return QQN::Login()->PermissionBitmap;
 				case 'Username': return QQN::Login()->Username;
 				case 'PasswordCache': return QQN::Login()->PasswordCache;
+				case 'PasswordLastSet': return QQN::Login()->PasswordLastSet;
 				case 'DateLastLogin': return QQN::Login()->DateLastLogin;
 				case 'DomainActiveFlag': return QQN::Login()->DomainActiveFlag;
 				case 'LoginActiveFlag': return QQN::Login()->LoginActiveFlag;

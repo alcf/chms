@@ -20,6 +20,7 @@
 	 * @property integer $PermissionBitmap the value for intPermissionBitmap 
 	 * @property string $Username the value for strUsername (Unique)
 	 * @property string $PasswordCache the value for strPasswordCache 
+	 * @property string $PasswordLastSet the value for strPasswordLastSet 
 	 * @property QDateTime $DateLastLogin the value for dttDateLastLogin 
 	 * @property boolean $DomainActiveFlag the value for blnDomainActiveFlag 
 	 * @property boolean $LoginActiveFlag the value for blnLoginActiveFlag 
@@ -79,6 +80,15 @@
 		protected $strPasswordCache;
 		const PasswordCacheMaxLength = 200;
 		const PasswordCacheDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column login.password_last_set
+		 * @var string strPasswordLastSet
+		 */
+		protected $strPasswordLastSet;
+		const PasswordLastSetMaxLength = 200;
+		const PasswordLastSetDefault = null;
 
 
 		/**
@@ -488,6 +498,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'permission_bitmap', $strAliasPrefix . 'permission_bitmap');
 			$objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
 			$objBuilder->AddSelectItem($strTableName, 'password_cache', $strAliasPrefix . 'password_cache');
+			$objBuilder->AddSelectItem($strTableName, 'password_last_set', $strAliasPrefix . 'password_last_set');
 			$objBuilder->AddSelectItem($strTableName, 'date_last_login', $strAliasPrefix . 'date_last_login');
 			$objBuilder->AddSelectItem($strTableName, 'domain_active_flag', $strAliasPrefix . 'domain_active_flag');
 			$objBuilder->AddSelectItem($strTableName, 'login_active_flag', $strAliasPrefix . 'login_active_flag');
@@ -582,6 +593,8 @@
 			$objToReturn->strUsername = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'password_cache', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password_cache'] : $strAliasPrefix . 'password_cache';
 			$objToReturn->strPasswordCache = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'password_last_set', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password_last_set'] : $strAliasPrefix . 'password_last_set';
+			$objToReturn->strPasswordLastSet = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_last_login', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_last_login'] : $strAliasPrefix . 'date_last_login';
 			$objToReturn->dttDateLastLogin = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'domain_active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'domain_active_flag'] : $strAliasPrefix . 'domain_active_flag';
@@ -836,6 +849,7 @@
 							`permission_bitmap`,
 							`username`,
 							`password_cache`,
+							`password_last_set`,
 							`date_last_login`,
 							`domain_active_flag`,
 							`login_active_flag`,
@@ -848,6 +862,7 @@
 							' . $objDatabase->SqlVariable($this->intPermissionBitmap) . ',
 							' . $objDatabase->SqlVariable($this->strUsername) . ',
 							' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
+							' . $objDatabase->SqlVariable($this->strPasswordLastSet) . ',
 							' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
 							' . $objDatabase->SqlVariable($this->blnDomainActiveFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnLoginActiveFlag) . ',
@@ -874,6 +889,7 @@
 							`permission_bitmap` = ' . $objDatabase->SqlVariable($this->intPermissionBitmap) . ',
 							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
 							`password_cache` = ' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
+							`password_last_set` = ' . $objDatabase->SqlVariable($this->strPasswordLastSet) . ',
 							`date_last_login` = ' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
 							`domain_active_flag` = ' . $objDatabase->SqlVariable($this->blnDomainActiveFlag) . ',
 							`login_active_flag` = ' . $objDatabase->SqlVariable($this->blnLoginActiveFlag) . ',
@@ -963,6 +979,7 @@
 			$this->intPermissionBitmap = $objReloaded->intPermissionBitmap;
 			$this->strUsername = $objReloaded->strUsername;
 			$this->strPasswordCache = $objReloaded->strPasswordCache;
+			$this->strPasswordLastSet = $objReloaded->strPasswordLastSet;
 			$this->dttDateLastLogin = $objReloaded->dttDateLastLogin;
 			$this->blnDomainActiveFlag = $objReloaded->blnDomainActiveFlag;
 			$this->blnLoginActiveFlag = $objReloaded->blnLoginActiveFlag;
@@ -1014,6 +1031,11 @@
 					// Gets the value for strPasswordCache 
 					// @return string
 					return $this->strPasswordCache;
+
+				case 'PasswordLastSet':
+					// Gets the value for strPasswordLastSet 
+					// @return string
+					return $this->strPasswordLastSet;
 
 				case 'DateLastLogin':
 					// Gets the value for dttDateLastLogin 
@@ -1150,6 +1172,17 @@
 					// @return string
 					try {
 						return ($this->strPasswordCache = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PasswordLastSet':
+					// Sets the value for strPasswordLastSet 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strPasswordLastSet = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1550,6 +1583,7 @@
 			$strToReturn .= '<element name="PermissionBitmap" type="xsd:int"/>';
 			$strToReturn .= '<element name="Username" type="xsd:string"/>';
 			$strToReturn .= '<element name="PasswordCache" type="xsd:string"/>';
+			$strToReturn .= '<element name="PasswordLastSet" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateLastLogin" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DomainActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="LoginActiveFlag" type="xsd:boolean"/>';
@@ -1589,6 +1623,8 @@
 				$objToReturn->strUsername = $objSoapObject->Username;
 			if (property_exists($objSoapObject, 'PasswordCache'))
 				$objToReturn->strPasswordCache = $objSoapObject->PasswordCache;
+			if (property_exists($objSoapObject, 'PasswordLastSet'))
+				$objToReturn->strPasswordLastSet = $objSoapObject->PasswordLastSet;
 			if (property_exists($objSoapObject, 'DateLastLogin'))
 				$objToReturn->dttDateLastLogin = new QDateTime($objSoapObject->DateLastLogin);
 			if (property_exists($objSoapObject, 'DomainActiveFlag'))
@@ -1680,6 +1716,8 @@
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'PasswordCache':
 					return new QQNode('password_cache', 'PasswordCache', 'string', $this);
+				case 'PasswordLastSet':
+					return new QQNode('password_last_set', 'PasswordLastSet', 'string', $this);
 				case 'DateLastLogin':
 					return new QQNode('date_last_login', 'DateLastLogin', 'QDateTime', $this);
 				case 'DomainActiveFlag':
@@ -1728,6 +1766,8 @@
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'PasswordCache':
 					return new QQNode('password_cache', 'PasswordCache', 'string', $this);
+				case 'PasswordLastSet':
+					return new QQNode('password_last_set', 'PasswordLastSet', 'string', $this);
 				case 'DateLastLogin':
 					return new QQNode('date_last_login', 'DateLastLogin', 'QDateTime', $this);
 				case 'DomainActiveFlag':

@@ -25,6 +25,7 @@
 		public $txtPermissionBitmap;
 		public $txtUsername;
 		public $txtPasswordCache;
+		public $txtPasswordLastSet;
 		public $calDateLastLogin;
 		public $chkDomainActiveFlag;
 		public $chkLoginActiveFlag;
@@ -67,6 +68,7 @@
 			$this->txtPermissionBitmap = $this->mctLogin->txtPermissionBitmap_Create();
 			$this->txtUsername = $this->mctLogin->txtUsername_Create();
 			$this->txtPasswordCache = $this->mctLogin->txtPasswordCache_Create();
+			$this->txtPasswordLastSet = $this->mctLogin->txtPasswordLastSet_Create();
 			$this->calDateLastLogin = $this->mctLogin->calDateLastLogin_Create();
 			$this->chkDomainActiveFlag = $this->mctLogin->chkDomainActiveFlag_Create();
 			$this->chkLoginActiveFlag = $this->mctLogin->chkLoginActiveFlag_Create();
