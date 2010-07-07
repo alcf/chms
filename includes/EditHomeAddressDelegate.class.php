@@ -109,7 +109,7 @@
 		public function btnSave_Click() {
 			// Save the object, itself
 			$this->mctAddress->SaveAddress();
-			
+
 			// Phone Numbers
 			for ($intIndex = 0; $intIndex < count($this->arrPhones); $intIndex++) {
 				$txtPhone = $this->pnlContent->Form->GetControl('txtPhone' . $intIndex);
@@ -121,7 +121,7 @@
 					$objPhone->Number = trim($txtPhone->Text);
 					$objPhone->Save();
 
-					if ($radPhone->Checked) $objPhone->SetAsPrimary();
+					if ($radPhone->Checked) $objPhone->SetAsPrimary(null, $this->mctAddress->Address);
 				} else if ($objPhone->Id) {
 					$objPhone->Delete();
 				}

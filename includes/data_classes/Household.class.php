@@ -131,7 +131,7 @@
 		 * @return Household
 		 */
 		public function SplitHousehold($objPersonArray, Person $objNewHeadPerson, Address $objNewAddress) {
-			$this->UnassociatePerson($objNewHeadPerson);
+			$this->UnassociatePerson($objNewHeadPerson, false);
 			$objNewHousehold = Household::CreateHousehold($objNewHeadPerson);
 			foreach ($objPersonArray as $objPerson) {
 				if ($objPerson->Id != $objNewHeadPerson->Id) {
@@ -250,9 +250,10 @@
 		 * 	- This person is the only person in the household
 		 *  - This person is the head of the household
 		 * @param Person $objPerson
+		 * @param boolean $blnClearAssociatedPhoneAndAddress
 		 * @return void
 		 */
-		public function UnassociatePerson(Person $objPerson) {
+		public function UnassociatePerson(Person $objPerson, $blnClearAssociatedPhoneAndAddress = true) {
 			$objParticipation = HouseholdParticipation::LoadByPersonIdHouseholdId($objPerson->Id, $this->Id);
 			if (!$objParticipation)
 				throw new QCallerException('Person does not exist in the household');
@@ -273,6 +274,18 @@
 			}
 			self::GetDatabase()->TransactionCommit();
 
+			// Update linked phone and address stuff
+			if ($blnClearAssociatedPhoneAndAddress) {
+				$intAddressIdArray = array();
+				$intPhoneIdArray = array();
+				foreach ($this->GetAddressArray() as $objAddress) {
+					$intAddressIdArray[$objAddress->Id] = true;
+					foreach ($objAddress->GetPhoneArray() as $objPhone) $intPhoneIdArray[$objPhone->Id] = true;
+				}
+				if (array_key_exists($objPerson->MailingAddressId, $intAddressIdArray)) $objPerson->MailingAddress = null;
+				if (array_key_exists($objPerson->StewardshipAddressId, $intAddressIdArray)) $objPerson->StewardshipAddress = null;
+				if (array_key_exists($objPerson->PrimaryPhoneId, $intPhoneIdArray)) $objPerson->PrimaryPhone = null;
+			}
 			$objPerson->RefreshPrimaryContactInfo();
 		}
 
@@ -366,7 +379,7 @@
 				$objPerson = $objHouseholdParticipation->Person;
 				if (array_key_exists($objPerson->MailingAddressId, $intAddressIdArray)) $objPerson->MailingAddress = $objCurrentAddress;
 				if (array_key_exists($objPerson->StewardshipAddressId, $intAddressIdArray)) $objPerson->StewardshipAddress = $objCurrentAddress;
-				if (array_key_exists($objPerson->PrimaryPhoneId, $intPhoneIdArray)) $objPerson->Phone = $objCurrentAddress->PrimaryPhone;
+				if (array_key_exists($objPerson->PrimaryPhoneId, $intPhoneIdArray)) $objPerson->PrimaryPhone = $objCurrentAddress->PrimaryPhone;
 				$objPerson->RefreshPrimaryContactInfo();
 			}
 		}

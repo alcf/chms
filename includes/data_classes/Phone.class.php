@@ -49,7 +49,7 @@
 		 * This will automatically UNSET as primary any current-primary phone (if applicable)
 		 * @return void
 		 */
-		public function SetAsPrimary(Person $objPerson = null) {
+		public function SetAsPrimary(Person $objPerson = null, Address $objAddress = null) {
 			if ($objPerson) {
 				if (($this->PersonId != $objPerson->Id) &&
 					(!$this->Address || !$this->Address->Household ||
@@ -59,6 +59,12 @@
 				$objPerson->PrimaryPhone = $this;
 				$objPerson->Save();
 				$objPerson->RefreshPrimaryContactInfo();
+			} else if ($objAddress) {
+				if ($objAddress->Id != $this->intAddressId) {
+					throw new QCallerException('Cannot set as primary phone for home address that does not own this phone object');
+				}
+				$objAddress->PrimaryPhone = $this;
+				$objAddress->Save();
 			} else if ($this->Address) {
 				$this->Address->PrimaryPhone = $this;
 				$this->Address->Save();
