@@ -78,6 +78,8 @@
 	define ('__VIRTUAL_DIRECTORY__', '');
 	define ('__SUBDIRECTORY__', '');
 
+	define ('LDAP_PATH', 'ldap://ldap.alcf.net/');
+
 	define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/../cli');
 	define ('__INCLUDES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/../includes');
 	define ('__QCODO__', __INCLUDES__ . '/qcodo');
