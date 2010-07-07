@@ -27,6 +27,9 @@
 			return sprintf('Comment Object %s',  $this->intId);
 		}
 
+		public function IsLoginCanEdit(Login $objLogin) {
+			return ($this->intPostedByLoginId == $objLogin->Id);
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
