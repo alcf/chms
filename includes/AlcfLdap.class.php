@@ -205,6 +205,8 @@
 					if (!$blnActive) {
 						$objLogin->LoginActiveFlag = false;
 						$objLogin->DomainActiveFlag = false;
+					} else {
+						$objLogin->LoginActiveFlag = true;
 					}
 				}
 
@@ -216,7 +218,7 @@
 					$objLogin->PasswordCache = null;
 				}
 
-				if ($strEmail) {
+				if ($strEmail && (strpos($strEmail, '@alcf.net') !== false)) {
 					$objLoginToCheck = Login::LoadByEmail($strEmail);
 					if ($objLoginToCheck && ($objLoginToCheck->Id != $objLogin->Id))
 						throw new Exception('Duplicate Email "' . $strEmail . '" Found while processing ldap user "' . $strUsername . '" -- duplicate is ' . $objLoginToCheck->Username);
@@ -232,7 +234,7 @@
 				$objLogin->Save();
 				
 				// Group Memberships
-				$objPerson->UnassociateAllMinistries();
+				$objLogin->UnassociateAllMinistries();
 				if (array_key_exists('memberof', $arrResult)) {
 					unset($arrResult['memberof']['count']);
 					foreach ($arrResult['memberof'] as $strPath) {
@@ -241,7 +243,7 @@
 						if (substr($strCn, 0, 3) == 'gg_') {
 							$strGroupToken = strtolower(substr($strCn, 3));
 							$objMinistry = Ministry::LoadByToken($strGroupToken);
-							if ($objMinistry) $objMinistry->AssociatePerson($objPerson);
+							if ($objMinistry) $objMinistry->AssociateLogin($objLogin);
 						}
 					}
 				}

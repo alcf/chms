@@ -74,8 +74,7 @@
 
 			// Next, try using Email
 			if (!$objLogin) {
-				$objPerson = Person::LoadByEmail($strUsername);
-				if ($objPerson) $objLogin = $objPerson->Login;
+				$objLogin = Login::LoadByEmail($strUsername);
 			}
 
 			// If it still fails, indicate so by returning null
@@ -84,7 +83,7 @@
 			// Check Against the Password Cache
 			if ($objLogin->IsPasswordValidAgainstCache($strPassword)) {
 				// Update and Return Login Record
-				$objLogin->LastLoginDate = QDateTime::Now();
+				$objLogin->DateLastLogin = QDateTime::Now();
 				$objLogin->Save();
 				return $objLogin;
 			}
@@ -97,7 +96,7 @@
 				$objLogin->SetPasswordCache($strPassword);
 
 				// Update and Return Login Record
-				$objLogin->LastLoginDate = QDateTime::Now();
+				$objLogin->DateLastLogin = QDateTime::Now();
 				$objLogin->Save();
 				return $objLogin;
 			} catch (Exception $objExc) {}

@@ -20,7 +20,14 @@
 	$objLdap->UpdateLocalPeople();
 	print "Done.\r\n";
 
-	// TODO: Delete Old Records
+	// Disable "admin" account
+	$objLogin = Login::LoadByUsername('admin');
+	if ($objLogin) {
+		$objLogin->LoginActiveFlag = false;
+		$objLogin->Save();
+	}
+
+	// TODO: Delete Old Records (?)
 
 	// Disconnect
 	$objLdap->Unbind();

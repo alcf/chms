@@ -181,4 +181,4 @@ INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
-INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
+INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
