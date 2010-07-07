@@ -46,7 +46,7 @@
 			$this->dtgMembers->MetaAddColumn('Role', 'Width=80px');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'HtmlEntities=false', 'Width=300px');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryEmail->Address, 'Name=Email', 'Width=250px');
-			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryPhone->Number, 'Name=Phone', 'Width=200px');
+			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryPhoneText, 'Name=Phone', 'Width=200px');
 			$this->dtgMembers->GetColumn(0)->OrderByClause = null;
 			$this->dtgMembers->GetColumn(1)->OrderByClause = null;
 			$this->dtgMembers->GetColumn(2)->OrderByClause = null;
@@ -127,7 +127,11 @@
 				$this->lstHead->Visible = true;
 				$this->pnlAddress->Visible = true;
 				
-				$this->pnlAddress->objDelegate = new EditHomeAddressDelegate($this->pnlAddress, '/households/view.php/' . $this->objHousehold->Id, QApplication::PathInfo(1), false);
+				$this->pnlAddress->objDelegate = new EditHomeAddressDelegate($this->pnlAddress, '/households/view.php/' . $this->objHousehold->Id, null, false);
+
+				// Since this HomeAddress panel/delegate is really for a NEW household's address, we want to set it to null
+				$this->pnlAddress->objDelegate->mctAddress->Address->Household = null;
+
 				$this->btnNext->Visible = false;
 				$this->btnSave->Visible = true;
 
@@ -166,9 +170,9 @@
 					return;
 			}
 
-			$objNewHousehold = $this->objHousehold->SplitHousehold($this->objSelectedPersonArray, $objNewHeadPerson);
-			$this->pnlAddress->objDelegate->mctAddress->Address->Household = $objNewHousehold;
 			$this->pnlAddress->objDelegate->btnSave_Click();
+			$objNewAddress = $this->pnlAddress->objDelegate->mctAddress->Address;
+			$objNewHousehold = $this->objHousehold->SplitHousehold($this->objSelectedPersonArray, $objNewHeadPerson, $objNewAddress);
 		}
 
 		protected function RemoveFromHousehold() {

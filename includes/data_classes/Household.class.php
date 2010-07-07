@@ -118,6 +118,7 @@
 			$objHouseholdParticipation->Save();
 
 			$this->RefreshMembers();
+			$objPerson->RefreshPrimaryContactInfo();
 		}
 
 		/**
@@ -126,9 +127,10 @@
 		 * 
 		 * @param Person[] $objPersonArray
 		 * @param Person $objNewHeadPerson
+		 * @param Address $objNewAddress
 		 * @return Household
 		 */
-		public function SplitHousehold($objPersonArray, Person $objNewHeadPerson) {
+		public function SplitHousehold($objPersonArray, Person $objNewHeadPerson, Address $objNewAddress) {
 			$this->UnassociatePerson($objNewHeadPerson);
 			$objNewHousehold = Household::CreateHousehold($objNewHeadPerson);
 			foreach ($objPersonArray as $objPerson) {
@@ -144,6 +146,11 @@
 			$objHouseholdSplit->SplitHousehold = $objNewHousehold;
 			$objHouseholdSplit->DateSplit = QDateTime::Now();
 			$objHouseholdSplit->Save();
+
+			// Set the Address
+			$objNewAddress->Household = $objNewHousehold;
+			$objNewAddress->Save();
+			$objNewHousehold->SetAsCurrentAddress($objNewAddress);
 
 			return $objNewHousehold;
 		}
@@ -225,7 +232,10 @@
 				$this->Save();
 
 				// Refresh Roles of All Members
-				foreach ($this->GetHouseholdParticipationArray() as $objParticipation) $objParticipation->RefreshRole();
+				foreach ($this->GetHouseholdParticipationArray() as $objParticipation) {
+					$objParticipation->RefreshRole();
+					$objParticipation->Person->RefreshPrimaryContactInfo();
+				}
 			} catch (Exception $objExc) {
 				self::GetDatabase()->TransactionRollBack();
 				throw $objExc;
@@ -262,6 +272,8 @@
 				throw $objExc;
 			}
 			self::GetDatabase()->TransactionCommit();
+
+			$objPerson->RefreshPrimaryContactInfo();
 		}
 
 		/**
@@ -321,12 +333,25 @@
 			if ($objCurrentAddress->HouseholdId != $this->intId)
 				throw new QCallerException('Address does not belong to this Household');
 
+			// Get any home address and home phone records for this household (and any from-split households)
 			$intAddressIdArray = array();
+			$intPhoneIdArray = array();
+
 			foreach ($this->GetAddressArray() as $objAddress) {
-				$intAddressIdArray[$objAddress->Id] = true;
 				if (($objAddress->Id != $objCurrentAddress->Id) && $objAddress->CurrentFlag) {
 					$objAddress->CurrentFlag = false;
 					$objAddress->Save();
+				}
+
+				$intAddressIdArray[$objAddress->Id] = true;
+				foreach ($objAddress->GetPhoneArray() as $objPhone) $intPhoneIdArray[$objPhone->Id] = true;
+			}
+
+			// Add any old HomeAddresses from previous households
+			foreach ($this->GetHouseholdSplitAsSplitArray() as $objHouseholdSplit) {
+				foreach ($objHouseholdSplit->Household->GetAddressArray() as $objAddress) {
+					$intAddressIdArray[$objAddress->Id] = true;
+					foreach ($objAddress->GetPhoneArray() as $objPhone) $intPhoneIdArray[$objPhone->Id] = true;
 				}
 			}
 
@@ -341,6 +366,7 @@
 				$objPerson = $objHouseholdParticipation->Person;
 				if (array_key_exists($objPerson->MailingAddressId, $intAddressIdArray)) $objPerson->MailingAddress = $objCurrentAddress;
 				if (array_key_exists($objPerson->StewardshipAddressId, $intAddressIdArray)) $objPerson->StewardshipAddress = $objCurrentAddress;
+				if (array_key_exists($objPerson->PrimaryPhoneId, $intPhoneIdArray)) $objPerson->Phone = $objCurrentAddress->PrimaryPhone;
 				$objPerson->RefreshPrimaryContactInfo();
 			}
 		}

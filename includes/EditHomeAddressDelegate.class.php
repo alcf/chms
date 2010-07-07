@@ -129,7 +129,8 @@
 
 			// If this addrss we are saving is "Current" then
 			// let's make sure all the other addresses are PREVIOUS
-			if ($this->mctAddress->Address->CurrentFlag) $this->mctAddress->Address->Household->SetAsCurrentAddress($this->mctAddress->Address);
+			if ($this->mctAddress->Address->CurrentFlag && $this->mctAddress->Address->Household)
+				$this->mctAddress->Address->Household->SetAsCurrentAddress($this->mctAddress->Address);
 
 			return $this->pnlContent->ReturnTo($this->strReturnUrl);
 		}
