@@ -1,0 +1,49 @@
+X-Mailer: ALCF ChMS Groups Server
+Received: by 10.229.235.196 with SMTP id kh4cs235330qcb;
+        Thu, 8 Jul 2010 15:54:07 -0700 (PDT)
+Received: by 10.224.115.38 with SMTP id g38mr4923178qaq.281.1278629647658;
+        Thu, 08 Jul 2010 15:54:07 -0700 (PDT)
+Return-Path: <mike@michaelho.com>
+Received: from mail-vw0-f49.google.com (mail-vw0-f49.google.com [209.85.212.49])
+        by mx.google.com with ESMTP id i16si311405qci.188.2010.07.08.15.54.07;
+        Thu, 08 Jul 2010 15:54:07 -0700 (PDT)
+Received-SPF: neutral (google.com: 209.85.212.49 is neither permitted nor denied by best guess record for domain of mike@michaelho.com) client-ip=209.85.212.49;
+Authentication-Results: mx.google.com; spf=neutral (google.com: 209.85.212.49 is neither permitted nor denied by best guess record for domain of mike@michaelho.com) smtp.mail=mike@michaelho.com
+Received: by vws8 with SMTP id 8so1514741vws.22
+        for <real_world@groups.alcf.net>; Thu, 08 Jul 2010 15:54:07 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.220.60.203 with SMTP id q11mr4680105vch.168.1278629646949; 
+	Thu, 08 Jul 2010 15:54:06 -0700 (PDT)
+Received: by 10.220.191.138 with HTTP; Thu, 8 Jul 2010 15:54:06 -0700 (PDT)
+Date: Thu, 8 Jul 2010 15:54:06 -0700
+Message-ID: <AANLkTilO6TLkbs2_lZ2iRJUGR8pvKO6qgvS5nvxa_73-@mail.gmail.com>
+Subject: [Real World] Come to Our Event!
+From: Mike Ho <mike@michaelho.com>
+To: real_world@groups.alcf.net
+Content-Type: multipart/alternative; boundary=e0cb4e887b3be7ed79048ae829cb
+
+--e0cb4e887b3be7ed79048ae829cb
+Content-Type: text/plain; charset=ISO-8859-1
+
+We are setting up a *GREAT EVENT* for this weekend.  Here are the details:
+
+   - Starts at 5pm on Saturday Evening
+   - Located at the Central Park
+   - Bring your own food and drinks
+   - We're going to Picnic!
+
+For more information, please contact us.
+
+--Real World Team
+
+--e0cb4e887b3be7ed79048ae829cb
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+We are setting up a <b>GREAT EVENT</b> for this weekend.=A0 Here are the de=
+tails:<br><ul><li>Starts at 5pm on Saturday Evening</li><li>Located at the =
+Central Park</li><li>Bring your own food and drinks</li><li>We&#39;re going=
+ to Picnic!</li>
+</ul>For more information, please contact us.<br><br>--Real World Team<br>
+
+--e0cb4e887b3be7ed79048ae829cb--
