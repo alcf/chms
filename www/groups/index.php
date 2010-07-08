@@ -11,6 +11,8 @@
 		protected $pxyMinistry;
 		protected $intMinistryId;
 
+		protected $lstGroupType;
+
 		protected $dtgGroups;
 		protected $lblStartText;
 
@@ -37,6 +39,13 @@
 			}
 			// Last
 			$pnlMinistry->CssClass = 'last';
+
+			$this->lstGroupType = new QListBox($this);
+			$this->lstGroupType->AddItem('- Create New... -');
+			foreach (GroupType::$NameArray as $intId => $strName)
+				$this->lstGroupType->AddItem($strName, $intId);
+			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
+			$this->lstGroupType->Visible = false;
 			
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->TagName = 'h3';
@@ -68,6 +77,13 @@
 			}
 
 			$this->lblStartText->Visible = !$this->dtgGroups->Visible;
+		}
+
+		public function lstGroupType_Change($strFormId, $strControlId, $strParameter) {
+			QApplication::ExecuteJavaScript(sprintf('document.location = "/groups/group.php#new/%s/%s";',
+				strtolower(str_replace(' ', '_', GroupType::$NameArray[$this->lstGroupType->SelectedIndex])),
+				$this->intMinistryId));
+			$this->lstGroupType->SelectedIndex = 0;
 		}
 
 		public function RenderName(Group $objGroup) {
@@ -118,6 +134,7 @@
 				$this->pnlMinistry_Refresh($this->intMinistryId);
 				$this->lblMinistry_Refresh();
 				$this->dtgGroups->Refresh();
+				$this->lstGroupType->Visible = true;
 			}
 		}
 	}

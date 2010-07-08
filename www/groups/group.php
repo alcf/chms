@@ -68,6 +68,7 @@
 					Ministry::Load($this->objGroup->MinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
 
 				$blnFirst = true;
+				$pnlGroup = null;
 				foreach ($objGroups as $objGroup) {
 					$pnlGroup = new QPanel($this->pnlGroups, 'pnlGroup' . $objGroup->Id);
 					$pnlGroup->TagName = 'li';
@@ -82,7 +83,7 @@
 				}
 
 				// Last
-				$pnlGroup->CssClass = 'last';
+				if ($pnlGroup) $pnlGroup->CssClass = 'last';
 			}
 		}
 
