@@ -61,6 +61,18 @@
 			return new QQNodeEmail('email', null, null);
 		}
 		/**
+		 * @return QQNodeEmailMessage
+		 */
+		static public function EmailMessage() {
+			return new QQNodeEmailMessage('email_message', null, null);
+		}
+		/**
+		 * @return QQNodeEmailOutgoingQueue
+		 */
+		static public function EmailOutgoingQueue() {
+			return new QQNodeEmailOutgoingQueue('email_outgoing_queue', null, null);
+		}
+		/**
 		 * @return QQNodeGroup
 		 */
 		static public function Group() {

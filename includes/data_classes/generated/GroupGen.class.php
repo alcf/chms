@@ -30,6 +30,8 @@
 	 * @property Group $ParentGroup the value for the Group object referenced by intParentGroupId 
 	 * @property GrowthGroup $GrowthGroup the value for the GrowthGroup object that uniquely references this Group
 	 * @property SmartGroup $SmartGroup the value for the SmartGroup object that uniquely references this Group
+	 * @property EmailMessage $_EmailMessage the value for the private _objEmailMessage (Read-Only) if set due to an expansion on the email_message.group_id reverse relationship
+	 * @property EmailMessage[] $_EmailMessageArray the value for the private _objEmailMessageArray (Read-Only) if set due to an ExpandAsArray on the email_message.group_id reverse relationship
 	 * @property Group $_ChildGroup the value for the private _objChildGroup (Read-Only) if set due to an expansion on the group.parent_group_id reverse relationship
 	 * @property Group[] $_ChildGroupArray the value for the private _objChildGroupArray (Read-Only) if set due to an ExpandAsArray on the group.parent_group_id reverse relationship
 	 * @property GroupParticipation $_GroupParticipation the value for the private _objGroupParticipation (Read-Only) if set due to an expansion on the group_participation.group_id reverse relationship
@@ -131,6 +133,22 @@
 		const TokenMaxLength = 100;
 		const TokenDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single EmailMessage object
+		 * (of type EmailMessage), if this Group object was restored with
+		 * an expansion on the email_message association table.
+		 * @var EmailMessage _objEmailMessage;
+		 */
+		private $_objEmailMessage;
+
+		/**
+		 * Private member variable that stores a reference to an array of EmailMessage objects
+		 * (of type EmailMessage[]), if this Group object was restored with
+		 * an ExpandAsArray on the email_message association table.
+		 * @var EmailMessage[] _objEmailMessageArray;
+		 */
+		private $_objEmailMessageArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single ChildGroup object
@@ -579,6 +597,20 @@
 					$strAliasPrefix = 'group__';
 
 
+				$strAlias = $strAliasPrefix . 'emailmessage__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objEmailMessageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objEmailMessageArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'childgroup__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -691,6 +723,16 @@
 			}
 
 
+
+			// Check for EmailMessage Virtual Binding
+			$strAlias = $strAliasPrefix . 'emailmessage__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objEmailMessage = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			// Check for ChildGroup Virtual Binding
 			$strAlias = $strAliasPrefix . 'childgroup__id';
@@ -1302,6 +1344,18 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_EmailMessage':
+					// Gets the value for the private _objEmailMessage (Read-Only)
+					// if set due to an expansion on the email_message.group_id reverse relationship
+					// @return EmailMessage
+					return $this->_objEmailMessage;
+
+				case '_EmailMessageArray':
+					// Gets the value for the private _objEmailMessageArray (Read-Only)
+					// if set due to an ExpandAsArray on the email_message.group_id reverse relationship
+					// @return EmailMessage[]
+					return (array) $this->_objEmailMessageArray;
+
 				case '_ChildGroup':
 					// Gets the value for the private _objChildGroup (Read-Only)
 					// if set due to an expansion on the group.parent_group_id reverse relationship
@@ -1629,6 +1683,156 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
+
+			
+		
+		// Related Objects' Methods for EmailMessage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated EmailMessages as an array of EmailMessage objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailMessage[]
+		*/ 
+		public function GetEmailMessageArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return EmailMessage::LoadArrayByGroupId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated EmailMessages
+		 * @return int
+		*/ 
+		public function CountEmailMessages() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return EmailMessage::CountByGroupId($this->intId);
+		}
+
+		/**
+		 * Associates a EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function AssociateEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this unsaved Group.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this Group with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message`
+				SET
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function UnassociateEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Group.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Group with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message`
+				SET
+					`group_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all EmailMessages
+		 * @return void
+		*/ 
+		public function UnassociateAllEmailMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message`
+				SET
+					`group_id` = null
+				WHERE
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function DeleteAssociatedEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Group.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Group with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`email_message`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated EmailMessages
+		 * @return void
+		*/ 
+		public function DeleteAllEmailMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`email_message`
+				WHERE
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
 
 			
 		
@@ -2071,6 +2275,8 @@
 					return new QQNode('email_broadcast_type_id', 'EmailBroadcastTypeId', 'integer', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'EmailMessage':
+					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'group_id');
 				case 'ChildGroup':
 					return new QQReverseReferenceNodeGroup($this, 'childgroup', 'reverse_reference', 'parent_group_id');
 				case 'GroupParticipation':
@@ -2125,6 +2331,8 @@
 					return new QQNode('email_broadcast_type_id', 'EmailBroadcastTypeId', 'integer', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'EmailMessage':
+					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'group_id');
 				case 'ChildGroup':
 					return new QQReverseReferenceNodeGroup($this, 'childgroup', 'reverse_reference', 'parent_group_id');
 				case 'GroupParticipation':

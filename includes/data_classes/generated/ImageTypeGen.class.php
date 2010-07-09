@@ -18,27 +18,15 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class ImageTypeGen extends QBaseClass {
-		const jpg = 1;
-		const png = 2;
-		const gif = 3;
 
-		const MaxId = 3;
+		const MaxId = 0;
 
-		public static $NameArray = array(
-			1 => 'jpg',
-			2 => 'png',
-			3 => 'gif');
+		public static $NameArray = array();
 
-		public static $TokenArray = array(
-			1 => 'jpg',
-			2 => 'png',
-			3 => 'gif');
+		public static $TokenArray = array();
 
 		public static function ToString($intImageTypeId) {
 			switch ($intImageTypeId) {
-				case 1: return 'jpg';
-				case 2: return 'png';
-				case 3: return 'gif';
 				default:
 					throw new QCallerException(sprintf('Invalid intImageTypeId: %s', $intImageTypeId));
 			}
@@ -46,9 +34,6 @@
 
 		public static function ToToken($intImageTypeId) {
 			switch ($intImageTypeId) {
-				case 1: return 'jpg';
-				case 2: return 'png';
-				case 3: return 'gif';
 				default:
 					throw new QCallerException(sprintf('Invalid intImageTypeId: %s', $intImageTypeId));
 			}

@@ -69,6 +69,20 @@
 		QApplicationBase::$ClassFile['emailmetacontrol'] = __DATA_META_CONTROLS__ . '/EmailMetaControl.class.php';
 		QApplicationBase::$ClassFile['emaildatagrid'] = __DATA_META_CONTROLS__ . '/EmailDataGrid.class.php';
 
+	// ClassPaths for the EmailMessage class
+		QApplicationBase::$ClassFile['emailmessage'] = __DATA_CLASSES__ . '/EmailMessage.class.php';
+		QApplicationBase::$ClassFile['qqnodeemailmessage'] = __DATA_CLASSES__ . '/EmailMessage.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeemailmessage'] = __DATA_CLASSES__ . '/EmailMessage.class.php';
+		QApplicationBase::$ClassFile['emailmessagemetacontrol'] = __DATA_META_CONTROLS__ . '/EmailMessageMetaControl.class.php';
+		QApplicationBase::$ClassFile['emailmessagedatagrid'] = __DATA_META_CONTROLS__ . '/EmailMessageDataGrid.class.php';
+
+	// ClassPaths for the EmailOutgoingQueue class
+		QApplicationBase::$ClassFile['emailoutgoingqueue'] = __DATA_CLASSES__ . '/EmailOutgoingQueue.class.php';
+		QApplicationBase::$ClassFile['qqnodeemailoutgoingqueue'] = __DATA_CLASSES__ . '/EmailOutgoingQueue.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeemailoutgoingqueue'] = __DATA_CLASSES__ . '/EmailOutgoingQueue.class.php';
+		QApplicationBase::$ClassFile['emailoutgoingqueuemetacontrol'] = __DATA_META_CONTROLS__ . '/EmailOutgoingQueueMetaControl.class.php';
+		QApplicationBase::$ClassFile['emailoutgoingqueuedatagrid'] = __DATA_META_CONTROLS__ . '/EmailOutgoingQueueDataGrid.class.php';
+
 	// ClassPaths for the Group class
 		QApplicationBase::$ClassFile['group'] = __DATA_CLASSES__ . '/Group.class.php';
 		QApplicationBase::$ClassFile['qqnodegroup'] = __DATA_CLASSES__ . '/Group.class.php';

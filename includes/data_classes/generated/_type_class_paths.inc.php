@@ -7,6 +7,8 @@
 		QApplicationBase::$ClassFile['commentprivacytype'] = __DATA_CLASSES__ . '/CommentPrivacyType.class.php';
 	// ClassPaths for the EmailBroadcastType type class
 		QApplicationBase::$ClassFile['emailbroadcasttype'] = __DATA_CLASSES__ . '/EmailBroadcastType.class.php';
+	// ClassPaths for the EmailMessageStatusType type class
+		QApplicationBase::$ClassFile['emailmessagestatustype'] = __DATA_CLASSES__ . '/EmailMessageStatusType.class.php';
 	// ClassPaths for the GroupRoleType type class
 		QApplicationBase::$ClassFile['grouproletype'] = __DATA_CLASSES__ . '/GroupRoleType.class.php';
 	// ClassPaths for the GroupType type class
