@@ -98,6 +98,13 @@ INSERT INTO email_broadcast_type VALUES(1, 'Public List');
 INSERT INTO email_broadcast_type VALUES(2, 'Private List');
 INSERT INTO email_broadcast_type VALUES(3, 'Announcement Only');
 
+INSERT INTO email_message_type VALUES(1, 'Not Yet Analyzed');
+INSERT INTO email_message_type VALUES(2, 'Pending Send');
+INSERT INTO email_message_type VALUES(3, 'Pending Rejection');
+INSERT INTO email_message_type VALUES(4, 'Rejected');
+INSERT INTO email_message_type VALUES(5, 'Completed');
+INSERT INTO email_message_type VALUES(6, 'Error');
+
 INSERT INTO group_type VALUES (1, 'Regular Group');
 INSERT INTO group_type VALUES (2, 'Group Category');
 INSERT INTO group_type VALUES (3, 'Smart Group');
