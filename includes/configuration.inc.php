@@ -120,10 +120,11 @@
 	define ('__IMAGE_ASSETS__', __SUBDIRECTORY__ . '/assets/images');
 	define ('__PHP_ASSETS__', __SUBDIRECTORY__ . '/assets/php');
 
-	define('GROUPS_SERVER_HOST', 'groups');
-	define('GROUPS_SERVER_USERNAME', 'groups');
-	define('GROUPS_SERVER_PASSWORD', '2Drf1$&ja');
-	define('SMTP_SERVER', '127.0.0.1');
+	define('GROUPS_SERVER_URI', 'ssl://pop.gmail.com');
+	define('GROUPS_SERVER_PORT', 995);
+	define('GROUPS_SERVER_USERNAME', 'groups@groups.alcf.net');
+	define('GROUPS_SERVER_PASSWORD_PATH', __DOCROOT__ . '/../groups_server_password.txt');
+	define('SMTP_SERVER', '10.128.2.37');
 	define('SMTP_EHLO', '127.0.0.1');
 	define('SMTP_TEST_MODE', true);
 

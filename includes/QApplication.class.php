@@ -201,6 +201,55 @@
 		////////////////////////////
 		// Additional Static Methods
 		////////////////////////////
-		// NOTE: Define any other custom global WebApplication functions (if any) here...
+
+		/**
+		 * Ensures that the current CLI Process is the ONLY Qcodo CLI running on the system.
+		 * If there is another process running of the same $ScriptName, this will force the process to exit()
+		 * @return void
+		 */
+		public static function CliProcessEnsureUnique() {
+			$strScriptName = QApplication::$ScriptName;
+			$strScriptName = substr($strScriptName, 0, strpos($strScriptName, '.'));
+
+			$strCommand = 'ps aux | grep "qcodo[ ]' . $strScriptName . '"';
+			$strResult = array();
+			exec($strCommand, $strResult);
+
+			$intCount = 0;
+			foreach ($strResult as $strLine) {
+				// Filter out any entries that are there as a wrapper/shell process
+				if (strpos($strLine, '/dev/null') === false) $intCount++;
+			}
+
+			// By now we should have the count of ACTUAL Qcodo/PHP Processes running for this script
+			// If there are at least one other process running by the same name, exit()
+			if ($intCount > 1) exit();
+		}
+
+		/**
+		 * Sets up a lock file for this process
+		 * @return void
+		 */
+		public static function CliProcessSetupLockFile() {
+			$strScriptName = QApplication::$ScriptName;
+			$strScriptName = substr($strScriptName, 0, strpos($strScriptName, '.'));
+			$strPidFilePath = __DEVTOOLS_CLI__ . '/' . $strScriptName . '.lock';
+			file_put_contents($strPidFilePath, getmypid());
+		}
+
+		/**
+		 * Checks to see if the lock file exists and the PID inside matches this PID
+		 * @return boolean
+		 */
+		public static function CliProcessIsLockFileValid() {
+			$strScriptName = QApplication::$ScriptName;
+			$strScriptName = substr($strScriptName, 0, strpos($strScriptName, '.'));
+			$strPidFilePath = __DEVTOOLS_CLI__ . '/' . $strScriptName . '.lock';
+
+			if (!is_file($strPidFilePath)) return false;
+
+			return (@file_get_contents($strPidFilePath) == getmypid());
+			return false;
+		}
 	}
 ?>
