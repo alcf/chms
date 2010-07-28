@@ -16,6 +16,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
+	 * @property string $MessageIdentifier the value for strMessageIdentifier (Unique)
 	 * @property integer $EmailMessageStatusTypeId the value for intEmailMessageStatusTypeId (Not Null)
 	 * @property string $RawMessage the value for strRawMessage 
 	 * @property QDateTime $DateReceived the value for dttDateReceived (Not Null)
@@ -45,6 +46,15 @@
 		 */
 		protected $intId;
 		const IdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column email_message.message_identifier
+		 * @var string strMessageIdentifier
+		 */
+		protected $strMessageIdentifier;
+		const MessageIdentifierMaxLength = 255;
+		const MessageIdentifierDefault = null;
 
 
 		/**
@@ -487,6 +497,7 @@
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
+			$objBuilder->AddSelectItem($strTableName, 'message_identifier', $strAliasPrefix . 'message_identifier');
 			$objBuilder->AddSelectItem($strTableName, 'email_message_status_type_id', $strAliasPrefix . 'email_message_status_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'raw_message', $strAliasPrefix . 'raw_message');
 			$objBuilder->AddSelectItem($strTableName, 'date_received', $strAliasPrefix . 'date_received');
@@ -561,6 +572,8 @@
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'message_identifier', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'message_identifier'] : $strAliasPrefix . 'message_identifier';
+			$objToReturn->strMessageIdentifier = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'email_message_status_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email_message_status_type_id'] : $strAliasPrefix . 'email_message_status_type_id';
 			$objToReturn->intEmailMessageStatusTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'raw_message', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'raw_message'] : $strAliasPrefix . 'raw_message';
@@ -709,6 +722,18 @@
 		public static function LoadById($intId) {
 			return EmailMessage::QuerySingle(
 				QQ::Equal(QQN::EmailMessage()->Id, $intId)
+			);
+		}
+			
+		/**
+		 * Load a single EmailMessage object,
+		 * by MessageIdentifier Index(es)
+		 * @param string $strMessageIdentifier
+		 * @return EmailMessage
+		*/
+		public static function LoadByMessageIdentifier($strMessageIdentifier) {
+			return EmailMessage::QuerySingle(
+				QQ::Equal(QQN::EmailMessage()->MessageIdentifier, $strMessageIdentifier)
 			);
 		}
 			
@@ -902,6 +927,7 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `email_message` (
+							`message_identifier`,
 							`email_message_status_type_id`,
 							`raw_message`,
 							`date_received`,
@@ -912,6 +938,7 @@
 							`subject`,
 							`response_message`
 						) VALUES (
+							' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
 							' . $objDatabase->SqlVariable($this->intEmailMessageStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strRawMessage) . ',
 							' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
@@ -936,6 +963,7 @@
 						UPDATE
 							`email_message`
 						SET
+							`message_identifier` = ' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
 							`email_message_status_type_id` = ' . $objDatabase->SqlVariable($this->intEmailMessageStatusTypeId) . ',
 							`raw_message` = ' . $objDatabase->SqlVariable($this->strRawMessage) . ',
 							`date_received` = ' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
@@ -1023,6 +1051,7 @@
 			$objReloaded = EmailMessage::Load($this->intId);
 
 			// Update $this's local variables to match
+			$this->strMessageIdentifier = $objReloaded->strMessageIdentifier;
 			$this->EmailMessageStatusTypeId = $objReloaded->EmailMessageStatusTypeId;
 			$this->strRawMessage = $objReloaded->strRawMessage;
 			$this->dttDateReceived = $objReloaded->dttDateReceived;
@@ -1056,6 +1085,11 @@
 					// Gets the value for intId (Read-Only PK)
 					// @return integer
 					return $this->intId;
+
+				case 'MessageIdentifier':
+					// Gets the value for strMessageIdentifier (Unique)
+					// @return string
+					return $this->strMessageIdentifier;
 
 				case 'EmailMessageStatusTypeId':
 					// Gets the value for intEmailMessageStatusTypeId (Not Null)
@@ -1199,6 +1233,17 @@
 				///////////////////
 				// Member Variables
 				///////////////////
+				case 'MessageIdentifier':
+					// Sets the value for strMessageIdentifier (Unique)
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strMessageIdentifier = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'EmailMessageStatusTypeId':
 					// Sets the value for intEmailMessageStatusTypeId (Not Null)
 					// @param integer $mixValue
@@ -1614,6 +1659,7 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="EmailMessage"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
+			$strToReturn .= '<element name="MessageIdentifier" type="xsd:string"/>';
 			$strToReturn .= '<element name="EmailMessageStatusTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="RawMessage" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateReceived" type="xsd:dateTime"/>';
@@ -1651,6 +1697,8 @@
 			$objToReturn = new EmailMessage();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
+			if (property_exists($objSoapObject, 'MessageIdentifier'))
+				$objToReturn->strMessageIdentifier = $objSoapObject->MessageIdentifier;
 			if (property_exists($objSoapObject, 'EmailMessageStatusTypeId'))
 				$objToReturn->intEmailMessageStatusTypeId = $objSoapObject->EmailMessageStatusTypeId;
 			if (property_exists($objSoapObject, 'RawMessage'))
@@ -1731,6 +1779,8 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'MessageIdentifier':
+					return new QQNode('message_identifier', 'MessageIdentifier', 'string', $this);
 				case 'EmailMessageStatusTypeId':
 					return new QQNode('email_message_status_type_id', 'EmailMessageStatusTypeId', 'integer', $this);
 				case 'RawMessage':
@@ -1781,6 +1831,8 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'MessageIdentifier':
+					return new QQNode('message_identifier', 'MessageIdentifier', 'string', $this);
 				case 'EmailMessageStatusTypeId':
 					return new QQNode('email_message_status_type_id', 'EmailMessageStatusTypeId', 'integer', $this);
 				case 'RawMessage':

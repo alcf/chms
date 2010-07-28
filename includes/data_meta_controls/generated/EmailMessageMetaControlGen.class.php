@@ -18,6 +18,8 @@
 	 * property-read EmailMessage $EmailMessage the actual EmailMessage data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
+	 * property QTextBox $MessageIdentifierControl
+	 * property-read QLabel $MessageIdentifierLabel
 	 * property QListBox $EmailMessageStatusTypeIdControl
 	 * property-read QLabel $EmailMessageStatusTypeIdLabel
 	 * property QTextBox $RawMessageControl
@@ -49,6 +51,7 @@
 
 		// Controls that allow the editing of EmailMessage's individual data fields
 		protected $lblId;
+		protected $txtMessageIdentifier;
 		protected $lstEmailMessageStatusType;
 		protected $txtRawMessage;
 		protected $calDateReceived;
@@ -60,6 +63,7 @@
 		protected $txtResponseMessage;
 
 		// Controls that allow the viewing of EmailMessage's individual data fields
+		protected $lblMessageIdentifier;
 		protected $lblEmailMessageStatusTypeId;
 		protected $lblRawMessage;
 		protected $lblDateReceived;
@@ -180,6 +184,33 @@
 			else
 				$this->lblId->Text = 'N/A';
 			return $this->lblId;
+		}
+
+		/**
+		 * Create and setup QTextBox txtMessageIdentifier
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtMessageIdentifier_Create($strControlId = null) {
+			$this->txtMessageIdentifier = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtMessageIdentifier->Name = QApplication::Translate('Message Identifier');
+			$this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+			$this->txtMessageIdentifier->Required = true;
+			$this->txtMessageIdentifier->MaxLength = EmailMessage::MessageIdentifierMaxLength;
+			return $this->txtMessageIdentifier;
+		}
+
+		/**
+		 * Create and setup QLabel lblMessageIdentifier
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblMessageIdentifier_Create($strControlId = null) {
+			$this->lblMessageIdentifier = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMessageIdentifier->Name = QApplication::Translate('Message Identifier');
+			$this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+			$this->lblMessageIdentifier->Required = true;
+			return $this->lblMessageIdentifier;
 		}
 
 		/**
@@ -488,6 +519,9 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objEmailMessage->Id;
 
+			if ($this->txtMessageIdentifier) $this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+			if ($this->lblMessageIdentifier) $this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+
 			if ($this->lstEmailMessageStatusType) $this->lstEmailMessageStatusType->SelectedValue = $this->objEmailMessage->EmailMessageStatusTypeId;
 			if ($this->lblEmailMessageStatusTypeId) $this->lblEmailMessageStatusTypeId->Text = ($this->objEmailMessage->EmailMessageStatusTypeId) ? EmailMessageStatusType::$NameArray[$this->objEmailMessage->EmailMessageStatusTypeId] : null;
 
@@ -578,6 +612,7 @@
 		public function SaveEmailMessage() {
 			try {
 				// Update any fields for controls that have been created
+				if ($this->txtMessageIdentifier) $this->objEmailMessage->MessageIdentifier = $this->txtMessageIdentifier->Text;
 				if ($this->lstEmailMessageStatusType) $this->objEmailMessage->EmailMessageStatusTypeId = $this->lstEmailMessageStatusType->SelectedValue;
 				if ($this->txtRawMessage) $this->objEmailMessage->RawMessage = $this->txtRawMessage->Text;
 				if ($this->calDateReceived) $this->objEmailMessage->DateReceived = $this->calDateReceived->DateTime;
@@ -635,6 +670,12 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
+				case 'MessageIdentifierControl':
+					if (!$this->txtMessageIdentifier) return $this->txtMessageIdentifier_Create();
+					return $this->txtMessageIdentifier;
+				case 'MessageIdentifierLabel':
+					if (!$this->lblMessageIdentifier) return $this->lblMessageIdentifier_Create();
+					return $this->lblMessageIdentifier;
 				case 'EmailMessageStatusTypeIdControl':
 					if (!$this->lstEmailMessageStatusType) return $this->lstEmailMessageStatusType_Create();
 					return $this->lstEmailMessageStatusType;
@@ -713,6 +754,8 @@
 					// Controls that point to EmailMessage fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
+					case 'MessageIdentifierControl':
+						return ($this->txtMessageIdentifier = QType::Cast($mixValue, 'QControl'));
 					case 'EmailMessageStatusTypeIdControl':
 						return ($this->lstEmailMessageStatusType = QType::Cast($mixValue, 'QControl'));
 					case 'RawMessageControl':

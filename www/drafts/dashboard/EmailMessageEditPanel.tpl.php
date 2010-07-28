@@ -7,6 +7,8 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtMessageIdentifier->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstEmailMessageStatusType->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtRawMessage->RenderWithName(); ?>

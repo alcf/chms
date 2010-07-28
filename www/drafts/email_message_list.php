@@ -56,6 +56,7 @@
 			// Create the Other Columns (note that you can use strings for email_message's properties, or you
 			// can traverse down QQN::email_message() to display fields that are down the hierarchy)
 			$this->dtgEmailMessages->MetaAddColumn('Id');
+			$this->dtgEmailMessages->MetaAddColumn('MessageIdentifier');
 			$this->dtgEmailMessages->MetaAddTypeColumn('EmailMessageStatusTypeId', 'EmailMessageStatusType');
 			$this->dtgEmailMessages->MetaAddColumn('RawMessage');
 			$this->dtgEmailMessages->MetaAddColumn('DateReceived');

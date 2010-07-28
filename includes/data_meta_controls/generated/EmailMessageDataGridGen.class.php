@@ -294,6 +294,7 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "email_message".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::EmailMessage()->Id;
+				case 'MessageIdentifier': return QQN::EmailMessage()->MessageIdentifier;
 				case 'EmailMessageStatusTypeId': return QQN::EmailMessage()->EmailMessageStatusTypeId;
 				case 'RawMessage': return QQN::EmailMessage()->RawMessage;
 				case 'DateReceived': return QQN::EmailMessage()->DateReceived;
