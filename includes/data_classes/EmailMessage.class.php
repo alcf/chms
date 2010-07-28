@@ -27,6 +27,20 @@
 			return sprintf('EmailMessage Object %s',  $this->intId);
 		}
 
+		/**
+		 * Creates a new EmailMessage object with the raw data from a POP3 Server.
+		 * @param string $strRawMessage
+		 * @return EmailMessage
+		 */
+		public static function CreateWithRawMessage($strRawMessage) {
+			$objEmailMessage = new EmailMessage();
+			$objEmailMessage->RawMessage = $strRawMessage;
+			$objEmailMessage->EmailMessageStatusTypeId = EmailMessageStatusType::NotYetAnalyzed;
+			$objEmailMessage->DateReceived = QDateTime::Now();
+			$objEmailMessage->Save();
+			
+			return $objEmailMessage;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

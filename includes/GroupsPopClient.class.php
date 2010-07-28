@@ -26,26 +26,41 @@
 			$objClient->SendCommand('STAT');
 			$strStat = $objClient->ReceiveResponse('STAT Request');
 			$strStatTokens = explode(' ', $strStat);
-			$this->intMessageCount = $strStatTokens[0];
+			$objClient->intMessageCount = $strStatTokens[0];
 
 			return $objClient;
 		}
 
 		/**
 		 * Gets a specific Message from the POP3 Server as RAW Data
+		 * 
+		 * If an optional Line Count is used, then only the top N lines will be returned from
+		 * the message body using the POP3 TOP command. (Full Message Headers will always be returned)
+		 * 
+		 * Otherwise, the full message (header and body) will be retrieved using the RETR command.
+		 * 
 		 * @param integer $intMessageNumber
+		 * @param integer $intLineCount
 		 * @return string
 		 */
-		public function GetMessage($intMessageNumber) {
+		public function GetMessage($intMessageNumber, $intLineCount = null) {
 			if ($intMessageNumber > $this->intMessageCount)
 				throw new QCallerException('Invalid intMessageNumber to Get (max is ' . $this->intMessageCount . '): ' . $intMessageNumber);
-			$objClient->SendCommand(sprintf('RETR %s', $intMessageNumber));
-			$objClient->ReceiveResponse('RETR Request');
+
+			if (is_null($intLineCount)) {
+				$this->SendCommand(sprintf('RETR %s', $intMessageNumber));
+				$this->ReceiveResponse('RETR Request');
+			} else {
+				$this->SendCommand(sprintf('TOP %s %s', $intMessageNumber, $intLineCount));
+				$this->ReceiveResponse('TOP Request');
+			}
 
 			$strMessage = null;
-			while (($strData = fgets($objServer, 4096)) != ".\r\n") {
+			while (($strData = fgets($this->objSocket, 4096)) != ".\r\n") {
 				$strMessage .= $strData;
 			}
+
+			return $strMessage;
 		}
 
 		/**
@@ -56,8 +71,8 @@
 		public function DeleteMessage($intMessageNumber) {
 			if ($intMessageNumber > $this->intMessageCount)
 				throw new QCallerException('Invalid intMessageNumber to Delete (max is ' . $this->intMessageCount . '): ' . $intMessageNumber);
-			$objClient->SendCommand(sprintf('DELE %s', $intMessageNumber));
-			$objClient->ReceiveResponse('DELE Request');
+			$this->SendCommand(sprintf('DELE %s', $intMessageNumber));
+			$this->ReceiveResponse('DELE Request');
 		}
 
 		protected function SendCommand($strMessage) {
