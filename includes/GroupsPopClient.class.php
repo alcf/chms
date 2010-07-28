@@ -1,6 +1,7 @@
 <?php 
 	class GroupsPopClient extends QBaseClass {
 		protected $objSocket;
+		protected $intMessageCount;
 
 		/**
 		 * Opens a POP3 Connection to a given server, and returns a GroupsPopClient object as a live session.
@@ -12,21 +13,94 @@
 		 */
 		public static function CreateClient($strServerUri, $intServerPort, $strUsername, $strPassword) {
 			$objClient = new GroupsPopClient();
-			$this->objSocket = fsockopen($strServerUri, $intServerPort);
+			$objClient->objSocket = fsockopen($strServerUri, $intServerPort);
 
-			$this->LookForOk('Initial Handshake');
+			$objClient->ReceiveResponse('Initial Handshake');
+
+			$objClient->SendCommand(sprintf('USER %s', $strUsername));
+			$objClient->ReceiveResponse('USER Specification');
+			
+			$objClient->SendCommand(sprintf('PASS %s', $strPassword));
+			$objClient->ReceiveResponse('PASS Specification');
+
+			$objClient->SendCommand('STAT');
+			$strStat = $objClient->ReceiveResponse('STAT Request');
+			$strStatTokens = explode(' ', $strStat);
+			$this->intMessageCount = $strStatTokens[0];
+
+			return $objClient;
+		}
+
+		/**
+		 * Gets a specific Message from the POP3 Server as RAW Data
+		 * @param integer $intMessageNumber
+		 * @return string
+		 */
+		public function GetMessage($intMessageNumber) {
+			if ($intMessageNumber > $this->intMessageCount)
+				throw new QCallerException('Invalid intMessageNumber to Get (max is ' . $this->intMessageCount . '): ' . $intMessageNumber);
+			$objClient->SendCommand(sprintf('RETR %s', $intMessageNumber));
+			$objClient->ReceiveResponse('RETR Request');
+
+			$strMessage = null;
+			while (($strData = fgets($objServer, 4096)) != ".\r\n") {
+				$strMessage .= $strData;
+			}
+		}
+
+		/**
+		 * Deletes a specific Message from the POP3 Server
+		 * @param integer $intMessageNumber
+		 * @return void
+		 */
+		public function DeleteMessage($intMessageNumber) {
+			if ($intMessageNumber > $this->intMessageCount)
+				throw new QCallerException('Invalid intMessageNumber to Delete (max is ' . $this->intMessageCount . '): ' . $intMessageNumber);
+			$objClient->SendCommand(sprintf('DELE %s', $intMessageNumber));
+			$objClient->ReceiveResponse('DELE Request');
+		}
+
+		protected function SendCommand($strMessage) {
+			fputs($this->objSocket, $strMessage . "\r\n");
+		}
+
+		/**
+		 * Closes the Client Connection
+		 * @return void
+		 */
+		public function CloseClient() {
+			$this->SendCommand('QUIT');
+			$this->ReceiveResponse('QUIT Request');
+			fclose($this->objSocket);
 		}
 
 		/**
 		 * Checks the current socket for an "OKAY" response from the POP3 Server
+		 * If valid, it will return any message (if appicable) after the +OK marker
 		 * @param string $strMessage added messaging information on error
-		 * @return void
+		 * @return string
 		 */
-		protected function LookForOk($strMessage) {
+		protected function ReceiveResponse($strMessage) {
 			$strData = fgets($this->objSocket, 4096);
 			if (strpos($strData, '+OK') === false) {
 				fclose($this->objSocket);
 				throw new Exception('Error on POP3 Connection while "' . $strMessage . '": ' . $strData);
+			}
+
+			return trim(substr($strData, 3));
+		}
+		
+		public function __get($strName) {
+			switch ($strName) {
+				case 'MessageCount': return $this->intMessageCount;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
 			}
 		}
 	}
