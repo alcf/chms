@@ -42,6 +42,18 @@
 			return $objEmailMessage;
 		}
 
+		/**
+		 * This will analyze a NotYetAnalyzed message, doing the appropriate
+		 * things to setup links to related objects, queueing outgoing messages, etc.
+		 * 
+		 * This will throw an exception if its MessageType is NOT NotYetAnalyzed.
+		 * @return void
+		 */
+		public function AnalyzeMessage() {
+			if ($this->intEmailMessageStatusTypeId != EmailMessageStatusType::NotYetAnalyzed)
+				throw new QCallerException('EmailMessage that is NOT in NotYetAnalyzed status cannot be Analyzed');
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
