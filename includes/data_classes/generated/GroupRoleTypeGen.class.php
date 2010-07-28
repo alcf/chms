@@ -18,15 +18,23 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class GroupRoleTypeGen extends QBaseClass {
+		const Volunteer = 1;
+		const Participant = 2;
 
-		const MaxId = 0;
+		const MaxId = 2;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Volunteer',
+			2 => 'Participant');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'Volunteer',
+			2 => 'Participant');
 
 		public static function ToString($intGroupRoleTypeId) {
 			switch ($intGroupRoleTypeId) {
+				case 1: return 'Volunteer';
+				case 2: return 'Participant';
 				default:
 					throw new QCallerException(sprintf('Invalid intGroupRoleTypeId: %s', $intGroupRoleTypeId));
 			}
@@ -34,6 +42,8 @@
 
 		public static function ToToken($intGroupRoleTypeId) {
 			switch ($intGroupRoleTypeId) {
+				case 1: return 'Volunteer';
+				case 2: return 'Participant';
 				default:
 					throw new QCallerException(sprintf('Invalid intGroupRoleTypeId: %s', $intGroupRoleTypeId));
 			}

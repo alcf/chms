@@ -18,15 +18,31 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class MarriageStatusTypeGen extends QBaseClass {
+		const Married = 1;
+		const Separated = 2;
+		const Divorced = 3;
+		const Widowed = 4;
 
-		const MaxId = 0;
+		const MaxId = 4;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Married',
+			2 => 'Separated',
+			3 => 'Divorced',
+			4 => 'Widowed');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'Married',
+			2 => 'Separated',
+			3 => 'Divorced',
+			4 => 'Widowed');
 
 		public static function ToString($intMarriageStatusTypeId) {
 			switch ($intMarriageStatusTypeId) {
+				case 1: return 'Married';
+				case 2: return 'Separated';
+				case 3: return 'Divorced';
+				case 4: return 'Widowed';
 				default:
 					throw new QCallerException(sprintf('Invalid intMarriageStatusTypeId: %s', $intMarriageStatusTypeId));
 			}
@@ -34,6 +50,10 @@
 
 		public static function ToToken($intMarriageStatusTypeId) {
 			switch ($intMarriageStatusTypeId) {
+				case 1: return 'Married';
+				case 2: return 'Separated';
+				case 3: return 'Divorced';
+				case 4: return 'Widowed';
 				default:
 					throw new QCallerException(sprintf('Invalid intMarriageStatusTypeId: %s', $intMarriageStatusTypeId));
 			}

@@ -18,15 +18,43 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class GrowthGroupDayTypeGen extends QBaseClass {
+		const Monday = 1;
+		const Tuesday = 2;
+		const Wednesday = 3;
+		const Thursday = 4;
+		const Friday = 5;
+		const Saturday = 6;
+		const Sunday = 7;
 
-		const MaxId = 0;
+		const MaxId = 7;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Monday',
+			2 => 'Tuesday',
+			3 => 'Wednesday',
+			4 => 'Thursday',
+			5 => 'Friday',
+			6 => 'Saturday',
+			7 => 'Sunday');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'Monday',
+			2 => 'Tuesday',
+			3 => 'Wednesday',
+			4 => 'Thursday',
+			5 => 'Friday',
+			6 => 'Saturday',
+			7 => 'Sunday');
 
 		public static function ToString($intGrowthGroupDayTypeId) {
 			switch ($intGrowthGroupDayTypeId) {
+				case 1: return 'Monday';
+				case 2: return 'Tuesday';
+				case 3: return 'Wednesday';
+				case 4: return 'Thursday';
+				case 5: return 'Friday';
+				case 6: return 'Saturday';
+				case 7: return 'Sunday';
 				default:
 					throw new QCallerException(sprintf('Invalid intGrowthGroupDayTypeId: %s', $intGrowthGroupDayTypeId));
 			}
@@ -34,6 +62,13 @@
 
 		public static function ToToken($intGrowthGroupDayTypeId) {
 			switch ($intGrowthGroupDayTypeId) {
+				case 1: return 'Monday';
+				case 2: return 'Tuesday';
+				case 3: return 'Wednesday';
+				case 4: return 'Thursday';
+				case 5: return 'Friday';
+				case 6: return 'Saturday';
+				case 7: return 'Sunday';
 				default:
 					throw new QCallerException(sprintf('Invalid intGrowthGroupDayTypeId: %s', $intGrowthGroupDayTypeId));
 			}

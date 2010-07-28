@@ -18,15 +18,35 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class PhoneTypeGen extends QBaseClass {
+		const Home = 1;
+		const Work = 2;
+		const Mobile = 3;
+		const Fax = 4;
+		const Other = 5;
 
-		const MaxId = 0;
+		const MaxId = 5;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Home',
+			2 => 'Work',
+			3 => 'Mobile',
+			4 => 'Fax',
+			5 => 'Other');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'Home',
+			2 => 'Work',
+			3 => 'Mobile',
+			4 => 'Fax',
+			5 => 'Other');
 
 		public static function ToString($intPhoneTypeId) {
 			switch ($intPhoneTypeId) {
+				case 1: return 'Home';
+				case 2: return 'Work';
+				case 3: return 'Mobile';
+				case 4: return 'Fax';
+				case 5: return 'Other';
 				default:
 					throw new QCallerException(sprintf('Invalid intPhoneTypeId: %s', $intPhoneTypeId));
 			}
@@ -34,6 +54,11 @@
 
 		public static function ToToken($intPhoneTypeId) {
 			switch ($intPhoneTypeId) {
+				case 1: return 'Home';
+				case 2: return 'Work';
+				case 3: return 'Mobile';
+				case 4: return 'Fax';
+				case 5: return 'Other';
 				default:
 					throw new QCallerException(sprintf('Invalid intPhoneTypeId: %s', $intPhoneTypeId));
 			}

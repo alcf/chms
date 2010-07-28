@@ -18,15 +18,31 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class MembershipStatusTypeGen extends QBaseClass {
+		const NonMember = 1;
+		const FormerMember = 2;
+		const Member = 3;
+		const ChildOfMember = 4;
 
-		const MaxId = 0;
+		const MaxId = 4;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Non-Member',
+			2 => 'Former Member',
+			3 => 'Member',
+			4 => 'Child Of Member');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'NonMember',
+			2 => 'FormerMember',
+			3 => 'Member',
+			4 => 'ChildOfMember');
 
 		public static function ToString($intMembershipStatusTypeId) {
 			switch ($intMembershipStatusTypeId) {
+				case 1: return 'Non-Member';
+				case 2: return 'Former Member';
+				case 3: return 'Member';
+				case 4: return 'Child Of Member';
 				default:
 					throw new QCallerException(sprintf('Invalid intMembershipStatusTypeId: %s', $intMembershipStatusTypeId));
 			}
@@ -34,6 +50,10 @@
 
 		public static function ToToken($intMembershipStatusTypeId) {
 			switch ($intMembershipStatusTypeId) {
+				case 1: return 'NonMember';
+				case 2: return 'FormerMember';
+				case 3: return 'Member';
+				case 4: return 'ChildOfMember';
 				default:
 					throw new QCallerException(sprintf('Invalid intMembershipStatusTypeId: %s', $intMembershipStatusTypeId));
 			}
