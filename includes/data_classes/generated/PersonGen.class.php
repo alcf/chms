@@ -60,8 +60,8 @@
 	 * @property Comment[] $_CommentArray the value for the private _objCommentArray (Read-Only) if set due to an ExpandAsArray on the comment.person_id reverse relationship
 	 * @property Email $_Email the value for the private _objEmail (Read-Only) if set due to an expansion on the email.person_id reverse relationship
 	 * @property Email[] $_EmailArray the value for the private _objEmailArray (Read-Only) if set due to an ExpandAsArray on the email.person_id reverse relationship
-	 * @property EmailMessage $_EmailMessageAsReceivedFrom the value for the private _objEmailMessageAsReceivedFrom (Read-Only) if set due to an expansion on the email_message.received_from_person_id reverse relationship
-	 * @property EmailMessage[] $_EmailMessageAsReceivedFromArray the value for the private _objEmailMessageAsReceivedFromArray (Read-Only) if set due to an ExpandAsArray on the email_message.received_from_person_id reverse relationship
+	 * @property EmailMessage $_EmailMessage the value for the private _objEmailMessage (Read-Only) if set due to an expansion on the email_message.person_id reverse relationship
+	 * @property EmailMessage[] $_EmailMessageArray the value for the private _objEmailMessageArray (Read-Only) if set due to an ExpandAsArray on the email_message.person_id reverse relationship
 	 * @property GroupParticipation $_GroupParticipation the value for the private _objGroupParticipation (Read-Only) if set due to an expansion on the group_participation.person_id reverse relationship
 	 * @property GroupParticipation[] $_GroupParticipationArray the value for the private _objGroupParticipationArray (Read-Only) if set due to an ExpandAsArray on the group_participation.person_id reverse relationship
 	 * @property HeadShot $_HeadShot the value for the private _objHeadShot (Read-Only) if set due to an expansion on the head_shot.person_id reverse relationship
@@ -415,20 +415,20 @@
 		private $_objEmailArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single EmailMessageAsReceivedFrom object
+		 * Private member variable that stores a reference to a single EmailMessage object
 		 * (of type EmailMessage), if this Person object was restored with
 		 * an expansion on the email_message association table.
-		 * @var EmailMessage _objEmailMessageAsReceivedFrom;
+		 * @var EmailMessage _objEmailMessage;
 		 */
-		private $_objEmailMessageAsReceivedFrom;
+		private $_objEmailMessage;
 
 		/**
-		 * Private member variable that stores a reference to an array of EmailMessageAsReceivedFrom objects
+		 * Private member variable that stores a reference to an array of EmailMessage objects
 		 * (of type EmailMessage[]), if this Person object was restored with
 		 * an ExpandAsArray on the email_message association table.
-		 * @var EmailMessage[] _objEmailMessageAsReceivedFromArray;
+		 * @var EmailMessage[] _objEmailMessageArray;
 		 */
-		private $_objEmailMessageAsReceivedFromArray = array();
+		private $_objEmailMessageArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single GroupParticipation object
@@ -1117,17 +1117,17 @@
 					$blnExpandedViaArray = true;
 				}
 
-				$strAlias = $strAliasPrefix . 'emailmessageasreceivedfrom__id';
+				$strAlias = $strAliasPrefix . 'emailmessage__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageAsReceivedFromArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objEmailMessageAsReceivedFromArray[$intPreviousChildItemCount - 1];
-						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageasreceivedfrom__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objEmailMessageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objEmailMessageAsReceivedFromArray[] = $objChildItem;
+							$objPreviousItem->_objEmailMessageArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objEmailMessageAsReceivedFromArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageasreceivedfrom__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -1454,14 +1454,14 @@
 					$objToReturn->_objEmail = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'email__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-			// Check for EmailMessageAsReceivedFrom Virtual Binding
-			$strAlias = $strAliasPrefix . 'emailmessageasreceivedfrom__id';
+			// Check for EmailMessage Virtual Binding
+			$strAlias = $strAliasPrefix . 'emailmessage__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objEmailMessageAsReceivedFromArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageasreceivedfrom__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objEmailMessageAsReceivedFrom = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageasreceivedfrom__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objEmailMessage = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for GroupParticipation Virtual Binding
@@ -2465,17 +2465,17 @@
 					// @return Email[]
 					return (array) $this->_objEmailArray;
 
-				case '_EmailMessageAsReceivedFrom':
-					// Gets the value for the private _objEmailMessageAsReceivedFrom (Read-Only)
-					// if set due to an expansion on the email_message.received_from_person_id reverse relationship
+				case '_EmailMessage':
+					// Gets the value for the private _objEmailMessage (Read-Only)
+					// if set due to an expansion on the email_message.person_id reverse relationship
 					// @return EmailMessage
-					return $this->_objEmailMessageAsReceivedFrom;
+					return $this->_objEmailMessage;
 
-				case '_EmailMessageAsReceivedFromArray':
-					// Gets the value for the private _objEmailMessageAsReceivedFromArray (Read-Only)
-					// if set due to an ExpandAsArray on the email_message.received_from_person_id reverse relationship
+				case '_EmailMessageArray':
+					// Gets the value for the private _objEmailMessageArray (Read-Only)
+					// if set due to an ExpandAsArray on the email_message.person_id reverse relationship
 					// @return EmailMessage[]
-					return (array) $this->_objEmailMessageAsReceivedFromArray;
+					return (array) $this->_objEmailMessageArray;
 
 				case '_GroupParticipation':
 					// Gets the value for the private _objGroupParticipation (Read-Only)
@@ -3735,20 +3735,20 @@
 
 			
 		
-		// Related Objects' Methods for EmailMessageAsReceivedFrom
+		// Related Objects' Methods for EmailMessage
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all associated EmailMessagesAsReceivedFrom as an array of EmailMessage objects
+		 * Gets all associated EmailMessages as an array of EmailMessage objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return EmailMessage[]
 		*/ 
-		public function GetEmailMessageAsReceivedFromArray($objOptionalClauses = null) {
+		public function GetEmailMessageArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return EmailMessage::LoadArrayByReceivedFromPersonId($this->intId, $objOptionalClauses);
+				return EmailMessage::LoadArrayByPersonId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -3756,26 +3756,26 @@
 		}
 
 		/**
-		 * Counts all associated EmailMessagesAsReceivedFrom
+		 * Counts all associated EmailMessages
 		 * @return int
 		*/ 
-		public function CountEmailMessagesAsReceivedFrom() {
+		public function CountEmailMessages() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return EmailMessage::CountByReceivedFromPersonId($this->intId);
+			return EmailMessage::CountByPersonId($this->intId);
 		}
 
 		/**
-		 * Associates a EmailMessageAsReceivedFrom
+		 * Associates a EmailMessage
 		 * @param EmailMessage $objEmailMessage
 		 * @return void
 		*/ 
-		public function AssociateEmailMessageAsReceivedFrom(EmailMessage $objEmailMessage) {
+		public function AssociateEmailMessage(EmailMessage $objEmailMessage) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessageAsReceivedFrom on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this unsaved Person.');
 			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessageAsReceivedFrom on this Person with an unsaved EmailMessage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this Person with an unsaved EmailMessage.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -3785,22 +3785,22 @@
 				UPDATE
 					`email_message`
 				SET
-					`received_from_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
 			');
 		}
 
 		/**
-		 * Unassociates a EmailMessageAsReceivedFrom
+		 * Unassociates a EmailMessage
 		 * @param EmailMessage $objEmailMessage
 		 * @return void
 		*/ 
-		public function UnassociateEmailMessageAsReceivedFrom(EmailMessage $objEmailMessage) {
+		public function UnassociateEmailMessage(EmailMessage $objEmailMessage) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageAsReceivedFrom on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Person.');
 			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageAsReceivedFrom on this Person with an unsaved EmailMessage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Person with an unsaved EmailMessage.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -3810,20 +3810,20 @@
 				UPDATE
 					`email_message`
 				SET
-					`received_from_person_id` = null
+					`person_id` = null
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
-					`received_from_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Unassociates all EmailMessagesAsReceivedFrom
+		 * Unassociates all EmailMessages
 		 * @return void
 		*/ 
-		public function UnassociateAllEmailMessagesAsReceivedFrom() {
+		public function UnassociateAllEmailMessages() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageAsReceivedFrom on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Person.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -3833,22 +3833,22 @@
 				UPDATE
 					`email_message`
 				SET
-					`received_from_person_id` = null
+					`person_id` = null
 				WHERE
-					`received_from_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes an associated EmailMessageAsReceivedFrom
+		 * Deletes an associated EmailMessage
 		 * @param EmailMessage $objEmailMessage
 		 * @return void
 		*/ 
-		public function DeleteAssociatedEmailMessageAsReceivedFrom(EmailMessage $objEmailMessage) {
+		public function DeleteAssociatedEmailMessage(EmailMessage $objEmailMessage) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageAsReceivedFrom on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Person.');
 			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageAsReceivedFrom on this Person with an unsaved EmailMessage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Person with an unsaved EmailMessage.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -3859,17 +3859,17 @@
 					`email_message`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
-					`received_from_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes all associated EmailMessagesAsReceivedFrom
+		 * Deletes all associated EmailMessages
 		 * @return void
 		*/ 
-		public function DeleteAllEmailMessagesAsReceivedFrom() {
+		public function DeleteAllEmailMessages() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageAsReceivedFrom on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Person.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -3879,7 +3879,7 @@
 				DELETE FROM
 					`email_message`
 				WHERE
-					`received_from_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -5942,8 +5942,8 @@
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
-				case 'EmailMessageAsReceivedFrom':
-					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessageasreceivedfrom', 'reverse_reference', 'received_from_person_id');
+				case 'EmailMessage':
+					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'person_id');
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'person_id');
 				case 'HeadShot':
@@ -6062,8 +6062,8 @@
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
-				case 'EmailMessageAsReceivedFrom':
-					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessageasreceivedfrom', 'reverse_reference', 'received_from_person_id');
+				case 'EmailMessage':
+					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'person_id');
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'person_id');
 				case 'HeadShot':

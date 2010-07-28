@@ -298,16 +298,14 @@
 				case 'DateReceived': return QQN::EmailMessage()->DateReceived;
 				case 'RawMessage': return QQN::EmailMessage()->RawMessage;
 				case 'MessageIdentifier': return QQN::EmailMessage()->MessageIdentifier;
-				case 'ReceivedFromPersonId': return QQN::EmailMessage()->ReceivedFromPersonId;
-				case 'ReceivedFromPerson': return QQN::EmailMessage()->ReceivedFromPerson;
-				case 'ReceivedFromEntryId': return QQN::EmailMessage()->ReceivedFromEntryId;
-				case 'ReceivedFromEntry': return QQN::EmailMessage()->ReceivedFromEntry;
-				case 'GroupId': return QQN::EmailMessage()->GroupId;
-				case 'Group': return QQN::EmailMessage()->Group;
-				case 'CommunicationListId': return QQN::EmailMessage()->CommunicationListId;
-				case 'CommunicationList': return QQN::EmailMessage()->CommunicationList;
+				case 'PersonId': return QQN::EmailMessage()->PersonId;
+				case 'Person': return QQN::EmailMessage()->Person;
+				case 'CommunicationListEntryId': return QQN::EmailMessage()->CommunicationListEntryId;
+				case 'CommunicationListEntry': return QQN::EmailMessage()->CommunicationListEntry;
 				case 'Subject': return QQN::EmailMessage()->Subject;
-				case 'ResponseMessage': return QQN::EmailMessage()->ResponseMessage;
+				case 'ResponseHeader': return QQN::EmailMessage()->ResponseHeader;
+				case 'ResponseBody': return QQN::EmailMessage()->ResponseBody;
+				case 'ErrorMessage': return QQN::EmailMessage()->ErrorMessage;
 				default: throw new QCallerException('Simple Property not found in EmailMessageDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

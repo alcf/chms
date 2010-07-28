@@ -20,16 +20,18 @@
 	 * @property QDateTime $DateReceived the value for dttDateReceived (Not Null)
 	 * @property string $RawMessage the value for strRawMessage (Not Null)
 	 * @property string $MessageIdentifier the value for strMessageIdentifier (Unique)
-	 * @property integer $ReceivedFromPersonId the value for intReceivedFromPersonId 
-	 * @property integer $ReceivedFromEntryId the value for intReceivedFromEntryId 
-	 * @property integer $GroupId the value for intGroupId 
-	 * @property integer $CommunicationListId the value for intCommunicationListId 
+	 * @property integer $PersonId the value for intPersonId 
+	 * @property integer $CommunicationListEntryId the value for intCommunicationListEntryId 
 	 * @property string $Subject the value for strSubject 
-	 * @property string $ResponseMessage the value for strResponseMessage 
-	 * @property Person $ReceivedFromPerson the value for the Person object referenced by intReceivedFromPersonId 
-	 * @property CommunicationListEntry $ReceivedFromEntry the value for the CommunicationListEntry object referenced by intReceivedFromEntryId 
-	 * @property Group $Group the value for the Group object referenced by intGroupId 
-	 * @property CommunicationList $CommunicationList the value for the CommunicationList object referenced by intCommunicationListId 
+	 * @property string $ResponseHeader the value for strResponseHeader 
+	 * @property string $ResponseBody the value for strResponseBody 
+	 * @property string $ErrorMessage the value for strErrorMessage 
+	 * @property Person $Person the value for the Person object referenced by intPersonId 
+	 * @property CommunicationListEntry $CommunicationListEntry the value for the CommunicationListEntry object referenced by intCommunicationListEntryId 
+	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the emailmessage_communicationlist_assn association table
+	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the emailmessage_communicationlist_assn association table
+	 * @property Group $_Group the value for the private _objGroup (Read-Only) if set due to an expansion on the emailmessage_group_assn association table
+	 * @property Group[] $_GroupArray the value for the private _objGroupArray (Read-Only) if set due to an ExpandAsArray on the emailmessage_group_assn association table
 	 * @property EmailOutgoingQueue $_EmailOutgoingQueue the value for the private _objEmailOutgoingQueue (Read-Only) if set due to an expansion on the email_outgoing_queue.email_message_id reverse relationship
 	 * @property EmailOutgoingQueue[] $_EmailOutgoingQueueArray the value for the private _objEmailOutgoingQueueArray (Read-Only) if set due to an ExpandAsArray on the email_outgoing_queue.email_message_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -82,35 +84,19 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column email_message.received_from_person_id
-		 * @var integer intReceivedFromPersonId
+		 * Protected member variable that maps to the database column email_message.person_id
+		 * @var integer intPersonId
 		 */
-		protected $intReceivedFromPersonId;
-		const ReceivedFromPersonIdDefault = null;
+		protected $intPersonId;
+		const PersonIdDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column email_message.received_from_entry_id
-		 * @var integer intReceivedFromEntryId
+		 * Protected member variable that maps to the database column email_message.communication_list_entry_id
+		 * @var integer intCommunicationListEntryId
 		 */
-		protected $intReceivedFromEntryId;
-		const ReceivedFromEntryIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column email_message.group_id
-		 * @var integer intGroupId
-		 */
-		protected $intGroupId;
-		const GroupIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column email_message.communication_list_id
-		 * @var integer intCommunicationListId
-		 */
-		protected $intCommunicationListId;
-		const CommunicationListIdDefault = null;
+		protected $intCommunicationListEntryId;
+		const CommunicationListEntryIdDefault = null;
 
 
 		/**
@@ -123,12 +109,60 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column email_message.response_message
-		 * @var string strResponseMessage
+		 * Protected member variable that maps to the database column email_message.response_header
+		 * @var string strResponseHeader
 		 */
-		protected $strResponseMessage;
-		const ResponseMessageDefault = null;
+		protected $strResponseHeader;
+		const ResponseHeaderDefault = null;
 
+
+		/**
+		 * Protected member variable that maps to the database column email_message.response_body
+		 * @var string strResponseBody
+		 */
+		protected $strResponseBody;
+		const ResponseBodyDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column email_message.error_message
+		 * @var string strErrorMessage
+		 */
+		protected $strErrorMessage;
+		const ErrorMessageDefault = null;
+
+
+		/**
+		 * Private member variable that stores a reference to a single CommunicationList object
+		 * (of type CommunicationList), if this EmailMessage object was restored with
+		 * an expansion on the emailmessage_communicationlist_assn association table.
+		 * @var CommunicationList _objCommunicationList;
+		 */
+		private $_objCommunicationList;
+
+		/**
+		 * Private member variable that stores a reference to an array of CommunicationList objects
+		 * (of type CommunicationList[]), if this EmailMessage object was restored with
+		 * an ExpandAsArray on the emailmessage_communicationlist_assn association table.
+		 * @var CommunicationList[] _objCommunicationListArray;
+		 */
+		private $_objCommunicationListArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single Group object
+		 * (of type Group), if this EmailMessage object was restored with
+		 * an expansion on the emailmessage_group_assn association table.
+		 * @var Group _objGroup;
+		 */
+		private $_objGroup;
+
+		/**
+		 * Private member variable that stores a reference to an array of Group objects
+		 * (of type Group[]), if this EmailMessage object was restored with
+		 * an ExpandAsArray on the emailmessage_group_assn association table.
+		 * @var Group[] _objGroupArray;
+		 */
+		private $_objGroupArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single EmailOutgoingQueue object
@@ -170,43 +204,23 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column email_message.received_from_person_id.
+		 * in the database column email_message.person_id.
 		 *
-		 * NOTE: Always use the ReceivedFromPerson property getter to correctly retrieve this Person object.
+		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Person objReceivedFromPerson
+		 * @var Person objPerson
 		 */
-		protected $objReceivedFromPerson;
+		protected $objPerson;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column email_message.received_from_entry_id.
+		 * in the database column email_message.communication_list_entry_id.
 		 *
-		 * NOTE: Always use the ReceivedFromEntry property getter to correctly retrieve this CommunicationListEntry object.
+		 * NOTE: Always use the CommunicationListEntry property getter to correctly retrieve this CommunicationListEntry object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var CommunicationListEntry objReceivedFromEntry
+		 * @var CommunicationListEntry objCommunicationListEntry
 		 */
-		protected $objReceivedFromEntry;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column email_message.group_id.
-		 *
-		 * NOTE: Always use the Group property getter to correctly retrieve this Group object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Group objGroup
-		 */
-		protected $objGroup;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column email_message.communication_list_id.
-		 *
-		 * NOTE: Always use the CommunicationList property getter to correctly retrieve this CommunicationList object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var CommunicationList objCommunicationList
-		 */
-		protected $objCommunicationList;
+		protected $objCommunicationListEntry;
 
 
 
@@ -501,12 +515,12 @@
 			$objBuilder->AddSelectItem($strTableName, 'date_received', $strAliasPrefix . 'date_received');
 			$objBuilder->AddSelectItem($strTableName, 'raw_message', $strAliasPrefix . 'raw_message');
 			$objBuilder->AddSelectItem($strTableName, 'message_identifier', $strAliasPrefix . 'message_identifier');
-			$objBuilder->AddSelectItem($strTableName, 'received_from_person_id', $strAliasPrefix . 'received_from_person_id');
-			$objBuilder->AddSelectItem($strTableName, 'received_from_entry_id', $strAliasPrefix . 'received_from_entry_id');
-			$objBuilder->AddSelectItem($strTableName, 'group_id', $strAliasPrefix . 'group_id');
-			$objBuilder->AddSelectItem($strTableName, 'communication_list_id', $strAliasPrefix . 'communication_list_id');
+			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
+			$objBuilder->AddSelectItem($strTableName, 'communication_list_entry_id', $strAliasPrefix . 'communication_list_entry_id');
 			$objBuilder->AddSelectItem($strTableName, 'subject', $strAliasPrefix . 'subject');
-			$objBuilder->AddSelectItem($strTableName, 'response_message', $strAliasPrefix . 'response_message');
+			$objBuilder->AddSelectItem($strTableName, 'response_header', $strAliasPrefix . 'response_header');
+			$objBuilder->AddSelectItem($strTableName, 'response_body', $strAliasPrefix . 'response_body');
+			$objBuilder->AddSelectItem($strTableName, 'error_message', $strAliasPrefix . 'error_message');
 		}
 
 
@@ -544,6 +558,34 @@
 				if (!$strAliasPrefix)
 					$strAliasPrefix = 'email_message__';
 
+				$strAlias = $strAliasPrefix . 'communicationlist__communication_list_id__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objCommunicationListArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objCommunicationListArray[$intPreviousChildItemCount - 1];
+						$objChildItem = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objCommunicationListArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objCommunicationListArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'group__group_id__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupArray[$intPreviousChildItemCount - 1];
+						$objChildItem = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__group_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupArray[] = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 
 				$strAlias = $strAliasPrefix . 'emailoutgoingqueue__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -580,18 +622,18 @@
 			$objToReturn->strRawMessage = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'message_identifier', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'message_identifier'] : $strAliasPrefix . 'message_identifier';
 			$objToReturn->strMessageIdentifier = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'received_from_person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'received_from_person_id'] : $strAliasPrefix . 'received_from_person_id';
-			$objToReturn->intReceivedFromPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'received_from_entry_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'received_from_entry_id'] : $strAliasPrefix . 'received_from_entry_id';
-			$objToReturn->intReceivedFromEntryId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'group_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_id'] : $strAliasPrefix . 'group_id';
-			$objToReturn->intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'communication_list_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'communication_list_id'] : $strAliasPrefix . 'communication_list_id';
-			$objToReturn->intCommunicationListId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
+			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'communication_list_entry_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'communication_list_entry_id'] : $strAliasPrefix . 'communication_list_entry_id';
+			$objToReturn->intCommunicationListEntryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'subject', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subject'] : $strAliasPrefix . 'subject';
 			$objToReturn->strSubject = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'response_message', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'response_message'] : $strAliasPrefix . 'response_message';
-			$objToReturn->strResponseMessage = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'response_header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'response_header'] : $strAliasPrefix . 'response_header';
+			$objToReturn->strResponseHeader = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'response_body', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'response_body'] : $strAliasPrefix . 'response_body';
+			$objToReturn->strResponseBody = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'error_message', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'error_message'] : $strAliasPrefix . 'error_message';
+			$objToReturn->strErrorMessage = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -605,31 +647,39 @@
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'email_message__';
 
-			// Check for ReceivedFromPerson Early Binding
-			$strAlias = $strAliasPrefix . 'received_from_person_id__id';
+			// Check for Person Early Binding
+			$strAlias = $strAliasPrefix . 'person_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objReceivedFromPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'received_from_person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for ReceivedFromEntry Early Binding
-			$strAlias = $strAliasPrefix . 'received_from_entry_id__id';
+			// Check for CommunicationListEntry Early Binding
+			$strAlias = $strAliasPrefix . 'communication_list_entry_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objReceivedFromEntry = CommunicationListEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'received_from_entry_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objCommunicationListEntry = CommunicationListEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communication_list_entry_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for Group Early Binding
-			$strAlias = $strAliasPrefix . 'group_id__id';
+
+
+			// Check for CommunicationList Virtual Binding
+			$strAlias = $strAliasPrefix . 'communicationlist__communication_list_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objCommunicationListArray[] = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objCommunicationList = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communicationlist__communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
-			// Check for CommunicationList Early Binding
-			$strAlias = $strAliasPrefix . 'communication_list_id__id';
+			// Check for Group Virtual Binding
+			$strAlias = $strAliasPrefix . 'group__group_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objCommunicationList = CommunicationList::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communication_list_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-
-
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupArray[] = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group__group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 
 			// Check for EmailOutgoingQueue Virtual Binding
@@ -771,16 +821,16 @@
 			
 		/**
 		 * Load an array of EmailMessage objects,
-		 * by ReceivedFromPersonId Index(es)
-		 * @param integer $intReceivedFromPersonId
+		 * by PersonId Index(es)
+		 * @param integer $intPersonId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return EmailMessage[]
 		*/
-		public static function LoadArrayByReceivedFromPersonId($intReceivedFromPersonId, $objOptionalClauses = null) {
-			// Call EmailMessage::QueryArray to perform the LoadArrayByReceivedFromPersonId query
+		public static function LoadArrayByPersonId($intPersonId, $objOptionalClauses = null) {
+			// Call EmailMessage::QueryArray to perform the LoadArrayByPersonId query
 			try {
 				return EmailMessage::QueryArray(
-					QQ::Equal(QQN::EmailMessage()->ReceivedFromPersonId, $intReceivedFromPersonId),
+					QQ::Equal(QQN::EmailMessage()->PersonId, $intPersonId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -790,29 +840,29 @@
 
 		/**
 		 * Count EmailMessages
-		 * by ReceivedFromPersonId Index(es)
-		 * @param integer $intReceivedFromPersonId
+		 * by PersonId Index(es)
+		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByReceivedFromPersonId($intReceivedFromPersonId) {
-			// Call EmailMessage::QueryCount to perform the CountByReceivedFromPersonId query
+		public static function CountByPersonId($intPersonId) {
+			// Call EmailMessage::QueryCount to perform the CountByPersonId query
 			return EmailMessage::QueryCount(
-				QQ::Equal(QQN::EmailMessage()->ReceivedFromPersonId, $intReceivedFromPersonId)
+				QQ::Equal(QQN::EmailMessage()->PersonId, $intPersonId)
 			);
 		}
 			
 		/**
 		 * Load an array of EmailMessage objects,
-		 * by ReceivedFromEntryId Index(es)
-		 * @param integer $intReceivedFromEntryId
+		 * by CommunicationListEntryId Index(es)
+		 * @param integer $intCommunicationListEntryId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return EmailMessage[]
 		*/
-		public static function LoadArrayByReceivedFromEntryId($intReceivedFromEntryId, $objOptionalClauses = null) {
-			// Call EmailMessage::QueryArray to perform the LoadArrayByReceivedFromEntryId query
+		public static function LoadArrayByCommunicationListEntryId($intCommunicationListEntryId, $objOptionalClauses = null) {
+			// Call EmailMessage::QueryArray to perform the LoadArrayByCommunicationListEntryId query
 			try {
 				return EmailMessage::QueryArray(
-					QQ::Equal(QQN::EmailMessage()->ReceivedFromEntryId, $intReceivedFromEntryId),
+					QQ::Equal(QQN::EmailMessage()->CommunicationListEntryId, $intCommunicationListEntryId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -822,78 +872,14 @@
 
 		/**
 		 * Count EmailMessages
-		 * by ReceivedFromEntryId Index(es)
-		 * @param integer $intReceivedFromEntryId
+		 * by CommunicationListEntryId Index(es)
+		 * @param integer $intCommunicationListEntryId
 		 * @return int
 		*/
-		public static function CountByReceivedFromEntryId($intReceivedFromEntryId) {
-			// Call EmailMessage::QueryCount to perform the CountByReceivedFromEntryId query
+		public static function CountByCommunicationListEntryId($intCommunicationListEntryId) {
+			// Call EmailMessage::QueryCount to perform the CountByCommunicationListEntryId query
 			return EmailMessage::QueryCount(
-				QQ::Equal(QQN::EmailMessage()->ReceivedFromEntryId, $intReceivedFromEntryId)
-			);
-		}
-			
-		/**
-		 * Load an array of EmailMessage objects,
-		 * by GroupId Index(es)
-		 * @param integer $intGroupId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return EmailMessage[]
-		*/
-		public static function LoadArrayByGroupId($intGroupId, $objOptionalClauses = null) {
-			// Call EmailMessage::QueryArray to perform the LoadArrayByGroupId query
-			try {
-				return EmailMessage::QueryArray(
-					QQ::Equal(QQN::EmailMessage()->GroupId, $intGroupId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count EmailMessages
-		 * by GroupId Index(es)
-		 * @param integer $intGroupId
-		 * @return int
-		*/
-		public static function CountByGroupId($intGroupId) {
-			// Call EmailMessage::QueryCount to perform the CountByGroupId query
-			return EmailMessage::QueryCount(
-				QQ::Equal(QQN::EmailMessage()->GroupId, $intGroupId)
-			);
-		}
-			
-		/**
-		 * Load an array of EmailMessage objects,
-		 * by CommunicationListId Index(es)
-		 * @param integer $intCommunicationListId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return EmailMessage[]
-		*/
-		public static function LoadArrayByCommunicationListId($intCommunicationListId, $objOptionalClauses = null) {
-			// Call EmailMessage::QueryArray to perform the LoadArrayByCommunicationListId query
-			try {
-				return EmailMessage::QueryArray(
-					QQ::Equal(QQN::EmailMessage()->CommunicationListId, $intCommunicationListId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count EmailMessages
-		 * by CommunicationListId Index(es)
-		 * @param integer $intCommunicationListId
-		 * @return int
-		*/
-		public static function CountByCommunicationListId($intCommunicationListId) {
-			// Call EmailMessage::QueryCount to perform the CountByCommunicationListId query
-			return EmailMessage::QueryCount(
-				QQ::Equal(QQN::EmailMessage()->CommunicationListId, $intCommunicationListId)
+				QQ::Equal(QQN::EmailMessage()->CommunicationListEntryId, $intCommunicationListEntryId)
 			);
 		}
 
@@ -902,6 +888,68 @@
 		////////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Array via Many to Many)
 		////////////////////////////////////////////////////
+			/**
+		 * Load an array of CommunicationList objects for a given CommunicationList
+		 * via the emailmessage_communicationlist_assn table
+		 * @param integer $intCommunicationListId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailMessage[]
+		*/
+		public static function LoadArrayByCommunicationList($intCommunicationListId, $objOptionalClauses = null) {
+			// Call EmailMessage::QueryArray to perform the LoadArrayByCommunicationList query
+			try {
+				return EmailMessage::QueryArray(
+					QQ::Equal(QQN::EmailMessage()->CommunicationList->CommunicationListId, $intCommunicationListId),
+					$objOptionalClauses
+				);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count EmailMessages for a given CommunicationList
+		 * via the emailmessage_communicationlist_assn table
+		 * @param integer $intCommunicationListId
+		 * @return int
+		*/
+		public static function CountByCommunicationList($intCommunicationListId) {
+			return EmailMessage::QueryCount(
+				QQ::Equal(QQN::EmailMessage()->CommunicationList->CommunicationListId, $intCommunicationListId)
+			);
+		}
+			/**
+		 * Load an array of Group objects for a given Group
+		 * via the emailmessage_group_assn table
+		 * @param integer $intGroupId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailMessage[]
+		*/
+		public static function LoadArrayByGroup($intGroupId, $objOptionalClauses = null) {
+			// Call EmailMessage::QueryArray to perform the LoadArrayByGroup query
+			try {
+				return EmailMessage::QueryArray(
+					QQ::Equal(QQN::EmailMessage()->Group->GroupId, $intGroupId),
+					$objOptionalClauses
+				);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count EmailMessages for a given Group
+		 * via the emailmessage_group_assn table
+		 * @param integer $intGroupId
+		 * @return int
+		*/
+		public static function CountByGroup($intGroupId) {
+			return EmailMessage::QueryCount(
+				QQ::Equal(QQN::EmailMessage()->Group->GroupId, $intGroupId)
+			);
+		}
 
 
 
@@ -931,23 +979,23 @@
 							`date_received`,
 							`raw_message`,
 							`message_identifier`,
-							`received_from_person_id`,
-							`received_from_entry_id`,
-							`group_id`,
-							`communication_list_id`,
+							`person_id`,
+							`communication_list_entry_id`,
 							`subject`,
-							`response_message`
+							`response_header`,
+							`response_body`,
+							`error_message`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intEmailMessageStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
 							' . $objDatabase->SqlVariable($this->strRawMessage) . ',
 							' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
-							' . $objDatabase->SqlVariable($this->intReceivedFromPersonId) . ',
-							' . $objDatabase->SqlVariable($this->intReceivedFromEntryId) . ',
-							' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							' . $objDatabase->SqlVariable($this->intCommunicationListId) . ',
+							' . $objDatabase->SqlVariable($this->intPersonId) . ',
+							' . $objDatabase->SqlVariable($this->intCommunicationListEntryId) . ',
 							' . $objDatabase->SqlVariable($this->strSubject) . ',
-							' . $objDatabase->SqlVariable($this->strResponseMessage) . '
+							' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
+							' . $objDatabase->SqlVariable($this->strResponseBody) . ',
+							' . $objDatabase->SqlVariable($this->strErrorMessage) . '
 						)
 					');
 
@@ -967,12 +1015,12 @@
 							`date_received` = ' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
 							`raw_message` = ' . $objDatabase->SqlVariable($this->strRawMessage) . ',
 							`message_identifier` = ' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
-							`received_from_person_id` = ' . $objDatabase->SqlVariable($this->intReceivedFromPersonId) . ',
-							`received_from_entry_id` = ' . $objDatabase->SqlVariable($this->intReceivedFromEntryId) . ',
-							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							`communication_list_id` = ' . $objDatabase->SqlVariable($this->intCommunicationListId) . ',
+							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
+							`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intCommunicationListEntryId) . ',
 							`subject` = ' . $objDatabase->SqlVariable($this->strSubject) . ',
-							`response_message` = ' . $objDatabase->SqlVariable($this->strResponseMessage) . '
+							`response_header` = ' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
+							`response_body` = ' . $objDatabase->SqlVariable($this->strResponseBody) . ',
+							`error_message` = ' . $objDatabase->SqlVariable($this->strErrorMessage) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1055,12 +1103,12 @@
 			$this->dttDateReceived = $objReloaded->dttDateReceived;
 			$this->strRawMessage = $objReloaded->strRawMessage;
 			$this->strMessageIdentifier = $objReloaded->strMessageIdentifier;
-			$this->ReceivedFromPersonId = $objReloaded->ReceivedFromPersonId;
-			$this->ReceivedFromEntryId = $objReloaded->ReceivedFromEntryId;
-			$this->GroupId = $objReloaded->GroupId;
-			$this->CommunicationListId = $objReloaded->CommunicationListId;
+			$this->PersonId = $objReloaded->PersonId;
+			$this->CommunicationListEntryId = $objReloaded->CommunicationListEntryId;
 			$this->strSubject = $objReloaded->strSubject;
-			$this->strResponseMessage = $objReloaded->strResponseMessage;
+			$this->strResponseHeader = $objReloaded->strResponseHeader;
+			$this->strResponseBody = $objReloaded->strResponseBody;
+			$this->strErrorMessage = $objReloaded->strErrorMessage;
 		}
 
 
@@ -1106,83 +1154,59 @@
 					// @return string
 					return $this->strMessageIdentifier;
 
-				case 'ReceivedFromPersonId':
-					// Gets the value for intReceivedFromPersonId 
+				case 'PersonId':
+					// Gets the value for intPersonId 
 					// @return integer
-					return $this->intReceivedFromPersonId;
+					return $this->intPersonId;
 
-				case 'ReceivedFromEntryId':
-					// Gets the value for intReceivedFromEntryId 
+				case 'CommunicationListEntryId':
+					// Gets the value for intCommunicationListEntryId 
 					// @return integer
-					return $this->intReceivedFromEntryId;
-
-				case 'GroupId':
-					// Gets the value for intGroupId 
-					// @return integer
-					return $this->intGroupId;
-
-				case 'CommunicationListId':
-					// Gets the value for intCommunicationListId 
-					// @return integer
-					return $this->intCommunicationListId;
+					return $this->intCommunicationListEntryId;
 
 				case 'Subject':
 					// Gets the value for strSubject 
 					// @return string
 					return $this->strSubject;
 
-				case 'ResponseMessage':
-					// Gets the value for strResponseMessage 
+				case 'ResponseHeader':
+					// Gets the value for strResponseHeader 
 					// @return string
-					return $this->strResponseMessage;
+					return $this->strResponseHeader;
+
+				case 'ResponseBody':
+					// Gets the value for strResponseBody 
+					// @return string
+					return $this->strResponseBody;
+
+				case 'ErrorMessage':
+					// Gets the value for strErrorMessage 
+					// @return string
+					return $this->strErrorMessage;
 
 
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'ReceivedFromPerson':
-					// Gets the value for the Person object referenced by intReceivedFromPersonId 
+				case 'Person':
+					// Gets the value for the Person object referenced by intPersonId 
 					// @return Person
 					try {
-						if ((!$this->objReceivedFromPerson) && (!is_null($this->intReceivedFromPersonId)))
-							$this->objReceivedFromPerson = Person::Load($this->intReceivedFromPersonId);
-						return $this->objReceivedFromPerson;
+						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
+							$this->objPerson = Person::Load($this->intPersonId);
+						return $this->objPerson;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'ReceivedFromEntry':
-					// Gets the value for the CommunicationListEntry object referenced by intReceivedFromEntryId 
+				case 'CommunicationListEntry':
+					// Gets the value for the CommunicationListEntry object referenced by intCommunicationListEntryId 
 					// @return CommunicationListEntry
 					try {
-						if ((!$this->objReceivedFromEntry) && (!is_null($this->intReceivedFromEntryId)))
-							$this->objReceivedFromEntry = CommunicationListEntry::Load($this->intReceivedFromEntryId);
-						return $this->objReceivedFromEntry;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Group':
-					// Gets the value for the Group object referenced by intGroupId 
-					// @return Group
-					try {
-						if ((!$this->objGroup) && (!is_null($this->intGroupId)))
-							$this->objGroup = Group::Load($this->intGroupId);
-						return $this->objGroup;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'CommunicationList':
-					// Gets the value for the CommunicationList object referenced by intCommunicationListId 
-					// @return CommunicationList
-					try {
-						if ((!$this->objCommunicationList) && (!is_null($this->intCommunicationListId)))
-							$this->objCommunicationList = CommunicationList::Load($this->intCommunicationListId);
-						return $this->objCommunicationList;
+						if ((!$this->objCommunicationListEntry) && (!is_null($this->intCommunicationListEntryId)))
+							$this->objCommunicationListEntry = CommunicationListEntry::Load($this->intCommunicationListEntryId);
+						return $this->objCommunicationListEntry;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1193,6 +1217,30 @@
 				// Virtual Object References (Many to Many and Reverse References)
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
+
+				case '_CommunicationList':
+					// Gets the value for the private _objCommunicationList (Read-Only)
+					// if set due to an expansion on the emailmessage_communicationlist_assn association table
+					// @return CommunicationList
+					return $this->_objCommunicationList;
+
+				case '_CommunicationListArray':
+					// Gets the value for the private _objCommunicationListArray (Read-Only)
+					// if set due to an ExpandAsArray on the emailmessage_communicationlist_assn association table
+					// @return CommunicationList[]
+					return (array) $this->_objCommunicationListArray;
+
+				case '_Group':
+					// Gets the value for the private _objGroup (Read-Only)
+					// if set due to an expansion on the emailmessage_group_assn association table
+					// @return Group
+					return $this->_objGroup;
+
+				case '_GroupArray':
+					// Gets the value for the private _objGroupArray (Read-Only)
+					// if set due to an ExpandAsArray on the emailmessage_group_assn association table
+					// @return Group[]
+					return (array) $this->_objGroupArray;
 
 				case '_EmailOutgoingQueue':
 					// Gets the value for the private _objEmailOutgoingQueue (Read-Only)
@@ -1277,49 +1325,25 @@
 						throw $objExc;
 					}
 
-				case 'ReceivedFromPersonId':
-					// Sets the value for intReceivedFromPersonId 
+				case 'PersonId':
+					// Sets the value for intPersonId 
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objReceivedFromPerson = null;
-						return ($this->intReceivedFromPersonId = QType::Cast($mixValue, QType::Integer));
+						$this->objPerson = null;
+						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'ReceivedFromEntryId':
-					// Sets the value for intReceivedFromEntryId 
+				case 'CommunicationListEntryId':
+					// Sets the value for intCommunicationListEntryId 
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objReceivedFromEntry = null;
-						return ($this->intReceivedFromEntryId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'GroupId':
-					// Sets the value for intGroupId 
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objGroup = null;
-						return ($this->intGroupId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'CommunicationListId':
-					// Sets the value for intCommunicationListId 
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objCommunicationList = null;
-						return ($this->intCommunicationListId = QType::Cast($mixValue, QType::Integer));
+						$this->objCommunicationListEntry = null;
+						return ($this->intCommunicationListEntryId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1336,12 +1360,34 @@
 						throw $objExc;
 					}
 
-				case 'ResponseMessage':
-					// Sets the value for strResponseMessage 
+				case 'ResponseHeader':
+					// Sets the value for strResponseHeader 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strResponseMessage = QType::Cast($mixValue, QType::String));
+						return ($this->strResponseHeader = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ResponseBody':
+					// Sets the value for strResponseBody 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strResponseBody = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ErrorMessage':
+					// Sets the value for strErrorMessage 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strErrorMessage = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1351,13 +1397,13 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'ReceivedFromPerson':
-					// Sets the value for the Person object referenced by intReceivedFromPersonId 
+				case 'Person':
+					// Sets the value for the Person object referenced by intPersonId 
 					// @param Person $mixValue
 					// @return Person
 					if (is_null($mixValue)) {
-						$this->intReceivedFromPersonId = null;
-						$this->objReceivedFromPerson = null;
+						$this->intPersonId = null;
+						$this->objPerson = null;
 						return null;
 					} else {
 						// Make sure $mixValue actually is a Person object
@@ -1370,24 +1416,24 @@
 
 						// Make sure $mixValue is a SAVED Person object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved ReceivedFromPerson for this EmailMessage');
+							throw new QCallerException('Unable to set an unsaved Person for this EmailMessage');
 
 						// Update Local Member Variables
-						$this->objReceivedFromPerson = $mixValue;
-						$this->intReceivedFromPersonId = $mixValue->Id;
+						$this->objPerson = $mixValue;
+						$this->intPersonId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
 					}
 					break;
 
-				case 'ReceivedFromEntry':
-					// Sets the value for the CommunicationListEntry object referenced by intReceivedFromEntryId 
+				case 'CommunicationListEntry':
+					// Sets the value for the CommunicationListEntry object referenced by intCommunicationListEntryId 
 					// @param CommunicationListEntry $mixValue
 					// @return CommunicationListEntry
 					if (is_null($mixValue)) {
-						$this->intReceivedFromEntryId = null;
-						$this->objReceivedFromEntry = null;
+						$this->intCommunicationListEntryId = null;
+						$this->objCommunicationListEntry = null;
 						return null;
 					} else {
 						// Make sure $mixValue actually is a CommunicationListEntry object
@@ -1400,71 +1446,11 @@
 
 						// Make sure $mixValue is a SAVED CommunicationListEntry object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved ReceivedFromEntry for this EmailMessage');
+							throw new QCallerException('Unable to set an unsaved CommunicationListEntry for this EmailMessage');
 
 						// Update Local Member Variables
-						$this->objReceivedFromEntry = $mixValue;
-						$this->intReceivedFromEntryId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'Group':
-					// Sets the value for the Group object referenced by intGroupId 
-					// @param Group $mixValue
-					// @return Group
-					if (is_null($mixValue)) {
-						$this->intGroupId = null;
-						$this->objGroup = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a Group object
-						try {
-							$mixValue = QType::Cast($mixValue, 'Group');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED Group object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Group for this EmailMessage');
-
-						// Update Local Member Variables
-						$this->objGroup = $mixValue;
-						$this->intGroupId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'CommunicationList':
-					// Sets the value for the CommunicationList object referenced by intCommunicationListId 
-					// @param CommunicationList $mixValue
-					// @return CommunicationList
-					if (is_null($mixValue)) {
-						$this->intCommunicationListId = null;
-						$this->objCommunicationList = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a CommunicationList object
-						try {
-							$mixValue = QType::Cast($mixValue, 'CommunicationList');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED CommunicationList object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved CommunicationList for this EmailMessage');
-
-						// Update Local Member Variables
-						$this->objCommunicationList = $mixValue;
-						$this->intCommunicationListId = $mixValue->Id;
+						$this->objCommunicationListEntry = $mixValue;
+						$this->intCommunicationListEntryId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1648,6 +1634,250 @@
 			');
 		}
 
+			
+		// Related Many-to-Many Objects' Methods for CommunicationList
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all many-to-many associated CommunicationLists as an array of CommunicationList objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return CommunicationList[]
+		*/ 
+		public function GetCommunicationListArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return CommunicationList::LoadArrayByEmailMessage($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all many-to-many associated CommunicationLists
+		 * @return int
+		*/ 
+		public function CountCommunicationLists() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return CommunicationList::CountByEmailMessage($this->intId);
+		}
+
+		/**
+		 * Checks to see if an association exists with a specific CommunicationList
+		 * @param CommunicationList $objCommunicationList
+		 * @return bool
+		*/
+		public function IsCommunicationListAssociated(CommunicationList $objCommunicationList) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsCommunicationListAssociated on this unsaved EmailMessage.');
+			if ((is_null($objCommunicationList->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsCommunicationListAssociated on this EmailMessage with an unsaved CommunicationList.');
+
+			$intRowCount = EmailMessage::QueryCount(
+				QQ::AndCondition(
+					QQ::Equal(QQN::EmailMessage()->Id, $this->intId),
+					QQ::Equal(QQN::EmailMessage()->CommunicationList->CommunicationListId, $objCommunicationList->Id)
+				)
+			);
+
+			return ($intRowCount > 0);
+		}
+
+		/**
+		 * Associates a CommunicationList
+		 * @param CommunicationList $objCommunicationList
+		 * @return void
+		*/ 
+		public function AssociateCommunicationList(CommunicationList $objCommunicationList) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCommunicationList on this unsaved EmailMessage.');
+			if ((is_null($objCommunicationList->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCommunicationList on this EmailMessage with an unsaved CommunicationList.');
+
+			// Get the Database Object for this Class
+			$objDatabase = EmailMessage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				INSERT INTO `emailmessage_communicationlist_assn` (
+					`email_message_id`,
+					`communication_list_id`
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
+				)
+			');
+		}
+
+		/**
+		 * Unassociates a CommunicationList
+		 * @param CommunicationList $objCommunicationList
+		 * @return void
+		*/ 
+		public function UnassociateCommunicationList(CommunicationList $objCommunicationList) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCommunicationList on this unsaved EmailMessage.');
+			if ((is_null($objCommunicationList->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCommunicationList on this EmailMessage with an unsaved CommunicationList.');
+
+			// Get the Database Object for this Class
+			$objDatabase = EmailMessage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`emailmessage_communicationlist_assn`
+				WHERE
+					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
+					`communication_list_id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates all CommunicationLists
+		 * @return void
+		*/ 
+		public function UnassociateAllCommunicationLists() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllCommunicationListArray on this unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = EmailMessage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`emailmessage_communicationlist_assn`
+				WHERE
+					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+			
+		// Related Many-to-Many Objects' Methods for Group
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all many-to-many associated Groups as an array of Group objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Group[]
+		*/ 
+		public function GetGroupArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return Group::LoadArrayByEmailMessage($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all many-to-many associated Groups
+		 * @return int
+		*/ 
+		public function CountGroups() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return Group::CountByEmailMessage($this->intId);
+		}
+
+		/**
+		 * Checks to see if an association exists with a specific Group
+		 * @param Group $objGroup
+		 * @return bool
+		*/
+		public function IsGroupAssociated(Group $objGroup) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsGroupAssociated on this unsaved EmailMessage.');
+			if ((is_null($objGroup->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsGroupAssociated on this EmailMessage with an unsaved Group.');
+
+			$intRowCount = EmailMessage::QueryCount(
+				QQ::AndCondition(
+					QQ::Equal(QQN::EmailMessage()->Id, $this->intId),
+					QQ::Equal(QQN::EmailMessage()->Group->GroupId, $objGroup->Id)
+				)
+			);
+
+			return ($intRowCount > 0);
+		}
+
+		/**
+		 * Associates a Group
+		 * @param Group $objGroup
+		 * @return void
+		*/ 
+		public function AssociateGroup(Group $objGroup) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroup on this unsaved EmailMessage.');
+			if ((is_null($objGroup->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroup on this EmailMessage with an unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = EmailMessage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				INSERT INTO `emailmessage_group_assn` (
+					`email_message_id`,
+					`group_id`
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($objGroup->Id) . '
+				)
+			');
+		}
+
+		/**
+		 * Unassociates a Group
+		 * @param Group $objGroup
+		 * @return void
+		*/ 
+		public function UnassociateGroup(Group $objGroup) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this unsaved EmailMessage.');
+			if ((is_null($objGroup->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroup on this EmailMessage with an unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = EmailMessage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`emailmessage_group_assn`
+				WHERE
+					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
+					`group_id` = ' . $objDatabase->SqlVariable($objGroup->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates all Groups
+		 * @return void
+		*/ 
+		public function UnassociateAllGroups() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllGroupArray on this unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = EmailMessage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`emailmessage_group_assn`
+				WHERE
+					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
 
 
 
@@ -1663,12 +1893,12 @@
 			$strToReturn .= '<element name="DateReceived" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="RawMessage" type="xsd:string"/>';
 			$strToReturn .= '<element name="MessageIdentifier" type="xsd:string"/>';
-			$strToReturn .= '<element name="ReceivedFromPerson" type="xsd1:Person"/>';
-			$strToReturn .= '<element name="ReceivedFromEntry" type="xsd1:CommunicationListEntry"/>';
-			$strToReturn .= '<element name="Group" type="xsd1:Group"/>';
-			$strToReturn .= '<element name="CommunicationList" type="xsd1:CommunicationList"/>';
+			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="CommunicationListEntry" type="xsd1:CommunicationListEntry"/>';
 			$strToReturn .= '<element name="Subject" type="xsd:string"/>';
-			$strToReturn .= '<element name="ResponseMessage" type="xsd:string"/>';
+			$strToReturn .= '<element name="ResponseHeader" type="xsd:string"/>';
+			$strToReturn .= '<element name="ResponseBody" type="xsd:string"/>';
+			$strToReturn .= '<element name="ErrorMessage" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1679,8 +1909,6 @@
 				$strComplexTypeArray['EmailMessage'] = EmailMessage::GetSoapComplexTypeXml();
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CommunicationListEntry::AlterSoapComplexTypeArray($strComplexTypeArray);
-				Group::AlterSoapComplexTypeArray($strComplexTypeArray);
-				CommunicationList::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1705,22 +1933,20 @@
 				$objToReturn->strRawMessage = $objSoapObject->RawMessage;
 			if (property_exists($objSoapObject, 'MessageIdentifier'))
 				$objToReturn->strMessageIdentifier = $objSoapObject->MessageIdentifier;
-			if ((property_exists($objSoapObject, 'ReceivedFromPerson')) &&
-				($objSoapObject->ReceivedFromPerson))
-				$objToReturn->ReceivedFromPerson = Person::GetObjectFromSoapObject($objSoapObject->ReceivedFromPerson);
-			if ((property_exists($objSoapObject, 'ReceivedFromEntry')) &&
-				($objSoapObject->ReceivedFromEntry))
-				$objToReturn->ReceivedFromEntry = CommunicationListEntry::GetObjectFromSoapObject($objSoapObject->ReceivedFromEntry);
-			if ((property_exists($objSoapObject, 'Group')) &&
-				($objSoapObject->Group))
-				$objToReturn->Group = Group::GetObjectFromSoapObject($objSoapObject->Group);
-			if ((property_exists($objSoapObject, 'CommunicationList')) &&
-				($objSoapObject->CommunicationList))
-				$objToReturn->CommunicationList = CommunicationList::GetObjectFromSoapObject($objSoapObject->CommunicationList);
+			if ((property_exists($objSoapObject, 'Person')) &&
+				($objSoapObject->Person))
+				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
+			if ((property_exists($objSoapObject, 'CommunicationListEntry')) &&
+				($objSoapObject->CommunicationListEntry))
+				$objToReturn->CommunicationListEntry = CommunicationListEntry::GetObjectFromSoapObject($objSoapObject->CommunicationListEntry);
 			if (property_exists($objSoapObject, 'Subject'))
 				$objToReturn->strSubject = $objSoapObject->Subject;
-			if (property_exists($objSoapObject, 'ResponseMessage'))
-				$objToReturn->strResponseMessage = $objSoapObject->ResponseMessage;
+			if (property_exists($objSoapObject, 'ResponseHeader'))
+				$objToReturn->strResponseHeader = $objSoapObject->ResponseHeader;
+			if (property_exists($objSoapObject, 'ResponseBody'))
+				$objToReturn->strResponseBody = $objSoapObject->ResponseBody;
+			if (property_exists($objSoapObject, 'ErrorMessage'))
+				$objToReturn->strErrorMessage = $objSoapObject->ErrorMessage;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1741,22 +1967,14 @@
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
 			if ($objObject->dttDateReceived)
 				$objObject->dttDateReceived = $objObject->dttDateReceived->__toString(QDateTime::FormatSoap);
-			if ($objObject->objReceivedFromPerson)
-				$objObject->objReceivedFromPerson = Person::GetSoapObjectFromObject($objObject->objReceivedFromPerson, false);
+			if ($objObject->objPerson)
+				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intReceivedFromPersonId = null;
-			if ($objObject->objReceivedFromEntry)
-				$objObject->objReceivedFromEntry = CommunicationListEntry::GetSoapObjectFromObject($objObject->objReceivedFromEntry, false);
+				$objObject->intPersonId = null;
+			if ($objObject->objCommunicationListEntry)
+				$objObject->objCommunicationListEntry = CommunicationListEntry::GetSoapObjectFromObject($objObject->objCommunicationListEntry, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intReceivedFromEntryId = null;
-			if ($objObject->objGroup)
-				$objObject->objGroup = Group::GetSoapObjectFromObject($objObject->objGroup, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intGroupId = null;
-			if ($objObject->objCommunicationList)
-				$objObject->objCommunicationList = CommunicationList::GetSoapObjectFromObject($objObject->objCommunicationList, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intCommunicationListId = null;
+				$objObject->intCommunicationListEntryId = null;
 			return $objObject;
 		}
 
@@ -1770,6 +1988,60 @@
 	/////////////////////////////////////
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
+
+	class QQNodeEmailMessageCommunicationList extends QQAssociationNode {
+		protected $strType = 'association';
+		protected $strName = 'communicationlist';
+
+		protected $strTableName = 'emailmessage_communicationlist_assn';
+		protected $strPrimaryKey = 'email_message_id';
+		protected $strClassName = 'CommunicationList';
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'CommunicationListId':
+					return new QQNode('communication_list_id', 'CommunicationListId', 'integer', $this);
+				case 'CommunicationList':
+					return new QQNodeCommunicationList('communication_list_id', 'CommunicationListId', 'integer', $this);
+				case '_ChildTableNode':
+					return new QQNodeCommunicationList('communication_list_id', 'CommunicationListId', 'integer', $this);
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+	}
+
+	class QQNodeEmailMessageGroup extends QQAssociationNode {
+		protected $strType = 'association';
+		protected $strName = 'group';
+
+		protected $strTableName = 'emailmessage_group_assn';
+		protected $strPrimaryKey = 'email_message_id';
+		protected $strClassName = 'Group';
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'GroupId':
+					return new QQNode('group_id', 'GroupId', 'integer', $this);
+				case 'Group':
+					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);
+				case '_ChildTableNode':
+					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+	}
 
 	class QQNodeEmailMessage extends QQNode {
 		protected $strTableName = 'email_message';
@@ -1787,26 +2059,26 @@
 					return new QQNode('raw_message', 'RawMessage', 'string', $this);
 				case 'MessageIdentifier':
 					return new QQNode('message_identifier', 'MessageIdentifier', 'string', $this);
-				case 'ReceivedFromPersonId':
-					return new QQNode('received_from_person_id', 'ReceivedFromPersonId', 'integer', $this);
-				case 'ReceivedFromPerson':
-					return new QQNodePerson('received_from_person_id', 'ReceivedFromPerson', 'integer', $this);
-				case 'ReceivedFromEntryId':
-					return new QQNode('received_from_entry_id', 'ReceivedFromEntryId', 'integer', $this);
-				case 'ReceivedFromEntry':
-					return new QQNodeCommunicationListEntry('received_from_entry_id', 'ReceivedFromEntry', 'integer', $this);
-				case 'GroupId':
-					return new QQNode('group_id', 'GroupId', 'integer', $this);
-				case 'Group':
-					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'CommunicationListId':
-					return new QQNode('communication_list_id', 'CommunicationListId', 'integer', $this);
-				case 'CommunicationList':
-					return new QQNodeCommunicationList('communication_list_id', 'CommunicationList', 'integer', $this);
+				case 'PersonId':
+					return new QQNode('person_id', 'PersonId', 'integer', $this);
+				case 'Person':
+					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'CommunicationListEntryId':
+					return new QQNode('communication_list_entry_id', 'CommunicationListEntryId', 'integer', $this);
+				case 'CommunicationListEntry':
+					return new QQNodeCommunicationListEntry('communication_list_entry_id', 'CommunicationListEntry', 'integer', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
-				case 'ResponseMessage':
-					return new QQNode('response_message', 'ResponseMessage', 'string', $this);
+				case 'ResponseHeader':
+					return new QQNode('response_header', 'ResponseHeader', 'string', $this);
+				case 'ResponseBody':
+					return new QQNode('response_body', 'ResponseBody', 'string', $this);
+				case 'ErrorMessage':
+					return new QQNode('error_message', 'ErrorMessage', 'string', $this);
+				case 'CommunicationList':
+					return new QQNodeEmailMessageCommunicationList($this);
+				case 'Group':
+					return new QQNodeEmailMessageGroup($this);
 				case 'EmailOutgoingQueue':
 					return new QQReverseReferenceNodeEmailOutgoingQueue($this, 'emailoutgoingqueue', 'reverse_reference', 'email_message_id');
 
@@ -1839,26 +2111,26 @@
 					return new QQNode('raw_message', 'RawMessage', 'string', $this);
 				case 'MessageIdentifier':
 					return new QQNode('message_identifier', 'MessageIdentifier', 'string', $this);
-				case 'ReceivedFromPersonId':
-					return new QQNode('received_from_person_id', 'ReceivedFromPersonId', 'integer', $this);
-				case 'ReceivedFromPerson':
-					return new QQNodePerson('received_from_person_id', 'ReceivedFromPerson', 'integer', $this);
-				case 'ReceivedFromEntryId':
-					return new QQNode('received_from_entry_id', 'ReceivedFromEntryId', 'integer', $this);
-				case 'ReceivedFromEntry':
-					return new QQNodeCommunicationListEntry('received_from_entry_id', 'ReceivedFromEntry', 'integer', $this);
-				case 'GroupId':
-					return new QQNode('group_id', 'GroupId', 'integer', $this);
-				case 'Group':
-					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'CommunicationListId':
-					return new QQNode('communication_list_id', 'CommunicationListId', 'integer', $this);
-				case 'CommunicationList':
-					return new QQNodeCommunicationList('communication_list_id', 'CommunicationList', 'integer', $this);
+				case 'PersonId':
+					return new QQNode('person_id', 'PersonId', 'integer', $this);
+				case 'Person':
+					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'CommunicationListEntryId':
+					return new QQNode('communication_list_entry_id', 'CommunicationListEntryId', 'integer', $this);
+				case 'CommunicationListEntry':
+					return new QQNodeCommunicationListEntry('communication_list_entry_id', 'CommunicationListEntry', 'integer', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
-				case 'ResponseMessage':
-					return new QQNode('response_message', 'ResponseMessage', 'string', $this);
+				case 'ResponseHeader':
+					return new QQNode('response_header', 'ResponseHeader', 'string', $this);
+				case 'ResponseBody':
+					return new QQNode('response_body', 'ResponseBody', 'string', $this);
+				case 'ErrorMessage':
+					return new QQNode('error_message', 'ErrorMessage', 'string', $this);
+				case 'CommunicationList':
+					return new QQNodeEmailMessageCommunicationList($this);
+				case 'Group':
+					return new QQNodeEmailMessageGroup($this);
 				case 'EmailOutgoingQueue':
 					return new QQReverseReferenceNodeEmailOutgoingQueue($this, 'emailoutgoingqueue', 'reverse_reference', 'email_message_id');
 

@@ -100,9 +100,9 @@ INSERT INTO email_broadcast_type VALUES(3, 'Announcement Only');
 
 INSERT INTO email_message_status_type VALUES(1, 'Not Yet Analyzed');
 INSERT INTO email_message_status_type VALUES(2, 'Pending Send');
-INSERT INTO email_message_status_type VALUES(3, 'Pending Rejection');
-INSERT INTO email_message_status_type VALUES(4, 'Rejected');
-INSERT INTO email_message_status_type VALUES(5, 'Completed');
+INSERT INTO email_message_status_type VALUES(3, 'Completed');
+INSERT INTO email_message_status_type VALUES(4, 'Completed With Some Rejections');
+INSERT INTO email_message_status_type VALUES(5, 'Rejected');
 INSERT INTO email_message_status_type VALUES(6, 'Error');
 
 INSERT INTO group_type VALUES (1, 'Regular Group');

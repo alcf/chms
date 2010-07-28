@@ -26,18 +26,22 @@
 	 * property-read QLabel $RawMessageLabel
 	 * property QTextBox $MessageIdentifierControl
 	 * property-read QLabel $MessageIdentifierLabel
-	 * property QListBox $ReceivedFromPersonIdControl
-	 * property-read QLabel $ReceivedFromPersonIdLabel
-	 * property QListBox $ReceivedFromEntryIdControl
-	 * property-read QLabel $ReceivedFromEntryIdLabel
-	 * property QListBox $GroupIdControl
-	 * property-read QLabel $GroupIdLabel
-	 * property QListBox $CommunicationListIdControl
-	 * property-read QLabel $CommunicationListIdLabel
+	 * property QListBox $PersonIdControl
+	 * property-read QLabel $PersonIdLabel
+	 * property QListBox $CommunicationListEntryIdControl
+	 * property-read QLabel $CommunicationListEntryIdLabel
 	 * property QTextBox $SubjectControl
 	 * property-read QLabel $SubjectLabel
-	 * property QTextBox $ResponseMessageControl
-	 * property-read QLabel $ResponseMessageLabel
+	 * property QTextBox $ResponseHeaderControl
+	 * property-read QLabel $ResponseHeaderLabel
+	 * property QTextBox $ResponseBodyControl
+	 * property-read QLabel $ResponseBodyLabel
+	 * property QTextBox $ErrorMessageControl
+	 * property-read QLabel $ErrorMessageLabel
+	 * property QListBox $CommunicationListControl
+	 * property-read QLabel $CommunicationListLabel
+	 * property QListBox $GroupControl
+	 * property-read QLabel $GroupLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -55,28 +59,32 @@
 		protected $calDateReceived;
 		protected $txtRawMessage;
 		protected $txtMessageIdentifier;
-		protected $lstReceivedFromPerson;
-		protected $lstReceivedFromEntry;
-		protected $lstGroup;
-		protected $lstCommunicationList;
+		protected $lstPerson;
+		protected $lstCommunicationListEntry;
 		protected $txtSubject;
-		protected $txtResponseMessage;
+		protected $txtResponseHeader;
+		protected $txtResponseBody;
+		protected $txtErrorMessage;
 
 		// Controls that allow the viewing of EmailMessage's individual data fields
 		protected $lblEmailMessageStatusTypeId;
 		protected $lblDateReceived;
 		protected $lblRawMessage;
 		protected $lblMessageIdentifier;
-		protected $lblReceivedFromPersonId;
-		protected $lblReceivedFromEntryId;
-		protected $lblGroupId;
-		protected $lblCommunicationListId;
+		protected $lblPersonId;
+		protected $lblCommunicationListEntryId;
 		protected $lblSubject;
-		protected $lblResponseMessage;
+		protected $lblResponseHeader;
+		protected $lblResponseBody;
+		protected $lblErrorMessage;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+		protected $lstCommunicationLists;
+		protected $lstGroups;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+		protected $lblCommunicationLists;
+		protected $lblGroups;
 
 
 		/**
@@ -297,163 +305,83 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstReceivedFromPerson
+		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstReceivedFromPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstReceivedFromPerson = new QListBox($this->objParentObject, $strControlId);
-			$this->lstReceivedFromPerson->Name = QApplication::Translate('Received From Person');
-			$this->lstReceivedFromPerson->AddItem(QApplication::Translate('- Select One -'), null);
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPerson->Name = QApplication::Translate('Person');
+			$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objReceivedFromPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
 
 			// Iterate through the Cursor
-			while ($objReceivedFromPerson = Person::InstantiateCursor($objReceivedFromPersonCursor)) {
-				$objListItem = new QListItem($objReceivedFromPerson->__toString(), $objReceivedFromPerson->Id);
-				if (($this->objEmailMessage->ReceivedFromPerson) && ($this->objEmailMessage->ReceivedFromPerson->Id == $objReceivedFromPerson->Id))
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
+				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+				if (($this->objEmailMessage->Person) && ($this->objEmailMessage->Person->Id == $objPerson->Id))
 					$objListItem->Selected = true;
-				$this->lstReceivedFromPerson->AddItem($objListItem);
+				$this->lstPerson->AddItem($objListItem);
 			}
 
 			// Return the QListBox
-			return $this->lstReceivedFromPerson;
+			return $this->lstPerson;
 		}
 
 		/**
-		 * Create and setup QLabel lblReceivedFromPersonId
+		 * Create and setup QLabel lblPersonId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblReceivedFromPersonId_Create($strControlId = null) {
-			$this->lblReceivedFromPersonId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblReceivedFromPersonId->Name = QApplication::Translate('Received From Person');
-			$this->lblReceivedFromPersonId->Text = ($this->objEmailMessage->ReceivedFromPerson) ? $this->objEmailMessage->ReceivedFromPerson->__toString() : null;
-			return $this->lblReceivedFromPersonId;
+		public function lblPersonId_Create($strControlId = null) {
+			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPersonId->Name = QApplication::Translate('Person');
+			$this->lblPersonId->Text = ($this->objEmailMessage->Person) ? $this->objEmailMessage->Person->__toString() : null;
+			return $this->lblPersonId;
 		}
 
 		/**
-		 * Create and setup QListBox lstReceivedFromEntry
+		 * Create and setup QListBox lstCommunicationListEntry
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstReceivedFromEntry_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstReceivedFromEntry = new QListBox($this->objParentObject, $strControlId);
-			$this->lstReceivedFromEntry->Name = QApplication::Translate('Received From Entry');
-			$this->lstReceivedFromEntry->AddItem(QApplication::Translate('- Select One -'), null);
+		public function lstCommunicationListEntry_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCommunicationListEntry = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCommunicationListEntry->Name = QApplication::Translate('Communication List Entry');
+			$this->lstCommunicationListEntry->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objReceivedFromEntryCursor = CommunicationListEntry::QueryCursor($objCondition, $objOptionalClauses);
+			$objCommunicationListEntryCursor = CommunicationListEntry::QueryCursor($objCondition, $objOptionalClauses);
 
 			// Iterate through the Cursor
-			while ($objReceivedFromEntry = CommunicationListEntry::InstantiateCursor($objReceivedFromEntryCursor)) {
-				$objListItem = new QListItem($objReceivedFromEntry->__toString(), $objReceivedFromEntry->Id);
-				if (($this->objEmailMessage->ReceivedFromEntry) && ($this->objEmailMessage->ReceivedFromEntry->Id == $objReceivedFromEntry->Id))
+			while ($objCommunicationListEntry = CommunicationListEntry::InstantiateCursor($objCommunicationListEntryCursor)) {
+				$objListItem = new QListItem($objCommunicationListEntry->__toString(), $objCommunicationListEntry->Id);
+				if (($this->objEmailMessage->CommunicationListEntry) && ($this->objEmailMessage->CommunicationListEntry->Id == $objCommunicationListEntry->Id))
 					$objListItem->Selected = true;
-				$this->lstReceivedFromEntry->AddItem($objListItem);
+				$this->lstCommunicationListEntry->AddItem($objListItem);
 			}
 
 			// Return the QListBox
-			return $this->lstReceivedFromEntry;
+			return $this->lstCommunicationListEntry;
 		}
 
 		/**
-		 * Create and setup QLabel lblReceivedFromEntryId
+		 * Create and setup QLabel lblCommunicationListEntryId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblReceivedFromEntryId_Create($strControlId = null) {
-			$this->lblReceivedFromEntryId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblReceivedFromEntryId->Name = QApplication::Translate('Received From Entry');
-			$this->lblReceivedFromEntryId->Text = ($this->objEmailMessage->ReceivedFromEntry) ? $this->objEmailMessage->ReceivedFromEntry->__toString() : null;
-			return $this->lblReceivedFromEntryId;
-		}
-
-		/**
-		 * Create and setup QListBox lstGroup
-		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
-		 */
-		public function lstGroup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstGroup = new QListBox($this->objParentObject, $strControlId);
-			$this->lstGroup->Name = QApplication::Translate('Group');
-			$this->lstGroup->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objGroup = Group::InstantiateCursor($objGroupCursor)) {
-				$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
-				if (($this->objEmailMessage->Group) && ($this->objEmailMessage->Group->Id == $objGroup->Id))
-					$objListItem->Selected = true;
-				$this->lstGroup->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstGroup;
-		}
-
-		/**
-		 * Create and setup QLabel lblGroupId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblGroupId_Create($strControlId = null) {
-			$this->lblGroupId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblGroupId->Name = QApplication::Translate('Group');
-			$this->lblGroupId->Text = ($this->objEmailMessage->Group) ? $this->objEmailMessage->Group->__toString() : null;
-			return $this->lblGroupId;
-		}
-
-		/**
-		 * Create and setup QListBox lstCommunicationList
-		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
-		 */
-		public function lstCommunicationList_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstCommunicationList = new QListBox($this->objParentObject, $strControlId);
-			$this->lstCommunicationList->Name = QApplication::Translate('Communication List');
-			$this->lstCommunicationList->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objCommunicationListCursor = CommunicationList::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objCommunicationList = CommunicationList::InstantiateCursor($objCommunicationListCursor)) {
-				$objListItem = new QListItem($objCommunicationList->__toString(), $objCommunicationList->Id);
-				if (($this->objEmailMessage->CommunicationList) && ($this->objEmailMessage->CommunicationList->Id == $objCommunicationList->Id))
-					$objListItem->Selected = true;
-				$this->lstCommunicationList->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstCommunicationList;
-		}
-
-		/**
-		 * Create and setup QLabel lblCommunicationListId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblCommunicationListId_Create($strControlId = null) {
-			$this->lblCommunicationListId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblCommunicationListId->Name = QApplication::Translate('Communication List');
-			$this->lblCommunicationListId->Text = ($this->objEmailMessage->CommunicationList) ? $this->objEmailMessage->CommunicationList->__toString() : null;
-			return $this->lblCommunicationListId;
+		public function lblCommunicationListEntryId_Create($strControlId = null) {
+			$this->lblCommunicationListEntryId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCommunicationListEntryId->Name = QApplication::Translate('Communication List Entry');
+			$this->lblCommunicationListEntryId->Text = ($this->objEmailMessage->CommunicationListEntry) ? $this->objEmailMessage->CommunicationListEntry->__toString() : null;
+			return $this->lblCommunicationListEntryId;
 		}
 
 		/**
@@ -482,28 +410,180 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtResponseMessage
+		 * Create and setup QTextBox txtResponseHeader
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtResponseMessage_Create($strControlId = null) {
-			$this->txtResponseMessage = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtResponseMessage->Name = QApplication::Translate('Response Message');
-			$this->txtResponseMessage->Text = $this->objEmailMessage->ResponseMessage;
-			$this->txtResponseMessage->TextMode = QTextMode::MultiLine;
-			return $this->txtResponseMessage;
+		public function txtResponseHeader_Create($strControlId = null) {
+			$this->txtResponseHeader = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtResponseHeader->Name = QApplication::Translate('Response Header');
+			$this->txtResponseHeader->Text = $this->objEmailMessage->ResponseHeader;
+			$this->txtResponseHeader->TextMode = QTextMode::MultiLine;
+			return $this->txtResponseHeader;
 		}
 
 		/**
-		 * Create and setup QLabel lblResponseMessage
+		 * Create and setup QLabel lblResponseHeader
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblResponseMessage_Create($strControlId = null) {
-			$this->lblResponseMessage = new QLabel($this->objParentObject, $strControlId);
-			$this->lblResponseMessage->Name = QApplication::Translate('Response Message');
-			$this->lblResponseMessage->Text = $this->objEmailMessage->ResponseMessage;
-			return $this->lblResponseMessage;
+		public function lblResponseHeader_Create($strControlId = null) {
+			$this->lblResponseHeader = new QLabel($this->objParentObject, $strControlId);
+			$this->lblResponseHeader->Name = QApplication::Translate('Response Header');
+			$this->lblResponseHeader->Text = $this->objEmailMessage->ResponseHeader;
+			return $this->lblResponseHeader;
+		}
+
+		/**
+		 * Create and setup QTextBox txtResponseBody
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtResponseBody_Create($strControlId = null) {
+			$this->txtResponseBody = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtResponseBody->Name = QApplication::Translate('Response Body');
+			$this->txtResponseBody->Text = $this->objEmailMessage->ResponseBody;
+			$this->txtResponseBody->TextMode = QTextMode::MultiLine;
+			return $this->txtResponseBody;
+		}
+
+		/**
+		 * Create and setup QLabel lblResponseBody
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblResponseBody_Create($strControlId = null) {
+			$this->lblResponseBody = new QLabel($this->objParentObject, $strControlId);
+			$this->lblResponseBody->Name = QApplication::Translate('Response Body');
+			$this->lblResponseBody->Text = $this->objEmailMessage->ResponseBody;
+			return $this->lblResponseBody;
+		}
+
+		/**
+		 * Create and setup QTextBox txtErrorMessage
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtErrorMessage_Create($strControlId = null) {
+			$this->txtErrorMessage = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtErrorMessage->Name = QApplication::Translate('Error Message');
+			$this->txtErrorMessage->Text = $this->objEmailMessage->ErrorMessage;
+			$this->txtErrorMessage->TextMode = QTextMode::MultiLine;
+			return $this->txtErrorMessage;
+		}
+
+		/**
+		 * Create and setup QLabel lblErrorMessage
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblErrorMessage_Create($strControlId = null) {
+			$this->lblErrorMessage = new QLabel($this->objParentObject, $strControlId);
+			$this->lblErrorMessage->Name = QApplication::Translate('Error Message');
+			$this->lblErrorMessage->Text = $this->objEmailMessage->ErrorMessage;
+			return $this->lblErrorMessage;
+		}
+
+		/**
+		 * Create and setup QListBox lstCommunicationLists
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstCommunicationLists_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCommunicationLists = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCommunicationLists->Name = QApplication::Translate('Communication Lists');
+			$this->lstCommunicationLists->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
+			$objAssociatedArray = $this->objEmailMessage->GetCommunicationListArray();
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCommunicationListCursor = CommunicationList::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCommunicationList = CommunicationList::InstantiateCursor($objCommunicationListCursor)) {
+				$objListItem = new QListItem($objCommunicationList->__toString(), $objCommunicationList->Id);
+				foreach ($objAssociatedArray as $objAssociated) {
+					if ($objAssociated->Id == $objCommunicationList->Id)
+						$objListItem->Selected = true;
+				}
+				$this->lstCommunicationLists->AddItem($objListItem);
+			}
+
+			// Return the QListControl
+			return $this->lstCommunicationLists;
+		}
+
+		/**
+		 * Create and setup QLabel lblCommunicationLists
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strGlue glue to display in between each associated object
+		 * @return QLabel
+		 */
+		public function lblCommunicationLists_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblCommunicationLists = new QLabel($this->objParentObject, $strControlId);
+			$this->lstCommunicationLists->Name = QApplication::Translate('Communication Lists');
+			
+			$objAssociatedArray = $this->objEmailMessage->GetCommunicationListArray();
+			$strItems = array();
+			foreach ($objAssociatedArray as $objAssociated)
+				$strItems[] = $objAssociated->__toString();
+			$this->lblCommunicationLists->Text = implode($strGlue, $strItems);
+			return $this->lblCommunicationLists;
+		}
+
+		/**
+		 * Create and setup QListBox lstGroups
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstGroups_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstGroups = new QListBox($this->objParentObject, $strControlId);
+			$this->lstGroups->Name = QApplication::Translate('Groups');
+			$this->lstGroups->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
+			$objAssociatedArray = $this->objEmailMessage->GetGroupArray();
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupCursor = Group::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroup = Group::InstantiateCursor($objGroupCursor)) {
+				$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
+				foreach ($objAssociatedArray as $objAssociated) {
+					if ($objAssociated->Id == $objGroup->Id)
+						$objListItem->Selected = true;
+				}
+				$this->lstGroups->AddItem($objListItem);
+			}
+
+			// Return the QListControl
+			return $this->lstGroups;
+		}
+
+		/**
+		 * Create and setup QLabel lblGroups
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strGlue glue to display in between each associated object
+		 * @return QLabel
+		 */
+		public function lblGroups_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblGroups = new QLabel($this->objParentObject, $strControlId);
+			$this->lstGroups->Name = QApplication::Translate('Groups');
+			
+			$objAssociatedArray = $this->objEmailMessage->GetGroupArray();
+			$strItems = array();
+			foreach ($objAssociatedArray as $objAssociated)
+				$strItems[] = $objAssociated->__toString();
+			$this->lblGroups->Text = implode($strGlue, $strItems);
+			return $this->lblGroups;
 		}
 
 
@@ -531,63 +611,85 @@
 			if ($this->txtMessageIdentifier) $this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
 			if ($this->lblMessageIdentifier) $this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
 
-			if ($this->lstReceivedFromPerson) {
-					$this->lstReceivedFromPerson->RemoveAllItems();
-				$this->lstReceivedFromPerson->AddItem(QApplication::Translate('- Select One -'), null);
-				$objReceivedFromPersonArray = Person::LoadAll();
-				if ($objReceivedFromPersonArray) foreach ($objReceivedFromPersonArray as $objReceivedFromPerson) {
-					$objListItem = new QListItem($objReceivedFromPerson->__toString(), $objReceivedFromPerson->Id);
-					if (($this->objEmailMessage->ReceivedFromPerson) && ($this->objEmailMessage->ReceivedFromPerson->Id == $objReceivedFromPerson->Id))
+			if ($this->lstPerson) {
+					$this->lstPerson->RemoveAllItems();
+				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPersonArray = Person::LoadAll();
+				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+					if (($this->objEmailMessage->Person) && ($this->objEmailMessage->Person->Id == $objPerson->Id))
 						$objListItem->Selected = true;
-					$this->lstReceivedFromPerson->AddItem($objListItem);
+					$this->lstPerson->AddItem($objListItem);
 				}
 			}
-			if ($this->lblReceivedFromPersonId) $this->lblReceivedFromPersonId->Text = ($this->objEmailMessage->ReceivedFromPerson) ? $this->objEmailMessage->ReceivedFromPerson->__toString() : null;
+			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objEmailMessage->Person) ? $this->objEmailMessage->Person->__toString() : null;
 
-			if ($this->lstReceivedFromEntry) {
-					$this->lstReceivedFromEntry->RemoveAllItems();
-				$this->lstReceivedFromEntry->AddItem(QApplication::Translate('- Select One -'), null);
-				$objReceivedFromEntryArray = CommunicationListEntry::LoadAll();
-				if ($objReceivedFromEntryArray) foreach ($objReceivedFromEntryArray as $objReceivedFromEntry) {
-					$objListItem = new QListItem($objReceivedFromEntry->__toString(), $objReceivedFromEntry->Id);
-					if (($this->objEmailMessage->ReceivedFromEntry) && ($this->objEmailMessage->ReceivedFromEntry->Id == $objReceivedFromEntry->Id))
+			if ($this->lstCommunicationListEntry) {
+					$this->lstCommunicationListEntry->RemoveAllItems();
+				$this->lstCommunicationListEntry->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCommunicationListEntryArray = CommunicationListEntry::LoadAll();
+				if ($objCommunicationListEntryArray) foreach ($objCommunicationListEntryArray as $objCommunicationListEntry) {
+					$objListItem = new QListItem($objCommunicationListEntry->__toString(), $objCommunicationListEntry->Id);
+					if (($this->objEmailMessage->CommunicationListEntry) && ($this->objEmailMessage->CommunicationListEntry->Id == $objCommunicationListEntry->Id))
 						$objListItem->Selected = true;
-					$this->lstReceivedFromEntry->AddItem($objListItem);
+					$this->lstCommunicationListEntry->AddItem($objListItem);
 				}
 			}
-			if ($this->lblReceivedFromEntryId) $this->lblReceivedFromEntryId->Text = ($this->objEmailMessage->ReceivedFromEntry) ? $this->objEmailMessage->ReceivedFromEntry->__toString() : null;
-
-			if ($this->lstGroup) {
-					$this->lstGroup->RemoveAllItems();
-				$this->lstGroup->AddItem(QApplication::Translate('- Select One -'), null);
-				$objGroupArray = Group::LoadAll();
-				if ($objGroupArray) foreach ($objGroupArray as $objGroup) {
-					$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
-					if (($this->objEmailMessage->Group) && ($this->objEmailMessage->Group->Id == $objGroup->Id))
-						$objListItem->Selected = true;
-					$this->lstGroup->AddItem($objListItem);
-				}
-			}
-			if ($this->lblGroupId) $this->lblGroupId->Text = ($this->objEmailMessage->Group) ? $this->objEmailMessage->Group->__toString() : null;
-
-			if ($this->lstCommunicationList) {
-					$this->lstCommunicationList->RemoveAllItems();
-				$this->lstCommunicationList->AddItem(QApplication::Translate('- Select One -'), null);
-				$objCommunicationListArray = CommunicationList::LoadAll();
-				if ($objCommunicationListArray) foreach ($objCommunicationListArray as $objCommunicationList) {
-					$objListItem = new QListItem($objCommunicationList->__toString(), $objCommunicationList->Id);
-					if (($this->objEmailMessage->CommunicationList) && ($this->objEmailMessage->CommunicationList->Id == $objCommunicationList->Id))
-						$objListItem->Selected = true;
-					$this->lstCommunicationList->AddItem($objListItem);
-				}
-			}
-			if ($this->lblCommunicationListId) $this->lblCommunicationListId->Text = ($this->objEmailMessage->CommunicationList) ? $this->objEmailMessage->CommunicationList->__toString() : null;
+			if ($this->lblCommunicationListEntryId) $this->lblCommunicationListEntryId->Text = ($this->objEmailMessage->CommunicationListEntry) ? $this->objEmailMessage->CommunicationListEntry->__toString() : null;
 
 			if ($this->txtSubject) $this->txtSubject->Text = $this->objEmailMessage->Subject;
 			if ($this->lblSubject) $this->lblSubject->Text = $this->objEmailMessage->Subject;
 
-			if ($this->txtResponseMessage) $this->txtResponseMessage->Text = $this->objEmailMessage->ResponseMessage;
-			if ($this->lblResponseMessage) $this->lblResponseMessage->Text = $this->objEmailMessage->ResponseMessage;
+			if ($this->txtResponseHeader) $this->txtResponseHeader->Text = $this->objEmailMessage->ResponseHeader;
+			if ($this->lblResponseHeader) $this->lblResponseHeader->Text = $this->objEmailMessage->ResponseHeader;
+
+			if ($this->txtResponseBody) $this->txtResponseBody->Text = $this->objEmailMessage->ResponseBody;
+			if ($this->lblResponseBody) $this->lblResponseBody->Text = $this->objEmailMessage->ResponseBody;
+
+			if ($this->txtErrorMessage) $this->txtErrorMessage->Text = $this->objEmailMessage->ErrorMessage;
+			if ($this->lblErrorMessage) $this->lblErrorMessage->Text = $this->objEmailMessage->ErrorMessage;
+
+			if ($this->lstCommunicationLists) {
+				$this->lstCommunicationLists->RemoveAllItems();
+				$objAssociatedArray = $this->objEmailMessage->GetCommunicationListArray();
+				$objCommunicationListArray = CommunicationList::LoadAll();
+				if ($objCommunicationListArray) foreach ($objCommunicationListArray as $objCommunicationList) {
+					$objListItem = new QListItem($objCommunicationList->__toString(), $objCommunicationList->Id);
+					foreach ($objAssociatedArray as $objAssociated) {
+						if ($objAssociated->Id == $objCommunicationList->Id)
+							$objListItem->Selected = true;
+					}
+					$this->lstCommunicationLists->AddItem($objListItem);
+				}
+			}
+			if ($this->lblCommunicationLists) {
+				$objAssociatedArray = $this->objEmailMessage->GetCommunicationListArray();
+				$strItems = array();
+				foreach ($objAssociatedArray as $objAssociated)
+					$strItems[] = $objAssociated->__toString();
+				$this->lblCommunicationLists->Text = implode($strGlue, $strItems);
+			}
+
+			if ($this->lstGroups) {
+				$this->lstGroups->RemoveAllItems();
+				$objAssociatedArray = $this->objEmailMessage->GetGroupArray();
+				$objGroupArray = Group::LoadAll();
+				if ($objGroupArray) foreach ($objGroupArray as $objGroup) {
+					$objListItem = new QListItem($objGroup->__toString(), $objGroup->Id);
+					foreach ($objAssociatedArray as $objAssociated) {
+						if ($objAssociated->Id == $objGroup->Id)
+							$objListItem->Selected = true;
+					}
+					$this->lstGroups->AddItem($objListItem);
+				}
+			}
+			if ($this->lblGroups) {
+				$objAssociatedArray = $this->objEmailMessage->GetGroupArray();
+				$strItems = array();
+				foreach ($objAssociatedArray as $objAssociated)
+					$strItems[] = $objAssociated->__toString();
+				$this->lblGroups->Text = implode($strGlue, $strItems);
+			}
 
 		}
 
@@ -596,6 +698,26 @@
 		///////////////////////////////////////////////
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
+
+		protected function lstCommunicationLists_Update() {
+			if ($this->lstCommunicationLists) {
+				$this->objEmailMessage->UnassociateAllCommunicationLists();
+				$objSelectedListItems = $this->lstCommunicationLists->SelectedItems;
+				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
+					$this->objEmailMessage->AssociateCommunicationList(CommunicationList::Load($objListItem->Value));
+				}
+			}
+		}
+
+		protected function lstGroups_Update() {
+			if ($this->lstGroups) {
+				$this->objEmailMessage->UnassociateAllGroups();
+				$objSelectedListItems = $this->lstGroups->SelectedItems;
+				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
+					$this->objEmailMessage->AssociateGroup(Group::Load($objListItem->Value));
+				}
+			}
+		}
 
 
 
@@ -616,12 +738,12 @@
 				if ($this->calDateReceived) $this->objEmailMessage->DateReceived = $this->calDateReceived->DateTime;
 				if ($this->txtRawMessage) $this->objEmailMessage->RawMessage = $this->txtRawMessage->Text;
 				if ($this->txtMessageIdentifier) $this->objEmailMessage->MessageIdentifier = $this->txtMessageIdentifier->Text;
-				if ($this->lstReceivedFromPerson) $this->objEmailMessage->ReceivedFromPersonId = $this->lstReceivedFromPerson->SelectedValue;
-				if ($this->lstReceivedFromEntry) $this->objEmailMessage->ReceivedFromEntryId = $this->lstReceivedFromEntry->SelectedValue;
-				if ($this->lstGroup) $this->objEmailMessage->GroupId = $this->lstGroup->SelectedValue;
-				if ($this->lstCommunicationList) $this->objEmailMessage->CommunicationListId = $this->lstCommunicationList->SelectedValue;
+				if ($this->lstPerson) $this->objEmailMessage->PersonId = $this->lstPerson->SelectedValue;
+				if ($this->lstCommunicationListEntry) $this->objEmailMessage->CommunicationListEntryId = $this->lstCommunicationListEntry->SelectedValue;
 				if ($this->txtSubject) $this->objEmailMessage->Subject = $this->txtSubject->Text;
-				if ($this->txtResponseMessage) $this->objEmailMessage->ResponseMessage = $this->txtResponseMessage->Text;
+				if ($this->txtResponseHeader) $this->objEmailMessage->ResponseHeader = $this->txtResponseHeader->Text;
+				if ($this->txtResponseBody) $this->objEmailMessage->ResponseBody = $this->txtResponseBody->Text;
+				if ($this->txtErrorMessage) $this->objEmailMessage->ErrorMessage = $this->txtErrorMessage->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -629,6 +751,8 @@
 				$this->objEmailMessage->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
+				$this->lstCommunicationLists_Update();
+				$this->lstGroups_Update();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -640,6 +764,8 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeleteEmailMessage() {
+			$this->objEmailMessage->UnassociateAllCommunicationLists();
+			$this->objEmailMessage->UnassociateAllGroups();
 			$this->objEmailMessage->Delete();
 		}		
 
@@ -694,42 +820,54 @@
 				case 'MessageIdentifierLabel':
 					if (!$this->lblMessageIdentifier) return $this->lblMessageIdentifier_Create();
 					return $this->lblMessageIdentifier;
-				case 'ReceivedFromPersonIdControl':
-					if (!$this->lstReceivedFromPerson) return $this->lstReceivedFromPerson_Create();
-					return $this->lstReceivedFromPerson;
-				case 'ReceivedFromPersonIdLabel':
-					if (!$this->lblReceivedFromPersonId) return $this->lblReceivedFromPersonId_Create();
-					return $this->lblReceivedFromPersonId;
-				case 'ReceivedFromEntryIdControl':
-					if (!$this->lstReceivedFromEntry) return $this->lstReceivedFromEntry_Create();
-					return $this->lstReceivedFromEntry;
-				case 'ReceivedFromEntryIdLabel':
-					if (!$this->lblReceivedFromEntryId) return $this->lblReceivedFromEntryId_Create();
-					return $this->lblReceivedFromEntryId;
-				case 'GroupIdControl':
-					if (!$this->lstGroup) return $this->lstGroup_Create();
-					return $this->lstGroup;
-				case 'GroupIdLabel':
-					if (!$this->lblGroupId) return $this->lblGroupId_Create();
-					return $this->lblGroupId;
-				case 'CommunicationListIdControl':
-					if (!$this->lstCommunicationList) return $this->lstCommunicationList_Create();
-					return $this->lstCommunicationList;
-				case 'CommunicationListIdLabel':
-					if (!$this->lblCommunicationListId) return $this->lblCommunicationListId_Create();
-					return $this->lblCommunicationListId;
+				case 'PersonIdControl':
+					if (!$this->lstPerson) return $this->lstPerson_Create();
+					return $this->lstPerson;
+				case 'PersonIdLabel':
+					if (!$this->lblPersonId) return $this->lblPersonId_Create();
+					return $this->lblPersonId;
+				case 'CommunicationListEntryIdControl':
+					if (!$this->lstCommunicationListEntry) return $this->lstCommunicationListEntry_Create();
+					return $this->lstCommunicationListEntry;
+				case 'CommunicationListEntryIdLabel':
+					if (!$this->lblCommunicationListEntryId) return $this->lblCommunicationListEntryId_Create();
+					return $this->lblCommunicationListEntryId;
 				case 'SubjectControl':
 					if (!$this->txtSubject) return $this->txtSubject_Create();
 					return $this->txtSubject;
 				case 'SubjectLabel':
 					if (!$this->lblSubject) return $this->lblSubject_Create();
 					return $this->lblSubject;
-				case 'ResponseMessageControl':
-					if (!$this->txtResponseMessage) return $this->txtResponseMessage_Create();
-					return $this->txtResponseMessage;
-				case 'ResponseMessageLabel':
-					if (!$this->lblResponseMessage) return $this->lblResponseMessage_Create();
-					return $this->lblResponseMessage;
+				case 'ResponseHeaderControl':
+					if (!$this->txtResponseHeader) return $this->txtResponseHeader_Create();
+					return $this->txtResponseHeader;
+				case 'ResponseHeaderLabel':
+					if (!$this->lblResponseHeader) return $this->lblResponseHeader_Create();
+					return $this->lblResponseHeader;
+				case 'ResponseBodyControl':
+					if (!$this->txtResponseBody) return $this->txtResponseBody_Create();
+					return $this->txtResponseBody;
+				case 'ResponseBodyLabel':
+					if (!$this->lblResponseBody) return $this->lblResponseBody_Create();
+					return $this->lblResponseBody;
+				case 'ErrorMessageControl':
+					if (!$this->txtErrorMessage) return $this->txtErrorMessage_Create();
+					return $this->txtErrorMessage;
+				case 'ErrorMessageLabel':
+					if (!$this->lblErrorMessage) return $this->lblErrorMessage_Create();
+					return $this->lblErrorMessage;
+				case 'CommunicationListControl':
+					if (!$this->lstCommunicationLists) return $this->lstCommunicationLists_Create();
+					return $this->lstCommunicationLists;
+				case 'CommunicationListLabel':
+					if (!$this->lblCommunicationLists) return $this->lblCommunicationLists_Create();
+					return $this->lblCommunicationLists;
+				case 'GroupControl':
+					if (!$this->lstGroups) return $this->lstGroups_Create();
+					return $this->lstGroups;
+				case 'GroupLabel':
+					if (!$this->lblGroups) return $this->lblGroups_Create();
+					return $this->lblGroups;
 				default:
 					try {
 						return parent::__get($strName);
@@ -762,18 +900,22 @@
 						return ($this->txtRawMessage = QType::Cast($mixValue, 'QControl'));
 					case 'MessageIdentifierControl':
 						return ($this->txtMessageIdentifier = QType::Cast($mixValue, 'QControl'));
-					case 'ReceivedFromPersonIdControl':
-						return ($this->lstReceivedFromPerson = QType::Cast($mixValue, 'QControl'));
-					case 'ReceivedFromEntryIdControl':
-						return ($this->lstReceivedFromEntry = QType::Cast($mixValue, 'QControl'));
-					case 'GroupIdControl':
-						return ($this->lstGroup = QType::Cast($mixValue, 'QControl'));
-					case 'CommunicationListIdControl':
-						return ($this->lstCommunicationList = QType::Cast($mixValue, 'QControl'));
+					case 'PersonIdControl':
+						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
+					case 'CommunicationListEntryIdControl':
+						return ($this->lstCommunicationListEntry = QType::Cast($mixValue, 'QControl'));
 					case 'SubjectControl':
 						return ($this->txtSubject = QType::Cast($mixValue, 'QControl'));
-					case 'ResponseMessageControl':
-						return ($this->txtResponseMessage = QType::Cast($mixValue, 'QControl'));
+					case 'ResponseHeaderControl':
+						return ($this->txtResponseHeader = QType::Cast($mixValue, 'QControl'));
+					case 'ResponseBodyControl':
+						return ($this->txtResponseBody = QType::Cast($mixValue, 'QControl'));
+					case 'ErrorMessageControl':
+						return ($this->txtErrorMessage = QType::Cast($mixValue, 'QControl'));
+					case 'CommunicationListControl':
+						return ($this->lstCommunicationLists = QType::Cast($mixValue, 'QControl'));
+					case 'GroupControl':
+						return ($this->lstGroups = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

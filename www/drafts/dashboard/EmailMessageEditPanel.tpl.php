@@ -15,17 +15,21 @@
 
 		<?php $_CONTROL->txtMessageIdentifier->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstReceivedFromPerson->RenderWithName(); ?>
+		<?php $_CONTROL->lstPerson->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstReceivedFromEntry->RenderWithName(); ?>
-
-		<?php $_CONTROL->lstGroup->RenderWithName(); ?>
-
-		<?php $_CONTROL->lstCommunicationList->RenderWithName(); ?>
+		<?php $_CONTROL->lstCommunicationListEntry->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtSubject->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtResponseMessage->RenderWithName(); ?>
+		<?php $_CONTROL->txtResponseHeader->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtResponseBody->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtErrorMessage->RenderWithName(); ?>
+
+		<?php $_CONTROL->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>
+
+		<?php $_CONTROL->lstGroups->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

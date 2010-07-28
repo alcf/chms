@@ -31,6 +31,8 @@
 
 		<?php $this->lstPeople->RenderWithName(true, "Rows=7"); ?>
 
+		<?php $this->lstEmailMessages->RenderWithName(true, "Rows=7"); ?>
+
 	</div>
 
 	<div id="formActions">

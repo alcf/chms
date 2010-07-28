@@ -28,14 +28,16 @@
 		protected $calDateReceived;
 		protected $txtRawMessage;
 		protected $txtMessageIdentifier;
-		protected $lstReceivedFromPerson;
-		protected $lstReceivedFromEntry;
-		protected $lstGroup;
-		protected $lstCommunicationList;
+		protected $lstPerson;
+		protected $lstCommunicationListEntry;
 		protected $txtSubject;
-		protected $txtResponseMessage;
+		protected $txtResponseHeader;
+		protected $txtResponseBody;
+		protected $txtErrorMessage;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+		protected $lstCommunicationLists;
+		protected $lstGroups;
 
 		// Other Controls
 		protected $btnSave;
@@ -65,12 +67,14 @@
 			$this->calDateReceived = $this->mctEmailMessage->calDateReceived_Create();
 			$this->txtRawMessage = $this->mctEmailMessage->txtRawMessage_Create();
 			$this->txtMessageIdentifier = $this->mctEmailMessage->txtMessageIdentifier_Create();
-			$this->lstReceivedFromPerson = $this->mctEmailMessage->lstReceivedFromPerson_Create();
-			$this->lstReceivedFromEntry = $this->mctEmailMessage->lstReceivedFromEntry_Create();
-			$this->lstGroup = $this->mctEmailMessage->lstGroup_Create();
-			$this->lstCommunicationList = $this->mctEmailMessage->lstCommunicationList_Create();
+			$this->lstPerson = $this->mctEmailMessage->lstPerson_Create();
+			$this->lstCommunicationListEntry = $this->mctEmailMessage->lstCommunicationListEntry_Create();
 			$this->txtSubject = $this->mctEmailMessage->txtSubject_Create();
-			$this->txtResponseMessage = $this->mctEmailMessage->txtResponseMessage_Create();
+			$this->txtResponseHeader = $this->mctEmailMessage->txtResponseHeader_Create();
+			$this->txtResponseBody = $this->mctEmailMessage->txtResponseBody_Create();
+			$this->txtErrorMessage = $this->mctEmailMessage->txtErrorMessage_Create();
+			$this->lstCommunicationLists = $this->mctEmailMessage->lstCommunicationLists_Create();
+			$this->lstGroups = $this->mctEmailMessage->lstGroups_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

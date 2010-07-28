@@ -25,8 +25,8 @@
 	 * @property CommunicationListEntry[] $_CommunicationListEntryArray the value for the private _objCommunicationListEntryArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_communicationlistentry_assn association table
 	 * @property Person $_Person the value for the private _objPerson (Read-Only) if set due to an expansion on the communicationlist_person_assn association table
 	 * @property Person[] $_PersonArray the value for the private _objPersonArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_person_assn association table
-	 * @property EmailMessage $_EmailMessage the value for the private _objEmailMessage (Read-Only) if set due to an expansion on the email_message.communication_list_id reverse relationship
-	 * @property EmailMessage[] $_EmailMessageArray the value for the private _objEmailMessageArray (Read-Only) if set due to an ExpandAsArray on the email_message.communication_list_id reverse relationship
+	 * @property EmailMessage $_EmailMessage the value for the private _objEmailMessage (Read-Only) if set due to an expansion on the emailmessage_communicationlist_assn association table
+	 * @property EmailMessage[] $_EmailMessageArray the value for the private _objEmailMessageArray (Read-Only) if set due to an ExpandAsArray on the emailmessage_communicationlist_assn association table
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class CommunicationListGen extends QBaseClass {
@@ -112,7 +112,7 @@
 		/**
 		 * Private member variable that stores a reference to a single EmailMessage object
 		 * (of type EmailMessage), if this CommunicationList object was restored with
-		 * an expansion on the email_message association table.
+		 * an expansion on the emailmessage_communicationlist_assn association table.
 		 * @var EmailMessage _objEmailMessage;
 		 */
 		private $_objEmailMessage;
@@ -120,7 +120,7 @@
 		/**
 		 * Private member variable that stores a reference to an array of EmailMessage objects
 		 * (of type EmailMessage[]), if this CommunicationList object was restored with
-		 * an ExpandAsArray on the email_message association table.
+		 * an ExpandAsArray on the emailmessage_communicationlist_assn association table.
 		 * @var EmailMessage[] _objEmailMessageArray;
 		 */
 		private $_objEmailMessageArray = array();
@@ -515,20 +515,20 @@
 					$blnExpandedViaArray = true;
 				}
 
-
-				$strAlias = $strAliasPrefix . 'emailmessage__id';
+				$strAlias = $strAliasPrefix . 'emailmessage__email_message_id__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageArray)) {
 						$objPreviousChildItem = $objPreviousItem->_objEmailMessageArray[$intPreviousChildItemCount - 1];
-						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__email_message_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
 							$objPreviousItem->_objEmailMessageArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__email_message_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
+
 
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
@@ -592,16 +592,16 @@
 					$objToReturn->_objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person__person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-
 			// Check for EmailMessage Virtual Binding
-			$strAlias = $strAliasPrefix . 'emailmessage__id';
+			$strAlias = $strAliasPrefix . 'emailmessage__email_message_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__email_message_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objEmailMessage = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objEmailMessage = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__email_message_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
+
 
 			return $objToReturn;
 		}
@@ -827,6 +827,37 @@
 		public static function CountByPerson($intPersonId) {
 			return CommunicationList::QueryCount(
 				QQ::Equal(QQN::CommunicationList()->Person->PersonId, $intPersonId)
+			);
+		}
+			/**
+		 * Load an array of EmailMessage objects for a given EmailMessage
+		 * via the emailmessage_communicationlist_assn table
+		 * @param integer $intEmailMessageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return CommunicationList[]
+		*/
+		public static function LoadArrayByEmailMessage($intEmailMessageId, $objOptionalClauses = null) {
+			// Call CommunicationList::QueryArray to perform the LoadArrayByEmailMessage query
+			try {
+				return CommunicationList::QueryArray(
+					QQ::Equal(QQN::CommunicationList()->EmailMessage->EmailMessageId, $intEmailMessageId),
+					$objOptionalClauses
+				);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count CommunicationLists for a given EmailMessage
+		 * via the emailmessage_communicationlist_assn table
+		 * @param integer $intEmailMessageId
+		 * @return int
+		*/
+		public static function CountByEmailMessage($intEmailMessageId) {
+			return CommunicationList::QueryCount(
+				QQ::Equal(QQN::CommunicationList()->EmailMessage->EmailMessageId, $intEmailMessageId)
 			);
 		}
 
@@ -1057,13 +1088,13 @@
 
 				case '_EmailMessage':
 					// Gets the value for the private _objEmailMessage (Read-Only)
-					// if set due to an expansion on the email_message.communication_list_id reverse relationship
+					// if set due to an expansion on the emailmessage_communicationlist_assn association table
 					// @return EmailMessage
 					return $this->_objEmailMessage;
 
 				case '_EmailMessageArray':
 					// Gets the value for the private _objEmailMessageArray (Read-Only)
-					// if set due to an ExpandAsArray on the email_message.communication_list_id reverse relationship
+					// if set due to an ExpandAsArray on the emailmessage_communicationlist_assn association table
 					// @return EmailMessage[]
 					return (array) $this->_objEmailMessageArray;
 
@@ -1199,156 +1230,6 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
-
-			
-		
-		// Related Objects' Methods for EmailMessage
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated EmailMessages as an array of EmailMessage objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return EmailMessage[]
-		*/ 
-		public function GetEmailMessageArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return EmailMessage::LoadArrayByCommunicationListId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated EmailMessages
-		 * @return int
-		*/ 
-		public function CountEmailMessages() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return EmailMessage::CountByCommunicationListId($this->intId);
-		}
-
-		/**
-		 * Associates a EmailMessage
-		 * @param EmailMessage $objEmailMessage
-		 * @return void
-		*/ 
-		public function AssociateEmailMessage(EmailMessage $objEmailMessage) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this unsaved CommunicationList.');
-			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this CommunicationList with an unsaved EmailMessage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CommunicationList::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`email_message`
-				SET
-					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a EmailMessage
-		 * @param EmailMessage $objEmailMessage
-		 * @return void
-		*/ 
-		public function UnassociateEmailMessage(EmailMessage $objEmailMessage) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved CommunicationList.');
-			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this CommunicationList with an unsaved EmailMessage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CommunicationList::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`email_message`
-				SET
-					`communication_list_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
-					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all EmailMessages
-		 * @return void
-		*/ 
-		public function UnassociateAllEmailMessages() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved CommunicationList.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CommunicationList::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`email_message`
-				SET
-					`communication_list_id` = null
-				WHERE
-					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated EmailMessage
-		 * @param EmailMessage $objEmailMessage
-		 * @return void
-		*/ 
-		public function DeleteAssociatedEmailMessage(EmailMessage $objEmailMessage) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved CommunicationList.');
-			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this CommunicationList with an unsaved EmailMessage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CommunicationList::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`email_message`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
-					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated EmailMessages
-		 * @return void
-		*/ 
-		public function DeleteAllEmailMessages() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved CommunicationList.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CommunicationList::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`email_message`
-				WHERE
-					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
 
 			
 		// Related Many-to-Many Objects' Methods for CommunicationListEntry
@@ -1594,6 +1475,128 @@
 					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
+			
+		// Related Many-to-Many Objects' Methods for EmailMessage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all many-to-many associated EmailMessages as an array of EmailMessage objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailMessage[]
+		*/ 
+		public function GetEmailMessageArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return EmailMessage::LoadArrayByCommunicationList($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all many-to-many associated EmailMessages
+		 * @return int
+		*/ 
+		public function CountEmailMessages() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return EmailMessage::CountByCommunicationList($this->intId);
+		}
+
+		/**
+		 * Checks to see if an association exists with a specific EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return bool
+		*/
+		public function IsEmailMessageAssociated(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsEmailMessageAssociated on this unsaved CommunicationList.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsEmailMessageAssociated on this CommunicationList with an unsaved EmailMessage.');
+
+			$intRowCount = CommunicationList::QueryCount(
+				QQ::AndCondition(
+					QQ::Equal(QQN::CommunicationList()->Id, $this->intId),
+					QQ::Equal(QQN::CommunicationList()->EmailMessage->EmailMessageId, $objEmailMessage->Id)
+				)
+			);
+
+			return ($intRowCount > 0);
+		}
+
+		/**
+		 * Associates a EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function AssociateEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this unsaved CommunicationList.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this CommunicationList with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationList::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				INSERT INTO `emailmessage_communicationlist_assn` (
+					`communication_list_id`,
+					`email_message_id`
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
+				)
+			');
+		}
+
+		/**
+		 * Unassociates a EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function UnassociateEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved CommunicationList.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this CommunicationList with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationList::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`emailmessage_communicationlist_assn`
+				WHERE
+					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
+					`email_message_id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates all EmailMessages
+		 * @return void
+		*/ 
+		public function UnassociateAllEmailMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllEmailMessageArray on this unsaved CommunicationList.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationList::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`emailmessage_communicationlist_assn`
+				WHERE
+					`communication_list_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
 
 
 
@@ -1733,6 +1736,33 @@
 		}
 	}
 
+	class QQNodeCommunicationListEmailMessage extends QQAssociationNode {
+		protected $strType = 'association';
+		protected $strName = 'emailmessage';
+
+		protected $strTableName = 'emailmessage_communicationlist_assn';
+		protected $strPrimaryKey = 'communication_list_id';
+		protected $strClassName = 'EmailMessage';
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'EmailMessageId':
+					return new QQNode('email_message_id', 'EmailMessageId', 'integer', $this);
+				case 'EmailMessage':
+					return new QQNodeEmailMessage('email_message_id', 'EmailMessageId', 'integer', $this);
+				case '_ChildTableNode':
+					return new QQNodeEmailMessage('email_message_id', 'EmailMessageId', 'integer', $this);
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+	}
+
 	class QQNodeCommunicationList extends QQNode {
 		protected $strTableName = 'communication_list';
 		protected $strPrimaryKey = 'id';
@@ -1756,7 +1786,7 @@
 				case 'Person':
 					return new QQNodeCommunicationListPerson($this);
 				case 'EmailMessage':
-					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'communication_list_id');
+					return new QQNodeCommunicationListEmailMessage($this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1794,7 +1824,7 @@
 				case 'Person':
 					return new QQNodeCommunicationListPerson($this);
 				case 'EmailMessage':
-					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'communication_list_id');
+					return new QQNodeCommunicationListEmailMessage($this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

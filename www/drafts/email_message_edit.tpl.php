@@ -27,17 +27,21 @@
 
 		<?php $this->txtMessageIdentifier->RenderWithName(); ?>
 
-		<?php $this->lstReceivedFromPerson->RenderWithName(); ?>
+		<?php $this->lstPerson->RenderWithName(); ?>
 
-		<?php $this->lstReceivedFromEntry->RenderWithName(); ?>
-
-		<?php $this->lstGroup->RenderWithName(); ?>
-
-		<?php $this->lstCommunicationList->RenderWithName(); ?>
+		<?php $this->lstCommunicationListEntry->RenderWithName(); ?>
 
 		<?php $this->txtSubject->RenderWithName(); ?>
 
-		<?php $this->txtResponseMessage->RenderWithName(); ?>
+		<?php $this->txtResponseHeader->RenderWithName(); ?>
+
+		<?php $this->txtResponseBody->RenderWithName(); ?>
+
+		<?php $this->txtErrorMessage->RenderWithName(); ?>
+
+		<?php $this->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>
+
+		<?php $this->lstGroups->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

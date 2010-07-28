@@ -35,6 +35,7 @@
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 		public $lstGrowthGroup;
 		public $lstSmartGroup;
+		public $lstEmailMessages;
 
 		// Other Controls
 		public $btnSave;
@@ -75,6 +76,7 @@
 			$this->txtToken = $this->mctGroup->txtToken_Create();
 			$this->lstGrowthGroup = $this->mctGroup->lstGrowthGroup_Create();
 			$this->lstSmartGroup = $this->mctGroup->lstSmartGroup_Create();
+			$this->lstEmailMessages = $this->mctGroup->lstEmailMessages_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

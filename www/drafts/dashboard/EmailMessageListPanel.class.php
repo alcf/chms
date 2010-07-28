@@ -70,12 +70,12 @@
 			$this->dtgEmailMessages->MetaAddColumn('DateReceived');
 			$this->dtgEmailMessages->MetaAddColumn('RawMessage');
 			$this->dtgEmailMessages->MetaAddColumn('MessageIdentifier');
-			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->ReceivedFromPerson);
-			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->ReceivedFromEntry);
-			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->Group);
-			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->CommunicationList);
+			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->Person);
+			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->CommunicationListEntry);
 			$this->dtgEmailMessages->MetaAddColumn('Subject');
-			$this->dtgEmailMessages->MetaAddColumn('ResponseMessage');
+			$this->dtgEmailMessages->MetaAddColumn('ResponseHeader');
+			$this->dtgEmailMessages->MetaAddColumn('ResponseBody');
+			$this->dtgEmailMessages->MetaAddColumn('ErrorMessage');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);
