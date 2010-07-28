@@ -19,13 +19,13 @@
 	<div id="formControls">
 		<?php $this->lblId->RenderWithName(); ?>
 
-		<?php $this->txtMessageIdentifier->RenderWithName(); ?>
-
 		<?php $this->lstEmailMessageStatusType->RenderWithName(); ?>
+
+		<?php $this->calDateReceived->RenderWithName(); ?>
 
 		<?php $this->txtRawMessage->RenderWithName(); ?>
 
-		<?php $this->calDateReceived->RenderWithName(); ?>
+		<?php $this->txtMessageIdentifier->RenderWithName(); ?>
 
 		<?php $this->lstReceivedFromPerson->RenderWithName(); ?>
 

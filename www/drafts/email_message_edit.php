@@ -24,10 +24,10 @@
 
 		// Controls for EmailMessage's Data Fields
 		protected $lblId;
-		protected $txtMessageIdentifier;
 		protected $lstEmailMessageStatusType;
-		protected $txtRawMessage;
 		protected $calDateReceived;
+		protected $txtRawMessage;
+		protected $txtMessageIdentifier;
 		protected $lstReceivedFromPerson;
 		protected $lstReceivedFromEntry;
 		protected $lstGroup;
@@ -61,10 +61,10 @@
 
 			// Call MetaControl's methods to create qcontrols based on EmailMessage's data fields
 			$this->lblId = $this->mctEmailMessage->lblId_Create();
-			$this->txtMessageIdentifier = $this->mctEmailMessage->txtMessageIdentifier_Create();
 			$this->lstEmailMessageStatusType = $this->mctEmailMessage->lstEmailMessageStatusType_Create();
-			$this->txtRawMessage = $this->mctEmailMessage->txtRawMessage_Create();
 			$this->calDateReceived = $this->mctEmailMessage->calDateReceived_Create();
+			$this->txtRawMessage = $this->mctEmailMessage->txtRawMessage_Create();
+			$this->txtMessageIdentifier = $this->mctEmailMessage->txtMessageIdentifier_Create();
 			$this->lstReceivedFromPerson = $this->mctEmailMessage->lstReceivedFromPerson_Create();
 			$this->lstReceivedFromEntry = $this->mctEmailMessage->lstReceivedFromEntry_Create();
 			$this->lstGroup = $this->mctEmailMessage->lstGroup_Create();

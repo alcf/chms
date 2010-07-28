@@ -18,14 +18,14 @@
 	 * property-read EmailMessage $EmailMessage the actual EmailMessage data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
-	 * property QTextBox $MessageIdentifierControl
-	 * property-read QLabel $MessageIdentifierLabel
 	 * property QListBox $EmailMessageStatusTypeIdControl
 	 * property-read QLabel $EmailMessageStatusTypeIdLabel
-	 * property QTextBox $RawMessageControl
-	 * property-read QLabel $RawMessageLabel
 	 * property QDateTimePicker $DateReceivedControl
 	 * property-read QLabel $DateReceivedLabel
+	 * property QTextBox $RawMessageControl
+	 * property-read QLabel $RawMessageLabel
+	 * property QTextBox $MessageIdentifierControl
+	 * property-read QLabel $MessageIdentifierLabel
 	 * property QListBox $ReceivedFromPersonIdControl
 	 * property-read QLabel $ReceivedFromPersonIdLabel
 	 * property QListBox $ReceivedFromEntryIdControl
@@ -51,10 +51,10 @@
 
 		// Controls that allow the editing of EmailMessage's individual data fields
 		protected $lblId;
-		protected $txtMessageIdentifier;
 		protected $lstEmailMessageStatusType;
-		protected $txtRawMessage;
 		protected $calDateReceived;
+		protected $txtRawMessage;
+		protected $txtMessageIdentifier;
 		protected $lstReceivedFromPerson;
 		protected $lstReceivedFromEntry;
 		protected $lstGroup;
@@ -63,10 +63,10 @@
 		protected $txtResponseMessage;
 
 		// Controls that allow the viewing of EmailMessage's individual data fields
-		protected $lblMessageIdentifier;
 		protected $lblEmailMessageStatusTypeId;
-		protected $lblRawMessage;
 		protected $lblDateReceived;
+		protected $lblRawMessage;
+		protected $lblMessageIdentifier;
 		protected $lblReceivedFromPersonId;
 		protected $lblReceivedFromEntryId;
 		protected $lblGroupId;
@@ -187,33 +187,6 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtMessageIdentifier
-		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
-		 */
-		public function txtMessageIdentifier_Create($strControlId = null) {
-			$this->txtMessageIdentifier = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtMessageIdentifier->Name = QApplication::Translate('Message Identifier');
-			$this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
-			$this->txtMessageIdentifier->Required = true;
-			$this->txtMessageIdentifier->MaxLength = EmailMessage::MessageIdentifierMaxLength;
-			return $this->txtMessageIdentifier;
-		}
-
-		/**
-		 * Create and setup QLabel lblMessageIdentifier
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblMessageIdentifier_Create($strControlId = null) {
-			$this->lblMessageIdentifier = new QLabel($this->objParentObject, $strControlId);
-			$this->lblMessageIdentifier->Name = QApplication::Translate('Message Identifier');
-			$this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
-			$this->lblMessageIdentifier->Required = true;
-			return $this->lblMessageIdentifier;
-		}
-
-		/**
 		 * Create and setup QListBox lstEmailMessageStatusType
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
@@ -238,31 +211,6 @@
 			$this->lblEmailMessageStatusTypeId->Text = ($this->objEmailMessage->EmailMessageStatusTypeId) ? EmailMessageStatusType::$NameArray[$this->objEmailMessage->EmailMessageStatusTypeId] : null;
 			$this->lblEmailMessageStatusTypeId->Required = true;
 			return $this->lblEmailMessageStatusTypeId;
-		}
-
-		/**
-		 * Create and setup QTextBox txtRawMessage
-		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
-		 */
-		public function txtRawMessage_Create($strControlId = null) {
-			$this->txtRawMessage = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtRawMessage->Name = QApplication::Translate('Raw Message');
-			$this->txtRawMessage->Text = $this->objEmailMessage->RawMessage;
-			$this->txtRawMessage->TextMode = QTextMode::MultiLine;
-			return $this->txtRawMessage;
-		}
-
-		/**
-		 * Create and setup QLabel lblRawMessage
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblRawMessage_Create($strControlId = null) {
-			$this->lblRawMessage = new QLabel($this->objParentObject, $strControlId);
-			$this->lblRawMessage->Name = QApplication::Translate('Raw Message');
-			$this->lblRawMessage->Text = $this->objEmailMessage->RawMessage;
-			return $this->lblRawMessage;
 		}
 
 		/**
@@ -295,6 +243,58 @@
 		}
 
 		protected $strDateReceivedDateTimeFormat;
+
+		/**
+		 * Create and setup QTextBox txtRawMessage
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtRawMessage_Create($strControlId = null) {
+			$this->txtRawMessage = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtRawMessage->Name = QApplication::Translate('Raw Message');
+			$this->txtRawMessage->Text = $this->objEmailMessage->RawMessage;
+			$this->txtRawMessage->Required = true;
+			$this->txtRawMessage->TextMode = QTextMode::MultiLine;
+			return $this->txtRawMessage;
+		}
+
+		/**
+		 * Create and setup QLabel lblRawMessage
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblRawMessage_Create($strControlId = null) {
+			$this->lblRawMessage = new QLabel($this->objParentObject, $strControlId);
+			$this->lblRawMessage->Name = QApplication::Translate('Raw Message');
+			$this->lblRawMessage->Text = $this->objEmailMessage->RawMessage;
+			$this->lblRawMessage->Required = true;
+			return $this->lblRawMessage;
+		}
+
+		/**
+		 * Create and setup QTextBox txtMessageIdentifier
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtMessageIdentifier_Create($strControlId = null) {
+			$this->txtMessageIdentifier = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtMessageIdentifier->Name = QApplication::Translate('Message Identifier');
+			$this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+			$this->txtMessageIdentifier->MaxLength = EmailMessage::MessageIdentifierMaxLength;
+			return $this->txtMessageIdentifier;
+		}
+
+		/**
+		 * Create and setup QLabel lblMessageIdentifier
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblMessageIdentifier_Create($strControlId = null) {
+			$this->lblMessageIdentifier = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMessageIdentifier->Name = QApplication::Translate('Message Identifier');
+			$this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+			return $this->lblMessageIdentifier;
+		}
 
 		/**
 		 * Create and setup QListBox lstReceivedFromPerson
@@ -519,17 +519,17 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objEmailMessage->Id;
 
-			if ($this->txtMessageIdentifier) $this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
-			if ($this->lblMessageIdentifier) $this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
-
 			if ($this->lstEmailMessageStatusType) $this->lstEmailMessageStatusType->SelectedValue = $this->objEmailMessage->EmailMessageStatusTypeId;
 			if ($this->lblEmailMessageStatusTypeId) $this->lblEmailMessageStatusTypeId->Text = ($this->objEmailMessage->EmailMessageStatusTypeId) ? EmailMessageStatusType::$NameArray[$this->objEmailMessage->EmailMessageStatusTypeId] : null;
+
+			if ($this->calDateReceived) $this->calDateReceived->DateTime = $this->objEmailMessage->DateReceived;
+			if ($this->lblDateReceived) $this->lblDateReceived->Text = sprintf($this->objEmailMessage->DateReceived) ? $this->objEmailMessage->__toString($this->strDateReceivedDateTimeFormat) : null;
 
 			if ($this->txtRawMessage) $this->txtRawMessage->Text = $this->objEmailMessage->RawMessage;
 			if ($this->lblRawMessage) $this->lblRawMessage->Text = $this->objEmailMessage->RawMessage;
 
-			if ($this->calDateReceived) $this->calDateReceived->DateTime = $this->objEmailMessage->DateReceived;
-			if ($this->lblDateReceived) $this->lblDateReceived->Text = sprintf($this->objEmailMessage->DateReceived) ? $this->objEmailMessage->__toString($this->strDateReceivedDateTimeFormat) : null;
+			if ($this->txtMessageIdentifier) $this->txtMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
+			if ($this->lblMessageIdentifier) $this->lblMessageIdentifier->Text = $this->objEmailMessage->MessageIdentifier;
 
 			if ($this->lstReceivedFromPerson) {
 					$this->lstReceivedFromPerson->RemoveAllItems();
@@ -612,10 +612,10 @@
 		public function SaveEmailMessage() {
 			try {
 				// Update any fields for controls that have been created
-				if ($this->txtMessageIdentifier) $this->objEmailMessage->MessageIdentifier = $this->txtMessageIdentifier->Text;
 				if ($this->lstEmailMessageStatusType) $this->objEmailMessage->EmailMessageStatusTypeId = $this->lstEmailMessageStatusType->SelectedValue;
-				if ($this->txtRawMessage) $this->objEmailMessage->RawMessage = $this->txtRawMessage->Text;
 				if ($this->calDateReceived) $this->objEmailMessage->DateReceived = $this->calDateReceived->DateTime;
+				if ($this->txtRawMessage) $this->objEmailMessage->RawMessage = $this->txtRawMessage->Text;
+				if ($this->txtMessageIdentifier) $this->objEmailMessage->MessageIdentifier = $this->txtMessageIdentifier->Text;
 				if ($this->lstReceivedFromPerson) $this->objEmailMessage->ReceivedFromPersonId = $this->lstReceivedFromPerson->SelectedValue;
 				if ($this->lstReceivedFromEntry) $this->objEmailMessage->ReceivedFromEntryId = $this->lstReceivedFromEntry->SelectedValue;
 				if ($this->lstGroup) $this->objEmailMessage->GroupId = $this->lstGroup->SelectedValue;
@@ -670,30 +670,30 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
-				case 'MessageIdentifierControl':
-					if (!$this->txtMessageIdentifier) return $this->txtMessageIdentifier_Create();
-					return $this->txtMessageIdentifier;
-				case 'MessageIdentifierLabel':
-					if (!$this->lblMessageIdentifier) return $this->lblMessageIdentifier_Create();
-					return $this->lblMessageIdentifier;
 				case 'EmailMessageStatusTypeIdControl':
 					if (!$this->lstEmailMessageStatusType) return $this->lstEmailMessageStatusType_Create();
 					return $this->lstEmailMessageStatusType;
 				case 'EmailMessageStatusTypeIdLabel':
 					if (!$this->lblEmailMessageStatusTypeId) return $this->lblEmailMessageStatusTypeId_Create();
 					return $this->lblEmailMessageStatusTypeId;
-				case 'RawMessageControl':
-					if (!$this->txtRawMessage) return $this->txtRawMessage_Create();
-					return $this->txtRawMessage;
-				case 'RawMessageLabel':
-					if (!$this->lblRawMessage) return $this->lblRawMessage_Create();
-					return $this->lblRawMessage;
 				case 'DateReceivedControl':
 					if (!$this->calDateReceived) return $this->calDateReceived_Create();
 					return $this->calDateReceived;
 				case 'DateReceivedLabel':
 					if (!$this->lblDateReceived) return $this->lblDateReceived_Create();
 					return $this->lblDateReceived;
+				case 'RawMessageControl':
+					if (!$this->txtRawMessage) return $this->txtRawMessage_Create();
+					return $this->txtRawMessage;
+				case 'RawMessageLabel':
+					if (!$this->lblRawMessage) return $this->lblRawMessage_Create();
+					return $this->lblRawMessage;
+				case 'MessageIdentifierControl':
+					if (!$this->txtMessageIdentifier) return $this->txtMessageIdentifier_Create();
+					return $this->txtMessageIdentifier;
+				case 'MessageIdentifierLabel':
+					if (!$this->lblMessageIdentifier) return $this->lblMessageIdentifier_Create();
+					return $this->lblMessageIdentifier;
 				case 'ReceivedFromPersonIdControl':
 					if (!$this->lstReceivedFromPerson) return $this->lstReceivedFromPerson_Create();
 					return $this->lstReceivedFromPerson;
@@ -754,14 +754,14 @@
 					// Controls that point to EmailMessage fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
-					case 'MessageIdentifierControl':
-						return ($this->txtMessageIdentifier = QType::Cast($mixValue, 'QControl'));
 					case 'EmailMessageStatusTypeIdControl':
 						return ($this->lstEmailMessageStatusType = QType::Cast($mixValue, 'QControl'));
-					case 'RawMessageControl':
-						return ($this->txtRawMessage = QType::Cast($mixValue, 'QControl'));
 					case 'DateReceivedControl':
 						return ($this->calDateReceived = QType::Cast($mixValue, 'QControl'));
+					case 'RawMessageControl':
+						return ($this->txtRawMessage = QType::Cast($mixValue, 'QControl'));
+					case 'MessageIdentifierControl':
+						return ($this->txtMessageIdentifier = QType::Cast($mixValue, 'QControl'));
 					case 'ReceivedFromPersonIdControl':
 						return ($this->lstReceivedFromPerson = QType::Cast($mixValue, 'QControl'));
 					case 'ReceivedFromEntryIdControl':

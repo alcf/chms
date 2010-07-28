@@ -7,13 +7,13 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtMessageIdentifier->RenderWithName(); ?>
-
 		<?php $_CONTROL->lstEmailMessageStatusType->RenderWithName(); ?>
+
+		<?php $_CONTROL->calDateReceived->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtRawMessage->RenderWithName(); ?>
 
-		<?php $_CONTROL->calDateReceived->RenderWithName(); ?>
+		<?php $_CONTROL->txtMessageIdentifier->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstReceivedFromPerson->RenderWithName(); ?>
 
