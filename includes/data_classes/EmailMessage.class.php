@@ -60,7 +60,7 @@
 
 			// Check MessageId
 			if (!is_null($this->strMessageIdentifier)) {
-				// Duplicate Message?
+				// Duplicate Message -- if so, delete this an move on
 				$objMessage = EmailMessage::LoadByMessageIdentifier($this->strMessageIdentifier);
 
 				if ($objMessage && ($objMessage->Id != $this->intId)) {
@@ -69,23 +69,10 @@
 				}
 			}
 
-			// Figure out who the recpieint(s) are
-			$strEmailAddressArray = $this->CalculateEmailArray();
-
-			$objCommunicationListArray = $this->LookupCommunicationLists($strEmailAddressArray);
-			$objGroupArray = $this->LookupGroups($strEmailAddressArray);
-
-			// Errors?
-			if (count($strEmailAddressArray)) {
-				$this->strErrorMessage .= "\r\n\r\nThe following email addresses do not exist on the system:\r\n    - " . implode("\r\n    - ", $strEmailAddressArray);
-			}
-			if (!count($objCommunicationListArray) && !count($objGroupArray)) {
-				$this->strErrorMessage .= "\r\n\r\nNo valid groups or communication lists were found in the system.\r\n";
-				$this->strErrorMessage .= "Please be sure you have entered the address correctly and that you are NOT using BCC.\r\n";
-			}
-
-			// Now Figure out who the sender is
+			// First, Figure out what the sender Email address is
 			$strFromAddress = $this->LookupSenderEmailAddress();
+
+			// If not valid, then something is very wrong -- we should punt immediately
 			if (is_null($strFromAddress)) {
 				$this->strErrorMessage = 'Invaid From Address';
 				$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Error;
@@ -93,45 +80,122 @@
 				return;
 			}
 
-			// Assign to Person/Login/CommListEntry objects if applicable
-			$this->LookupSenderObject($strFromAddress, $objGroupArray, $objCommunicationListArray);
+			// Get a PersonArray and update Login / CommListEntry links
+			$objPersonArray = $this->LookupSenderObject($strFromAddress);
+			$this->Save();
 
-			
+			// Next, Figure out the totel set of *potential* recpieint(s) are
+			$strEmailAddressArray = $this->CalculateEmailArray();
+			$objGroupArray = $this->LookupGroups($strEmailAddressArray);
+			$objCommunicationListArray = $this->LookupCommunicationLists($strEmailAddressArray);
+
+			// Next, iterate throug EACH CommList and Group to see which ones that the sender can send to
+			$objUnauthorizedCommuniationListArray = $this->SetupCommunicationListAssociations($objCommunicationListArray, $objPersonArray);
+			$objUnauthorizedGroupArray = $this->SetupGroupAssociations($objGroupArray, $objPersonArray);
+
+			// Next, Error Reporting
+			$this->SetupErrorMessage($strEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray);
 			$this->Save();
 		}
 
-		protected function LookupSenderObject($strFromAddress, $objGroupArray, $objCommunicationListArray) {
+		protected function SetupErrorMessage($strUnmatchedEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray) {
+			$strErrorMessageArray = array();
+
+			if (count($strUnmatchedEmailAddressArray)) {
+				$strErrorMessageArray[] = "The following email addresses do not exist on the system:\r\n    - " . implode("\r\n    - ", $strUnmatchedEmailAddressArray);
+			}
+
+			$strUnauthorizedArray = array();
+			foreach ($objUnauthorizedCommuniationListArray as $objCommuniationList) $strUnauthorizedArray[] = $objCommuniationList->Token . '@groups.alcf.net';
+			foreach ($objUnauthorizedGroupArray as $objGroup) $strUnauthorizedArray[] = $objGroup->Token . '@groups.alcf.net';
+			if (count($strUnauthorizedArray)) {
+				$strErrorMessageArray[] = "You are not currently authorized to send messages to the following groups or communication lists:\r\n    - " . implode("\r\n    - ", $strUnauthorizedArray);
+			}
+
+			if (!$this->CountCommunicationLists() && !$this->CountGroups()) {
+				$strErrorMessageArray[] = "No valid groups or communication lists were found in the system.\r\n" .
+					"Please be sure you have entered the address correctly and that you are NOT using BCC.";
+			}
+
+			if (count($strErrorMessageArray))
+				$this->strErrorMessage = implode("\r\n\r\n", $strErrorMessageArray);
+			else
+				$this->strErrorMessage = null;
+		}
+
+		/**
+		 * Given the locally set Login and CommListEntry link, and given an array of Person[] objects all which
+		 * represent the FromEmailAddress, iterate through the array of Group objects to see which ones
+		 * the sender can send to.  Associate any valid ones to this object.  Return any invalid (e.g. unauthorized) ones
+		 * as an array.
+		 * @param Group[] $objGroupArray
+		 * @param Person[] $objPersonArray
+		 * @return Group[] returns any unauthorized Groups that the sender is not allowed to send to
+		 */
+		protected function SetupGroupAssociations($objGroupArray, $objPersonArray) {
+			$objUnauthorizedArray = array();
+
+			// TODO
+
+			return $objUnauthorizedArray;
+		}
+		
+		/**
+		 * Given the locally set Login and CommListEntry link, and given an array of Person[] objects all which
+		 * represent the FromEmailAddress, iterate through the array of CommunicationList objects to see which ones
+		 * the sender can send to.  Associate any valid ones to this object.  Return any invalid (e.g. unauthorized) ones
+		 * as an array.
+		 * @param CommunicationList[] $objCommunicationListArray
+		 * @param Person[] $objPersonArray
+		 * @return CommunicationList[] returns any unauthorized CommLists that the sender is not allowed to send to
+		 */
+		protected function SetupCommunicationListAssociations($objCommunicationListArray, $objPersonArray) {
+			$objUnauthorizedArray = array();
+
+			// TODO
+
+			return $objUnauthorizedArray;
+		}
+		
+		/**
+		 * Given a valid From EmailAddress, this will set the local Login and CommListEntry properties,
+		 * as well as return an array of Person objects that all correnspond to this FromEmailAddress.
+		 * @param string $strFromAddress
+		 * @return Person[]
+		 */
+		protected function LookupSenderObject($strFromAddress) {
 			$this->CommunicationListEntry = CommunicationListEntry::LoadByEmail($strFromAddress);
 			$this->Login = Login::LoadByEmail($strFromAddress);
 
 			// Get all Person objects that have this as an email address
 			$objPersonArray = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $strFromAddress), QQ::Distinct());
+			return $objPersonArray;
 
-			// Iterate through each person and each group see if there is a GroupParticipation for the pair
-			foreach ($objPersonArray as $objPerson) {
-				if (!$this->Person) {
-					foreach ($objGroupArray as $objGroup) {
-						if (GroupParticipation::CountByPersonIdGroupId($objPerson->Id, $objGroup->Id)) {
-							$this->Person = $objPerson;
-							break;
-						}
-					}
-				}
-			}
-
-			if (!$this->Person) {
-				// Iterate through each CommList see if there is a association for the pair
-				foreach ($objPersonArray as $objPerson) {
-					if (!$this->Person) {
-						foreach ($objCommunicationListArray as $objCommunicationList) {
-							if ($objPerson->IsCommunicationListAssociated($objCommunicationList)) {
-								$this->Person = $objPerson;
-								break;
-							}
-						}
-					}
-				}
-			}
+//			// Iterate through each person and each group see if there is a GroupParticipation for the pair
+//			foreach ($objPersonArray as $objPerson) {
+//				if (!$this->Person) {
+//					foreach ($objGroupArray as $objGroup) {
+//						if (GroupParticipation::CountByPersonIdGroupId($objPerson->Id, $objGroup->Id)) {
+//							$this->Person = $objPerson;
+//							break;
+//						}
+//					}
+//				}
+//			}
+//
+//			if (!$this->Person) {
+//				// Iterate through each CommList see if there is a association for the pair
+//				foreach ($objPersonArray as $objPerson) {
+//					if (!$this->Person) {
+//						foreach ($objCommunicationListArray as $objCommunicationList) {
+//							if ($objPerson->IsCommunicationListAssociated($objCommunicationList)) {
+//								$this->Person = $objPerson;
+//								break;
+//							}
+//						}
+//					}
+//				}
+//			}
 		}
 
 		/**
