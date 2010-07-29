@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class MinistryListForm extends QForm {
+	class MinistryListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Ministries
 		protected $dtgMinistries;
 

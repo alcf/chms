@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class MarriageEditForm extends QForm {
+	class MarriageEditForm extends ChmsForm {
 		// Local instance of the MarriageMetaControl
 		protected $mctMarriage;
 

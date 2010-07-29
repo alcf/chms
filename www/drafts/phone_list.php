@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class PhoneListForm extends QForm {
+	class PhoneListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Phones
 		protected $dtgPhones;
 

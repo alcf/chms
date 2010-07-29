@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class EmailOutgoingQueueListForm extends QForm {
+	class EmailOutgoingQueueListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list EmailOutgoingQueues
 		protected $dtgEmailOutgoingQueues;
 

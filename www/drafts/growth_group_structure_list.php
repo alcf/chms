@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class GrowthGroupStructureListForm extends QForm {
+	class GrowthGroupStructureListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list GrowthGroupStructures
 		protected $dtgGrowthGroupStructures;
 

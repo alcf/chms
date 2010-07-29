@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class RelationshipEditForm extends QForm {
+	class RelationshipEditForm extends ChmsForm {
 		// Local instance of the RelationshipMetaControl
 		protected $mctRelationship;
 

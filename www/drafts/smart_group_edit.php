@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class SmartGroupEditForm extends QForm {
+	class SmartGroupEditForm extends ChmsForm {
 		// Local instance of the SmartGroupMetaControl
 		protected $mctSmartGroup;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class OtherContactInfoEditForm extends QForm {
+	class OtherContactInfoEditForm extends ChmsForm {
 		// Local instance of the OtherContactInfoMetaControl
 		protected $mctOtherContactInfo;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class NameItemListForm extends QForm {
+	class NameItemListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list NameItems
 		protected $dtgNameItems;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class LoginListForm extends QForm {
+	class LoginListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Logins
 		protected $dtgLogins;
 

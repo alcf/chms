@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class AttributeOptionEditForm extends QForm {
+	class AttributeOptionEditForm extends ChmsForm {
 		// Local instance of the AttributeOptionMetaControl
 		protected $mctAttributeOption;
 

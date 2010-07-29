@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class RegistryEditForm extends QForm {
+	class RegistryEditForm extends ChmsForm {
 		// Local instance of the RegistryMetaControl
 		protected $mctRegistry;
 

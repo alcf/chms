@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class MembershipEditForm extends QForm {
+	class MembershipEditForm extends ChmsForm {
 		// Local instance of the MembershipMetaControl
 		protected $mctMembership;
 

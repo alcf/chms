@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CountryListForm extends QForm {
+	class CountryListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Countries
 		protected $dtgCountries;
 

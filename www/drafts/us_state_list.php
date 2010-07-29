@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class UsStateListForm extends QForm {
+	class UsStateListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list UsStates
 		protected $dtgUsStates;
 

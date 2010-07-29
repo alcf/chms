@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class HeadShotListForm extends QForm {
+	class HeadShotListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list HeadShots
 		protected $dtgHeadShots;
 

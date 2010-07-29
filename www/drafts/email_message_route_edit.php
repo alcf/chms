@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class EmailMessageRouteEditForm extends QForm {
+	class EmailMessageRouteEditForm extends ChmsForm {
 		// Local instance of the EmailMessageRouteMetaControl
 		protected $mctEmailMessageRoute;
 

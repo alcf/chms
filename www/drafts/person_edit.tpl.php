@@ -9,8 +9,6 @@
 	require(__INCLUDES__ . '/header.inc.php');
 ?>
 
-	<?php $this->RenderBegin() ?>
-
 	<div id="titleBar">
 		<h2><?php _p($this->mctPerson->TitleVerb); ?></h2>
 		<h1><?php _t('Person')?></h1>
@@ -84,7 +82,5 @@
 		<div id="cancel"><?php $this->btnCancel->Render(); ?></div>
 		<div id="delete"><?php $this->btnDelete->Render(); ?></div>
 	</div>
-
-	<?php $this->RenderEnd() ?>	
 
 <?php require(__INCLUDES__ .'/footer.inc.php'); ?>

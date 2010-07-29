@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class EmailOutgoingQueueEditForm extends QForm {
+	class EmailOutgoingQueueEditForm extends ChmsForm {
 		// Local instance of the EmailOutgoingQueueMetaControl
 		protected $mctEmailOutgoingQueue;
 

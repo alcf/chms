@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CommunicationListEditForm extends QForm {
+	class CommunicationListEditForm extends ChmsForm {
 		// Local instance of the CommunicationListMetaControl
 		protected $mctCommunicationList;
 

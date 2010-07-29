@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class EmailListForm extends QForm {
+	class EmailListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Emails
 		protected $dtgEmails;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class UsStateEditForm extends QForm {
+	class UsStateEditForm extends ChmsForm {
 		// Local instance of the UsStateMetaControl
 		protected $mctUsState;
 

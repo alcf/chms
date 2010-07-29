@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class RelationshipListForm extends QForm {
+	class RelationshipListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Relationships
 		protected $dtgRelationships;
 

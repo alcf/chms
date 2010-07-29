@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CommunicationListEntryListForm extends QForm {
+	class CommunicationListEntryListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list CommunicationListEntries
 		protected $dtgCommunicationListEntries;
 

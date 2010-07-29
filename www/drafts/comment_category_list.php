@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CommentCategoryListForm extends QForm {
+	class CommentCategoryListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list CommentCategories
 		protected $dtgCommentCategories;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class GrowthGroupLocationEditForm extends QForm {
+	class GrowthGroupLocationEditForm extends ChmsForm {
 		// Local instance of the GrowthGroupLocationMetaControl
 		protected $mctGrowthGroupLocation;
 

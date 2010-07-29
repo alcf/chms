@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class HouseholdParticipationListForm extends QForm {
+	class HouseholdParticipationListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list HouseholdParticipations
 		protected $dtgHouseholdParticipations;
 

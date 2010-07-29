@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class AttributeOptionListForm extends QForm {
+	class AttributeOptionListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list AttributeOptions
 		protected $dtgAttributeOptions;
 

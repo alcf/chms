@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class EmailMessageRouteListForm extends QForm {
+	class EmailMessageRouteListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list EmailMessageRoutes
 		protected $dtgEmailMessageRoutes;
 

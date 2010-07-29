@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CountryEditForm extends QForm {
+	class CountryEditForm extends ChmsForm {
 		// Local instance of the CountryMetaControl
 		protected $mctCountry;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class HouseholdSplitEditForm extends QForm {
+	class HouseholdSplitEditForm extends ChmsForm {
 		// Local instance of the HouseholdSplitMetaControl
 		protected $mctHouseholdSplit;
 

@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class AddressEditForm extends QForm {
+	class AddressEditForm extends ChmsForm {
 		// Local instance of the AddressMetaControl
 		protected $mctAddress;
 

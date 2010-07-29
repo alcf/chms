@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class HouseholdSplitListForm extends QForm {
+	class HouseholdSplitListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list HouseholdSplits
 		protected $dtgHouseholdSplits;
 

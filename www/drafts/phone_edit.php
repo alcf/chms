@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class PhoneEditForm extends QForm {
+	class PhoneEditForm extends ChmsForm {
 		// Local instance of the PhoneMetaControl
 		protected $mctPhone;
 

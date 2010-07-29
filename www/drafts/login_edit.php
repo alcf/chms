@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class LoginEditForm extends QForm {
+	class LoginEditForm extends ChmsForm {
 		// Local instance of the LoginMetaControl
 		protected $mctLogin;
 

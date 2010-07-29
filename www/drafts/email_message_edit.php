@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class EmailMessageEditForm extends QForm {
+	class EmailMessageEditForm extends ChmsForm {
 		// Local instance of the EmailMessageMetaControl
 		protected $mctEmailMessage;
 

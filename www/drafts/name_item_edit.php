@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class NameItemEditForm extends QForm {
+	class NameItemEditForm extends ChmsForm {
 		// Local instance of the NameItemMetaControl
 		protected $mctNameItem;
 

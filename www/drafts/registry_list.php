@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class RegistryListForm extends QForm {
+	class RegistryListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list Registries
 		protected $dtgRegistries;
 

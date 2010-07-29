@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class OtherContactMethodListForm extends QForm {
+	class OtherContactMethodListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list OtherContactMethods
 		protected $dtgOtherContactMethods;
 

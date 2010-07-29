@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class PersonEditForm extends QForm {
+	class PersonEditForm extends ChmsForm {
 		// Local instance of the PersonMetaControl
 		protected $mctPerson;
 

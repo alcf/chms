@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class MinistryEditForm extends QForm {
+	class MinistryEditForm extends ChmsForm {
 		// Local instance of the MinistryMetaControl
 		protected $mctMinistry;
 

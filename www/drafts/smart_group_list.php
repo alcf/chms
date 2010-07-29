@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class SmartGroupListForm extends QForm {
+	class SmartGroupListForm extends ChmsForm {
 		// Local instance of the Meta DataGrid to list SmartGroups
 		protected $dtgSmartGroups;
 

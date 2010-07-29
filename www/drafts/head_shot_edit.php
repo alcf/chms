@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class HeadShotEditForm extends QForm {
+	class HeadShotEditForm extends ChmsForm {
 		// Local instance of the HeadShotMetaControl
 		protected $mctHeadShot;
 

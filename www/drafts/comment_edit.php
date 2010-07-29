@@ -18,7 +18,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CommentEditForm extends QForm {
+	class CommentEditForm extends ChmsForm {
 		// Local instance of the CommentMetaControl
 		protected $mctComment;
 
