@@ -81,20 +81,22 @@
 			}
 
 			// Get a PersonArray and update Login / CommListEntry links
-			$objPersonArray = $this->LookupSenderObject($strFromAddress);
-			$this->Save();
+			$objSenderArray = $this->CalculatePotentialSenderArray($strFromAddress);
 
 			// Next, Figure out the totel set of *potential* recpieint(s) are
 			$strEmailAddressArray = $this->CalculateEmailArray();
 			$objGroupArray = $this->LookupGroups($strEmailAddressArray);
 			$objCommunicationListArray = $this->LookupCommunicationLists($strEmailAddressArray);
 
+			// At this point, strEmailAddressArray is actually an array of Unmatched Email Addresses
+			$strUnmatchedEmailAddressArray = $strEmailAddressArray;
+
 			// Next, iterate throug EACH CommList and Group to see which ones that the sender can send to
-			$objUnauthorizedCommuniationListArray = $this->SetupCommunicationListAssociations($objCommunicationListArray, $objPersonArray);
-			$objUnauthorizedGroupArray = $this->SetupGroupAssociations($objGroupArray, $objPersonArray);
+			$objUnauthorizedCommuniationListArray = $this->SetupCommunicationListRoutes($objCommunicationListArray, $objSenderArray);
+			$objUnauthorizedGroupArray = $this->SetupGroupRoutes($objGroupArray, $objSenderArray);
 
 			// Next, Error Reporting
-			$this->SetupErrorMessage($strEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray);
+			$this->SetupErrorMessage($strUnmatchedEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray);
 			$this->Save();
 		}
 
@@ -126,13 +128,13 @@
 		/**
 		 * Given the locally set Login and CommListEntry link, and given an array of Person[] objects all which
 		 * represent the FromEmailAddress, iterate through the array of Group objects to see which ones
-		 * the sender can send to.  Associate any valid ones to this object.  Return any invalid (e.g. unauthorized) ones
-		 * as an array.
+		 * the sender can send to.  Associate any valid ones to this object as a new EmailMessageRoute.
+		 * Return any invalid (e.g. unauthorized) ones as an array.
 		 * @param Group[] $objGroupArray
-		 * @param Person[] $objPersonArray
+		 * @param mixed[] $objSenderArray
 		 * @return Group[] returns any unauthorized Groups that the sender is not allowed to send to
 		 */
-		protected function SetupGroupAssociations($objGroupArray, $objPersonArray) {
+		protected function SetupGroupRoutes($objGroupArray, $objSenderArray) {
 			$objUnauthorizedArray = array();
 
 			// TODO
@@ -146,13 +148,13 @@
 		/**
 		 * Given the locally set Login and CommListEntry link, and given an array of Person[] objects all which
 		 * represent the FromEmailAddress, iterate through the array of CommunicationList objects to see which ones
-		 * the sender can send to.  Associate any valid ones to this object.  Return any invalid (e.g. unauthorized) ones
-		 * as an array.
+		 * the sender can send to.  Associate any valid ones to this object as a new EmailMessageRoute.
+		 * Return any invalid (e.g. unauthorized) ones as an array.
 		 * @param CommunicationList[] $objCommunicationListArray
-		 * @param Person[] $objPersonArray
+		 * @param mixed[] $objSenderArray
 		 * @return CommunicationList[] returns any unauthorized CommLists that the sender is not allowed to send to
 		 */
-		protected function SetupCommunicationListAssociations($objCommunicationListArray, $objPersonArray) {
+		protected function SetupCommunicationListRoutes($objCommunicationListArray, $objSenderArray) {
 			$objUnauthorizedArray = array();
 
 			// TODO
@@ -161,44 +163,25 @@
 		}
 		
 		/**
-		 * Given a valid From EmailAddress, this will set the local Login and CommListEntry properties,
-		 * as well as return an array of Person objects that all correnspond to this FromEmailAddress.
+		 * Given a valid From EmailAddress, this will lookup and return a "Sender" array, a 3-item array containing:
+		 * 	Login
+		 * 	CommunicationListEntry
+		 * 	Person[]
+		 * that would correspond to this From EmailAddress.  Note that any one of those indexes can also be null
+		 * if there is no object corresponding to this From Email Address.
 		 * @param string $strFromAddress
-		 * @return Person[]
+		 * @return mixed[]
 		 */
-		protected function LookupSenderObject($strFromAddress) {
-			$this->CommunicationListEntry = CommunicationListEntry::LoadByEmail($strFromAddress);
-			$this->Login = Login::LoadByEmail($strFromAddress);
+		protected function CalculatePotentialSenderArray($strFromAddress) {
+			$objArrayToReturn = array();
+			
+			$objArrayToReturn[] = Login::LoadByEmail($strFromAddress);
+			$objArrayToReturn[] = CommunicationListEntry::LoadByEmail($strFromAddress);
 
 			// Get all Person objects that have this as an email address
-			$objPersonArray = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $strFromAddress), QQ::Distinct());
-			return $objPersonArray;
+			$objArrayToReturn[] = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $strFromAddress), QQ::Distinct());
 
-//			// Iterate through each person and each group see if there is a GroupParticipation for the pair
-//			foreach ($objPersonArray as $objPerson) {
-//				if (!$this->Person) {
-//					foreach ($objGroupArray as $objGroup) {
-//						if (GroupParticipation::CountByPersonIdGroupId($objPerson->Id, $objGroup->Id)) {
-//							$this->Person = $objPerson;
-//							break;
-//						}
-//					}
-//				}
-//			}
-//
-//			if (!$this->Person) {
-//				// Iterate through each CommList see if there is a association for the pair
-//				foreach ($objPersonArray as $objPerson) {
-//					if (!$this->Person) {
-//						foreach ($objCommunicationListArray as $objCommunicationList) {
-//							if ($objPerson->IsCommunicationListAssociated($objCommunicationList)) {
-//								$this->Person = $objPerson;
-//								break;
-//							}
-//						}
-//					}
-//				}
-//			}
+			return $objArrayToReturn;
 		}
 
 		/**
@@ -221,13 +204,18 @@
 			return $strFrom;
 		}
 
+		/**
+		 * This will cleanup any old associations from prior incomplete analysis (if applicable)
+		 * and then do the first step of message analysis, setting up the ResponseHeader, ResponseBody and Subject.
+		 * 
+		 * I will also Setup the Message Identifier.
+		 * 
+		 * @return void
+		 */
 		protected function CleanupAndSetup() {
 			// First, cleanup anything from a prior incomplete analysis (if applicable)
 			$this->DeleteAllEmailOutgoingQueues();
-			$this->UnassociateAllCommunicationLists();
-			$this->UnassociateAllGroups();
-			$this->Person = null;
-			$this->CommunicationListEntry = null;
+			$this->DeleteAllEmailMessageRoutes();
 			$this->strErrorMessage = null;
 
 			// Parse and cleanup headers
