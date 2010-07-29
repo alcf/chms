@@ -55,24 +55,8 @@
 			if ($this->intEmailMessageStatusTypeId != EmailMessageStatusType::NotYetAnalyzed)
 				throw new QCallerException('EmailMessage that is NOT in NotYetAnalyzed status cannot be Analyzed');
 
-			// First, cleanup anything from a prior incomplete analysis (if applicable)
-			$this->DeleteAllEmailOutgoingQueues();
-			$this->UnassociateAllCommunicationLists();
-			$this->UnassociateAllGroups();
-			$this->strErrorMessage = null;
-
-			// Parse and cleanup headers
-			$intPosition = strpos($this->strRawMessage, "\r\n\r\n");
-			if ($intPosition === false) throw new QCallerException('Message does not have distinct Header/Body sections');
-			$this->strResponseHeader = substr($this->strRawMessage, 0, $intPosition);
-			$this->strResponseBody = substr($this->strRawMessage, $intPosition + 4);
-
-			// Get the HeaderArray
-			$this->GetHeaderArray();
-
-			// Update Fields
-			$this->strSubject = $this->GetHeaderValue('Subject');
-			$this->strMessageIdentifier = $this->GetHeaderValue('Message-Id');
+			// Do Initial Cleanup and Setup Work
+			$this->CleanupAndSetup();
 
 			// Check MessageId
 			if (!is_null($this->strMessageIdentifier)) {
@@ -84,9 +68,6 @@
 					return;
 				}
 			}
-
-			// Figure out who the sender is
-			$strFrom = $this->GetHeaderValue('From');
 
 			// Figure out who the recpieint(s) are
 			$strEmailAddressArray = $this->CalculateEmailArray();
@@ -103,7 +84,59 @@
 				$this->strErrorMessage .= "Please be sure you have entered the address correctly and that you are NOT using BCC.\r\n";
 			}
 
+			// Now Figure out who the sender is
+			$strFromAddress = $this->LookupSenderEmailAddress();
+			if (!is_null($strFromAddress)) {
+				$this->strErrorMessage = 'Invaid From Address';
+				$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Error;
+				$this->Save();
+				return;
+			}
+
 			$this->Save();
+		}
+
+		/**
+		 * Attempts to lookup the Sender's Email Address.  Will return NULL if not valid or none.
+		 * @return string
+		 */
+		protected function LookupSenderEmailAddress() {
+			$strEmailAddressArray = QEmailServer::GetEmailAddresses($this->GetHeaderValue('From'));
+			if (count($strEmailAddressArray) < 1) {
+				return null;
+			}
+
+			$strFrom = strtolower($strEmailAddressArray[0]);
+			foreach ($strEmailAddressArray as $strEmailAddress) {
+				if ($strFrom != strtolower($strEmailAddress)) {
+					return null;
+				}
+			}
+
+			return $strFrom;
+		}
+
+		protected function CleanupAndSetup() {
+			// First, cleanup anything from a prior incomplete analysis (if applicable)
+			$this->DeleteAllEmailOutgoingQueues();
+			$this->UnassociateAllCommunicationLists();
+			$this->UnassociateAllGroups();
+			$this->Person = null;
+			$this->CommunicationListEntry = null;
+			$this->strErrorMessage = null;
+
+			// Parse and cleanup headers
+			$intPosition = strpos($this->strRawMessage, "\r\n\r\n");
+			if ($intPosition === false) throw new QCallerException('Message does not have distinct Header/Body sections');
+			$this->strResponseHeader = substr($this->strRawMessage, 0, $intPosition);
+			$this->strResponseBody = substr($this->strRawMessage, $intPosition + 4);
+
+			// Get the HeaderArray
+			$this->GetHeaderArray();
+
+			// Update Fields
+			$this->strSubject = $this->GetHeaderValue('Subject');
+			$this->strMessageIdentifier = $this->GetHeaderValue('Message-Id');
 		}
 
 		/**
