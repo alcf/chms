@@ -72,6 +72,7 @@
 			$this->dtgEmailMessages->MetaAddColumn('MessageIdentifier');
 			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->Person);
 			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->CommunicationListEntry);
+			$this->dtgEmailMessages->MetaAddColumn(QQN::EmailMessage()->Login);
 			$this->dtgEmailMessages->MetaAddColumn('Subject');
 			$this->dtgEmailMessages->MetaAddColumn('ResponseHeader');
 			$this->dtgEmailMessages->MetaAddColumn('ResponseBody');

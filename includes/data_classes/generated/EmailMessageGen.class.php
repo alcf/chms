@@ -22,12 +22,14 @@
 	 * @property string $MessageIdentifier the value for strMessageIdentifier (Unique)
 	 * @property integer $PersonId the value for intPersonId 
 	 * @property integer $CommunicationListEntryId the value for intCommunicationListEntryId 
+	 * @property integer $LoginId the value for intLoginId 
 	 * @property string $Subject the value for strSubject 
 	 * @property string $ResponseHeader the value for strResponseHeader 
 	 * @property string $ResponseBody the value for strResponseBody 
 	 * @property string $ErrorMessage the value for strErrorMessage 
 	 * @property Person $Person the value for the Person object referenced by intPersonId 
 	 * @property CommunicationListEntry $CommunicationListEntry the value for the CommunicationListEntry object referenced by intCommunicationListEntryId 
+	 * @property Login $Login the value for the Login object referenced by intLoginId 
 	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the emailmessage_communicationlist_assn association table
 	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the emailmessage_communicationlist_assn association table
 	 * @property Group $_Group the value for the private _objGroup (Read-Only) if set due to an expansion on the emailmessage_group_assn association table
@@ -97,6 +99,14 @@
 		 */
 		protected $intCommunicationListEntryId;
 		const CommunicationListEntryIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column email_message.login_id
+		 * @var integer intLoginId
+		 */
+		protected $intLoginId;
+		const LoginIdDefault = null;
 
 
 		/**
@@ -221,6 +231,16 @@
 		 * @var CommunicationListEntry objCommunicationListEntry
 		 */
 		protected $objCommunicationListEntry;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column email_message.login_id.
+		 *
+		 * NOTE: Always use the Login property getter to correctly retrieve this Login object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Login objLogin
+		 */
+		protected $objLogin;
 
 
 
@@ -517,6 +537,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'message_identifier', $strAliasPrefix . 'message_identifier');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'communication_list_entry_id', $strAliasPrefix . 'communication_list_entry_id');
+			$objBuilder->AddSelectItem($strTableName, 'login_id', $strAliasPrefix . 'login_id');
 			$objBuilder->AddSelectItem($strTableName, 'subject', $strAliasPrefix . 'subject');
 			$objBuilder->AddSelectItem($strTableName, 'response_header', $strAliasPrefix . 'response_header');
 			$objBuilder->AddSelectItem($strTableName, 'response_body', $strAliasPrefix . 'response_body');
@@ -626,6 +647,8 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'communication_list_entry_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'communication_list_entry_id'] : $strAliasPrefix . 'communication_list_entry_id';
 			$objToReturn->intCommunicationListEntryId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'login_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'login_id'] : $strAliasPrefix . 'login_id';
+			$objToReturn->intLoginId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'subject', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subject'] : $strAliasPrefix . 'subject';
 			$objToReturn->strSubject = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'response_header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'response_header'] : $strAliasPrefix . 'response_header';
@@ -658,6 +681,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objCommunicationListEntry = CommunicationListEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communication_list_entry_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for Login Early Binding
+			$strAlias = $strAliasPrefix . 'login_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objLogin = Login::InstantiateDbRow($objDbRow, $strAliasPrefix . 'login_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -882,6 +911,38 @@
 				QQ::Equal(QQN::EmailMessage()->CommunicationListEntryId, $intCommunicationListEntryId)
 			);
 		}
+			
+		/**
+		 * Load an array of EmailMessage objects,
+		 * by LoginId Index(es)
+		 * @param integer $intLoginId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailMessage[]
+		*/
+		public static function LoadArrayByLoginId($intLoginId, $objOptionalClauses = null) {
+			// Call EmailMessage::QueryArray to perform the LoadArrayByLoginId query
+			try {
+				return EmailMessage::QueryArray(
+					QQ::Equal(QQN::EmailMessage()->LoginId, $intLoginId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count EmailMessages
+		 * by LoginId Index(es)
+		 * @param integer $intLoginId
+		 * @return int
+		*/
+		public static function CountByLoginId($intLoginId) {
+			// Call EmailMessage::QueryCount to perform the CountByLoginId query
+			return EmailMessage::QueryCount(
+				QQ::Equal(QQN::EmailMessage()->LoginId, $intLoginId)
+			);
+		}
 
 
 
@@ -981,6 +1042,7 @@
 							`message_identifier`,
 							`person_id`,
 							`communication_list_entry_id`,
+							`login_id`,
 							`subject`,
 							`response_header`,
 							`response_body`,
@@ -992,6 +1054,7 @@
 							' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intCommunicationListEntryId) . ',
+							' . $objDatabase->SqlVariable($this->intLoginId) . ',
 							' . $objDatabase->SqlVariable($this->strSubject) . ',
 							' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
 							' . $objDatabase->SqlVariable($this->strResponseBody) . ',
@@ -1017,6 +1080,7 @@
 							`message_identifier` = ' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intCommunicationListEntryId) . ',
+							`login_id` = ' . $objDatabase->SqlVariable($this->intLoginId) . ',
 							`subject` = ' . $objDatabase->SqlVariable($this->strSubject) . ',
 							`response_header` = ' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
 							`response_body` = ' . $objDatabase->SqlVariable($this->strResponseBody) . ',
@@ -1105,6 +1169,7 @@
 			$this->strMessageIdentifier = $objReloaded->strMessageIdentifier;
 			$this->PersonId = $objReloaded->PersonId;
 			$this->CommunicationListEntryId = $objReloaded->CommunicationListEntryId;
+			$this->LoginId = $objReloaded->LoginId;
 			$this->strSubject = $objReloaded->strSubject;
 			$this->strResponseHeader = $objReloaded->strResponseHeader;
 			$this->strResponseBody = $objReloaded->strResponseBody;
@@ -1164,6 +1229,11 @@
 					// @return integer
 					return $this->intCommunicationListEntryId;
 
+				case 'LoginId':
+					// Gets the value for intLoginId 
+					// @return integer
+					return $this->intLoginId;
+
 				case 'Subject':
 					// Gets the value for strSubject 
 					// @return string
@@ -1207,6 +1277,18 @@
 						if ((!$this->objCommunicationListEntry) && (!is_null($this->intCommunicationListEntryId)))
 							$this->objCommunicationListEntry = CommunicationListEntry::Load($this->intCommunicationListEntryId);
 						return $this->objCommunicationListEntry;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Login':
+					// Gets the value for the Login object referenced by intLoginId 
+					// @return Login
+					try {
+						if ((!$this->objLogin) && (!is_null($this->intLoginId)))
+							$this->objLogin = Login::Load($this->intLoginId);
+						return $this->objLogin;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1349,6 +1431,18 @@
 						throw $objExc;
 					}
 
+				case 'LoginId':
+					// Sets the value for intLoginId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objLogin = null;
+						return ($this->intLoginId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'Subject':
 					// Sets the value for strSubject 
 					// @param string $mixValue
@@ -1451,6 +1545,36 @@
 						// Update Local Member Variables
 						$this->objCommunicationListEntry = $mixValue;
 						$this->intCommunicationListEntryId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Login':
+					// Sets the value for the Login object referenced by intLoginId 
+					// @param Login $mixValue
+					// @return Login
+					if (is_null($mixValue)) {
+						$this->intLoginId = null;
+						$this->objLogin = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Login object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Login');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Login object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved Login for this EmailMessage');
+
+						// Update Local Member Variables
+						$this->objLogin = $mixValue;
+						$this->intLoginId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1895,6 +2019,7 @@
 			$strToReturn .= '<element name="MessageIdentifier" type="xsd:string"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="CommunicationListEntry" type="xsd1:CommunicationListEntry"/>';
+			$strToReturn .= '<element name="Login" type="xsd1:Login"/>';
 			$strToReturn .= '<element name="Subject" type="xsd:string"/>';
 			$strToReturn .= '<element name="ResponseHeader" type="xsd:string"/>';
 			$strToReturn .= '<element name="ResponseBody" type="xsd:string"/>';
@@ -1909,6 +2034,7 @@
 				$strComplexTypeArray['EmailMessage'] = EmailMessage::GetSoapComplexTypeXml();
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CommunicationListEntry::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Login::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1939,6 +2065,9 @@
 			if ((property_exists($objSoapObject, 'CommunicationListEntry')) &&
 				($objSoapObject->CommunicationListEntry))
 				$objToReturn->CommunicationListEntry = CommunicationListEntry::GetObjectFromSoapObject($objSoapObject->CommunicationListEntry);
+			if ((property_exists($objSoapObject, 'Login')) &&
+				($objSoapObject->Login))
+				$objToReturn->Login = Login::GetObjectFromSoapObject($objSoapObject->Login);
 			if (property_exists($objSoapObject, 'Subject'))
 				$objToReturn->strSubject = $objSoapObject->Subject;
 			if (property_exists($objSoapObject, 'ResponseHeader'))
@@ -1975,6 +2104,10 @@
 				$objObject->objCommunicationListEntry = CommunicationListEntry::GetSoapObjectFromObject($objObject->objCommunicationListEntry, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intCommunicationListEntryId = null;
+			if ($objObject->objLogin)
+				$objObject->objLogin = Login::GetSoapObjectFromObject($objObject->objLogin, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intLoginId = null;
 			return $objObject;
 		}
 
@@ -2067,6 +2200,10 @@
 					return new QQNode('communication_list_entry_id', 'CommunicationListEntryId', 'integer', $this);
 				case 'CommunicationListEntry':
 					return new QQNodeCommunicationListEntry('communication_list_entry_id', 'CommunicationListEntry', 'integer', $this);
+				case 'LoginId':
+					return new QQNode('login_id', 'LoginId', 'integer', $this);
+				case 'Login':
+					return new QQNodeLogin('login_id', 'Login', 'integer', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
 				case 'ResponseHeader':
@@ -2119,6 +2256,10 @@
 					return new QQNode('communication_list_entry_id', 'CommunicationListEntryId', 'integer', $this);
 				case 'CommunicationListEntry':
 					return new QQNodeCommunicationListEntry('communication_list_entry_id', 'CommunicationListEntry', 'integer', $this);
+				case 'LoginId':
+					return new QQNode('login_id', 'LoginId', 'integer', $this);
+				case 'Login':
+					return new QQNodeLogin('login_id', 'Login', 'integer', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
 				case 'ResponseHeader':

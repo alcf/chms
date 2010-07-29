@@ -31,6 +31,8 @@
 
 		<?php $this->lstCommunicationListEntry->RenderWithName(); ?>
 
+		<?php $this->lstLogin->RenderWithName(); ?>
+
 		<?php $this->txtSubject->RenderWithName(); ?>
 
 		<?php $this->txtResponseHeader->RenderWithName(); ?>

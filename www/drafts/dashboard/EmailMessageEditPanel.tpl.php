@@ -19,6 +19,8 @@
 
 		<?php $_CONTROL->lstCommunicationListEntry->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstLogin->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtSubject->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtResponseHeader->RenderWithName(); ?>

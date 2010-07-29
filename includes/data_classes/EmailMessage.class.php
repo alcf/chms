@@ -93,6 +93,9 @@
 				return;
 			}
 
+			$this->CommunicationListEntry = CommunicationListEntry::LoadByEmail($strFromAddress);
+			$objPersonArray = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $strFromAddress), QQ::Distinct());
+
 			$this->Save();
 		}
 

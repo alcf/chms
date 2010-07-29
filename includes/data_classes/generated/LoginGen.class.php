@@ -32,6 +32,8 @@
 	 * @property Ministry[] $_MinistryArray the value for the private _objMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry_login_assn association table
 	 * @property Comment $_CommentAsPostedBy the value for the private _objCommentAsPostedBy (Read-Only) if set due to an expansion on the comment.posted_by_login_id reverse relationship
 	 * @property Comment[] $_CommentAsPostedByArray the value for the private _objCommentAsPostedByArray (Read-Only) if set due to an ExpandAsArray on the comment.posted_by_login_id reverse relationship
+	 * @property EmailMessage $_EmailMessage the value for the private _objEmailMessage (Read-Only) if set due to an expansion on the email_message.login_id reverse relationship
+	 * @property EmailMessage[] $_EmailMessageArray the value for the private _objEmailMessageArray (Read-Only) if set due to an ExpandAsArray on the email_message.login_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class LoginGen extends QBaseClass {
@@ -182,6 +184,22 @@
 		 * @var Comment[] _objCommentAsPostedByArray;
 		 */
 		private $_objCommentAsPostedByArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single EmailMessage object
+		 * (of type EmailMessage), if this Login object was restored with
+		 * an expansion on the email_message association table.
+		 * @var EmailMessage _objEmailMessage;
+		 */
+		private $_objEmailMessage;
+
+		/**
+		 * Private member variable that stores a reference to an array of EmailMessage objects
+		 * (of type EmailMessage[]), if this Login object was restored with
+		 * an ExpandAsArray on the email_message association table.
+		 * @var EmailMessage[] _objEmailMessageArray;
+		 */
+		private $_objEmailMessageArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -572,6 +590,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'emailmessage__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objEmailMessageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objEmailMessageArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -643,6 +675,16 @@
 					$objToReturn->_objCommentAsPostedByArray[] = Comment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'commentaspostedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objCommentAsPostedBy = Comment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'commentaspostedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for EmailMessage Virtual Binding
+			$strAlias = $strAliasPrefix . 'emailmessage__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objEmailMessage = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1106,6 +1148,18 @@
 					// @return Comment[]
 					return (array) $this->_objCommentAsPostedByArray;
 
+				case '_EmailMessage':
+					// Gets the value for the private _objEmailMessage (Read-Only)
+					// if set due to an expansion on the email_message.login_id reverse relationship
+					// @return EmailMessage
+					return $this->_objEmailMessage;
+
+				case '_EmailMessageArray':
+					// Gets the value for the private _objEmailMessageArray (Read-Only)
+					// if set due to an ExpandAsArray on the email_message.login_id reverse relationship
+					// @return EmailMessage[]
+					return (array) $this->_objEmailMessageArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1447,6 +1501,156 @@
 		}
 
 			
+		
+		// Related Objects' Methods for EmailMessage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated EmailMessages as an array of EmailMessage objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailMessage[]
+		*/ 
+		public function GetEmailMessageArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return EmailMessage::LoadArrayByLoginId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated EmailMessages
+		 * @return int
+		*/ 
+		public function CountEmailMessages() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return EmailMessage::CountByLoginId($this->intId);
+		}
+
+		/**
+		 * Associates a EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function AssociateEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this unsaved Login.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this Login with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message`
+				SET
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function UnassociateEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Login with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message`
+				SET
+					`login_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all EmailMessages
+		 * @return void
+		*/ 
+		public function UnassociateAllEmailMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message`
+				SET
+					`login_id` = null
+				WHERE
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated EmailMessage
+		 * @param EmailMessage $objEmailMessage
+		 * @return void
+		*/ 
+		public function DeleteAssociatedEmailMessage(EmailMessage $objEmailMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
+			if ((is_null($objEmailMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Login with an unsaved EmailMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`email_message`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated EmailMessages
+		 * @return void
+		*/ 
+		public function DeleteAllEmailMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`email_message`
+				WHERE
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
 		// Related Many-to-Many Objects' Methods for Ministry
 		//-------------------------------------------------------------------
 
@@ -1736,6 +1940,8 @@
 					return new QQNodeLoginMinistry($this);
 				case 'CommentAsPostedBy':
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
+				case 'EmailMessage':
+					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'login_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1786,6 +1992,8 @@
 					return new QQNodeLoginMinistry($this);
 				case 'CommentAsPostedBy':
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
+				case 'EmailMessage':
+					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'login_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

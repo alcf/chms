@@ -30,6 +30,7 @@
 		protected $txtMessageIdentifier;
 		protected $lstPerson;
 		protected $lstCommunicationListEntry;
+		protected $lstLogin;
 		protected $txtSubject;
 		protected $txtResponseHeader;
 		protected $txtResponseBody;
@@ -69,6 +70,7 @@
 			$this->txtMessageIdentifier = $this->mctEmailMessage->txtMessageIdentifier_Create();
 			$this->lstPerson = $this->mctEmailMessage->lstPerson_Create();
 			$this->lstCommunicationListEntry = $this->mctEmailMessage->lstCommunicationListEntry_Create();
+			$this->lstLogin = $this->mctEmailMessage->lstLogin_Create();
 			$this->txtSubject = $this->mctEmailMessage->txtSubject_Create();
 			$this->txtResponseHeader = $this->mctEmailMessage->txtResponseHeader_Create();
 			$this->txtResponseBody = $this->mctEmailMessage->txtResponseBody_Create();

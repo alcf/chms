@@ -30,6 +30,8 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QListBox $CommunicationListEntryIdControl
 	 * property-read QLabel $CommunicationListEntryIdLabel
+	 * property QListBox $LoginIdControl
+	 * property-read QLabel $LoginIdLabel
 	 * property QTextBox $SubjectControl
 	 * property-read QLabel $SubjectLabel
 	 * property QTextBox $ResponseHeaderControl
@@ -61,6 +63,7 @@
 		protected $txtMessageIdentifier;
 		protected $lstPerson;
 		protected $lstCommunicationListEntry;
+		protected $lstLogin;
 		protected $txtSubject;
 		protected $txtResponseHeader;
 		protected $txtResponseBody;
@@ -73,6 +76,7 @@
 		protected $lblMessageIdentifier;
 		protected $lblPersonId;
 		protected $lblCommunicationListEntryId;
+		protected $lblLoginId;
 		protected $lblSubject;
 		protected $lblResponseHeader;
 		protected $lblResponseBody;
@@ -385,6 +389,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstLogin
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstLogin_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstLogin = new QListBox($this->objParentObject, $strControlId);
+			$this->lstLogin->Name = QApplication::Translate('Login');
+			$this->lstLogin->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objLoginCursor = Login::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objLogin = Login::InstantiateCursor($objLoginCursor)) {
+				$objListItem = new QListItem($objLogin->__toString(), $objLogin->Id);
+				if (($this->objEmailMessage->Login) && ($this->objEmailMessage->Login->Id == $objLogin->Id))
+					$objListItem->Selected = true;
+				$this->lstLogin->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstLogin;
+		}
+
+		/**
+		 * Create and setup QLabel lblLoginId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblLoginId_Create($strControlId = null) {
+			$this->lblLoginId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblLoginId->Name = QApplication::Translate('Login');
+			$this->lblLoginId->Text = ($this->objEmailMessage->Login) ? $this->objEmailMessage->Login->__toString() : null;
+			return $this->lblLoginId;
+		}
+
+		/**
 		 * Create and setup QTextBox txtSubject
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -637,6 +681,19 @@
 			}
 			if ($this->lblCommunicationListEntryId) $this->lblCommunicationListEntryId->Text = ($this->objEmailMessage->CommunicationListEntry) ? $this->objEmailMessage->CommunicationListEntry->__toString() : null;
 
+			if ($this->lstLogin) {
+					$this->lstLogin->RemoveAllItems();
+				$this->lstLogin->AddItem(QApplication::Translate('- Select One -'), null);
+				$objLoginArray = Login::LoadAll();
+				if ($objLoginArray) foreach ($objLoginArray as $objLogin) {
+					$objListItem = new QListItem($objLogin->__toString(), $objLogin->Id);
+					if (($this->objEmailMessage->Login) && ($this->objEmailMessage->Login->Id == $objLogin->Id))
+						$objListItem->Selected = true;
+					$this->lstLogin->AddItem($objListItem);
+				}
+			}
+			if ($this->lblLoginId) $this->lblLoginId->Text = ($this->objEmailMessage->Login) ? $this->objEmailMessage->Login->__toString() : null;
+
 			if ($this->txtSubject) $this->txtSubject->Text = $this->objEmailMessage->Subject;
 			if ($this->lblSubject) $this->lblSubject->Text = $this->objEmailMessage->Subject;
 
@@ -740,6 +797,7 @@
 				if ($this->txtMessageIdentifier) $this->objEmailMessage->MessageIdentifier = $this->txtMessageIdentifier->Text;
 				if ($this->lstPerson) $this->objEmailMessage->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->lstCommunicationListEntry) $this->objEmailMessage->CommunicationListEntryId = $this->lstCommunicationListEntry->SelectedValue;
+				if ($this->lstLogin) $this->objEmailMessage->LoginId = $this->lstLogin->SelectedValue;
 				if ($this->txtSubject) $this->objEmailMessage->Subject = $this->txtSubject->Text;
 				if ($this->txtResponseHeader) $this->objEmailMessage->ResponseHeader = $this->txtResponseHeader->Text;
 				if ($this->txtResponseBody) $this->objEmailMessage->ResponseBody = $this->txtResponseBody->Text;
@@ -832,6 +890,12 @@
 				case 'CommunicationListEntryIdLabel':
 					if (!$this->lblCommunicationListEntryId) return $this->lblCommunicationListEntryId_Create();
 					return $this->lblCommunicationListEntryId;
+				case 'LoginIdControl':
+					if (!$this->lstLogin) return $this->lstLogin_Create();
+					return $this->lstLogin;
+				case 'LoginIdLabel':
+					if (!$this->lblLoginId) return $this->lblLoginId_Create();
+					return $this->lblLoginId;
 				case 'SubjectControl':
 					if (!$this->txtSubject) return $this->txtSubject_Create();
 					return $this->txtSubject;
@@ -904,6 +968,8 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'CommunicationListEntryIdControl':
 						return ($this->lstCommunicationListEntry = QType::Cast($mixValue, 'QControl'));
+					case 'LoginIdControl':
+						return ($this->lstLogin = QType::Cast($mixValue, 'QControl'));
 					case 'SubjectControl':
 						return ($this->txtSubject = QType::Cast($mixValue, 'QControl'));
 					case 'ResponseHeaderControl':

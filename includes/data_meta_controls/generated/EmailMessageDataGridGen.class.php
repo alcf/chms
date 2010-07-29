@@ -302,6 +302,8 @@
 				case 'Person': return QQN::EmailMessage()->Person;
 				case 'CommunicationListEntryId': return QQN::EmailMessage()->CommunicationListEntryId;
 				case 'CommunicationListEntry': return QQN::EmailMessage()->CommunicationListEntry;
+				case 'LoginId': return QQN::EmailMessage()->LoginId;
+				case 'Login': return QQN::EmailMessage()->Login;
 				case 'Subject': return QQN::EmailMessage()->Subject;
 				case 'ResponseHeader': return QQN::EmailMessage()->ResponseHeader;
 				case 'ResponseBody': return QQN::EmailMessage()->ResponseBody;
