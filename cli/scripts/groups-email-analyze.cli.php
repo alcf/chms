@@ -22,6 +22,7 @@ print ('Analyzeing ' . $objMessage->Id . '... ');
 print "Done.\r\n";
 		}
 
-		sleep(10);
+//		sleep(10);
+		exit();
 	}
 ?>

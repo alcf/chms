@@ -115,6 +115,88 @@
 				return strcmp($arrMember2[$this->intColumnIndex], $arrMember1[$this->intColumnIndex]);
 		}
 
+		/**
+		 * Can the Login edit this CommList information (based on Login roles / ministry assignments)
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanEdit(Login $objLogin) {
+			// Administrators can always view
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+
+			// Otherwise, only ministry members can edit
+			return $objLogin->IsMinistryAssociated($this->Ministry);
+		}
+
+		/**
+		 * Calculates whether or not a given Login object is allowed to send emails
+		 * to this Communication List.  Return true if the Login can.  Returns false
+		 * if the Login is not allowed to.
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanSendEmail(Login $objLogin) {
+			switch ($this->intEmailBroadcastTypeId) {
+				case EmailBroadcastType::PublicList:
+					return true;
+
+				case EmailBroadcastType::PrivateList:
+					return $this->IsLoginCanEdit($objLogin);
+
+				case EmailBroadcastType::AnnouncementOnly:
+					return $this->IsLoginCanEdit($objLogin);
+
+				default:
+					return false;
+			}
+		}
+
+		/**
+		 * Calculates whether or not a given Person object is allowed to send emails
+		 * to this CommList.  Return true if the Person can.  Returns false
+		 * if the Person is not allowed to.
+		 * @param Person $objPerson
+		 * @return boolean
+		 */
+		public function IsPersonCanSendEmail(Person $objPerson) {
+			switch ($this->intEmailBroadcastTypeId) {
+				case EmailBroadcastType::PublicList:
+					return true;
+
+				case EmailBroadcastType::PrivateList:
+					return $this->IsPersonAssociated($objPerson);
+
+				case EmailBroadcastType::AnnouncementOnly:
+					return false;
+
+				default:
+					return false;
+			}
+		}
+		
+		/**
+		 * Calculates whether or not a given CommListEntry is allowed to send emails
+		 * to this CommList.  Return true if the CommListEntry can.  Returns false
+		 * if the CommListEntry is not allowed to.
+		 * @param CommunicationListEntry $objCommunicationListEntry
+		 * @return boolean
+		 */
+		public function IsCommunicationListEntryCanSendEmail(CommunicationListEntry $objCommunicationListEntry) {
+			switch ($this->intEmailBroadcastTypeId) {
+				case EmailBroadcastType::PublicList:
+					return true;
+
+				case EmailBroadcastType::PrivateList:
+					return $this->IsCommunicationListEntryAssociated($objCommunicationListEntry);
+
+				case EmailBroadcastType::AnnouncementOnly:
+					return false;
+
+				default:
+					return false;
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

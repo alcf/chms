@@ -98,6 +98,12 @@
 			// Next, Error Reporting
 			$this->SetupErrorMessage($strUnmatchedEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray);
 			$this->Save();
+
+			// Queue Outgoing Messages (if applicable)
+
+			// Update the status
+			$this->intEmailMessageStatusTypeId = EmailMessageStatusType::PendingSend;
+			$this->Save();
 		}
 
 		protected function SetupErrorMessage($strUnmatchedEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray) {
@@ -114,7 +120,7 @@
 				$strErrorMessageArray[] = "You are not currently authorized to send messages to the following groups or communication lists:\r\n    - " . implode("\r\n    - ", $strUnauthorizedArray);
 			}
 
-			if (!$this->CountCommunicationLists() && !$this->CountGroups()) {
+			if (!$this->CountEmailMessageRoutes()) {
 				$strErrorMessageArray[] = "No valid groups or communication lists were found in the system.\r\n" .
 					"Please be sure you have entered the address correctly and that you are NOT using BCC.";
 			}
@@ -135,16 +141,40 @@
 		 * @return Group[] returns any unauthorized Groups that the sender is not allowed to send to
 		 */
 		protected function SetupGroupRoutes($objGroupArray, $objSenderArray) {
+			// Pull out the components of the $objSenderArray
+			$objLogin = $objSenderArray[0];
+			$objCommunicationListEntry = $objSenderArray[1];
+			$objPersonArray = $objSenderArray[2];
+
 			$objUnauthorizedArray = array();
 
-			// TODO
+			// Do the calculation for Each Group being attempted to emailed to
 			foreach ($objGroupArray as $objGroup) {
-				
+				$objSource = null;
+
+				// Figure out if there is a valid "Source" of this email that is authorized
+				// to send to $objGroup
+				if ($objLogin && $objGroup->IsLoginCanSendEmail($objLogin)) {
+					$objSource = $objLogin;
+				} else foreach ($objPersonArray as $objPerson) {
+					if ($objGroup->IsPersonCanSendEmail($objPerson)) {
+						$objSource = $objPerson;
+						break;
+					}
+				}
+
+				// If a Valid Source, create the EmailRoute for the group,
+				// otherwise, add the group to the list of Unauthorized 
+				if ($objSource) {
+					EmailMessageRoute::CreateNewRoute($this, $objSource, $objGroup);
+				} else {
+					$objUnauthorizedArray[] = $objGroup;
+				}
 			}
 
 			return $objUnauthorizedArray;
 		}
-		
+
 		/**
 		 * Given the locally set Login and CommListEntry link, and given an array of Person[] objects all which
 		 * represent the FromEmailAddress, iterate through the array of CommunicationList objects to see which ones
@@ -155,13 +185,42 @@
 		 * @return CommunicationList[] returns any unauthorized CommLists that the sender is not allowed to send to
 		 */
 		protected function SetupCommunicationListRoutes($objCommunicationListArray, $objSenderArray) {
+			// Pull out the components of the $objSenderArray
+			$objLogin = $objSenderArray[0];
+			$objCommunicationListEntry = $objSenderArray[1];
+			$objPersonArray = $objSenderArray[2];
+
 			$objUnauthorizedArray = array();
 
-			// TODO
+			// Do the calculation for Each CommList being attempted to emailed to
+			foreach ($objCommunicationListArray as $objCommunicationList) {
+				$objSource = null;
+
+				// Figure out if there is a valid "Source" of this email that is authorized
+				// to send to $objCommunicaitonList
+				if ($objLogin && $objCommunicationList->IsLoginCanSendEmail($objLogin)) {
+					$objSource = $objLogin;
+				} else if ($objCommunicationListEntry && $objCommunicationList->IsCommunicationListEntryCanSendEmail($objCommunicationListEntry)) {
+					$objSource = $objCommunicationListEntry;
+				} else foreach ($objPersonArray as $objPerson) {
+					if ($objGroup->IsPersonCanSendEmail($objPerson)) {
+						$objSource = $objPerson;
+						break;
+					}
+				}
+
+				// If a Valid Source, create the EmailRoute for the CommList,
+				// otherwise, add the CommList to the list of Unauthorized 
+				if ($objSource) {
+					EmailMessageRoute::CreateNewRoute($this, $objSource, $objCommunicationList);
+				} else {
+					$objUnauthorizedArray[] = $objCommunicationList;
+				}
+			}
 
 			return $objUnauthorizedArray;
 		}
-		
+
 		/**
 		 * Given a valid From EmailAddress, this will lookup and return a "Sender" array, a 3-item array containing:
 		 * 	Login
@@ -229,7 +288,18 @@
 
 			// Update Fields
 			$this->strSubject = $this->GetHeaderValue('Subject');
-			$this->strMessageIdentifier = $this->GetHeaderValue('Message-Id');
+			if ($strMessageId = $this->GetHeaderValue('Message-Id'))
+				$this->strMessageIdentifier = $strMessageId;
+			else if ($strMessageId = $this->GetHeaderValue('Message-ID'))
+				$this->strMessageIdentifier = $strMessageId;
+			else if ($strMessageId = $this->GetHeaderValue('Message-id'))
+				$this->strMessageIdentifier = $strMessageId;
+			else if ($strMessageId = $this->GetHeaderValue('MESSAGE-ID'))
+				$this->strMessageIdentifier = $strMessageId;
+			else if ($strMessageId = $this->GetHeaderValue('message-id'))
+				$this->strMessageIdentifier = $strMessageId;
+			else
+				$this->strMessageIdentifier = null;
 		}
 
 		/**

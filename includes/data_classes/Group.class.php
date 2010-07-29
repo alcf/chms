@@ -289,10 +289,10 @@
 					return true;
 
 				case EmailBroadcastType::PrivateList:
-					break;
+					return $this->IsLoginCanEdit($objLogin);
 
 				case EmailBroadcastType::AnnouncementOnly:
-					break;
+					return $this->IsLoginCanEdit($objLogin);
 
 				default:
 					return false;
@@ -312,10 +312,14 @@
 					return true;
 
 				case EmailBroadcastType::PrivateList:
-					break;
+					foreach (GroupParticipation::LoadArrayByPersonIdGroupId($objPerson->Id, $this->intId) as $objParticipation) {
+						if (!$objParticipation->DateEnd || $objParticipation->DateEnd->IsLaterThan(QDateTime::Now()))
+							return true;
+					}
+					return false;
 
 				case EmailBroadcastType::AnnouncementOnly:
-					break;
+					return false;
 
 				default:
 					return false;

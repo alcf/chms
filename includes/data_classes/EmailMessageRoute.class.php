@@ -27,6 +27,46 @@
 			return sprintf('EmailMessageRoute Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will create a New EmailMessageRoute object for a given EmailMessage.
+		 * You must specify the Source object (which is either a Login, CommListEntry or Person) and
+		 * the Destination object (which is either a Group or CommList).
+		 * 
+		 * This will throw a QCallerException if the route is invalid.
+		 * 
+		 * @param EmailMessage $objEmailMessage
+		 * @param object $objSource must be a Login, CommunicationListEntry or Person object
+		 * @param object $objDestination must be a Group or CommunicationList object
+		 * @return EmailMessageRoute
+		 */
+		public static function CreateNewRoute(EmailMessage $objEmailMessage, $objSource, $objDestination) {
+			$objRoute = new EmailMessageRoute();
+			$objRoute->EmailMessage = $objEmailMessage;
+
+			if ($objSource instanceof Login) {
+				$objRoute->Login = $objSource;
+			} else if ($objSource instanceof CommunicationListEntry) {
+				$objRoute->CommunicationListEntry = $objSource;
+			} else if ($objSource instanceof Person) {
+				$objRoute->Person= $objSource;
+			} else {
+				throw new QCallerException('Invalid Source for EmailMessageRoute');
+			}
+
+			if ($objDestination instanceof Group) {
+				$objRoute->Group = $objDestination;
+			} else if ($objDestination instanceof CommunicationList) {
+				$objRoute->CommunicationList = $objDestination;
+			} else {
+				throw new QCallerException('Invalid Destination for EmailMessageRoute');
+			}
+
+			if ($objRoute->CommunicationListEntry && !$objRoute->CommuniationList)
+				throw new QCallerException('Invalid CommunicationListEntry Source for EmailMessageRoute to a non CommunicationList Destination');
+
+			$objRoute->Save();
+			return $objRoute;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
