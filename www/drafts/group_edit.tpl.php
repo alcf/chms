@@ -43,8 +43,6 @@
 
 		<?php $this->lstSmartGroup->RenderWithName(); ?>
 
-		<?php $this->lstEmailMessages->RenderWithName(true, "Rows=7"); ?>
-
 	</div>
 
 	<div id="formActions">

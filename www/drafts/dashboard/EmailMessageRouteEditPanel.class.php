@@ -1,34 +1,34 @@
 <?php
 	/**
 	 * This is a quick-and-dirty draft QPanel object to do Create, Edit, and Delete functionality
-	 * of the CommunicationList class.  It uses the code-generated
-	 * CommunicationListMetaControl class, which has meta-methods to help with
-	 * easily creating/defining controls to modify the fields of a CommunicationList columns.
+	 * of the EmailMessageRoute class.  It uses the code-generated
+	 * EmailMessageRouteMetaControl class, which has meta-methods to help with
+	 * easily creating/defining controls to modify the fields of a EmailMessageRoute columns.
 	 *
 	 * Any display customizations and presentation-tier logic can be implemented
 	 * here by overriding existing or implementing new methods, properties and variables.
 	 * 
 	 * NOTE: This file is overwritten on any code regenerations.  If you want to make
-	 * permanent changes, it is STRONGLY RECOMMENDED to move both communication_list_edit.php AND
-	 * communication_list_edit.tpl.php out of this Form Drafts directory.
+	 * permanent changes, it is STRONGLY RECOMMENDED to move both email_message_route_edit.php AND
+	 * email_message_route_edit.tpl.php out of this Form Drafts directory.
 	 *
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class CommunicationListEditPanel extends QPanel {
-		// Local instance of the CommunicationListMetaControl
-		protected $mctCommunicationList;
+	class EmailMessageRouteEditPanel extends QPanel {
+		// Local instance of the EmailMessageRouteMetaControl
+		protected $mctEmailMessageRoute;
 
-		// Controls for CommunicationList's Data Fields
+		// Controls for EmailMessageRoute's Data Fields
 		public $lblId;
-		public $lstEmailBroadcastType;
-		public $lstMinistry;
-		public $txtName;
-		public $txtToken;
+		public $lstEmailMessage;
+		public $lstGroup;
+		public $lstCommunicationList;
+		public $lstLogin;
+		public $lstCommunicationListEntry;
+		public $lstPerson;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		public $lstCommunicationListEntries;
-		public $lstPeople;
 
 		// Other Controls
 		public $btnSave;
@@ -48,21 +48,21 @@
 			}
 
 			// Setup Callback and Template
-			$this->strTemplate = 'CommunicationListEditPanel.tpl.php';
+			$this->strTemplate = 'EmailMessageRouteEditPanel.tpl.php';
 			$this->strClosePanelMethod = $strClosePanelMethod;
 
-			// Construct the CommunicationListMetaControl
+			// Construct the EmailMessageRouteMetaControl
 			// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
-			$this->mctCommunicationList = CommunicationListMetaControl::Create($this, $intId);
+			$this->mctEmailMessageRoute = EmailMessageRouteMetaControl::Create($this, $intId);
 
-			// Call MetaControl's methods to create qcontrols based on CommunicationList's data fields
-			$this->lblId = $this->mctCommunicationList->lblId_Create();
-			$this->lstEmailBroadcastType = $this->mctCommunicationList->lstEmailBroadcastType_Create();
-			$this->lstMinistry = $this->mctCommunicationList->lstMinistry_Create();
-			$this->txtName = $this->mctCommunicationList->txtName_Create();
-			$this->txtToken = $this->mctCommunicationList->txtToken_Create();
-			$this->lstCommunicationListEntries = $this->mctCommunicationList->lstCommunicationListEntries_Create();
-			$this->lstPeople = $this->mctCommunicationList->lstPeople_Create();
+			// Call MetaControl's methods to create qcontrols based on EmailMessageRoute's data fields
+			$this->lblId = $this->mctEmailMessageRoute->lblId_Create();
+			$this->lstEmailMessage = $this->mctEmailMessageRoute->lstEmailMessage_Create();
+			$this->lstGroup = $this->mctEmailMessageRoute->lstGroup_Create();
+			$this->lstCommunicationList = $this->mctEmailMessageRoute->lstCommunicationList_Create();
+			$this->lstLogin = $this->mctEmailMessageRoute->lstLogin_Create();
+			$this->lstCommunicationListEntry = $this->mctEmailMessageRoute->lstCommunicationListEntry_Create();
+			$this->lstPerson = $this->mctEmailMessageRoute->lstPerson_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);
@@ -76,21 +76,21 @@
 
 			$this->btnDelete = new QButton($this);
 			$this->btnDelete->Text = QApplication::Translate('Delete');
-			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('CommunicationList') . '?'));
+			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('EmailMessageRoute') . '?'));
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
-			$this->btnDelete->Visible = $this->mctCommunicationList->EditMode;
+			$this->btnDelete->Visible = $this->mctEmailMessageRoute->EditMode;
 		}
 
 		// Control AjaxAction Event Handlers
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			// Delegate "Save" processing to the CommunicationListMetaControl
-			$this->mctCommunicationList->SaveCommunicationList();
+			// Delegate "Save" processing to the EmailMessageRouteMetaControl
+			$this->mctEmailMessageRoute->SaveEmailMessageRoute();
 			$this->CloseSelf(true);
 		}
 
 		public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-			// Delegate "Delete" processing to the CommunicationListMetaControl
-			$this->mctCommunicationList->DeleteCommunicationList();
+			// Delegate "Delete" processing to the EmailMessageRouteMetaControl
+			$this->mctEmailMessageRoute->DeleteEmailMessageRoute();
 			$this->CloseSelf(true);
 		}
 

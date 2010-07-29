@@ -32,7 +32,6 @@
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 		protected $lstCommunicationListEntries;
 		protected $lstPeople;
-		protected $lstEmailMessages;
 
 		// Other Controls
 		protected $btnSave;
@@ -64,7 +63,6 @@
 			$this->txtToken = $this->mctCommunicationList->txtToken_Create();
 			$this->lstCommunicationListEntries = $this->mctCommunicationList->lstCommunicationListEntries_Create();
 			$this->lstPeople = $this->mctCommunicationList->lstPeople_Create();
-			$this->lstEmailMessages = $this->mctCommunicationList->lstEmailMessages_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

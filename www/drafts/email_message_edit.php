@@ -28,17 +28,12 @@
 		protected $calDateReceived;
 		protected $txtRawMessage;
 		protected $txtMessageIdentifier;
-		protected $lstPerson;
-		protected $lstCommunicationListEntry;
-		protected $lstLogin;
 		protected $txtSubject;
 		protected $txtResponseHeader;
 		protected $txtResponseBody;
 		protected $txtErrorMessage;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		protected $lstCommunicationLists;
-		protected $lstGroups;
 
 		// Other Controls
 		protected $btnSave;
@@ -68,15 +63,10 @@
 			$this->calDateReceived = $this->mctEmailMessage->calDateReceived_Create();
 			$this->txtRawMessage = $this->mctEmailMessage->txtRawMessage_Create();
 			$this->txtMessageIdentifier = $this->mctEmailMessage->txtMessageIdentifier_Create();
-			$this->lstPerson = $this->mctEmailMessage->lstPerson_Create();
-			$this->lstCommunicationListEntry = $this->mctEmailMessage->lstCommunicationListEntry_Create();
-			$this->lstLogin = $this->mctEmailMessage->lstLogin_Create();
 			$this->txtSubject = $this->mctEmailMessage->txtSubject_Create();
 			$this->txtResponseHeader = $this->mctEmailMessage->txtResponseHeader_Create();
 			$this->txtResponseBody = $this->mctEmailMessage->txtResponseBody_Create();
 			$this->txtErrorMessage = $this->mctEmailMessage->txtErrorMessage_Create();
-			$this->lstCommunicationLists = $this->mctEmailMessage->lstCommunicationLists_Create();
-			$this->lstGroups = $this->mctEmailMessage->lstGroups_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

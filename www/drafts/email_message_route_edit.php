@@ -4,40 +4,34 @@
 
 	/**
 	 * This is a quick-and-dirty draft QForm object to do Create, Edit, and Delete functionality
-	 * of the Group class.  It uses the code-generated
-	 * GroupMetaControl class, which has meta-methods to help with
-	 * easily creating/defining controls to modify the fields of a Group columns.
+	 * of the EmailMessageRoute class.  It uses the code-generated
+	 * EmailMessageRouteMetaControl class, which has meta-methods to help with
+	 * easily creating/defining controls to modify the fields of a EmailMessageRoute columns.
 	 *
 	 * Any display customizations and presentation-tier logic can be implemented
 	 * here by overriding existing or implementing new methods, properties and variables.
 	 * 
 	 * NOTE: This file is overwritten on any code regenerations.  If you want to make
-	 * permanent changes, it is STRONGLY RECOMMENDED to move both group_edit.php AND
-	 * group_edit.tpl.php out of this Form Drafts directory.
+	 * permanent changes, it is STRONGLY RECOMMENDED to move both email_message_route_edit.php AND
+	 * email_message_route_edit.tpl.php out of this Form Drafts directory.
 	 *
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class GroupEditForm extends QForm {
-		// Local instance of the GroupMetaControl
-		protected $mctGroup;
+	class EmailMessageRouteEditForm extends QForm {
+		// Local instance of the EmailMessageRouteMetaControl
+		protected $mctEmailMessageRoute;
 
-		// Controls for Group's Data Fields
+		// Controls for EmailMessageRoute's Data Fields
 		protected $lblId;
-		protected $lstGroupType;
-		protected $lstMinistry;
-		protected $txtName;
-		protected $txtDescription;
-		protected $lstParentGroup;
-		protected $txtHierarchyLevel;
-		protected $txtHierarchyOrderNumber;
-		protected $chkConfidentialFlag;
-		protected $lstEmailBroadcastType;
-		protected $txtToken;
+		protected $lstEmailMessage;
+		protected $lstGroup;
+		protected $lstCommunicationList;
+		protected $lstLogin;
+		protected $lstCommunicationListEntry;
+		protected $lstPerson;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		protected $lstGrowthGroup;
-		protected $lstSmartGroup;
 
 		// Other Controls
 		protected $btnSave;
@@ -57,24 +51,18 @@
 		}
 
 		protected function Form_Create() {
-			// Use the CreateFromPathInfo shortcut (this can also be done manually using the GroupMetaControl constructor)
+			// Use the CreateFromPathInfo shortcut (this can also be done manually using the EmailMessageRouteMetaControl constructor)
 			// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
-			$this->mctGroup = GroupMetaControl::CreateFromPathInfo($this);
+			$this->mctEmailMessageRoute = EmailMessageRouteMetaControl::CreateFromPathInfo($this);
 
-			// Call MetaControl's methods to create qcontrols based on Group's data fields
-			$this->lblId = $this->mctGroup->lblId_Create();
-			$this->lstGroupType = $this->mctGroup->lstGroupType_Create();
-			$this->lstMinistry = $this->mctGroup->lstMinistry_Create();
-			$this->txtName = $this->mctGroup->txtName_Create();
-			$this->txtDescription = $this->mctGroup->txtDescription_Create();
-			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
-			$this->txtHierarchyLevel = $this->mctGroup->txtHierarchyLevel_Create();
-			$this->txtHierarchyOrderNumber = $this->mctGroup->txtHierarchyOrderNumber_Create();
-			$this->chkConfidentialFlag = $this->mctGroup->chkConfidentialFlag_Create();
-			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
-			$this->txtToken = $this->mctGroup->txtToken_Create();
-			$this->lstGrowthGroup = $this->mctGroup->lstGrowthGroup_Create();
-			$this->lstSmartGroup = $this->mctGroup->lstSmartGroup_Create();
+			// Call MetaControl's methods to create qcontrols based on EmailMessageRoute's data fields
+			$this->lblId = $this->mctEmailMessageRoute->lblId_Create();
+			$this->lstEmailMessage = $this->mctEmailMessageRoute->lstEmailMessage_Create();
+			$this->lstGroup = $this->mctEmailMessageRoute->lstGroup_Create();
+			$this->lstCommunicationList = $this->mctEmailMessageRoute->lstCommunicationList_Create();
+			$this->lstLogin = $this->mctEmailMessageRoute->lstLogin_Create();
+			$this->lstCommunicationListEntry = $this->mctEmailMessageRoute->lstCommunicationListEntry_Create();
+			$this->lstPerson = $this->mctEmailMessageRoute->lstPerson_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);
@@ -88,9 +76,9 @@
 
 			$this->btnDelete = new QButton($this);
 			$this->btnDelete->Text = QApplication::Translate('Delete');
-			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('Group') . '?'));
+			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('EmailMessageRoute') . '?'));
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
-			$this->btnDelete->Visible = $this->mctGroup->EditMode;
+			$this->btnDelete->Visible = $this->mctEmailMessageRoute->EditMode;
 		}
 
 		/**
@@ -122,14 +110,14 @@
 		// Button Event Handlers
 
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			// Delegate "Save" processing to the GroupMetaControl
-			$this->mctGroup->SaveGroup();
+			// Delegate "Save" processing to the EmailMessageRouteMetaControl
+			$this->mctEmailMessageRoute->SaveEmailMessageRoute();
 			$this->RedirectToListPage();
 		}
 
 		protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-			// Delegate "Delete" processing to the GroupMetaControl
-			$this->mctGroup->DeleteGroup();
+			// Delegate "Delete" processing to the EmailMessageRouteMetaControl
+			$this->mctEmailMessageRoute->DeleteEmailMessageRoute();
 			$this->RedirectToListPage();
 		}
 
@@ -140,11 +128,11 @@
 		// Other Methods
 
 		protected function RedirectToListPage() {
-			QApplication::Redirect(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . '/group_list.php');
+			QApplication::Redirect(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . '/email_message_route_list.php');
 		}
 	}
 
 	// Go ahead and run this form object to render the page and its event handlers, implicitly using
-	// group_edit.tpl.php as the included HTML template file
-	GroupEditForm::Run('GroupEditForm');
+	// email_message_route_edit.tpl.php as the included HTML template file
+	EmailMessageRouteEditForm::Run('EmailMessageRouteEditForm');
 ?>

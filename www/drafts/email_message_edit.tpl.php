@@ -27,12 +27,6 @@
 
 		<?php $this->txtMessageIdentifier->RenderWithName(); ?>
 
-		<?php $this->lstPerson->RenderWithName(); ?>
-
-		<?php $this->lstCommunicationListEntry->RenderWithName(); ?>
-
-		<?php $this->lstLogin->RenderWithName(); ?>
-
 		<?php $this->txtSubject->RenderWithName(); ?>
 
 		<?php $this->txtResponseHeader->RenderWithName(); ?>
@@ -40,10 +34,6 @@
 		<?php $this->txtResponseBody->RenderWithName(); ?>
 
 		<?php $this->txtErrorMessage->RenderWithName(); ?>
-
-		<?php $this->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>
-
-		<?php $this->lstGroups->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 

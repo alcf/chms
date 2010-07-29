@@ -32,8 +32,8 @@
 	 * @property Ministry[] $_MinistryArray the value for the private _objMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry_login_assn association table
 	 * @property Comment $_CommentAsPostedBy the value for the private _objCommentAsPostedBy (Read-Only) if set due to an expansion on the comment.posted_by_login_id reverse relationship
 	 * @property Comment[] $_CommentAsPostedByArray the value for the private _objCommentAsPostedByArray (Read-Only) if set due to an ExpandAsArray on the comment.posted_by_login_id reverse relationship
-	 * @property EmailMessage $_EmailMessage the value for the private _objEmailMessage (Read-Only) if set due to an expansion on the email_message.login_id reverse relationship
-	 * @property EmailMessage[] $_EmailMessageArray the value for the private _objEmailMessageArray (Read-Only) if set due to an ExpandAsArray on the email_message.login_id reverse relationship
+	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.login_id reverse relationship
+	 * @property EmailMessageRoute[] $_EmailMessageRouteArray the value for the private _objEmailMessageRouteArray (Read-Only) if set due to an ExpandAsArray on the email_message_route.login_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class LoginGen extends QBaseClass {
@@ -186,20 +186,20 @@
 		private $_objCommentAsPostedByArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single EmailMessage object
-		 * (of type EmailMessage), if this Login object was restored with
-		 * an expansion on the email_message association table.
-		 * @var EmailMessage _objEmailMessage;
+		 * Private member variable that stores a reference to a single EmailMessageRoute object
+		 * (of type EmailMessageRoute), if this Login object was restored with
+		 * an expansion on the email_message_route association table.
+		 * @var EmailMessageRoute _objEmailMessageRoute;
 		 */
-		private $_objEmailMessage;
+		private $_objEmailMessageRoute;
 
 		/**
-		 * Private member variable that stores a reference to an array of EmailMessage objects
-		 * (of type EmailMessage[]), if this Login object was restored with
-		 * an ExpandAsArray on the email_message association table.
-		 * @var EmailMessage[] _objEmailMessageArray;
+		 * Private member variable that stores a reference to an array of EmailMessageRoute objects
+		 * (of type EmailMessageRoute[]), if this Login object was restored with
+		 * an ExpandAsArray on the email_message_route association table.
+		 * @var EmailMessageRoute[] _objEmailMessageRouteArray;
 		 */
-		private $_objEmailMessageArray = array();
+		private $_objEmailMessageRouteArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -590,17 +590,17 @@
 					$blnExpandedViaArray = true;
 				}
 
-				$strAlias = $strAliasPrefix . 'emailmessage__id';
+				$strAlias = $strAliasPrefix . 'emailmessageroute__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objEmailMessageArray[$intPreviousChildItemCount - 1];
-						$objChildItem = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objEmailMessageRouteArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objEmailMessageRouteArray[$intPreviousChildItemCount - 1];
+						$objChildItem = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objEmailMessageArray[] = $objChildItem;
+							$objPreviousItem->_objEmailMessageRouteArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objEmailMessageRouteArray[] = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -677,14 +677,14 @@
 					$objToReturn->_objCommentAsPostedBy = Comment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'commentaspostedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-			// Check for EmailMessage Virtual Binding
-			$strAlias = $strAliasPrefix . 'emailmessage__id';
+			// Check for EmailMessageRoute Virtual Binding
+			$strAlias = $strAliasPrefix . 'emailmessageroute__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objEmailMessageArray[] = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objEmailMessageRouteArray[] = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objEmailMessage = EmailMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objEmailMessageRoute = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1148,17 +1148,17 @@
 					// @return Comment[]
 					return (array) $this->_objCommentAsPostedByArray;
 
-				case '_EmailMessage':
-					// Gets the value for the private _objEmailMessage (Read-Only)
-					// if set due to an expansion on the email_message.login_id reverse relationship
-					// @return EmailMessage
-					return $this->_objEmailMessage;
+				case '_EmailMessageRoute':
+					// Gets the value for the private _objEmailMessageRoute (Read-Only)
+					// if set due to an expansion on the email_message_route.login_id reverse relationship
+					// @return EmailMessageRoute
+					return $this->_objEmailMessageRoute;
 
-				case '_EmailMessageArray':
-					// Gets the value for the private _objEmailMessageArray (Read-Only)
-					// if set due to an ExpandAsArray on the email_message.login_id reverse relationship
-					// @return EmailMessage[]
-					return (array) $this->_objEmailMessageArray;
+				case '_EmailMessageRouteArray':
+					// Gets the value for the private _objEmailMessageRouteArray (Read-Only)
+					// if set due to an ExpandAsArray on the email_message_route.login_id reverse relationship
+					// @return EmailMessageRoute[]
+					return (array) $this->_objEmailMessageRouteArray;
 
 
 				case '__Restored':
@@ -1502,20 +1502,20 @@
 
 			
 		
-		// Related Objects' Methods for EmailMessage
+		// Related Objects' Methods for EmailMessageRoute
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all associated EmailMessages as an array of EmailMessage objects
+		 * Gets all associated EmailMessageRoutes as an array of EmailMessageRoute objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return EmailMessage[]
+		 * @return EmailMessageRoute[]
 		*/ 
-		public function GetEmailMessageArray($objOptionalClauses = null) {
+		public function GetEmailMessageRouteArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return EmailMessage::LoadArrayByLoginId($this->intId, $objOptionalClauses);
+				return EmailMessageRoute::LoadArrayByLoginId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1523,26 +1523,26 @@
 		}
 
 		/**
-		 * Counts all associated EmailMessages
+		 * Counts all associated EmailMessageRoutes
 		 * @return int
 		*/ 
-		public function CountEmailMessages() {
+		public function CountEmailMessageRoutes() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return EmailMessage::CountByLoginId($this->intId);
+			return EmailMessageRoute::CountByLoginId($this->intId);
 		}
 
 		/**
-		 * Associates a EmailMessage
-		 * @param EmailMessage $objEmailMessage
+		 * Associates a EmailMessageRoute
+		 * @param EmailMessageRoute $objEmailMessageRoute
 		 * @return void
 		*/ 
-		public function AssociateEmailMessage(EmailMessage $objEmailMessage) {
+		public function AssociateEmailMessageRoute(EmailMessageRoute $objEmailMessageRoute) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this unsaved Login.');
-			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessage on this Login with an unsaved EmailMessage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessageRoute on this unsaved Login.');
+			if ((is_null($objEmailMessageRoute->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEmailMessageRoute on this Login with an unsaved EmailMessageRoute.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Login::GetDatabase();
@@ -1550,24 +1550,24 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`email_message`
+					`email_message_route`
 				SET
 					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . '
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
 		}
 
 		/**
-		 * Unassociates a EmailMessage
-		 * @param EmailMessage $objEmailMessage
+		 * Unassociates a EmailMessageRoute
+		 * @param EmailMessageRoute $objEmailMessageRoute
 		 * @return void
 		*/ 
-		public function UnassociateEmailMessage(EmailMessage $objEmailMessage) {
+		public function UnassociateEmailMessageRoute(EmailMessageRoute $objEmailMessageRoute) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
-			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Login with an unsaved EmailMessage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageRoute on this unsaved Login.');
+			if ((is_null($objEmailMessageRoute->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageRoute on this Login with an unsaved EmailMessageRoute.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Login::GetDatabase();
@@ -1575,47 +1575,47 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`email_message`
-				SET
-					`login_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
-					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all EmailMessages
-		 * @return void
-		*/ 
-		public function UnassociateAllEmailMessages() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Login::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`email_message`
+					`email_message_route`
 				SET
 					`login_id` = null
 				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes an associated EmailMessage
-		 * @param EmailMessage $objEmailMessage
+		 * Unassociates all EmailMessageRoutes
 		 * @return void
 		*/ 
-		public function DeleteAssociatedEmailMessage(EmailMessage $objEmailMessage) {
+		public function UnassociateAllEmailMessageRoutes() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
-			if ((is_null($objEmailMessage->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this Login with an unsaved EmailMessage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageRoute on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`email_message_route`
+				SET
+					`login_id` = null
+				WHERE
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated EmailMessageRoute
+		 * @param EmailMessageRoute $objEmailMessageRoute
+		 * @return void
+		*/ 
+		public function DeleteAssociatedEmailMessageRoute(EmailMessageRoute $objEmailMessageRoute) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageRoute on this unsaved Login.');
+			if ((is_null($objEmailMessageRoute->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageRoute on this Login with an unsaved EmailMessageRoute.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Login::GetDatabase();
@@ -1623,20 +1623,20 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`email_message`
+					`email_message_route`
 				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objEmailMessage->Id) . ' AND
+					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes all associated EmailMessages
+		 * Deletes all associated EmailMessageRoutes
 		 * @return void
 		*/ 
-		public function DeleteAllEmailMessages() {
+		public function DeleteAllEmailMessageRoutes() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessage on this unsaved Login.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEmailMessageRoute on this unsaved Login.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Login::GetDatabase();
@@ -1644,7 +1644,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`email_message`
+					`email_message_route`
 				WHERE
 					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -1940,8 +1940,8 @@
 					return new QQNodeLoginMinistry($this);
 				case 'CommentAsPostedBy':
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
-				case 'EmailMessage':
-					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'login_id');
+				case 'EmailMessageRoute':
+					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'login_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1992,8 +1992,8 @@
 					return new QQNodeLoginMinistry($this);
 				case 'CommentAsPostedBy':
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
-				case 'EmailMessage':
-					return new QQReverseReferenceNodeEmailMessage($this, 'emailmessage', 'reverse_reference', 'login_id');
+				case 'EmailMessageRoute':
+					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'login_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

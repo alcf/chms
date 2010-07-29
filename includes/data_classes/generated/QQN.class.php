@@ -67,6 +67,12 @@
 			return new QQNodeEmailMessage('email_message', null, null);
 		}
 		/**
+		 * @return QQNodeEmailMessageRoute
+		 */
+		static public function EmailMessageRoute() {
+			return new QQNodeEmailMessageRoute('email_message_route', null, null);
+		}
+		/**
 		 * @return QQNodeEmailOutgoingQueue
 		 */
 		static public function EmailOutgoingQueue() {

@@ -42,8 +42,6 @@
 	 * property-read QLabel $GrowthGroupLabel
 	 * property QListBox $SmartGroupControl
 	 * property-read QLabel $SmartGroupLabel
-	 * property QListBox $EmailMessageControl
-	 * property-read QLabel $EmailMessageLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -83,12 +81,10 @@
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstGrowthGroup;
 		protected $lstSmartGroup;
-		protected $lstEmailMessages;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblGrowthGroup;
 		protected $lblSmartGroup;
-		protected $lblEmailMessages;
 
 
 		/**
@@ -573,57 +569,6 @@
 			return $this->lblSmartGroup;
 		}
 
-		/**
-		 * Create and setup QListBox lstEmailMessages
-		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
-		 */
-		public function lstEmailMessages_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstEmailMessages = new QListBox($this->objParentObject, $strControlId);
-			$this->lstEmailMessages->Name = QApplication::Translate('Email Messages');
-			$this->lstEmailMessages->SelectionMode = QSelectionMode::Multiple;
-
-			// We need to know which items to "Pre-Select"
-			$objAssociatedArray = $this->objGroup->GetEmailMessageArray();
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objEmailMessageCursor = EmailMessage::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objEmailMessage = EmailMessage::InstantiateCursor($objEmailMessageCursor)) {
-				$objListItem = new QListItem($objEmailMessage->__toString(), $objEmailMessage->Id);
-				foreach ($objAssociatedArray as $objAssociated) {
-					if ($objAssociated->Id == $objEmailMessage->Id)
-						$objListItem->Selected = true;
-				}
-				$this->lstEmailMessages->AddItem($objListItem);
-			}
-
-			// Return the QListControl
-			return $this->lstEmailMessages;
-		}
-
-		/**
-		 * Create and setup QLabel lblEmailMessages
-		 * @param string $strControlId optional ControlId to use
-		 * @param string $strGlue glue to display in between each associated object
-		 * @return QLabel
-		 */
-		public function lblEmailMessages_Create($strControlId = null, $strGlue = ', ') {
-			$this->lblEmailMessages = new QLabel($this->objParentObject, $strControlId);
-			$this->lstEmailMessages->Name = QApplication::Translate('Email Messages');
-			
-			$objAssociatedArray = $this->objGroup->GetEmailMessageArray();
-			$strItems = array();
-			foreach ($objAssociatedArray as $objAssociated)
-				$strItems[] = $objAssociated->__toString();
-			$this->lblEmailMessages->Text = implode($strGlue, $strItems);
-			return $this->lblEmailMessages;
-		}
-
 
 
 		/**
@@ -724,27 +669,6 @@
 			}
 			if ($this->lblSmartGroup) $this->lblSmartGroup->Text = ($this->objGroup->SmartGroup) ? $this->objGroup->SmartGroup->__toString() : null;
 
-			if ($this->lstEmailMessages) {
-				$this->lstEmailMessages->RemoveAllItems();
-				$objAssociatedArray = $this->objGroup->GetEmailMessageArray();
-				$objEmailMessageArray = EmailMessage::LoadAll();
-				if ($objEmailMessageArray) foreach ($objEmailMessageArray as $objEmailMessage) {
-					$objListItem = new QListItem($objEmailMessage->__toString(), $objEmailMessage->Id);
-					foreach ($objAssociatedArray as $objAssociated) {
-						if ($objAssociated->Id == $objEmailMessage->Id)
-							$objListItem->Selected = true;
-					}
-					$this->lstEmailMessages->AddItem($objListItem);
-				}
-			}
-			if ($this->lblEmailMessages) {
-				$objAssociatedArray = $this->objGroup->GetEmailMessageArray();
-				$strItems = array();
-				foreach ($objAssociatedArray as $objAssociated)
-					$strItems[] = $objAssociated->__toString();
-				$this->lblEmailMessages->Text = implode($strGlue, $strItems);
-			}
-
 		}
 
 
@@ -752,16 +676,6 @@
 		///////////////////////////////////////////////
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
-
-		protected function lstEmailMessages_Update() {
-			if ($this->lstEmailMessages) {
-				$this->objGroup->UnassociateAllEmailMessages();
-				$objSelectedListItems = $this->lstEmailMessages->SelectedItems;
-				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
-					$this->objGroup->AssociateEmailMessage(EmailMessage::Load($objListItem->Value));
-				}
-			}
-		}
 
 
 
@@ -797,7 +711,6 @@
 				$this->objGroup->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
-				$this->lstEmailMessages_Update();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -809,7 +722,6 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeleteGroup() {
-			$this->objGroup->UnassociateAllEmailMessages();
 			$this->objGroup->Delete();
 		}		
 
@@ -912,12 +824,6 @@
 				case 'SmartGroupLabel':
 					if (!$this->lblSmartGroup) return $this->lblSmartGroup_Create();
 					return $this->lblSmartGroup;
-				case 'EmailMessageControl':
-					if (!$this->lstEmailMessages) return $this->lstEmailMessages_Create();
-					return $this->lstEmailMessages;
-				case 'EmailMessageLabel':
-					if (!$this->lblEmailMessages) return $this->lblEmailMessages_Create();
-					return $this->lblEmailMessages;
 				default:
 					try {
 						return parent::__get($strName);
@@ -966,8 +872,6 @@
 						return ($this->lstGrowthGroup = QType::Cast($mixValue, 'QControl'));
 					case 'SmartGroupControl':
 						return ($this->lstSmartGroup = QType::Cast($mixValue, 'QControl'));
-					case 'EmailMessageControl':
-						return ($this->lstEmailMessages = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

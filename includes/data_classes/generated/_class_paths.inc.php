@@ -76,6 +76,13 @@
 		QApplicationBase::$ClassFile['emailmessagemetacontrol'] = __DATA_META_CONTROLS__ . '/EmailMessageMetaControl.class.php';
 		QApplicationBase::$ClassFile['emailmessagedatagrid'] = __DATA_META_CONTROLS__ . '/EmailMessageDataGrid.class.php';
 
+	// ClassPaths for the EmailMessageRoute class
+		QApplicationBase::$ClassFile['emailmessageroute'] = __DATA_CLASSES__ . '/EmailMessageRoute.class.php';
+		QApplicationBase::$ClassFile['qqnodeemailmessageroute'] = __DATA_CLASSES__ . '/EmailMessageRoute.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeemailmessageroute'] = __DATA_CLASSES__ . '/EmailMessageRoute.class.php';
+		QApplicationBase::$ClassFile['emailmessageroutemetacontrol'] = __DATA_META_CONTROLS__ . '/EmailMessageRouteMetaControl.class.php';
+		QApplicationBase::$ClassFile['emailmessageroutedatagrid'] = __DATA_META_CONTROLS__ . '/EmailMessageRouteDataGrid.class.php';
+
 	// ClassPaths for the EmailOutgoingQueue class
 		QApplicationBase::$ClassFile['emailoutgoingqueue'] = __DATA_CLASSES__ . '/EmailOutgoingQueue.class.php';
 		QApplicationBase::$ClassFile['qqnodeemailoutgoingqueue'] = __DATA_CLASSES__ . '/EmailOutgoingQueue.class.php';

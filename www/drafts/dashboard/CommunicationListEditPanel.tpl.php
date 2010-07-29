@@ -19,8 +19,6 @@
 
 		<?php $_CONTROL->lstPeople->RenderWithName(true, "Rows=7"); ?>
 
-		<?php $_CONTROL->lstEmailMessages->RenderWithName(true, "Rows=7"); ?>
-
 	</div>
 
 	<div id="formActions">

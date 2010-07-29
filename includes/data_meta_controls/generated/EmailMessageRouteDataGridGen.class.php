@@ -1,9 +1,9 @@
 <?php
 	/**
 	 * This is the "Meta" DataGrid class for the List functionality
-	 * of the EmailMessage class.  This code-generated class
+	 * of the EmailMessageRoute class.  This code-generated class
 	 * contains a QDataGrid class which can be used by any QForm or QPanel,
-	 * listing a collection of EmailMessage objects.  It includes
+	 * listing a collection of EmailMessageRoute objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
@@ -16,7 +16,7 @@
 	 * @subpackage MetaControls
 	 * 
 	 */
-	class EmailMessageDataGridGen extends QDataGrid {
+	class EmailMessageRouteDataGridGen extends QDataGrid {
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own BindAllRows method (which can obviousy be switched to something else).
@@ -35,9 +35,9 @@
 
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
-		 * way of adding a column to this EmailMessage datagrid.  The description of a column's
+		 * way of adding a column to this EmailMessageRoute datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
-		 * in the EmailMessage object, or it can be any QQNode extending from QQN::EmailMessage().
+		 * in the EmailMessageRoute object, or it can be any QQNode extending from QQN::EmailMessageRoute().
 		 * 
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
@@ -45,7 +45,7 @@
 		 * Any of these things can be overridden with OverrideParameters.
 		 * 
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
-		 * sorting using two fields from the EmailMessage object.
+		 * sorting using two fields from the EmailMessageRoute object.
 		 *
 		 * @param mixed $mixContents
 		 * @param string $objOverrideParameters[]
@@ -127,7 +127,7 @@
 		 * 
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
-		 * @param mixed $mixContent string or QQNode from EmailMessage
+		 * @param mixed $mixContent string or QQNode from EmailMessageRoute
 		 * @param string $strTypeClassName the name of the TypeClass to use $NameArray against
 		 * @param mixed $objOverrideParameters
 		 */
@@ -251,7 +251,7 @@
 			$objClauses = ($objOptionalClauses) ? $objOptionalClauses : array();
 
 			// We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-			if ($this->Paginator) $this->TotalItemCount = EmailMessage::QueryCount($objCondition, $objClauses);
+			if ($this->Paginator) $this->TotalItemCount = EmailMessageRoute::QueryCount($objCondition, $objClauses);
 
 			// If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
 			// the OrderByClause to the $objClauses array
@@ -260,8 +260,8 @@
 			// Add the LimitClause information, as well
 			if ($objClause = $this->LimitClause) array_push($objClauses, $objClause);
 
-			// Set the DataSource to be a Query result from EmailMessage, given the clauses above
-			$this->DataSource = EmailMessage::QueryArray($objCondition, $objClauses);
+			// Set the DataSource to be a Query result from EmailMessageRoute, given the clauses above
+			$this->DataSource = EmailMessageRoute::QueryArray($objCondition, $objClauses);
 		}
 
 
@@ -269,8 +269,8 @@
 		/**
 		 * Used internally by the Meta-based Add Column tools.
 		 *
-		 * Given a QQNode or a Text String, this will return a EmailMessage-based QQNode.
-		 * It will also verify that it is a proper EmailMessage-based QQNode, and will throw an exception otherwise.
+		 * Given a QQNode or a Text String, this will return a EmailMessageRoute-based QQNode.
+		 * It will also verify that it is a proper EmailMessageRoute-based QQNode, and will throw an exception otherwise.
 		 *
 		 * @param mixed $mixContent
 		 * @return QQNode
@@ -279,7 +279,7 @@
 			if ($mixContent instanceof QQNode) {
 				if (!$mixContent->_ParentNode)
 					throw new QCallerException('Content QQNode cannot be a Top Level Node');
-				if ($mixContent->_RootTableName == 'email_message') {
+				if ($mixContent->_RootTableName == 'email_message_route') {
 					if (($mixContent instanceof QQReverseReferenceNode) && !($mixContent->_PropertyName))
 						throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 					$objCurrentNode = $mixContent;
@@ -291,18 +291,22 @@
 					}
 					return $mixContent;
 				} else
-					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "email_message".');
+					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "email_message_route".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
-				case 'Id': return QQN::EmailMessage()->Id;
-				case 'EmailMessageStatusTypeId': return QQN::EmailMessage()->EmailMessageStatusTypeId;
-				case 'DateReceived': return QQN::EmailMessage()->DateReceived;
-				case 'RawMessage': return QQN::EmailMessage()->RawMessage;
-				case 'MessageIdentifier': return QQN::EmailMessage()->MessageIdentifier;
-				case 'Subject': return QQN::EmailMessage()->Subject;
-				case 'ResponseHeader': return QQN::EmailMessage()->ResponseHeader;
-				case 'ResponseBody': return QQN::EmailMessage()->ResponseBody;
-				case 'ErrorMessage': return QQN::EmailMessage()->ErrorMessage;
-				default: throw new QCallerException('Simple Property not found in EmailMessageDataGrid content: ' . $mixContent);
+				case 'Id': return QQN::EmailMessageRoute()->Id;
+				case 'EmailMessageId': return QQN::EmailMessageRoute()->EmailMessageId;
+				case 'EmailMessage': return QQN::EmailMessageRoute()->EmailMessage;
+				case 'GroupId': return QQN::EmailMessageRoute()->GroupId;
+				case 'Group': return QQN::EmailMessageRoute()->Group;
+				case 'CommunicationListId': return QQN::EmailMessageRoute()->CommunicationListId;
+				case 'CommunicationList': return QQN::EmailMessageRoute()->CommunicationList;
+				case 'LoginId': return QQN::EmailMessageRoute()->LoginId;
+				case 'Login': return QQN::EmailMessageRoute()->Login;
+				case 'CommunicationListEntryId': return QQN::EmailMessageRoute()->CommunicationListEntryId;
+				case 'CommunicationListEntry': return QQN::EmailMessageRoute()->CommunicationListEntry;
+				case 'PersonId': return QQN::EmailMessageRoute()->PersonId;
+				case 'Person': return QQN::EmailMessageRoute()->Person;
+				default: throw new QCallerException('Simple Property not found in EmailMessageRouteDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 			else
