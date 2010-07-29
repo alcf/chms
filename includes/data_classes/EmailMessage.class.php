@@ -136,6 +136,9 @@
 			$objUnauthorizedArray = array();
 
 			// TODO
+			foreach ($objGroupArray as $objGroup) {
+				
+			}
 
 			return $objUnauthorizedArray;
 		}

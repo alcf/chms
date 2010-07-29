@@ -276,6 +276,52 @@
 			return $intLevel;
 		}
 
+		/**
+		 * Calculates whether or not a given Login object is allowed to send emails
+		 * to this Group email list.  Return true if the Login can.  Returns false
+		 * if the Login is not allowed to OR if there is no Email List for this Group.
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanSendEmail(Login $objLogin) {
+			switch ($this->intEmailBroadcastTypeId) {
+				case EmailBroadcastType::PublicList:
+					return true;
+
+				case EmailBroadcastType::PrivateList:
+					break;
+
+				case EmailBroadcastType::AnnouncementOnly:
+					break;
+
+				default:
+					return false;
+			}
+		}
+
+		/**
+		 * Calculates whether or not a given Person object is allowed to send emails
+		 * to this Group email list.  Return true if the Person can.  Returns false
+		 * if the Person is not allowed to OR if there is no Email List for this Group.
+		 * @param Person $objPerson
+		 * @return boolean
+		 */
+		public function IsPersonCanSendEmail(Person $objPerson) {
+			switch ($this->intEmailBroadcastTypeId) {
+				case EmailBroadcastType::PublicList:
+					return true;
+
+				case EmailBroadcastType::PrivateList:
+					break;
+
+				case EmailBroadcastType::AnnouncementOnly:
+					break;
+
+				default:
+					return false;
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
