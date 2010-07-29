@@ -86,17 +86,52 @@
 
 			// Now Figure out who the sender is
 			$strFromAddress = $this->LookupSenderEmailAddress();
-			if (!is_null($strFromAddress)) {
+			if (is_null($strFromAddress)) {
 				$this->strErrorMessage = 'Invaid From Address';
 				$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Error;
 				$this->Save();
 				return;
 			}
 
+			// Assign to Person/Login/CommListEntry objects if applicable
+			$this->LookupSenderObject($strFromAddress, $objGroupArray, $objCommunicationListArray);
+
+			
+			$this->Save();
+		}
+
+		protected function LookupSenderObject($strFromAddress, $objGroupArray, $objCommunicationListArray) {
 			$this->CommunicationListEntry = CommunicationListEntry::LoadByEmail($strFromAddress);
+			$this->Login = Login::LoadByEmail($strFromAddress);
+
+			// Get all Person objects that have this as an email address
 			$objPersonArray = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $strFromAddress), QQ::Distinct());
 
-			$this->Save();
+			// Iterate through each person and each group see if there is a GroupParticipation for the pair
+			foreach ($objPersonArray as $objPerson) {
+				if (!$this->Person) {
+					foreach ($objGroupArray as $objGroup) {
+						if (GroupParticipation::CountByPersonIdGroupId($objPerson->Id, $objGroup->Id)) {
+							$this->Person = $objPerson;
+							break;
+						}
+					}
+				}
+			}
+
+			if (!$this->Person) {
+				// Iterate through each CommList see if there is a association for the pair
+				foreach ($objPersonArray as $objPerson) {
+					if (!$this->Person) {
+						foreach ($objCommunicationListArray as $objCommunicationList) {
+							if ($objPerson->IsCommunicationListAssociated($objCommunicationList)) {
+								$this->Person = $objPerson;
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
 
 		/**
@@ -147,9 +182,15 @@
 		 * @return string[]
 		 */
 		protected function CalculateEmailArray() {
-			$strTo = $this->GetHeaderValue('To') . ' ' . $this->GetHeaderValue('Cc');
-			
+			$strTo = $this->GetHeaderValue('To') . ', ' .
+				$this->GetHeaderValue('Cc') . ', ' .
+				$this->GetHeaderValue('TO') . ', ' .
+				$this->GetHeaderValue('CC') . ', ' .
+				$this->GetHeaderValue('to') . ', ' .
+				$this->GetHeaderValue('cc');
+
 			$strArrayToReturn = array();
+
 			foreach (QEmailServer::GetEmailAddresses($strTo) as $strEmailAddress) {
 				$strEmailAddress = strtolower($strEmailAddress);
 				if (strpos($strEmailAddress, '@groups.alcf.net')) $strArrayToReturn[$strEmailAddress] = $strEmailAddress;
