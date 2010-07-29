@@ -128,6 +128,8 @@
 		}
 
 		public function ValidateToken() {
+			if (!$this->txtToken) return true;
+
 			$strToken = QApplication::Tokenize($this->txtToken->Text);
 			if (strlen($strToken)) {
 				if (CommunicationList::LoadByToken($strToken) ||
