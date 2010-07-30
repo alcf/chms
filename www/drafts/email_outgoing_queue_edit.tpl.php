@@ -19,7 +19,7 @@
 
 		<?php $this->lstEmailMessage->RenderWithName(); ?>
 
-		<?php $this->txtSendToEmailAddress->RenderWithName(); ?>
+		<?php $this->txtToAddress->RenderWithName(); ?>
 
 		<?php $this->chkErrorFlag->RenderWithName(); ?>
 

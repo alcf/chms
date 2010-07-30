@@ -299,6 +299,7 @@
 				case 'RawMessage': return QQN::EmailMessage()->RawMessage;
 				case 'MessageIdentifier': return QQN::EmailMessage()->MessageIdentifier;
 				case 'Subject': return QQN::EmailMessage()->Subject;
+				case 'FromAddress': return QQN::EmailMessage()->FromAddress;
 				case 'ResponseHeader': return QQN::EmailMessage()->ResponseHeader;
 				case 'ResponseBody': return QQN::EmailMessage()->ResponseBody;
 				case 'ErrorMessage': return QQN::EmailMessage()->ErrorMessage;

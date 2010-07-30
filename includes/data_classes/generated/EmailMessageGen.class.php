@@ -21,6 +21,7 @@
 	 * @property string $RawMessage the value for strRawMessage (Not Null)
 	 * @property string $MessageIdentifier the value for strMessageIdentifier (Unique)
 	 * @property string $Subject the value for strSubject 
+	 * @property string $FromAddress the value for strFromAddress 
 	 * @property string $ResponseHeader the value for strResponseHeader 
 	 * @property string $ResponseBody the value for strResponseBody 
 	 * @property string $ErrorMessage the value for strErrorMessage 
@@ -84,6 +85,15 @@
 		protected $strSubject;
 		const SubjectMaxLength = 255;
 		const SubjectDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column email_message.from_address
+		 * @var string strFromAddress
+		 */
+		protected $strFromAddress;
+		const FromAddressMaxLength = 255;
+		const FromAddressDefault = null;
 
 
 		/**
@@ -458,6 +468,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'raw_message', $strAliasPrefix . 'raw_message');
 			$objBuilder->AddSelectItem($strTableName, 'message_identifier', $strAliasPrefix . 'message_identifier');
 			$objBuilder->AddSelectItem($strTableName, 'subject', $strAliasPrefix . 'subject');
+			$objBuilder->AddSelectItem($strTableName, 'from_address', $strAliasPrefix . 'from_address');
 			$objBuilder->AddSelectItem($strTableName, 'response_header', $strAliasPrefix . 'response_header');
 			$objBuilder->AddSelectItem($strTableName, 'response_body', $strAliasPrefix . 'response_body');
 			$objBuilder->AddSelectItem($strTableName, 'error_message', $strAliasPrefix . 'error_message');
@@ -550,6 +561,8 @@
 			$objToReturn->strMessageIdentifier = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'subject', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subject'] : $strAliasPrefix . 'subject';
 			$objToReturn->strSubject = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'from_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'from_address'] : $strAliasPrefix . 'from_address';
+			$objToReturn->strFromAddress = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'response_header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'response_header'] : $strAliasPrefix . 'response_header';
 			$objToReturn->strResponseHeader = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'response_body', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'response_body'] : $strAliasPrefix . 'response_body';
@@ -754,6 +767,7 @@
 							`raw_message`,
 							`message_identifier`,
 							`subject`,
+							`from_address`,
 							`response_header`,
 							`response_body`,
 							`error_message`
@@ -763,6 +777,7 @@
 							' . $objDatabase->SqlVariable($this->strRawMessage) . ',
 							' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
 							' . $objDatabase->SqlVariable($this->strSubject) . ',
+							' . $objDatabase->SqlVariable($this->strFromAddress) . ',
 							' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
 							' . $objDatabase->SqlVariable($this->strResponseBody) . ',
 							' . $objDatabase->SqlVariable($this->strErrorMessage) . '
@@ -786,6 +801,7 @@
 							`raw_message` = ' . $objDatabase->SqlVariable($this->strRawMessage) . ',
 							`message_identifier` = ' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
 							`subject` = ' . $objDatabase->SqlVariable($this->strSubject) . ',
+							`from_address` = ' . $objDatabase->SqlVariable($this->strFromAddress) . ',
 							`response_header` = ' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
 							`response_body` = ' . $objDatabase->SqlVariable($this->strResponseBody) . ',
 							`error_message` = ' . $objDatabase->SqlVariable($this->strErrorMessage) . '
@@ -872,6 +888,7 @@
 			$this->strRawMessage = $objReloaded->strRawMessage;
 			$this->strMessageIdentifier = $objReloaded->strMessageIdentifier;
 			$this->strSubject = $objReloaded->strSubject;
+			$this->strFromAddress = $objReloaded->strFromAddress;
 			$this->strResponseHeader = $objReloaded->strResponseHeader;
 			$this->strResponseBody = $objReloaded->strResponseBody;
 			$this->strErrorMessage = $objReloaded->strErrorMessage;
@@ -924,6 +941,11 @@
 					// Gets the value for strSubject 
 					// @return string
 					return $this->strSubject;
+
+				case 'FromAddress':
+					// Gets the value for strFromAddress 
+					// @return string
+					return $this->strFromAddress;
 
 				case 'ResponseHeader':
 					// Gets the value for strResponseHeader 
@@ -1051,6 +1073,17 @@
 					// @return string
 					try {
 						return ($this->strSubject = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'FromAddress':
+					// Sets the value for strFromAddress 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strFromAddress = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1436,6 +1469,7 @@
 			$strToReturn .= '<element name="RawMessage" type="xsd:string"/>';
 			$strToReturn .= '<element name="MessageIdentifier" type="xsd:string"/>';
 			$strToReturn .= '<element name="Subject" type="xsd:string"/>';
+			$strToReturn .= '<element name="FromAddress" type="xsd:string"/>';
 			$strToReturn .= '<element name="ResponseHeader" type="xsd:string"/>';
 			$strToReturn .= '<element name="ResponseBody" type="xsd:string"/>';
 			$strToReturn .= '<element name="ErrorMessage" type="xsd:string"/>';
@@ -1473,6 +1507,8 @@
 				$objToReturn->strMessageIdentifier = $objSoapObject->MessageIdentifier;
 			if (property_exists($objSoapObject, 'Subject'))
 				$objToReturn->strSubject = $objSoapObject->Subject;
+			if (property_exists($objSoapObject, 'FromAddress'))
+				$objToReturn->strFromAddress = $objSoapObject->FromAddress;
 			if (property_exists($objSoapObject, 'ResponseHeader'))
 				$objToReturn->strResponseHeader = $objSoapObject->ResponseHeader;
 			if (property_exists($objSoapObject, 'ResponseBody'))
@@ -1531,6 +1567,8 @@
 					return new QQNode('message_identifier', 'MessageIdentifier', 'string', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
+				case 'FromAddress':
+					return new QQNode('from_address', 'FromAddress', 'string', $this);
 				case 'ResponseHeader':
 					return new QQNode('response_header', 'ResponseHeader', 'string', $this);
 				case 'ResponseBody':
@@ -1573,6 +1611,8 @@
 					return new QQNode('message_identifier', 'MessageIdentifier', 'string', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
+				case 'FromAddress':
+					return new QQNode('from_address', 'FromAddress', 'string', $this);
 				case 'ResponseHeader':
 					return new QQNode('response_header', 'ResponseHeader', 'string', $this);
 				case 'ResponseBody':

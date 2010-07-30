@@ -27,6 +27,8 @@
 
 		<?php $this->txtSubject->RenderWithName(); ?>
 
+		<?php $this->txtFromAddress->RenderWithName(); ?>
+
 		<?php $this->txtResponseHeader->RenderWithName(); ?>
 
 		<?php $this->txtResponseBody->RenderWithName(); ?>

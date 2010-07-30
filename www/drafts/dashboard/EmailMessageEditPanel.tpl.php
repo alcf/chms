@@ -17,6 +17,8 @@
 
 		<?php $_CONTROL->txtSubject->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtFromAddress->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtResponseHeader->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtResponseBody->RenderWithName(); ?>

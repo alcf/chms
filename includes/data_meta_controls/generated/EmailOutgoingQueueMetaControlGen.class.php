@@ -20,8 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $EmailMessageIdControl
 	 * property-read QLabel $EmailMessageIdLabel
-	 * property QTextBox $SendToEmailAddressControl
-	 * property-read QLabel $SendToEmailAddressLabel
+	 * property QTextBox $ToAddressControl
+	 * property-read QLabel $ToAddressLabel
 	 * property QCheckBox $ErrorFlagControl
 	 * property-read QLabel $ErrorFlagLabel
 	 * property QTextBox $TokenControl
@@ -40,13 +40,13 @@
 		// Controls that allow the editing of EmailOutgoingQueue's individual data fields
 		protected $lblId;
 		protected $lstEmailMessage;
-		protected $txtSendToEmailAddress;
+		protected $txtToAddress;
 		protected $chkErrorFlag;
 		protected $txtToken;
 
 		// Controls that allow the viewing of EmailOutgoingQueue's individual data fields
 		protected $lblEmailMessageId;
-		protected $lblSendToEmailAddress;
+		protected $lblToAddress;
 		protected $lblErrorFlag;
 		protected $lblToken;
 
@@ -206,28 +206,30 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtSendToEmailAddress
+		 * Create and setup QTextBox txtToAddress
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtSendToEmailAddress_Create($strControlId = null) {
-			$this->txtSendToEmailAddress = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtSendToEmailAddress->Name = QApplication::Translate('Send To Email Address');
-			$this->txtSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
-			$this->txtSendToEmailAddress->MaxLength = EmailOutgoingQueue::SendToEmailAddressMaxLength;
-			return $this->txtSendToEmailAddress;
+		public function txtToAddress_Create($strControlId = null) {
+			$this->txtToAddress = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtToAddress->Name = QApplication::Translate('To Address');
+			$this->txtToAddress->Text = $this->objEmailOutgoingQueue->ToAddress;
+			$this->txtToAddress->Required = true;
+			$this->txtToAddress->MaxLength = EmailOutgoingQueue::ToAddressMaxLength;
+			return $this->txtToAddress;
 		}
 
 		/**
-		 * Create and setup QLabel lblSendToEmailAddress
+		 * Create and setup QLabel lblToAddress
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblSendToEmailAddress_Create($strControlId = null) {
-			$this->lblSendToEmailAddress = new QLabel($this->objParentObject, $strControlId);
-			$this->lblSendToEmailAddress->Name = QApplication::Translate('Send To Email Address');
-			$this->lblSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
-			return $this->lblSendToEmailAddress;
+		public function lblToAddress_Create($strControlId = null) {
+			$this->lblToAddress = new QLabel($this->objParentObject, $strControlId);
+			$this->lblToAddress->Name = QApplication::Translate('To Address');
+			$this->lblToAddress->Text = $this->objEmailOutgoingQueue->ToAddress;
+			$this->lblToAddress->Required = true;
+			return $this->lblToAddress;
 		}
 
 		/**
@@ -306,8 +308,8 @@
 			}
 			if ($this->lblEmailMessageId) $this->lblEmailMessageId->Text = ($this->objEmailOutgoingQueue->EmailMessage) ? $this->objEmailOutgoingQueue->EmailMessage->__toString() : null;
 
-			if ($this->txtSendToEmailAddress) $this->txtSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
-			if ($this->lblSendToEmailAddress) $this->lblSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
+			if ($this->txtToAddress) $this->txtToAddress->Text = $this->objEmailOutgoingQueue->ToAddress;
+			if ($this->lblToAddress) $this->lblToAddress->Text = $this->objEmailOutgoingQueue->ToAddress;
 
 			if ($this->chkErrorFlag) $this->chkErrorFlag->Checked = $this->objEmailOutgoingQueue->ErrorFlag;
 			if ($this->lblErrorFlag) $this->lblErrorFlag->Text = ($this->objEmailOutgoingQueue->ErrorFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
@@ -339,7 +341,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstEmailMessage) $this->objEmailOutgoingQueue->EmailMessageId = $this->lstEmailMessage->SelectedValue;
-				if ($this->txtSendToEmailAddress) $this->objEmailOutgoingQueue->SendToEmailAddress = $this->txtSendToEmailAddress->Text;
+				if ($this->txtToAddress) $this->objEmailOutgoingQueue->ToAddress = $this->txtToAddress->Text;
 				if ($this->chkErrorFlag) $this->objEmailOutgoingQueue->ErrorFlag = $this->chkErrorFlag->Checked;
 				if ($this->txtToken) $this->objEmailOutgoingQueue->Token = $this->txtToken->Text;
 
@@ -396,12 +398,12 @@
 				case 'EmailMessageIdLabel':
 					if (!$this->lblEmailMessageId) return $this->lblEmailMessageId_Create();
 					return $this->lblEmailMessageId;
-				case 'SendToEmailAddressControl':
-					if (!$this->txtSendToEmailAddress) return $this->txtSendToEmailAddress_Create();
-					return $this->txtSendToEmailAddress;
-				case 'SendToEmailAddressLabel':
-					if (!$this->lblSendToEmailAddress) return $this->lblSendToEmailAddress_Create();
-					return $this->lblSendToEmailAddress;
+				case 'ToAddressControl':
+					if (!$this->txtToAddress) return $this->txtToAddress_Create();
+					return $this->txtToAddress;
+				case 'ToAddressLabel':
+					if (!$this->lblToAddress) return $this->lblToAddress_Create();
+					return $this->lblToAddress;
 				case 'ErrorFlagControl':
 					if (!$this->chkErrorFlag) return $this->chkErrorFlag_Create();
 					return $this->chkErrorFlag;
@@ -440,8 +442,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'EmailMessageIdControl':
 						return ($this->lstEmailMessage = QType::Cast($mixValue, 'QControl'));
-					case 'SendToEmailAddressControl':
-						return ($this->txtSendToEmailAddress = QType::Cast($mixValue, 'QControl'));
+					case 'ToAddressControl':
+						return ($this->txtToAddress = QType::Cast($mixValue, 'QControl'));
 					case 'ErrorFlagControl':
 						return ($this->chkErrorFlag = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':

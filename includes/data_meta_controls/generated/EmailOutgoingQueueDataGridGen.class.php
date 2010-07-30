@@ -296,7 +296,7 @@
 				case 'Id': return QQN::EmailOutgoingQueue()->Id;
 				case 'EmailMessageId': return QQN::EmailOutgoingQueue()->EmailMessageId;
 				case 'EmailMessage': return QQN::EmailOutgoingQueue()->EmailMessage;
-				case 'SendToEmailAddress': return QQN::EmailOutgoingQueue()->SendToEmailAddress;
+				case 'ToAddress': return QQN::EmailOutgoingQueue()->ToAddress;
 				case 'ErrorFlag': return QQN::EmailOutgoingQueue()->ErrorFlag;
 				case 'Token': return QQN::EmailOutgoingQueue()->Token;
 				default: throw new QCallerException('Simple Property not found in EmailOutgoingQueueDataGrid content: ' . $mixContent);

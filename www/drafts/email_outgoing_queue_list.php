@@ -57,7 +57,7 @@
 			// can traverse down QQN::email_outgoing_queue() to display fields that are down the hierarchy)
 			$this->dtgEmailOutgoingQueues->MetaAddColumn('Id');
 			$this->dtgEmailOutgoingQueues->MetaAddColumn(QQN::EmailOutgoingQueue()->EmailMessage);
-			$this->dtgEmailOutgoingQueues->MetaAddColumn('SendToEmailAddress');
+			$this->dtgEmailOutgoingQueues->MetaAddColumn('ToAddress');
 			$this->dtgEmailOutgoingQueues->MetaAddColumn('ErrorFlag');
 			$this->dtgEmailOutgoingQueues->MetaAddColumn('Token');
 		}

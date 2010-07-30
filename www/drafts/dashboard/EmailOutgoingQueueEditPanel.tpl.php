@@ -9,7 +9,7 @@
 
 		<?php $_CONTROL->lstEmailMessage->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtSendToEmailAddress->RenderWithName(); ?>
+		<?php $_CONTROL->txtToAddress->RenderWithName(); ?>
 
 		<?php $_CONTROL->chkErrorFlag->RenderWithName(); ?>
 

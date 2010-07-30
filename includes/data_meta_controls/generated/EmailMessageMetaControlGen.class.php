@@ -28,6 +28,8 @@
 	 * property-read QLabel $MessageIdentifierLabel
 	 * property QTextBox $SubjectControl
 	 * property-read QLabel $SubjectLabel
+	 * property QTextBox $FromAddressControl
+	 * property-read QLabel $FromAddressLabel
 	 * property QTextBox $ResponseHeaderControl
 	 * property-read QLabel $ResponseHeaderLabel
 	 * property QTextBox $ResponseBodyControl
@@ -52,6 +54,7 @@
 		protected $txtRawMessage;
 		protected $txtMessageIdentifier;
 		protected $txtSubject;
+		protected $txtFromAddress;
 		protected $txtResponseHeader;
 		protected $txtResponseBody;
 		protected $txtErrorMessage;
@@ -62,6 +65,7 @@
 		protected $lblRawMessage;
 		protected $lblMessageIdentifier;
 		protected $lblSubject;
+		protected $lblFromAddress;
 		protected $lblResponseHeader;
 		protected $lblResponseBody;
 		protected $lblErrorMessage;
@@ -314,6 +318,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtFromAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtFromAddress_Create($strControlId = null) {
+			$this->txtFromAddress = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtFromAddress->Name = QApplication::Translate('From Address');
+			$this->txtFromAddress->Text = $this->objEmailMessage->FromAddress;
+			$this->txtFromAddress->MaxLength = EmailMessage::FromAddressMaxLength;
+			return $this->txtFromAddress;
+		}
+
+		/**
+		 * Create and setup QLabel lblFromAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblFromAddress_Create($strControlId = null) {
+			$this->lblFromAddress = new QLabel($this->objParentObject, $strControlId);
+			$this->lblFromAddress->Name = QApplication::Translate('From Address');
+			$this->lblFromAddress->Text = $this->objEmailMessage->FromAddress;
+			return $this->lblFromAddress;
+		}
+
+		/**
 		 * Create and setup QTextBox txtResponseHeader
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -416,6 +445,9 @@
 			if ($this->txtSubject) $this->txtSubject->Text = $this->objEmailMessage->Subject;
 			if ($this->lblSubject) $this->lblSubject->Text = $this->objEmailMessage->Subject;
 
+			if ($this->txtFromAddress) $this->txtFromAddress->Text = $this->objEmailMessage->FromAddress;
+			if ($this->lblFromAddress) $this->lblFromAddress->Text = $this->objEmailMessage->FromAddress;
+
 			if ($this->txtResponseHeader) $this->txtResponseHeader->Text = $this->objEmailMessage->ResponseHeader;
 			if ($this->lblResponseHeader) $this->lblResponseHeader->Text = $this->objEmailMessage->ResponseHeader;
 
@@ -453,6 +485,7 @@
 				if ($this->txtRawMessage) $this->objEmailMessage->RawMessage = $this->txtRawMessage->Text;
 				if ($this->txtMessageIdentifier) $this->objEmailMessage->MessageIdentifier = $this->txtMessageIdentifier->Text;
 				if ($this->txtSubject) $this->objEmailMessage->Subject = $this->txtSubject->Text;
+				if ($this->txtFromAddress) $this->objEmailMessage->FromAddress = $this->txtFromAddress->Text;
 				if ($this->txtResponseHeader) $this->objEmailMessage->ResponseHeader = $this->txtResponseHeader->Text;
 				if ($this->txtResponseBody) $this->objEmailMessage->ResponseBody = $this->txtResponseBody->Text;
 				if ($this->txtErrorMessage) $this->objEmailMessage->ErrorMessage = $this->txtErrorMessage->Text;
@@ -534,6 +567,12 @@
 				case 'SubjectLabel':
 					if (!$this->lblSubject) return $this->lblSubject_Create();
 					return $this->lblSubject;
+				case 'FromAddressControl':
+					if (!$this->txtFromAddress) return $this->txtFromAddress_Create();
+					return $this->txtFromAddress;
+				case 'FromAddressLabel':
+					if (!$this->lblFromAddress) return $this->lblFromAddress_Create();
+					return $this->lblFromAddress;
 				case 'ResponseHeaderControl':
 					if (!$this->txtResponseHeader) return $this->txtResponseHeader_Create();
 					return $this->txtResponseHeader;
@@ -586,6 +625,8 @@
 						return ($this->txtMessageIdentifier = QType::Cast($mixValue, 'QControl'));
 					case 'SubjectControl':
 						return ($this->txtSubject = QType::Cast($mixValue, 'QControl'));
+					case 'FromAddressControl':
+						return ($this->txtFromAddress = QType::Cast($mixValue, 'QControl'));
 					case 'ResponseHeaderControl':
 						return ($this->txtResponseHeader = QType::Cast($mixValue, 'QControl'));
 					case 'ResponseBodyControl':

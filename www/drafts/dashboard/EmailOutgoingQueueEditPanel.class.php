@@ -22,7 +22,7 @@
 		// Controls for EmailOutgoingQueue's Data Fields
 		public $lblId;
 		public $lstEmailMessage;
-		public $txtSendToEmailAddress;
+		public $txtToAddress;
 		public $chkErrorFlag;
 		public $txtToken;
 
@@ -56,7 +56,7 @@
 			// Call MetaControl's methods to create qcontrols based on EmailOutgoingQueue's data fields
 			$this->lblId = $this->mctEmailOutgoingQueue->lblId_Create();
 			$this->lstEmailMessage = $this->mctEmailOutgoingQueue->lstEmailMessage_Create();
-			$this->txtSendToEmailAddress = $this->mctEmailOutgoingQueue->txtSendToEmailAddress_Create();
+			$this->txtToAddress = $this->mctEmailOutgoingQueue->txtToAddress_Create();
 			$this->chkErrorFlag = $this->mctEmailOutgoingQueue->chkErrorFlag_Create();
 			$this->txtToken = $this->mctEmailOutgoingQueue->txtToken_Create();
 

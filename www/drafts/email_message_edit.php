@@ -29,6 +29,7 @@
 		protected $txtRawMessage;
 		protected $txtMessageIdentifier;
 		protected $txtSubject;
+		protected $txtFromAddress;
 		protected $txtResponseHeader;
 		protected $txtResponseBody;
 		protected $txtErrorMessage;
@@ -64,6 +65,7 @@
 			$this->txtRawMessage = $this->mctEmailMessage->txtRawMessage_Create();
 			$this->txtMessageIdentifier = $this->mctEmailMessage->txtMessageIdentifier_Create();
 			$this->txtSubject = $this->mctEmailMessage->txtSubject_Create();
+			$this->txtFromAddress = $this->mctEmailMessage->txtFromAddress_Create();
 			$this->txtResponseHeader = $this->mctEmailMessage->txtResponseHeader_Create();
 			$this->txtResponseBody = $this->mctEmailMessage->txtResponseBody_Create();
 			$this->txtErrorMessage = $this->mctEmailMessage->txtErrorMessage_Create();

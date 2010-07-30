@@ -71,6 +71,7 @@
 			$this->dtgEmailMessages->MetaAddColumn('RawMessage');
 			$this->dtgEmailMessages->MetaAddColumn('MessageIdentifier');
 			$this->dtgEmailMessages->MetaAddColumn('Subject');
+			$this->dtgEmailMessages->MetaAddColumn('FromAddress');
 			$this->dtgEmailMessages->MetaAddColumn('ResponseHeader');
 			$this->dtgEmailMessages->MetaAddColumn('ResponseBody');
 			$this->dtgEmailMessages->MetaAddColumn('ErrorMessage');
