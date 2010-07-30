@@ -82,7 +82,7 @@
 					EmailOutgoingQueue::Queue($this->EmailMessage, $this->CommunicationList->Token, $objCommunicationListEntry);
 				}
 				foreach ($this->CommunicationList->Ministry->GetLoginArray() as $objLogin) {
-					EmailOutgoingQueue::Queue($this->EmailMessage, $this->CommunicationList->Token, $objLogin);
+					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objLogin);
 				}
 			}
 		}

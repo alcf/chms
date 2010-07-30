@@ -99,6 +99,11 @@
 			$this->SetupErrorMessage($strUnmatchedEmailAddressArray, $objUnauthorizedCommuniationListArray, $objUnauthorizedGroupArray);
 			$this->Save();
 
+			// Queue Error Message (if applicable)
+			if ($this->ErrorMessage) {
+				EmailOutgoingQueue::QueueError($this, $strFromAddress);
+			}
+
 			// Queue Outgoing Messages (if applicable)
 			foreach ($this->GetEmailMessageRouteArray() as $objRoute) {
 				$objRoute->QueueMessages();

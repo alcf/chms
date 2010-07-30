@@ -39,7 +39,7 @@
 		 * @param mixed $objRecipient
 		 * @return EmailOutgoingQueue
 		 */
-		public static function Queue(EmailMessage $objMessage, $strToken, $objRecipient) {
+		public static function QueueMessage(EmailMessage $objMessage, $strToken, $objRecipient) {
 			$objQueue = new EmailOutgoingQueue();
 			$objQueue->EmailMessage = $objMessage;
 			$objQueue->Token = $strToken;
@@ -63,6 +63,27 @@
 			} else {
 				return null;
 			}
+		}
+
+		/**
+		 * If the EmailMessage has an error, then this will queue the bounceback/error message
+		 * to be sent back to the Sender.
+		 * 
+		 * Note that this does **NO** validation.  It is assumes that the EmailMessage has a Error / Bounceback
+		 * message set.
+		 * 
+		 * @param EmailMessage $objMessage
+		 * @param string $strSenderEmailAddress
+		 * @return EmailOutgoingQueue
+		 */
+		public static function QueueError(EmailMessage $objMessage, $strSenderEmailAddress) {
+			$objQueue = new EmailOutgoingQueue();
+			$objQueue->EmailMessage = $objMessage;
+			$objQueue->ErrorFlag = true;
+			$objQueue->SendToEmailAddress = $strSenderEmailAddress;
+			$objQueue->Save();
+
+			return $objQueue;
 		}
 
 		// Override or Create New Load/Count methods
