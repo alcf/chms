@@ -10,6 +10,8 @@
 		protected $objGroup1;
 		protected $objGroup2;
 
+		const DeleteFlag = false;
+
 		public function SetUp() {
 			$this->objMinistry = Ministry::LoadByToken('ert');
 			if (!$this->objMinistry) {
@@ -138,8 +140,8 @@
 			$this->AssertNull($objEmailMessage->ErrorMessage, 'Valid Message Should Have Null Error');
 			$this->AssertEquals($objEmailMessage->CountEmailMessageRoutes(), 1, 'Valid Msssage should have 1 route');
 
-			$objEmailMessage->DeleteAllEmailMessageRoutes();
-			$objEmailMessage->Delete();
+			if (self::DeleteFlag) $objEmailMessage->DeleteAllEmailMessageRoutes();
+			if (self::DeleteFlag) $objEmailMessage->Delete();
 
 			$objEmailMessage = $this->GenerateEmailMessage('ert2@michaelho.com', $this->objGroup1->Token);
 			$this->AssertEquals($objEmailMessage->EmailMessageStatusTypeId, EmailMessageStatusType::NotYetAnalyzed, 'NotYetAnalyzed');
@@ -149,8 +151,8 @@
 			$this->AssertNotNull($objEmailMessage->ErrorMessage, 'InValid Message Should Have Error');
 			$this->AssertEquals($objEmailMessage->CountEmailMessageRoutes(), 0, 'InValid Msssage should have 1 route');
 
-			$objEmailMessage->DeleteAllEmailMessageRoutes();
-			$objEmailMessage->Delete();
+			if (self::DeleteFlag) $objEmailMessage->DeleteAllEmailMessageRoutes();
+			if (self::DeleteFlag) $objEmailMessage->Delete();
 		}
 
 
@@ -163,8 +165,8 @@
 			$this->AssertNotNull($objEmailMessage->ErrorMessage, 'InValid Message Should Have Null Error');
 			$this->AssertEquals($objEmailMessage->CountEmailMessageRoutes(), 0, 'InValid Msssage should have 0 route');
 
-			$objEmailMessage->DeleteAllEmailMessageRoutes();
-			$objEmailMessage->Delete();
+			if (self::DeleteFlag) $objEmailMessage->DeleteAllEmailMessageRoutes();
+			if (self::DeleteFlag) $objEmailMessage->Delete();
 
 			$objEmailMessage = $this->GenerateEmailMessage('ert2@michaelho.com', $this->objGroup2->Token);
 			$this->AssertEquals($objEmailMessage->EmailMessageStatusTypeId, EmailMessageStatusType::NotYetAnalyzed, 'NotYetAnalyzed');
@@ -174,16 +176,16 @@
 			$this->AssertNotNull($objEmailMessage->ErrorMessage, 'InValid Message Should Have Error');
 			$this->AssertEquals($objEmailMessage->CountEmailMessageRoutes(), 0, 'InValid Msssage should have 0 route');
 
-			$objEmailMessage->DeleteAllEmailMessageRoutes();
-			$objEmailMessage->Delete();
+			if (self::DeleteFlag) $objEmailMessage->DeleteAllEmailMessageRoutes();
+			if (self::DeleteFlag) $objEmailMessage->Delete();
 		}
 
 		public function TearDown() {
-			$this->objGroup1->DeleteAllGroupParticipations();
-			$this->objGroup2->DeleteAllGroupParticipations();
+			if (self::DeleteFlag) $this->objGroup1->DeleteAllGroupParticipations();
+			if (self::DeleteFlag) $this->objGroup2->DeleteAllGroupParticipations();
 
 			foreach ($this->objPersonArray as $objPerson) {
-				$objPerson->Delete();
+				if (self::DeleteFlag) $objPerson->Delete();
 			}
 		}
 	}
