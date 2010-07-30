@@ -21,6 +21,8 @@
 
 		<?php $this->txtSendToEmailAddress->RenderWithName(); ?>
 
+		<?php $this->chkErrorFlag->RenderWithName(); ?>
+
 		<?php $this->txtToken->RenderWithName(); ?>
 
 	</div>

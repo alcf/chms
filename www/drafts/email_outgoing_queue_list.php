@@ -58,6 +58,7 @@
 			$this->dtgEmailOutgoingQueues->MetaAddColumn('Id');
 			$this->dtgEmailOutgoingQueues->MetaAddColumn(QQN::EmailOutgoingQueue()->EmailMessage);
 			$this->dtgEmailOutgoingQueues->MetaAddColumn('SendToEmailAddress');
+			$this->dtgEmailOutgoingQueues->MetaAddColumn('ErrorFlag');
 			$this->dtgEmailOutgoingQueues->MetaAddColumn('Token');
 		}
 	}

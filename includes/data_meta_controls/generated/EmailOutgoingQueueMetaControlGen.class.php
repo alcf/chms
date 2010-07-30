@@ -22,6 +22,8 @@
 	 * property-read QLabel $EmailMessageIdLabel
 	 * property QTextBox $SendToEmailAddressControl
 	 * property-read QLabel $SendToEmailAddressLabel
+	 * property QCheckBox $ErrorFlagControl
+	 * property-read QLabel $ErrorFlagLabel
 	 * property QTextBox $TokenControl
 	 * property-read QLabel $TokenLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -39,11 +41,13 @@
 		protected $lblId;
 		protected $lstEmailMessage;
 		protected $txtSendToEmailAddress;
+		protected $chkErrorFlag;
 		protected $txtToken;
 
 		// Controls that allow the viewing of EmailOutgoingQueue's individual data fields
 		protected $lblEmailMessageId;
 		protected $lblSendToEmailAddress;
+		protected $lblErrorFlag;
 		protected $lblToken;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -227,6 +231,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkErrorFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkErrorFlag_Create($strControlId = null) {
+			$this->chkErrorFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkErrorFlag->Name = QApplication::Translate('Error Flag');
+			$this->chkErrorFlag->Checked = $this->objEmailOutgoingQueue->ErrorFlag;
+			return $this->chkErrorFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblErrorFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblErrorFlag_Create($strControlId = null) {
+			$this->lblErrorFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblErrorFlag->Name = QApplication::Translate('Error Flag');
+			$this->lblErrorFlag->Text = ($this->objEmailOutgoingQueue->ErrorFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblErrorFlag;
+		}
+
+		/**
 		 * Create and setup QTextBox txtToken
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -281,6 +309,9 @@
 			if ($this->txtSendToEmailAddress) $this->txtSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
 			if ($this->lblSendToEmailAddress) $this->lblSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
 
+			if ($this->chkErrorFlag) $this->chkErrorFlag->Checked = $this->objEmailOutgoingQueue->ErrorFlag;
+			if ($this->lblErrorFlag) $this->lblErrorFlag->Text = ($this->objEmailOutgoingQueue->ErrorFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->txtToken) $this->txtToken->Text = $this->objEmailOutgoingQueue->Token;
 			if ($this->lblToken) $this->lblToken->Text = $this->objEmailOutgoingQueue->Token;
 
@@ -309,6 +340,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstEmailMessage) $this->objEmailOutgoingQueue->EmailMessageId = $this->lstEmailMessage->SelectedValue;
 				if ($this->txtSendToEmailAddress) $this->objEmailOutgoingQueue->SendToEmailAddress = $this->txtSendToEmailAddress->Text;
+				if ($this->chkErrorFlag) $this->objEmailOutgoingQueue->ErrorFlag = $this->chkErrorFlag->Checked;
 				if ($this->txtToken) $this->objEmailOutgoingQueue->Token = $this->txtToken->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -370,6 +402,12 @@
 				case 'SendToEmailAddressLabel':
 					if (!$this->lblSendToEmailAddress) return $this->lblSendToEmailAddress_Create();
 					return $this->lblSendToEmailAddress;
+				case 'ErrorFlagControl':
+					if (!$this->chkErrorFlag) return $this->chkErrorFlag_Create();
+					return $this->chkErrorFlag;
+				case 'ErrorFlagLabel':
+					if (!$this->lblErrorFlag) return $this->lblErrorFlag_Create();
+					return $this->lblErrorFlag;
 				case 'TokenControl':
 					if (!$this->txtToken) return $this->txtToken_Create();
 					return $this->txtToken;
@@ -404,6 +442,8 @@
 						return ($this->lstEmailMessage = QType::Cast($mixValue, 'QControl'));
 					case 'SendToEmailAddressControl':
 						return ($this->txtSendToEmailAddress = QType::Cast($mixValue, 'QControl'));
+					case 'ErrorFlagControl':
+						return ($this->chkErrorFlag = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
 					default:

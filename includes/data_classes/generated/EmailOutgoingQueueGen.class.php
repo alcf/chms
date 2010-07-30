@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $EmailMessageId the value for intEmailMessageId (Not Null)
 	 * @property string $SendToEmailAddress the value for strSendToEmailAddress 
+	 * @property boolean $ErrorFlag the value for blnErrorFlag 
 	 * @property string $Token the value for strToken 
 	 * @property EmailMessage $EmailMessage the value for the EmailMessage object referenced by intEmailMessageId (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -51,6 +52,14 @@
 		protected $strSendToEmailAddress;
 		const SendToEmailAddressMaxLength = 255;
 		const SendToEmailAddressDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column email_outgoing_queue.error_flag
+		 * @var boolean blnErrorFlag
+		 */
+		protected $blnErrorFlag;
+		const ErrorFlagDefault = null;
 
 
 		/**
@@ -385,6 +394,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'email_message_id', $strAliasPrefix . 'email_message_id');
 			$objBuilder->AddSelectItem($strTableName, 'send_to_email_address', $strAliasPrefix . 'send_to_email_address');
+			$objBuilder->AddSelectItem($strTableName, 'error_flag', $strAliasPrefix . 'error_flag');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
 		}
 
@@ -423,6 +433,8 @@
 			$objToReturn->intEmailMessageId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'send_to_email_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'send_to_email_address'] : $strAliasPrefix . 'send_to_email_address';
 			$objToReturn->strSendToEmailAddress = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'error_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'error_flag'] : $strAliasPrefix . 'error_flag';
+			$objToReturn->blnErrorFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'token', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'token'] : $strAliasPrefix . 'token';
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
@@ -572,6 +584,46 @@
 			
 		/**
 		 * Load an array of EmailOutgoingQueue objects,
+		 * by EmailMessageId, ErrorFlag Index(es)
+		 * @param integer $intEmailMessageId
+		 * @param boolean $blnErrorFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailOutgoingQueue[]
+		*/
+		public static function LoadArrayByEmailMessageIdErrorFlag($intEmailMessageId, $blnErrorFlag, $objOptionalClauses = null) {
+			// Call EmailOutgoingQueue::QueryArray to perform the LoadArrayByEmailMessageIdErrorFlag query
+			try {
+				return EmailOutgoingQueue::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
+					QQ::Equal(QQN::EmailOutgoingQueue()->ErrorFlag, $blnErrorFlag)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count EmailOutgoingQueues
+		 * by EmailMessageId, ErrorFlag Index(es)
+		 * @param integer $intEmailMessageId
+		 * @param boolean $blnErrorFlag
+		 * @return int
+		*/
+		public static function CountByEmailMessageIdErrorFlag($intEmailMessageId, $blnErrorFlag) {
+			// Call EmailOutgoingQueue::QueryCount to perform the CountByEmailMessageIdErrorFlag query
+			return EmailOutgoingQueue::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
+				QQ::Equal(QQN::EmailOutgoingQueue()->ErrorFlag, $blnErrorFlag)
+				)
+			);
+		}
+			
+		/**
+		 * Load an array of EmailOutgoingQueue objects,
 		 * by EmailMessageId Index(es)
 		 * @param integer $intEmailMessageId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -634,10 +686,12 @@
 						INSERT INTO `email_outgoing_queue` (
 							`email_message_id`,
 							`send_to_email_address`,
+							`error_flag`,
 							`token`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intEmailMessageId) . ',
 							' . $objDatabase->SqlVariable($this->strSendToEmailAddress) . ',
+							' . $objDatabase->SqlVariable($this->blnErrorFlag) . ',
 							' . $objDatabase->SqlVariable($this->strToken) . '
 						)
 					');
@@ -656,6 +710,7 @@
 						SET
 							`email_message_id` = ' . $objDatabase->SqlVariable($this->intEmailMessageId) . ',
 							`send_to_email_address` = ' . $objDatabase->SqlVariable($this->strSendToEmailAddress) . ',
+							`error_flag` = ' . $objDatabase->SqlVariable($this->blnErrorFlag) . ',
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -737,6 +792,7 @@
 			// Update $this's local variables to match
 			$this->EmailMessageId = $objReloaded->EmailMessageId;
 			$this->strSendToEmailAddress = $objReloaded->strSendToEmailAddress;
+			$this->blnErrorFlag = $objReloaded->blnErrorFlag;
 			$this->strToken = $objReloaded->strToken;
 		}
 
@@ -772,6 +828,11 @@
 					// Gets the value for strSendToEmailAddress 
 					// @return string
 					return $this->strSendToEmailAddress;
+
+				case 'ErrorFlag':
+					// Gets the value for blnErrorFlag 
+					// @return boolean
+					return $this->blnErrorFlag;
 
 				case 'Token':
 					// Gets the value for strToken 
@@ -845,6 +906,17 @@
 					// @return string
 					try {
 						return ($this->strSendToEmailAddress = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ErrorFlag':
+					// Sets the value for blnErrorFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnErrorFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -935,6 +1007,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="EmailMessage" type="xsd1:EmailMessage"/>';
 			$strToReturn .= '<element name="SendToEmailAddress" type="xsd:string"/>';
+			$strToReturn .= '<element name="ErrorFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -966,6 +1039,8 @@
 				$objToReturn->EmailMessage = EmailMessage::GetObjectFromSoapObject($objSoapObject->EmailMessage);
 			if (property_exists($objSoapObject, 'SendToEmailAddress'))
 				$objToReturn->strSendToEmailAddress = $objSoapObject->SendToEmailAddress;
+			if (property_exists($objSoapObject, 'ErrorFlag'))
+				$objToReturn->blnErrorFlag = $objSoapObject->ErrorFlag;
 			if (property_exists($objSoapObject, 'Token'))
 				$objToReturn->strToken = $objSoapObject->Token;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1018,6 +1093,8 @@
 					return new QQNodeEmailMessage('email_message_id', 'EmailMessage', 'integer', $this);
 				case 'SendToEmailAddress':
 					return new QQNode('send_to_email_address', 'SendToEmailAddress', 'string', $this);
+				case 'ErrorFlag':
+					return new QQNode('error_flag', 'ErrorFlag', 'boolean', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
 
@@ -1048,6 +1125,8 @@
 					return new QQNodeEmailMessage('email_message_id', 'EmailMessage', 'integer', $this);
 				case 'SendToEmailAddress':
 					return new QQNode('send_to_email_address', 'SendToEmailAddress', 'string', $this);
+				case 'ErrorFlag':
+					return new QQNode('error_flag', 'ErrorFlag', 'boolean', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
 
