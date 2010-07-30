@@ -100,6 +100,9 @@
 			$this->Save();
 
 			// Queue Outgoing Messages (if applicable)
+			foreach ($this->GetEmailMessageRouteArray() as $objRoute) {
+				$objRoute->QueueMessages();
+			}
 
 			// Update the status
 			$this->intEmailMessageStatusTypeId = EmailMessageStatusType::PendingSend;

@@ -68,6 +68,25 @@
 			return $objRoute;
 		}
 
+		public function QueueMessages() {
+			if ($this->Group) {
+				foreach ($this->Group->GetGroupParticipationArray() as $objParticipation) {
+					$objPerson = $objParticipation->Person;
+					EmailOutgoingQueue::Queue($this->EmailMessage, $this->Group->Token, $objPerson);
+				}
+				foreach ($this->Group->Ministry->GetLoginArray() as $objLogin) {
+					EmailOutgoingQueue::Queue($this->EmailMessage, $this->Group->Token, $objLogin);
+				}
+			} else if ($this->CommunicationList) {
+				foreach ($this->CommunicationList->GetCommunicationListEntryArray() as $objCommunicationListEntry) {
+					EmailOutgoingQueue::Queue($this->EmailMessage, $this->CommunicationList->Token, $objCommunicationListEntry);
+				}
+				foreach ($this->CommunicationList->Ministry->GetLoginArray() as $objLogin) {
+					EmailOutgoingQueue::Queue($this->EmailMessage, $this->CommunicationList->Token, $objLogin);
+				}
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

@@ -27,6 +27,43 @@
 			return sprintf('EmailOutgoingQueue Object %s',  $this->intId);
 		}
 
+		/**
+		 * Queues a given message, with a token (from the group or commlist we are sending to) and a recipient,
+		 * which can be a Person, Login or CommunicationListEntry object.
+		 * 
+		 * Note that this does **NO** validation.  It is assumed that any call to this has already validated
+		 * the message, recipient and list to be valid.
+		 * 
+		 * @param EmailMessage $objMessage
+		 * @param string $strToken
+		 * @param mixed $objRecipient
+		 * @return EmailOutgoingQueue
+		 */
+		public static function Queue(EmailMessage $objMessage, $strToken, $objRecipient) {
+			$objQueue = new EmailOutgoingQueue();
+			$objQueue->EmailMessage = $objMessage;
+			$objQueue->Token = $strToken;
+
+			if ($objRecipient instanceof Login) {
+				$objQueue->SendToEmailAddress = $objRecipient->Email;
+			} else if ($objRecipient instanceof CommunicationListEntry) {
+				$objQueue->SendToEmailAddress = $objRecipient->Email;
+			} else if ($objRecipient instanceof Person) {
+				if ($objRecipient->PrimaryEmail)
+					$objQueue->SendToEmailAddress = $objRecipient->PrimaryEmail->Address;
+				else if (count($objEmailArray = $objRecipient->GetEmailArray()))
+					$objQueue->SendToEmailAddress = $objEmailArray[0]->Address;
+			} else {
+				throw new QCallerException('Recipient must be a Login, Person or CommunicationListEntry object');
+			}
+
+			if ($objQueue->SendToEmailAddress) {
+				$objQueue->Save();
+				return $objQueue;
+			} else {
+				return null;
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
