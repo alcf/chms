@@ -72,14 +72,17 @@
 			if ($this->Group) {
 				foreach ($this->Group->GetGroupParticipationArray() as $objParticipation) {
 					$objPerson = $objParticipation->Person;
-					EmailOutgoingQueue::Queue($this->EmailMessage, $this->Group->Token, $objPerson);
+					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objPerson);
 				}
 				foreach ($this->Group->Ministry->GetLoginArray() as $objLogin) {
-					EmailOutgoingQueue::Queue($this->EmailMessage, $this->Group->Token, $objLogin);
+					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objLogin);
 				}
 			} else if ($this->CommunicationList) {
+				foreach ($this->CommunicationList->GetPersonArray() as $objPerson) {
+					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objPerson);
+				}
 				foreach ($this->CommunicationList->GetCommunicationListEntryArray() as $objCommunicationListEntry) {
-					EmailOutgoingQueue::Queue($this->EmailMessage, $this->CommunicationList->Token, $objCommunicationListEntry);
+					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objCommunicationListEntry);
 				}
 				foreach ($this->CommunicationList->Ministry->GetLoginArray() as $objLogin) {
 					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objLogin);
