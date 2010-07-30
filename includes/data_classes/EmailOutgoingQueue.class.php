@@ -45,19 +45,19 @@
 			$objQueue->Token = $strToken;
 
 			if ($objRecipient instanceof Login) {
-				$objQueue->SendToEmailAddress = $objRecipient->Email;
+				$objQueue->ToAddress = $objRecipient->Email;
 			} else if ($objRecipient instanceof CommunicationListEntry) {
-				$objQueue->SendToEmailAddress = $objRecipient->Email;
+				$objQueue->ToAddress = $objRecipient->Email;
 			} else if ($objRecipient instanceof Person) {
 				if ($objRecipient->PrimaryEmail)
-					$objQueue->SendToEmailAddress = $objRecipient->PrimaryEmail->Address;
+					$objQueue->ToAddress = $objRecipient->PrimaryEmail->Address;
 				else if (count($objEmailArray = $objRecipient->GetEmailArray()))
-					$objQueue->SendToEmailAddress = $objEmailArray[0]->Address;
+					$objQueue->ToAddress = $objEmailArray[0]->Address;
 			} else {
 				throw new QCallerException('Recipient must be a Login, Person or CommunicationListEntry object');
 			}
 
-			if ($objQueue->SendToEmailAddress) {
+			if ($objQueue->ToAddress) {
 				$objQueue->Save();
 				return $objQueue;
 			} else {
@@ -76,11 +76,11 @@
 		 * @param string $strSenderEmailAddress
 		 * @return EmailOutgoingQueue
 		 */
-		public static function QueueError(EmailMessage $objMessage, $strSenderEmailAddress) {
+		public static function QueueError(EmailMessage $objMessage) {
 			$objQueue = new EmailOutgoingQueue();
 			$objQueue->EmailMessage = $objMessage;
 			$objQueue->ErrorFlag = true;
-			$objQueue->SendToEmailAddress = $strSenderEmailAddress;
+			$objQueue->ToAddress = $objMessage->FromAddress;
 			$objQueue->Save();
 
 			return $objQueue;

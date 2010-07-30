@@ -70,10 +70,10 @@
 			}
 
 			// First, Figure out what the sender Email address is
-			$strFromAddress = $this->LookupSenderEmailAddress();
+			$this->FromAddress = $this->LookupSenderEmailAddress();
 
 			// If not valid, then something is very wrong -- we should punt immediately
-			if (is_null($strFromAddress)) {
+			if (is_null($this->FromAddress)) {
 				$this->strErrorMessage = 'Invaid From Address';
 				$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Error;
 				$this->Save();
@@ -81,7 +81,7 @@
 			}
 
 			// Get a PersonArray and update Login / CommListEntry links
-			$objSenderArray = $this->CalculatePotentialSenderArray($strFromAddress);
+			$objSenderArray = $this->CalculatePotentialSenderArray();
 
 			// Next, Figure out the totel set of *potential* recpieint(s) are
 			$strEmailAddressArray = $this->CalculateEmailArray();
@@ -101,7 +101,7 @@
 
 			// Queue Error Message (if applicable)
 			if ($this->ErrorMessage) {
-				EmailOutgoingQueue::QueueError($this, $strFromAddress);
+				EmailOutgoingQueue::QueueError($this);
 			}
 
 			// Queue Outgoing Messages (if applicable)
@@ -236,17 +236,16 @@
 		 * 	Person[]
 		 * that would correspond to this From EmailAddress.  Note that any one of those indexes can also be null
 		 * if there is no object corresponding to this From Email Address.
-		 * @param string $strFromAddress
 		 * @return mixed[]
 		 */
-		protected function CalculatePotentialSenderArray($strFromAddress) {
+		protected function CalculatePotentialSenderArray() {
 			$objArrayToReturn = array();
 			
-			$objArrayToReturn[] = Login::LoadByEmail($strFromAddress);
-			$objArrayToReturn[] = CommunicationListEntry::LoadByEmail($strFromAddress);
+			$objArrayToReturn[] = Login::LoadByEmail($this->FromAddress);
+			$objArrayToReturn[] = CommunicationListEntry::LoadByEmail($this->FromAddress);
 
 			// Get all Person objects that have this as an email address
-			$objArrayToReturn[] = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $strFromAddress), QQ::Distinct());
+			$objArrayToReturn[] = Person::QueryArray(QQ::Equal(QQN::Person()->Email->Address, $this->FromAddress), QQ::Distinct());
 
 			return $objArrayToReturn;
 		}
