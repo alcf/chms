@@ -22,6 +22,8 @@
 	 * property-read QLabel $EmailMessageIdLabel
 	 * property QTextBox $SendToEmailAddressControl
 	 * property-read QLabel $SendToEmailAddressLabel
+	 * property QTextBox $TokenControl
+	 * property-read QLabel $TokenLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -37,10 +39,12 @@
 		protected $lblId;
 		protected $lstEmailMessage;
 		protected $txtSendToEmailAddress;
+		protected $txtToken;
 
 		// Controls that allow the viewing of EmailOutgoingQueue's individual data fields
 		protected $lblEmailMessageId;
 		protected $lblSendToEmailAddress;
+		protected $lblToken;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -222,6 +226,31 @@
 			return $this->lblSendToEmailAddress;
 		}
 
+		/**
+		 * Create and setup QTextBox txtToken
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtToken_Create($strControlId = null) {
+			$this->txtToken = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtToken->Name = QApplication::Translate('Token');
+			$this->txtToken->Text = $this->objEmailOutgoingQueue->Token;
+			$this->txtToken->MaxLength = EmailOutgoingQueue::TokenMaxLength;
+			return $this->txtToken;
+		}
+
+		/**
+		 * Create and setup QLabel lblToken
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblToken_Create($strControlId = null) {
+			$this->lblToken = new QLabel($this->objParentObject, $strControlId);
+			$this->lblToken->Name = QApplication::Translate('Token');
+			$this->lblToken->Text = $this->objEmailOutgoingQueue->Token;
+			return $this->lblToken;
+		}
+
 
 
 		/**
@@ -252,6 +281,9 @@
 			if ($this->txtSendToEmailAddress) $this->txtSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
 			if ($this->lblSendToEmailAddress) $this->lblSendToEmailAddress->Text = $this->objEmailOutgoingQueue->SendToEmailAddress;
 
+			if ($this->txtToken) $this->txtToken->Text = $this->objEmailOutgoingQueue->Token;
+			if ($this->lblToken) $this->lblToken->Text = $this->objEmailOutgoingQueue->Token;
+
 		}
 
 
@@ -277,6 +309,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstEmailMessage) $this->objEmailOutgoingQueue->EmailMessageId = $this->lstEmailMessage->SelectedValue;
 				if ($this->txtSendToEmailAddress) $this->objEmailOutgoingQueue->SendToEmailAddress = $this->txtSendToEmailAddress->Text;
+				if ($this->txtToken) $this->objEmailOutgoingQueue->Token = $this->txtToken->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -337,6 +370,12 @@
 				case 'SendToEmailAddressLabel':
 					if (!$this->lblSendToEmailAddress) return $this->lblSendToEmailAddress_Create();
 					return $this->lblSendToEmailAddress;
+				case 'TokenControl':
+					if (!$this->txtToken) return $this->txtToken_Create();
+					return $this->txtToken;
+				case 'TokenLabel':
+					if (!$this->lblToken) return $this->lblToken_Create();
+					return $this->lblToken;
 				default:
 					try {
 						return parent::__get($strName);
@@ -365,6 +404,8 @@
 						return ($this->lstEmailMessage = QType::Cast($mixValue, 'QControl'));
 					case 'SendToEmailAddressControl':
 						return ($this->txtSendToEmailAddress = QType::Cast($mixValue, 'QControl'));
+					case 'TokenControl':
+						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

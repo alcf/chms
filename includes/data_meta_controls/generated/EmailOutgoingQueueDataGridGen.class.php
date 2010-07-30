@@ -297,6 +297,7 @@
 				case 'EmailMessageId': return QQN::EmailOutgoingQueue()->EmailMessageId;
 				case 'EmailMessage': return QQN::EmailOutgoingQueue()->EmailMessage;
 				case 'SendToEmailAddress': return QQN::EmailOutgoingQueue()->SendToEmailAddress;
+				case 'Token': return QQN::EmailOutgoingQueue()->Token;
 				default: throw new QCallerException('Simple Property not found in EmailOutgoingQueueDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

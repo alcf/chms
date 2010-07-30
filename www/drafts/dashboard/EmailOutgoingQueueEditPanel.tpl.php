@@ -11,6 +11,8 @@
 
 		<?php $_CONTROL->txtSendToEmailAddress->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtToken->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

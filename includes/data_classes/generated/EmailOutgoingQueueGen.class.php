@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $EmailMessageId the value for intEmailMessageId (Not Null)
 	 * @property string $SendToEmailAddress the value for strSendToEmailAddress 
+	 * @property string $Token the value for strToken 
 	 * @property EmailMessage $EmailMessage the value for the EmailMessage object referenced by intEmailMessageId (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -50,6 +51,15 @@
 		protected $strSendToEmailAddress;
 		const SendToEmailAddressMaxLength = 255;
 		const SendToEmailAddressDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column email_outgoing_queue.token
+		 * @var string strToken
+		 */
+		protected $strToken;
+		const TokenMaxLength = 40;
+		const TokenDefault = null;
 
 
 		/**
@@ -375,6 +385,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'email_message_id', $strAliasPrefix . 'email_message_id');
 			$objBuilder->AddSelectItem($strTableName, 'send_to_email_address', $strAliasPrefix . 'send_to_email_address');
+			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
 		}
 
 
@@ -412,6 +423,8 @@
 			$objToReturn->intEmailMessageId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'send_to_email_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'send_to_email_address'] : $strAliasPrefix . 'send_to_email_address';
 			$objToReturn->strSendToEmailAddress = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'token', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'token'] : $strAliasPrefix . 'token';
+			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -519,6 +532,46 @@
 			
 		/**
 		 * Load an array of EmailOutgoingQueue objects,
+		 * by EmailMessageId, Token Index(es)
+		 * @param integer $intEmailMessageId
+		 * @param string $strToken
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return EmailOutgoingQueue[]
+		*/
+		public static function LoadArrayByEmailMessageIdToken($intEmailMessageId, $strToken, $objOptionalClauses = null) {
+			// Call EmailOutgoingQueue::QueryArray to perform the LoadArrayByEmailMessageIdToken query
+			try {
+				return EmailOutgoingQueue::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
+					QQ::Equal(QQN::EmailOutgoingQueue()->Token, $strToken)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count EmailOutgoingQueues
+		 * by EmailMessageId, Token Index(es)
+		 * @param integer $intEmailMessageId
+		 * @param string $strToken
+		 * @return int
+		*/
+		public static function CountByEmailMessageIdToken($intEmailMessageId, $strToken) {
+			// Call EmailOutgoingQueue::QueryCount to perform the CountByEmailMessageIdToken query
+			return EmailOutgoingQueue::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
+				QQ::Equal(QQN::EmailOutgoingQueue()->Token, $strToken)
+				)
+			);
+		}
+			
+		/**
+		 * Load an array of EmailOutgoingQueue objects,
 		 * by EmailMessageId Index(es)
 		 * @param integer $intEmailMessageId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -580,10 +633,12 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `email_outgoing_queue` (
 							`email_message_id`,
-							`send_to_email_address`
+							`send_to_email_address`,
+							`token`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intEmailMessageId) . ',
-							' . $objDatabase->SqlVariable($this->strSendToEmailAddress) . '
+							' . $objDatabase->SqlVariable($this->strSendToEmailAddress) . ',
+							' . $objDatabase->SqlVariable($this->strToken) . '
 						)
 					');
 
@@ -600,7 +655,8 @@
 							`email_outgoing_queue`
 						SET
 							`email_message_id` = ' . $objDatabase->SqlVariable($this->intEmailMessageId) . ',
-							`send_to_email_address` = ' . $objDatabase->SqlVariable($this->strSendToEmailAddress) . '
+							`send_to_email_address` = ' . $objDatabase->SqlVariable($this->strSendToEmailAddress) . ',
+							`token` = ' . $objDatabase->SqlVariable($this->strToken) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -681,6 +737,7 @@
 			// Update $this's local variables to match
 			$this->EmailMessageId = $objReloaded->EmailMessageId;
 			$this->strSendToEmailAddress = $objReloaded->strSendToEmailAddress;
+			$this->strToken = $objReloaded->strToken;
 		}
 
 
@@ -715,6 +772,11 @@
 					// Gets the value for strSendToEmailAddress 
 					// @return string
 					return $this->strSendToEmailAddress;
+
+				case 'Token':
+					// Gets the value for strToken 
+					// @return string
+					return $this->strToken;
 
 
 				///////////////////
@@ -783,6 +845,17 @@
 					// @return string
 					try {
 						return ($this->strSendToEmailAddress = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Token':
+					// Sets the value for strToken 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strToken = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -862,6 +935,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="EmailMessage" type="xsd1:EmailMessage"/>';
 			$strToReturn .= '<element name="SendToEmailAddress" type="xsd:string"/>';
+			$strToReturn .= '<element name="Token" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -892,6 +966,8 @@
 				$objToReturn->EmailMessage = EmailMessage::GetObjectFromSoapObject($objSoapObject->EmailMessage);
 			if (property_exists($objSoapObject, 'SendToEmailAddress'))
 				$objToReturn->strSendToEmailAddress = $objSoapObject->SendToEmailAddress;
+			if (property_exists($objSoapObject, 'Token'))
+				$objToReturn->strToken = $objSoapObject->Token;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -942,6 +1018,8 @@
 					return new QQNodeEmailMessage('email_message_id', 'EmailMessage', 'integer', $this);
 				case 'SendToEmailAddress':
 					return new QQNode('send_to_email_address', 'SendToEmailAddress', 'string', $this);
+				case 'Token':
+					return new QQNode('token', 'Token', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -970,6 +1048,8 @@
 					return new QQNodeEmailMessage('email_message_id', 'EmailMessage', 'integer', $this);
 				case 'SendToEmailAddress':
 					return new QQNode('send_to_email_address', 'SendToEmailAddress', 'string', $this);
+				case 'Token':
+					return new QQNode('token', 'Token', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

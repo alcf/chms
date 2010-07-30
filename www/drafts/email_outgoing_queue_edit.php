@@ -26,6 +26,7 @@
 		protected $lblId;
 		protected $lstEmailMessage;
 		protected $txtSendToEmailAddress;
+		protected $txtToken;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -55,6 +56,7 @@
 			$this->lblId = $this->mctEmailOutgoingQueue->lblId_Create();
 			$this->lstEmailMessage = $this->mctEmailOutgoingQueue->lstEmailMessage_Create();
 			$this->txtSendToEmailAddress = $this->mctEmailOutgoingQueue->txtSendToEmailAddress_Create();
+			$this->txtToken = $this->mctEmailOutgoingQueue->txtToken_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);
