@@ -9,6 +9,8 @@
 
 		<?php $_CONTROL->txtQuery->RenderWithName(); ?>
 
+		<?php $_CONTROL->calDateRefreshed->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

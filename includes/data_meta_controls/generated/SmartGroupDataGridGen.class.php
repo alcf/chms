@@ -296,6 +296,7 @@
 				case 'GroupId': return QQN::SmartGroup()->GroupId;
 				case 'Group': return QQN::SmartGroup()->Group;
 				case 'Query': return QQN::SmartGroup()->Query;
+				case 'DateRefreshed': return QQN::SmartGroup()->DateRefreshed;
 				default: throw new QCallerException('Simple Property not found in SmartGroupDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

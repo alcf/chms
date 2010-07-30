@@ -17,6 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $GroupId the value for intGroupId (PK)
 	 * @property string $Query the value for strQuery 
+	 * @property QDateTime $DateRefreshed the value for dttDateRefreshed 
 	 * @property Group $Group the value for the Group object referenced by intGroupId (PK)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -47,6 +48,14 @@
 		 */
 		protected $strQuery;
 		const QueryDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column smart_group.date_refreshed
+		 * @var QDateTime dttDateRefreshed
+		 */
+		protected $dttDateRefreshed;
+		const DateRefreshedDefault = null;
 
 
 		/**
@@ -371,6 +380,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'group_id', $strAliasPrefix . 'group_id');
 			$objBuilder->AddSelectItem($strTableName, 'query', $strAliasPrefix . 'query');
+			$objBuilder->AddSelectItem($strTableName, 'date_refreshed', $strAliasPrefix . 'date_refreshed');
 		}
 
 
@@ -407,6 +417,8 @@
 			$objToReturn->__intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'query', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query'] : $strAliasPrefix . 'query';
 			$objToReturn->strQuery = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_refreshed', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_refreshed'] : $strAliasPrefix . 'date_refreshed';
+			$objToReturn->dttDateRefreshed = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -543,10 +555,12 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `smart_group` (
 							`group_id`,
-							`query`
+							`query`,
+							`date_refreshed`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							' . $objDatabase->SqlVariable($this->strQuery) . '
+							' . $objDatabase->SqlVariable($this->strQuery) . ',
+							' . $objDatabase->SqlVariable($this->dttDateRefreshed) . '
 						)
 					');
 
@@ -562,7 +576,8 @@
 							`smart_group`
 						SET
 							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							`query` = ' . $objDatabase->SqlVariable($this->strQuery) . '
+							`query` = ' . $objDatabase->SqlVariable($this->strQuery) . ',
+							`date_refreshed` = ' . $objDatabase->SqlVariable($this->dttDateRefreshed) . '
 						WHERE
 							`group_id` = ' . $objDatabase->SqlVariable($this->__intGroupId) . '
 					');
@@ -645,6 +660,7 @@
 			$this->GroupId = $objReloaded->GroupId;
 			$this->__intGroupId = $this->intGroupId;
 			$this->strQuery = $objReloaded->strQuery;
+			$this->dttDateRefreshed = $objReloaded->dttDateRefreshed;
 		}
 
 
@@ -674,6 +690,11 @@
 					// Gets the value for strQuery 
 					// @return string
 					return $this->strQuery;
+
+				case 'DateRefreshed':
+					// Gets the value for dttDateRefreshed 
+					// @return QDateTime
+					return $this->dttDateRefreshed;
 
 
 				///////////////////
@@ -742,6 +763,17 @@
 					// @return string
 					try {
 						return ($this->strQuery = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateRefreshed':
+					// Sets the value for dttDateRefreshed 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateRefreshed = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -820,6 +852,7 @@
 			$strToReturn = '<complexType name="SmartGroup"><sequence>';
 			$strToReturn .= '<element name="Group" type="xsd1:Group"/>';
 			$strToReturn .= '<element name="Query" type="xsd:string"/>';
+			$strToReturn .= '<element name="DateRefreshed" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -848,6 +881,8 @@
 				$objToReturn->Group = Group::GetObjectFromSoapObject($objSoapObject->Group);
 			if (property_exists($objSoapObject, 'Query'))
 				$objToReturn->strQuery = $objSoapObject->Query;
+			if (property_exists($objSoapObject, 'DateRefreshed'))
+				$objToReturn->dttDateRefreshed = new QDateTime($objSoapObject->DateRefreshed);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -870,6 +905,8 @@
 				$objObject->objGroup = Group::GetSoapObjectFromObject($objObject->objGroup, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intGroupId = null;
+			if ($objObject->dttDateRefreshed)
+				$objObject->dttDateRefreshed = $objObject->dttDateRefreshed->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -896,6 +933,8 @@
 					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
 				case 'Query':
 					return new QQNode('query', 'Query', 'string', $this);
+				case 'DateRefreshed':
+					return new QQNode('date_refreshed', 'DateRefreshed', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);
@@ -922,6 +961,8 @@
 					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
 				case 'Query':
 					return new QQNode('query', 'Query', 'string', $this);
+				case 'DateRefreshed':
+					return new QQNode('date_refreshed', 'DateRefreshed', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);

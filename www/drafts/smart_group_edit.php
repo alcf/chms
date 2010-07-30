@@ -25,6 +25,7 @@
 		// Controls for SmartGroup's Data Fields
 		protected $lstGroup;
 		protected $txtQuery;
+		protected $calDateRefreshed;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -53,6 +54,7 @@
 			// Call MetaControl's methods to create qcontrols based on SmartGroup's data fields
 			$this->lstGroup = $this->mctSmartGroup->lstGroup_Create();
 			$this->txtQuery = $this->mctSmartGroup->txtQuery_Create();
+			$this->calDateRefreshed = $this->mctSmartGroup->calDateRefreshed_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

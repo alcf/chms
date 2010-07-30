@@ -67,6 +67,7 @@
 			// can traverse down QQN::smart_group() to display fields that are down the hierarchy)
 			$this->dtgSmartGroups->MetaAddColumn(QQN::SmartGroup()->Group);
 			$this->dtgSmartGroups->MetaAddColumn('Query');
+			$this->dtgSmartGroups->MetaAddColumn('DateRefreshed');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

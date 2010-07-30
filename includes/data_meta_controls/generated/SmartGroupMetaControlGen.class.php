@@ -20,6 +20,8 @@
 	 * property-read QLabel $GroupIdLabel
 	 * property QTextBox $QueryControl
 	 * property-read QLabel $QueryLabel
+	 * property QDateTimePicker $DateRefreshedControl
+	 * property-read QLabel $DateRefreshedLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -34,10 +36,12 @@
 		// Controls that allow the editing of SmartGroup's individual data fields
 		protected $lstGroup;
 		protected $txtQuery;
+		protected $calDateRefreshed;
 
 		// Controls that allow the viewing of SmartGroup's individual data fields
 		protected $lblGroupId;
 		protected $lblQuery;
+		protected $lblDateRefreshed;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -204,6 +208,35 @@
 			return $this->lblQuery;
 		}
 
+		/**
+		 * Create and setup QDateTimePicker calDateRefreshed
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateRefreshed_Create($strControlId = null) {
+			$this->calDateRefreshed = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateRefreshed->Name = QApplication::Translate('Date Refreshed');
+			$this->calDateRefreshed->DateTime = $this->objSmartGroup->DateRefreshed;
+			$this->calDateRefreshed->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDateRefreshed;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateRefreshed
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateRefreshed_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateRefreshed = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateRefreshed->Name = QApplication::Translate('Date Refreshed');
+			$this->strDateRefreshedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateRefreshed->Text = sprintf($this->objSmartGroup->DateRefreshed) ? $this->objSmartGroup->DateRefreshed->__toString($this->strDateRefreshedDateTimeFormat) : null;
+			return $this->lblDateRefreshed;
+		}
+
+		protected $strDateRefreshedDateTimeFormat;
+
 
 
 		/**
@@ -232,6 +265,9 @@
 			if ($this->txtQuery) $this->txtQuery->Text = $this->objSmartGroup->Query;
 			if ($this->lblQuery) $this->lblQuery->Text = $this->objSmartGroup->Query;
 
+			if ($this->calDateRefreshed) $this->calDateRefreshed->DateTime = $this->objSmartGroup->DateRefreshed;
+			if ($this->lblDateRefreshed) $this->lblDateRefreshed->Text = sprintf($this->objSmartGroup->DateRefreshed) ? $this->objSmartGroup->__toString($this->strDateRefreshedDateTimeFormat) : null;
+
 		}
 
 
@@ -257,6 +293,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstGroup) $this->objSmartGroup->GroupId = $this->lstGroup->SelectedValue;
 				if ($this->txtQuery) $this->objSmartGroup->Query = $this->txtQuery->Text;
+				if ($this->calDateRefreshed) $this->objSmartGroup->DateRefreshed = $this->calDateRefreshed->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -311,6 +348,12 @@
 				case 'QueryLabel':
 					if (!$this->lblQuery) return $this->lblQuery_Create();
 					return $this->lblQuery;
+				case 'DateRefreshedControl':
+					if (!$this->calDateRefreshed) return $this->calDateRefreshed_Create();
+					return $this->calDateRefreshed;
+				case 'DateRefreshedLabel':
+					if (!$this->lblDateRefreshed) return $this->lblDateRefreshed_Create();
+					return $this->lblDateRefreshed;
 				default:
 					try {
 						return parent::__get($strName);
@@ -337,6 +380,8 @@
 						return ($this->lstGroup = QType::Cast($mixValue, 'QControl'));
 					case 'QueryControl':
 						return ($this->txtQuery = QType::Cast($mixValue, 'QControl'));
+					case 'DateRefreshedControl':
+						return ($this->calDateRefreshed = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

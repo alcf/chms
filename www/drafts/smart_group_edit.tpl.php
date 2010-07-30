@@ -19,6 +19,8 @@
 
 		<?php $this->txtQuery->RenderWithName(); ?>
 
+		<?php $this->calDateRefreshed->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">
