@@ -124,10 +124,10 @@
 	define('GROUPS_SERVER_PORT', 995);
 	define('GROUPS_SERVER_USERNAME', 'groups@groups.alcf.net');
 	define('GROUPS_SERVER_PASSWORD_PATH', __DOCROOT__ . '/../groups_server_password.txt');
-	define('SMTP_SERVER', '10.128.2.37');
-	define('SMTP_EHLO', '127.0.0.1');
-	define('SMTP_TEST_MODE', true);
 
+	define('SMTP_SERVER', '10.128.2.37');
+	define('SMTP_TEST_MODE', true);
+	
 	if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
 		date_default_timezone_set('America/Los_Angeles');
 

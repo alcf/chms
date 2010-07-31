@@ -254,9 +254,9 @@
 		}
 		protected static function ReceiveResponse($strExpectedStatusCode, $strCurrentAction) {
 			if (!self::$TestMode) {
-				$strReponse = null;
+				$strResponse = '000-';
 				$strFullResponse = null;
-				while (!feof(self::$objSmtpSocket)) {
+				while (!feof(self::$objSmtpSocket) && (substr($strResponse, 3, 1) == '-')) {
 					$strResponse = fgets(self::$objSmtpSocket, 4096);
 					$strFullResponse .= $strResponse;
 				}
@@ -280,9 +280,27 @@
 		 * @return void
 		 */
 		public static function Send(QEmailMessage $objMessage) {
-			// TODO: Setup Fields...
+			// Set Up Fields
+			$strAddressArray = QEmailServer::GetEmailAddresses($objMessage->From);
+			if (count($strAddressArray) != 1) throw new QEmailException(sprintf('Not a valid From address: %s', $objMessage->From));
+			$strMailFrom = $strAddressArray[0];
 
-			self::SendRawMessage($strMailFrom, $strRcptToArray, $strMessageHeader, $strMessageBody);
+			// Setup RCPT TO Addresses
+			$strAddressToArray = QEmailServer::GetEmailAddresses($objMessage->To);
+			if (!$strAddressToArray || !count($strAddressToArray)) throw new QEmailException(sprintf('Not a valid To address: %s', $objMessage->To));
+
+			$strAddressCcArray = QEmailServer::GetEmailAddresses($objMessage->Cc);
+			if (!$strAddressCcArray) $strAddressCcArray = array();
+
+			$strAddressBccArray = QEmailServer::GetEmailAddresses($objMessage->Bcc);
+			if (!$strAddressBccArray) $strAddressBccArray = array();
+
+			$strAddressCcBccArray = array_merge($strAddressCcArray, $strAddressBccArray);
+			$strRcptToArray = array_merge($strAddressToArray, $strAddressCcBccArray);
+
+			$strMessageArray = $objMessage->CalculateMessageHeaderAndBody(self::$EncodingType);
+
+			self::SendRawMessage($strMailFrom, $strRcptToArray, $strMessageArray[0], $strMessageArray[1]);
 		}
 	}
 
@@ -449,12 +467,12 @@
 			$strAltBoundary = sprintf('qcodo_alt_%s', strtolower(md5(microtime())));
 			$strArrayToReturn = array($strBoundary, $strAltBoundary);
 
-			if ($objMessage->HasFiles || $objMessage->HtmlBody) {
+			if ($this->HasFiles || $this->HtmlBody) {
 				$this->SetHeader('MIME-Version', '1.0');
 				$this->SetHeader('Content-Type', sprintf('multipart/mixed; boundary="%s"', $strBoundary));
 			} else {
-				$strBody .= SetHeader('Content-Type', sprintf('text/plain; charset="%s"', $strEncodingType));
-				$strBody .= SetHeader('Content-Transfer-Encoding', 'quoted-printable');
+				$this->SetHeader('Content-Type', sprintf('text/plain; charset="%s"', $strEncodingType));
+				$this->SetHeader('Content-Transfer-Encoding', 'quoted-printable');
 			}
 
 			return $strArrayToReturn;
@@ -555,7 +573,7 @@
 			if ($this->Cc) $this->SetHeader('Cc', $this->Cc);
 
 			// Setup for MIME and Content Encoding
-			$strBoundaryArray = $this->SetupMimeHeaders();
+			$strBoundaryArray = $this->SetupMimeHeaders($strEncodingType);
 			$strBoundary = $strBoundaryArray[0];
 			$strAltBoundary = $strBoundaryArray[1];
 
@@ -606,13 +624,11 @@
 						$strBody = QType::Cast($mixValue, QType::String);
 						$strBody = str_replace("\r", "", $strBody);
 						$strBody = str_replace("\n", "\r\n", $strBody);
-						$strBody = str_replace("\r\n.", "\r\n..", $strBody);
 						return ($this->strBody = $strBody);
 					case 'HtmlBody':
 						$strHtmlBody = QType::Cast($mixValue, QType::String);
 						$strHtmlBody = str_replace("\r", "", $strHtmlBody);
 						$strHtmlBody = str_replace("\n", "\r\n", $strHtmlBody);
-						$strHtmlBody = str_replace("\r\n.", "\r\n..", $strHtmlBody);
 						return ($this->strHtmlBody = $strHtmlBody);
 
 					case 'Cc': return ($this->strCc = QType::Cast($mixValue, QType::String));
@@ -632,13 +648,14 @@
 		 * @return string the encoded string
 		 */
 		public static function QuotedPrintableEncode($strString) {
-			if ( function_exists('quoted_printable_encode') )
+			if (function_exists('quoted_printable_encode')) {
 				$strText = quoted_printable_encode($strString);
-			else
+			} else {
 				$strText = preg_replace( '/[^\x21-\x3C\x3E-\x7E\x09\x20]/e', 'sprintf( "=%02X", ord ( "$0" ) ) ;', $strString );
+				preg_match_all( '/.{1,73}([^=]{0,2})?/', $strText, $arrMatch );
+				$strText = implode( '=' . "\r\n", $arrMatch[0] );
+			}
 
-			preg_match_all( '/.{1,73}([^=]{0,2})?/', $strText, $arrMatch );
-			$strText = implode( '=' . "\r\n", $arrMatch[0] );
 			return $strText;
 		}
 	}
