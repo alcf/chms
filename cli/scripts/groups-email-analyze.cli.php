@@ -17,12 +17,9 @@
 		);
 
 		foreach ($objMessageArray as $objMessage) {
-print ('Analyzeing ' . $objMessage->Id . '... ');
 			$objMessage->AnalyzeMessage();
-print "Done.\r\n";
 		}
 
-//		sleep(10);
-		exit();
+		sleep(10);
 	}
 ?>

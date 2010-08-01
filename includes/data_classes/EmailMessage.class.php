@@ -54,6 +54,7 @@
 		 * @return void
 		 */
 		public function SendMessage($intMaxPerEmail) {
+			// First process errors
 			$objToSend = EmailOutgoingQueue::LoadArrayByEmailMessageIdErrorFlag($this->intId, true);
 			foreach ($objToSend as $objEmailOutgoingQueue) {
 				$objSmtpMessage = new QEmailMessage(GROUPS_SERVER_BOUNCE_EMAIL, $objEmailOutgoingQueue->ToAddress, GROUPS_SERVER_BOUNCE_SUBJECT,
@@ -62,6 +63,38 @@
 				$objEmailOutgoingQueue->Delete();
 			}
 
+			// Second process successes
+			$this->GetHeaderArray();
+			$this->ClearHeaderValue('Subject');
+			$this->ClearHeaderValue('Message-Id');
+			$this->ClearHeaderValue('Message-ID');
+			$this->ClearHeaderValue('Message-id');
+			$this->ClearHeaderValue('message-id');
+			$this->ClearHeaderValue('MESSAGE-ID');
+			foreach ($this->GetEmailMessageRouteArray() as $objRoute) {
+				$objToSend = EmailOutgoingQueue::LoadArrayByEmailMessageIdToken($this->Id, $objRoute->Token, QQ::LimitInfo($intMaxPerEmail));
+
+				if (count($objToSend)) {
+					$strHeaderArray = $this->strHeaderArray;
+					$strSubject = $this->Subject;
+					if (strpos(strtolower($strSubject), '[' . strtolower($objRoute->Token) . ']') === false)
+						$strSubject = '[' . $objRoute->Token . '] ' . $strSubject;
+					$strHeaderArray['Subject'] = $strSubject;
+
+					$strRcptToArray = array();
+					foreach ($objToSend as $objEmailOutgoingQueue) {
+						$strRcptToArray[] = $objEmailOutgoingQueue->ToAddress;
+					}
+
+					QEmailServer::SendRawMessage($this->FromAddress, $strRcptToArray, $strHeaderArray, $this->ResponseBody);
+
+					foreach ($objToSend as $objEmailOutgoingQueue) {
+						$objEmailOutgoingQueue->Delete();
+					}
+				}
+			}
+
+			// Finally, update status (if applicable)
 			if (!$this->CountEmailOutgoingQueues()) {
 				if ($this->CountEmailMessageRoutes() && $this->ErrorMessage) {
 					$this->intEmailMessageStatusTypeId = EmailMessageStatusType::CompletedWithSomeRejections;
@@ -400,6 +433,12 @@
 				}
 			}
 			return $objArrayToReturn;
+		}
+
+		public function ClearHeaderValue($strHeaderKey) {
+			if (array_key_exists($strHeaderKey, $this->strHeaderArray)) {
+				unset($this->strHeaderArray[$strHeaderKey]);
+			}
 		}
 
 		/**

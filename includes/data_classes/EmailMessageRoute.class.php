@@ -27,6 +27,22 @@
 			return sprintf('EmailMessageRoute Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Token':
+					if ($this->Group) return $this->Group->Token;
+					return $this->CommunicationList->Token;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		/**
 		 * This will create a New EmailMessageRoute object for a given EmailMessage.
 		 * You must specify the Source object (which is either a Login, CommListEntry or Person) and
