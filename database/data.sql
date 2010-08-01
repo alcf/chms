@@ -152,6 +152,21 @@ INSERT INTO phone_type VALUES(3, 'Mobile');
 INSERT INTO phone_type VALUES(4, 'Fax');
 INSERT INTO phone_type VALUES(5, 'Other');
 
+INSERT INTO query_condition_type VALUES(1,  'Is Equal To');
+INSERT INTO query_condition_type VALUES(2,  'Is Not Equal To');
+INSERT INTO query_condition_type VALUES(3,  'Exists');
+INSERT INTO query_condition_type VALUES(4,  'Does Not Exist');
+INSERT INTO query_condition_type VALUES(5,  'Contains');
+INSERT INTO query_condition_type VALUES(6,  'Does Not Contain');
+INSERT INTO query_condition_type VALUES(7,  'Starts With');
+INSERT INTO query_condition_type VALUES(8,  'Does Not Start With');
+INSERT INTO query_condition_type VALUES(9,  'Ends With');
+INSERT INTO query_condition_type VALUES(10, 'Does Not End With');
+INSERT INTO query_condition_type VALUES(11, 'Is Greater Than');
+INSERT INTO query_condition_type VALUES(12, 'Is Greater or Equal To');
+INSERT INTO query_condition_type VALUES(13, 'Is Less Than');
+INSERT INTO query_condition_type VALUES(14, 'Is Less Than or Equal To');
+
 INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
 INSERT INTO relationship_type VALUES(3, 'Sibling');
