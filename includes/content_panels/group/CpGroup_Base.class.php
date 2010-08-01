@@ -27,6 +27,11 @@
 		 */
 		public $dtgMembers;
 
+		/**
+		 * @var EmailMessageRouteDataGrid
+		 */
+		public $dtgEmailMessageRoute;
+
 		public $lblMinistry;
 		public $lblType;
 		public $lblConfidential;
@@ -70,7 +75,66 @@
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 
+			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageRouteDataGrid();
+
 			$this->SetupPanel();
+		}
+
+		/**
+		 * Sets up the EmailMessageRouteDataGrid if there are messages associated with this group
+		 * @return void
+		 */
+		protected function SetupEmailMessageRouteDataGrid() {
+			$this->dtgEmailMessageRoute = new EmailMessageRouteDataGrid($this);
+			$this->dtgEmailMessageRoute->MetaAddColumn(QQN::EmailMessageRoute()->EmailMessage->DateReceived, 'Width=115px', 'FontSize=11px', 'Html=<?= $_CONTROL->ParentControl->RenderEmailDateReceived($_ITEM); ?>');
+			$this->dtgEmailMessageRoute->MetaAddColumn(QQN::EmailMessageRoute()->EmailMessage->FromAddress, 'Width=200px', 'FontSize=11px', 'Html=<?= $_CONTROL->ParentControl->RenderEmailFromAddress($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgEmailMessageRoute->MetaAddColumn(QQN::EmailMessageRoute()->EmailMessage->Subject, 'Width=420px', 'FontSize=11px', 'Html=<?= $_CONTROL->ParentControl->RenderEmailSubject($_ITEM); ?>', 'HtmlEntities=false');
+
+			$this->dtgEmailMessageRoute->SetDataBinder('dtgEmailMessageRoute_Bind', $this);
+			$this->dtgEmailMessageRoute->Paginator = new QPaginator($this->dtgEmailMessageRoute);
+			$this->dtgEmailMessageRoute->SortColumnIndex = 0;
+			$this->dtgEmailMessageRoute->SortDirection = 1;
+		}
+
+		public function dtgEmailMessageRoute_Bind() {
+			$this->dtgEmailMessageRoute->MetaDataBinder(QQ::Equal(QQN::EmailMessageRoute()->GroupId, $this->objGroup->Id), array(QQ::Expand(QQN::EmailMessageRoute()->EmailMessage->Id)));
+		}
+
+		public function RenderEmailDateReceived(EmailMessageRoute $objEmailMessageRoute) {
+			$objEmailMessage = $objEmailMessageRoute->EmailMessage;
+
+			$dttToCompare = QDateTime::Now(false);
+			if ($objEmailMessage->DateReceived->IsEqualTo($dttToCompare)) {
+				return 'Today ' . $objEmailMessage->DateReceived->ToString('h:mmz');
+			}
+
+			$dttToCompare->Day--;
+			if ($objEmailMessage->DateReceived->IsEqualTo($dttToCompare)) {
+				return 'Yesterday ' . $objEmailMessage->DateReceived->ToString('h:mmz');
+			}
+
+			$dttToCompare->Day -= 6;
+			if ($objEmailMessage->DateReceived->IsLaterThan($dttToCompare)) {
+				return $objEmailMessage->DateReceived->ToString('DDD h:mmz');
+			}
+
+			return $objEmailMessage->DateReceived->ToString('MMM D YYYY');
+		}
+
+		public function RenderEmailSubject(EmailMessageRoute $objEmailMessageRoute) {
+			$strSubject = QApplication::HtmlEntities($objEmailMessageRoute->EmailMessage->Subject);
+			return $strSubject;
+		}
+		
+		public function RenderEmailFromAddress(EmailMessageRoute $objEmailMessageRoute) {
+			$strToReturn = $objEmailMessageRoute->EmailMessage->FromAddress;
+			if ($objEmailMessageRoute->Login) {
+				return $strToReturn;
+			} else if ($objEmailMessageRoute->Person) {
+				return sprintf('<a href="%s">%s</a>', $objEmailMessageRoute->Person->LinkUrl, $strToReturn);
+			}
+
+			return $strToReturn;
 		}
 
 		/**

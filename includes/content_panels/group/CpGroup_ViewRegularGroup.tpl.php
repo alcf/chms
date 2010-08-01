@@ -20,6 +20,13 @@
 		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/add_participation'; return false;">Add Participant</button>
 	<?php } ?>
 </h3>
+
 <div class="section">
 	<?php $_CONTROL->dtgMembers->Render(); ?>
 </div>
+
+<?php if ($_CONTROL->dtgEmailMessageRoute) { ?>
+	<br/>
+	<h3>Email Message Archive</h3>
+	<div class="section"><?php $_CONTROL->dtgEmailMessageRoute->Render(); ?></div>
+<?php } ?>
