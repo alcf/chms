@@ -128,7 +128,7 @@
 	define('GROUPS_SERVER_BOUNCE_SUBJECT', 'Delivery Status Notification');
 
 	define('SMTP_SERVER', '10.128.2.37');
-	define('SMTP_TEST_MODE', true);
+	define('SMTP_TEST_MODE', false);
 	
 	if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
 		date_default_timezone_set('America/Los_Angeles');

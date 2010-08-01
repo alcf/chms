@@ -195,6 +195,12 @@
 			if (!$this->CountEmailMessageRoutes()) {
 				$strErrorMessageArray[] = "No valid groups or communication lists were found in the system.\r\n" .
 					"Please be sure you have entered the address correctly and that you are NOT using BCC.";
+			} else if (count($strErrorMessageArray)) {
+				$strSuccessEmailArray = array();
+				foreach ($this->GetEmailMessageRouteArray() as $objRoute) {
+					$strSuccessEmailArray[] = $objRoute->Token . '@groups.alcf.net';
+				}
+				$strErrorMessageArray[] = "Note that your message sent to the following groups will still be delivered:\r\n    - " . implode("\r\n    - ", $strSuccessEmailArray);
 			}
 
 			if (count($strErrorMessageArray))
