@@ -7,11 +7,11 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstSearchQueryObject->RenderWithName(); ?>
+		<?php $_CONTROL->lstSearchQuery->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstQueryConditionType->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstQueryNodeObject->RenderWithName(); ?>
+		<?php $_CONTROL->lstQueryNode->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtValue->RenderWithName(); ?>
 

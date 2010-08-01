@@ -21,8 +21,8 @@
 	 * @property string $DataType the value for strDataType 
 	 * @property string $QcodoQueryCondition the value for strQcodoQueryCondition 
 	 * @property boolean $RequiresDistinctFlag the value for blnRequiresDistinctFlag 
-	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.query_node reverse relationship
-	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.query_node reverse relationship
+	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.query_node_id reverse relationship
+	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.query_node_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class QueryNodeGen extends QBaseClass {
@@ -803,13 +803,13 @@
 
 				case '_QueryCondition':
 					// Gets the value for the private _objQueryCondition (Read-Only)
-					// if set due to an expansion on the query_condition.query_node reverse relationship
+					// if set due to an expansion on the query_condition.query_node_id reverse relationship
 					// @return QueryCondition
 					return $this->_objQueryCondition;
 
 				case '_QueryConditionArray':
 					// Gets the value for the private _objQueryConditionArray (Read-Only)
-					// if set due to an ExpandAsArray on the query_condition.query_node reverse relationship
+					// if set due to an ExpandAsArray on the query_condition.query_node_id reverse relationship
 					// @return QueryCondition[]
 					return (array) $this->_objQueryConditionArray;
 
@@ -941,7 +941,7 @@
 				return array();
 
 			try {
-				return QueryCondition::LoadArrayByQueryNode($this->intId, $objOptionalClauses);
+				return QueryCondition::LoadArrayByQueryNodeId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -956,7 +956,7 @@
 			if ((is_null($this->intId)))
 				return 0;
 
-			return QueryCondition::CountByQueryNode($this->intId);
+			return QueryCondition::CountByQueryNodeId($this->intId);
 		}
 
 		/**
@@ -978,7 +978,7 @@
 				UPDATE
 					`query_condition`
 				SET
-					`query_node` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
@@ -1003,10 +1003,10 @@
 				UPDATE
 					`query_condition`
 				SET
-					`query_node` = null
+					`query_node_id` = null
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
-					`query_node` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1026,9 +1026,9 @@
 				UPDATE
 					`query_condition`
 				SET
-					`query_node` = null
+					`query_node_id` = null
 				WHERE
-					`query_node` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1052,7 +1052,7 @@
 					`query_condition`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
-					`query_node` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1072,7 +1072,7 @@
 				DELETE FROM
 					`query_condition`
 				WHERE
-					`query_node` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1177,7 +1177,7 @@
 				case 'RequiresDistinctFlag':
 					return new QQNode('requires_distinct_flag', 'RequiresDistinctFlag', 'boolean', $this);
 				case 'QueryCondition':
-					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node');
+					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1211,7 +1211,7 @@
 				case 'RequiresDistinctFlag':
 					return new QQNode('requires_distinct_flag', 'RequiresDistinctFlag', 'boolean', $this);
 				case 'QueryCondition':
-					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node');
+					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

@@ -66,9 +66,9 @@
 			// Create the Other Columns (note that you can use strings for query_condition's properties, or you
 			// can traverse down QQN::query_condition() to display fields that are down the hierarchy)
 			$this->dtgQueryConditions->MetaAddColumn('Id');
-			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->SearchQueryObject);
+			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->SearchQuery);
 			$this->dtgQueryConditions->MetaAddTypeColumn('QueryConditionTypeId', 'QueryConditionType');
-			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryNodeObject);
+			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryNode);
 			$this->dtgQueryConditions->MetaAddColumn('Value');
 
 			// Setup the Create New button

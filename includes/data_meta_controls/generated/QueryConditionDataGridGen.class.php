@@ -294,11 +294,11 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "query_condition".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::QueryCondition()->Id;
+				case 'SearchQueryId': return QQN::QueryCondition()->SearchQueryId;
 				case 'SearchQuery': return QQN::QueryCondition()->SearchQuery;
-				case 'SearchQueryObject': return QQN::QueryCondition()->SearchQueryObject;
 				case 'QueryConditionTypeId': return QQN::QueryCondition()->QueryConditionTypeId;
+				case 'QueryNodeId': return QQN::QueryCondition()->QueryNodeId;
 				case 'QueryNode': return QQN::QueryCondition()->QueryNode;
-				case 'QueryNodeObject': return QQN::QueryCondition()->QueryNodeObject;
 				case 'Value': return QQN::QueryCondition()->Value;
 				default: throw new QCallerException('Simple Property not found in QueryConditionDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

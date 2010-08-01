@@ -21,9 +21,9 @@
 
 		// Controls for QueryCondition's Data Fields
 		public $lblId;
-		public $lstSearchQueryObject;
+		public $lstSearchQuery;
 		public $lstQueryConditionType;
-		public $lstQueryNodeObject;
+		public $lstQueryNode;
 		public $txtValue;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -55,9 +55,9 @@
 
 			// Call MetaControl's methods to create qcontrols based on QueryCondition's data fields
 			$this->lblId = $this->mctQueryCondition->lblId_Create();
-			$this->lstSearchQueryObject = $this->mctQueryCondition->lstSearchQueryObject_Create();
+			$this->lstSearchQuery = $this->mctQueryCondition->lstSearchQuery_Create();
 			$this->lstQueryConditionType = $this->mctQueryCondition->lstQueryConditionType_Create();
-			$this->lstQueryNodeObject = $this->mctQueryCondition->lstQueryNodeObject_Create();
+			$this->lstQueryNode = $this->mctQueryCondition->lstQueryNode_Create();
 			$this->txtValue = $this->mctQueryCondition->txtValue_Create();
 
 			// Create Buttons and Actions on this Form

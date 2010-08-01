@@ -18,8 +18,8 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Description the value for strDescription 
 	 * @property SmartGroup $SmartGroup the value for the SmartGroup object that uniquely references this SearchQuery
-	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.search_query reverse relationship
-	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.search_query reverse relationship
+	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.search_query_id reverse relationship
+	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.search_query_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class SearchQueryGen extends QBaseClass {
@@ -796,13 +796,13 @@
 
 				case '_QueryCondition':
 					// Gets the value for the private _objQueryCondition (Read-Only)
-					// if set due to an expansion on the query_condition.search_query reverse relationship
+					// if set due to an expansion on the query_condition.search_query_id reverse relationship
 					// @return QueryCondition
 					return $this->_objQueryCondition;
 
 				case '_QueryConditionArray':
 					// Gets the value for the private _objQueryConditionArray (Read-Only)
-					// if set due to an ExpandAsArray on the query_condition.search_query reverse relationship
+					// if set due to an ExpandAsArray on the query_condition.search_query_id reverse relationship
 					// @return QueryCondition[]
 					return (array) $this->_objQueryConditionArray;
 
@@ -927,7 +927,7 @@
 				return array();
 
 			try {
-				return QueryCondition::LoadArrayBySearchQuery($this->intId, $objOptionalClauses);
+				return QueryCondition::LoadArrayBySearchQueryId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -942,7 +942,7 @@
 			if ((is_null($this->intId)))
 				return 0;
 
-			return QueryCondition::CountBySearchQuery($this->intId);
+			return QueryCondition::CountBySearchQueryId($this->intId);
 		}
 
 		/**
@@ -964,7 +964,7 @@
 				UPDATE
 					`query_condition`
 				SET
-					`search_query` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`search_query_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
@@ -989,10 +989,10 @@
 				UPDATE
 					`query_condition`
 				SET
-					`search_query` = null
+					`search_query_id` = null
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
-					`search_query` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`search_query_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1012,9 +1012,9 @@
 				UPDATE
 					`query_condition`
 				SET
-					`search_query` = null
+					`search_query_id` = null
 				WHERE
-					`search_query` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`search_query_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1038,7 +1038,7 @@
 					`query_condition`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
-					`search_query` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`search_query_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1058,7 +1058,7 @@
 				DELETE FROM
 					`query_condition`
 				WHERE
-					`search_query` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`search_query_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1143,7 +1143,7 @@
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'QueryCondition':
-					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'search_query');
+					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'search_query_id');
 				case 'SmartGroup':
 					return new QQReverseReferenceNodeSmartGroup($this, 'smartgroup', 'reverse_reference', 'search_query_id', 'SmartGroup');
 
@@ -1171,7 +1171,7 @@
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'QueryCondition':
-					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'search_query');
+					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'search_query_id');
 				case 'SmartGroup':
 					return new QQReverseReferenceNodeSmartGroup($this, 'smartgroup', 'reverse_reference', 'search_query_id', 'SmartGroup');
 

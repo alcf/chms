@@ -17,11 +17,11 @@
 	<div id="formControls">
 		<?php $this->lblId->RenderWithName(); ?>
 
-		<?php $this->lstSearchQueryObject->RenderWithName(); ?>
+		<?php $this->lstSearchQuery->RenderWithName(); ?>
 
 		<?php $this->lstQueryConditionType->RenderWithName(); ?>
 
-		<?php $this->lstQueryNodeObject->RenderWithName(); ?>
+		<?php $this->lstQueryNode->RenderWithName(); ?>
 
 		<?php $this->txtValue->RenderWithName(); ?>
 
