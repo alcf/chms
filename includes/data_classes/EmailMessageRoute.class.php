@@ -51,11 +51,11 @@
 		 * This will throw a QCallerException if the route is invalid.
 		 * 
 		 * @param EmailMessage $objEmailMessage
-		 * @param object $objSource must be a Login, CommunicationListEntry or Person object
+		 * @param object $objSource must be a Login, CommunicationListEntry or Person object (can be null for public lists)
 		 * @param object $objDestination must be a Group or CommunicationList object
 		 * @return EmailMessageRoute
 		 */
-		public static function CreateNewRoute(EmailMessage $objEmailMessage, $objSource, $objDestination) {
+		public static function CreateNewRoute(EmailMessage $objEmailMessage, $objSource = null, $objDestination = null) {
 			$objRoute = new EmailMessageRoute();
 			$objRoute->EmailMessage = $objEmailMessage;
 
@@ -65,7 +65,7 @@
 				$objRoute->CommunicationListEntry = $objSource;
 			} else if ($objSource instanceof Person) {
 				$objRoute->Person= $objSource;
-			} else {
+			} else if (!is_null($objSource)) {
 				throw new QCallerException('Invalid Source for EmailMessageRoute');
 			}
 
@@ -77,6 +77,8 @@
 				throw new QCallerException('Invalid Destination for EmailMessageRoute');
 			}
 
+			if (is_null($objSource) && ($objDestination->EmailBroadcastTypeId != EmailBroadcastType::PublicList))
+				throw new QCallerException('Invalid External Source for EmailMessageRoute to a non PublicList Destination');
 			if ($objRoute->CommunicationListEntry && !$objRoute->CommuniationList)
 				throw new QCallerException('Invalid CommunicationListEntry Source for EmailMessageRoute to a non CommunicationList Destination');
 

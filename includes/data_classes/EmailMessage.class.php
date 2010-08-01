@@ -241,9 +241,9 @@
 					}
 				}
 
-				// If a Valid Source, create the EmailRoute for the group,
+				// If a Valid Source, or if a PublicList, create the EmailRoute for the group,
 				// otherwise, add the group to the list of Unauthorized 
-				if ($objSource) {
+				if ($objSource || $objGroup->IsAnyoneCanSendEmail()) {
 					EmailMessageRoute::CreateNewRoute($this, $objSource, $objGroup);
 				} else {
 					$objUnauthorizedArray[] = $objGroup;
@@ -287,9 +287,9 @@
 					}
 				}
 
-				// If a Valid Source, create the EmailRoute for the CommList,
+				// If a Valid Source, or if a PublicList, create the EmailRoute for the CommList,
 				// otherwise, add the CommList to the list of Unauthorized 
-				if ($objSource) {
+				if ($objSource || $objCommunicationList->IsAnyoneCanSendEmail()) {
 					EmailMessageRoute::CreateNewRoute($this, $objSource, $objCommunicationList);
 				} else {
 					$objUnauthorizedArray[] = $objCommunicationList;
