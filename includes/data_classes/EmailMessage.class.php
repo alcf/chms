@@ -193,7 +193,7 @@
 			}
 
 			if (!$this->CountEmailMessageRoutes()) {
-				$strErrorMessageArray[] = "No valid groups or communication lists were found in the system.\r\n" .
+				$strErrorMessageArray[] = "Your message does not contain any valid groups or communication lists that you can send to.\r\n" .
 					"Please be sure you have entered the address correctly and that you are NOT using BCC.";
 			} else if (count($strErrorMessageArray)) {
 				$strSuccessEmailArray = array();

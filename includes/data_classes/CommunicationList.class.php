@@ -129,6 +129,15 @@
 		}
 
 		/**
+		 * Quick check to see if "Anyone" can send an email through this list.  This
+		 * only works of this has a broadcast type of PublicList.
+		 * @return boolean
+		 */
+		public function IsAnyoneCanSendEmail() {
+			return $this->intEmailBroadcastTypeId == EmailBroadcastType::PublicList;
+		}
+
+		/**
 		 * Calculates whether or not a given Login object is allowed to send emails
 		 * to this Communication List.  Return true if the Login can.  Returns false
 		 * if the Login is not allowed to.
