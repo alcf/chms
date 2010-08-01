@@ -56,8 +56,10 @@
 			// Create the Other Columns (note that you can use strings for smart_group's properties, or you
 			// can traverse down QQN::smart_group() to display fields that are down the hierarchy)
 			$this->dtgSmartGroups->MetaAddColumn(QQN::SmartGroup()->Group);
+			$this->dtgSmartGroups->MetaAddColumn(QQN::SmartGroup()->SearchQuery);
 			$this->dtgSmartGroups->MetaAddColumn('Query');
 			$this->dtgSmartGroups->MetaAddColumn('DateRefreshed');
+			$this->dtgSmartGroups->MetaAddColumn('ProcessTimeMs');
 		}
 	}
 

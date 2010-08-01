@@ -193,6 +193,18 @@
 			return new QQNodePhone('phone', null, null);
 		}
 		/**
+		 * @return QQNodeQueryCondition
+		 */
+		static public function QueryCondition() {
+			return new QQNodeQueryCondition('query_condition', null, null);
+		}
+		/**
+		 * @return QQNodeQueryNode
+		 */
+		static public function QueryNode() {
+			return new QQNodeQueryNode('query_node', null, null);
+		}
+		/**
 		 * @return QQNodeRegistry
 		 */
 		static public function Registry() {
@@ -203,6 +215,12 @@
 		 */
 		static public function Relationship() {
 			return new QQNodeRelationship('relationship', null, null);
+		}
+		/**
+		 * @return QQNodeSearchQuery
+		 */
+		static public function SearchQuery() {
+			return new QQNodeSearchQuery('search_query', null, null);
 		}
 		/**
 		 * @return QQNodeSmartGroup

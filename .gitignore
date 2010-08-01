@@ -10,3 +10,4 @@ configuration.local
 /error_log
 /groups_server_password.txt
 /cli/*.lock
+/cli/scripts/test.cli.php

@@ -1,19 +1,19 @@
 <?php
-	// This is the HTML template include file (.tpl.php) for smart_groupEditPanel.
+	// This is the HTML template include file (.tpl.php) for query_conditionEditPanel.
 	// Remember that this is a DRAFT.  It is MEANT to be altered/modified.
 	// Be sure to move this out of the drafts/dashboard subdirectory before modifying to ensure that subsequent 
 	// code re-generations do not overwrite your changes.
 ?>
 	<div id="formControls">
-		<?php $_CONTROL->lstGroup->RenderWithName(); ?>
+		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstSearchQuery->RenderWithName(); ?>
+		<?php $_CONTROL->lstSearchQueryObject->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtQuery->RenderWithName(); ?>
+		<?php $_CONTROL->lstQueryConditionType->RenderWithName(); ?>
 
-		<?php $_CONTROL->calDateRefreshed->RenderWithName(); ?>
+		<?php $_CONTROL->lstQueryNodeObject->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtProcessTimeMs->RenderWithName(); ?>
+		<?php $_CONTROL->txtValue->RenderWithName(); ?>
 
 	</div>
 

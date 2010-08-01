@@ -223,6 +223,20 @@
 		QApplicationBase::$ClassFile['phonemetacontrol'] = __DATA_META_CONTROLS__ . '/PhoneMetaControl.class.php';
 		QApplicationBase::$ClassFile['phonedatagrid'] = __DATA_META_CONTROLS__ . '/PhoneDataGrid.class.php';
 
+	// ClassPaths for the QueryCondition class
+		QApplicationBase::$ClassFile['querycondition'] = __DATA_CLASSES__ . '/QueryCondition.class.php';
+		QApplicationBase::$ClassFile['qqnodequerycondition'] = __DATA_CLASSES__ . '/QueryCondition.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodequerycondition'] = __DATA_CLASSES__ . '/QueryCondition.class.php';
+		QApplicationBase::$ClassFile['queryconditionmetacontrol'] = __DATA_META_CONTROLS__ . '/QueryConditionMetaControl.class.php';
+		QApplicationBase::$ClassFile['queryconditiondatagrid'] = __DATA_META_CONTROLS__ . '/QueryConditionDataGrid.class.php';
+
+	// ClassPaths for the QueryNode class
+		QApplicationBase::$ClassFile['querynode'] = __DATA_CLASSES__ . '/QueryNode.class.php';
+		QApplicationBase::$ClassFile['qqnodequerynode'] = __DATA_CLASSES__ . '/QueryNode.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodequerynode'] = __DATA_CLASSES__ . '/QueryNode.class.php';
+		QApplicationBase::$ClassFile['querynodemetacontrol'] = __DATA_META_CONTROLS__ . '/QueryNodeMetaControl.class.php';
+		QApplicationBase::$ClassFile['querynodedatagrid'] = __DATA_META_CONTROLS__ . '/QueryNodeDataGrid.class.php';
+
 	// ClassPaths for the Registry class
 		QApplicationBase::$ClassFile['registry'] = __DATA_CLASSES__ . '/Registry.class.php';
 		QApplicationBase::$ClassFile['qqnoderegistry'] = __DATA_CLASSES__ . '/Registry.class.php';
@@ -236,6 +250,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenoderelationship'] = __DATA_CLASSES__ . '/Relationship.class.php';
 		QApplicationBase::$ClassFile['relationshipmetacontrol'] = __DATA_META_CONTROLS__ . '/RelationshipMetaControl.class.php';
 		QApplicationBase::$ClassFile['relationshipdatagrid'] = __DATA_META_CONTROLS__ . '/RelationshipDataGrid.class.php';
+
+	// ClassPaths for the SearchQuery class
+		QApplicationBase::$ClassFile['searchquery'] = __DATA_CLASSES__ . '/SearchQuery.class.php';
+		QApplicationBase::$ClassFile['qqnodesearchquery'] = __DATA_CLASSES__ . '/SearchQuery.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesearchquery'] = __DATA_CLASSES__ . '/SearchQuery.class.php';
+		QApplicationBase::$ClassFile['searchquerymetacontrol'] = __DATA_META_CONTROLS__ . '/SearchQueryMetaControl.class.php';
+		QApplicationBase::$ClassFile['searchquerydatagrid'] = __DATA_META_CONTROLS__ . '/SearchQueryDataGrid.class.php';
 
 	// ClassPaths for the SmartGroup class
 		QApplicationBase::$ClassFile['smartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';

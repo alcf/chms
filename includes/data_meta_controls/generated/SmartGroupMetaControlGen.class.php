@@ -18,10 +18,14 @@
 	 * property-read SmartGroup $SmartGroup the actual SmartGroup data class being edited
 	 * property QListBox $GroupIdControl
 	 * property-read QLabel $GroupIdLabel
+	 * property QListBox $SearchQueryIdControl
+	 * property-read QLabel $SearchQueryIdLabel
 	 * property QTextBox $QueryControl
 	 * property-read QLabel $QueryLabel
 	 * property QDateTimePicker $DateRefreshedControl
 	 * property-read QLabel $DateRefreshedLabel
+	 * property QIntegerTextBox $ProcessTimeMsControl
+	 * property-read QLabel $ProcessTimeMsLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -35,13 +39,17 @@
 
 		// Controls that allow the editing of SmartGroup's individual data fields
 		protected $lstGroup;
+		protected $lstSearchQuery;
 		protected $txtQuery;
 		protected $calDateRefreshed;
+		protected $txtProcessTimeMs;
 
 		// Controls that allow the viewing of SmartGroup's individual data fields
 		protected $lblGroupId;
+		protected $lblSearchQueryId;
 		protected $lblQuery;
 		protected $lblDateRefreshed;
+		protected $lblProcessTimeMs;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -184,6 +192,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstSearchQuery
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstSearchQuery_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstSearchQuery = new QListBox($this->objParentObject, $strControlId);
+			$this->lstSearchQuery->Name = QApplication::Translate('Search Query');
+			$this->lstSearchQuery->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objSearchQueryCursor = SearchQuery::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objSearchQuery = SearchQuery::InstantiateCursor($objSearchQueryCursor)) {
+				$objListItem = new QListItem($objSearchQuery->__toString(), $objSearchQuery->Id);
+				if (($this->objSmartGroup->SearchQuery) && ($this->objSmartGroup->SearchQuery->Id == $objSearchQuery->Id))
+					$objListItem->Selected = true;
+				$this->lstSearchQuery->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstSearchQuery;
+		}
+
+		/**
+		 * Create and setup QLabel lblSearchQueryId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblSearchQueryId_Create($strControlId = null) {
+			$this->lblSearchQueryId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSearchQueryId->Name = QApplication::Translate('Search Query');
+			$this->lblSearchQueryId->Text = ($this->objSmartGroup->SearchQuery) ? $this->objSmartGroup->SearchQuery->__toString() : null;
+			return $this->lblSearchQueryId;
+		}
+
+		/**
 		 * Create and setup QTextBox txtQuery
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -237,6 +285,32 @@
 
 		protected $strDateRefreshedDateTimeFormat;
 
+		/**
+		 * Create and setup QIntegerTextBox txtProcessTimeMs
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtProcessTimeMs_Create($strControlId = null) {
+			$this->txtProcessTimeMs = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtProcessTimeMs->Name = QApplication::Translate('Process Time Ms');
+			$this->txtProcessTimeMs->Text = $this->objSmartGroup->ProcessTimeMs;
+			return $this->txtProcessTimeMs;
+		}
+
+		/**
+		 * Create and setup QLabel lblProcessTimeMs
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblProcessTimeMs_Create($strControlId = null, $strFormat = null) {
+			$this->lblProcessTimeMs = new QLabel($this->objParentObject, $strControlId);
+			$this->lblProcessTimeMs->Name = QApplication::Translate('Process Time Ms');
+			$this->lblProcessTimeMs->Text = $this->objSmartGroup->ProcessTimeMs;
+			$this->lblProcessTimeMs->Format = $strFormat;
+			return $this->lblProcessTimeMs;
+		}
+
 
 
 		/**
@@ -262,11 +336,27 @@
 			}
 			if ($this->lblGroupId) $this->lblGroupId->Text = ($this->objSmartGroup->Group) ? $this->objSmartGroup->Group->__toString() : null;
 
+			if ($this->lstSearchQuery) {
+					$this->lstSearchQuery->RemoveAllItems();
+				$this->lstSearchQuery->AddItem(QApplication::Translate('- Select One -'), null);
+				$objSearchQueryArray = SearchQuery::LoadAll();
+				if ($objSearchQueryArray) foreach ($objSearchQueryArray as $objSearchQuery) {
+					$objListItem = new QListItem($objSearchQuery->__toString(), $objSearchQuery->Id);
+					if (($this->objSmartGroup->SearchQuery) && ($this->objSmartGroup->SearchQuery->Id == $objSearchQuery->Id))
+						$objListItem->Selected = true;
+					$this->lstSearchQuery->AddItem($objListItem);
+				}
+			}
+			if ($this->lblSearchQueryId) $this->lblSearchQueryId->Text = ($this->objSmartGroup->SearchQuery) ? $this->objSmartGroup->SearchQuery->__toString() : null;
+
 			if ($this->txtQuery) $this->txtQuery->Text = $this->objSmartGroup->Query;
 			if ($this->lblQuery) $this->lblQuery->Text = $this->objSmartGroup->Query;
 
 			if ($this->calDateRefreshed) $this->calDateRefreshed->DateTime = $this->objSmartGroup->DateRefreshed;
 			if ($this->lblDateRefreshed) $this->lblDateRefreshed->Text = sprintf($this->objSmartGroup->DateRefreshed) ? $this->objSmartGroup->__toString($this->strDateRefreshedDateTimeFormat) : null;
+
+			if ($this->txtProcessTimeMs) $this->txtProcessTimeMs->Text = $this->objSmartGroup->ProcessTimeMs;
+			if ($this->lblProcessTimeMs) $this->lblProcessTimeMs->Text = $this->objSmartGroup->ProcessTimeMs;
 
 		}
 
@@ -292,8 +382,10 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstGroup) $this->objSmartGroup->GroupId = $this->lstGroup->SelectedValue;
+				if ($this->lstSearchQuery) $this->objSmartGroup->SearchQueryId = $this->lstSearchQuery->SelectedValue;
 				if ($this->txtQuery) $this->objSmartGroup->Query = $this->txtQuery->Text;
 				if ($this->calDateRefreshed) $this->objSmartGroup->DateRefreshed = $this->calDateRefreshed->DateTime;
+				if ($this->txtProcessTimeMs) $this->objSmartGroup->ProcessTimeMs = $this->txtProcessTimeMs->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -342,6 +434,12 @@
 				case 'GroupIdLabel':
 					if (!$this->lblGroupId) return $this->lblGroupId_Create();
 					return $this->lblGroupId;
+				case 'SearchQueryIdControl':
+					if (!$this->lstSearchQuery) return $this->lstSearchQuery_Create();
+					return $this->lstSearchQuery;
+				case 'SearchQueryIdLabel':
+					if (!$this->lblSearchQueryId) return $this->lblSearchQueryId_Create();
+					return $this->lblSearchQueryId;
 				case 'QueryControl':
 					if (!$this->txtQuery) return $this->txtQuery_Create();
 					return $this->txtQuery;
@@ -354,6 +452,12 @@
 				case 'DateRefreshedLabel':
 					if (!$this->lblDateRefreshed) return $this->lblDateRefreshed_Create();
 					return $this->lblDateRefreshed;
+				case 'ProcessTimeMsControl':
+					if (!$this->txtProcessTimeMs) return $this->txtProcessTimeMs_Create();
+					return $this->txtProcessTimeMs;
+				case 'ProcessTimeMsLabel':
+					if (!$this->lblProcessTimeMs) return $this->lblProcessTimeMs_Create();
+					return $this->lblProcessTimeMs;
 				default:
 					try {
 						return parent::__get($strName);
@@ -378,10 +482,14 @@
 					// Controls that point to SmartGroup fields
 					case 'GroupIdControl':
 						return ($this->lstGroup = QType::Cast($mixValue, 'QControl'));
+					case 'SearchQueryIdControl':
+						return ($this->lstSearchQuery = QType::Cast($mixValue, 'QControl'));
 					case 'QueryControl':
 						return ($this->txtQuery = QType::Cast($mixValue, 'QControl'));
 					case 'DateRefreshedControl':
 						return ($this->calDateRefreshed = QType::Cast($mixValue, 'QControl'));
+					case 'ProcessTimeMsControl':
+						return ($this->txtProcessTimeMs = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

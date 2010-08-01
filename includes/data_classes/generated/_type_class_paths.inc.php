@@ -27,6 +27,8 @@
 		QApplicationBase::$ClassFile['permissiontype'] = __DATA_CLASSES__ . '/PermissionType.class.php';
 	// ClassPaths for the PhoneType type class
 		QApplicationBase::$ClassFile['phonetype'] = __DATA_CLASSES__ . '/PhoneType.class.php';
+	// ClassPaths for the QueryConditionType type class
+		QApplicationBase::$ClassFile['queryconditiontype'] = __DATA_CLASSES__ . '/QueryConditionType.class.php';
 	// ClassPaths for the RelationshipType type class
 		QApplicationBase::$ClassFile['relationshiptype'] = __DATA_CLASSES__ . '/RelationshipType.class.php';
 	// ClassPaths for the RoleType type class

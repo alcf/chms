@@ -1,80 +1,74 @@
 <?php
 	/**
-	 * The abstract SmartGroupGen class defined here is
+	 * The abstract QueryConditionGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the SmartGroup subclass which
-	 * extends this SmartGroupGen class.
+	 * To use, you should use the QueryCondition subclass which
+	 * extends this QueryConditionGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the SmartGroup class.
+	 * in the QueryCondition class.
 	 * 
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
-	 * @property integer $GroupId the value for intGroupId (PK)
-	 * @property integer $SearchQueryId the value for intSearchQueryId (Unique)
-	 * @property string $Query the value for strQuery 
-	 * @property QDateTime $DateRefreshed the value for dttDateRefreshed 
-	 * @property integer $ProcessTimeMs the value for intProcessTimeMs 
-	 * @property Group $Group the value for the Group object referenced by intGroupId (PK)
-	 * @property SearchQuery $SearchQuery the value for the SearchQuery object referenced by intSearchQueryId (Unique)
+	 * @property integer $Id the value for intId (Read-Only PK)
+	 * @property integer $SearchQuery the value for intSearchQuery (Not Null)
+	 * @property integer $QueryConditionTypeId the value for intQueryConditionTypeId (Not Null)
+	 * @property integer $QueryNode the value for intQueryNode (Not Null)
+	 * @property string $Value the value for strValue 
+	 * @property SearchQuery $SearchQueryObject the value for the SearchQuery object referenced by intSearchQuery (Not Null)
+	 * @property QueryNode $QueryNodeObject the value for the QueryNode object referenced by intQueryNode (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
-	class SmartGroupGen extends QBaseClass {
+	class QueryConditionGen extends QBaseClass {
 
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK column smart_group.group_id
-		 * @var integer intGroupId
+		 * Protected member variable that maps to the database PK Identity column query_condition.id
+		 * @var integer intId
 		 */
-		protected $intGroupId;
-		const GroupIdDefault = null;
+		protected $intId;
+		const IdDefault = null;
 
 
 		/**
-		 * Protected internal member variable that stores the original version of the PK column value (if restored)
-		 * Used by Save() to update a PK column during UPDATE
-		 * @var integer __intGroupId;
+		 * Protected member variable that maps to the database column query_condition.search_query
+		 * @var integer intSearchQuery
 		 */
-		protected $__intGroupId;
-
-		/**
-		 * Protected member variable that maps to the database column smart_group.search_query_id
-		 * @var integer intSearchQueryId
-		 */
-		protected $intSearchQueryId;
-		const SearchQueryIdDefault = null;
+		protected $intSearchQuery;
+		const SearchQueryDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column smart_group.query
-		 * @var string strQuery
+		 * Protected member variable that maps to the database column query_condition.query_condition_type_id
+		 * @var integer intQueryConditionTypeId
 		 */
-		protected $strQuery;
-		const QueryDefault = null;
+		protected $intQueryConditionTypeId;
+		const QueryConditionTypeIdDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column smart_group.date_refreshed
-		 * @var QDateTime dttDateRefreshed
+		 * Protected member variable that maps to the database column query_condition.query_node
+		 * @var integer intQueryNode
 		 */
-		protected $dttDateRefreshed;
-		const DateRefreshedDefault = null;
+		protected $intQueryNode;
+		const QueryNodeDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column smart_group.process_time_ms
-		 * @var integer intProcessTimeMs
+		 * Protected member variable that maps to the database column query_condition.value
+		 * @var string strValue
 		 */
-		protected $intProcessTimeMs;
-		const ProcessTimeMsDefault = null;
+		protected $strValue;
+		const ValueMaxLength = 255;
+		const ValueDefault = null;
 
 
 		/**
@@ -101,23 +95,23 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column smart_group.group_id.
+		 * in the database column query_condition.search_query.
 		 *
-		 * NOTE: Always use the Group property getter to correctly retrieve this Group object.
+		 * NOTE: Always use the SearchQueryObject property getter to correctly retrieve this SearchQuery object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Group objGroup
+		 * @var SearchQuery objSearchQueryObject
 		 */
-		protected $objGroup;
+		protected $objSearchQueryObject;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column smart_group.search_query_id.
+		 * in the database column query_condition.query_node.
 		 *
-		 * NOTE: Always use the SearchQuery property getter to correctly retrieve this SearchQuery object.
+		 * NOTE: Always use the QueryNodeObject property getter to correctly retrieve this QueryNode object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var SearchQuery objSearchQuery
+		 * @var QueryNode objQueryNodeObject
 		 */
-		protected $objSearchQuery;
+		protected $objQueryNodeObject;
 
 
 
@@ -136,26 +130,26 @@
 		}
 
 		/**
-		 * Load a SmartGroup from PK Info
-		 * @param integer $intGroupId
-		 * @return SmartGroup
+		 * Load a QueryCondition from PK Info
+		 * @param integer $intId
+		 * @return QueryCondition
 		 */
-		public static function Load($intGroupId) {
+		public static function Load($intId) {
 			// Use QuerySingle to Perform the Query
-			return SmartGroup::QuerySingle(
-				QQ::Equal(QQN::SmartGroup()->GroupId, $intGroupId)
+			return QueryCondition::QuerySingle(
+				QQ::Equal(QQN::QueryCondition()->Id, $intId)
 			);
 		}
 
 		/**
-		 * Load all SmartGroups
+		 * Load all QueryConditions
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return SmartGroup[]
+		 * @return QueryCondition[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
-			// Call SmartGroup::QueryArray to perform the LoadAll query
+			// Call QueryCondition::QueryArray to perform the LoadAll query
 			try {
-				return SmartGroup::QueryArray(QQ::All(), $objOptionalClauses);
+				return QueryCondition::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -163,12 +157,12 @@
 		}
 
 		/**
-		 * Count all SmartGroups
+		 * Count all QueryConditions
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call SmartGroup::QueryCount to perform the CountAll query
-			return SmartGroup::QueryCount(QQ::All());
+			// Call QueryCondition::QueryCount to perform the CountAll query
+			return QueryCondition::QueryCount(QQ::All());
 		}
 
 
@@ -190,12 +184,12 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = SmartGroup::GetDatabase();
+			$objDatabase = QueryCondition::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with SmartGroup-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'smart_group');
-			SmartGroup::GetSelectFields($objQueryBuilder);
-			$objQueryBuilder->AddFromItem('smart_group');
+			// Create/Build out the QueryBuilder object with QueryCondition-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'query_condition');
+			QueryCondition::GetSelectFields($objQueryBuilder);
+			$objQueryBuilder->AddFromItem('query_condition');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -242,39 +236,39 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a single SmartGroup object.
+		 * Static Qcodo Query method to query for a single QueryCondition object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return SmartGroup the queried object
+		 * @return QueryCondition the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = SmartGroup::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = QueryCondition::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new SmartGroup object
+			// Perform the Query, Get the First Row, and Instantiate a new QueryCondition object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return SmartGroup::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
+			return QueryCondition::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
-		 * Static Qcodo Query method to query for an array of SmartGroup objects.
+		 * Static Qcodo Query method to query for an array of QueryCondition objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return SmartGroup[] the queried objects as an array
+		 * @return QueryCondition[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = SmartGroup::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = QueryCondition::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -282,7 +276,7 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return SmartGroup::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
+			return QueryCondition::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
@@ -296,7 +290,7 @@
 		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the query statement
 			try {
-				$strQuery = SmartGroup::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = QueryCondition::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -311,7 +305,7 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a count of SmartGroup objects.
+		 * Static Qcodo Query method to query for a count of QueryCondition objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -321,7 +315,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = SmartGroup::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = QueryCondition::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -352,15 +346,15 @@
 
 /*		public static function QueryArrayCached($strConditions, $mixParameterArray = null) {
 			// Get the Database Object for this Class
-			$objDatabase = SmartGroup::GetDatabase();
+			$objDatabase = QueryCondition::GetDatabase();
 
 			// Lookup the QCache for This Query Statement
-			$objCache = new QCache('query', 'smart_group_' . serialize($strConditions));
+			$objCache = new QCache('query', 'query_condition_' . serialize($strConditions));
 			if (!($strQuery = $objCache->GetData())) {
-				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with SmartGroup-specific fields
+				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with QueryCondition-specific fields
 				$objQueryBuilder = new QQueryBuilder($objDatabase);
-				SmartGroup::GetSelectFields($objQueryBuilder);
-				SmartGroup::GetFromFields($objQueryBuilder);
+				QueryCondition::GetSelectFields($objQueryBuilder);
+				QueryCondition::GetFromFields($objQueryBuilder);
 
 				// Ensure the Passed-in Conditions is a string
 				try {
@@ -390,11 +384,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return SmartGroup::InstantiateDbResult($objDbResult);
+			return QueryCondition::InstantiateDbResult($objDbResult);
 		}*/
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this SmartGroup
+		 * Updates a QQueryBuilder with the SELECT fields for this QueryCondition
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -403,15 +397,15 @@
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
 			} else {
-				$strTableName = 'smart_group';
+				$strTableName = 'query_condition';
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'group_id', $strAliasPrefix . 'group_id');
-			$objBuilder->AddSelectItem($strTableName, 'search_query_id', $strAliasPrefix . 'search_query_id');
-			$objBuilder->AddSelectItem($strTableName, 'query', $strAliasPrefix . 'query');
-			$objBuilder->AddSelectItem($strTableName, 'date_refreshed', $strAliasPrefix . 'date_refreshed');
-			$objBuilder->AddSelectItem($strTableName, 'process_time_ms', $strAliasPrefix . 'process_time_ms');
+			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
+			$objBuilder->AddSelectItem($strTableName, 'search_query', $strAliasPrefix . 'search_query');
+			$objBuilder->AddSelectItem($strTableName, 'query_condition_type_id', $strAliasPrefix . 'query_condition_type_id');
+			$objBuilder->AddSelectItem($strTableName, 'query_node', $strAliasPrefix . 'query_node');
+			$objBuilder->AddSelectItem($strTableName, 'value', $strAliasPrefix . 'value');
 		}
 
 
@@ -422,16 +416,16 @@
 		///////////////////////////////
 
 		/**
-		 * Instantiate a SmartGroup from a Database Row.
+		 * Instantiate a QueryCondition from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this SmartGroup::InstantiateDbRow in order to perform
+		 * is calling this QueryCondition::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param QDatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
 		 * @param string $strExpandAsArrayNodes
 		 * @param QBaseClass $objPreviousItem
 		 * @param string[] $strColumnAliasArray
-		 * @return SmartGroup
+		 * @return QueryCondition
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null, $strColumnAliasArray = array()) {
 			// If blank row, return null
@@ -439,21 +433,20 @@
 				return null;
 
 
-			// Create a new instance of the SmartGroup object
-			$objToReturn = new SmartGroup();
+			// Create a new instance of the QueryCondition object
+			$objToReturn = new QueryCondition();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'group_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_id'] : $strAliasPrefix . 'group_id';
-			$objToReturn->intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$objToReturn->__intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'search_query_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'search_query_id'] : $strAliasPrefix . 'search_query_id';
-			$objToReturn->intSearchQueryId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'query', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query'] : $strAliasPrefix . 'query';
-			$objToReturn->strQuery = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_refreshed', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_refreshed'] : $strAliasPrefix . 'date_refreshed';
-			$objToReturn->dttDateRefreshed = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'process_time_ms', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'process_time_ms'] : $strAliasPrefix . 'process_time_ms';
-			$objToReturn->intProcessTimeMs = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
+			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'search_query', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'search_query'] : $strAliasPrefix . 'search_query';
+			$objToReturn->intSearchQuery = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'query_condition_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_condition_type_id'] : $strAliasPrefix . 'query_condition_type_id';
+			$objToReturn->intQueryConditionTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'query_node', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_node'] : $strAliasPrefix . 'query_node';
+			$objToReturn->intQueryNode = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'value'] : $strAliasPrefix . 'value';
+			$objToReturn->strValue = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -465,19 +458,19 @@
 
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'smart_group__';
+				$strAliasPrefix = 'query_condition__';
 
-			// Check for Group Early Binding
-			$strAlias = $strAliasPrefix . 'group_id__id';
+			// Check for SearchQueryObject Early Binding
+			$strAlias = $strAliasPrefix . 'search_query__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objSearchQueryObject = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'search_query__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for SearchQuery Early Binding
-			$strAlias = $strAliasPrefix . 'search_query_id__id';
+			// Check for QueryNodeObject Early Binding
+			$strAlias = $strAliasPrefix . 'query_node__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objSearchQuery = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'search_query_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objQueryNodeObject = QueryNode::InstantiateDbRow($objDbRow, $strAliasPrefix . 'query_node__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -486,11 +479,11 @@
 		}
 
 		/**
-		 * Instantiate an array of SmartGroups from a Database Result
+		 * Instantiate an array of QueryConditions from a Database Result
 		 * @param QDatabaseResultBase $objDbResult
 		 * @param string $strExpandAsArrayNodes
 		 * @param string[] $strColumnAliasArray
-		 * @return SmartGroup[]
+		 * @return QueryCondition[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
@@ -506,7 +499,7 @@
 			if ($strExpandAsArrayNodes) {
 				$objLastRowItem = null;
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = SmartGroup::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
+					$objItem = QueryCondition::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
 					if ($objItem) {
 						$objToReturn[] = $objItem;
 						$objLastRowItem = $objItem;
@@ -514,18 +507,18 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					$objToReturn[] = SmartGroup::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
+					$objToReturn[] = QueryCondition::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
 		}
 
 		/**
-		 * Instantiate a single SmartGroup object from a query cursor (e.g. a DB ResultSet).
+		 * Instantiate a single QueryCondition object from a query cursor (e.g. a DB ResultSet).
 		 * Cursor is automatically moved to the "next row" of the result set.
 		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
 		 * @param QDatabaseResultBase $objDbResult cursor resource
-		 * @return SmartGroup next row resulting from the query
+		 * @return QueryCondition next row resulting from the query
 		 */
 		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
 			// If blank resultset, then return empty result
@@ -543,7 +536,7 @@
 			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
 
 			// Load up the return result with a row and return it
-			return SmartGroup::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			return QueryCondition::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
 		}
 
 
@@ -554,26 +547,110 @@
 		///////////////////////////////////////////////////
 			
 		/**
-		 * Load a single SmartGroup object,
-		 * by GroupId Index(es)
-		 * @param integer $intGroupId
-		 * @return SmartGroup
+		 * Load a single QueryCondition object,
+		 * by Id Index(es)
+		 * @param integer $intId
+		 * @return QueryCondition
 		*/
-		public static function LoadByGroupId($intGroupId) {
-			return SmartGroup::QuerySingle(
-				QQ::Equal(QQN::SmartGroup()->GroupId, $intGroupId)
+		public static function LoadById($intId) {
+			return QueryCondition::QuerySingle(
+				QQ::Equal(QQN::QueryCondition()->Id, $intId)
 			);
 		}
 			
 		/**
-		 * Load a single SmartGroup object,
-		 * by SearchQueryId Index(es)
-		 * @param integer $intSearchQueryId
-		 * @return SmartGroup
+		 * Load an array of QueryCondition objects,
+		 * by SearchQuery Index(es)
+		 * @param integer $intSearchQuery
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return QueryCondition[]
 		*/
-		public static function LoadBySearchQueryId($intSearchQueryId) {
-			return SmartGroup::QuerySingle(
-				QQ::Equal(QQN::SmartGroup()->SearchQueryId, $intSearchQueryId)
+		public static function LoadArrayBySearchQuery($intSearchQuery, $objOptionalClauses = null) {
+			// Call QueryCondition::QueryArray to perform the LoadArrayBySearchQuery query
+			try {
+				return QueryCondition::QueryArray(
+					QQ::Equal(QQN::QueryCondition()->SearchQuery, $intSearchQuery),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count QueryConditions
+		 * by SearchQuery Index(es)
+		 * @param integer $intSearchQuery
+		 * @return int
+		*/
+		public static function CountBySearchQuery($intSearchQuery) {
+			// Call QueryCondition::QueryCount to perform the CountBySearchQuery query
+			return QueryCondition::QueryCount(
+				QQ::Equal(QQN::QueryCondition()->SearchQuery, $intSearchQuery)
+			);
+		}
+			
+		/**
+		 * Load an array of QueryCondition objects,
+		 * by QueryConditionTypeId Index(es)
+		 * @param integer $intQueryConditionTypeId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return QueryCondition[]
+		*/
+		public static function LoadArrayByQueryConditionTypeId($intQueryConditionTypeId, $objOptionalClauses = null) {
+			// Call QueryCondition::QueryArray to perform the LoadArrayByQueryConditionTypeId query
+			try {
+				return QueryCondition::QueryArray(
+					QQ::Equal(QQN::QueryCondition()->QueryConditionTypeId, $intQueryConditionTypeId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count QueryConditions
+		 * by QueryConditionTypeId Index(es)
+		 * @param integer $intQueryConditionTypeId
+		 * @return int
+		*/
+		public static function CountByQueryConditionTypeId($intQueryConditionTypeId) {
+			// Call QueryCondition::QueryCount to perform the CountByQueryConditionTypeId query
+			return QueryCondition::QueryCount(
+				QQ::Equal(QQN::QueryCondition()->QueryConditionTypeId, $intQueryConditionTypeId)
+			);
+		}
+			
+		/**
+		 * Load an array of QueryCondition objects,
+		 * by QueryNode Index(es)
+		 * @param integer $intQueryNode
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return QueryCondition[]
+		*/
+		public static function LoadArrayByQueryNode($intQueryNode, $objOptionalClauses = null) {
+			// Call QueryCondition::QueryArray to perform the LoadArrayByQueryNode query
+			try {
+				return QueryCondition::QueryArray(
+					QQ::Equal(QQN::QueryCondition()->QueryNode, $intQueryNode),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count QueryConditions
+		 * by QueryNode Index(es)
+		 * @param integer $intQueryNode
+		 * @return int
+		*/
+		public static function CountByQueryNode($intQueryNode) {
+			// Call QueryCondition::QueryCount to perform the CountByQueryNode query
+			return QueryCondition::QueryCount(
+				QQ::Equal(QQN::QueryCondition()->QueryNode, $intQueryNode)
 			);
 		}
 
@@ -591,14 +668,14 @@
 		//////////////////////////
 
 		/**
-		 * Save this SmartGroup
+		 * Save this QueryCondition
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
-		 * @return void
+		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = SmartGroup::GetDatabase();
+			$objDatabase = QueryCondition::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -606,22 +683,21 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `smart_group` (
-							`group_id`,
-							`search_query_id`,
-							`query`,
-							`date_refreshed`,
-							`process_time_ms`
+						INSERT INTO `query_condition` (
+							`search_query`,
+							`query_condition_type_id`,
+							`query_node`,
+							`value`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
-							' . $objDatabase->SqlVariable($this->strQuery) . ',
-							' . $objDatabase->SqlVariable($this->dttDateRefreshed) . ',
-							' . $objDatabase->SqlVariable($this->intProcessTimeMs) . '
+							' . $objDatabase->SqlVariable($this->intSearchQuery) . ',
+							' . $objDatabase->SqlVariable($this->intQueryConditionTypeId) . ',
+							' . $objDatabase->SqlVariable($this->intQueryNode) . ',
+							' . $objDatabase->SqlVariable($this->strValue) . '
 						)
 					');
 
-
+					// Update Identity column and return its value
+					$mixToReturn = $this->intId = $objDatabase->InsertId('query_condition', 'id');
 				} else {
 					// Perform an UPDATE query
 
@@ -630,15 +706,14 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`smart_group`
+							`query_condition`
 						SET
-							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							`search_query_id` = ' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
-							`query` = ' . $objDatabase->SqlVariable($this->strQuery) . ',
-							`date_refreshed` = ' . $objDatabase->SqlVariable($this->dttDateRefreshed) . ',
-							`process_time_ms` = ' . $objDatabase->SqlVariable($this->intProcessTimeMs) . '
+							`search_query` = ' . $objDatabase->SqlVariable($this->intSearchQuery) . ',
+							`query_condition_type_id` = ' . $objDatabase->SqlVariable($this->intQueryConditionTypeId) . ',
+							`query_node` = ' . $objDatabase->SqlVariable($this->intQueryNode) . ',
+							`value` = ' . $objDatabase->SqlVariable($this->strValue) . '
 						WHERE
-							`group_id` = ' . $objDatabase->SqlVariable($this->__intGroupId) . '
+							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
 				}
 
@@ -649,7 +724,6 @@
 
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
-			$this->__intGroupId = $this->intGroupId;
 
 
 			// Return 
@@ -657,71 +731,69 @@
 		}
 
 		/**
-		 * Delete this SmartGroup
+		 * Delete this QueryCondition
 		 * @return void
 		 */
 		public function Delete() {
-			if ((is_null($this->intGroupId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this SmartGroup with an unset primary key.');
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Cannot delete this QueryCondition with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = SmartGroup::GetDatabase();
+			$objDatabase = QueryCondition::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`smart_group`
+					`query_condition`
 				WHERE
-					`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . '');
+					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 		}
 
 		/**
-		 * Delete all SmartGroups
+		 * Delete all QueryConditions
 		 * @return void
 		 */
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = SmartGroup::GetDatabase();
+			$objDatabase = QueryCondition::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`smart_group`');
+					`query_condition`');
 		}
 
 		/**
-		 * Truncate smart_group table
+		 * Truncate query_condition table
 		 * @return void
 		 */
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = SmartGroup::GetDatabase();
+			$objDatabase = QueryCondition::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `smart_group`');
+				TRUNCATE `query_condition`');
 		}
 
 		/**
-		 * Reload this SmartGroup from the database.
+		 * Reload this QueryCondition from the database.
 		 * @return void
 		 */
 		public function Reload() {
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
-				throw new QCallerException('Cannot call Reload() on a new, unsaved SmartGroup object.');
+				throw new QCallerException('Cannot call Reload() on a new, unsaved QueryCondition object.');
 
 			// Reload the Object
-			$objReloaded = SmartGroup::Load($this->intGroupId);
+			$objReloaded = QueryCondition::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->GroupId = $objReloaded->GroupId;
-			$this->__intGroupId = $this->intGroupId;
-			$this->SearchQueryId = $objReloaded->SearchQueryId;
-			$this->strQuery = $objReloaded->strQuery;
-			$this->dttDateRefreshed = $objReloaded->dttDateRefreshed;
-			$this->intProcessTimeMs = $objReloaded->intProcessTimeMs;
+			$this->SearchQuery = $objReloaded->SearchQuery;
+			$this->QueryConditionTypeId = $objReloaded->QueryConditionTypeId;
+			$this->QueryNode = $objReloaded->QueryNode;
+			$this->strValue = $objReloaded->strValue;
 		}
 
 
@@ -742,54 +814,54 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'GroupId':
-					// Gets the value for intGroupId (PK)
+				case 'Id':
+					// Gets the value for intId (Read-Only PK)
 					// @return integer
-					return $this->intGroupId;
+					return $this->intId;
 
-				case 'SearchQueryId':
-					// Gets the value for intSearchQueryId (Unique)
+				case 'SearchQuery':
+					// Gets the value for intSearchQuery (Not Null)
 					// @return integer
-					return $this->intSearchQueryId;
+					return $this->intSearchQuery;
 
-				case 'Query':
-					// Gets the value for strQuery 
+				case 'QueryConditionTypeId':
+					// Gets the value for intQueryConditionTypeId (Not Null)
+					// @return integer
+					return $this->intQueryConditionTypeId;
+
+				case 'QueryNode':
+					// Gets the value for intQueryNode (Not Null)
+					// @return integer
+					return $this->intQueryNode;
+
+				case 'Value':
+					// Gets the value for strValue 
 					// @return string
-					return $this->strQuery;
-
-				case 'DateRefreshed':
-					// Gets the value for dttDateRefreshed 
-					// @return QDateTime
-					return $this->dttDateRefreshed;
-
-				case 'ProcessTimeMs':
-					// Gets the value for intProcessTimeMs 
-					// @return integer
-					return $this->intProcessTimeMs;
+					return $this->strValue;
 
 
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Group':
-					// Gets the value for the Group object referenced by intGroupId (PK)
-					// @return Group
+				case 'SearchQueryObject':
+					// Gets the value for the SearchQuery object referenced by intSearchQuery (Not Null)
+					// @return SearchQuery
 					try {
-						if ((!$this->objGroup) && (!is_null($this->intGroupId)))
-							$this->objGroup = Group::Load($this->intGroupId);
-						return $this->objGroup;
+						if ((!$this->objSearchQueryObject) && (!is_null($this->intSearchQuery)))
+							$this->objSearchQueryObject = SearchQuery::Load($this->intSearchQuery);
+						return $this->objSearchQueryObject;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'SearchQuery':
-					// Gets the value for the SearchQuery object referenced by intSearchQueryId (Unique)
-					// @return SearchQuery
+				case 'QueryNodeObject':
+					// Gets the value for the QueryNode object referenced by intQueryNode (Not Null)
+					// @return QueryNode
 					try {
-						if ((!$this->objSearchQuery) && (!is_null($this->intSearchQueryId)))
-							$this->objSearchQuery = SearchQuery::Load($this->intSearchQueryId);
-						return $this->objSearchQuery;
+						if ((!$this->objQueryNodeObject) && (!is_null($this->intQueryNode)))
+							$this->objQueryNodeObject = QueryNode::Load($this->intQueryNode);
+						return $this->objQueryNodeObject;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -828,58 +900,47 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'GroupId':
-					// Sets the value for intGroupId (PK)
+				case 'SearchQuery':
+					// Sets the value for intSearchQuery (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objGroup = null;
-						return ($this->intGroupId = QType::Cast($mixValue, QType::Integer));
+						$this->objSearchQueryObject = null;
+						return ($this->intSearchQuery = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'SearchQueryId':
-					// Sets the value for intSearchQueryId (Unique)
+				case 'QueryConditionTypeId':
+					// Sets the value for intQueryConditionTypeId (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objSearchQuery = null;
-						return ($this->intSearchQueryId = QType::Cast($mixValue, QType::Integer));
+						return ($this->intQueryConditionTypeId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'Query':
-					// Sets the value for strQuery 
+				case 'QueryNode':
+					// Sets the value for intQueryNode (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objQueryNodeObject = null;
+						return ($this->intQueryNode = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Value':
+					// Sets the value for strValue 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strQuery = QType::Cast($mixValue, QType::String));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'DateRefreshed':
-					// Sets the value for dttDateRefreshed 
-					// @param QDateTime $mixValue
-					// @return QDateTime
-					try {
-						return ($this->dttDateRefreshed = QType::Cast($mixValue, QType::DateTime));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'ProcessTimeMs':
-					// Sets the value for intProcessTimeMs 
-					// @param integer $mixValue
-					// @return integer
-					try {
-						return ($this->intProcessTimeMs = QType::Cast($mixValue, QType::Integer));
+						return ($this->strValue = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -889,43 +950,13 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Group':
-					// Sets the value for the Group object referenced by intGroupId (PK)
-					// @param Group $mixValue
-					// @return Group
-					if (is_null($mixValue)) {
-						$this->intGroupId = null;
-						$this->objGroup = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a Group object
-						try {
-							$mixValue = QType::Cast($mixValue, 'Group');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED Group object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Group for this SmartGroup');
-
-						// Update Local Member Variables
-						$this->objGroup = $mixValue;
-						$this->intGroupId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'SearchQuery':
-					// Sets the value for the SearchQuery object referenced by intSearchQueryId (Unique)
+				case 'SearchQueryObject':
+					// Sets the value for the SearchQuery object referenced by intSearchQuery (Not Null)
 					// @param SearchQuery $mixValue
 					// @return SearchQuery
 					if (is_null($mixValue)) {
-						$this->intSearchQueryId = null;
-						$this->objSearchQuery = null;
+						$this->intSearchQuery = null;
+						$this->objSearchQueryObject = null;
 						return null;
 					} else {
 						// Make sure $mixValue actually is a SearchQuery object
@@ -938,11 +969,41 @@
 
 						// Make sure $mixValue is a SAVED SearchQuery object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved SearchQuery for this SmartGroup');
+							throw new QCallerException('Unable to set an unsaved SearchQueryObject for this QueryCondition');
 
 						// Update Local Member Variables
-						$this->objSearchQuery = $mixValue;
-						$this->intSearchQueryId = $mixValue->Id;
+						$this->objSearchQueryObject = $mixValue;
+						$this->intSearchQuery = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'QueryNodeObject':
+					// Sets the value for the QueryNode object referenced by intQueryNode (Not Null)
+					// @param QueryNode $mixValue
+					// @return QueryNode
+					if (is_null($mixValue)) {
+						$this->intQueryNode = null;
+						$this->objQueryNodeObject = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a QueryNode object
+						try {
+							$mixValue = QType::Cast($mixValue, 'QueryNode');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED QueryNode object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved QueryNodeObject for this QueryCondition');
+
+						// Update Local Member Variables
+						$this->objQueryNodeObject = $mixValue;
+						$this->intQueryNode = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -985,22 +1046,22 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="SmartGroup"><sequence>';
-			$strToReturn .= '<element name="Group" type="xsd1:Group"/>';
-			$strToReturn .= '<element name="SearchQuery" type="xsd1:SearchQuery"/>';
-			$strToReturn .= '<element name="Query" type="xsd:string"/>';
-			$strToReturn .= '<element name="DateRefreshed" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="ProcessTimeMs" type="xsd:int"/>';
+			$strToReturn = '<complexType name="QueryCondition"><sequence>';
+			$strToReturn .= '<element name="Id" type="xsd:int"/>';
+			$strToReturn .= '<element name="SearchQueryObject" type="xsd1:SearchQuery"/>';
+			$strToReturn .= '<element name="QueryConditionTypeId" type="xsd:int"/>';
+			$strToReturn .= '<element name="QueryNodeObject" type="xsd1:QueryNode"/>';
+			$strToReturn .= '<element name="Value" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('SmartGroup', $strComplexTypeArray)) {
-				$strComplexTypeArray['SmartGroup'] = SmartGroup::GetSoapComplexTypeXml();
-				Group::AlterSoapComplexTypeArray($strComplexTypeArray);
+			if (!array_key_exists('QueryCondition', $strComplexTypeArray)) {
+				$strComplexTypeArray['QueryCondition'] = QueryCondition::GetSoapComplexTypeXml();
 				SearchQuery::AlterSoapComplexTypeArray($strComplexTypeArray);
+				QueryNode::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1008,25 +1069,25 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, SmartGroup::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, QueryCondition::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new SmartGroup();
-			if ((property_exists($objSoapObject, 'Group')) &&
-				($objSoapObject->Group))
-				$objToReturn->Group = Group::GetObjectFromSoapObject($objSoapObject->Group);
-			if ((property_exists($objSoapObject, 'SearchQuery')) &&
-				($objSoapObject->SearchQuery))
-				$objToReturn->SearchQuery = SearchQuery::GetObjectFromSoapObject($objSoapObject->SearchQuery);
-			if (property_exists($objSoapObject, 'Query'))
-				$objToReturn->strQuery = $objSoapObject->Query;
-			if (property_exists($objSoapObject, 'DateRefreshed'))
-				$objToReturn->dttDateRefreshed = new QDateTime($objSoapObject->DateRefreshed);
-			if (property_exists($objSoapObject, 'ProcessTimeMs'))
-				$objToReturn->intProcessTimeMs = $objSoapObject->ProcessTimeMs;
+			$objToReturn = new QueryCondition();
+			if (property_exists($objSoapObject, 'Id'))
+				$objToReturn->intId = $objSoapObject->Id;
+			if ((property_exists($objSoapObject, 'SearchQueryObject')) &&
+				($objSoapObject->SearchQueryObject))
+				$objToReturn->SearchQueryObject = SearchQuery::GetObjectFromSoapObject($objSoapObject->SearchQueryObject);
+			if (property_exists($objSoapObject, 'QueryConditionTypeId'))
+				$objToReturn->intQueryConditionTypeId = $objSoapObject->QueryConditionTypeId;
+			if ((property_exists($objSoapObject, 'QueryNodeObject')) &&
+				($objSoapObject->QueryNodeObject))
+				$objToReturn->QueryNodeObject = QueryNode::GetObjectFromSoapObject($objSoapObject->QueryNodeObject);
+			if (property_exists($objSoapObject, 'Value'))
+				$objToReturn->strValue = $objSoapObject->Value;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1039,22 +1100,20 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, SmartGroup::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, QueryCondition::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objGroup)
-				$objObject->objGroup = Group::GetSoapObjectFromObject($objObject->objGroup, false);
+			if ($objObject->objSearchQueryObject)
+				$objObject->objSearchQueryObject = SearchQuery::GetSoapObjectFromObject($objObject->objSearchQueryObject, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intGroupId = null;
-			if ($objObject->objSearchQuery)
-				$objObject->objSearchQuery = SearchQuery::GetSoapObjectFromObject($objObject->objSearchQuery, false);
+				$objObject->intSearchQuery = null;
+			if ($objObject->objQueryNodeObject)
+				$objObject->objQueryNodeObject = QueryNode::GetSoapObjectFromObject($objObject->objQueryNodeObject, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intSearchQueryId = null;
-			if ($objObject->dttDateRefreshed)
-				$objObject->dttDateRefreshed = $objObject->dttDateRefreshed->__toString(QDateTime::FormatSoap);
+				$objObject->intQueryNode = null;
 			return $objObject;
 		}
 
@@ -1069,29 +1128,29 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeSmartGroup extends QQNode {
-		protected $strTableName = 'smart_group';
-		protected $strPrimaryKey = 'group_id';
-		protected $strClassName = 'SmartGroup';
+	class QQNodeQueryCondition extends QQNode {
+		protected $strTableName = 'query_condition';
+		protected $strPrimaryKey = 'id';
+		protected $strClassName = 'QueryCondition';
 		public function __get($strName) {
 			switch ($strName) {
-				case 'GroupId':
-					return new QQNode('group_id', 'GroupId', 'integer', $this);
-				case 'Group':
-					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'SearchQueryId':
-					return new QQNode('search_query_id', 'SearchQueryId', 'integer', $this);
+				case 'Id':
+					return new QQNode('id', 'Id', 'integer', $this);
 				case 'SearchQuery':
-					return new QQNodeSearchQuery('search_query_id', 'SearchQuery', 'integer', $this);
-				case 'Query':
-					return new QQNode('query', 'Query', 'string', $this);
-				case 'DateRefreshed':
-					return new QQNode('date_refreshed', 'DateRefreshed', 'QDateTime', $this);
-				case 'ProcessTimeMs':
-					return new QQNode('process_time_ms', 'ProcessTimeMs', 'integer', $this);
+					return new QQNode('search_query', 'SearchQuery', 'integer', $this);
+				case 'SearchQueryObject':
+					return new QQNodeSearchQuery('search_query', 'SearchQueryObject', 'integer', $this);
+				case 'QueryConditionTypeId':
+					return new QQNode('query_condition_type_id', 'QueryConditionTypeId', 'integer', $this);
+				case 'QueryNode':
+					return new QQNode('query_node', 'QueryNode', 'integer', $this);
+				case 'QueryNodeObject':
+					return new QQNodeQueryNode('query_node', 'QueryNodeObject', 'integer', $this);
+				case 'Value':
+					return new QQNode('value', 'Value', 'string', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);
+					return new QQNode('id', 'Id', 'integer', $this);
 				default:
 					try {
 						return parent::__get($strName);
@@ -1103,29 +1162,29 @@
 		}
 	}
 
-	class QQReverseReferenceNodeSmartGroup extends QQReverseReferenceNode {
-		protected $strTableName = 'smart_group';
-		protected $strPrimaryKey = 'group_id';
-		protected $strClassName = 'SmartGroup';
+	class QQReverseReferenceNodeQueryCondition extends QQReverseReferenceNode {
+		protected $strTableName = 'query_condition';
+		protected $strPrimaryKey = 'id';
+		protected $strClassName = 'QueryCondition';
 		public function __get($strName) {
 			switch ($strName) {
-				case 'GroupId':
-					return new QQNode('group_id', 'GroupId', 'integer', $this);
-				case 'Group':
-					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'SearchQueryId':
-					return new QQNode('search_query_id', 'SearchQueryId', 'integer', $this);
+				case 'Id':
+					return new QQNode('id', 'Id', 'integer', $this);
 				case 'SearchQuery':
-					return new QQNodeSearchQuery('search_query_id', 'SearchQuery', 'integer', $this);
-				case 'Query':
-					return new QQNode('query', 'Query', 'string', $this);
-				case 'DateRefreshed':
-					return new QQNode('date_refreshed', 'DateRefreshed', 'QDateTime', $this);
-				case 'ProcessTimeMs':
-					return new QQNode('process_time_ms', 'ProcessTimeMs', 'integer', $this);
+					return new QQNode('search_query', 'SearchQuery', 'integer', $this);
+				case 'SearchQueryObject':
+					return new QQNodeSearchQuery('search_query', 'SearchQueryObject', 'integer', $this);
+				case 'QueryConditionTypeId':
+					return new QQNode('query_condition_type_id', 'QueryConditionTypeId', 'integer', $this);
+				case 'QueryNode':
+					return new QQNode('query_node', 'QueryNode', 'integer', $this);
+				case 'QueryNodeObject':
+					return new QQNodeQueryNode('query_node', 'QueryNodeObject', 'integer', $this);
+				case 'Value':
+					return new QQNode('value', 'Value', 'string', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);
+					return new QQNode('id', 'Id', 'integer', $this);
 				default:
 					try {
 						return parent::__get($strName);
