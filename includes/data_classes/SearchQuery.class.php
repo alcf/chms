@@ -27,6 +27,50 @@
 			return sprintf('SearchQuery Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will execute the search query object and should in theory
+		 * return an array of Person objects
+		 * @param QQClause $objOptionalClauses
+		 * @return Person[]
+		 */
+		public function Execute($objOptionalClauses = null) {
+			$objCondition = QQ::All();
+			if (!$objOptionalClauses) $objOptionalClauses = array();
+
+			foreach ($this->GetQueryConditionArray() as $objQueryCondition) {
+				$blnNotFlag = false;
+
+				switch ($objQueryCondition->QueryConditionTypeId) {
+					case QueryConditionType::IsEqualTo:
+						$strQqClassName = 'QQConditionEqual';
+						break;
+					case QueryConditionType::IsNotEqualTo:
+						$strQqClassName = 'QQConditionEqual';
+						$blnNotFlag = true;
+						break;
+					case QueryConditionType::IsGreaterThan:
+						$strQqClassName = 'QQConditionGreaterThan';
+						break;
+					default: throw new Exception('Unhandled');
+				}
+
+				if ($objQueryCondition->QueryNode->QcodoQueryNode) {
+					$objQueryNode = QQN::Person();
+					foreach (explode('->', $objQueryCondition->QueryNode->QcodoQueryNode) as $strPropertyName)
+						$objQueryNode = $objQueryNode->__get($strPropertyName);
+
+					$objConditionToAdd = new $strQqClassName($objQueryNode, $objQueryCondition->Value);
+				} else {
+					$objConditionToAdd = new $strQqClassName($objQueryNode);
+				}
+
+				// Set up "NOT" Condition and Add it to the total Condition
+				if ($blnNotFlag) $objConditionToAdd = QQ::Not($objConditionToAdd);
+				$objCondition = QQ::AndCondition($objCondition, $objConditionToAdd);
+			}
+
+			return Person::QueryArray($objCondition, $objOptionalClauses);
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

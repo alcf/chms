@@ -203,10 +203,11 @@ INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('City', 'QQN::Person()->Address->City', 'string', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Gender', 'QQN::Person()->Gender', 'M,F', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Membership Status', 'QQN::Person()->MembershipStatusTypeId', 'MembershipStatusType', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date Baptized', 'QQN::Person()->AttributeValue->DateValue', 'date', 'QQ::Equal(QQN::Person()->AttributeValue->AttributeId, 11)', false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date Accepted Christ', 'QQN::Person()->AttributeValue->DateValue', 'date', 'QQ::Equal(QQN::Person()->AttributeValue->AttributeId, 12)', false);
+INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('City', 'Address->City', 'string', null, false);
+INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Gender', 'Gender', 'M,F', null, false);
+INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Membership Status', 'MembershipStatusTypeId', 'MembershipStatusType', null, false);
+INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date of Birth', 'DateOfBirth', 'date', null, false);
+INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date Baptized', 'AttributeValue->DateValue', 'date', 'AttributeValue->AttributeId=11', false);
+INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date Accepted Christ', 'AttributeValue->DateValue', 'date', 'AttributeValue->AttributeId=12', false);
 
 INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
