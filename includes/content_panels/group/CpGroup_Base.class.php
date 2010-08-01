@@ -32,6 +32,26 @@
 		 */
 		public $dtgEmailMessageRoute;
 
+		/**
+		 * @var QDialogBox
+		 */
+		public $dlgEmailMessage;
+
+		/**
+		 * @var QButton
+		 */
+		public $btnEmailMessage;
+
+		/**
+		 * @var QControlProxy
+		 */
+		public $pxyEmailMessage;
+
+		/**
+		 * @var EmailMessageRoute
+		 */
+		public $objSelectedEmailMessageRoute;
+
 		public $lblMinistry;
 		public $lblType;
 		public $lblConfidential;
@@ -75,7 +95,7 @@
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 
-			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageRouteDataGrid();
+			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 
 			$this->SetupPanel();
 		}
@@ -84,7 +104,7 @@
 		 * Sets up the EmailMessageRouteDataGrid if there are messages associated with this group
 		 * @return void
 		 */
-		protected function SetupEmailMessageRouteDataGrid() {
+		protected function SetupEmailMessageControls() {
 			$this->dtgEmailMessageRoute = new EmailMessageRouteDataGrid($this);
 			$this->dtgEmailMessageRoute->MetaAddColumn(QQN::EmailMessageRoute()->EmailMessage->DateReceived, 'Width=115px', 'FontSize=11px', 'Html=<?= $_CONTROL->ParentControl->RenderEmailDateReceived($_ITEM); ?>');
 			$this->dtgEmailMessageRoute->MetaAddColumn(QQN::EmailMessageRoute()->EmailMessage->FromAddress, 'Width=200px', 'FontSize=11px', 'Html=<?= $_CONTROL->ParentControl->RenderEmailFromAddress($_ITEM); ?>', 'HtmlEntities=false');
@@ -94,6 +114,28 @@
 			$this->dtgEmailMessageRoute->Paginator = new QPaginator($this->dtgEmailMessageRoute);
 			$this->dtgEmailMessageRoute->SortColumnIndex = 0;
 			$this->dtgEmailMessageRoute->SortDirection = 1;
+
+			$this->dlgEmailMessage = new QDialogBox($this);
+			$this->dlgEmailMessage->Template = dirname(__FILE__) . '/dlgEmailMessage.tpl.php';
+			$this->dlgEmailMessage->HideDialogBox();
+
+			$this->btnEmailMessage = new QButton($this->dlgEmailMessage);
+			$this->btnEmailMessage->Text = 'Close';
+			$this->btnEmailMessage->AddAction(new QClickEvent(), new QHideDialogBox($this->dlgEmailMessage));
+
+			$this->pxyEmailMessage = new QControlProxy($this);
+			$this->pxyEmailMessage->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyEmailMessage_Click'));
+			$this->pxyEmailMessage->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+
+		public function pxyEmailMessage_Click($strFormId, $strControlId, $strParameter) {
+			$objEmailMessageRoute = EmailMessageRoute::Load($strParameter);
+			
+			if ($objEmailMessageRoute &&
+				($objEmailMessageRoute->GroupId == $this->objGroup->Id)) {
+				$this->objSelectedEmailMessageRoute = $objEmailMessageRoute;
+				$this->dlgEmailMessage->ShowDialogBox();
+			}
 		}
 
 		public function dtgEmailMessageRoute_Bind() {
@@ -123,7 +165,7 @@
 
 		public function RenderEmailSubject(EmailMessageRoute $objEmailMessageRoute) {
 			$strSubject = QApplication::HtmlEntities($objEmailMessageRoute->EmailMessage->Subject);
-			return $strSubject;
+			return sprintf('<a href="" %s>%s</a>', $this->pxyEmailMessage->RenderAsEvents($objEmailMessageRoute->Id, false), $strSubject);
 		}
 		
 		public function RenderEmailFromAddress(EmailMessageRoute $objEmailMessageRoute) {

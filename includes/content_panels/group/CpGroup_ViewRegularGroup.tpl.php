@@ -29,4 +29,5 @@
 	<br/>
 	<h3>Email Message Archive</h3>
 	<div class="section"><?php $_CONTROL->dtgEmailMessageRoute->Render(); ?></div>
+	<?php $_CONTROL->dlgEmailMessage->Render(); ?>
 <?php } ?>
