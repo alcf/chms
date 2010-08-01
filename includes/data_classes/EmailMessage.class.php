@@ -144,6 +144,14 @@
 				return;
 			}
 
+			// Next, ensure the entire email message is not larger than 10MB
+			if (strlen($this->strRawMessage) > 10485750) {
+				$this->strErrorMessage = "Message Too Large\r\n\r\nMessages sent to ALCF Groups must be less than 10MB in size.";
+				$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Error;
+				$this->Save();
+				return;
+			}
+
 			// Get a PersonArray and update Login / CommListEntry links
 			$objSenderArray = $this->CalculatePotentialSenderArray();
 
