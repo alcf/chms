@@ -124,6 +124,8 @@
 	define('GROUPS_SERVER_PORT', 995);
 	define('GROUPS_SERVER_USERNAME', 'groups@groups.alcf.net');
 	define('GROUPS_SERVER_PASSWORD_PATH', __DOCROOT__ . '/../groups_server_password.txt');
+	define('GROUPS_SERVER_BOUNCE_EMAIL', 'ALCF Groups Subsystem <mailer-daemon@groups.alcf.net>');
+	define('GROUPS_SERVER_BOUNCE_SUBJECT', 'Delivery Status Notification');
 
 	define('SMTP_SERVER', '10.128.2.37');
 	define('SMTP_TEST_MODE', true);

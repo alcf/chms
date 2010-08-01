@@ -45,6 +45,37 @@
 		}
 
 		/**
+		 * This will send this message in PendingSend status, given a limit of how many to send out.
+		 * It will first attempt to send bounces... then it will send actuals (up to the limit)
+		 * per token.
+		 * 
+		 * If all OutgoingMessageQueus are exhuasted for this EmailMessage, then this EmailMessage
+		 * status will be set to Completed, CompletedWithSomeRejections or Rejected
+		 * @return void
+		 */
+		public function SendMessage($intMaxPerEmail) {
+			$objToSend = EmailOutgoingQueue::LoadArrayByEmailMessageIdErrorFlag($this->intId, true);
+			foreach ($objToSend as $objEmailOutgoingQueue) {
+				$objSmtpMessage = new QEmailMessage(GROUPS_SERVER_BOUNCE_EMAIL, $objEmailOutgoingQueue->ToAddress, GROUPS_SERVER_BOUNCE_SUBJECT,
+					$this->ErrorMessage . "\r\n\r\n----- Original message -----\r\n\r\n" . $this->strRawMessage);
+				QEmailServer::Send($objSmtpMessage);
+				$objEmailOutgoingQueue->Delete();
+			}
+
+			if (!$this->CountEmailOutgoingQueues()) {
+				if ($this->CountEmailMessageRoutes() && $this->ErrorMessage) {
+					$this->intEmailMessageStatusTypeId = EmailMessageStatusType::CompletedWithSomeRejections;
+				} else if ($this->CountEmailMessageRoutes()) {
+					$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Completed;
+				} else {
+					$this->intEmailMessageStatusTypeId = EmailMessageStatusType::Rejected;
+				}
+
+				$this->Save();
+			}
+		}
+
+		/**
 		 * This will analyze a NotYetAnalyzed message, doing the appropriate
 		 * things to setup links to related objects, queueing outgoing messages, etc.
 		 * 
