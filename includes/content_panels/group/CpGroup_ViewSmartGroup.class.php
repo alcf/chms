@@ -10,7 +10,8 @@
 
 			$this->lblQuery = new QLabel($this);
 			$this->lblQuery->Name = 'Query Info';
-			$this->lblQuery->Text = $this->objGroup->SmartGroup->Query;
+			$this->lblQuery->Text = nl2br(QApplication::HtmlEntities($this->objGroup->SmartGroup->SearchQuery->Description));
+			$this->lblQuery->HtmlEntities = false;
 		}
 
 		public function dtgMembers_Bind() {

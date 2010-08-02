@@ -9,11 +9,11 @@
 <?php $_CONTROL->txtToken->RenderWithName(); ?>
 
 <?php $_CONTROL->chkConfidentialFlag->RenderWithName(); ?>
-
+</div>
 <br/>
 
-<?php $_CONTROL->txtQuery->RenderWithName('Width=400px', 'Height=120px', 'Instructions=Do NOT alter this unless you understand what you are doing!'); ?>
-</div>
+<?php $_CONTROL->pnlSearchQuery->Render(); ?>
+<br/>
 
 <div class="buttonBar">
 <?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>

@@ -27,6 +27,19 @@
 			return sprintf('SearchQuery Object %s',  $this->intId);
 		}
 
+		public function RefreshDescription($blnSave = true) {
+			$strDescriptionArray = array();
+			foreach ($this->GetQueryConditionArray(QQ::OrderBy(QQN::QueryCondition()->Id)) as $objQueryCondition) {
+				if (strlen($objQueryCondition->Value)) {
+					$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $objQueryCondition->Value);
+				} else {
+					$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
+				}
+			}
+			$this->strDescription = implode("\r\n", $strDescriptionArray);
+			if ($blnSave) $this->Save();
+		}
+
 		/**
 		 * This will execute the search query object and should in theory
 		 * return an array of Person objects

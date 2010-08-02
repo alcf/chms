@@ -27,6 +27,32 @@
 			return sprintf('SmartGroup Object %s',  $this->intGroupId);
 		}
 
+		public function RefreshParticipationList() {
+			$fltStartTime = microtime(true);
+			$objGroupRole = GroupRole::QuerySingle(QQ::AndCondition(
+				QQ::Equal(QQN::GroupRole()->MinistryId, $this->Group->MinistryId),
+				QQ::Equal(QQN::GroupRole()->GroupRoleTypeId, GroupRoleType::Participant)
+			), QQ::OrderBy(QQN::GroupRole()->Id));
+
+			if (!$objGroupRole) {
+				$objGroupRole = new GroupRole();
+				$objGroupRole->MinistryId = $this->Group->MinistryId;
+				$objGroupRole->Name = 'Participant';
+				$objGroupRole->GroupRoleTypeId = GroupRoleType::Participant;
+				$objGroupRole->Save();
+			}
+
+			$this->Group->DeleteAllGroupParticipations();
+			foreach ($this->SearchQuery->Execute() as $objPerson) {
+				$this->Group->AddPerson($objPerson, $objGroupRole->Id);
+			}
+
+			$fltEndTime = microtime(true);
+
+			$this->dttDateRefreshed = QDateTime::Now();
+			$this->ProcessTimeMs = round(($fltEndTime - $fltStartTime) * 1000);
+			$this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
