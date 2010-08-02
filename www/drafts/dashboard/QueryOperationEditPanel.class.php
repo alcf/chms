@@ -1,31 +1,31 @@
 <?php
 	/**
 	 * This is a quick-and-dirty draft QPanel object to do Create, Edit, and Delete functionality
-	 * of the QueryNode class.  It uses the code-generated
-	 * QueryNodeMetaControl class, which has meta-methods to help with
-	 * easily creating/defining controls to modify the fields of a QueryNode columns.
+	 * of the QueryOperation class.  It uses the code-generated
+	 * QueryOperationMetaControl class, which has meta-methods to help with
+	 * easily creating/defining controls to modify the fields of a QueryOperation columns.
 	 *
 	 * Any display customizations and presentation-tier logic can be implemented
 	 * here by overriding existing or implementing new methods, properties and variables.
 	 * 
 	 * NOTE: This file is overwritten on any code regenerations.  If you want to make
-	 * permanent changes, it is STRONGLY RECOMMENDED to move both query_node_edit.php AND
-	 * query_node_edit.tpl.php out of this Form Drafts directory.
+	 * permanent changes, it is STRONGLY RECOMMENDED to move both query_operation_edit.php AND
+	 * query_operation_edit.tpl.php out of this Form Drafts directory.
 	 *
 	 * @package ALCF ChMS
 	 * @subpackage Drafts
 	 */
-	class QueryNodeEditPanel extends QPanel {
-		// Local instance of the QueryNodeMetaControl
-		protected $mctQueryNode;
+	class QueryOperationEditPanel extends QPanel {
+		// Local instance of the QueryOperationMetaControl
+		protected $mctQueryOperation;
 
-		// Controls for QueryNode's Data Fields
+		// Controls for QueryOperation's Data Fields
 		public $lblId;
 		public $txtName;
-		public $txtQcodoQueryNode;
-		public $lstQueryDataType;
-		public $txtTypeDetail;
-		public $txtQcodoQueryCondition;
+		public $txtQqFactoryName;
+		public $chkArgumentFlag;
+		public $txtArgumentPrepend;
+		public $txtArgumentPostpend;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -47,20 +47,20 @@
 			}
 
 			// Setup Callback and Template
-			$this->strTemplate = 'QueryNodeEditPanel.tpl.php';
+			$this->strTemplate = 'QueryOperationEditPanel.tpl.php';
 			$this->strClosePanelMethod = $strClosePanelMethod;
 
-			// Construct the QueryNodeMetaControl
+			// Construct the QueryOperationMetaControl
 			// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
-			$this->mctQueryNode = QueryNodeMetaControl::Create($this, $intId);
+			$this->mctQueryOperation = QueryOperationMetaControl::Create($this, $intId);
 
-			// Call MetaControl's methods to create qcontrols based on QueryNode's data fields
-			$this->lblId = $this->mctQueryNode->lblId_Create();
-			$this->txtName = $this->mctQueryNode->txtName_Create();
-			$this->txtQcodoQueryNode = $this->mctQueryNode->txtQcodoQueryNode_Create();
-			$this->lstQueryDataType = $this->mctQueryNode->lstQueryDataType_Create();
-			$this->txtTypeDetail = $this->mctQueryNode->txtTypeDetail_Create();
-			$this->txtQcodoQueryCondition = $this->mctQueryNode->txtQcodoQueryCondition_Create();
+			// Call MetaControl's methods to create qcontrols based on QueryOperation's data fields
+			$this->lblId = $this->mctQueryOperation->lblId_Create();
+			$this->txtName = $this->mctQueryOperation->txtName_Create();
+			$this->txtQqFactoryName = $this->mctQueryOperation->txtQqFactoryName_Create();
+			$this->chkArgumentFlag = $this->mctQueryOperation->chkArgumentFlag_Create();
+			$this->txtArgumentPrepend = $this->mctQueryOperation->txtArgumentPrepend_Create();
+			$this->txtArgumentPostpend = $this->mctQueryOperation->txtArgumentPostpend_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);
@@ -74,21 +74,21 @@
 
 			$this->btnDelete = new QButton($this);
 			$this->btnDelete->Text = QApplication::Translate('Delete');
-			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('QueryNode') . '?'));
+			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('QueryOperation') . '?'));
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
-			$this->btnDelete->Visible = $this->mctQueryNode->EditMode;
+			$this->btnDelete->Visible = $this->mctQueryOperation->EditMode;
 		}
 
 		// Control AjaxAction Event Handlers
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			// Delegate "Save" processing to the QueryNodeMetaControl
-			$this->mctQueryNode->SaveQueryNode();
+			// Delegate "Save" processing to the QueryOperationMetaControl
+			$this->mctQueryOperation->SaveQueryOperation();
 			$this->CloseSelf(true);
 		}
 
 		public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-			// Delegate "Delete" processing to the QueryNodeMetaControl
-			$this->mctQueryNode->DeleteQueryNode();
+			// Delegate "Delete" processing to the QueryOperationMetaControl
+			$this->mctQueryOperation->DeleteQueryOperation();
 			$this->CloseSelf(true);
 		}
 

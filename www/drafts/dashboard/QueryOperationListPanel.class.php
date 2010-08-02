@@ -1,13 +1,13 @@
 <?php
 	/**
 	 * This is the abstract Panel class for the List All functionality
-	 * of the QueryCondition class.  This code-generated class
+	 * of the QueryOperation class.  This code-generated class
 	 * contains a datagrid to display an HTML page that can
-	 * list a collection of QueryCondition objects.  It includes
+	 * list a collection of QueryOperation objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
-	 * must create a new QPanel which extends this QueryConditionListPanelBase
+	 * must create a new QPanel which extends this QueryOperationListPanelBase
 	 * class.
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent re-
@@ -17,9 +17,9 @@
 	 * @subpackage Drafts
 	 * 
 	 */
-	class QueryConditionListPanel extends QPanel {
-		// Local instance of the Meta DataGrid to list QueryConditions
-		public $dtgQueryConditions;
+	class QueryOperationListPanel extends QPanel {
+		// Local instance of the Meta DataGrid to list QueryOperations
+		public $dtgQueryOperations;
 
 		// Other public QControls in this panel
 		public $btnCreateNew;
@@ -43,50 +43,51 @@
 			$this->strCloseEditPanelMethod = $strCloseEditPanelMethod;
 
 			// Setup the Template
-			$this->Template = 'QueryConditionListPanel.tpl.php';
+			$this->Template = 'QueryOperationListPanel.tpl.php';
 
 			// Instantiate the Meta DataGrid
-			$this->dtgQueryConditions = new QueryConditionDataGrid($this);
+			$this->dtgQueryOperations = new QueryOperationDataGrid($this);
 
 			// Style the DataGrid (if desired)
-			$this->dtgQueryConditions->CssClass = 'datagrid';
-			$this->dtgQueryConditions->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgQueryOperations->CssClass = 'datagrid';
+			$this->dtgQueryOperations->AlternateRowStyle->CssClass = 'alternate';
 
 			// Add Pagination (if desired)
-			$this->dtgQueryConditions->Paginator = new QPaginator($this->dtgQueryConditions);
-			$this->dtgQueryConditions->ItemsPerPage = 8;
+			$this->dtgQueryOperations->Paginator = new QPaginator($this->dtgQueryOperations);
+			$this->dtgQueryOperations->ItemsPerPage = 8;
 
 			// Use the MetaDataGrid functionality to add Columns for this datagrid
 
 			// Create an Edit Column
 			$this->pxyEdit = new QControlProxy($this);
 			$this->pxyEdit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyEdit_Click'));
-			$this->dtgQueryConditions->MetaAddEditProxyColumn($this->pxyEdit, 'Edit', 'Edit');
+			$this->dtgQueryOperations->MetaAddEditProxyColumn($this->pxyEdit, 'Edit', 'Edit');
 
-			// Create the Other Columns (note that you can use strings for query_condition's properties, or you
-			// can traverse down QQN::query_condition() to display fields that are down the hierarchy)
-			$this->dtgQueryConditions->MetaAddColumn('Id');
-			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->SearchQuery);
-			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryOperation);
-			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryNode);
-			$this->dtgQueryConditions->MetaAddColumn('Value');
+			// Create the Other Columns (note that you can use strings for query_operation's properties, or you
+			// can traverse down QQN::query_operation() to display fields that are down the hierarchy)
+			$this->dtgQueryOperations->MetaAddColumn('Id');
+			$this->dtgQueryOperations->MetaAddColumn('Name');
+			$this->dtgQueryOperations->MetaAddColumn('QqFactoryName');
+			$this->dtgQueryOperations->MetaAddColumn('ArgumentFlag');
+			$this->dtgQueryOperations->MetaAddColumn('ArgumentPrepend');
+			$this->dtgQueryOperations->MetaAddColumn('ArgumentPostpend');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);
-			$this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('QueryCondition');
+			$this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('QueryOperation');
 			$this->btnCreateNew->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCreateNew_Click'));
 		}
 
 		public function pxyEdit_Click($strFormId, $strControlId, $strParameter) {
 			$strParameterArray = explode(',', $strParameter);
-			$objEditPanel = new QueryConditionEditPanel($this, $this->strCloseEditPanelMethod, $strParameterArray[0]);
+			$objEditPanel = new QueryOperationEditPanel($this, $this->strCloseEditPanelMethod, $strParameterArray[0]);
 
 			$strMethodName = $this->strSetEditPanelMethod;
 			$this->objForm->$strMethodName($objEditPanel);
 		}
 
 		public function btnCreateNew_Click($strFormId, $strControlId, $strParameter) {
-			$objEditPanel = new QueryConditionEditPanel($this, $this->strCloseEditPanelMethod, null);
+			$objEditPanel = new QueryOperationEditPanel($this, $this->strCloseEditPanelMethod, null);
 			$strMethodName = $this->strSetEditPanelMethod;
 			$this->objForm->$strMethodName($objEditPanel);
 		}

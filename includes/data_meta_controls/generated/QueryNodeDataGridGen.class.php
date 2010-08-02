@@ -296,9 +296,9 @@
 				case 'Id': return QQN::QueryNode()->Id;
 				case 'Name': return QQN::QueryNode()->Name;
 				case 'QcodoQueryNode': return QQN::QueryNode()->QcodoQueryNode;
-				case 'DataType': return QQN::QueryNode()->DataType;
+				case 'QueryDataTypeId': return QQN::QueryNode()->QueryDataTypeId;
+				case 'TypeDetail': return QQN::QueryNode()->TypeDetail;
 				case 'QcodoQueryCondition': return QQN::QueryNode()->QcodoQueryCondition;
-				case 'RequiresDistinctFlag': return QQN::QueryNode()->RequiresDistinctFlag;
 				default: throw new QCallerException('Simple Property not found in QueryNodeDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

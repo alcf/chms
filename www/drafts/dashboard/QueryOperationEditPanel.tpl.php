@@ -1,5 +1,5 @@
 <?php
-	// This is the HTML template include file (.tpl.php) for query_conditionEditPanel.
+	// This is the HTML template include file (.tpl.php) for query_operationEditPanel.
 	// Remember that this is a DRAFT.  It is MEANT to be altered/modified.
 	// Be sure to move this out of the drafts/dashboard subdirectory before modifying to ensure that subsequent 
 	// code re-generations do not overwrite your changes.
@@ -7,13 +7,15 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstSearchQuery->RenderWithName(); ?>
+		<?php $_CONTROL->txtName->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstQueryOperation->RenderWithName(); ?>
+		<?php $_CONTROL->txtQqFactoryName->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstQueryNode->RenderWithName(); ?>
+		<?php $_CONTROL->chkArgumentFlag->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtValue->RenderWithName(); ?>
+		<?php $_CONTROL->txtArgumentPrepend->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtArgumentPostpend->RenderWithName(); ?>
 
 	</div>
 

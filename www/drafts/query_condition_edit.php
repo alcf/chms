@@ -25,7 +25,7 @@
 		// Controls for QueryCondition's Data Fields
 		protected $lblId;
 		protected $lstSearchQuery;
-		protected $lstQueryConditionType;
+		protected $lstQueryOperation;
 		protected $lstQueryNode;
 		protected $txtValue;
 
@@ -56,7 +56,7 @@
 			// Call MetaControl's methods to create qcontrols based on QueryCondition's data fields
 			$this->lblId = $this->mctQueryCondition->lblId_Create();
 			$this->lstSearchQuery = $this->mctQueryCondition->lstSearchQuery_Create();
-			$this->lstQueryConditionType = $this->mctQueryCondition->lstQueryConditionType_Create();
+			$this->lstQueryOperation = $this->mctQueryCondition->lstQueryOperation_Create();
 			$this->lstQueryNode = $this->mctQueryCondition->lstQueryNode_Create();
 			$this->txtValue = $this->mctQueryCondition->txtValue_Create();
 

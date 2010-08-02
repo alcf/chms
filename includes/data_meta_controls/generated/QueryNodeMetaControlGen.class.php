@@ -22,12 +22,12 @@
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $QcodoQueryNodeControl
 	 * property-read QLabel $QcodoQueryNodeLabel
-	 * property QTextBox $DataTypeControl
-	 * property-read QLabel $DataTypeLabel
+	 * property QListBox $QueryDataTypeIdControl
+	 * property-read QLabel $QueryDataTypeIdLabel
+	 * property QTextBox $TypeDetailControl
+	 * property-read QLabel $TypeDetailLabel
 	 * property QTextBox $QcodoQueryConditionControl
 	 * property-read QLabel $QcodoQueryConditionLabel
-	 * property QCheckBox $RequiresDistinctFlagControl
-	 * property-read QLabel $RequiresDistinctFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -43,16 +43,16 @@
 		protected $lblId;
 		protected $txtName;
 		protected $txtQcodoQueryNode;
-		protected $txtDataType;
+		protected $lstQueryDataType;
+		protected $txtTypeDetail;
 		protected $txtQcodoQueryCondition;
-		protected $chkRequiresDistinctFlag;
 
 		// Controls that allow the viewing of QueryNode's individual data fields
 		protected $lblName;
 		protected $lblQcodoQueryNode;
-		protected $lblDataType;
+		protected $lblQueryDataTypeId;
+		protected $lblTypeDetail;
 		protected $lblQcodoQueryCondition;
-		protected $lblRequiresDistinctFlag;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -217,28 +217,55 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtDataType
+		 * Create and setup QListBox lstQueryDataType
 		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
+		 * @return QListBox
 		 */
-		public function txtDataType_Create($strControlId = null) {
-			$this->txtDataType = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtDataType->Name = QApplication::Translate('Data Type');
-			$this->txtDataType->Text = $this->objQueryNode->DataType;
-			$this->txtDataType->MaxLength = QueryNode::DataTypeMaxLength;
-			return $this->txtDataType;
+		public function lstQueryDataType_Create($strControlId = null) {
+			$this->lstQueryDataType = new QListBox($this->objParentObject, $strControlId);
+			$this->lstQueryDataType->Name = QApplication::Translate('Query Data Type');
+			$this->lstQueryDataType->Required = true;
+			foreach (QueryDataType::$NameArray as $intId => $strValue)
+				$this->lstQueryDataType->AddItem(new QListItem($strValue, $intId, $this->objQueryNode->QueryDataTypeId == $intId));
+			return $this->lstQueryDataType;
 		}
 
 		/**
-		 * Create and setup QLabel lblDataType
+		 * Create and setup QLabel lblQueryDataTypeId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblDataType_Create($strControlId = null) {
-			$this->lblDataType = new QLabel($this->objParentObject, $strControlId);
-			$this->lblDataType->Name = QApplication::Translate('Data Type');
-			$this->lblDataType->Text = $this->objQueryNode->DataType;
-			return $this->lblDataType;
+		public function lblQueryDataTypeId_Create($strControlId = null) {
+			$this->lblQueryDataTypeId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblQueryDataTypeId->Name = QApplication::Translate('Query Data Type');
+			$this->lblQueryDataTypeId->Text = ($this->objQueryNode->QueryDataTypeId) ? QueryDataType::$NameArray[$this->objQueryNode->QueryDataTypeId] : null;
+			$this->lblQueryDataTypeId->Required = true;
+			return $this->lblQueryDataTypeId;
+		}
+
+		/**
+		 * Create and setup QTextBox txtTypeDetail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtTypeDetail_Create($strControlId = null) {
+			$this->txtTypeDetail = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtTypeDetail->Name = QApplication::Translate('Type Detail');
+			$this->txtTypeDetail->Text = $this->objQueryNode->TypeDetail;
+			$this->txtTypeDetail->MaxLength = QueryNode::TypeDetailMaxLength;
+			return $this->txtTypeDetail;
+		}
+
+		/**
+		 * Create and setup QLabel lblTypeDetail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblTypeDetail_Create($strControlId = null) {
+			$this->lblTypeDetail = new QLabel($this->objParentObject, $strControlId);
+			$this->lblTypeDetail->Name = QApplication::Translate('Type Detail');
+			$this->lblTypeDetail->Text = $this->objQueryNode->TypeDetail;
+			return $this->lblTypeDetail;
 		}
 
 		/**
@@ -266,30 +293,6 @@
 			return $this->lblQcodoQueryCondition;
 		}
 
-		/**
-		 * Create and setup QCheckBox chkRequiresDistinctFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
-		 */
-		public function chkRequiresDistinctFlag_Create($strControlId = null) {
-			$this->chkRequiresDistinctFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkRequiresDistinctFlag->Name = QApplication::Translate('Requires Distinct Flag');
-			$this->chkRequiresDistinctFlag->Checked = $this->objQueryNode->RequiresDistinctFlag;
-			return $this->chkRequiresDistinctFlag;
-		}
-
-		/**
-		 * Create and setup QLabel lblRequiresDistinctFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblRequiresDistinctFlag_Create($strControlId = null) {
-			$this->lblRequiresDistinctFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblRequiresDistinctFlag->Name = QApplication::Translate('Requires Distinct Flag');
-			$this->lblRequiresDistinctFlag->Text = ($this->objQueryNode->RequiresDistinctFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblRequiresDistinctFlag;
-		}
-
 
 
 		/**
@@ -309,14 +312,14 @@
 			if ($this->txtQcodoQueryNode) $this->txtQcodoQueryNode->Text = $this->objQueryNode->QcodoQueryNode;
 			if ($this->lblQcodoQueryNode) $this->lblQcodoQueryNode->Text = $this->objQueryNode->QcodoQueryNode;
 
-			if ($this->txtDataType) $this->txtDataType->Text = $this->objQueryNode->DataType;
-			if ($this->lblDataType) $this->lblDataType->Text = $this->objQueryNode->DataType;
+			if ($this->lstQueryDataType) $this->lstQueryDataType->SelectedValue = $this->objQueryNode->QueryDataTypeId;
+			if ($this->lblQueryDataTypeId) $this->lblQueryDataTypeId->Text = ($this->objQueryNode->QueryDataTypeId) ? QueryDataType::$NameArray[$this->objQueryNode->QueryDataTypeId] : null;
+
+			if ($this->txtTypeDetail) $this->txtTypeDetail->Text = $this->objQueryNode->TypeDetail;
+			if ($this->lblTypeDetail) $this->lblTypeDetail->Text = $this->objQueryNode->TypeDetail;
 
 			if ($this->txtQcodoQueryCondition) $this->txtQcodoQueryCondition->Text = $this->objQueryNode->QcodoQueryCondition;
 			if ($this->lblQcodoQueryCondition) $this->lblQcodoQueryCondition->Text = $this->objQueryNode->QcodoQueryCondition;
-
-			if ($this->chkRequiresDistinctFlag) $this->chkRequiresDistinctFlag->Checked = $this->objQueryNode->RequiresDistinctFlag;
-			if ($this->lblRequiresDistinctFlag) $this->lblRequiresDistinctFlag->Text = ($this->objQueryNode->RequiresDistinctFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
 		}
 
@@ -343,9 +346,9 @@
 				// Update any fields for controls that have been created
 				if ($this->txtName) $this->objQueryNode->Name = $this->txtName->Text;
 				if ($this->txtQcodoQueryNode) $this->objQueryNode->QcodoQueryNode = $this->txtQcodoQueryNode->Text;
-				if ($this->txtDataType) $this->objQueryNode->DataType = $this->txtDataType->Text;
+				if ($this->lstQueryDataType) $this->objQueryNode->QueryDataTypeId = $this->lstQueryDataType->SelectedValue;
+				if ($this->txtTypeDetail) $this->objQueryNode->TypeDetail = $this->txtTypeDetail->Text;
 				if ($this->txtQcodoQueryCondition) $this->objQueryNode->QcodoQueryCondition = $this->txtQcodoQueryCondition->Text;
-				if ($this->chkRequiresDistinctFlag) $this->objQueryNode->RequiresDistinctFlag = $this->chkRequiresDistinctFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -406,24 +409,24 @@
 				case 'QcodoQueryNodeLabel':
 					if (!$this->lblQcodoQueryNode) return $this->lblQcodoQueryNode_Create();
 					return $this->lblQcodoQueryNode;
-				case 'DataTypeControl':
-					if (!$this->txtDataType) return $this->txtDataType_Create();
-					return $this->txtDataType;
-				case 'DataTypeLabel':
-					if (!$this->lblDataType) return $this->lblDataType_Create();
-					return $this->lblDataType;
+				case 'QueryDataTypeIdControl':
+					if (!$this->lstQueryDataType) return $this->lstQueryDataType_Create();
+					return $this->lstQueryDataType;
+				case 'QueryDataTypeIdLabel':
+					if (!$this->lblQueryDataTypeId) return $this->lblQueryDataTypeId_Create();
+					return $this->lblQueryDataTypeId;
+				case 'TypeDetailControl':
+					if (!$this->txtTypeDetail) return $this->txtTypeDetail_Create();
+					return $this->txtTypeDetail;
+				case 'TypeDetailLabel':
+					if (!$this->lblTypeDetail) return $this->lblTypeDetail_Create();
+					return $this->lblTypeDetail;
 				case 'QcodoQueryConditionControl':
 					if (!$this->txtQcodoQueryCondition) return $this->txtQcodoQueryCondition_Create();
 					return $this->txtQcodoQueryCondition;
 				case 'QcodoQueryConditionLabel':
 					if (!$this->lblQcodoQueryCondition) return $this->lblQcodoQueryCondition_Create();
 					return $this->lblQcodoQueryCondition;
-				case 'RequiresDistinctFlagControl':
-					if (!$this->chkRequiresDistinctFlag) return $this->chkRequiresDistinctFlag_Create();
-					return $this->chkRequiresDistinctFlag;
-				case 'RequiresDistinctFlagLabel':
-					if (!$this->lblRequiresDistinctFlag) return $this->lblRequiresDistinctFlag_Create();
-					return $this->lblRequiresDistinctFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -452,12 +455,12 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'QcodoQueryNodeControl':
 						return ($this->txtQcodoQueryNode = QType::Cast($mixValue, 'QControl'));
-					case 'DataTypeControl':
-						return ($this->txtDataType = QType::Cast($mixValue, 'QControl'));
+					case 'QueryDataTypeIdControl':
+						return ($this->lstQueryDataType = QType::Cast($mixValue, 'QControl'));
+					case 'TypeDetailControl':
+						return ($this->txtTypeDetail = QType::Cast($mixValue, 'QControl'));
 					case 'QcodoQueryConditionControl':
 						return ($this->txtQcodoQueryCondition = QType::Cast($mixValue, 'QControl'));
-					case 'RequiresDistinctFlagControl':
-						return ($this->chkRequiresDistinctFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

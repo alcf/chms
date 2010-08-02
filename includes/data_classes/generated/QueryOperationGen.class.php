@@ -1,38 +1,38 @@
 <?php
 	/**
-	 * The abstract QueryNodeGen class defined here is
+	 * The abstract QueryOperationGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the QueryNode subclass which
-	 * extends this QueryNodeGen class.
+	 * To use, you should use the QueryOperation subclass which
+	 * extends this QueryOperationGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the QueryNode class.
+	 * in the QueryOperation class.
 	 * 
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
-	 * @property string $Name the value for strName 
-	 * @property string $QcodoQueryNode the value for strQcodoQueryNode 
-	 * @property integer $QueryDataTypeId the value for intQueryDataTypeId (Not Null)
-	 * @property string $TypeDetail the value for strTypeDetail 
-	 * @property string $QcodoQueryCondition the value for strQcodoQueryCondition 
-	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.query_node_id reverse relationship
-	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.query_node_id reverse relationship
+	 * @property string $Name the value for strName (Not Null)
+	 * @property string $QqFactoryName the value for strQqFactoryName (Not Null)
+	 * @property boolean $ArgumentFlag the value for blnArgumentFlag 
+	 * @property string $ArgumentPrepend the value for strArgumentPrepend 
+	 * @property string $ArgumentPostpend the value for strArgumentPostpend 
+	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.query_operation_id reverse relationship
+	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.query_operation_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
-	class QueryNodeGen extends QBaseClass {
+	class QueryOperationGen extends QBaseClass {
 
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK Identity column query_node.id
+		 * Protected member variable that maps to the database PK Identity column query_operation.id
 		 * @var integer intId
 		 */
 		protected $intId;
@@ -40,50 +40,52 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column query_node.name
+		 * Protected member variable that maps to the database column query_operation.name
 		 * @var string strName
 		 */
 		protected $strName;
-		const NameMaxLength = 100;
+		const NameMaxLength = 40;
 		const NameDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column query_node.qcodo_query_node
-		 * @var string strQcodoQueryNode
+		 * Protected member variable that maps to the database column query_operation.qq_factory_name
+		 * @var string strQqFactoryName
 		 */
-		protected $strQcodoQueryNode;
-		const QcodoQueryNodeDefault = null;
+		protected $strQqFactoryName;
+		const QqFactoryNameMaxLength = 80;
+		const QqFactoryNameDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column query_node.query_data_type_id
-		 * @var integer intQueryDataTypeId
+		 * Protected member variable that maps to the database column query_operation.argument_flag
+		 * @var boolean blnArgumentFlag
 		 */
-		protected $intQueryDataTypeId;
-		const QueryDataTypeIdDefault = null;
+		protected $blnArgumentFlag;
+		const ArgumentFlagDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column query_node.type_detail
-		 * @var string strTypeDetail
+		 * Protected member variable that maps to the database column query_operation.argument_prepend
+		 * @var string strArgumentPrepend
 		 */
-		protected $strTypeDetail;
-		const TypeDetailMaxLength = 255;
-		const TypeDetailDefault = null;
+		protected $strArgumentPrepend;
+		const ArgumentPrependMaxLength = 100;
+		const ArgumentPrependDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column query_node.qcodo_query_condition
-		 * @var string strQcodoQueryCondition
+		 * Protected member variable that maps to the database column query_operation.argument_postpend
+		 * @var string strArgumentPostpend
 		 */
-		protected $strQcodoQueryCondition;
-		const QcodoQueryConditionDefault = null;
+		protected $strArgumentPostpend;
+		const ArgumentPostpendMaxLength = 100;
+		const ArgumentPostpendDefault = null;
 
 
 		/**
 		 * Private member variable that stores a reference to a single QueryCondition object
-		 * (of type QueryCondition), if this QueryNode object was restored with
+		 * (of type QueryCondition), if this QueryOperation object was restored with
 		 * an expansion on the query_condition association table.
 		 * @var QueryCondition _objQueryCondition;
 		 */
@@ -91,7 +93,7 @@
 
 		/**
 		 * Private member variable that stores a reference to an array of QueryCondition objects
-		 * (of type QueryCondition[]), if this QueryNode object was restored with
+		 * (of type QueryCondition[]), if this QueryOperation object was restored with
 		 * an ExpandAsArray on the query_condition association table.
 		 * @var QueryCondition[] _objQueryConditionArray;
 		 */
@@ -136,26 +138,26 @@
 		}
 
 		/**
-		 * Load a QueryNode from PK Info
+		 * Load a QueryOperation from PK Info
 		 * @param integer $intId
-		 * @return QueryNode
+		 * @return QueryOperation
 		 */
 		public static function Load($intId) {
 			// Use QuerySingle to Perform the Query
-			return QueryNode::QuerySingle(
-				QQ::Equal(QQN::QueryNode()->Id, $intId)
+			return QueryOperation::QuerySingle(
+				QQ::Equal(QQN::QueryOperation()->Id, $intId)
 			);
 		}
 
 		/**
-		 * Load all QueryNodes
+		 * Load all QueryOperations
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return QueryNode[]
+		 * @return QueryOperation[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
-			// Call QueryNode::QueryArray to perform the LoadAll query
+			// Call QueryOperation::QueryArray to perform the LoadAll query
 			try {
-				return QueryNode::QueryArray(QQ::All(), $objOptionalClauses);
+				return QueryOperation::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -163,12 +165,12 @@
 		}
 
 		/**
-		 * Count all QueryNodes
+		 * Count all QueryOperations
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call QueryNode::QueryCount to perform the CountAll query
-			return QueryNode::QueryCount(QQ::All());
+			// Call QueryOperation::QueryCount to perform the CountAll query
+			return QueryOperation::QueryCount(QQ::All());
 		}
 
 
@@ -190,12 +192,12 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with QueryNode-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'query_node');
-			QueryNode::GetSelectFields($objQueryBuilder);
-			$objQueryBuilder->AddFromItem('query_node');
+			// Create/Build out the QueryBuilder object with QueryOperation-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'query_operation');
+			QueryOperation::GetSelectFields($objQueryBuilder);
+			$objQueryBuilder->AddFromItem('query_operation');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -242,39 +244,39 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a single QueryNode object.
+		 * Static Qcodo Query method to query for a single QueryOperation object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return QueryNode the queried object
+		 * @return QueryOperation the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = QueryNode::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = QueryOperation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new QueryNode object
+			// Perform the Query, Get the First Row, and Instantiate a new QueryOperation object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return QueryNode::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
+			return QueryOperation::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
-		 * Static Qcodo Query method to query for an array of QueryNode objects.
+		 * Static Qcodo Query method to query for an array of QueryOperation objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return QueryNode[] the queried objects as an array
+		 * @return QueryOperation[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = QueryNode::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = QueryOperation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -282,7 +284,7 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return QueryNode::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
+			return QueryOperation::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
@@ -296,7 +298,7 @@
 		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the query statement
 			try {
-				$strQuery = QueryNode::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = QueryOperation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -311,7 +313,7 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a count of QueryNode objects.
+		 * Static Qcodo Query method to query for a count of QueryOperation objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -321,7 +323,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = QueryNode::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = QueryOperation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -352,15 +354,15 @@
 
 /*		public static function QueryArrayCached($strConditions, $mixParameterArray = null) {
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Lookup the QCache for This Query Statement
-			$objCache = new QCache('query', 'query_node_' . serialize($strConditions));
+			$objCache = new QCache('query', 'query_operation_' . serialize($strConditions));
 			if (!($strQuery = $objCache->GetData())) {
-				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with QueryNode-specific fields
+				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with QueryOperation-specific fields
 				$objQueryBuilder = new QQueryBuilder($objDatabase);
-				QueryNode::GetSelectFields($objQueryBuilder);
-				QueryNode::GetFromFields($objQueryBuilder);
+				QueryOperation::GetSelectFields($objQueryBuilder);
+				QueryOperation::GetFromFields($objQueryBuilder);
 
 				// Ensure the Passed-in Conditions is a string
 				try {
@@ -390,11 +392,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return QueryNode::InstantiateDbResult($objDbResult);
+			return QueryOperation::InstantiateDbResult($objDbResult);
 		}*/
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this QueryNode
+		 * Updates a QQueryBuilder with the SELECT fields for this QueryOperation
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -403,16 +405,16 @@
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
 			} else {
-				$strTableName = 'query_node';
+				$strTableName = 'query_operation';
 				$strAliasPrefix = '';
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
-			$objBuilder->AddSelectItem($strTableName, 'qcodo_query_node', $strAliasPrefix . 'qcodo_query_node');
-			$objBuilder->AddSelectItem($strTableName, 'query_data_type_id', $strAliasPrefix . 'query_data_type_id');
-			$objBuilder->AddSelectItem($strTableName, 'type_detail', $strAliasPrefix . 'type_detail');
-			$objBuilder->AddSelectItem($strTableName, 'qcodo_query_condition', $strAliasPrefix . 'qcodo_query_condition');
+			$objBuilder->AddSelectItem($strTableName, 'qq_factory_name', $strAliasPrefix . 'qq_factory_name');
+			$objBuilder->AddSelectItem($strTableName, 'argument_flag', $strAliasPrefix . 'argument_flag');
+			$objBuilder->AddSelectItem($strTableName, 'argument_prepend', $strAliasPrefix . 'argument_prepend');
+			$objBuilder->AddSelectItem($strTableName, 'argument_postpend', $strAliasPrefix . 'argument_postpend');
 		}
 
 
@@ -423,16 +425,16 @@
 		///////////////////////////////
 
 		/**
-		 * Instantiate a QueryNode from a Database Row.
+		 * Instantiate a QueryOperation from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this QueryNode::InstantiateDbRow in order to perform
+		 * is calling this QueryOperation::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param QDatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
 		 * @param string $strExpandAsArrayNodes
 		 * @param QBaseClass $objPreviousItem
 		 * @param string[] $strColumnAliasArray
-		 * @return QueryNode
+		 * @return QueryOperation
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null, $strColumnAliasArray = array()) {
 			// If blank row, return null
@@ -448,7 +450,7 @@
 				// We are.  Now, prepare to check for ExpandAsArray clauses
 				$blnExpandedViaArray = false;
 				if (!$strAliasPrefix)
-					$strAliasPrefix = 'query_node__';
+					$strAliasPrefix = 'query_operation__';
 
 
 				$strAlias = $strAliasPrefix . 'querycondition__id';
@@ -468,26 +470,26 @@
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
-				else if ($strAliasPrefix == 'query_node__')
+				else if ($strAliasPrefix == 'query_operation__')
 					$strAliasPrefix = null;
 			}
 
-			// Create a new instance of the QueryNode object
-			$objToReturn = new QueryNode();
+			// Create a new instance of the QueryOperation object
+			$objToReturn = new QueryOperation();
 			$objToReturn->__blnRestored = true;
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'name'] : $strAliasPrefix . 'name';
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'qcodo_query_node', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'qcodo_query_node'] : $strAliasPrefix . 'qcodo_query_node';
-			$objToReturn->strQcodoQueryNode = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'query_data_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_data_type_id'] : $strAliasPrefix . 'query_data_type_id';
-			$objToReturn->intQueryDataTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'type_detail', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'type_detail'] : $strAliasPrefix . 'type_detail';
-			$objToReturn->strTypeDetail = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'qcodo_query_condition', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'qcodo_query_condition'] : $strAliasPrefix . 'qcodo_query_condition';
-			$objToReturn->strQcodoQueryCondition = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'qq_factory_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'qq_factory_name'] : $strAliasPrefix . 'qq_factory_name';
+			$objToReturn->strQqFactoryName = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'argument_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'argument_flag'] : $strAliasPrefix . 'argument_flag';
+			$objToReturn->blnArgumentFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'argument_prepend', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'argument_prepend'] : $strAliasPrefix . 'argument_prepend';
+			$objToReturn->strArgumentPrepend = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'argument_postpend', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'argument_postpend'] : $strAliasPrefix . 'argument_postpend';
+			$objToReturn->strArgumentPostpend = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -499,7 +501,7 @@
 
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'query_node__';
+				$strAliasPrefix = 'query_operation__';
 
 
 
@@ -518,11 +520,11 @@
 		}
 
 		/**
-		 * Instantiate an array of QueryNodes from a Database Result
+		 * Instantiate an array of QueryOperations from a Database Result
 		 * @param QDatabaseResultBase $objDbResult
 		 * @param string $strExpandAsArrayNodes
 		 * @param string[] $strColumnAliasArray
-		 * @return QueryNode[]
+		 * @return QueryOperation[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
@@ -538,7 +540,7 @@
 			if ($strExpandAsArrayNodes) {
 				$objLastRowItem = null;
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = QueryNode::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
+					$objItem = QueryOperation::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
 					if ($objItem) {
 						$objToReturn[] = $objItem;
 						$objLastRowItem = $objItem;
@@ -546,18 +548,18 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					$objToReturn[] = QueryNode::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
+					$objToReturn[] = QueryOperation::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
 		}
 
 		/**
-		 * Instantiate a single QueryNode object from a query cursor (e.g. a DB ResultSet).
+		 * Instantiate a single QueryOperation object from a query cursor (e.g. a DB ResultSet).
 		 * Cursor is automatically moved to the "next row" of the result set.
 		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
 		 * @param QDatabaseResultBase $objDbResult cursor resource
-		 * @return QueryNode next row resulting from the query
+		 * @return QueryOperation next row resulting from the query
 		 */
 		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
 			// If blank resultset, then return empty result
@@ -575,7 +577,7 @@
 			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
 
 			// Load up the return result with a row and return it
-			return QueryNode::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			return QueryOperation::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
 		}
 
 
@@ -586,46 +588,14 @@
 		///////////////////////////////////////////////////
 			
 		/**
-		 * Load a single QueryNode object,
+		 * Load a single QueryOperation object,
 		 * by Id Index(es)
 		 * @param integer $intId
-		 * @return QueryNode
+		 * @return QueryOperation
 		*/
 		public static function LoadById($intId) {
-			return QueryNode::QuerySingle(
-				QQ::Equal(QQN::QueryNode()->Id, $intId)
-			);
-		}
-			
-		/**
-		 * Load an array of QueryNode objects,
-		 * by QueryDataTypeId Index(es)
-		 * @param integer $intQueryDataTypeId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return QueryNode[]
-		*/
-		public static function LoadArrayByQueryDataTypeId($intQueryDataTypeId, $objOptionalClauses = null) {
-			// Call QueryNode::QueryArray to perform the LoadArrayByQueryDataTypeId query
-			try {
-				return QueryNode::QueryArray(
-					QQ::Equal(QQN::QueryNode()->QueryDataTypeId, $intQueryDataTypeId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count QueryNodes
-		 * by QueryDataTypeId Index(es)
-		 * @param integer $intQueryDataTypeId
-		 * @return int
-		*/
-		public static function CountByQueryDataTypeId($intQueryDataTypeId) {
-			// Call QueryNode::QueryCount to perform the CountByQueryDataTypeId query
-			return QueryNode::QueryCount(
-				QQ::Equal(QQN::QueryNode()->QueryDataTypeId, $intQueryDataTypeId)
+			return QueryOperation::QuerySingle(
+				QQ::Equal(QQN::QueryOperation()->Id, $intId)
 			);
 		}
 
@@ -643,14 +613,14 @@
 		//////////////////////////
 
 		/**
-		 * Save this QueryNode
+		 * Save this QueryOperation
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
 		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -658,23 +628,23 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `query_node` (
+						INSERT INTO `query_operation` (
 							`name`,
-							`qcodo_query_node`,
-							`query_data_type_id`,
-							`type_detail`,
-							`qcodo_query_condition`
+							`qq_factory_name`,
+							`argument_flag`,
+							`argument_prepend`,
+							`argument_postpend`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strName) . ',
-							' . $objDatabase->SqlVariable($this->strQcodoQueryNode) . ',
-							' . $objDatabase->SqlVariable($this->intQueryDataTypeId) . ',
-							' . $objDatabase->SqlVariable($this->strTypeDetail) . ',
-							' . $objDatabase->SqlVariable($this->strQcodoQueryCondition) . '
+							' . $objDatabase->SqlVariable($this->strQqFactoryName) . ',
+							' . $objDatabase->SqlVariable($this->blnArgumentFlag) . ',
+							' . $objDatabase->SqlVariable($this->strArgumentPrepend) . ',
+							' . $objDatabase->SqlVariable($this->strArgumentPostpend) . '
 						)
 					');
 
 					// Update Identity column and return its value
-					$mixToReturn = $this->intId = $objDatabase->InsertId('query_node', 'id');
+					$mixToReturn = $this->intId = $objDatabase->InsertId('query_operation', 'id');
 				} else {
 					// Perform an UPDATE query
 
@@ -683,13 +653,13 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`query_node`
+							`query_operation`
 						SET
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
-							`qcodo_query_node` = ' . $objDatabase->SqlVariable($this->strQcodoQueryNode) . ',
-							`query_data_type_id` = ' . $objDatabase->SqlVariable($this->intQueryDataTypeId) . ',
-							`type_detail` = ' . $objDatabase->SqlVariable($this->strTypeDetail) . ',
-							`qcodo_query_condition` = ' . $objDatabase->SqlVariable($this->strQcodoQueryCondition) . '
+							`qq_factory_name` = ' . $objDatabase->SqlVariable($this->strQqFactoryName) . ',
+							`argument_flag` = ' . $objDatabase->SqlVariable($this->blnArgumentFlag) . ',
+							`argument_prepend` = ' . $objDatabase->SqlVariable($this->strArgumentPrepend) . ',
+							`argument_postpend` = ' . $objDatabase->SqlVariable($this->strArgumentPostpend) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -709,70 +679,70 @@
 		}
 
 		/**
-		 * Delete this QueryNode
+		 * Delete this QueryOperation
 		 * @return void
 		 */
 		public function Delete() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this QueryNode with an unset primary key.');
+				throw new QUndefinedPrimaryKeyException('Cannot delete this QueryOperation with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`query_node`
+					`query_operation`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 		}
 
 		/**
-		 * Delete all QueryNodes
+		 * Delete all QueryOperations
 		 * @return void
 		 */
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`query_node`');
+					`query_operation`');
 		}
 
 		/**
-		 * Truncate query_node table
+		 * Truncate query_operation table
 		 * @return void
 		 */
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `query_node`');
+				TRUNCATE `query_operation`');
 		}
 
 		/**
-		 * Reload this QueryNode from the database.
+		 * Reload this QueryOperation from the database.
 		 * @return void
 		 */
 		public function Reload() {
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
-				throw new QCallerException('Cannot call Reload() on a new, unsaved QueryNode object.');
+				throw new QCallerException('Cannot call Reload() on a new, unsaved QueryOperation object.');
 
 			// Reload the Object
-			$objReloaded = QueryNode::Load($this->intId);
+			$objReloaded = QueryOperation::Load($this->intId);
 
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
-			$this->strQcodoQueryNode = $objReloaded->strQcodoQueryNode;
-			$this->QueryDataTypeId = $objReloaded->QueryDataTypeId;
-			$this->strTypeDetail = $objReloaded->strTypeDetail;
-			$this->strQcodoQueryCondition = $objReloaded->strQcodoQueryCondition;
+			$this->strQqFactoryName = $objReloaded->strQqFactoryName;
+			$this->blnArgumentFlag = $objReloaded->blnArgumentFlag;
+			$this->strArgumentPrepend = $objReloaded->strArgumentPrepend;
+			$this->strArgumentPostpend = $objReloaded->strArgumentPostpend;
 		}
 
 
@@ -799,29 +769,29 @@
 					return $this->intId;
 
 				case 'Name':
-					// Gets the value for strName 
+					// Gets the value for strName (Not Null)
 					// @return string
 					return $this->strName;
 
-				case 'QcodoQueryNode':
-					// Gets the value for strQcodoQueryNode 
+				case 'QqFactoryName':
+					// Gets the value for strQqFactoryName (Not Null)
 					// @return string
-					return $this->strQcodoQueryNode;
+					return $this->strQqFactoryName;
 
-				case 'QueryDataTypeId':
-					// Gets the value for intQueryDataTypeId (Not Null)
-					// @return integer
-					return $this->intQueryDataTypeId;
+				case 'ArgumentFlag':
+					// Gets the value for blnArgumentFlag 
+					// @return boolean
+					return $this->blnArgumentFlag;
 
-				case 'TypeDetail':
-					// Gets the value for strTypeDetail 
+				case 'ArgumentPrepend':
+					// Gets the value for strArgumentPrepend 
 					// @return string
-					return $this->strTypeDetail;
+					return $this->strArgumentPrepend;
 
-				case 'QcodoQueryCondition':
-					// Gets the value for strQcodoQueryCondition 
+				case 'ArgumentPostpend':
+					// Gets the value for strArgumentPostpend 
 					// @return string
-					return $this->strQcodoQueryCondition;
+					return $this->strArgumentPostpend;
 
 
 				///////////////////
@@ -835,13 +805,13 @@
 
 				case '_QueryCondition':
 					// Gets the value for the private _objQueryCondition (Read-Only)
-					// if set due to an expansion on the query_condition.query_node_id reverse relationship
+					// if set due to an expansion on the query_condition.query_operation_id reverse relationship
 					// @return QueryCondition
 					return $this->_objQueryCondition;
 
 				case '_QueryConditionArray':
 					// Gets the value for the private _objQueryConditionArray (Read-Only)
-					// if set due to an ExpandAsArray on the query_condition.query_node_id reverse relationship
+					// if set due to an ExpandAsArray on the query_condition.query_operation_id reverse relationship
 					// @return QueryCondition[]
 					return (array) $this->_objQueryConditionArray;
 
@@ -873,7 +843,7 @@
 				// Member Variables
 				///////////////////
 				case 'Name':
-					// Sets the value for strName 
+					// Sets the value for strName (Not Null)
 					// @param string $mixValue
 					// @return string
 					try {
@@ -883,45 +853,45 @@
 						throw $objExc;
 					}
 
-				case 'QcodoQueryNode':
-					// Sets the value for strQcodoQueryNode 
+				case 'QqFactoryName':
+					// Sets the value for strQqFactoryName (Not Null)
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strQcodoQueryNode = QType::Cast($mixValue, QType::String));
+						return ($this->strQqFactoryName = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'QueryDataTypeId':
-					// Sets the value for intQueryDataTypeId (Not Null)
-					// @param integer $mixValue
-					// @return integer
+				case 'ArgumentFlag':
+					// Sets the value for blnArgumentFlag 
+					// @param boolean $mixValue
+					// @return boolean
 					try {
-						return ($this->intQueryDataTypeId = QType::Cast($mixValue, QType::Integer));
+						return ($this->blnArgumentFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'TypeDetail':
-					// Sets the value for strTypeDetail 
+				case 'ArgumentPrepend':
+					// Sets the value for strArgumentPrepend 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strTypeDetail = QType::Cast($mixValue, QType::String));
+						return ($this->strArgumentPrepend = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'QcodoQueryCondition':
-					// Sets the value for strQcodoQueryCondition 
+				case 'ArgumentPostpend':
+					// Sets the value for strArgumentPostpend 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strQcodoQueryCondition = QType::Cast($mixValue, QType::String));
+						return ($this->strArgumentPostpend = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -973,7 +943,7 @@
 				return array();
 
 			try {
-				return QueryCondition::LoadArrayByQueryNodeId($this->intId, $objOptionalClauses);
+				return QueryCondition::LoadArrayByQueryOperationId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -988,7 +958,7 @@
 			if ((is_null($this->intId)))
 				return 0;
 
-			return QueryCondition::CountByQueryNodeId($this->intId);
+			return QueryCondition::CountByQueryOperationId($this->intId);
 		}
 
 		/**
@@ -998,19 +968,19 @@
 		*/ 
 		public function AssociateQueryCondition(QueryCondition $objQueryCondition) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateQueryCondition on this unsaved QueryNode.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateQueryCondition on this unsaved QueryOperation.');
 			if ((is_null($objQueryCondition->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateQueryCondition on this QueryNode with an unsaved QueryCondition.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateQueryCondition on this QueryOperation with an unsaved QueryCondition.');
 
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
 					`query_condition`
 				SET
-					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
@@ -1023,22 +993,22 @@
 		*/ 
 		public function UnassociateQueryCondition(QueryCondition $objQueryCondition) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryNode.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryOperation.');
 			if ((is_null($objQueryCondition->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this QueryNode with an unsaved QueryCondition.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this QueryOperation with an unsaved QueryCondition.');
 
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
 					`query_condition`
 				SET
-					`query_node_id` = null
+					`query_operation_id` = null
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
-					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1048,19 +1018,19 @@
 		*/ 
 		public function UnassociateAllQueryConditions() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryNode.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryOperation.');
 
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
 					`query_condition`
 				SET
-					`query_node_id` = null
+					`query_operation_id` = null
 				WHERE
-					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1071,12 +1041,12 @@
 		*/ 
 		public function DeleteAssociatedQueryCondition(QueryCondition $objQueryCondition) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryNode.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryOperation.');
 			if ((is_null($objQueryCondition->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this QueryNode with an unsaved QueryCondition.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this QueryOperation with an unsaved QueryCondition.');
 
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1084,7 +1054,7 @@
 					`query_condition`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
-					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1094,17 +1064,17 @@
 		*/ 
 		public function DeleteAllQueryConditions() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryNode.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateQueryCondition on this unsaved QueryOperation.');
 
 			// Get the Database Object for this Class
-			$objDatabase = QueryNode::GetDatabase();
+			$objDatabase = QueryOperation::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`query_condition`
 				WHERE
-					`query_node_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1117,21 +1087,21 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="QueryNode"><sequence>';
+			$strToReturn = '<complexType name="QueryOperation"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
-			$strToReturn .= '<element name="QcodoQueryNode" type="xsd:string"/>';
-			$strToReturn .= '<element name="QueryDataTypeId" type="xsd:int"/>';
-			$strToReturn .= '<element name="TypeDetail" type="xsd:string"/>';
-			$strToReturn .= '<element name="QcodoQueryCondition" type="xsd:string"/>';
+			$strToReturn .= '<element name="QqFactoryName" type="xsd:string"/>';
+			$strToReturn .= '<element name="ArgumentFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="ArgumentPrepend" type="xsd:string"/>';
+			$strToReturn .= '<element name="ArgumentPostpend" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('QueryNode', $strComplexTypeArray)) {
-				$strComplexTypeArray['QueryNode'] = QueryNode::GetSoapComplexTypeXml();
+			if (!array_key_exists('QueryOperation', $strComplexTypeArray)) {
+				$strComplexTypeArray['QueryOperation'] = QueryOperation::GetSoapComplexTypeXml();
 			}
 		}
 
@@ -1139,25 +1109,25 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, QueryNode::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, QueryOperation::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new QueryNode();
+			$objToReturn = new QueryOperation();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
 			if (property_exists($objSoapObject, 'Name'))
 				$objToReturn->strName = $objSoapObject->Name;
-			if (property_exists($objSoapObject, 'QcodoQueryNode'))
-				$objToReturn->strQcodoQueryNode = $objSoapObject->QcodoQueryNode;
-			if (property_exists($objSoapObject, 'QueryDataTypeId'))
-				$objToReturn->intQueryDataTypeId = $objSoapObject->QueryDataTypeId;
-			if (property_exists($objSoapObject, 'TypeDetail'))
-				$objToReturn->strTypeDetail = $objSoapObject->TypeDetail;
-			if (property_exists($objSoapObject, 'QcodoQueryCondition'))
-				$objToReturn->strQcodoQueryCondition = $objSoapObject->QcodoQueryCondition;
+			if (property_exists($objSoapObject, 'QqFactoryName'))
+				$objToReturn->strQqFactoryName = $objSoapObject->QqFactoryName;
+			if (property_exists($objSoapObject, 'ArgumentFlag'))
+				$objToReturn->blnArgumentFlag = $objSoapObject->ArgumentFlag;
+			if (property_exists($objSoapObject, 'ArgumentPrepend'))
+				$objToReturn->strArgumentPrepend = $objSoapObject->ArgumentPrepend;
+			if (property_exists($objSoapObject, 'ArgumentPostpend'))
+				$objToReturn->strArgumentPostpend = $objSoapObject->ArgumentPostpend;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1170,7 +1140,7 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, QueryNode::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, QueryOperation::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
@@ -1190,26 +1160,26 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeQueryNode extends QQNode {
-		protected $strTableName = 'query_node';
+	class QQNodeQueryOperation extends QQNode {
+		protected $strTableName = 'query_operation';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'QueryNode';
+		protected $strClassName = 'QueryOperation';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
-				case 'QcodoQueryNode':
-					return new QQNode('qcodo_query_node', 'QcodoQueryNode', 'string', $this);
-				case 'QueryDataTypeId':
-					return new QQNode('query_data_type_id', 'QueryDataTypeId', 'integer', $this);
-				case 'TypeDetail':
-					return new QQNode('type_detail', 'TypeDetail', 'string', $this);
-				case 'QcodoQueryCondition':
-					return new QQNode('qcodo_query_condition', 'QcodoQueryCondition', 'string', $this);
+				case 'QqFactoryName':
+					return new QQNode('qq_factory_name', 'QqFactoryName', 'string', $this);
+				case 'ArgumentFlag':
+					return new QQNode('argument_flag', 'ArgumentFlag', 'boolean', $this);
+				case 'ArgumentPrepend':
+					return new QQNode('argument_prepend', 'ArgumentPrepend', 'string', $this);
+				case 'ArgumentPostpend':
+					return new QQNode('argument_postpend', 'ArgumentPostpend', 'string', $this);
 				case 'QueryCondition':
-					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node_id');
+					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_operation_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1224,26 +1194,26 @@
 		}
 	}
 
-	class QQReverseReferenceNodeQueryNode extends QQReverseReferenceNode {
-		protected $strTableName = 'query_node';
+	class QQReverseReferenceNodeQueryOperation extends QQReverseReferenceNode {
+		protected $strTableName = 'query_operation';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'QueryNode';
+		protected $strClassName = 'QueryOperation';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
-				case 'QcodoQueryNode':
-					return new QQNode('qcodo_query_node', 'QcodoQueryNode', 'string', $this);
-				case 'QueryDataTypeId':
-					return new QQNode('query_data_type_id', 'QueryDataTypeId', 'integer', $this);
-				case 'TypeDetail':
-					return new QQNode('type_detail', 'TypeDetail', 'string', $this);
-				case 'QcodoQueryCondition':
-					return new QQNode('qcodo_query_condition', 'QcodoQueryCondition', 'string', $this);
+				case 'QqFactoryName':
+					return new QQNode('qq_factory_name', 'QqFactoryName', 'string', $this);
+				case 'ArgumentFlag':
+					return new QQNode('argument_flag', 'ArgumentFlag', 'boolean', $this);
+				case 'ArgumentPrepend':
+					return new QQNode('argument_prepend', 'ArgumentPrepend', 'string', $this);
+				case 'ArgumentPostpend':
+					return new QQNode('argument_postpend', 'ArgumentPostpend', 'string', $this);
 				case 'QueryCondition':
-					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node_id');
+					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_operation_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

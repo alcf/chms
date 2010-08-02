@@ -20,8 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $SearchQueryIdControl
 	 * property-read QLabel $SearchQueryIdLabel
-	 * property QListBox $QueryConditionTypeIdControl
-	 * property-read QLabel $QueryConditionTypeIdLabel
+	 * property QListBox $QueryOperationIdControl
+	 * property-read QLabel $QueryOperationIdLabel
 	 * property QListBox $QueryNodeIdControl
 	 * property-read QLabel $QueryNodeIdLabel
 	 * property QTextBox $ValueControl
@@ -40,13 +40,13 @@
 		// Controls that allow the editing of QueryCondition's individual data fields
 		protected $lblId;
 		protected $lstSearchQuery;
-		protected $lstQueryConditionType;
+		protected $lstQueryOperation;
 		protected $lstQueryNode;
 		protected $txtValue;
 
 		// Controls that allow the viewing of QueryCondition's individual data fields
 		protected $lblSearchQueryId;
-		protected $lblQueryConditionTypeId;
+		protected $lblQueryOperationId;
 		protected $lblQueryNodeId;
 		protected $lblValue;
 
@@ -206,30 +206,46 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstQueryConditionType
+		 * Create and setup QListBox lstQueryOperation
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstQueryConditionType_Create($strControlId = null) {
-			$this->lstQueryConditionType = new QListBox($this->objParentObject, $strControlId);
-			$this->lstQueryConditionType->Name = QApplication::Translate('Query Condition Type');
-			$this->lstQueryConditionType->Required = true;
-			foreach (QueryConditionType::$NameArray as $intId => $strValue)
-				$this->lstQueryConditionType->AddItem(new QListItem($strValue, $intId, $this->objQueryCondition->QueryConditionTypeId == $intId));
-			return $this->lstQueryConditionType;
+		public function lstQueryOperation_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstQueryOperation = new QListBox($this->objParentObject, $strControlId);
+			$this->lstQueryOperation->Name = QApplication::Translate('Query Operation');
+			$this->lstQueryOperation->Required = true;
+			if (!$this->blnEditMode)
+				$this->lstQueryOperation->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objQueryOperationCursor = QueryOperation::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objQueryOperation = QueryOperation::InstantiateCursor($objQueryOperationCursor)) {
+				$objListItem = new QListItem($objQueryOperation->__toString(), $objQueryOperation->Id);
+				if (($this->objQueryCondition->QueryOperation) && ($this->objQueryCondition->QueryOperation->Id == $objQueryOperation->Id))
+					$objListItem->Selected = true;
+				$this->lstQueryOperation->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstQueryOperation;
 		}
 
 		/**
-		 * Create and setup QLabel lblQueryConditionTypeId
+		 * Create and setup QLabel lblQueryOperationId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblQueryConditionTypeId_Create($strControlId = null) {
-			$this->lblQueryConditionTypeId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblQueryConditionTypeId->Name = QApplication::Translate('Query Condition Type');
-			$this->lblQueryConditionTypeId->Text = ($this->objQueryCondition->QueryConditionTypeId) ? QueryConditionType::$NameArray[$this->objQueryCondition->QueryConditionTypeId] : null;
-			$this->lblQueryConditionTypeId->Required = true;
-			return $this->lblQueryConditionTypeId;
+		public function lblQueryOperationId_Create($strControlId = null) {
+			$this->lblQueryOperationId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblQueryOperationId->Name = QApplication::Translate('Query Operation');
+			$this->lblQueryOperationId->Text = ($this->objQueryCondition->QueryOperation) ? $this->objQueryCondition->QueryOperation->__toString() : null;
+			$this->lblQueryOperationId->Required = true;
+			return $this->lblQueryOperationId;
 		}
 
 		/**
@@ -327,8 +343,19 @@
 			}
 			if ($this->lblSearchQueryId) $this->lblSearchQueryId->Text = ($this->objQueryCondition->SearchQuery) ? $this->objQueryCondition->SearchQuery->__toString() : null;
 
-			if ($this->lstQueryConditionType) $this->lstQueryConditionType->SelectedValue = $this->objQueryCondition->QueryConditionTypeId;
-			if ($this->lblQueryConditionTypeId) $this->lblQueryConditionTypeId->Text = ($this->objQueryCondition->QueryConditionTypeId) ? QueryConditionType::$NameArray[$this->objQueryCondition->QueryConditionTypeId] : null;
+			if ($this->lstQueryOperation) {
+					$this->lstQueryOperation->RemoveAllItems();
+				if (!$this->blnEditMode)
+					$this->lstQueryOperation->AddItem(QApplication::Translate('- Select One -'), null);
+				$objQueryOperationArray = QueryOperation::LoadAll();
+				if ($objQueryOperationArray) foreach ($objQueryOperationArray as $objQueryOperation) {
+					$objListItem = new QListItem($objQueryOperation->__toString(), $objQueryOperation->Id);
+					if (($this->objQueryCondition->QueryOperation) && ($this->objQueryCondition->QueryOperation->Id == $objQueryOperation->Id))
+						$objListItem->Selected = true;
+					$this->lstQueryOperation->AddItem($objListItem);
+				}
+			}
+			if ($this->lblQueryOperationId) $this->lblQueryOperationId->Text = ($this->objQueryCondition->QueryOperation) ? $this->objQueryCondition->QueryOperation->__toString() : null;
 
 			if ($this->lstQueryNode) {
 					$this->lstQueryNode->RemoveAllItems();
@@ -371,7 +398,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstSearchQuery) $this->objQueryCondition->SearchQueryId = $this->lstSearchQuery->SelectedValue;
-				if ($this->lstQueryConditionType) $this->objQueryCondition->QueryConditionTypeId = $this->lstQueryConditionType->SelectedValue;
+				if ($this->lstQueryOperation) $this->objQueryCondition->QueryOperationId = $this->lstQueryOperation->SelectedValue;
 				if ($this->lstQueryNode) $this->objQueryCondition->QueryNodeId = $this->lstQueryNode->SelectedValue;
 				if ($this->txtValue) $this->objQueryCondition->Value = $this->txtValue->Text;
 
@@ -428,12 +455,12 @@
 				case 'SearchQueryIdLabel':
 					if (!$this->lblSearchQueryId) return $this->lblSearchQueryId_Create();
 					return $this->lblSearchQueryId;
-				case 'QueryConditionTypeIdControl':
-					if (!$this->lstQueryConditionType) return $this->lstQueryConditionType_Create();
-					return $this->lstQueryConditionType;
-				case 'QueryConditionTypeIdLabel':
-					if (!$this->lblQueryConditionTypeId) return $this->lblQueryConditionTypeId_Create();
-					return $this->lblQueryConditionTypeId;
+				case 'QueryOperationIdControl':
+					if (!$this->lstQueryOperation) return $this->lstQueryOperation_Create();
+					return $this->lstQueryOperation;
+				case 'QueryOperationIdLabel':
+					if (!$this->lblQueryOperationId) return $this->lblQueryOperationId_Create();
+					return $this->lblQueryOperationId;
 				case 'QueryNodeIdControl':
 					if (!$this->lstQueryNode) return $this->lstQueryNode_Create();
 					return $this->lstQueryNode;
@@ -472,8 +499,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'SearchQueryIdControl':
 						return ($this->lstSearchQuery = QType::Cast($mixValue, 'QControl'));
-					case 'QueryConditionTypeIdControl':
-						return ($this->lstQueryConditionType = QType::Cast($mixValue, 'QControl'));
+					case 'QueryOperationIdControl':
+						return ($this->lstQueryOperation = QType::Cast($mixValue, 'QControl'));
 					case 'QueryNodeIdControl':
 						return ($this->lstQueryNode = QType::Cast($mixValue, 'QControl'));
 					case 'ValueControl':

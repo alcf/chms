@@ -237,6 +237,13 @@
 		QApplicationBase::$ClassFile['querynodemetacontrol'] = __DATA_META_CONTROLS__ . '/QueryNodeMetaControl.class.php';
 		QApplicationBase::$ClassFile['querynodedatagrid'] = __DATA_META_CONTROLS__ . '/QueryNodeDataGrid.class.php';
 
+	// ClassPaths for the QueryOperation class
+		QApplicationBase::$ClassFile['queryoperation'] = __DATA_CLASSES__ . '/QueryOperation.class.php';
+		QApplicationBase::$ClassFile['qqnodequeryoperation'] = __DATA_CLASSES__ . '/QueryOperation.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodequeryoperation'] = __DATA_CLASSES__ . '/QueryOperation.class.php';
+		QApplicationBase::$ClassFile['queryoperationmetacontrol'] = __DATA_META_CONTROLS__ . '/QueryOperationMetaControl.class.php';
+		QApplicationBase::$ClassFile['queryoperationdatagrid'] = __DATA_META_CONTROLS__ . '/QueryOperationDataGrid.class.php';
+
 	// ClassPaths for the Registry class
 		QApplicationBase::$ClassFile['registry'] = __DATA_CLASSES__ . '/Registry.class.php';
 		QApplicationBase::$ClassFile['qqnoderegistry'] = __DATA_CLASSES__ . '/Registry.class.php';

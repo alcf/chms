@@ -205,6 +205,12 @@
 			return new QQNodeQueryNode('query_node', null, null);
 		}
 		/**
+		 * @return QQNodeQueryOperation
+		 */
+		static public function QueryOperation() {
+			return new QQNodeQueryOperation('query_operation', null, null);
+		}
+		/**
 		 * @return QQNodeRegistry
 		 */
 		static public function Registry() {

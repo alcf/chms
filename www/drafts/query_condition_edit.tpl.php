@@ -19,7 +19,7 @@
 
 		<?php $this->lstSearchQuery->RenderWithName(); ?>
 
-		<?php $this->lstQueryConditionType->RenderWithName(); ?>
+		<?php $this->lstQueryOperation->RenderWithName(); ?>
 
 		<?php $this->lstQueryNode->RenderWithName(); ?>
 

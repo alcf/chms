@@ -68,9 +68,9 @@
 			$this->dtgQueryNodes->MetaAddColumn('Id');
 			$this->dtgQueryNodes->MetaAddColumn('Name');
 			$this->dtgQueryNodes->MetaAddColumn('QcodoQueryNode');
-			$this->dtgQueryNodes->MetaAddColumn('DataType');
+			$this->dtgQueryNodes->MetaAddTypeColumn('QueryDataTypeId', 'QueryDataType');
+			$this->dtgQueryNodes->MetaAddColumn('TypeDetail');
 			$this->dtgQueryNodes->MetaAddColumn('QcodoQueryCondition');
-			$this->dtgQueryNodes->MetaAddColumn('RequiresDistinctFlag');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

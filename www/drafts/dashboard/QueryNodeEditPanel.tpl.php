@@ -11,11 +11,11 @@
 
 		<?php $_CONTROL->txtQcodoQueryNode->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtDataType->RenderWithName(); ?>
+		<?php $_CONTROL->lstQueryDataType->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtTypeDetail->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtQcodoQueryCondition->RenderWithName(); ?>
-
-		<?php $_CONTROL->chkRequiresDistinctFlag->RenderWithName(); ?>
 
 	</div>
 
