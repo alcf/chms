@@ -34,42 +34,46 @@
 		 * @return Person[]
 		 */
 		public function Execute($objOptionalClauses = null) {
-			$objCondition = QQ::All();
-			if (!$objOptionalClauses) $objOptionalClauses = array();
+			// Setup the Clauses array
+			if (!$objOptionalClauses)
+				$objOptionalClauses = array(QQ::Distinct());
+			else
+				$objOptionalClauses[] = QQ::Distinct();
+
+			// Go through all the Conditions assigned to this SearchQuery
+			$objQqConditionToUse = QQ::All();
 
 			foreach ($this->GetQueryConditionArray() as $objQueryCondition) {
-				$blnNotFlag = false;
+				// Get the QcodoQuery Node we are operating on for this condition
+				$objQqNode = QQN::Person();
+				foreach (explode('->', $objQueryCondition->QueryNode->QcodoQueryNode) as $strPropertyName)
+					$objQqNode = $objQqNode->__get($strPropertyName);
 
-				switch ($objQueryCondition->QueryConditionTypeId) {
-					case QueryConditionType::IsEqualTo:
-						$strQqClassName = 'QQConditionEqual';
-						break;
-					case QueryConditionType::IsNotEqualTo:
-						$strQqClassName = 'QQConditionEqual';
-						$blnNotFlag = true;
-						break;
-					case QueryConditionType::IsGreaterThan:
-						$strQqClassName = 'QQConditionGreaterThan';
-						break;
-					default: throw new Exception('Unhandled');
-				}
+				// Get the comparison Query Operation we are using 
+				$objOperation = $objQueryCondition->QueryOperation;
 
-				if ($objQueryCondition->QueryNode->QcodoQueryNode) {
-					$objQueryNode = QQN::Person();
-					foreach (explode('->', $objQueryCondition->QueryNode->QcodoQueryNode) as $strPropertyName)
-						$objQueryNode = $objQueryNode->__get($strPropertyName);
+				// Get the QQ Factory Name we are using -- this becomes the Qq Method Name we run to construct
+				// the QcodoQueryCondition
+				$strMethodName = $objOperation->QqFactoryName;
 
-					$objConditionToAdd = new $strQqClassName($objQueryNode, $objQueryCondition->Value);
+				// Generate the QcodoQueryCondition
+				if ($objOperation->ArgumentFlag) {
+					$strArgument = $objOperation->ArgumentPrepend . $objQueryCondition->Value . $objOperation->ArgumentPostpend;
+					$objQqConditionToAdd = QQ::$strMethodName($objQqNode, $strArgument);
 				} else {
-					$objConditionToAdd = new $strQqClassName($objQueryNode);
+					$objQqConditionToAdd = QQ::$strMethodName($objQqNode);
 				}
 
-				// Set up "NOT" Condition and Add it to the total Condition
-				if ($blnNotFlag) $objConditionToAdd = QQ::Not($objConditionToAdd);
-				$objCondition = QQ::AndCondition($objCondition, $objConditionToAdd);
+				// Add any Node Conditions (if applicable)
+				if ($objQueryCondition->QueryNode->QcodoQueryCondition) {
+					throw new Exception('TODO');
+				}
+
+				$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd);
 			}
 
-			return Person::QueryArray($objCondition, $objOptionalClauses);
+			// Return an array of Person objects
+			return Person::QueryArray($objQqConditionToUse, $objOptionalClauses);
 		}
 
 		// Override or Create New Load/Count methods
