@@ -213,7 +213,7 @@ INSERT INTO query_node VALUES (null, 'City', 'Address->City', 1, null, null);
 INSERT INTO query_node VALUES (null, 'Gender', 'Gender', 5, 'M,F', null);
 INSERT INTO query_node VALUES (null, 'Membership Status', 'MembershipStatusTypeId', 4, 'MembershipStatusType', null);
 INSERT INTO query_node VALUES (null, 'Date of Birth', 'DateOfBirth', 3, null, null);
-INSERT INTO query_node VALUES (null, 'Date Baptized', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId=11');
-INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId=12');
+INSERT INTO query_node VALUES (null, 'Date Baptized', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId Equal 11');
+INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId Equal 12');
 
 INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');

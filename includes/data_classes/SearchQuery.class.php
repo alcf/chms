@@ -65,11 +65,37 @@
 				}
 
 				// Add any Node Conditions (if applicable)
+				$objQqConditionToAddForNode = null;
 				if ($objQueryCondition->QueryNode->QcodoQueryCondition) {
-					throw new Exception('TODO');
+					foreach (explode(',', $objQueryCondition->QueryNode->QcodoQueryCondition) as $strNodeCondition) {
+						// Index 0 - The QqNode that the NodeCondition operates on
+						// Index 1 - The QQ:: Factory Name for the condition
+						// Index 2 (if applicable) - the value to compare with
+						$strTokens = explode(' ', $strNodeCondition);
+
+						// Figure out the NodeCondition QqNode
+						$objQqNode = QQN::Person();
+						foreach (explode('->', $strTokens[0]) as $strPropertyName)
+							$objQqNode = $objQqNode->__get($strPropertyName);
+
+						// Get the Method Name
+						$strMethodName = $strTokens[1];
+
+						// Add the Condition with argument
+						if (array_key_exists(2, $strTokens)) {
+							$objQqConditionToAddForNode = QQ::$strMethodName($objQqNode, $strTokens[2]);
+
+						// Add the Condition WITHOUT argument
+						} else {
+							$objQqConditionToAddForNode = QQ::$strMethodName($objQqNode);
+						}
+					}
 				}
 
-				$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd);
+				if ($objQqConditionToAddForNode)
+					$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd, $objQqConditionToAddForNode);
+				else
+					$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd);
 			}
 
 			// Return an array of Person objects
