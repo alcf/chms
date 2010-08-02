@@ -58,6 +58,10 @@
 
 			$this->strPageTitle .= $this->objPerson->Name;
 
+			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
+				unset($this->strSubNavItemArray['stewardship']);
+			}
+
 			$this->lblHeading = new QLabel($this);
 			$this->lblSubheading = new QLabel($this);
 			$this->lblSubheading->CssClass = 'subhead';
