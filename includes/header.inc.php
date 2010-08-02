@@ -19,7 +19,7 @@
 	<div class="status">
 		Welcome, <strong><?php _p(QApplication::$Login->Name); ?></strong>
 		&nbsp;|&nbsp;
-		<?php _p(QDateTime::Now()->ToString('DDDD, MMMM D YYYY')); ?>
+		<?php _p(QDateTime::Now()->ToString('DDDD, MMMM D, YYYY')); ?>
 		&nbsp;|&nbsp;
 		<a href="/logout/" title="Log Out of ALCF ChMS">Logout</a>
 		<br/>
