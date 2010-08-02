@@ -24,7 +24,7 @@
 			// Increment CurrentStateIndex if BackButtonFlag is true
 			// Otherwise, we're in an ajax-to-ajax call, and the back button is invalid anyway
 			// No need to increment session state index -- let's not to save space
-			if ($blnBackButtonFlag)
+//			if ($blnBackButtonFlag)
 				$_SESSION['qform_current_state_index'] = $_SESSION['qform_current_state_index'] + 1;
 			$intStateIndex = $_SESSION['qform_current_state_index'];
 

@@ -3,6 +3,8 @@
 		public $lblQuery;
 		public $lblRefresh;
 		
+		public $btnRefresh;
+		
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
 
@@ -16,10 +18,25 @@
 
 			$this->lblRefresh = new QLabel($this);
 			$this->lblRefresh->Name = 'Participant List Last Refresh';
-			if ($this->objGroup->SmartGroup->DateRefreshed)
-				$this->lblRefresh->Text = 'about ' . QDateTime::Now()->Difference($this->objGroup->SmartGroup->DateRefreshed)->SimpleDisplay() . ' ago';
-			else
+			if ($this->objGroup->SmartGroup->DateRefreshed) {
+				$strText = QDateTime::Now()->Difference($this->objGroup->SmartGroup->DateRefreshed)->SimpleDisplay();
+				$this->lblRefresh->Text = ($strText) ? 'about ' . $strText . ' ago' : 'just now';
+			} else {
 				$this->lstRefresh->Text = 'n/a';
+			}
+
+			$this->btnRefresh = new QButton($this);
+			$this->btnRefresh->Name = '&nbsp;';
+			$this->btnRefresh->Text = 'Refresh Now';
+			$this->btnRefresh->CssClass = 'primary';
+			$this->btnRefresh->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click'));
+		}
+
+		public function btnRefresh_Click() {
+			$this->objGroup->SmartGroup->RefreshParticipationList();
+			$this->dtgMembers->Refresh();
+			$strText = QDateTime::Now()->Difference($this->objGroup->SmartGroup->DateRefreshed)->SimpleDisplay();
+			$this->lblRefresh->Text = ($strText) ? 'about ' . $strText . ' ago' : 'just now';
 		}
 
 		public function dtgMembers_Bind() {

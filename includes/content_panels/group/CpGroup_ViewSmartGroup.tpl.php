@@ -14,6 +14,7 @@
 	<br/>
 	<?php $_CONTROL->lblQuery->RenderWithName(); ?>
 	<?php $_CONTROL->lblRefresh->RenderWithName(); ?>
+	<?php $_CONTROL->btnRefresh->RenderWithName(); ?>
 </div>
 
 
