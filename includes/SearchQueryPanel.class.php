@@ -196,7 +196,7 @@
 
 					case QueryDataType::DateValue:
 						$ctlValue = new QDateTimePicker($pnlValue, $strControlId);
-						if ($objQueryCondition->QueryNodeId == $objQueryNode->Id) $ctlValue->DateTime = $objQueryCondition->Value;
+						if ($objQueryCondition->QueryNodeId == $objQueryNode->Id) $ctlValue->DateTime = new QDateTime($objQueryCondition->Value);
 						break;
 
 					case QueryDataType::IntegerValue:

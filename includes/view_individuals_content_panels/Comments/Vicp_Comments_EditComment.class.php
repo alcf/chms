@@ -28,13 +28,10 @@
 				$this->lstPrivacyLevel->RemoveItem(0);
 			}
 
-			$this->lstCategory = $this->mctComments->lstCommentCategory_Create();
+			$this->lstCategory = $this->mctComments->lstCommentCategory_Create(null, null, QQ::OrderBy(QQN::CommentCategory()->Name));
 			$this->txtComment = $this->mctComments->txtComment_Create();
 			$this->txtComment->Width = '500px';
 			$this->txtComment->Height = '200px';
-
-			$this->mctComments->lstPerson_Create();
-			$this->mctComments->lstPostedByLogin_Create();
 		}
 
 		public function btnSave_Click() {

@@ -209,7 +209,7 @@ INSERT INTO query_operation VALUES (null, 'Is Greater or Equal To', 'GreaterOrEq
 INSERT INTO query_operation VALUES (null, 'Is Less Than', 'LessThan', true, null, null);
 INSERT INTO query_operation VALUES (null, 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
 
-INSERT INTO query_node VALUES (null, 'City', 'Address->City', 1, null, null);
+INSERT INTO query_node VALUES (null, 'Home City', 'HouseholdParticipation->Household->Address->City', 1, null, null);
 INSERT INTO query_node VALUES (null, 'Gender', 'Gender', 5, 'M,F', null);
 INSERT INTO query_node VALUES (null, 'Membership Status', 'MembershipStatusTypeId', 4, 'MembershipStatusType', null);
 INSERT INTO query_node VALUES (null, 'Date of Birth', 'DateOfBirth', 3, null, null);

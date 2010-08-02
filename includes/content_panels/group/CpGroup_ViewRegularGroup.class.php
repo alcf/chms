@@ -8,11 +8,14 @@
 		}
 
 		public function dtgMembers_Bind() {
-			$objClauses = array(QQ::Distinct());
+			$objCondition = QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id);
+			$this->dtgMembers->TotalItemCount = Person::QueryCount($objCondition);
+
+			$objClauses = array();
 			if ($objClause = $this->dtgMembers->LimitClause) $objClauses[] = $objClause;
 			if ($objClause = $this->dtgMembers->OrderByClause) $objClauses[] = $objClause;
 
-			$this->dtgMembers->DataSource = Person::QueryArray(QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id), $objClauses);
+			$this->dtgMembers->DataSource = Person::QueryArray($objCondition, $objClauses);
 		}
 	}
 ?>

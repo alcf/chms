@@ -13,6 +13,7 @@
 	<?php $_CONTROL->lblEmail->RenderWithName(); ?>
 	<br/>
 	<?php $_CONTROL->lblQuery->RenderWithName(); ?>
+	<?php $_CONTROL->lblRefresh->RenderWithName(); ?>
 </div>
 
 
