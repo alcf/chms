@@ -1,6 +1,7 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
 	<h1>Search Individuals</h1>
+
 	<h3>Filter Results</h3>
 	<div class="section">
 		<div class="filterBy">First Name<br/><?php $this->txtFirstName->Render(); ?></div>
