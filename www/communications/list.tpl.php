@@ -38,4 +38,12 @@
 	<div class="section">
 		<?php $this->dtgMembers->Render(); ?>
 	</div>
+
+<?php if ($this->dtgEmailMessageRoute) { ?>
+	<br/>
+	<h3>Email Message Archive</h3>
+	<div class="section"><?php $this->dtgEmailMessageRoute->Render(); ?></div>
+	<?php $this->dlgEmailMessage->Render(); ?>
+<?php } ?>
+
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

@@ -20,3 +20,10 @@
 
 <h3>Members within All Subgroups</h3>
 <div class="section"><?php $_CONTROL->dtgMembers->Render(); ?></div>
+
+<?php if ($_CONTROL->dtgEmailMessageRoute) { ?>
+	<br/>
+	<h3>Email Message Archive</h3>
+	<div class="section"><?php $_CONTROL->dtgEmailMessageRoute->Render(); ?></div>
+	<?php $_CONTROL->dlgEmailMessage->Render(); ?>
+<?php } ?>
