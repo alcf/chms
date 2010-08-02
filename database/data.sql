@@ -152,20 +152,11 @@ INSERT INTO phone_type VALUES(3, 'Mobile');
 INSERT INTO phone_type VALUES(4, 'Fax');
 INSERT INTO phone_type VALUES(5, 'Other');
 
-INSERT INTO query_condition_type VALUES(1,  'Is Equal To');
-INSERT INTO query_condition_type VALUES(2,  'Is Not Equal To');
-INSERT INTO query_condition_type VALUES(3,  'Exists');
-INSERT INTO query_condition_type VALUES(4,  'Does Not Exist');
-INSERT INTO query_condition_type VALUES(5,  'Contains');
-INSERT INTO query_condition_type VALUES(6,  'Does Not Contain');
-INSERT INTO query_condition_type VALUES(7,  'Starts With');
-INSERT INTO query_condition_type VALUES(8,  'Does Not Start With');
-INSERT INTO query_condition_type VALUES(9,  'Ends With');
-INSERT INTO query_condition_type VALUES(10, 'Does Not End With');
-INSERT INTO query_condition_type VALUES(11, 'Is Greater Than');
-INSERT INTO query_condition_type VALUES(12, 'Is Greater or Equal To');
-INSERT INTO query_condition_type VALUES(13, 'Is Less Than');
-INSERT INTO query_condition_type VALUES(14, 'Is Less Than or Equal To');
+INSERT INTO query_data_type VALUES(1, 'String Value');
+INSERT INTO query_data_type VALUES(2, 'Integer Value');
+INSERT INTO query_data_type VALUES(3, 'Date Value');
+INSERT INTO query_data_type VALUES(4, 'Type Value');
+INSERT INTO query_data_type VALUES(5, 'Custom Value');
 
 INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
@@ -203,11 +194,26 @@ INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('City', 'Address->City', 'string', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Gender', 'Gender', 'M,F', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Membership Status', 'MembershipStatusTypeId', 'MembershipStatusType', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date of Birth', 'DateOfBirth', 'date', null, false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date Baptized', 'AttributeValue->DateValue', 'date', 'AttributeValue->AttributeId=11', false);
-INSERT INTO query_node(name, qcodo_query_node, data_type, qcodo_query_condition, requires_distinct_flag) VALUES ('Date Accepted Christ', 'AttributeValue->DateValue', 'date', 'AttributeValue->AttributeId=12', false);
+INSERT INTO query_operation VALUES (null, 'Is Equal To', 'Equal', true, null, null);
+INSERT INTO query_operation VALUES (null, 'Is Not Equal To', 'NotEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 'Exists', 'IsNotNull', false, null, null);
+INSERT INTO query_operation VALUES (null, 'Does Not Exist', 'IsNull', false, null, null);
+INSERT INTO query_operation VALUES (null, 'Contains', 'Like', true, '%', '%');
+INSERT INTO query_operation VALUES (null, 'Does Not Contain', 'NotLike', true, '%', '%');
+INSERT INTO query_operation VALUES (null, 'Starts With', 'Like', true, null, '%');
+INSERT INTO query_operation VALUES (null, 'Does Not Start With', 'NotLike', true, null, '%');
+INSERT INTO query_operation VALUES (null, 'Ends With', 'Like', true, '%', null);
+INSERT INTO query_operation VALUES (null, 'Does Not End With', 'NotLike', true, '%', null);
+INSERT INTO query_operation VALUES (null, 'Is Greater Than', 'GreaterThan', true, null, null);
+INSERT INTO query_operation VALUES (null, 'Is Greater or Equal To', 'GreaterOrEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 'Is Less Than', 'LessThan', true, null, null);
+INSERT INTO query_operation VALUES (null, 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
+
+INSERT INTO query_node VALUES (null, 'City', 'Address->City', 1, null, null);
+INSERT INTO query_node VALUES (null, 'Gender', 'Gender', 5, 'M,F', null);
+INSERT INTO query_node VALUES (null, 'Membership Status', 'MembershipStatusTypeId', 4, 'MembershipStatusType', null);
+INSERT INTO query_node VALUES (null, 'Date of Birth', 'DateOfBirth', 3, null, null);
+INSERT INTO query_node VALUES (null, 'Date Baptized', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId=11');
+INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId=12');
 
 INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
