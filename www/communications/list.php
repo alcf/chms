@@ -15,6 +15,8 @@
 			$this->objList = CommunicationList::LoadById(QApplication::PathInfo(0));
 			if (!$this->objList) QApplication::Redirect('/communications/');
 
+			$this->strPageTitle .= $this->objList->Name;
+
 			$this->dtgMembers = new QDataGrid($this);
 			$this->dtgMembers->UseAjax = true;
 			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);

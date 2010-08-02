@@ -289,7 +289,7 @@
 				} else if ($objCommunicationListEntry && $objCommunicationList->IsCommunicationListEntryCanSendEmail($objCommunicationListEntry)) {
 					$objSource = $objCommunicationListEntry;
 				} else foreach ($objPersonArray as $objPerson) {
-					if ($objGroup->IsPersonCanSendEmail($objPerson)) {
+					if ($objCommunicationList->IsPersonCanSendEmail($objPerson)) {
 						$objSource = $objPerson;
 						break;
 					}
@@ -366,7 +366,10 @@
 			$intPosition = strpos($this->strRawMessage, "\r\n\r\n");
 			if ($intPosition === false) throw new QCallerException('Message does not have distinct Header/Body sections');
 			$this->strResponseHeader = substr($this->strRawMessage, 0, $intPosition);
-			$this->strResponseBody = substr($this->strRawMessage, $intPosition + 4);
+			if (strlen($this->strRawMessage) > ($intPosition + 4))
+				$this->strResponseBody = substr($this->strRawMessage, $intPosition + 4);
+			else
+				$this->strResponseBody = null;
 
 			// Get the HeaderArray
 			$this->GetHeaderArray();
