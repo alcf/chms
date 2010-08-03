@@ -13,6 +13,6 @@
 		//
 		// Remember: CacheFolder *must* have a leading "/" and no trailing "/", and also
 		// be sure that the webserver process has WRITE access to the CacheFolder, itself.
-		protected $strCacheFolder = '/cache/images';
+		protected $strCacheFolder = '/cache';
 	}
 ?>
