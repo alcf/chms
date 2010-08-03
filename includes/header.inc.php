@@ -11,7 +11,6 @@
 
 <div class="headerBackground">
 <div class="left">&nbsp;</div>
-<div class="right">&nbsp;</div>
 </div>
 
 <div class="header" title="ALCF ChMS" onclick="document.location='/';">
