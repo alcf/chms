@@ -79,7 +79,7 @@
 
 			if (is_null($objSource) && ($objDestination->EmailBroadcastTypeId != EmailBroadcastType::PublicList))
 				throw new QCallerException('Invalid External Source for EmailMessageRoute to a non PublicList Destination');
-			if ($objRoute->CommunicationListEntry && !$objRoute->CommuniationList)
+			if ($objRoute->CommunicationListEntry && !$objRoute->CommunicationList)
 				throw new QCallerException('Invalid CommunicationListEntry Source for EmailMessageRoute to a non CommunicationList Destination');
 
 			$objRoute->Save();
