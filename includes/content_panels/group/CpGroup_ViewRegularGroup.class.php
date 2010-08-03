@@ -5,6 +5,8 @@
 
 			$this->SetupViewControls(true, false);
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
+			
+			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 		}
 
 		public function dtgMembers_Bind() {

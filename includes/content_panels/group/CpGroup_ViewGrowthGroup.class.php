@@ -27,6 +27,8 @@
 			$this->lblStructure->Name = 'Structure';
 			$this->lblStructure->Text = $this->objGroup->GrowthGroup->StructuresHtml;
 			$this->lblStructure->HtmlEntities = false;
+
+			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 		}
 
 		public function dtgMembers_Bind() {

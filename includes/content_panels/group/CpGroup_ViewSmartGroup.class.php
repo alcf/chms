@@ -30,6 +30,8 @@
 			$this->btnRefresh->Text = 'Refresh Now';
 			$this->btnRefresh->CssClass = 'primary';
 			$this->btnRefresh->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click'));
+			
+			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 		}
 
 		public function btnRefresh_Click() {

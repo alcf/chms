@@ -95,8 +95,6 @@
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 
-			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
-
 			$this->SetupPanel();
 		}
 

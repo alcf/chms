@@ -21,6 +21,8 @@
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=130px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false', 'Width=360px'));
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
+			
+			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 		}
 
 		public function RenderGroupName(Group $objGroup) {
