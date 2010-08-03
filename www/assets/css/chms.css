@@ -56,7 +56,7 @@
 
 	/*** PAGE STRUCTURE ***/
 
-	div.headerBackground { width: 100%; position: absolute; font-size: 1px; }
+	div.headerBackground { width: 100%; position: absolute; font-size: 1px; left: 0; }
 		div.headerBackground div.left { width: 50%; height: 80px; background-color: #eeeef2; float: left; }
 		div.headerBackground div.right { width: 50%; height: 80px; background-color: #deeaee; float: right; }
 
@@ -65,6 +65,7 @@
 		clear: both;
 		font-family: arial, helvetica; font-size: 10px; color: #4a3f5d; text-align: center;
 	}
+	div.footer a { color: #4a3f5d; }
 	div.footer a.footerLink { font-weight: bold; text-decoration: none; }
 	div.footer a.footerLink:hover { text-decoration: underline; }
 
@@ -80,6 +81,7 @@
 		font: 11px arial; color: #4a3f5d;
 		text-align: right;
 	}
+	div.header div.status a { color: #4a3f5d; }
 
 	div.header div.status span.subhead { font-size: 10px; color: #5a768e; }
 

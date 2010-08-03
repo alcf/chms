@@ -8,7 +8,7 @@
 <?php if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) { ?>
 		<div class="dashboardIcon" style="background: url(/assets/images/dashboard/administration.png);" onclick="document.location = '/admin/';" title="Administration">Administration</div>
 <?php } ?>
-		<br clear="all"/>
+		<div class="cleaner"></div>
 	</div>
 
 	<div style="height: 130px; width: 1px;">&nbsp;</div><br/>
