@@ -19,6 +19,7 @@
 <div class="section">
 	<div class="sectionButtons"><button class="primary" <?php $_CONTROL->objDelegate->pxyAddPhone->RenderAsEvents(); ?>>Add Another</button></div>
 	<?php $_CONTROL->objDelegate->dtrPhones->Render(); ?>
+	<div class="cleaner"></div>
 </div>
 
 <?php if ($_CONTROL->objDelegate->blnDisplayButtons) { ?>

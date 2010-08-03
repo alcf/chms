@@ -78,10 +78,12 @@
 		}
 		
 		public function RenderFirstName(Person $objPerson) {
+			if (!strlen(trim($objPerson->FirstName))) return '&nbsp;';
 			return sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->FirstName));
 		}
 		
 		public function RenderLastName(Person $objPerson) {
+			if (!strlen(trim($objPerson->LastName))) return '&nbsp;';
 			return sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->LastName));
 		}
 

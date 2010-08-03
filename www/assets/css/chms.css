@@ -36,7 +36,7 @@
 	}
 	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
 
-	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; }
+	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
 	select.listbox:enabled { color: #444; }
@@ -51,8 +51,8 @@
 	h3 span.subhead { font-size: 11px; font-weight: normal; color: #555; }
 	h3 .moveUp { margin-top: -16px; }
 
-	h1 button.primary, h3 button.primary { float: right; margin-left: 10px; }
-	h1 input.primary, h3 input.primary { float: right; margin-left: 10px; }
+	h1 button.primary, h3 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
+	h1 input.primary, h3 input.primary { *margin-top: -15px; margin-left: 10px; float: right; }
 
 	/*** PAGE STRUCTURE ***/
 
