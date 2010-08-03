@@ -1,13 +1,15 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
-	<h1>ALCF Church Management System</h1>
-	<div class="section">
-		<button class="primary" style="margin-left:  0px;" onclick="document.location=     '/individuals/'; return false;">Manage Individuals</button>
-		<button class="primary" style="margin-left: 25px;" onclick="document.location='/households/'; return false;">Manage Households</button>
-		<button class="primary" style="margin-left: 25px;" onclick="document.location='/groups/'; return false;">Manage Groups</button>
-		<button class="primary" style="margin-left: 25px;" onclick="document.location='/communications/'; return false;">Manage Email Lists</button>
+	<h1 style="padding: 12px 0 20px 0;">ALCF Church Management System</h1>
+	<div class="section" style="padding-bottom: 0;">
+		<div class="dashboardIcon" style="background: url(/assets/images/dashboard/individuals.png);" onclick="document.location = '/individuals/';" title="Manage Individuals">Manage Individuals</div>
+		<div class="dashboardIcon" style="background: url(/assets/images/dashboard/households.png);" onclick="document.location = '/households/';" title="Manage Households">Manage Households</div>
+		<div class="dashboardIcon" style="background: url(/assets/images/dashboard/groups.png);" onclick="document.location = '/groups/';" title="Manage Groups">Manage Groups</div>
+		<div class="dashboardIcon" style="background: url(/assets/images/dashboard/email.png);" onclick="document.location = '/communications/';" title="Manage Email Lists">Manage Email Lists</div>
 <?php if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) { ?>
-		<button class="primary" style="margin-left: 25px;" onclick="document.location='/communications/'; return false;">Administration</button>
+		<div class="dashboardIcon" style="background: url(/assets/images/dashboard/administration.png);" onclick="document.location = '/admin/';" title="Administration">Administration</div>
 <?php } ?>
+		<br clear="all"/>
 	</div>
 
+	<div style="height: 130px; width: 1px;">&nbsp;</div><br/>
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
