@@ -43,7 +43,7 @@
 			$objCondition = QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id);
 			$this->dtgMembers->TotalItemCount = Person::QueryCount($objCondition);
 
-			$objClauses = array();
+			$objClauses = array(QQ::Distinct());
 			if ($objClause = $this->dtgMembers->LimitClause) $objClauses[] = $objClause;
 			if ($objClause = $this->dtgMembers->OrderByClause) $objClauses[] = $objClause;
 

@@ -22,6 +22,7 @@
 
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->TagName = 'h1';
+			$this->lblMinistry->HtmlEntities = false;
 
 			$this->pnlContent = new QPanel($this);
 			$this->pnlContent->AutoRenderChildren = true;
@@ -167,7 +168,12 @@
 		public function lblMinistry_Refresh() {
 			if ($this->objGroup &&
 				($this->lblMinistry->Text != $this->objGroup->Ministry->Name)) {
-				$this->lblMinistry->Text = $this->objGroup->Ministry->Name;
+				$this->lblMinistry->Text = QApplication::HtmlEntities($this->objGroup->Ministry->Name);
+				$strLoginNameArray = array();
+				foreach ($this->objGroup->Ministry->GetLoginArray(QQ::OrderBy(QQN::Login()->FirstName)) as $objLogin) {
+					$strLoginNameArray[] = $objLogin->FirstName . ' ' . $objLogin->LastName;
+				}
+				$this->lblMinistry->Text .= '<br/><span class="subhead">Facilitated by ' . QApplication::HtmlEntities(implode(', ', $strLoginNameArray)) . '</span>';
 			}
 		}
 
