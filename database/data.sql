@@ -166,6 +166,15 @@ INSERT INTO role_type VALUES(1, 'Volunteer');
 INSERT INTO role_type VALUES(2, 'Staff Member');
 INSERT INTO role_type VALUES(3, 'ChMS Administrator');
 
+INSERT INTO stewardship_contribution_type VALUES (1, 'Cash');
+INSERT INTO stewardship_contribution_type VALUES (2, 'Check');
+INSERT INTO stewardship_contribution_type VALUES (3, 'Credit Card');
+INSERT INTO stewardship_contribution_type VALUES (4, 'Credit Card, Recurring');
+INSERT INTO stewardship_contribution_type VALUES (5, 'Corporate Match, Pre-Tax');
+INSERT INTO stewardship_contribution_type VALUES (6, 'Corporate Match, Post-Tax');
+INSERT INTO stewardship_contribution_type VALUES (7, 'Stock Donation');
+INSERT INTO stewardship_contribution_type VALUES (8, 'Automobile');
+INSERT INTO stewardship_contribution_type VALUES (9, 'Other');
 
 
 ##############
