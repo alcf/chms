@@ -11,6 +11,8 @@
 
 		<?php $_CONTROL->lstHeadPerson->RenderWithName(); ?>
 
+		<?php $_CONTROL->chkCombinedStewardshipFlag->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtMembers->RenderWithName(); ?>
 
 	</div>

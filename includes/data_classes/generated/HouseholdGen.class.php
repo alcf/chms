@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Name the value for strName 
 	 * @property integer $HeadPersonId the value for intHeadPersonId (Unique)
+	 * @property boolean $CombinedStewardshipFlag the value for blnCombinedStewardshipFlag 
 	 * @property string $Members the value for strMembers 
 	 * @property Person $HeadPerson the value for the Person object referenced by intHeadPersonId (Unique)
 	 * @property Address $_Address the value for the private _objAddress (Read-Only) if set due to an expansion on the address.household_id reverse relationship
@@ -59,6 +60,14 @@
 		 */
 		protected $intHeadPersonId;
 		const HeadPersonIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column household.combined_stewardship_flag
+		 * @var boolean blnCombinedStewardshipFlag
+		 */
+		protected $blnCombinedStewardshipFlag;
+		const CombinedStewardshipFlagDefault = null;
 
 
 		/**
@@ -457,6 +466,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'head_person_id', $strAliasPrefix . 'head_person_id');
+			$objBuilder->AddSelectItem($strTableName, 'combined_stewardship_flag', $strAliasPrefix . 'combined_stewardship_flag');
 			$objBuilder->AddSelectItem($strTableName, 'members', $strAliasPrefix . 'members');
 		}
 
@@ -569,6 +579,8 @@
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'head_person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'head_person_id'] : $strAliasPrefix . 'head_person_id';
 			$objToReturn->intHeadPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'combined_stewardship_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'combined_stewardship_flag'] : $strAliasPrefix . 'combined_stewardship_flag';
+			$objToReturn->blnCombinedStewardshipFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'members', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'members'] : $strAliasPrefix . 'members';
 			$objToReturn->strMembers = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
@@ -760,10 +772,12 @@
 						INSERT INTO `household` (
 							`name`,
 							`head_person_id`,
+							`combined_stewardship_flag`,
 							`members`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->intHeadPersonId) . ',
+							' . $objDatabase->SqlVariable($this->blnCombinedStewardshipFlag) . ',
 							' . $objDatabase->SqlVariable($this->strMembers) . '
 						)
 					');
@@ -782,6 +796,7 @@
 						SET
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`head_person_id` = ' . $objDatabase->SqlVariable($this->intHeadPersonId) . ',
+							`combined_stewardship_flag` = ' . $objDatabase->SqlVariable($this->blnCombinedStewardshipFlag) . ',
 							`members` = ' . $objDatabase->SqlVariable($this->strMembers) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -863,6 +878,7 @@
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
 			$this->HeadPersonId = $objReloaded->HeadPersonId;
+			$this->blnCombinedStewardshipFlag = $objReloaded->blnCombinedStewardshipFlag;
 			$this->strMembers = $objReloaded->strMembers;
 		}
 
@@ -898,6 +914,11 @@
 					// Gets the value for intHeadPersonId (Unique)
 					// @return integer
 					return $this->intHeadPersonId;
+
+				case 'CombinedStewardshipFlag':
+					// Gets the value for blnCombinedStewardshipFlag 
+					// @return boolean
+					return $this->blnCombinedStewardshipFlag;
 
 				case 'Members':
 					// Gets the value for strMembers 
@@ -1019,6 +1040,17 @@
 					try {
 						$this->objHeadPerson = null;
 						return ($this->intHeadPersonId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CombinedStewardshipFlag':
+					// Sets the value for blnCombinedStewardshipFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnCombinedStewardshipFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1709,6 +1741,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="HeadPerson" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="CombinedStewardshipFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Members" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1740,6 +1773,8 @@
 			if ((property_exists($objSoapObject, 'HeadPerson')) &&
 				($objSoapObject->HeadPerson))
 				$objToReturn->HeadPerson = Person::GetObjectFromSoapObject($objSoapObject->HeadPerson);
+			if (property_exists($objSoapObject, 'CombinedStewardshipFlag'))
+				$objToReturn->blnCombinedStewardshipFlag = $objSoapObject->CombinedStewardshipFlag;
 			if (property_exists($objSoapObject, 'Members'))
 				$objToReturn->strMembers = $objSoapObject->Members;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1792,6 +1827,8 @@
 					return new QQNode('head_person_id', 'HeadPersonId', 'integer', $this);
 				case 'HeadPerson':
 					return new QQNodePerson('head_person_id', 'HeadPerson', 'integer', $this);
+				case 'CombinedStewardshipFlag':
+					return new QQNode('combined_stewardship_flag', 'CombinedStewardshipFlag', 'boolean', $this);
 				case 'Members':
 					return new QQNode('members', 'Members', 'string', $this);
 				case 'Address':
@@ -1830,6 +1867,8 @@
 					return new QQNode('head_person_id', 'HeadPersonId', 'integer', $this);
 				case 'HeadPerson':
 					return new QQNodePerson('head_person_id', 'HeadPerson', 'integer', $this);
+				case 'CombinedStewardshipFlag':
+					return new QQNode('combined_stewardship_flag', 'CombinedStewardshipFlag', 'boolean', $this);
 				case 'Members':
 					return new QQNode('members', 'Members', 'string', $this);
 				case 'Address':

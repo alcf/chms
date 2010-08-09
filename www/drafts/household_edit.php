@@ -26,6 +26,7 @@
 		protected $lblId;
 		protected $txtName;
 		protected $lstHeadPerson;
+		protected $chkCombinedStewardshipFlag;
 		protected $txtMembers;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -56,6 +57,7 @@
 			$this->lblId = $this->mctHousehold->lblId_Create();
 			$this->txtName = $this->mctHousehold->txtName_Create();
 			$this->lstHeadPerson = $this->mctHousehold->lstHeadPerson_Create();
+			$this->chkCombinedStewardshipFlag = $this->mctHousehold->chkCombinedStewardshipFlag_Create();
 			$this->txtMembers = $this->mctHousehold->txtMembers_Create();
 
 			// Create Buttons and Actions on this Form

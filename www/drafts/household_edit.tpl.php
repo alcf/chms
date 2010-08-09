@@ -21,6 +21,8 @@
 
 		<?php $this->lstHeadPerson->RenderWithName(); ?>
 
+		<?php $this->chkCombinedStewardshipFlag->RenderWithName(); ?>
+
 		<?php $this->txtMembers->RenderWithName(); ?>
 
 	</div>

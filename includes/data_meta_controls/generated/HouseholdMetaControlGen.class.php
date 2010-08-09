@@ -22,6 +22,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QListBox $HeadPersonIdControl
 	 * property-read QLabel $HeadPersonIdLabel
+	 * property QCheckBox $CombinedStewardshipFlagControl
+	 * property-read QLabel $CombinedStewardshipFlagLabel
 	 * property QTextBox $MembersControl
 	 * property-read QLabel $MembersLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -39,11 +41,13 @@
 		protected $lblId;
 		protected $txtName;
 		protected $lstHeadPerson;
+		protected $chkCombinedStewardshipFlag;
 		protected $txtMembers;
 
 		// Controls that allow the viewing of Household's individual data fields
 		protected $lblName;
 		protected $lblHeadPersonId;
+		protected $lblCombinedStewardshipFlag;
 		protected $lblMembers;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -227,6 +231,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkCombinedStewardshipFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkCombinedStewardshipFlag_Create($strControlId = null) {
+			$this->chkCombinedStewardshipFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkCombinedStewardshipFlag->Name = QApplication::Translate('Combined Stewardship Flag');
+			$this->chkCombinedStewardshipFlag->Checked = $this->objHousehold->CombinedStewardshipFlag;
+			return $this->chkCombinedStewardshipFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblCombinedStewardshipFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCombinedStewardshipFlag_Create($strControlId = null) {
+			$this->lblCombinedStewardshipFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCombinedStewardshipFlag->Name = QApplication::Translate('Combined Stewardship Flag');
+			$this->lblCombinedStewardshipFlag->Text = ($this->objHousehold->CombinedStewardshipFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblCombinedStewardshipFlag;
+		}
+
+		/**
 		 * Create and setup QTextBox txtMembers
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -281,6 +309,9 @@
 			}
 			if ($this->lblHeadPersonId) $this->lblHeadPersonId->Text = ($this->objHousehold->HeadPerson) ? $this->objHousehold->HeadPerson->__toString() : null;
 
+			if ($this->chkCombinedStewardshipFlag) $this->chkCombinedStewardshipFlag->Checked = $this->objHousehold->CombinedStewardshipFlag;
+			if ($this->lblCombinedStewardshipFlag) $this->lblCombinedStewardshipFlag->Text = ($this->objHousehold->CombinedStewardshipFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->txtMembers) $this->txtMembers->Text = $this->objHousehold->Members;
 			if ($this->lblMembers) $this->lblMembers->Text = $this->objHousehold->Members;
 
@@ -309,6 +340,7 @@
 				// Update any fields for controls that have been created
 				if ($this->txtName) $this->objHousehold->Name = $this->txtName->Text;
 				if ($this->lstHeadPerson) $this->objHousehold->HeadPersonId = $this->lstHeadPerson->SelectedValue;
+				if ($this->chkCombinedStewardshipFlag) $this->objHousehold->CombinedStewardshipFlag = $this->chkCombinedStewardshipFlag->Checked;
 				if ($this->txtMembers) $this->objHousehold->Members = $this->txtMembers->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -370,6 +402,12 @@
 				case 'HeadPersonIdLabel':
 					if (!$this->lblHeadPersonId) return $this->lblHeadPersonId_Create();
 					return $this->lblHeadPersonId;
+				case 'CombinedStewardshipFlagControl':
+					if (!$this->chkCombinedStewardshipFlag) return $this->chkCombinedStewardshipFlag_Create();
+					return $this->chkCombinedStewardshipFlag;
+				case 'CombinedStewardshipFlagLabel':
+					if (!$this->lblCombinedStewardshipFlag) return $this->lblCombinedStewardshipFlag_Create();
+					return $this->lblCombinedStewardshipFlag;
 				case 'MembersControl':
 					if (!$this->txtMembers) return $this->txtMembers_Create();
 					return $this->txtMembers;
@@ -404,6 +442,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'HeadPersonIdControl':
 						return ($this->lstHeadPerson = QType::Cast($mixValue, 'QControl'));
+					case 'CombinedStewardshipFlagControl':
+						return ($this->chkCombinedStewardshipFlag = QType::Cast($mixValue, 'QControl'));
 					case 'MembersControl':
 						return ($this->txtMembers = QType::Cast($mixValue, 'QControl'));
 					default:

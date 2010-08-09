@@ -297,6 +297,7 @@
 				case 'Name': return QQN::Household()->Name;
 				case 'HeadPersonId': return QQN::Household()->HeadPersonId;
 				case 'HeadPerson': return QQN::Household()->HeadPerson;
+				case 'CombinedStewardshipFlag': return QQN::Household()->CombinedStewardshipFlag;
 				case 'Members': return QQN::Household()->Members;
 				default: throw new QCallerException('Simple Property not found in HouseholdDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
