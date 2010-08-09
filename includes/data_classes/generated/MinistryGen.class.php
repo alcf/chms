@@ -31,6 +31,8 @@
 	 * @property GroupRole[] $_GroupRoleArray the value for the private _objGroupRoleArray (Read-Only) if set due to an ExpandAsArray on the group_role.ministry_id reverse relationship
 	 * @property Ministry $_ChildMinistry the value for the private _objChildMinistry (Read-Only) if set due to an expansion on the ministry.parent_ministry_id reverse relationship
 	 * @property Ministry[] $_ChildMinistryArray the value for the private _objChildMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry.parent_ministry_id reverse relationship
+	 * @property StewardshipFund $_StewardshipFund the value for the private _objStewardshipFund (Read-Only) if set due to an expansion on the stewardship_fund.ministry_id reverse relationship
+	 * @property StewardshipFund[] $_StewardshipFundArray the value for the private _objStewardshipFundArray (Read-Only) if set due to an ExpandAsArray on the stewardship_fund.ministry_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class MinistryGen extends QBaseClass {
@@ -160,6 +162,22 @@
 		 * @var Ministry[] _objChildMinistryArray;
 		 */
 		private $_objChildMinistryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipFund object
+		 * (of type StewardshipFund), if this Ministry object was restored with
+		 * an expansion on the stewardship_fund association table.
+		 * @var StewardshipFund _objStewardshipFund;
+		 */
+		private $_objStewardshipFund;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipFund objects
+		 * (of type StewardshipFund[]), if this Ministry object was restored with
+		 * an ExpandAsArray on the stewardship_fund association table.
+		 * @var StewardshipFund[] _objStewardshipFundArray;
+		 */
+		private $_objStewardshipFundArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -594,6 +612,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'stewardshipfund__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipFundArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipFundArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipfund__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipFundArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipFundArray[] = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipfund__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -685,6 +717,16 @@
 					$objToReturn->_objChildMinistryArray[] = Ministry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childministry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objChildMinistry = Ministry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childministry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for StewardshipFund Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshipfund__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipFundArray[] = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipfund__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipfund__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1143,6 +1185,18 @@
 					// if set due to an ExpandAsArray on the ministry.parent_ministry_id reverse relationship
 					// @return Ministry[]
 					return (array) $this->_objChildMinistryArray;
+
+				case '_StewardshipFund':
+					// Gets the value for the private _objStewardshipFund (Read-Only)
+					// if set due to an expansion on the stewardship_fund.ministry_id reverse relationship
+					// @return StewardshipFund
+					return $this->_objStewardshipFund;
+
+				case '_StewardshipFundArray':
+					// Gets the value for the private _objStewardshipFundArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_fund.ministry_id reverse relationship
+					// @return StewardshipFund[]
+					return (array) $this->_objStewardshipFundArray;
 
 
 				case '__Restored':
@@ -1878,6 +1932,156 @@
 		}
 
 			
+		
+		// Related Objects' Methods for StewardshipFund
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipFunds as an array of StewardshipFund objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipFund[]
+		*/ 
+		public function GetStewardshipFundArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipFund::LoadArrayByMinistryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipFunds
+		 * @return int
+		*/ 
+		public function CountStewardshipFunds() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipFund::CountByMinistryId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipFund
+		 * @param StewardshipFund $objStewardshipFund
+		 * @return void
+		*/ 
+		public function AssociateStewardshipFund(StewardshipFund $objStewardshipFund) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipFund on this unsaved Ministry.');
+			if ((is_null($objStewardshipFund->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipFund on this Ministry with an unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_fund`
+				SET
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a StewardshipFund
+		 * @param StewardshipFund $objStewardshipFund
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipFund(StewardshipFund $objStewardshipFund) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipFund on this unsaved Ministry.');
+			if ((is_null($objStewardshipFund->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipFund on this Ministry with an unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_fund`
+				SET
+					`ministry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all StewardshipFunds
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipFunds() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipFund on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_fund`
+				SET
+					`ministry_id` = null
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipFund
+		 * @param StewardshipFund $objStewardshipFund
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipFund(StewardshipFund $objStewardshipFund) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipFund on this unsaved Ministry.');
+			if ((is_null($objStewardshipFund->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipFund on this Ministry with an unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_fund`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated StewardshipFunds
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipFunds() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipFund on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_fund`
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
 		// Related Many-to-Many Objects' Methods for Login
 		//-------------------------------------------------------------------
 
@@ -2139,6 +2343,8 @@
 					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
+				case 'StewardshipFund':
+					return new QQReverseReferenceNodeStewardshipFund($this, 'stewardshipfund', 'reverse_reference', 'ministry_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -2181,6 +2387,8 @@
 					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
+				case 'StewardshipFund':
+					return new QQReverseReferenceNodeStewardshipFund($this, 'stewardshipfund', 'reverse_reference', 'ministry_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

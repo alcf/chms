@@ -27,6 +27,13 @@
 		QApplicationBase::$ClassFile['attributevaluemetacontrol'] = __DATA_META_CONTROLS__ . '/AttributeValueMetaControl.class.php';
 		QApplicationBase::$ClassFile['attributevaluedatagrid'] = __DATA_META_CONTROLS__ . '/AttributeValueDataGrid.class.php';
 
+	// ClassPaths for the CheckingAccountLookup class
+		QApplicationBase::$ClassFile['checkingaccountlookup'] = __DATA_CLASSES__ . '/CheckingAccountLookup.class.php';
+		QApplicationBase::$ClassFile['qqnodecheckingaccountlookup'] = __DATA_CLASSES__ . '/CheckingAccountLookup.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodecheckingaccountlookup'] = __DATA_CLASSES__ . '/CheckingAccountLookup.class.php';
+		QApplicationBase::$ClassFile['checkingaccountlookupmetacontrol'] = __DATA_META_CONTROLS__ . '/CheckingAccountLookupMetaControl.class.php';
+		QApplicationBase::$ClassFile['checkingaccountlookupdatagrid'] = __DATA_META_CONTROLS__ . '/CheckingAccountLookupDataGrid.class.php';
+
 	// ClassPaths for the Comment class
 		QApplicationBase::$ClassFile['comment'] = __DATA_CLASSES__ . '/Comment.class.php';
 		QApplicationBase::$ClassFile['qqnodecomment'] = __DATA_CLASSES__ . '/Comment.class.php';
@@ -271,6 +278,27 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodesmartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';
 		QApplicationBase::$ClassFile['smartgroupmetacontrol'] = __DATA_META_CONTROLS__ . '/SmartGroupMetaControl.class.php';
 		QApplicationBase::$ClassFile['smartgroupdatagrid'] = __DATA_META_CONTROLS__ . '/SmartGroupDataGrid.class.php';
+
+	// ClassPaths for the StewardshipBatch class
+		QApplicationBase::$ClassFile['stewardshipbatch'] = __DATA_CLASSES__ . '/StewardshipBatch.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshipbatch'] = __DATA_CLASSES__ . '/StewardshipBatch.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshipbatch'] = __DATA_CLASSES__ . '/StewardshipBatch.class.php';
+		QApplicationBase::$ClassFile['stewardshipbatchmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipBatchMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshipbatchdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipBatchDataGrid.class.php';
+
+	// ClassPaths for the StewardshipContribution class
+		QApplicationBase::$ClassFile['stewardshipcontribution'] = __DATA_CLASSES__ . '/StewardshipContribution.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshipcontribution'] = __DATA_CLASSES__ . '/StewardshipContribution.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshipcontribution'] = __DATA_CLASSES__ . '/StewardshipContribution.class.php';
+		QApplicationBase::$ClassFile['stewardshipcontributionmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipContributionMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshipcontributiondatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipContributionDataGrid.class.php';
+
+	// ClassPaths for the StewardshipFund class
+		QApplicationBase::$ClassFile['stewardshipfund'] = __DATA_CLASSES__ . '/StewardshipFund.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshipfund'] = __DATA_CLASSES__ . '/StewardshipFund.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshipfund'] = __DATA_CLASSES__ . '/StewardshipFund.class.php';
+		QApplicationBase::$ClassFile['stewardshipfundmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipFundMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshipfunddatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipFundDataGrid.class.php';
 
 	// ClassPaths for the UsState class
 		QApplicationBase::$ClassFile['usstate'] = __DATA_CLASSES__ . '/UsState.class.php';

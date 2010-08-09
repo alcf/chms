@@ -25,6 +25,12 @@
 			return new QQNodeAttributeValue('attribute_value', null, null);
 		}
 		/**
+		 * @return QQNodeCheckingAccountLookup
+		 */
+		static public function CheckingAccountLookup() {
+			return new QQNodeCheckingAccountLookup('checking_account_lookup', null, null);
+		}
+		/**
 		 * @return QQNodeComment
 		 */
 		static public function Comment() {
@@ -233,6 +239,24 @@
 		 */
 		static public function SmartGroup() {
 			return new QQNodeSmartGroup('smart_group', null, null);
+		}
+		/**
+		 * @return QQNodeStewardshipBatch
+		 */
+		static public function StewardshipBatch() {
+			return new QQNodeStewardshipBatch('stewardship_batch', null, null);
+		}
+		/**
+		 * @return QQNodeStewardshipContribution
+		 */
+		static public function StewardshipContribution() {
+			return new QQNodeStewardshipContribution('stewardship_contribution', null, null);
+		}
+		/**
+		 * @return QQNodeStewardshipFund
+		 */
+		static public function StewardshipFund() {
+			return new QQNodeStewardshipFund('stewardship_fund', null, null);
 		}
 		/**
 		 * @return QQNodeUsState

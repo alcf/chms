@@ -61,6 +61,8 @@
 
 		<?php $_CONTROL->lstHouseholdAsHead->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstCheckingAccountLookupsAsCheckaccountlookup->RenderWithName(true, "Rows=7"); ?>
+
 		<?php $_CONTROL->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>
 
 		<?php $_CONTROL->lstNameItems->RenderWithName(true, "Rows=7"); ?>

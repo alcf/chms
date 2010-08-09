@@ -33,4 +33,6 @@
 		QApplicationBase::$ClassFile['relationshiptype'] = __DATA_CLASSES__ . '/RelationshipType.class.php';
 	// ClassPaths for the RoleType type class
 		QApplicationBase::$ClassFile['roletype'] = __DATA_CLASSES__ . '/RoleType.class.php';
+	// ClassPaths for the StewardshipContributionType type class
+		QApplicationBase::$ClassFile['stewardshipcontributiontype'] = __DATA_CLASSES__ . '/StewardshipContributionType.class.php';
 ?>
