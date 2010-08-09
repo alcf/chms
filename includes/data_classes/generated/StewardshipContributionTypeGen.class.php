@@ -18,51 +18,55 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class StewardshipContributionTypeGen extends QBaseClass {
-		const Cash = 1;
-		const Check = 2;
+		const Check = 1;
+		const Cash = 2;
 		const CreditCard = 3;
 		const CreditCardRecurring = 4;
-		const CorporateMatchPreTax = 5;
-		const CorporateMatchPostTax = 6;
+		const CorporateMatch = 5;
+		const CorporateMatchNonDeductible = 6;
 		const StockDonation = 7;
 		const Automobile = 8;
-		const Other = 9;
+		const ReturnedCheck = 9;
+		const Other = 10;
 
-		const MaxId = 9;
+		const MaxId = 10;
 
 		public static $NameArray = array(
-			1 => 'Cash',
-			2 => 'Check',
+			1 => 'Check',
+			2 => 'Cash',
 			3 => 'Credit Card',
 			4 => 'Credit Card, Recurring',
-			5 => 'Corporate Match, Pre-Tax',
-			6 => 'Corporate Match, Post-Tax',
+			5 => 'Corporate Match',
+			6 => 'Corporate Match, Non-Deductible',
 			7 => 'Stock Donation',
 			8 => 'Automobile',
-			9 => 'Other');
+			9 => 'Returned Check',
+			10 => 'Other');
 
 		public static $TokenArray = array(
-			1 => 'Cash',
-			2 => 'Check',
+			1 => 'Check',
+			2 => 'Cash',
 			3 => 'CreditCard',
 			4 => 'CreditCardRecurring',
-			5 => 'CorporateMatchPreTax',
-			6 => 'CorporateMatchPostTax',
+			5 => 'CorporateMatch',
+			6 => 'CorporateMatchNonDeductible',
 			7 => 'StockDonation',
 			8 => 'Automobile',
-			9 => 'Other');
+			9 => 'ReturnedCheck',
+			10 => 'Other');
 
 		public static function ToString($intStewardshipContributionTypeId) {
 			switch ($intStewardshipContributionTypeId) {
-				case 1: return 'Cash';
-				case 2: return 'Check';
+				case 1: return 'Check';
+				case 2: return 'Cash';
 				case 3: return 'Credit Card';
 				case 4: return 'Credit Card, Recurring';
-				case 5: return 'Corporate Match, Pre-Tax';
-				case 6: return 'Corporate Match, Post-Tax';
+				case 5: return 'Corporate Match';
+				case 6: return 'Corporate Match, Non-Deductible';
 				case 7: return 'Stock Donation';
 				case 8: return 'Automobile';
-				case 9: return 'Other';
+				case 9: return 'Returned Check';
+				case 10: return 'Other';
 				default:
 					throw new QCallerException(sprintf('Invalid intStewardshipContributionTypeId: %s', $intStewardshipContributionTypeId));
 			}
@@ -70,15 +74,16 @@
 
 		public static function ToToken($intStewardshipContributionTypeId) {
 			switch ($intStewardshipContributionTypeId) {
-				case 1: return 'Cash';
-				case 2: return 'Check';
+				case 1: return 'Check';
+				case 2: return 'Cash';
 				case 3: return 'CreditCard';
 				case 4: return 'CreditCardRecurring';
-				case 5: return 'CorporateMatchPreTax';
-				case 6: return 'CorporateMatchPostTax';
+				case 5: return 'CorporateMatch';
+				case 6: return 'CorporateMatchNonDeductible';
 				case 7: return 'StockDonation';
 				case 8: return 'Automobile';
-				case 9: return 'Other';
+				case 9: return 'ReturnedCheck';
+				case 10: return 'Other';
 				default:
 					throw new QCallerException(sprintf('Invalid intStewardshipContributionTypeId: %s', $intStewardshipContributionTypeId));
 			}
