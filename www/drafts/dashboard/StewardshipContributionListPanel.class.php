@@ -67,16 +67,16 @@
 			// can traverse down QQN::stewardship_contribution() to display fields that are down the hierarchy)
 			$this->dtgStewardshipContributions->MetaAddColumn('Id');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->Person);
-			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->StewardshipFund);
 			$this->dtgStewardshipContributions->MetaAddTypeColumn('StewardshipContributionType', 'StewardshipContributionType');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->StewardshipBatch);
+			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->StewardshipStack);
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->CheckingAccountLookup);
-			$this->dtgStewardshipContributions->MetaAddColumn('Amount');
+			$this->dtgStewardshipContributions->MetaAddColumn('TotalAmount');
 			$this->dtgStewardshipContributions->MetaAddColumn('DateEntered');
 			$this->dtgStewardshipContributions->MetaAddColumn('DateCleared');
 			$this->dtgStewardshipContributions->MetaAddColumn('CheckNumber');
 			$this->dtgStewardshipContributions->MetaAddColumn('AuthorizationNumber');
-			$this->dtgStewardshipContributions->MetaAddColumn('AlternateTitle');
+			$this->dtgStewardshipContributions->MetaAddColumn('AlternateSource');
 			$this->dtgStewardshipContributions->MetaAddColumn('Note');
 
 			// Setup the Create New button

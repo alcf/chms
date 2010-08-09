@@ -20,10 +20,10 @@
 	 * @property string $Name the value for strName 
 	 * @property string $AccountNumber the value for strAccountNumber 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId 
-	 * @property StewardshipBatch $_StewardshipBatch the value for the private _objStewardshipBatch (Read-Only) if set due to an expansion on the stewardship_batch.stewardship_fund_id reverse relationship
-	 * @property StewardshipBatch[] $_StewardshipBatchArray the value for the private _objStewardshipBatchArray (Read-Only) if set due to an ExpandAsArray on the stewardship_batch.stewardship_fund_id reverse relationship
-	 * @property StewardshipContribution $_StewardshipContribution the value for the private _objStewardshipContribution (Read-Only) if set due to an expansion on the stewardship_contribution.stewardship_fund_id reverse relationship
-	 * @property StewardshipContribution[] $_StewardshipContributionArray the value for the private _objStewardshipContributionArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution.stewardship_fund_id reverse relationship
+	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
+	 * @property StewardshipContributionAmount[] $_StewardshipContributionAmountArray the value for the private _objStewardshipContributionAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
+	 * @property StewardshipPostAmount $_StewardshipPostAmount the value for the private _objStewardshipPostAmount (Read-Only) if set due to an expansion on the stewardship_post_amount.stewardship_fund_id reverse relationship
+	 * @property StewardshipPostAmount[] $_StewardshipPostAmountArray the value for the private _objStewardshipPostAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_post_amount.stewardship_fund_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class StewardshipFundGen extends QBaseClass {
@@ -67,36 +67,36 @@
 
 
 		/**
-		 * Private member variable that stores a reference to a single StewardshipBatch object
-		 * (of type StewardshipBatch), if this StewardshipFund object was restored with
-		 * an expansion on the stewardship_batch association table.
-		 * @var StewardshipBatch _objStewardshipBatch;
+		 * Private member variable that stores a reference to a single StewardshipContributionAmount object
+		 * (of type StewardshipContributionAmount), if this StewardshipFund object was restored with
+		 * an expansion on the stewardship_contribution_amount association table.
+		 * @var StewardshipContributionAmount _objStewardshipContributionAmount;
 		 */
-		private $_objStewardshipBatch;
+		private $_objStewardshipContributionAmount;
 
 		/**
-		 * Private member variable that stores a reference to an array of StewardshipBatch objects
-		 * (of type StewardshipBatch[]), if this StewardshipFund object was restored with
-		 * an ExpandAsArray on the stewardship_batch association table.
-		 * @var StewardshipBatch[] _objStewardshipBatchArray;
+		 * Private member variable that stores a reference to an array of StewardshipContributionAmount objects
+		 * (of type StewardshipContributionAmount[]), if this StewardshipFund object was restored with
+		 * an ExpandAsArray on the stewardship_contribution_amount association table.
+		 * @var StewardshipContributionAmount[] _objStewardshipContributionAmountArray;
 		 */
-		private $_objStewardshipBatchArray = array();
+		private $_objStewardshipContributionAmountArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single StewardshipContribution object
-		 * (of type StewardshipContribution), if this StewardshipFund object was restored with
-		 * an expansion on the stewardship_contribution association table.
-		 * @var StewardshipContribution _objStewardshipContribution;
+		 * Private member variable that stores a reference to a single StewardshipPostAmount object
+		 * (of type StewardshipPostAmount), if this StewardshipFund object was restored with
+		 * an expansion on the stewardship_post_amount association table.
+		 * @var StewardshipPostAmount _objStewardshipPostAmount;
 		 */
-		private $_objStewardshipContribution;
+		private $_objStewardshipPostAmount;
 
 		/**
-		 * Private member variable that stores a reference to an array of StewardshipContribution objects
-		 * (of type StewardshipContribution[]), if this StewardshipFund object was restored with
-		 * an ExpandAsArray on the stewardship_contribution association table.
-		 * @var StewardshipContribution[] _objStewardshipContributionArray;
+		 * Private member variable that stores a reference to an array of StewardshipPostAmount objects
+		 * (of type StewardshipPostAmount[]), if this StewardshipFund object was restored with
+		 * an ExpandAsArray on the stewardship_post_amount association table.
+		 * @var StewardshipPostAmount[] _objStewardshipPostAmountArray;
 		 */
-		private $_objStewardshipContributionArray = array();
+		private $_objStewardshipPostAmountArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -460,31 +460,31 @@
 					$strAliasPrefix = 'stewardship_fund__';
 
 
-				$strAlias = $strAliasPrefix . 'stewardshipbatch__id';
+				$strAlias = $strAliasPrefix . 'stewardshipcontributionamount__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipBatchArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objStewardshipBatchArray[$intPreviousChildItemCount - 1];
-						$objChildItem = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatch__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipContributionAmountArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipContributionAmountArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objStewardshipBatchArray[] = $objChildItem;
+							$objPreviousItem->_objStewardshipContributionAmountArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objStewardshipBatchArray[] = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatch__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objStewardshipContributionAmountArray[] = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
-				$strAlias = $strAliasPrefix . 'stewardshipcontribution__id';
+				$strAlias = $strAliasPrefix . 'stewardshippostamount__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipContributionArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objStewardshipContributionArray[$intPreviousChildItemCount - 1];
-						$objChildItem = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontribution__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipPostAmountArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipPostAmountArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipPostAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostamount__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objStewardshipContributionArray[] = $objChildItem;
+							$objPreviousItem->_objStewardshipPostAmountArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objStewardshipContributionArray[] = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontribution__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objStewardshipPostAmountArray[] = StewardshipPostAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -529,24 +529,24 @@
 
 
 
-			// Check for StewardshipBatch Virtual Binding
-			$strAlias = $strAliasPrefix . 'stewardshipbatch__id';
+			// Check for StewardshipContributionAmount Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshipcontributionamount__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objStewardshipBatchArray[] = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatch__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objStewardshipContributionAmountArray[] = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objStewardshipBatch = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatch__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objStewardshipContributionAmount = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-			// Check for StewardshipContribution Virtual Binding
-			$strAlias = $strAliasPrefix . 'stewardshipcontribution__id';
+			// Check for StewardshipPostAmount Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshippostamount__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objStewardshipContributionArray[] = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontribution__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objStewardshipPostAmountArray[] = StewardshipPostAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objStewardshipContribution = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontribution__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objStewardshipPostAmount = StewardshipPostAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -862,29 +862,29 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_StewardshipBatch':
-					// Gets the value for the private _objStewardshipBatch (Read-Only)
-					// if set due to an expansion on the stewardship_batch.stewardship_fund_id reverse relationship
-					// @return StewardshipBatch
-					return $this->_objStewardshipBatch;
+				case '_StewardshipContributionAmount':
+					// Gets the value for the private _objStewardshipContributionAmount (Read-Only)
+					// if set due to an expansion on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
+					// @return StewardshipContributionAmount
+					return $this->_objStewardshipContributionAmount;
 
-				case '_StewardshipBatchArray':
-					// Gets the value for the private _objStewardshipBatchArray (Read-Only)
-					// if set due to an ExpandAsArray on the stewardship_batch.stewardship_fund_id reverse relationship
-					// @return StewardshipBatch[]
-					return (array) $this->_objStewardshipBatchArray;
+				case '_StewardshipContributionAmountArray':
+					// Gets the value for the private _objStewardshipContributionAmountArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
+					// @return StewardshipContributionAmount[]
+					return (array) $this->_objStewardshipContributionAmountArray;
 
-				case '_StewardshipContribution':
-					// Gets the value for the private _objStewardshipContribution (Read-Only)
-					// if set due to an expansion on the stewardship_contribution.stewardship_fund_id reverse relationship
-					// @return StewardshipContribution
-					return $this->_objStewardshipContribution;
+				case '_StewardshipPostAmount':
+					// Gets the value for the private _objStewardshipPostAmount (Read-Only)
+					// if set due to an expansion on the stewardship_post_amount.stewardship_fund_id reverse relationship
+					// @return StewardshipPostAmount
+					return $this->_objStewardshipPostAmount;
 
-				case '_StewardshipContributionArray':
-					// Gets the value for the private _objStewardshipContributionArray (Read-Only)
-					// if set due to an ExpandAsArray on the stewardship_contribution.stewardship_fund_id reverse relationship
-					// @return StewardshipContribution[]
-					return (array) $this->_objStewardshipContributionArray;
+				case '_StewardshipPostAmountArray':
+					// Gets the value for the private _objStewardshipPostAmountArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_post_amount.stewardship_fund_id reverse relationship
+					// @return StewardshipPostAmount[]
+					return (array) $this->_objStewardshipPostAmountArray;
 
 
 				case '__Restored':
@@ -1010,20 +1010,20 @@
 
 			
 		
-		// Related Objects' Methods for StewardshipBatch
+		// Related Objects' Methods for StewardshipContributionAmount
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all associated StewardshipBatches as an array of StewardshipBatch objects
+		 * Gets all associated StewardshipContributionAmounts as an array of StewardshipContributionAmount objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return StewardshipBatch[]
+		 * @return StewardshipContributionAmount[]
 		*/ 
-		public function GetStewardshipBatchArray($objOptionalClauses = null) {
+		public function GetStewardshipContributionAmountArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return StewardshipBatch::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
+				return StewardshipContributionAmount::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1031,26 +1031,26 @@
 		}
 
 		/**
-		 * Counts all associated StewardshipBatches
+		 * Counts all associated StewardshipContributionAmounts
 		 * @return int
 		*/ 
-		public function CountStewardshipBatches() {
+		public function CountStewardshipContributionAmounts() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return StewardshipBatch::CountByStewardshipFundId($this->intId);
+			return StewardshipContributionAmount::CountByStewardshipFundId($this->intId);
 		}
 
 		/**
-		 * Associates a StewardshipBatch
-		 * @param StewardshipBatch $objStewardshipBatch
+		 * Associates a StewardshipContributionAmount
+		 * @param StewardshipContributionAmount $objStewardshipContributionAmount
 		 * @return void
 		*/ 
-		public function AssociateStewardshipBatch(StewardshipBatch $objStewardshipBatch) {
+		public function AssociateStewardshipContributionAmount(StewardshipContributionAmount $objStewardshipContributionAmount) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipBatch on this unsaved StewardshipFund.');
-			if ((is_null($objStewardshipBatch->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipBatch on this StewardshipFund with an unsaved StewardshipBatch.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContributionAmount on this unsaved StewardshipFund.');
+			if ((is_null($objStewardshipContributionAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContributionAmount on this StewardshipFund with an unsaved StewardshipContributionAmount.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1058,24 +1058,24 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`stewardship_batch`
+					`stewardship_contribution_amount`
 				SET
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . '
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . '
 			');
 		}
 
 		/**
-		 * Unassociates a StewardshipBatch
-		 * @param StewardshipBatch $objStewardshipBatch
+		 * Unassociates a StewardshipContributionAmount
+		 * @param StewardshipContributionAmount $objStewardshipContributionAmount
 		 * @return void
 		*/ 
-		public function UnassociateStewardshipBatch(StewardshipBatch $objStewardshipBatch) {
+		public function UnassociateStewardshipContributionAmount(StewardshipContributionAmount $objStewardshipContributionAmount) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatch on this unsaved StewardshipFund.');
-			if ((is_null($objStewardshipBatch->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatch on this StewardshipFund with an unsaved StewardshipBatch.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipFund.');
+			if ((is_null($objStewardshipContributionAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this StewardshipFund with an unsaved StewardshipContributionAmount.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1083,47 +1083,47 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`stewardship_batch`
-				SET
-					`stewardship_fund_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . ' AND
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all StewardshipBatches
-		 * @return void
-		*/ 
-		public function UnassociateAllStewardshipBatches() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatch on this unsaved StewardshipFund.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`stewardship_batch`
+					`stewardship_contribution_amount`
 				SET
 					`stewardship_fund_id` = null
 				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . ' AND
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes an associated StewardshipBatch
-		 * @param StewardshipBatch $objStewardshipBatch
+		 * Unassociates all StewardshipContributionAmounts
 		 * @return void
 		*/ 
-		public function DeleteAssociatedStewardshipBatch(StewardshipBatch $objStewardshipBatch) {
+		public function UnassociateAllStewardshipContributionAmounts() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatch on this unsaved StewardshipFund.');
-			if ((is_null($objStewardshipBatch->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatch on this StewardshipFund with an unsaved StewardshipBatch.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution_amount`
+				SET
+					`stewardship_fund_id` = null
+				WHERE
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipContributionAmount
+		 * @param StewardshipContributionAmount $objStewardshipContributionAmount
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipContributionAmount(StewardshipContributionAmount $objStewardshipContributionAmount) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipFund.');
+			if ((is_null($objStewardshipContributionAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this StewardshipFund with an unsaved StewardshipContributionAmount.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1131,20 +1131,20 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`stewardship_batch`
+					`stewardship_contribution_amount`
 				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . ' AND
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . ' AND
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes all associated StewardshipBatches
+		 * Deletes all associated StewardshipContributionAmounts
 		 * @return void
 		*/ 
-		public function DeleteAllStewardshipBatches() {
+		public function DeleteAllStewardshipContributionAmounts() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatch on this unsaved StewardshipFund.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipFund.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1152,7 +1152,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`stewardship_batch`
+					`stewardship_contribution_amount`
 				WHERE
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -1160,20 +1160,20 @@
 
 			
 		
-		// Related Objects' Methods for StewardshipContribution
+		// Related Objects' Methods for StewardshipPostAmount
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all associated StewardshipContributions as an array of StewardshipContribution objects
+		 * Gets all associated StewardshipPostAmounts as an array of StewardshipPostAmount objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return StewardshipContribution[]
+		 * @return StewardshipPostAmount[]
 		*/ 
-		public function GetStewardshipContributionArray($objOptionalClauses = null) {
+		public function GetStewardshipPostAmountArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return StewardshipContribution::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
+				return StewardshipPostAmount::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1181,26 +1181,26 @@
 		}
 
 		/**
-		 * Counts all associated StewardshipContributions
+		 * Counts all associated StewardshipPostAmounts
 		 * @return int
 		*/ 
-		public function CountStewardshipContributions() {
+		public function CountStewardshipPostAmounts() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return StewardshipContribution::CountByStewardshipFundId($this->intId);
+			return StewardshipPostAmount::CountByStewardshipFundId($this->intId);
 		}
 
 		/**
-		 * Associates a StewardshipContribution
-		 * @param StewardshipContribution $objStewardshipContribution
+		 * Associates a StewardshipPostAmount
+		 * @param StewardshipPostAmount $objStewardshipPostAmount
 		 * @return void
 		*/ 
-		public function AssociateStewardshipContribution(StewardshipContribution $objStewardshipContribution) {
+		public function AssociateStewardshipPostAmount(StewardshipPostAmount $objStewardshipPostAmount) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContribution on this unsaved StewardshipFund.');
-			if ((is_null($objStewardshipContribution->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContribution on this StewardshipFund with an unsaved StewardshipContribution.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPostAmount on this unsaved StewardshipFund.');
+			if ((is_null($objStewardshipPostAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPostAmount on this StewardshipFund with an unsaved StewardshipPostAmount.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1208,24 +1208,24 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`stewardship_contribution`
+					`stewardship_post_amount`
 				SET
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostAmount->Id) . '
 			');
 		}
 
 		/**
-		 * Unassociates a StewardshipContribution
-		 * @param StewardshipContribution $objStewardshipContribution
+		 * Unassociates a StewardshipPostAmount
+		 * @param StewardshipPostAmount $objStewardshipPostAmount
 		 * @return void
 		*/ 
-		public function UnassociateStewardshipContribution(StewardshipContribution $objStewardshipContribution) {
+		public function UnassociateStewardshipPostAmount(StewardshipPostAmount $objStewardshipPostAmount) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContribution on this unsaved StewardshipFund.');
-			if ((is_null($objStewardshipContribution->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContribution on this StewardshipFund with an unsaved StewardshipContribution.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAmount on this unsaved StewardshipFund.');
+			if ((is_null($objStewardshipPostAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAmount on this StewardshipFund with an unsaved StewardshipPostAmount.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1233,47 +1233,47 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`stewardship_contribution`
-				SET
-					`stewardship_fund_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all StewardshipContributions
-		 * @return void
-		*/ 
-		public function UnassociateAllStewardshipContributions() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContribution on this unsaved StewardshipFund.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`stewardship_contribution`
+					`stewardship_post_amount`
 				SET
 					`stewardship_fund_id` = null
 				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostAmount->Id) . ' AND
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes an associated StewardshipContribution
-		 * @param StewardshipContribution $objStewardshipContribution
+		 * Unassociates all StewardshipPostAmounts
 		 * @return void
 		*/ 
-		public function DeleteAssociatedStewardshipContribution(StewardshipContribution $objStewardshipContribution) {
+		public function UnassociateAllStewardshipPostAmounts() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContribution on this unsaved StewardshipFund.');
-			if ((is_null($objStewardshipContribution->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContribution on this StewardshipFund with an unsaved StewardshipContribution.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAmount on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post_amount`
+				SET
+					`stewardship_fund_id` = null
+				WHERE
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipPostAmount
+		 * @param StewardshipPostAmount $objStewardshipPostAmount
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipPostAmount(StewardshipPostAmount $objStewardshipPostAmount) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAmount on this unsaved StewardshipFund.');
+			if ((is_null($objStewardshipPostAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAmount on this StewardshipFund with an unsaved StewardshipPostAmount.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1281,20 +1281,20 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`stewardship_contribution`
+					`stewardship_post_amount`
 				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostAmount->Id) . ' AND
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes all associated StewardshipContributions
+		 * Deletes all associated StewardshipPostAmounts
 		 * @return void
 		*/ 
-		public function DeleteAllStewardshipContributions() {
+		public function DeleteAllStewardshipPostAmounts() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContribution on this unsaved StewardshipFund.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAmount on this unsaved StewardshipFund.');
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipFund::GetDatabase();
@@ -1302,7 +1302,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`stewardship_contribution`
+					`stewardship_post_amount`
 				WHERE
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -1406,10 +1406,10 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'AccountNumber':
 					return new QQNode('account_number', 'AccountNumber', 'string', $this);
-				case 'StewardshipBatch':
-					return new QQReverseReferenceNodeStewardshipBatch($this, 'stewardshipbatch', 'reverse_reference', 'stewardship_fund_id');
-				case 'StewardshipContribution':
-					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'stewardship_fund_id');
+				case 'StewardshipContributionAmount':
+					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_fund_id');
+				case 'StewardshipPostAmount':
+					return new QQReverseReferenceNodeStewardshipPostAmount($this, 'stewardshippostamount', 'reverse_reference', 'stewardship_fund_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1440,10 +1440,10 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'AccountNumber':
 					return new QQNode('account_number', 'AccountNumber', 'string', $this);
-				case 'StewardshipBatch':
-					return new QQReverseReferenceNodeStewardshipBatch($this, 'stewardshipbatch', 'reverse_reference', 'stewardship_fund_id');
-				case 'StewardshipContribution':
-					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'stewardship_fund_id');
+				case 'StewardshipContributionAmount':
+					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_fund_id');
+				case 'StewardshipPostAmount':
+					return new QQReverseReferenceNodeStewardshipPostAmount($this, 'stewardshippostamount', 'reverse_reference', 'stewardship_fund_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

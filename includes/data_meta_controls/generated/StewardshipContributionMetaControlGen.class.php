@@ -20,16 +20,16 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
-	 * property QListBox $StewardshipFundIdControl
-	 * property-read QLabel $StewardshipFundIdLabel
 	 * property QListBox $StewardshipContributionTypeControl
 	 * property-read QLabel $StewardshipContributionTypeLabel
 	 * property QListBox $StewardshipBatchIdControl
 	 * property-read QLabel $StewardshipBatchIdLabel
+	 * property QListBox $StewardshipStackIdControl
+	 * property-read QLabel $StewardshipStackIdLabel
 	 * property QListBox $CheckingAccountLookupIdControl
 	 * property-read QLabel $CheckingAccountLookupIdLabel
-	 * property QFloatTextBox $AmountControl
-	 * property-read QLabel $AmountLabel
+	 * property QFloatTextBox $TotalAmountControl
+	 * property-read QLabel $TotalAmountLabel
 	 * property QDateTimePicker $DateEnteredControl
 	 * property-read QLabel $DateEnteredLabel
 	 * property QDateTimePicker $DateClearedControl
@@ -38,8 +38,8 @@
 	 * property-read QLabel $CheckNumberLabel
 	 * property QTextBox $AuthorizationNumberControl
 	 * property-read QLabel $AuthorizationNumberLabel
-	 * property QTextBox $AlternateTitleControl
-	 * property-read QLabel $AlternateTitleLabel
+	 * property QTextBox $AlternateSourceControl
+	 * property-read QLabel $AlternateSourceLabel
 	 * property QTextBox $NoteControl
 	 * property-read QLabel $NoteLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -56,30 +56,30 @@
 		// Controls that allow the editing of StewardshipContribution's individual data fields
 		protected $lblId;
 		protected $lstPerson;
-		protected $lstStewardshipFund;
 		protected $lstStewardshipContributionTypeObject;
 		protected $lstStewardshipBatch;
+		protected $lstStewardshipStack;
 		protected $lstCheckingAccountLookup;
-		protected $txtAmount;
+		protected $txtTotalAmount;
 		protected $calDateEntered;
 		protected $calDateCleared;
 		protected $txtCheckNumber;
 		protected $txtAuthorizationNumber;
-		protected $txtAlternateTitle;
+		protected $txtAlternateSource;
 		protected $txtNote;
 
 		// Controls that allow the viewing of StewardshipContribution's individual data fields
 		protected $lblPersonId;
-		protected $lblStewardshipFundId;
 		protected $lblStewardshipContributionType;
 		protected $lblStewardshipBatchId;
+		protected $lblStewardshipStackId;
 		protected $lblCheckingAccountLookupId;
-		protected $lblAmount;
+		protected $lblTotalAmount;
 		protected $lblDateEntered;
 		protected $lblDateCleared;
 		protected $lblCheckNumber;
 		protected $lblAuthorizationNumber;
-		protected $lblAlternateTitle;
+		protected $lblAlternateSource;
 		protected $lblNote;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -238,49 +238,6 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstStewardshipFund
-		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
-		 */
-		public function lstStewardshipFund_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstStewardshipFund = new QListBox($this->objParentObject, $strControlId);
-			$this->lstStewardshipFund->Name = QApplication::Translate('Stewardship Fund');
-			$this->lstStewardshipFund->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objStewardshipFundCursor = StewardshipFund::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objStewardshipFund = StewardshipFund::InstantiateCursor($objStewardshipFundCursor)) {
-				$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-				if (($this->objStewardshipContribution->StewardshipFund) && ($this->objStewardshipContribution->StewardshipFund->Id == $objStewardshipFund->Id))
-					$objListItem->Selected = true;
-				$this->lstStewardshipFund->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstStewardshipFund;
-		}
-
-		/**
-		 * Create and setup QLabel lblStewardshipFundId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblStewardshipFundId_Create($strControlId = null) {
-			$this->lblStewardshipFundId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblStewardshipFundId->Name = QApplication::Translate('Stewardship Fund');
-			$this->lblStewardshipFundId->Text = ($this->objStewardshipContribution->StewardshipFund) ? $this->objStewardshipContribution->StewardshipFund->__toString() : null;
-			$this->lblStewardshipFundId->Required = true;
-			return $this->lblStewardshipFundId;
-		}
-
-		/**
 		 * Create and setup QListBox lstStewardshipContributionTypeObject
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
@@ -351,6 +308,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstStewardshipStack
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstStewardshipStack_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstStewardshipStack = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStewardshipStack->Name = QApplication::Translate('Stewardship Stack');
+			$this->lstStewardshipStack->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objStewardshipStackCursor = StewardshipStack::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objStewardshipStack = StewardshipStack::InstantiateCursor($objStewardshipStackCursor)) {
+				$objListItem = new QListItem($objStewardshipStack->__toString(), $objStewardshipStack->Id);
+				if (($this->objStewardshipContribution->StewardshipStack) && ($this->objStewardshipContribution->StewardshipStack->Id == $objStewardshipStack->Id))
+					$objListItem->Selected = true;
+				$this->lstStewardshipStack->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstStewardshipStack;
+		}
+
+		/**
+		 * Create and setup QLabel lblStewardshipStackId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblStewardshipStackId_Create($strControlId = null) {
+			$this->lblStewardshipStackId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStewardshipStackId->Name = QApplication::Translate('Stewardship Stack');
+			$this->lblStewardshipStackId->Text = ($this->objStewardshipContribution->StewardshipStack) ? $this->objStewardshipContribution->StewardshipStack->__toString() : null;
+			return $this->lblStewardshipStackId;
+		}
+
+		/**
 		 * Create and setup QListBox lstCheckingAccountLookup
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -391,29 +388,29 @@
 		}
 
 		/**
-		 * Create and setup QFloatTextBox txtAmount
+		 * Create and setup QFloatTextBox txtTotalAmount
 		 * @param string $strControlId optional ControlId to use
 		 * @return QFloatTextBox
 		 */
-		public function txtAmount_Create($strControlId = null) {
-			$this->txtAmount = new QFloatTextBox($this->objParentObject, $strControlId);
-			$this->txtAmount->Name = QApplication::Translate('Amount');
-			$this->txtAmount->Text = $this->objStewardshipContribution->Amount;
-			return $this->txtAmount;
+		public function txtTotalAmount_Create($strControlId = null) {
+			$this->txtTotalAmount = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtTotalAmount->Name = QApplication::Translate('Total Amount');
+			$this->txtTotalAmount->Text = $this->objStewardshipContribution->TotalAmount;
+			return $this->txtTotalAmount;
 		}
 
 		/**
-		 * Create and setup QLabel lblAmount
+		 * Create and setup QLabel lblTotalAmount
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblAmount_Create($strControlId = null, $strFormat = null) {
-			$this->lblAmount = new QLabel($this->objParentObject, $strControlId);
-			$this->lblAmount->Name = QApplication::Translate('Amount');
-			$this->lblAmount->Text = $this->objStewardshipContribution->Amount;
-			$this->lblAmount->Format = $strFormat;
-			return $this->lblAmount;
+		public function lblTotalAmount_Create($strControlId = null, $strFormat = null) {
+			$this->lblTotalAmount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblTotalAmount->Name = QApplication::Translate('Total Amount');
+			$this->lblTotalAmount->Text = $this->objStewardshipContribution->TotalAmount;
+			$this->lblTotalAmount->Format = $strFormat;
+			return $this->lblTotalAmount;
 		}
 
 		/**
@@ -527,28 +524,28 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtAlternateTitle
+		 * Create and setup QTextBox txtAlternateSource
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtAlternateTitle_Create($strControlId = null) {
-			$this->txtAlternateTitle = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtAlternateTitle->Name = QApplication::Translate('Alternate Title');
-			$this->txtAlternateTitle->Text = $this->objStewardshipContribution->AlternateTitle;
-			$this->txtAlternateTitle->MaxLength = StewardshipContribution::AlternateTitleMaxLength;
-			return $this->txtAlternateTitle;
+		public function txtAlternateSource_Create($strControlId = null) {
+			$this->txtAlternateSource = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtAlternateSource->Name = QApplication::Translate('Alternate Source');
+			$this->txtAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
+			$this->txtAlternateSource->MaxLength = StewardshipContribution::AlternateSourceMaxLength;
+			return $this->txtAlternateSource;
 		}
 
 		/**
-		 * Create and setup QLabel lblAlternateTitle
+		 * Create and setup QLabel lblAlternateSource
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblAlternateTitle_Create($strControlId = null) {
-			$this->lblAlternateTitle = new QLabel($this->objParentObject, $strControlId);
-			$this->lblAlternateTitle->Name = QApplication::Translate('Alternate Title');
-			$this->lblAlternateTitle->Text = $this->objStewardshipContribution->AlternateTitle;
-			return $this->lblAlternateTitle;
+		public function lblAlternateSource_Create($strControlId = null) {
+			$this->lblAlternateSource = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAlternateSource->Name = QApplication::Translate('Alternate Source');
+			$this->lblAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
+			return $this->lblAlternateSource;
 		}
 
 		/**
@@ -603,20 +600,6 @@
 			}
 			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objStewardshipContribution->Person) ? $this->objStewardshipContribution->Person->__toString() : null;
 
-			if ($this->lstStewardshipFund) {
-					$this->lstStewardshipFund->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-				$objStewardshipFundArray = StewardshipFund::LoadAll();
-				if ($objStewardshipFundArray) foreach ($objStewardshipFundArray as $objStewardshipFund) {
-					$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-					if (($this->objStewardshipContribution->StewardshipFund) && ($this->objStewardshipContribution->StewardshipFund->Id == $objStewardshipFund->Id))
-						$objListItem->Selected = true;
-					$this->lstStewardshipFund->AddItem($objListItem);
-				}
-			}
-			if ($this->lblStewardshipFundId) $this->lblStewardshipFundId->Text = ($this->objStewardshipContribution->StewardshipFund) ? $this->objStewardshipContribution->StewardshipFund->__toString() : null;
-
 			if ($this->lstStewardshipContributionTypeObject) $this->lstStewardshipContributionTypeObject->SelectedValue = $this->objStewardshipContribution->StewardshipContributionType;
 			if ($this->lblStewardshipContributionType) $this->lblStewardshipContributionType->Text = ($this->objStewardshipContribution->StewardshipContributionType) ? StewardshipContributionType::$NameArray[$this->objStewardshipContribution->StewardshipContributionType] : null;
 
@@ -634,6 +617,19 @@
 			}
 			if ($this->lblStewardshipBatchId) $this->lblStewardshipBatchId->Text = ($this->objStewardshipContribution->StewardshipBatch) ? $this->objStewardshipContribution->StewardshipBatch->__toString() : null;
 
+			if ($this->lstStewardshipStack) {
+					$this->lstStewardshipStack->RemoveAllItems();
+				$this->lstStewardshipStack->AddItem(QApplication::Translate('- Select One -'), null);
+				$objStewardshipStackArray = StewardshipStack::LoadAll();
+				if ($objStewardshipStackArray) foreach ($objStewardshipStackArray as $objStewardshipStack) {
+					$objListItem = new QListItem($objStewardshipStack->__toString(), $objStewardshipStack->Id);
+					if (($this->objStewardshipContribution->StewardshipStack) && ($this->objStewardshipContribution->StewardshipStack->Id == $objStewardshipStack->Id))
+						$objListItem->Selected = true;
+					$this->lstStewardshipStack->AddItem($objListItem);
+				}
+			}
+			if ($this->lblStewardshipStackId) $this->lblStewardshipStackId->Text = ($this->objStewardshipContribution->StewardshipStack) ? $this->objStewardshipContribution->StewardshipStack->__toString() : null;
+
 			if ($this->lstCheckingAccountLookup) {
 					$this->lstCheckingAccountLookup->RemoveAllItems();
 				$this->lstCheckingAccountLookup->AddItem(QApplication::Translate('- Select One -'), null);
@@ -647,8 +643,8 @@
 			}
 			if ($this->lblCheckingAccountLookupId) $this->lblCheckingAccountLookupId->Text = ($this->objStewardshipContribution->CheckingAccountLookup) ? $this->objStewardshipContribution->CheckingAccountLookup->__toString() : null;
 
-			if ($this->txtAmount) $this->txtAmount->Text = $this->objStewardshipContribution->Amount;
-			if ($this->lblAmount) $this->lblAmount->Text = $this->objStewardshipContribution->Amount;
+			if ($this->txtTotalAmount) $this->txtTotalAmount->Text = $this->objStewardshipContribution->TotalAmount;
+			if ($this->lblTotalAmount) $this->lblTotalAmount->Text = $this->objStewardshipContribution->TotalAmount;
 
 			if ($this->calDateEntered) $this->calDateEntered->DateTime = $this->objStewardshipContribution->DateEntered;
 			if ($this->lblDateEntered) $this->lblDateEntered->Text = sprintf($this->objStewardshipContribution->DateEntered) ? $this->objStewardshipContribution->__toString($this->strDateEnteredDateTimeFormat) : null;
@@ -662,8 +658,8 @@
 			if ($this->txtAuthorizationNumber) $this->txtAuthorizationNumber->Text = $this->objStewardshipContribution->AuthorizationNumber;
 			if ($this->lblAuthorizationNumber) $this->lblAuthorizationNumber->Text = $this->objStewardshipContribution->AuthorizationNumber;
 
-			if ($this->txtAlternateTitle) $this->txtAlternateTitle->Text = $this->objStewardshipContribution->AlternateTitle;
-			if ($this->lblAlternateTitle) $this->lblAlternateTitle->Text = $this->objStewardshipContribution->AlternateTitle;
+			if ($this->txtAlternateSource) $this->txtAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
+			if ($this->lblAlternateSource) $this->lblAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
 
 			if ($this->txtNote) $this->txtNote->Text = $this->objStewardshipContribution->Note;
 			if ($this->lblNote) $this->lblNote->Text = $this->objStewardshipContribution->Note;
@@ -692,16 +688,16 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objStewardshipContribution->PersonId = $this->lstPerson->SelectedValue;
-				if ($this->lstStewardshipFund) $this->objStewardshipContribution->StewardshipFundId = $this->lstStewardshipFund->SelectedValue;
 				if ($this->lstStewardshipContributionTypeObject) $this->objStewardshipContribution->StewardshipContributionType = $this->lstStewardshipContributionTypeObject->SelectedValue;
 				if ($this->lstStewardshipBatch) $this->objStewardshipContribution->StewardshipBatchId = $this->lstStewardshipBatch->SelectedValue;
+				if ($this->lstStewardshipStack) $this->objStewardshipContribution->StewardshipStackId = $this->lstStewardshipStack->SelectedValue;
 				if ($this->lstCheckingAccountLookup) $this->objStewardshipContribution->CheckingAccountLookupId = $this->lstCheckingAccountLookup->SelectedValue;
-				if ($this->txtAmount) $this->objStewardshipContribution->Amount = $this->txtAmount->Text;
+				if ($this->txtTotalAmount) $this->objStewardshipContribution->TotalAmount = $this->txtTotalAmount->Text;
 				if ($this->calDateEntered) $this->objStewardshipContribution->DateEntered = $this->calDateEntered->DateTime;
 				if ($this->calDateCleared) $this->objStewardshipContribution->DateCleared = $this->calDateCleared->DateTime;
 				if ($this->txtCheckNumber) $this->objStewardshipContribution->CheckNumber = $this->txtCheckNumber->Text;
 				if ($this->txtAuthorizationNumber) $this->objStewardshipContribution->AuthorizationNumber = $this->txtAuthorizationNumber->Text;
-				if ($this->txtAlternateTitle) $this->objStewardshipContribution->AlternateTitle = $this->txtAlternateTitle->Text;
+				if ($this->txtAlternateSource) $this->objStewardshipContribution->AlternateSource = $this->txtAlternateSource->Text;
 				if ($this->txtNote) $this->objStewardshipContribution->Note = $this->txtNote->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -757,12 +753,6 @@
 				case 'PersonIdLabel':
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
-				case 'StewardshipFundIdControl':
-					if (!$this->lstStewardshipFund) return $this->lstStewardshipFund_Create();
-					return $this->lstStewardshipFund;
-				case 'StewardshipFundIdLabel':
-					if (!$this->lblStewardshipFundId) return $this->lblStewardshipFundId_Create();
-					return $this->lblStewardshipFundId;
 				case 'StewardshipContributionTypeControl':
 					if (!$this->lstStewardshipContributionTypeObject) return $this->lstStewardshipContributionTypeObject_Create();
 					return $this->lstStewardshipContributionTypeObject;
@@ -775,18 +765,24 @@
 				case 'StewardshipBatchIdLabel':
 					if (!$this->lblStewardshipBatchId) return $this->lblStewardshipBatchId_Create();
 					return $this->lblStewardshipBatchId;
+				case 'StewardshipStackIdControl':
+					if (!$this->lstStewardshipStack) return $this->lstStewardshipStack_Create();
+					return $this->lstStewardshipStack;
+				case 'StewardshipStackIdLabel':
+					if (!$this->lblStewardshipStackId) return $this->lblStewardshipStackId_Create();
+					return $this->lblStewardshipStackId;
 				case 'CheckingAccountLookupIdControl':
 					if (!$this->lstCheckingAccountLookup) return $this->lstCheckingAccountLookup_Create();
 					return $this->lstCheckingAccountLookup;
 				case 'CheckingAccountLookupIdLabel':
 					if (!$this->lblCheckingAccountLookupId) return $this->lblCheckingAccountLookupId_Create();
 					return $this->lblCheckingAccountLookupId;
-				case 'AmountControl':
-					if (!$this->txtAmount) return $this->txtAmount_Create();
-					return $this->txtAmount;
-				case 'AmountLabel':
-					if (!$this->lblAmount) return $this->lblAmount_Create();
-					return $this->lblAmount;
+				case 'TotalAmountControl':
+					if (!$this->txtTotalAmount) return $this->txtTotalAmount_Create();
+					return $this->txtTotalAmount;
+				case 'TotalAmountLabel':
+					if (!$this->lblTotalAmount) return $this->lblTotalAmount_Create();
+					return $this->lblTotalAmount;
 				case 'DateEnteredControl':
 					if (!$this->calDateEntered) return $this->calDateEntered_Create();
 					return $this->calDateEntered;
@@ -811,12 +807,12 @@
 				case 'AuthorizationNumberLabel':
 					if (!$this->lblAuthorizationNumber) return $this->lblAuthorizationNumber_Create();
 					return $this->lblAuthorizationNumber;
-				case 'AlternateTitleControl':
-					if (!$this->txtAlternateTitle) return $this->txtAlternateTitle_Create();
-					return $this->txtAlternateTitle;
-				case 'AlternateTitleLabel':
-					if (!$this->lblAlternateTitle) return $this->lblAlternateTitle_Create();
-					return $this->lblAlternateTitle;
+				case 'AlternateSourceControl':
+					if (!$this->txtAlternateSource) return $this->txtAlternateSource_Create();
+					return $this->txtAlternateSource;
+				case 'AlternateSourceLabel':
+					if (!$this->lblAlternateSource) return $this->lblAlternateSource_Create();
+					return $this->lblAlternateSource;
 				case 'NoteControl':
 					if (!$this->txtNote) return $this->txtNote_Create();
 					return $this->txtNote;
@@ -849,16 +845,16 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
-					case 'StewardshipFundIdControl':
-						return ($this->lstStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipContributionTypeControl':
 						return ($this->lstStewardshipContributionTypeObject = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipBatchIdControl':
 						return ($this->lstStewardshipBatch = QType::Cast($mixValue, 'QControl'));
+					case 'StewardshipStackIdControl':
+						return ($this->lstStewardshipStack = QType::Cast($mixValue, 'QControl'));
 					case 'CheckingAccountLookupIdControl':
 						return ($this->lstCheckingAccountLookup = QType::Cast($mixValue, 'QControl'));
-					case 'AmountControl':
-						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
+					case 'TotalAmountControl':
+						return ($this->txtTotalAmount = QType::Cast($mixValue, 'QControl'));
 					case 'DateEnteredControl':
 						return ($this->calDateEntered = QType::Cast($mixValue, 'QControl'));
 					case 'DateClearedControl':
@@ -867,8 +863,8 @@
 						return ($this->txtCheckNumber = QType::Cast($mixValue, 'QControl'));
 					case 'AuthorizationNumberControl':
 						return ($this->txtAuthorizationNumber = QType::Cast($mixValue, 'QControl'));
-					case 'AlternateTitleControl':
-						return ($this->txtAlternateTitle = QType::Cast($mixValue, 'QControl'));
+					case 'AlternateSourceControl':
+						return ($this->txtAlternateSource = QType::Cast($mixValue, 'QControl'));
 					case 'NoteControl':
 						return ($this->txtNote = QType::Cast($mixValue, 'QControl'));
 					default:

@@ -253,10 +253,34 @@
 			return new QQNodeStewardshipContribution('stewardship_contribution', null, null);
 		}
 		/**
+		 * @return QQNodeStewardshipContributionAmount
+		 */
+		static public function StewardshipContributionAmount() {
+			return new QQNodeStewardshipContributionAmount('stewardship_contribution_amount', null, null);
+		}
+		/**
 		 * @return QQNodeStewardshipFund
 		 */
 		static public function StewardshipFund() {
 			return new QQNodeStewardshipFund('stewardship_fund', null, null);
+		}
+		/**
+		 * @return QQNodeStewardshipPost
+		 */
+		static public function StewardshipPost() {
+			return new QQNodeStewardshipPost('stewardship_post', null, null);
+		}
+		/**
+		 * @return QQNodeStewardshipPostAmount
+		 */
+		static public function StewardshipPostAmount() {
+			return new QQNodeStewardshipPostAmount('stewardship_post_amount', null, null);
+		}
+		/**
+		 * @return QQNodeStewardshipStack
+		 */
+		static public function StewardshipStack() {
+			return new QQNodeStewardshipStack('stewardship_stack', null, null);
 		}
 		/**
 		 * @return QQNodeUsState

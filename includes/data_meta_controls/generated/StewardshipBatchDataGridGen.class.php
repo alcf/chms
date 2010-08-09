@@ -294,10 +294,12 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "stewardship_batch".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::StewardshipBatch()->Id;
+				case 'StewardshipBatchStatusTypeId': return QQN::StewardshipBatch()->StewardshipBatchStatusTypeId;
 				case 'DateEntered': return QQN::StewardshipBatch()->DateEntered;
-				case 'BatchNumber': return QQN::StewardshipBatch()->BatchNumber;
-				case 'StewardshipFundId': return QQN::StewardshipBatch()->StewardshipFundId;
-				case 'StewardshipFund': return QQN::StewardshipBatch()->StewardshipFund;
+				case 'BatchLabel': return QQN::StewardshipBatch()->BatchLabel;
+				case 'ReportedTotalAmount': return QQN::StewardshipBatch()->ReportedTotalAmount;
+				case 'ActualTotalAmount': return QQN::StewardshipBatch()->ActualTotalAmount;
+				case 'PostedTotalAmount': return QQN::StewardshipBatch()->PostedTotalAmount;
 				default: throw new QCallerException('Simple Property not found in StewardshipBatchDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

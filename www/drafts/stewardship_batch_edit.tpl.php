@@ -17,11 +17,17 @@
 	<div id="formControls">
 		<?php $this->lblId->RenderWithName(); ?>
 
+		<?php $this->lstStewardshipBatchStatusType->RenderWithName(); ?>
+
 		<?php $this->calDateEntered->RenderWithName(); ?>
 
-		<?php $this->txtBatchNumber->RenderWithName(); ?>
+		<?php $this->txtBatchLabel->RenderWithName(); ?>
 
-		<?php $this->lstStewardshipFund->RenderWithName(); ?>
+		<?php $this->txtReportedTotalAmount->RenderWithName(); ?>
+
+		<?php $this->txtActualTotalAmount->RenderWithName(); ?>
+
+		<?php $this->txtPostedTotalAmount->RenderWithName(); ?>
 
 	</div>
 

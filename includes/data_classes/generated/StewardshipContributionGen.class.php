@@ -17,21 +17,23 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
-	 * @property integer $StewardshipFundId the value for intStewardshipFundId (Not Null)
 	 * @property integer $StewardshipContributionType the value for intStewardshipContributionType (Not Null)
 	 * @property integer $StewardshipBatchId the value for intStewardshipBatchId (Not Null)
+	 * @property integer $StewardshipStackId the value for intStewardshipStackId 
 	 * @property integer $CheckingAccountLookupId the value for intCheckingAccountLookupId 
-	 * @property double $Amount the value for fltAmount 
+	 * @property double $TotalAmount the value for fltTotalAmount 
 	 * @property QDateTime $DateEntered the value for dttDateEntered (Not Null)
 	 * @property QDateTime $DateCleared the value for dttDateCleared 
 	 * @property string $CheckNumber the value for strCheckNumber 
 	 * @property string $AuthorizationNumber the value for strAuthorizationNumber 
-	 * @property string $AlternateTitle the value for strAlternateTitle 
+	 * @property string $AlternateSource the value for strAlternateSource 
 	 * @property string $Note the value for strNote 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
-	 * @property StewardshipFund $StewardshipFund the value for the StewardshipFund object referenced by intStewardshipFundId (Not Null)
 	 * @property StewardshipBatch $StewardshipBatch the value for the StewardshipBatch object referenced by intStewardshipBatchId (Not Null)
+	 * @property StewardshipStack $StewardshipStack the value for the StewardshipStack object referenced by intStewardshipStackId 
 	 * @property CheckingAccountLookup $CheckingAccountLookup the value for the CheckingAccountLookup object referenced by intCheckingAccountLookupId 
+	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
+	 * @property StewardshipContributionAmount[] $_StewardshipContributionAmountArray the value for the private _objStewardshipContributionAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class StewardshipContributionGen extends QBaseClass {
@@ -57,14 +59,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column stewardship_contribution.stewardship_fund_id
-		 * @var integer intStewardshipFundId
-		 */
-		protected $intStewardshipFundId;
-		const StewardshipFundIdDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column stewardship_contribution.stewardship_contribution_type
 		 * @var integer intStewardshipContributionType
 		 */
@@ -81,6 +75,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column stewardship_contribution.stewardship_stack_id
+		 * @var integer intStewardshipStackId
+		 */
+		protected $intStewardshipStackId;
+		const StewardshipStackIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column stewardship_contribution.checking_account_lookup_id
 		 * @var integer intCheckingAccountLookupId
 		 */
@@ -89,11 +91,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column stewardship_contribution.amount
-		 * @var double fltAmount
+		 * Protected member variable that maps to the database column stewardship_contribution.total_amount
+		 * @var double fltTotalAmount
 		 */
-		protected $fltAmount;
-		const AmountDefault = null;
+		protected $fltTotalAmount;
+		const TotalAmountDefault = null;
 
 
 		/**
@@ -131,12 +133,12 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column stewardship_contribution.alternate_title
-		 * @var string strAlternateTitle
+		 * Protected member variable that maps to the database column stewardship_contribution.alternate_source
+		 * @var string strAlternateSource
 		 */
-		protected $strAlternateTitle;
-		const AlternateTitleMaxLength = 200;
-		const AlternateTitleDefault = null;
+		protected $strAlternateSource;
+		const AlternateSourceMaxLength = 200;
+		const AlternateSourceDefault = null;
 
 
 		/**
@@ -146,6 +148,22 @@
 		protected $strNote;
 		const NoteDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipContributionAmount object
+		 * (of type StewardshipContributionAmount), if this StewardshipContribution object was restored with
+		 * an expansion on the stewardship_contribution_amount association table.
+		 * @var StewardshipContributionAmount _objStewardshipContributionAmount;
+		 */
+		private $_objStewardshipContributionAmount;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipContributionAmount objects
+		 * (of type StewardshipContributionAmount[]), if this StewardshipContribution object was restored with
+		 * an ExpandAsArray on the stewardship_contribution_amount association table.
+		 * @var StewardshipContributionAmount[] _objStewardshipContributionAmountArray;
+		 */
+		private $_objStewardshipContributionAmountArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -181,16 +199,6 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column stewardship_contribution.stewardship_fund_id.
-		 *
-		 * NOTE: Always use the StewardshipFund property getter to correctly retrieve this StewardshipFund object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var StewardshipFund objStewardshipFund
-		 */
-		protected $objStewardshipFund;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column stewardship_contribution.stewardship_batch_id.
 		 *
 		 * NOTE: Always use the StewardshipBatch property getter to correctly retrieve this StewardshipBatch object.
@@ -198,6 +206,16 @@
 		 * @var StewardshipBatch objStewardshipBatch
 		 */
 		protected $objStewardshipBatch;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column stewardship_contribution.stewardship_stack_id.
+		 *
+		 * NOTE: Always use the StewardshipStack property getter to correctly retrieve this StewardshipStack object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var StewardshipStack objStewardshipStack
+		 */
+		protected $objStewardshipStack;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -499,16 +517,16 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
-			$objBuilder->AddSelectItem($strTableName, 'stewardship_fund_id', $strAliasPrefix . 'stewardship_fund_id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_contribution_type', $strAliasPrefix . 'stewardship_contribution_type');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_batch_id', $strAliasPrefix . 'stewardship_batch_id');
+			$objBuilder->AddSelectItem($strTableName, 'stewardship_stack_id', $strAliasPrefix . 'stewardship_stack_id');
 			$objBuilder->AddSelectItem($strTableName, 'checking_account_lookup_id', $strAliasPrefix . 'checking_account_lookup_id');
-			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
+			$objBuilder->AddSelectItem($strTableName, 'total_amount', $strAliasPrefix . 'total_amount');
 			$objBuilder->AddSelectItem($strTableName, 'date_entered', $strAliasPrefix . 'date_entered');
 			$objBuilder->AddSelectItem($strTableName, 'date_cleared', $strAliasPrefix . 'date_cleared');
 			$objBuilder->AddSelectItem($strTableName, 'check_number', $strAliasPrefix . 'check_number');
 			$objBuilder->AddSelectItem($strTableName, 'authorization_number', $strAliasPrefix . 'authorization_number');
-			$objBuilder->AddSelectItem($strTableName, 'alternate_title', $strAliasPrefix . 'alternate_title');
+			$objBuilder->AddSelectItem($strTableName, 'alternate_source', $strAliasPrefix . 'alternate_source');
 			$objBuilder->AddSelectItem($strTableName, 'note', $strAliasPrefix . 'note');
 		}
 
@@ -536,6 +554,38 @@
 			if (!$objDbRow)
 				return null;
 
+			// See if we're doing an array expansion on the previous item
+			$strAlias = $strAliasPrefix . 'id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (($strExpandAsArrayNodes) && ($objPreviousItem) &&
+				($objPreviousItem->intId == $objDbRow->GetColumn($strAliasName, 'Integer'))) {
+
+				// We are.  Now, prepare to check for ExpandAsArray clauses
+				$blnExpandedViaArray = false;
+				if (!$strAliasPrefix)
+					$strAliasPrefix = 'stewardship_contribution__';
+
+
+				$strAlias = $strAliasPrefix . 'stewardshipcontributionamount__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipContributionAmountArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipContributionAmountArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipContributionAmountArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipContributionAmountArray[] = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
+				if ($blnExpandedViaArray)
+					return false;
+				else if ($strAliasPrefix == 'stewardship_contribution__')
+					$strAliasPrefix = null;
+			}
 
 			// Create a new instance of the StewardshipContribution object
 			$objToReturn = new StewardshipContribution();
@@ -545,16 +595,16 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_fund_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_fund_id'] : $strAliasPrefix . 'stewardship_fund_id';
-			$objToReturn->intStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_contribution_type', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_contribution_type'] : $strAliasPrefix . 'stewardship_contribution_type';
 			$objToReturn->intStewardshipContributionType = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_batch_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_batch_id'] : $strAliasPrefix . 'stewardship_batch_id';
 			$objToReturn->intStewardshipBatchId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_stack_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_stack_id'] : $strAliasPrefix . 'stewardship_stack_id';
+			$objToReturn->intStewardshipStackId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'checking_account_lookup_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'checking_account_lookup_id'] : $strAliasPrefix . 'checking_account_lookup_id';
 			$objToReturn->intCheckingAccountLookupId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount'] : $strAliasPrefix . 'amount';
-			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_amount'] : $strAliasPrefix . 'total_amount';
+			$objToReturn->fltTotalAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_entered', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_entered'] : $strAliasPrefix . 'date_entered';
 			$objToReturn->dttDateEntered = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_cleared', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_cleared'] : $strAliasPrefix . 'date_cleared';
@@ -563,8 +613,8 @@
 			$objToReturn->strCheckNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'authorization_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'authorization_number'] : $strAliasPrefix . 'authorization_number';
 			$objToReturn->strAuthorizationNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'alternate_title', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'alternate_title'] : $strAliasPrefix . 'alternate_title';
-			$objToReturn->strAlternateTitle = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'alternate_source', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'alternate_source'] : $strAliasPrefix . 'alternate_source';
+			$objToReturn->strAlternateSource = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'note', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'note'] : $strAliasPrefix . 'note';
 			$objToReturn->strNote = $objDbRow->GetColumn($strAliasName, 'Blob');
 
@@ -586,17 +636,17 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for StewardshipFund Early Binding
-			$strAlias = $strAliasPrefix . 'stewardship_fund_id__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_fund_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-
 			// Check for StewardshipBatch Early Binding
 			$strAlias = $strAliasPrefix . 'stewardship_batch_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objStewardshipBatch = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_batch_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for StewardshipStack Early Binding
+			$strAlias = $strAliasPrefix . 'stewardship_stack_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objStewardshipStack = StewardshipStack::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_stack_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for CheckingAccountLookup Early Binding
 			$strAlias = $strAliasPrefix . 'checking_account_lookup_id__id';
@@ -606,6 +656,16 @@
 
 
 
+
+			// Check for StewardshipContributionAmount Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshipcontributionamount__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipContributionAmountArray[] = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipContributionAmount = StewardshipContributionAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			return $objToReturn;
 		}
@@ -764,38 +824,6 @@
 			
 		/**
 		 * Load an array of StewardshipContribution objects,
-		 * by StewardshipFundId Index(es)
-		 * @param integer $intStewardshipFundId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return StewardshipContribution[]
-		*/
-		public static function LoadArrayByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
-			// Call StewardshipContribution::QueryArray to perform the LoadArrayByStewardshipFundId query
-			try {
-				return StewardshipContribution::QueryArray(
-					QQ::Equal(QQN::StewardshipContribution()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count StewardshipContributions
-		 * by StewardshipFundId Index(es)
-		 * @param integer $intStewardshipFundId
-		 * @return int
-		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
-			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipFundId query
-			return StewardshipContribution::QueryCount(
-				QQ::Equal(QQN::StewardshipContribution()->StewardshipFundId, $intStewardshipFundId)
-			);
-		}
-			
-		/**
-		 * Load an array of StewardshipContribution objects,
 		 * by StewardshipContributionType Index(es)
 		 * @param integer $intStewardshipContributionType
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -855,6 +883,38 @@
 			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipBatchId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->StewardshipBatchId, $intStewardshipBatchId)
+			);
+		}
+			
+		/**
+		 * Load an array of StewardshipContribution objects,
+		 * by StewardshipStackId Index(es)
+		 * @param integer $intStewardshipStackId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipContribution[]
+		*/
+		public static function LoadArrayByStewardshipStackId($intStewardshipStackId, $objOptionalClauses = null) {
+			// Call StewardshipContribution::QueryArray to perform the LoadArrayByStewardshipStackId query
+			try {
+				return StewardshipContribution::QueryArray(
+					QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $intStewardshipStackId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count StewardshipContributions
+		 * by StewardshipStackId Index(es)
+		 * @param integer $intStewardshipStackId
+		 * @return int
+		*/
+		public static function CountByStewardshipStackId($intStewardshipStackId) {
+			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipStackId query
+			return StewardshipContribution::QueryCount(
+				QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $intStewardshipStackId)
 			);
 		}
 			
@@ -921,29 +981,29 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `stewardship_contribution` (
 							`person_id`,
-							`stewardship_fund_id`,
 							`stewardship_contribution_type`,
 							`stewardship_batch_id`,
+							`stewardship_stack_id`,
 							`checking_account_lookup_id`,
-							`amount`,
+							`total_amount`,
 							`date_entered`,
 							`date_cleared`,
 							`check_number`,
 							`authorization_number`,
-							`alternate_title`,
+							`alternate_source`,
 							`note`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipContributionType) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
+							' . $objDatabase->SqlVariable($this->intStewardshipStackId) . ',
 							' . $objDatabase->SqlVariable($this->intCheckingAccountLookupId) . ',
-							' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
 							' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
 							' . $objDatabase->SqlVariable($this->dttDateCleared) . ',
 							' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
-							' . $objDatabase->SqlVariable($this->strAlternateTitle) . ',
+							' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
 							' . $objDatabase->SqlVariable($this->strNote) . '
 						)
 					');
@@ -961,16 +1021,16 @@
 							`stewardship_contribution`
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 							`stewardship_contribution_type` = ' . $objDatabase->SqlVariable($this->intStewardshipContributionType) . ',
 							`stewardship_batch_id` = ' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
+							`stewardship_stack_id` = ' . $objDatabase->SqlVariable($this->intStewardshipStackId) . ',
 							`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intCheckingAccountLookupId) . ',
-							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							`total_amount` = ' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
 							`date_entered` = ' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
 							`date_cleared` = ' . $objDatabase->SqlVariable($this->dttDateCleared) . ',
 							`check_number` = ' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							`authorization_number` = ' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
-							`alternate_title` = ' . $objDatabase->SqlVariable($this->strAlternateTitle) . ',
+							`alternate_source` = ' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
 							`note` = ' . $objDatabase->SqlVariable($this->strNote) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -1051,16 +1111,16 @@
 
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
-			$this->StewardshipFundId = $objReloaded->StewardshipFundId;
 			$this->StewardshipContributionType = $objReloaded->StewardshipContributionType;
 			$this->StewardshipBatchId = $objReloaded->StewardshipBatchId;
+			$this->StewardshipStackId = $objReloaded->StewardshipStackId;
 			$this->CheckingAccountLookupId = $objReloaded->CheckingAccountLookupId;
-			$this->fltAmount = $objReloaded->fltAmount;
+			$this->fltTotalAmount = $objReloaded->fltTotalAmount;
 			$this->dttDateEntered = $objReloaded->dttDateEntered;
 			$this->dttDateCleared = $objReloaded->dttDateCleared;
 			$this->strCheckNumber = $objReloaded->strCheckNumber;
 			$this->strAuthorizationNumber = $objReloaded->strAuthorizationNumber;
-			$this->strAlternateTitle = $objReloaded->strAlternateTitle;
+			$this->strAlternateSource = $objReloaded->strAlternateSource;
 			$this->strNote = $objReloaded->strNote;
 		}
 
@@ -1092,11 +1152,6 @@
 					// @return integer
 					return $this->intPersonId;
 
-				case 'StewardshipFundId':
-					// Gets the value for intStewardshipFundId (Not Null)
-					// @return integer
-					return $this->intStewardshipFundId;
-
 				case 'StewardshipContributionType':
 					// Gets the value for intStewardshipContributionType (Not Null)
 					// @return integer
@@ -1107,15 +1162,20 @@
 					// @return integer
 					return $this->intStewardshipBatchId;
 
+				case 'StewardshipStackId':
+					// Gets the value for intStewardshipStackId 
+					// @return integer
+					return $this->intStewardshipStackId;
+
 				case 'CheckingAccountLookupId':
 					// Gets the value for intCheckingAccountLookupId 
 					// @return integer
 					return $this->intCheckingAccountLookupId;
 
-				case 'Amount':
-					// Gets the value for fltAmount 
+				case 'TotalAmount':
+					// Gets the value for fltTotalAmount 
 					// @return double
-					return $this->fltAmount;
+					return $this->fltTotalAmount;
 
 				case 'DateEntered':
 					// Gets the value for dttDateEntered (Not Null)
@@ -1137,10 +1197,10 @@
 					// @return string
 					return $this->strAuthorizationNumber;
 
-				case 'AlternateTitle':
-					// Gets the value for strAlternateTitle 
+				case 'AlternateSource':
+					// Gets the value for strAlternateSource 
 					// @return string
-					return $this->strAlternateTitle;
+					return $this->strAlternateSource;
 
 				case 'Note':
 					// Gets the value for strNote 
@@ -1163,18 +1223,6 @@
 						throw $objExc;
 					}
 
-				case 'StewardshipFund':
-					// Gets the value for the StewardshipFund object referenced by intStewardshipFundId (Not Null)
-					// @return StewardshipFund
-					try {
-						if ((!$this->objStewardshipFund) && (!is_null($this->intStewardshipFundId)))
-							$this->objStewardshipFund = StewardshipFund::Load($this->intStewardshipFundId);
-						return $this->objStewardshipFund;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'StewardshipBatch':
 					// Gets the value for the StewardshipBatch object referenced by intStewardshipBatchId (Not Null)
 					// @return StewardshipBatch
@@ -1182,6 +1230,18 @@
 						if ((!$this->objStewardshipBatch) && (!is_null($this->intStewardshipBatchId)))
 							$this->objStewardshipBatch = StewardshipBatch::Load($this->intStewardshipBatchId);
 						return $this->objStewardshipBatch;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'StewardshipStack':
+					// Gets the value for the StewardshipStack object referenced by intStewardshipStackId 
+					// @return StewardshipStack
+					try {
+						if ((!$this->objStewardshipStack) && (!is_null($this->intStewardshipStackId)))
+							$this->objStewardshipStack = StewardshipStack::Load($this->intStewardshipStackId);
+						return $this->objStewardshipStack;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1204,6 +1264,18 @@
 				// Virtual Object References (Many to Many and Reverse References)
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
+
+				case '_StewardshipContributionAmount':
+					// Gets the value for the private _objStewardshipContributionAmount (Read-Only)
+					// if set due to an expansion on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
+					// @return StewardshipContributionAmount
+					return $this->_objStewardshipContributionAmount;
+
+				case '_StewardshipContributionAmountArray':
+					// Gets the value for the private _objStewardshipContributionAmountArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
+					// @return StewardshipContributionAmount[]
+					return (array) $this->_objStewardshipContributionAmountArray;
 
 
 				case '__Restored':
@@ -1244,18 +1316,6 @@
 						throw $objExc;
 					}
 
-				case 'StewardshipFundId':
-					// Sets the value for intStewardshipFundId (Not Null)
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objStewardshipFund = null;
-						return ($this->intStewardshipFundId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'StewardshipContributionType':
 					// Sets the value for intStewardshipContributionType (Not Null)
 					// @param integer $mixValue
@@ -1279,6 +1339,18 @@
 						throw $objExc;
 					}
 
+				case 'StewardshipStackId':
+					// Sets the value for intStewardshipStackId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objStewardshipStack = null;
+						return ($this->intStewardshipStackId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CheckingAccountLookupId':
 					// Sets the value for intCheckingAccountLookupId 
 					// @param integer $mixValue
@@ -1291,12 +1363,12 @@
 						throw $objExc;
 					}
 
-				case 'Amount':
-					// Sets the value for fltAmount 
+				case 'TotalAmount':
+					// Sets the value for fltTotalAmount 
 					// @param double $mixValue
 					// @return double
 					try {
-						return ($this->fltAmount = QType::Cast($mixValue, QType::Float));
+						return ($this->fltTotalAmount = QType::Cast($mixValue, QType::Float));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1346,12 +1418,12 @@
 						throw $objExc;
 					}
 
-				case 'AlternateTitle':
-					// Sets the value for strAlternateTitle 
+				case 'AlternateSource':
+					// Sets the value for strAlternateSource 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strAlternateTitle = QType::Cast($mixValue, QType::String));
+						return ($this->strAlternateSource = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1402,36 +1474,6 @@
 					}
 					break;
 
-				case 'StewardshipFund':
-					// Sets the value for the StewardshipFund object referenced by intStewardshipFundId (Not Null)
-					// @param StewardshipFund $mixValue
-					// @return StewardshipFund
-					if (is_null($mixValue)) {
-						$this->intStewardshipFundId = null;
-						$this->objStewardshipFund = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a StewardshipFund object
-						try {
-							$mixValue = QType::Cast($mixValue, 'StewardshipFund');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED StewardshipFund object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved StewardshipFund for this StewardshipContribution');
-
-						// Update Local Member Variables
-						$this->objStewardshipFund = $mixValue;
-						$this->intStewardshipFundId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
 				case 'StewardshipBatch':
 					// Sets the value for the StewardshipBatch object referenced by intStewardshipBatchId (Not Null)
 					// @param StewardshipBatch $mixValue
@@ -1456,6 +1498,36 @@
 						// Update Local Member Variables
 						$this->objStewardshipBatch = $mixValue;
 						$this->intStewardshipBatchId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'StewardshipStack':
+					// Sets the value for the StewardshipStack object referenced by intStewardshipStackId 
+					// @param StewardshipStack $mixValue
+					// @return StewardshipStack
+					if (is_null($mixValue)) {
+						$this->intStewardshipStackId = null;
+						$this->objStewardshipStack = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a StewardshipStack object
+						try {
+							$mixValue = QType::Cast($mixValue, 'StewardshipStack');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED StewardshipStack object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved StewardshipStack for this StewardshipContribution');
+
+						// Update Local Member Variables
+						$this->objStewardshipStack = $mixValue;
+						$this->intStewardshipStackId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1519,6 +1591,156 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
+			
+		
+		// Related Objects' Methods for StewardshipContributionAmount
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipContributionAmounts as an array of StewardshipContributionAmount objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipContributionAmount[]
+		*/ 
+		public function GetStewardshipContributionAmountArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipContributionAmount::LoadArrayByStewardshipContributionId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipContributionAmounts
+		 * @return int
+		*/ 
+		public function CountStewardshipContributionAmounts() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipContributionAmount::CountByStewardshipContributionId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipContributionAmount
+		 * @param StewardshipContributionAmount $objStewardshipContributionAmount
+		 * @return void
+		*/ 
+		public function AssociateStewardshipContributionAmount(StewardshipContributionAmount $objStewardshipContributionAmount) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContributionAmount on this unsaved StewardshipContribution.');
+			if ((is_null($objStewardshipContributionAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContributionAmount on this StewardshipContribution with an unsaved StewardshipContributionAmount.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution_amount`
+				SET
+					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a StewardshipContributionAmount
+		 * @param StewardshipContributionAmount $objStewardshipContributionAmount
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipContributionAmount(StewardshipContributionAmount $objStewardshipContributionAmount) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipContribution.');
+			if ((is_null($objStewardshipContributionAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this StewardshipContribution with an unsaved StewardshipContributionAmount.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution_amount`
+				SET
+					`stewardship_contribution_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . ' AND
+					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all StewardshipContributionAmounts
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipContributionAmounts() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipContribution.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution_amount`
+				SET
+					`stewardship_contribution_id` = null
+				WHERE
+					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipContributionAmount
+		 * @param StewardshipContributionAmount $objStewardshipContributionAmount
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipContributionAmount(StewardshipContributionAmount $objStewardshipContributionAmount) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipContribution.');
+			if ((is_null($objStewardshipContributionAmount->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this StewardshipContribution with an unsaved StewardshipContributionAmount.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_contribution_amount`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . ' AND
+					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated StewardshipContributionAmounts
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipContributionAmounts() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAmount on this unsaved StewardshipContribution.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_contribution_amount`
+				WHERE
+					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1531,16 +1753,16 @@
 			$strToReturn = '<complexType name="StewardshipContribution"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
-			$strToReturn .= '<element name="StewardshipFund" type="xsd1:StewardshipFund"/>';
 			$strToReturn .= '<element name="StewardshipContributionType" type="xsd:int"/>';
 			$strToReturn .= '<element name="StewardshipBatch" type="xsd1:StewardshipBatch"/>';
+			$strToReturn .= '<element name="StewardshipStack" type="xsd1:StewardshipStack"/>';
 			$strToReturn .= '<element name="CheckingAccountLookup" type="xsd1:CheckingAccountLookup"/>';
-			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
+			$strToReturn .= '<element name="TotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="DateEntered" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateCleared" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="CheckNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="AuthorizationNumber" type="xsd:string"/>';
-			$strToReturn .= '<element name="AlternateTitle" type="xsd:string"/>';
+			$strToReturn .= '<element name="AlternateSource" type="xsd:string"/>';
 			$strToReturn .= '<element name="Note" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1551,8 +1773,8 @@
 			if (!array_key_exists('StewardshipContribution', $strComplexTypeArray)) {
 				$strComplexTypeArray['StewardshipContribution'] = StewardshipContribution::GetSoapComplexTypeXml();
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
-				StewardshipFund::AlterSoapComplexTypeArray($strComplexTypeArray);
 				StewardshipBatch::AlterSoapComplexTypeArray($strComplexTypeArray);
+				StewardshipStack::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CheckingAccountLookup::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1573,19 +1795,19 @@
 			if ((property_exists($objSoapObject, 'Person')) &&
 				($objSoapObject->Person))
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
-			if ((property_exists($objSoapObject, 'StewardshipFund')) &&
-				($objSoapObject->StewardshipFund))
-				$objToReturn->StewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->StewardshipFund);
 			if (property_exists($objSoapObject, 'StewardshipContributionType'))
 				$objToReturn->intStewardshipContributionType = $objSoapObject->StewardshipContributionType;
 			if ((property_exists($objSoapObject, 'StewardshipBatch')) &&
 				($objSoapObject->StewardshipBatch))
 				$objToReturn->StewardshipBatch = StewardshipBatch::GetObjectFromSoapObject($objSoapObject->StewardshipBatch);
+			if ((property_exists($objSoapObject, 'StewardshipStack')) &&
+				($objSoapObject->StewardshipStack))
+				$objToReturn->StewardshipStack = StewardshipStack::GetObjectFromSoapObject($objSoapObject->StewardshipStack);
 			if ((property_exists($objSoapObject, 'CheckingAccountLookup')) &&
 				($objSoapObject->CheckingAccountLookup))
 				$objToReturn->CheckingAccountLookup = CheckingAccountLookup::GetObjectFromSoapObject($objSoapObject->CheckingAccountLookup);
-			if (property_exists($objSoapObject, 'Amount'))
-				$objToReturn->fltAmount = $objSoapObject->Amount;
+			if (property_exists($objSoapObject, 'TotalAmount'))
+				$objToReturn->fltTotalAmount = $objSoapObject->TotalAmount;
 			if (property_exists($objSoapObject, 'DateEntered'))
 				$objToReturn->dttDateEntered = new QDateTime($objSoapObject->DateEntered);
 			if (property_exists($objSoapObject, 'DateCleared'))
@@ -1594,8 +1816,8 @@
 				$objToReturn->strCheckNumber = $objSoapObject->CheckNumber;
 			if (property_exists($objSoapObject, 'AuthorizationNumber'))
 				$objToReturn->strAuthorizationNumber = $objSoapObject->AuthorizationNumber;
-			if (property_exists($objSoapObject, 'AlternateTitle'))
-				$objToReturn->strAlternateTitle = $objSoapObject->AlternateTitle;
+			if (property_exists($objSoapObject, 'AlternateSource'))
+				$objToReturn->strAlternateSource = $objSoapObject->AlternateSource;
 			if (property_exists($objSoapObject, 'Note'))
 				$objToReturn->strNote = $objSoapObject->Note;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1620,14 +1842,14 @@
 				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intPersonId = null;
-			if ($objObject->objStewardshipFund)
-				$objObject->objStewardshipFund = StewardshipFund::GetSoapObjectFromObject($objObject->objStewardshipFund, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intStewardshipFundId = null;
 			if ($objObject->objStewardshipBatch)
 				$objObject->objStewardshipBatch = StewardshipBatch::GetSoapObjectFromObject($objObject->objStewardshipBatch, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intStewardshipBatchId = null;
+			if ($objObject->objStewardshipStack)
+				$objObject->objStewardshipStack = StewardshipStack::GetSoapObjectFromObject($objObject->objStewardshipStack, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intStewardshipStackId = null;
 			if ($objObject->objCheckingAccountLookup)
 				$objObject->objCheckingAccountLookup = CheckingAccountLookup::GetSoapObjectFromObject($objObject->objCheckingAccountLookup, false);
 			else if (!$blnBindRelatedObjects)
@@ -1662,22 +1884,22 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
-				case 'StewardshipFundId':
-					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
-				case 'StewardshipFund':
-					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
 				case 'StewardshipContributionType':
 					return new QQNode('stewardship_contribution_type', 'StewardshipContributionType', 'integer', $this);
 				case 'StewardshipBatchId':
 					return new QQNode('stewardship_batch_id', 'StewardshipBatchId', 'integer', $this);
 				case 'StewardshipBatch':
 					return new QQNodeStewardshipBatch('stewardship_batch_id', 'StewardshipBatch', 'integer', $this);
+				case 'StewardshipStackId':
+					return new QQNode('stewardship_stack_id', 'StewardshipStackId', 'integer', $this);
+				case 'StewardshipStack':
+					return new QQNodeStewardshipStack('stewardship_stack_id', 'StewardshipStack', 'integer', $this);
 				case 'CheckingAccountLookupId':
 					return new QQNode('checking_account_lookup_id', 'CheckingAccountLookupId', 'integer', $this);
 				case 'CheckingAccountLookup':
 					return new QQNodeCheckingAccountLookup('checking_account_lookup_id', 'CheckingAccountLookup', 'integer', $this);
-				case 'Amount':
-					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'TotalAmount':
+					return new QQNode('total_amount', 'TotalAmount', 'double', $this);
 				case 'DateEntered':
 					return new QQNode('date_entered', 'DateEntered', 'QDateTime', $this);
 				case 'DateCleared':
@@ -1686,10 +1908,12 @@
 					return new QQNode('check_number', 'CheckNumber', 'string', $this);
 				case 'AuthorizationNumber':
 					return new QQNode('authorization_number', 'AuthorizationNumber', 'string', $this);
-				case 'AlternateTitle':
-					return new QQNode('alternate_title', 'AlternateTitle', 'string', $this);
+				case 'AlternateSource':
+					return new QQNode('alternate_source', 'AlternateSource', 'string', $this);
 				case 'Note':
 					return new QQNode('note', 'Note', 'string', $this);
+				case 'StewardshipContributionAmount':
+					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_contribution_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1716,22 +1940,22 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
-				case 'StewardshipFundId':
-					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
-				case 'StewardshipFund':
-					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
 				case 'StewardshipContributionType':
 					return new QQNode('stewardship_contribution_type', 'StewardshipContributionType', 'integer', $this);
 				case 'StewardshipBatchId':
 					return new QQNode('stewardship_batch_id', 'StewardshipBatchId', 'integer', $this);
 				case 'StewardshipBatch':
 					return new QQNodeStewardshipBatch('stewardship_batch_id', 'StewardshipBatch', 'integer', $this);
+				case 'StewardshipStackId':
+					return new QQNode('stewardship_stack_id', 'StewardshipStackId', 'integer', $this);
+				case 'StewardshipStack':
+					return new QQNodeStewardshipStack('stewardship_stack_id', 'StewardshipStack', 'integer', $this);
 				case 'CheckingAccountLookupId':
 					return new QQNode('checking_account_lookup_id', 'CheckingAccountLookupId', 'integer', $this);
 				case 'CheckingAccountLookup':
 					return new QQNodeCheckingAccountLookup('checking_account_lookup_id', 'CheckingAccountLookup', 'integer', $this);
-				case 'Amount':
-					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'TotalAmount':
+					return new QQNode('total_amount', 'TotalAmount', 'double', $this);
 				case 'DateEntered':
 					return new QQNode('date_entered', 'DateEntered', 'QDateTime', $this);
 				case 'DateCleared':
@@ -1740,10 +1964,12 @@
 					return new QQNode('check_number', 'CheckNumber', 'string', $this);
 				case 'AuthorizationNumber':
 					return new QQNode('authorization_number', 'AuthorizationNumber', 'string', $this);
-				case 'AlternateTitle':
-					return new QQNode('alternate_title', 'AlternateTitle', 'string', $this);
+				case 'AlternateSource':
+					return new QQNode('alternate_source', 'AlternateSource', 'string', $this);
 				case 'Note':
 					return new QQNode('note', 'Note', 'string', $this);
+				case 'StewardshipContributionAmount':
+					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_contribution_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

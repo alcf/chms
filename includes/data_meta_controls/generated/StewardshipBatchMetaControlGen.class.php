@@ -18,12 +18,18 @@
 	 * property-read StewardshipBatch $StewardshipBatch the actual StewardshipBatch data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
+	 * property QListBox $StewardshipBatchStatusTypeIdControl
+	 * property-read QLabel $StewardshipBatchStatusTypeIdLabel
 	 * property QDateTimePicker $DateEnteredControl
 	 * property-read QLabel $DateEnteredLabel
-	 * property QIntegerTextBox $BatchNumberControl
-	 * property-read QLabel $BatchNumberLabel
-	 * property QListBox $StewardshipFundIdControl
-	 * property-read QLabel $StewardshipFundIdLabel
+	 * property QTextBox $BatchLabelControl
+	 * property-read QLabel $BatchLabelLabel
+	 * property QFloatTextBox $ReportedTotalAmountControl
+	 * property-read QLabel $ReportedTotalAmountLabel
+	 * property QFloatTextBox $ActualTotalAmountControl
+	 * property-read QLabel $ActualTotalAmountLabel
+	 * property QFloatTextBox $PostedTotalAmountControl
+	 * property-read QLabel $PostedTotalAmountLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -37,14 +43,20 @@
 
 		// Controls that allow the editing of StewardshipBatch's individual data fields
 		protected $lblId;
+		protected $lstStewardshipBatchStatusType;
 		protected $calDateEntered;
-		protected $txtBatchNumber;
-		protected $lstStewardshipFund;
+		protected $txtBatchLabel;
+		protected $txtReportedTotalAmount;
+		protected $txtActualTotalAmount;
+		protected $txtPostedTotalAmount;
 
 		// Controls that allow the viewing of StewardshipBatch's individual data fields
+		protected $lblStewardshipBatchStatusTypeId;
 		protected $lblDateEntered;
-		protected $lblBatchNumber;
-		protected $lblStewardshipFundId;
+		protected $lblBatchLabel;
+		protected $lblReportedTotalAmount;
+		protected $lblActualTotalAmount;
+		protected $lblPostedTotalAmount;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -159,6 +171,33 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstStewardshipBatchStatusType
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstStewardshipBatchStatusType_Create($strControlId = null) {
+			$this->lstStewardshipBatchStatusType = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStewardshipBatchStatusType->Name = QApplication::Translate('Stewardship Batch Status Type');
+			$this->lstStewardshipBatchStatusType->Required = true;
+			foreach (StewardshipBatchStatusType::$NameArray as $intId => $strValue)
+				$this->lstStewardshipBatchStatusType->AddItem(new QListItem($strValue, $intId, $this->objStewardshipBatch->StewardshipBatchStatusTypeId == $intId));
+			return $this->lstStewardshipBatchStatusType;
+		}
+
+		/**
+		 * Create and setup QLabel lblStewardshipBatchStatusTypeId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblStewardshipBatchStatusTypeId_Create($strControlId = null) {
+			$this->lblStewardshipBatchStatusTypeId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStewardshipBatchStatusTypeId->Name = QApplication::Translate('Stewardship Batch Status Type');
+			$this->lblStewardshipBatchStatusTypeId->Text = ($this->objStewardshipBatch->StewardshipBatchStatusTypeId) ? StewardshipBatchStatusType::$NameArray[$this->objStewardshipBatch->StewardshipBatchStatusTypeId] : null;
+			$this->lblStewardshipBatchStatusTypeId->Required = true;
+			return $this->lblStewardshipBatchStatusTypeId;
+		}
+
+		/**
 		 * Create and setup QDateTimePicker calDateEntered
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -190,74 +229,108 @@
 		protected $strDateEnteredDateTimeFormat;
 
 		/**
-		 * Create and setup QIntegerTextBox txtBatchNumber
+		 * Create and setup QTextBox txtBatchLabel
 		 * @param string $strControlId optional ControlId to use
-		 * @return QIntegerTextBox
+		 * @return QTextBox
 		 */
-		public function txtBatchNumber_Create($strControlId = null) {
-			$this->txtBatchNumber = new QIntegerTextBox($this->objParentObject, $strControlId);
-			$this->txtBatchNumber->Name = QApplication::Translate('Batch Number');
-			$this->txtBatchNumber->Text = $this->objStewardshipBatch->BatchNumber;
-			$this->txtBatchNumber->Required = true;
-			return $this->txtBatchNumber;
+		public function txtBatchLabel_Create($strControlId = null) {
+			$this->txtBatchLabel = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtBatchLabel->Name = QApplication::Translate('Batch Label');
+			$this->txtBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
+			$this->txtBatchLabel->Required = true;
+			$this->txtBatchLabel->MaxLength = StewardshipBatch::BatchLabelMaxLength;
+			return $this->txtBatchLabel;
 		}
 
 		/**
-		 * Create and setup QLabel lblBatchNumber
+		 * Create and setup QLabel lblBatchLabel
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblBatchLabel_Create($strControlId = null) {
+			$this->lblBatchLabel = new QLabel($this->objParentObject, $strControlId);
+			$this->lblBatchLabel->Name = QApplication::Translate('Batch Label');
+			$this->lblBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
+			$this->lblBatchLabel->Required = true;
+			return $this->lblBatchLabel;
+		}
+
+		/**
+		 * Create and setup QFloatTextBox txtReportedTotalAmount
+		 * @param string $strControlId optional ControlId to use
+		 * @return QFloatTextBox
+		 */
+		public function txtReportedTotalAmount_Create($strControlId = null) {
+			$this->txtReportedTotalAmount = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtReportedTotalAmount->Name = QApplication::Translate('Reported Total Amount');
+			$this->txtReportedTotalAmount->Text = $this->objStewardshipBatch->ReportedTotalAmount;
+			return $this->txtReportedTotalAmount;
+		}
+
+		/**
+		 * Create and setup QLabel lblReportedTotalAmount
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblBatchNumber_Create($strControlId = null, $strFormat = null) {
-			$this->lblBatchNumber = new QLabel($this->objParentObject, $strControlId);
-			$this->lblBatchNumber->Name = QApplication::Translate('Batch Number');
-			$this->lblBatchNumber->Text = $this->objStewardshipBatch->BatchNumber;
-			$this->lblBatchNumber->Required = true;
-			$this->lblBatchNumber->Format = $strFormat;
-			return $this->lblBatchNumber;
+		public function lblReportedTotalAmount_Create($strControlId = null, $strFormat = null) {
+			$this->lblReportedTotalAmount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblReportedTotalAmount->Name = QApplication::Translate('Reported Total Amount');
+			$this->lblReportedTotalAmount->Text = $this->objStewardshipBatch->ReportedTotalAmount;
+			$this->lblReportedTotalAmount->Format = $strFormat;
+			return $this->lblReportedTotalAmount;
 		}
 
 		/**
-		 * Create and setup QListBox lstStewardshipFund
+		 * Create and setup QFloatTextBox txtActualTotalAmount
 		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
+		 * @return QFloatTextBox
 		 */
-		public function lstStewardshipFund_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstStewardshipFund = new QListBox($this->objParentObject, $strControlId);
-			$this->lstStewardshipFund->Name = QApplication::Translate('Stewardship Fund');
-			$this->lstStewardshipFund->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objStewardshipFundCursor = StewardshipFund::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objStewardshipFund = StewardshipFund::InstantiateCursor($objStewardshipFundCursor)) {
-				$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-				if (($this->objStewardshipBatch->StewardshipFund) && ($this->objStewardshipBatch->StewardshipFund->Id == $objStewardshipFund->Id))
-					$objListItem->Selected = true;
-				$this->lstStewardshipFund->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstStewardshipFund;
+		public function txtActualTotalAmount_Create($strControlId = null) {
+			$this->txtActualTotalAmount = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtActualTotalAmount->Name = QApplication::Translate('Actual Total Amount');
+			$this->txtActualTotalAmount->Text = $this->objStewardshipBatch->ActualTotalAmount;
+			return $this->txtActualTotalAmount;
 		}
 
 		/**
-		 * Create and setup QLabel lblStewardshipFundId
+		 * Create and setup QLabel lblActualTotalAmount
 		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblStewardshipFundId_Create($strControlId = null) {
-			$this->lblStewardshipFundId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblStewardshipFundId->Name = QApplication::Translate('Stewardship Fund');
-			$this->lblStewardshipFundId->Text = ($this->objStewardshipBatch->StewardshipFund) ? $this->objStewardshipBatch->StewardshipFund->__toString() : null;
-			$this->lblStewardshipFundId->Required = true;
-			return $this->lblStewardshipFundId;
+		public function lblActualTotalAmount_Create($strControlId = null, $strFormat = null) {
+			$this->lblActualTotalAmount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblActualTotalAmount->Name = QApplication::Translate('Actual Total Amount');
+			$this->lblActualTotalAmount->Text = $this->objStewardshipBatch->ActualTotalAmount;
+			$this->lblActualTotalAmount->Format = $strFormat;
+			return $this->lblActualTotalAmount;
+		}
+
+		/**
+		 * Create and setup QFloatTextBox txtPostedTotalAmount
+		 * @param string $strControlId optional ControlId to use
+		 * @return QFloatTextBox
+		 */
+		public function txtPostedTotalAmount_Create($strControlId = null) {
+			$this->txtPostedTotalAmount = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtPostedTotalAmount->Name = QApplication::Translate('Posted Total Amount');
+			$this->txtPostedTotalAmount->Text = $this->objStewardshipBatch->PostedTotalAmount;
+			return $this->txtPostedTotalAmount;
+		}
+
+		/**
+		 * Create and setup QLabel lblPostedTotalAmount
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblPostedTotalAmount_Create($strControlId = null, $strFormat = null) {
+			$this->lblPostedTotalAmount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPostedTotalAmount->Name = QApplication::Translate('Posted Total Amount');
+			$this->lblPostedTotalAmount->Text = $this->objStewardshipBatch->PostedTotalAmount;
+			$this->lblPostedTotalAmount->Format = $strFormat;
+			return $this->lblPostedTotalAmount;
 		}
 
 
@@ -273,25 +346,23 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objStewardshipBatch->Id;
 
+			if ($this->lstStewardshipBatchStatusType) $this->lstStewardshipBatchStatusType->SelectedValue = $this->objStewardshipBatch->StewardshipBatchStatusTypeId;
+			if ($this->lblStewardshipBatchStatusTypeId) $this->lblStewardshipBatchStatusTypeId->Text = ($this->objStewardshipBatch->StewardshipBatchStatusTypeId) ? StewardshipBatchStatusType::$NameArray[$this->objStewardshipBatch->StewardshipBatchStatusTypeId] : null;
+
 			if ($this->calDateEntered) $this->calDateEntered->DateTime = $this->objStewardshipBatch->DateEntered;
 			if ($this->lblDateEntered) $this->lblDateEntered->Text = sprintf($this->objStewardshipBatch->DateEntered) ? $this->objStewardshipBatch->__toString($this->strDateEnteredDateTimeFormat) : null;
 
-			if ($this->txtBatchNumber) $this->txtBatchNumber->Text = $this->objStewardshipBatch->BatchNumber;
-			if ($this->lblBatchNumber) $this->lblBatchNumber->Text = $this->objStewardshipBatch->BatchNumber;
+			if ($this->txtBatchLabel) $this->txtBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
+			if ($this->lblBatchLabel) $this->lblBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
 
-			if ($this->lstStewardshipFund) {
-					$this->lstStewardshipFund->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-				$objStewardshipFundArray = StewardshipFund::LoadAll();
-				if ($objStewardshipFundArray) foreach ($objStewardshipFundArray as $objStewardshipFund) {
-					$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-					if (($this->objStewardshipBatch->StewardshipFund) && ($this->objStewardshipBatch->StewardshipFund->Id == $objStewardshipFund->Id))
-						$objListItem->Selected = true;
-					$this->lstStewardshipFund->AddItem($objListItem);
-				}
-			}
-			if ($this->lblStewardshipFundId) $this->lblStewardshipFundId->Text = ($this->objStewardshipBatch->StewardshipFund) ? $this->objStewardshipBatch->StewardshipFund->__toString() : null;
+			if ($this->txtReportedTotalAmount) $this->txtReportedTotalAmount->Text = $this->objStewardshipBatch->ReportedTotalAmount;
+			if ($this->lblReportedTotalAmount) $this->lblReportedTotalAmount->Text = $this->objStewardshipBatch->ReportedTotalAmount;
+
+			if ($this->txtActualTotalAmount) $this->txtActualTotalAmount->Text = $this->objStewardshipBatch->ActualTotalAmount;
+			if ($this->lblActualTotalAmount) $this->lblActualTotalAmount->Text = $this->objStewardshipBatch->ActualTotalAmount;
+
+			if ($this->txtPostedTotalAmount) $this->txtPostedTotalAmount->Text = $this->objStewardshipBatch->PostedTotalAmount;
+			if ($this->lblPostedTotalAmount) $this->lblPostedTotalAmount->Text = $this->objStewardshipBatch->PostedTotalAmount;
 
 		}
 
@@ -316,9 +387,12 @@
 		public function SaveStewardshipBatch() {
 			try {
 				// Update any fields for controls that have been created
+				if ($this->lstStewardshipBatchStatusType) $this->objStewardshipBatch->StewardshipBatchStatusTypeId = $this->lstStewardshipBatchStatusType->SelectedValue;
 				if ($this->calDateEntered) $this->objStewardshipBatch->DateEntered = $this->calDateEntered->DateTime;
-				if ($this->txtBatchNumber) $this->objStewardshipBatch->BatchNumber = $this->txtBatchNumber->Text;
-				if ($this->lstStewardshipFund) $this->objStewardshipBatch->StewardshipFundId = $this->lstStewardshipFund->SelectedValue;
+				if ($this->txtBatchLabel) $this->objStewardshipBatch->BatchLabel = $this->txtBatchLabel->Text;
+				if ($this->txtReportedTotalAmount) $this->objStewardshipBatch->ReportedTotalAmount = $this->txtReportedTotalAmount->Text;
+				if ($this->txtActualTotalAmount) $this->objStewardshipBatch->ActualTotalAmount = $this->txtActualTotalAmount->Text;
+				if ($this->txtPostedTotalAmount) $this->objStewardshipBatch->PostedTotalAmount = $this->txtPostedTotalAmount->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -367,24 +441,42 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
+				case 'StewardshipBatchStatusTypeIdControl':
+					if (!$this->lstStewardshipBatchStatusType) return $this->lstStewardshipBatchStatusType_Create();
+					return $this->lstStewardshipBatchStatusType;
+				case 'StewardshipBatchStatusTypeIdLabel':
+					if (!$this->lblStewardshipBatchStatusTypeId) return $this->lblStewardshipBatchStatusTypeId_Create();
+					return $this->lblStewardshipBatchStatusTypeId;
 				case 'DateEnteredControl':
 					if (!$this->calDateEntered) return $this->calDateEntered_Create();
 					return $this->calDateEntered;
 				case 'DateEnteredLabel':
 					if (!$this->lblDateEntered) return $this->lblDateEntered_Create();
 					return $this->lblDateEntered;
-				case 'BatchNumberControl':
-					if (!$this->txtBatchNumber) return $this->txtBatchNumber_Create();
-					return $this->txtBatchNumber;
-				case 'BatchNumberLabel':
-					if (!$this->lblBatchNumber) return $this->lblBatchNumber_Create();
-					return $this->lblBatchNumber;
-				case 'StewardshipFundIdControl':
-					if (!$this->lstStewardshipFund) return $this->lstStewardshipFund_Create();
-					return $this->lstStewardshipFund;
-				case 'StewardshipFundIdLabel':
-					if (!$this->lblStewardshipFundId) return $this->lblStewardshipFundId_Create();
-					return $this->lblStewardshipFundId;
+				case 'BatchLabelControl':
+					if (!$this->txtBatchLabel) return $this->txtBatchLabel_Create();
+					return $this->txtBatchLabel;
+				case 'BatchLabelLabel':
+					if (!$this->lblBatchLabel) return $this->lblBatchLabel_Create();
+					return $this->lblBatchLabel;
+				case 'ReportedTotalAmountControl':
+					if (!$this->txtReportedTotalAmount) return $this->txtReportedTotalAmount_Create();
+					return $this->txtReportedTotalAmount;
+				case 'ReportedTotalAmountLabel':
+					if (!$this->lblReportedTotalAmount) return $this->lblReportedTotalAmount_Create();
+					return $this->lblReportedTotalAmount;
+				case 'ActualTotalAmountControl':
+					if (!$this->txtActualTotalAmount) return $this->txtActualTotalAmount_Create();
+					return $this->txtActualTotalAmount;
+				case 'ActualTotalAmountLabel':
+					if (!$this->lblActualTotalAmount) return $this->lblActualTotalAmount_Create();
+					return $this->lblActualTotalAmount;
+				case 'PostedTotalAmountControl':
+					if (!$this->txtPostedTotalAmount) return $this->txtPostedTotalAmount_Create();
+					return $this->txtPostedTotalAmount;
+				case 'PostedTotalAmountLabel':
+					if (!$this->lblPostedTotalAmount) return $this->lblPostedTotalAmount_Create();
+					return $this->lblPostedTotalAmount;
 				default:
 					try {
 						return parent::__get($strName);
@@ -409,12 +501,18 @@
 					// Controls that point to StewardshipBatch fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
+					case 'StewardshipBatchStatusTypeIdControl':
+						return ($this->lstStewardshipBatchStatusType = QType::Cast($mixValue, 'QControl'));
 					case 'DateEnteredControl':
 						return ($this->calDateEntered = QType::Cast($mixValue, 'QControl'));
-					case 'BatchNumberControl':
-						return ($this->txtBatchNumber = QType::Cast($mixValue, 'QControl'));
-					case 'StewardshipFundIdControl':
-						return ($this->lstStewardshipFund = QType::Cast($mixValue, 'QControl'));
+					case 'BatchLabelControl':
+						return ($this->txtBatchLabel = QType::Cast($mixValue, 'QControl'));
+					case 'ReportedTotalAmountControl':
+						return ($this->txtReportedTotalAmount = QType::Cast($mixValue, 'QControl'));
+					case 'ActualTotalAmountControl':
+						return ($this->txtActualTotalAmount = QType::Cast($mixValue, 'QControl'));
+					case 'PostedTotalAmountControl':
+						return ($this->txtPostedTotalAmount = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

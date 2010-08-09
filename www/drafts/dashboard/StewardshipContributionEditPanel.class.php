@@ -22,16 +22,16 @@
 		// Controls for StewardshipContribution's Data Fields
 		public $lblId;
 		public $lstPerson;
-		public $lstStewardshipFund;
 		public $lstStewardshipContributionTypeObject;
 		public $lstStewardshipBatch;
+		public $lstStewardshipStack;
 		public $lstCheckingAccountLookup;
-		public $txtAmount;
+		public $txtTotalAmount;
 		public $calDateEntered;
 		public $calDateCleared;
 		public $txtCheckNumber;
 		public $txtAuthorizationNumber;
-		public $txtAlternateTitle;
+		public $txtAlternateSource;
 		public $txtNote;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -64,16 +64,16 @@
 			// Call MetaControl's methods to create qcontrols based on StewardshipContribution's data fields
 			$this->lblId = $this->mctStewardshipContribution->lblId_Create();
 			$this->lstPerson = $this->mctStewardshipContribution->lstPerson_Create();
-			$this->lstStewardshipFund = $this->mctStewardshipContribution->lstStewardshipFund_Create();
 			$this->lstStewardshipContributionTypeObject = $this->mctStewardshipContribution->lstStewardshipContributionTypeObject_Create();
 			$this->lstStewardshipBatch = $this->mctStewardshipContribution->lstStewardshipBatch_Create();
+			$this->lstStewardshipStack = $this->mctStewardshipContribution->lstStewardshipStack_Create();
 			$this->lstCheckingAccountLookup = $this->mctStewardshipContribution->lstCheckingAccountLookup_Create();
-			$this->txtAmount = $this->mctStewardshipContribution->txtAmount_Create();
+			$this->txtTotalAmount = $this->mctStewardshipContribution->txtTotalAmount_Create();
 			$this->calDateEntered = $this->mctStewardshipContribution->calDateEntered_Create();
 			$this->calDateCleared = $this->mctStewardshipContribution->calDateCleared_Create();
 			$this->txtCheckNumber = $this->mctStewardshipContribution->txtCheckNumber_Create();
 			$this->txtAuthorizationNumber = $this->mctStewardshipContribution->txtAuthorizationNumber_Create();
-			$this->txtAlternateTitle = $this->mctStewardshipContribution->txtAlternateTitle_Create();
+			$this->txtAlternateSource = $this->mctStewardshipContribution->txtAlternateSource_Create();
 			$this->txtNote = $this->mctStewardshipContribution->txtNote_Create();
 
 			// Create Buttons and Actions on this Form

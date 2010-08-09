@@ -293,12 +293,40 @@
 		QApplicationBase::$ClassFile['stewardshipcontributionmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipContributionMetaControl.class.php';
 		QApplicationBase::$ClassFile['stewardshipcontributiondatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipContributionDataGrid.class.php';
 
+	// ClassPaths for the StewardshipContributionAmount class
+		QApplicationBase::$ClassFile['stewardshipcontributionamount'] = __DATA_CLASSES__ . '/StewardshipContributionAmount.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshipcontributionamount'] = __DATA_CLASSES__ . '/StewardshipContributionAmount.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshipcontributionamount'] = __DATA_CLASSES__ . '/StewardshipContributionAmount.class.php';
+		QApplicationBase::$ClassFile['stewardshipcontributionamountmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipContributionAmountMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshipcontributionamountdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipContributionAmountDataGrid.class.php';
+
 	// ClassPaths for the StewardshipFund class
 		QApplicationBase::$ClassFile['stewardshipfund'] = __DATA_CLASSES__ . '/StewardshipFund.class.php';
 		QApplicationBase::$ClassFile['qqnodestewardshipfund'] = __DATA_CLASSES__ . '/StewardshipFund.class.php';
 		QApplicationBase::$ClassFile['qqreversereferencenodestewardshipfund'] = __DATA_CLASSES__ . '/StewardshipFund.class.php';
 		QApplicationBase::$ClassFile['stewardshipfundmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipFundMetaControl.class.php';
 		QApplicationBase::$ClassFile['stewardshipfunddatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipFundDataGrid.class.php';
+
+	// ClassPaths for the StewardshipPost class
+		QApplicationBase::$ClassFile['stewardshippost'] = __DATA_CLASSES__ . '/StewardshipPost.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshippost'] = __DATA_CLASSES__ . '/StewardshipPost.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshippost'] = __DATA_CLASSES__ . '/StewardshipPost.class.php';
+		QApplicationBase::$ClassFile['stewardshippostmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipPostMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshippostdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipPostDataGrid.class.php';
+
+	// ClassPaths for the StewardshipPostAmount class
+		QApplicationBase::$ClassFile['stewardshippostamount'] = __DATA_CLASSES__ . '/StewardshipPostAmount.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshippostamount'] = __DATA_CLASSES__ . '/StewardshipPostAmount.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshippostamount'] = __DATA_CLASSES__ . '/StewardshipPostAmount.class.php';
+		QApplicationBase::$ClassFile['stewardshippostamountmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipPostAmountMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshippostamountdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipPostAmountDataGrid.class.php';
+
+	// ClassPaths for the StewardshipStack class
+		QApplicationBase::$ClassFile['stewardshipstack'] = __DATA_CLASSES__ . '/StewardshipStack.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshipstack'] = __DATA_CLASSES__ . '/StewardshipStack.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshipstack'] = __DATA_CLASSES__ . '/StewardshipStack.class.php';
+		QApplicationBase::$ClassFile['stewardshipstackmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipStackMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshipstackdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipStackDataGrid.class.php';
 
 	// ClassPaths for the UsState class
 		QApplicationBase::$ClassFile['usstate'] = __DATA_CLASSES__ . '/UsState.class.php';

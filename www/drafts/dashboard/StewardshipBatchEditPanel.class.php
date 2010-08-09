@@ -21,9 +21,12 @@
 
 		// Controls for StewardshipBatch's Data Fields
 		public $lblId;
+		public $lstStewardshipBatchStatusType;
 		public $calDateEntered;
-		public $txtBatchNumber;
-		public $lstStewardshipFund;
+		public $txtBatchLabel;
+		public $txtReportedTotalAmount;
+		public $txtActualTotalAmount;
+		public $txtPostedTotalAmount;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -54,9 +57,12 @@
 
 			// Call MetaControl's methods to create qcontrols based on StewardshipBatch's data fields
 			$this->lblId = $this->mctStewardshipBatch->lblId_Create();
+			$this->lstStewardshipBatchStatusType = $this->mctStewardshipBatch->lstStewardshipBatchStatusType_Create();
 			$this->calDateEntered = $this->mctStewardshipBatch->calDateEntered_Create();
-			$this->txtBatchNumber = $this->mctStewardshipBatch->txtBatchNumber_Create();
-			$this->lstStewardshipFund = $this->mctStewardshipBatch->lstStewardshipFund_Create();
+			$this->txtBatchLabel = $this->mctStewardshipBatch->txtBatchLabel_Create();
+			$this->txtReportedTotalAmount = $this->mctStewardshipBatch->txtReportedTotalAmount_Create();
+			$this->txtActualTotalAmount = $this->mctStewardshipBatch->txtActualTotalAmount_Create();
+			$this->txtPostedTotalAmount = $this->mctStewardshipBatch->txtPostedTotalAmount_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

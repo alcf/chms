@@ -296,19 +296,19 @@
 				case 'Id': return QQN::StewardshipContribution()->Id;
 				case 'PersonId': return QQN::StewardshipContribution()->PersonId;
 				case 'Person': return QQN::StewardshipContribution()->Person;
-				case 'StewardshipFundId': return QQN::StewardshipContribution()->StewardshipFundId;
-				case 'StewardshipFund': return QQN::StewardshipContribution()->StewardshipFund;
 				case 'StewardshipContributionType': return QQN::StewardshipContribution()->StewardshipContributionType;
 				case 'StewardshipBatchId': return QQN::StewardshipContribution()->StewardshipBatchId;
 				case 'StewardshipBatch': return QQN::StewardshipContribution()->StewardshipBatch;
+				case 'StewardshipStackId': return QQN::StewardshipContribution()->StewardshipStackId;
+				case 'StewardshipStack': return QQN::StewardshipContribution()->StewardshipStack;
 				case 'CheckingAccountLookupId': return QQN::StewardshipContribution()->CheckingAccountLookupId;
 				case 'CheckingAccountLookup': return QQN::StewardshipContribution()->CheckingAccountLookup;
-				case 'Amount': return QQN::StewardshipContribution()->Amount;
+				case 'TotalAmount': return QQN::StewardshipContribution()->TotalAmount;
 				case 'DateEntered': return QQN::StewardshipContribution()->DateEntered;
 				case 'DateCleared': return QQN::StewardshipContribution()->DateCleared;
 				case 'CheckNumber': return QQN::StewardshipContribution()->CheckNumber;
 				case 'AuthorizationNumber': return QQN::StewardshipContribution()->AuthorizationNumber;
-				case 'AlternateTitle': return QQN::StewardshipContribution()->AlternateTitle;
+				case 'AlternateSource': return QQN::StewardshipContribution()->AlternateSource;
 				case 'Note': return QQN::StewardshipContribution()->Note;
 				default: throw new QCallerException('Simple Property not found in StewardshipContributionDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

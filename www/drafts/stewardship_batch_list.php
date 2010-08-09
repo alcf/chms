@@ -56,9 +56,12 @@
 			// Create the Other Columns (note that you can use strings for stewardship_batch's properties, or you
 			// can traverse down QQN::stewardship_batch() to display fields that are down the hierarchy)
 			$this->dtgStewardshipBatches->MetaAddColumn('Id');
+			$this->dtgStewardshipBatches->MetaAddTypeColumn('StewardshipBatchStatusTypeId', 'StewardshipBatchStatusType');
 			$this->dtgStewardshipBatches->MetaAddColumn('DateEntered');
-			$this->dtgStewardshipBatches->MetaAddColumn('BatchNumber');
-			$this->dtgStewardshipBatches->MetaAddColumn(QQN::StewardshipBatch()->StewardshipFund);
+			$this->dtgStewardshipBatches->MetaAddColumn('BatchLabel');
+			$this->dtgStewardshipBatches->MetaAddColumn('ReportedTotalAmount');
+			$this->dtgStewardshipBatches->MetaAddColumn('ActualTotalAmount');
+			$this->dtgStewardshipBatches->MetaAddColumn('PostedTotalAmount');
 		}
 	}
 

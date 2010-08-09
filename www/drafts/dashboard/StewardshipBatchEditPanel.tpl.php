@@ -7,11 +7,17 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstStewardshipBatchStatusType->RenderWithName(); ?>
+
 		<?php $_CONTROL->calDateEntered->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtBatchNumber->RenderWithName(); ?>
+		<?php $_CONTROL->txtBatchLabel->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstStewardshipFund->RenderWithName(); ?>
+		<?php $_CONTROL->txtReportedTotalAmount->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtActualTotalAmount->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtPostedTotalAmount->RenderWithName(); ?>
 
 	</div>
 

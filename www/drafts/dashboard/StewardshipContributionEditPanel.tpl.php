@@ -9,15 +9,15 @@
 
 		<?php $_CONTROL->lstPerson->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstStewardshipFund->RenderWithName(); ?>
-
 		<?php $_CONTROL->lstStewardshipContributionTypeObject->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstStewardshipBatch->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstStewardshipStack->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstCheckingAccountLookup->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtAmount->RenderWithName(); ?>
+		<?php $_CONTROL->txtTotalAmount->RenderWithName(); ?>
 
 		<?php $_CONTROL->calDateEntered->RenderWithName(); ?>
 
@@ -27,7 +27,7 @@
 
 		<?php $_CONTROL->txtAuthorizationNumber->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtAlternateTitle->RenderWithName(); ?>
+		<?php $_CONTROL->txtAlternateSource->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtNote->RenderWithName(); ?>
 
