@@ -428,6 +428,9 @@
 
 			$objHeadPerson = self::GenerateIndividual(rand(0, 6), true, $strLastName);
 			$objHousehold = Household::CreateHousehold($objHeadPerson);
+			
+			$objHousehold->CombinedStewardshipFlag = rand(0, 7);
+			$objHousehold->Save();
 
 			// Add a Spouse
 			if (rand(0, 6)) {

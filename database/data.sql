@@ -176,6 +176,10 @@ INSERT INTO stewardship_contribution_type VALUES (7, 'Stock Donation');
 INSERT INTO stewardship_contribution_type VALUES (8, 'Automobile');
 INSERT INTO stewardship_contribution_type VALUES (9, 'Other');
 
+INSERT INTO stewardship_batch_status_type VALUES(1, 'New Batch');
+INSERT INTO stewardship_batch_status_type VALUES(2, 'Posted In Full');
+INSERT INTO stewardship_batch_status_type VALUES(3, 'Unposted Changes Exist');
+
 
 ##############
 # Starter Data

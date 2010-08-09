@@ -52,6 +52,7 @@
 			$objHousehold = new Household();
 			$objHousehold->HeadPerson = $objHeadPerson;
 			$objHousehold->RefreshName(false);
+			$objHousehold->CombinedStewardshipFlag = true;
 			$objHousehold->Save();
 
 			$objHousehold->AssociatePerson($objHeadPerson);
