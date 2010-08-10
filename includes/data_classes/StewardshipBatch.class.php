@@ -100,7 +100,7 @@
 			foreach ($this->GetStewardshipContributionArray() as $objAmount)
 				$fltTotalAmount += $objAmount->TotalAmount;
 
-			$this->TotalAmount = $fltTotalAmount;
+			$this->ActualTotalAmount = $fltTotalAmount;
 			if ($blnSave) $this->Save();
 		}
 		
