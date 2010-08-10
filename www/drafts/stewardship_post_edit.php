@@ -28,6 +28,7 @@
 		protected $txtPostNumber;
 		protected $calDatePosted;
 		protected $txtTotalAmount;
+		protected $lstCreatedByLogin;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -59,6 +60,7 @@
 			$this->txtPostNumber = $this->mctStewardshipPost->txtPostNumber_Create();
 			$this->calDatePosted = $this->mctStewardshipPost->calDatePosted_Create();
 			$this->txtTotalAmount = $this->mctStewardshipPost->txtTotalAmount_Create();
+			$this->lstCreatedByLogin = $this->mctStewardshipPost->lstCreatedByLogin_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

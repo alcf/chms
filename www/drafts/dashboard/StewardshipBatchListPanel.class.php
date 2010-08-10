@@ -73,6 +73,7 @@
 			$this->dtgStewardshipBatches->MetaAddColumn('ReportedTotalAmount');
 			$this->dtgStewardshipBatches->MetaAddColumn('ActualTotalAmount');
 			$this->dtgStewardshipBatches->MetaAddColumn('PostedTotalAmount');
+			$this->dtgStewardshipBatches->MetaAddColumn(QQN::StewardshipBatch()->CreatedByLogin);
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

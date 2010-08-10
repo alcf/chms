@@ -41,6 +41,8 @@
 
 		<?php $this->txtNote->RenderWithName(); ?>
 
+		<?php $this->lstCreatedByLogin->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

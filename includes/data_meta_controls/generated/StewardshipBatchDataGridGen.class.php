@@ -301,6 +301,8 @@
 				case 'ReportedTotalAmount': return QQN::StewardshipBatch()->ReportedTotalAmount;
 				case 'ActualTotalAmount': return QQN::StewardshipBatch()->ActualTotalAmount;
 				case 'PostedTotalAmount': return QQN::StewardshipBatch()->PostedTotalAmount;
+				case 'CreatedByLoginId': return QQN::StewardshipBatch()->CreatedByLoginId;
+				case 'CreatedByLogin': return QQN::StewardshipBatch()->CreatedByLogin;
 				default: throw new QCallerException('Simple Property not found in StewardshipBatchDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

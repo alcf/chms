@@ -36,6 +36,7 @@
 		protected $txtAuthorizationNumber;
 		protected $txtAlternateSource;
 		protected $txtNote;
+		protected $lstCreatedByLogin;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -75,6 +76,7 @@
 			$this->txtAuthorizationNumber = $this->mctStewardshipContribution->txtAuthorizationNumber_Create();
 			$this->txtAlternateSource = $this->mctStewardshipContribution->txtAlternateSource_Create();
 			$this->txtNote = $this->mctStewardshipContribution->txtNote_Create();
+			$this->lstCreatedByLogin = $this->mctStewardshipContribution->lstCreatedByLogin_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

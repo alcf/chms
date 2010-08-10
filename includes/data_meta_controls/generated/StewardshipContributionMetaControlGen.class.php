@@ -42,6 +42,8 @@
 	 * property-read QLabel $AlternateSourceLabel
 	 * property QTextBox $NoteControl
 	 * property-read QLabel $NoteLabel
+	 * property QListBox $CreatedByLoginIdControl
+	 * property-read QLabel $CreatedByLoginIdLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -67,6 +69,7 @@
 		protected $txtAuthorizationNumber;
 		protected $txtAlternateSource;
 		protected $txtNote;
+		protected $lstCreatedByLogin;
 
 		// Controls that allow the viewing of StewardshipContribution's individual data fields
 		protected $lblPersonId;
@@ -81,6 +84,7 @@
 		protected $lblAuthorizationNumber;
 		protected $lblAlternateSource;
 		protected $lblNote;
+		protected $lblCreatedByLoginId;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -573,6 +577,49 @@
 			return $this->lblNote;
 		}
 
+		/**
+		 * Create and setup QListBox lstCreatedByLogin
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstCreatedByLogin_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCreatedByLogin = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCreatedByLogin->Name = QApplication::Translate('Created By Login');
+			$this->lstCreatedByLogin->Required = true;
+			if (!$this->blnEditMode)
+				$this->lstCreatedByLogin->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCreatedByLoginCursor = Login::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCreatedByLogin = Login::InstantiateCursor($objCreatedByLoginCursor)) {
+				$objListItem = new QListItem($objCreatedByLogin->__toString(), $objCreatedByLogin->Id);
+				if (($this->objStewardshipContribution->CreatedByLogin) && ($this->objStewardshipContribution->CreatedByLogin->Id == $objCreatedByLogin->Id))
+					$objListItem->Selected = true;
+				$this->lstCreatedByLogin->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstCreatedByLogin;
+		}
+
+		/**
+		 * Create and setup QLabel lblCreatedByLoginId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCreatedByLoginId_Create($strControlId = null) {
+			$this->lblCreatedByLoginId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCreatedByLoginId->Name = QApplication::Translate('Created By Login');
+			$this->lblCreatedByLoginId->Text = ($this->objStewardshipContribution->CreatedByLogin) ? $this->objStewardshipContribution->CreatedByLogin->__toString() : null;
+			$this->lblCreatedByLoginId->Required = true;
+			return $this->lblCreatedByLoginId;
+		}
+
 
 
 		/**
@@ -664,6 +711,20 @@
 			if ($this->txtNote) $this->txtNote->Text = $this->objStewardshipContribution->Note;
 			if ($this->lblNote) $this->lblNote->Text = $this->objStewardshipContribution->Note;
 
+			if ($this->lstCreatedByLogin) {
+					$this->lstCreatedByLogin->RemoveAllItems();
+				if (!$this->blnEditMode)
+					$this->lstCreatedByLogin->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCreatedByLoginArray = Login::LoadAll();
+				if ($objCreatedByLoginArray) foreach ($objCreatedByLoginArray as $objCreatedByLogin) {
+					$objListItem = new QListItem($objCreatedByLogin->__toString(), $objCreatedByLogin->Id);
+					if (($this->objStewardshipContribution->CreatedByLogin) && ($this->objStewardshipContribution->CreatedByLogin->Id == $objCreatedByLogin->Id))
+						$objListItem->Selected = true;
+					$this->lstCreatedByLogin->AddItem($objListItem);
+				}
+			}
+			if ($this->lblCreatedByLoginId) $this->lblCreatedByLoginId->Text = ($this->objStewardshipContribution->CreatedByLogin) ? $this->objStewardshipContribution->CreatedByLogin->__toString() : null;
+
 		}
 
 
@@ -699,6 +760,7 @@
 				if ($this->txtAuthorizationNumber) $this->objStewardshipContribution->AuthorizationNumber = $this->txtAuthorizationNumber->Text;
 				if ($this->txtAlternateSource) $this->objStewardshipContribution->AlternateSource = $this->txtAlternateSource->Text;
 				if ($this->txtNote) $this->objStewardshipContribution->Note = $this->txtNote->Text;
+				if ($this->lstCreatedByLogin) $this->objStewardshipContribution->CreatedByLoginId = $this->lstCreatedByLogin->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -819,6 +881,12 @@
 				case 'NoteLabel':
 					if (!$this->lblNote) return $this->lblNote_Create();
 					return $this->lblNote;
+				case 'CreatedByLoginIdControl':
+					if (!$this->lstCreatedByLogin) return $this->lstCreatedByLogin_Create();
+					return $this->lstCreatedByLogin;
+				case 'CreatedByLoginIdLabel':
+					if (!$this->lblCreatedByLoginId) return $this->lblCreatedByLoginId_Create();
+					return $this->lblCreatedByLoginId;
 				default:
 					try {
 						return parent::__get($strName);
@@ -867,6 +935,8 @@
 						return ($this->txtAlternateSource = QType::Cast($mixValue, 'QControl'));
 					case 'NoteControl':
 						return ($this->txtNote = QType::Cast($mixValue, 'QControl'));
+					case 'CreatedByLoginIdControl':
+						return ($this->lstCreatedByLogin = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

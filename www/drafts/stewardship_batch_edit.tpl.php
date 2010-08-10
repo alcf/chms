@@ -31,6 +31,8 @@
 
 		<?php $this->txtPostedTotalAmount->RenderWithName(); ?>
 
+		<?php $this->lstCreatedByLogin->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

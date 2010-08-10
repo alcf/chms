@@ -92,9 +92,13 @@
 			print 'Generating Stewardship... ';
 			while ($dttDate->IsEarlierThan(QDateTime::Now())) {
 				print ($strDate = '[' . $dttDate->ToString('YYYY-MMM-DD') . ']');
-				
+
+				$objBatch = StewardshipBatch::Create(null, self::GenerateFromArray(array('Weekend T/O', 'Weekend Giving', 'Tithes and Offerings', 'Tithes & Offerings')), $dttDate);
 				$dttDate->Day += 7;
+
+				print (str_repeat(chr(8) . ' ' . chr(8), strlen($strDate)));
 			}
+			print "Done.\r\n";
 		}
 
 		public static function GenerateCommunicationLists() {

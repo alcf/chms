@@ -34,6 +34,12 @@
 	 * @property Comment[] $_CommentAsPostedByArray the value for the private _objCommentAsPostedByArray (Read-Only) if set due to an ExpandAsArray on the comment.posted_by_login_id reverse relationship
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.login_id reverse relationship
 	 * @property EmailMessageRoute[] $_EmailMessageRouteArray the value for the private _objEmailMessageRouteArray (Read-Only) if set due to an ExpandAsArray on the email_message_route.login_id reverse relationship
+	 * @property StewardshipBatch $_StewardshipBatchAsCreatedBy the value for the private _objStewardshipBatchAsCreatedBy (Read-Only) if set due to an expansion on the stewardship_batch.created_by_login_id reverse relationship
+	 * @property StewardshipBatch[] $_StewardshipBatchAsCreatedByArray the value for the private _objStewardshipBatchAsCreatedByArray (Read-Only) if set due to an ExpandAsArray on the stewardship_batch.created_by_login_id reverse relationship
+	 * @property StewardshipContribution $_StewardshipContributionAsCreatedBy the value for the private _objStewardshipContributionAsCreatedBy (Read-Only) if set due to an expansion on the stewardship_contribution.created_by_login_id reverse relationship
+	 * @property StewardshipContribution[] $_StewardshipContributionAsCreatedByArray the value for the private _objStewardshipContributionAsCreatedByArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution.created_by_login_id reverse relationship
+	 * @property StewardshipPost $_StewardshipPostAsCreatedBy the value for the private _objStewardshipPostAsCreatedBy (Read-Only) if set due to an expansion on the stewardship_post.created_by_login_id reverse relationship
+	 * @property StewardshipPost[] $_StewardshipPostAsCreatedByArray the value for the private _objStewardshipPostAsCreatedByArray (Read-Only) if set due to an ExpandAsArray on the stewardship_post.created_by_login_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class LoginGen extends QBaseClass {
@@ -200,6 +206,54 @@
 		 * @var EmailMessageRoute[] _objEmailMessageRouteArray;
 		 */
 		private $_objEmailMessageRouteArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipBatchAsCreatedBy object
+		 * (of type StewardshipBatch), if this Login object was restored with
+		 * an expansion on the stewardship_batch association table.
+		 * @var StewardshipBatch _objStewardshipBatchAsCreatedBy;
+		 */
+		private $_objStewardshipBatchAsCreatedBy;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipBatchAsCreatedBy objects
+		 * (of type StewardshipBatch[]), if this Login object was restored with
+		 * an ExpandAsArray on the stewardship_batch association table.
+		 * @var StewardshipBatch[] _objStewardshipBatchAsCreatedByArray;
+		 */
+		private $_objStewardshipBatchAsCreatedByArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipContributionAsCreatedBy object
+		 * (of type StewardshipContribution), if this Login object was restored with
+		 * an expansion on the stewardship_contribution association table.
+		 * @var StewardshipContribution _objStewardshipContributionAsCreatedBy;
+		 */
+		private $_objStewardshipContributionAsCreatedBy;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipContributionAsCreatedBy objects
+		 * (of type StewardshipContribution[]), if this Login object was restored with
+		 * an ExpandAsArray on the stewardship_contribution association table.
+		 * @var StewardshipContribution[] _objStewardshipContributionAsCreatedByArray;
+		 */
+		private $_objStewardshipContributionAsCreatedByArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipPostAsCreatedBy object
+		 * (of type StewardshipPost), if this Login object was restored with
+		 * an expansion on the stewardship_post association table.
+		 * @var StewardshipPost _objStewardshipPostAsCreatedBy;
+		 */
+		private $_objStewardshipPostAsCreatedBy;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipPostAsCreatedBy objects
+		 * (of type StewardshipPost[]), if this Login object was restored with
+		 * an ExpandAsArray on the stewardship_post association table.
+		 * @var StewardshipPost[] _objStewardshipPostAsCreatedByArray;
+		 */
+		private $_objStewardshipPostAsCreatedByArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -604,6 +658,48 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'stewardshipbatchascreatedby__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipBatchAsCreatedByArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipBatchAsCreatedByArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatchascreatedby__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipBatchAsCreatedByArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipBatchAsCreatedByArray[] = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatchascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'stewardshipcontributionascreatedby__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipContributionAsCreatedByArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipContributionAsCreatedByArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionascreatedby__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipContributionAsCreatedByArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipContributionAsCreatedByArray[] = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'stewardshippostascreatedby__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipPostAsCreatedByArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipPostAsCreatedByArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipPost::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostascreatedby__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipPostAsCreatedByArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipPostAsCreatedByArray[] = StewardshipPost::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -685,6 +781,36 @@
 					$objToReturn->_objEmailMessageRouteArray[] = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objEmailMessageRoute = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for StewardshipBatchAsCreatedBy Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshipbatchascreatedby__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipBatchAsCreatedByArray[] = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatchascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipBatchAsCreatedBy = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipbatchascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for StewardshipContributionAsCreatedBy Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshipcontributionascreatedby__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipContributionAsCreatedByArray[] = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipContributionAsCreatedBy = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontributionascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for StewardshipPostAsCreatedBy Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshippostascreatedby__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipPostAsCreatedByArray[] = StewardshipPost::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipPostAsCreatedBy = StewardshipPost::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostascreatedby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1159,6 +1285,42 @@
 					// if set due to an ExpandAsArray on the email_message_route.login_id reverse relationship
 					// @return EmailMessageRoute[]
 					return (array) $this->_objEmailMessageRouteArray;
+
+				case '_StewardshipBatchAsCreatedBy':
+					// Gets the value for the private _objStewardshipBatchAsCreatedBy (Read-Only)
+					// if set due to an expansion on the stewardship_batch.created_by_login_id reverse relationship
+					// @return StewardshipBatch
+					return $this->_objStewardshipBatchAsCreatedBy;
+
+				case '_StewardshipBatchAsCreatedByArray':
+					// Gets the value for the private _objStewardshipBatchAsCreatedByArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_batch.created_by_login_id reverse relationship
+					// @return StewardshipBatch[]
+					return (array) $this->_objStewardshipBatchAsCreatedByArray;
+
+				case '_StewardshipContributionAsCreatedBy':
+					// Gets the value for the private _objStewardshipContributionAsCreatedBy (Read-Only)
+					// if set due to an expansion on the stewardship_contribution.created_by_login_id reverse relationship
+					// @return StewardshipContribution
+					return $this->_objStewardshipContributionAsCreatedBy;
+
+				case '_StewardshipContributionAsCreatedByArray':
+					// Gets the value for the private _objStewardshipContributionAsCreatedByArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_contribution.created_by_login_id reverse relationship
+					// @return StewardshipContribution[]
+					return (array) $this->_objStewardshipContributionAsCreatedByArray;
+
+				case '_StewardshipPostAsCreatedBy':
+					// Gets the value for the private _objStewardshipPostAsCreatedBy (Read-Only)
+					// if set due to an expansion on the stewardship_post.created_by_login_id reverse relationship
+					// @return StewardshipPost
+					return $this->_objStewardshipPostAsCreatedBy;
+
+				case '_StewardshipPostAsCreatedByArray':
+					// Gets the value for the private _objStewardshipPostAsCreatedByArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_post.created_by_login_id reverse relationship
+					// @return StewardshipPost[]
+					return (array) $this->_objStewardshipPostAsCreatedByArray;
 
 
 				case '__Restored':
@@ -1651,6 +1813,456 @@
 		}
 
 			
+		
+		// Related Objects' Methods for StewardshipBatchAsCreatedBy
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipBatchesAsCreatedBy as an array of StewardshipBatch objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipBatch[]
+		*/ 
+		public function GetStewardshipBatchAsCreatedByArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipBatch::LoadArrayByCreatedByLoginId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipBatchesAsCreatedBy
+		 * @return int
+		*/ 
+		public function CountStewardshipBatchesAsCreatedBy() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipBatch::CountByCreatedByLoginId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipBatchAsCreatedBy
+		 * @param StewardshipBatch $objStewardshipBatch
+		 * @return void
+		*/ 
+		public function AssociateStewardshipBatchAsCreatedBy(StewardshipBatch $objStewardshipBatch) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipBatchAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipBatch->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipBatchAsCreatedBy on this Login with an unsaved StewardshipBatch.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_batch`
+				SET
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a StewardshipBatchAsCreatedBy
+		 * @param StewardshipBatch $objStewardshipBatch
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipBatchAsCreatedBy(StewardshipBatch $objStewardshipBatch) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatchAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipBatch->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatchAsCreatedBy on this Login with an unsaved StewardshipBatch.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_batch`
+				SET
+					`created_by_login_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . ' AND
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all StewardshipBatchesAsCreatedBy
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipBatchesAsCreatedBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatchAsCreatedBy on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_batch`
+				SET
+					`created_by_login_id` = null
+				WHERE
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipBatchAsCreatedBy
+		 * @param StewardshipBatch $objStewardshipBatch
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipBatchAsCreatedBy(StewardshipBatch $objStewardshipBatch) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatchAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipBatch->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatchAsCreatedBy on this Login with an unsaved StewardshipBatch.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_batch`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . ' AND
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated StewardshipBatchesAsCreatedBy
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipBatchesAsCreatedBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipBatchAsCreatedBy on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_batch`
+				WHERE
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for StewardshipContributionAsCreatedBy
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipContributionsAsCreatedBy as an array of StewardshipContribution objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipContribution[]
+		*/ 
+		public function GetStewardshipContributionAsCreatedByArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipContribution::LoadArrayByCreatedByLoginId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipContributionsAsCreatedBy
+		 * @return int
+		*/ 
+		public function CountStewardshipContributionsAsCreatedBy() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipContribution::CountByCreatedByLoginId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipContributionAsCreatedBy
+		 * @param StewardshipContribution $objStewardshipContribution
+		 * @return void
+		*/ 
+		public function AssociateStewardshipContributionAsCreatedBy(StewardshipContribution $objStewardshipContribution) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContributionAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipContribution->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipContributionAsCreatedBy on this Login with an unsaved StewardshipContribution.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution`
+				SET
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a StewardshipContributionAsCreatedBy
+		 * @param StewardshipContribution $objStewardshipContribution
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipContributionAsCreatedBy(StewardshipContribution $objStewardshipContribution) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipContribution->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAsCreatedBy on this Login with an unsaved StewardshipContribution.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution`
+				SET
+					`created_by_login_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all StewardshipContributionsAsCreatedBy
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipContributionsAsCreatedBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAsCreatedBy on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_contribution`
+				SET
+					`created_by_login_id` = null
+				WHERE
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipContributionAsCreatedBy
+		 * @param StewardshipContribution $objStewardshipContribution
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipContributionAsCreatedBy(StewardshipContribution $objStewardshipContribution) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipContribution->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAsCreatedBy on this Login with an unsaved StewardshipContribution.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_contribution`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated StewardshipContributionsAsCreatedBy
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipContributionsAsCreatedBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipContributionAsCreatedBy on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_contribution`
+				WHERE
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for StewardshipPostAsCreatedBy
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipPostsAsCreatedBy as an array of StewardshipPost objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipPost[]
+		*/ 
+		public function GetStewardshipPostAsCreatedByArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipPost::LoadArrayByCreatedByLoginId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipPostsAsCreatedBy
+		 * @return int
+		*/ 
+		public function CountStewardshipPostsAsCreatedBy() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipPost::CountByCreatedByLoginId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipPostAsCreatedBy
+		 * @param StewardshipPost $objStewardshipPost
+		 * @return void
+		*/ 
+		public function AssociateStewardshipPostAsCreatedBy(StewardshipPost $objStewardshipPost) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPostAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipPost->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPostAsCreatedBy on this Login with an unsaved StewardshipPost.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post`
+				SET
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPost->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a StewardshipPostAsCreatedBy
+		 * @param StewardshipPost $objStewardshipPost
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipPostAsCreatedBy(StewardshipPost $objStewardshipPost) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipPost->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAsCreatedBy on this Login with an unsaved StewardshipPost.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post`
+				SET
+					`created_by_login_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPost->Id) . ' AND
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all StewardshipPostsAsCreatedBy
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipPostsAsCreatedBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAsCreatedBy on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post`
+				SET
+					`created_by_login_id` = null
+				WHERE
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipPostAsCreatedBy
+		 * @param StewardshipPost $objStewardshipPost
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipPostAsCreatedBy(StewardshipPost $objStewardshipPost) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAsCreatedBy on this unsaved Login.');
+			if ((is_null($objStewardshipPost->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAsCreatedBy on this Login with an unsaved StewardshipPost.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_post`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPost->Id) . ' AND
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated StewardshipPostsAsCreatedBy
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipPostsAsCreatedBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostAsCreatedBy on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_post`
+				WHERE
+					`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
 		// Related Many-to-Many Objects' Methods for Ministry
 		//-------------------------------------------------------------------
 
@@ -1942,6 +2554,12 @@
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'login_id');
+				case 'StewardshipBatchAsCreatedBy':
+					return new QQReverseReferenceNodeStewardshipBatch($this, 'stewardshipbatchascreatedby', 'reverse_reference', 'created_by_login_id');
+				case 'StewardshipContributionAsCreatedBy':
+					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontributionascreatedby', 'reverse_reference', 'created_by_login_id');
+				case 'StewardshipPostAsCreatedBy':
+					return new QQReverseReferenceNodeStewardshipPost($this, 'stewardshippostascreatedby', 'reverse_reference', 'created_by_login_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1994,6 +2612,12 @@
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'login_id');
+				case 'StewardshipBatchAsCreatedBy':
+					return new QQReverseReferenceNodeStewardshipBatch($this, 'stewardshipbatchascreatedby', 'reverse_reference', 'created_by_login_id');
+				case 'StewardshipContributionAsCreatedBy':
+					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontributionascreatedby', 'reverse_reference', 'created_by_login_id');
+				case 'StewardshipPostAsCreatedBy':
+					return new QQReverseReferenceNodeStewardshipPost($this, 'stewardshippostascreatedby', 'reverse_reference', 'created_by_login_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

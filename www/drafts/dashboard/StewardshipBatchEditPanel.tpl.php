@@ -21,6 +21,8 @@
 
 		<?php $_CONTROL->txtPostedTotalAmount->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstCreatedByLogin->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

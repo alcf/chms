@@ -20,7 +20,9 @@
 	 * @property integer $PostNumber the value for intPostNumber (Not Null)
 	 * @property QDateTime $DatePosted the value for dttDatePosted (Not Null)
 	 * @property double $TotalAmount the value for fltTotalAmount 
+	 * @property integer $CreatedByLoginId the value for intCreatedByLoginId (Not Null)
 	 * @property StewardshipBatch $StewardshipBatch the value for the StewardshipBatch object referenced by intStewardshipBatchId (Not Null)
+	 * @property Login $CreatedByLogin the value for the Login object referenced by intCreatedByLoginId (Not Null)
 	 * @property StewardshipPostAmount $_StewardshipPostAmount the value for the private _objStewardshipPostAmount (Read-Only) if set due to an expansion on the stewardship_post_amount.stewardship_post_id reverse relationship
 	 * @property StewardshipPostAmount[] $_StewardshipPostAmountArray the value for the private _objStewardshipPostAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_post_amount.stewardship_post_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -72,6 +74,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column stewardship_post.created_by_login_id
+		 * @var integer intCreatedByLoginId
+		 */
+		protected $intCreatedByLoginId;
+		const CreatedByLoginIdDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single StewardshipPostAmount object
 		 * (of type StewardshipPostAmount), if this StewardshipPost object was restored with
 		 * an expansion on the stewardship_post_amount association table.
@@ -118,6 +128,16 @@
 		 * @var StewardshipBatch objStewardshipBatch
 		 */
 		protected $objStewardshipBatch;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column stewardship_post.created_by_login_id.
+		 *
+		 * NOTE: Always use the CreatedByLogin property getter to correctly retrieve this Login object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Login objCreatedByLogin
+		 */
+		protected $objCreatedByLogin;
 
 
 
@@ -412,6 +432,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'post_number', $strAliasPrefix . 'post_number');
 			$objBuilder->AddSelectItem($strTableName, 'date_posted', $strAliasPrefix . 'date_posted');
 			$objBuilder->AddSelectItem($strTableName, 'total_amount', $strAliasPrefix . 'total_amount');
+			$objBuilder->AddSelectItem($strTableName, 'created_by_login_id', $strAliasPrefix . 'created_by_login_id');
 		}
 
 
@@ -485,6 +506,8 @@
 			$objToReturn->dttDatePosted = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_amount'] : $strAliasPrefix . 'total_amount';
 			$objToReturn->fltTotalAmount = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'created_by_login_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created_by_login_id'] : $strAliasPrefix . 'created_by_login_id';
+			$objToReturn->intCreatedByLoginId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -503,6 +526,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objStewardshipBatch = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_batch_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for CreatedByLogin Early Binding
+			$strAlias = $strAliasPrefix . 'created_by_login_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objCreatedByLogin = Login::InstantiateDbRow($objDbRow, $strAliasPrefix . 'created_by_login_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -647,6 +676,38 @@
 				QQ::Equal(QQN::StewardshipPost()->StewardshipBatchId, $intStewardshipBatchId)
 			);
 		}
+			
+		/**
+		 * Load an array of StewardshipPost objects,
+		 * by CreatedByLoginId Index(es)
+		 * @param integer $intCreatedByLoginId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipPost[]
+		*/
+		public static function LoadArrayByCreatedByLoginId($intCreatedByLoginId, $objOptionalClauses = null) {
+			// Call StewardshipPost::QueryArray to perform the LoadArrayByCreatedByLoginId query
+			try {
+				return StewardshipPost::QueryArray(
+					QQ::Equal(QQN::StewardshipPost()->CreatedByLoginId, $intCreatedByLoginId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count StewardshipPosts
+		 * by CreatedByLoginId Index(es)
+		 * @param integer $intCreatedByLoginId
+		 * @return int
+		*/
+		public static function CountByCreatedByLoginId($intCreatedByLoginId) {
+			// Call StewardshipPost::QueryCount to perform the CountByCreatedByLoginId query
+			return StewardshipPost::QueryCount(
+				QQ::Equal(QQN::StewardshipPost()->CreatedByLoginId, $intCreatedByLoginId)
+			);
+		}
 
 
 
@@ -681,12 +742,14 @@
 							`stewardship_batch_id`,
 							`post_number`,
 							`date_posted`,
-							`total_amount`
+							`total_amount`,
+							`created_by_login_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 							' . $objDatabase->SqlVariable($this->intPostNumber) . ',
 							' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
-							' . $objDatabase->SqlVariable($this->fltTotalAmount) . '
+							' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
+							' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . '
 						)
 					');
 
@@ -705,7 +768,8 @@
 							`stewardship_batch_id` = ' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 							`post_number` = ' . $objDatabase->SqlVariable($this->intPostNumber) . ',
 							`date_posted` = ' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
-							`total_amount` = ' . $objDatabase->SqlVariable($this->fltTotalAmount) . '
+							`total_amount` = ' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
+							`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -788,6 +852,7 @@
 			$this->intPostNumber = $objReloaded->intPostNumber;
 			$this->dttDatePosted = $objReloaded->dttDatePosted;
 			$this->fltTotalAmount = $objReloaded->fltTotalAmount;
+			$this->CreatedByLoginId = $objReloaded->CreatedByLoginId;
 		}
 
 
@@ -833,6 +898,11 @@
 					// @return double
 					return $this->fltTotalAmount;
 
+				case 'CreatedByLoginId':
+					// Gets the value for intCreatedByLoginId (Not Null)
+					// @return integer
+					return $this->intCreatedByLoginId;
+
 
 				///////////////////
 				// Member Objects
@@ -844,6 +914,18 @@
 						if ((!$this->objStewardshipBatch) && (!is_null($this->intStewardshipBatchId)))
 							$this->objStewardshipBatch = StewardshipBatch::Load($this->intStewardshipBatchId);
 						return $this->objStewardshipBatch;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CreatedByLogin':
+					// Gets the value for the Login object referenced by intCreatedByLoginId (Not Null)
+					// @return Login
+					try {
+						if ((!$this->objCreatedByLogin) && (!is_null($this->intCreatedByLoginId)))
+							$this->objCreatedByLogin = Login::Load($this->intCreatedByLoginId);
+						return $this->objCreatedByLogin;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -939,6 +1021,18 @@
 						throw $objExc;
 					}
 
+				case 'CreatedByLoginId':
+					// Sets the value for intCreatedByLoginId (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objCreatedByLogin = null;
+						return ($this->intCreatedByLoginId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -967,6 +1061,36 @@
 						// Update Local Member Variables
 						$this->objStewardshipBatch = $mixValue;
 						$this->intStewardshipBatchId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'CreatedByLogin':
+					// Sets the value for the Login object referenced by intCreatedByLoginId (Not Null)
+					// @param Login $mixValue
+					// @return Login
+					if (is_null($mixValue)) {
+						$this->intCreatedByLoginId = null;
+						$this->objCreatedByLogin = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Login object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Login');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Login object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved CreatedByLogin for this StewardshipPost');
+
+						// Update Local Member Variables
+						$this->objCreatedByLogin = $mixValue;
+						$this->intCreatedByLoginId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1165,6 +1289,7 @@
 			$strToReturn .= '<element name="PostNumber" type="xsd:int"/>';
 			$strToReturn .= '<element name="DatePosted" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="TotalAmount" type="xsd:float"/>';
+			$strToReturn .= '<element name="CreatedByLogin" type="xsd1:Login"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1174,6 +1299,7 @@
 			if (!array_key_exists('StewardshipPost', $strComplexTypeArray)) {
 				$strComplexTypeArray['StewardshipPost'] = StewardshipPost::GetSoapComplexTypeXml();
 				StewardshipBatch::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Login::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1199,6 +1325,9 @@
 				$objToReturn->dttDatePosted = new QDateTime($objSoapObject->DatePosted);
 			if (property_exists($objSoapObject, 'TotalAmount'))
 				$objToReturn->fltTotalAmount = $objSoapObject->TotalAmount;
+			if ((property_exists($objSoapObject, 'CreatedByLogin')) &&
+				($objSoapObject->CreatedByLogin))
+				$objToReturn->CreatedByLogin = Login::GetObjectFromSoapObject($objSoapObject->CreatedByLogin);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1223,6 +1352,10 @@
 				$objObject->intStewardshipBatchId = null;
 			if ($objObject->dttDatePosted)
 				$objObject->dttDatePosted = $objObject->dttDatePosted->__toString(QDateTime::FormatSoap);
+			if ($objObject->objCreatedByLogin)
+				$objObject->objCreatedByLogin = Login::GetSoapObjectFromObject($objObject->objCreatedByLogin, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intCreatedByLoginId = null;
 			return $objObject;
 		}
 
@@ -1255,6 +1388,10 @@
 					return new QQNode('date_posted', 'DatePosted', 'QDateTime', $this);
 				case 'TotalAmount':
 					return new QQNode('total_amount', 'TotalAmount', 'double', $this);
+				case 'CreatedByLoginId':
+					return new QQNode('created_by_login_id', 'CreatedByLoginId', 'integer', $this);
+				case 'CreatedByLogin':
+					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'StewardshipPostAmount':
 					return new QQReverseReferenceNodeStewardshipPostAmount($this, 'stewardshippostamount', 'reverse_reference', 'stewardship_post_id');
 
@@ -1289,6 +1426,10 @@
 					return new QQNode('date_posted', 'DatePosted', 'QDateTime', $this);
 				case 'TotalAmount':
 					return new QQNode('total_amount', 'TotalAmount', 'double', $this);
+				case 'CreatedByLoginId':
+					return new QQNode('created_by_login_id', 'CreatedByLoginId', 'integer', $this);
+				case 'CreatedByLogin':
+					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'StewardshipPostAmount':
 					return new QQReverseReferenceNodeStewardshipPostAmount($this, 'stewardshippostamount', 'reverse_reference', 'stewardship_post_id');
 

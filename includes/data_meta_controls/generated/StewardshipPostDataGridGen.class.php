@@ -299,6 +299,8 @@
 				case 'PostNumber': return QQN::StewardshipPost()->PostNumber;
 				case 'DatePosted': return QQN::StewardshipPost()->DatePosted;
 				case 'TotalAmount': return QQN::StewardshipPost()->TotalAmount;
+				case 'CreatedByLoginId': return QQN::StewardshipPost()->CreatedByLoginId;
+				case 'CreatedByLogin': return QQN::StewardshipPost()->CreatedByLogin;
 				default: throw new QCallerException('Simple Property not found in StewardshipPostDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

@@ -70,6 +70,7 @@
 			$this->dtgStewardshipPosts->MetaAddColumn('PostNumber');
 			$this->dtgStewardshipPosts->MetaAddColumn('DatePosted');
 			$this->dtgStewardshipPosts->MetaAddColumn('TotalAmount');
+			$this->dtgStewardshipPosts->MetaAddColumn(QQN::StewardshipPost()->CreatedByLogin);
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

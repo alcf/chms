@@ -63,6 +63,7 @@
 			$this->dtgStewardshipBatches->MetaAddColumn('ReportedTotalAmount');
 			$this->dtgStewardshipBatches->MetaAddColumn('ActualTotalAmount');
 			$this->dtgStewardshipBatches->MetaAddColumn('PostedTotalAmount');
+			$this->dtgStewardshipBatches->MetaAddColumn(QQN::StewardshipBatch()->CreatedByLogin);
 		}
 	}
 

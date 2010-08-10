@@ -78,6 +78,7 @@
 			$this->dtgStewardshipContributions->MetaAddColumn('AuthorizationNumber');
 			$this->dtgStewardshipContributions->MetaAddColumn('AlternateSource');
 			$this->dtgStewardshipContributions->MetaAddColumn('Note');
+			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->CreatedByLogin);
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

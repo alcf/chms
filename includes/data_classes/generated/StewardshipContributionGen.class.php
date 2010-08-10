@@ -28,10 +28,12 @@
 	 * @property string $AuthorizationNumber the value for strAuthorizationNumber 
 	 * @property string $AlternateSource the value for strAlternateSource 
 	 * @property string $Note the value for strNote 
+	 * @property integer $CreatedByLoginId the value for intCreatedByLoginId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property StewardshipBatch $StewardshipBatch the value for the StewardshipBatch object referenced by intStewardshipBatchId (Not Null)
 	 * @property StewardshipStack $StewardshipStack the value for the StewardshipStack object referenced by intStewardshipStackId 
 	 * @property CheckingAccountLookup $CheckingAccountLookup the value for the CheckingAccountLookup object referenced by intCheckingAccountLookupId 
+	 * @property Login $CreatedByLogin the value for the Login object referenced by intCreatedByLoginId (Not Null)
 	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
 	 * @property StewardshipContributionAmount[] $_StewardshipContributionAmountArray the value for the private _objStewardshipContributionAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -150,6 +152,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column stewardship_contribution.created_by_login_id
+		 * @var integer intCreatedByLoginId
+		 */
+		protected $intCreatedByLoginId;
+		const CreatedByLoginIdDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single StewardshipContributionAmount object
 		 * (of type StewardshipContributionAmount), if this StewardshipContribution object was restored with
 		 * an expansion on the stewardship_contribution_amount association table.
@@ -226,6 +236,16 @@
 		 * @var CheckingAccountLookup objCheckingAccountLookup
 		 */
 		protected $objCheckingAccountLookup;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column stewardship_contribution.created_by_login_id.
+		 *
+		 * NOTE: Always use the CreatedByLogin property getter to correctly retrieve this Login object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Login objCreatedByLogin
+		 */
+		protected $objCreatedByLogin;
 
 
 
@@ -528,6 +548,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'authorization_number', $strAliasPrefix . 'authorization_number');
 			$objBuilder->AddSelectItem($strTableName, 'alternate_source', $strAliasPrefix . 'alternate_source');
 			$objBuilder->AddSelectItem($strTableName, 'note', $strAliasPrefix . 'note');
+			$objBuilder->AddSelectItem($strTableName, 'created_by_login_id', $strAliasPrefix . 'created_by_login_id');
 		}
 
 
@@ -617,6 +638,8 @@
 			$objToReturn->strAlternateSource = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'note', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'note'] : $strAliasPrefix . 'note';
 			$objToReturn->strNote = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'created_by_login_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created_by_login_id'] : $strAliasPrefix . 'created_by_login_id';
+			$objToReturn->intCreatedByLoginId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -653,6 +676,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objCheckingAccountLookup = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for CreatedByLogin Early Binding
+			$strAlias = $strAliasPrefix . 'created_by_login_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objCreatedByLogin = Login::InstantiateDbRow($objDbRow, $strAliasPrefix . 'created_by_login_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -949,6 +978,38 @@
 				QQ::Equal(QQN::StewardshipContribution()->CheckingAccountLookupId, $intCheckingAccountLookupId)
 			);
 		}
+			
+		/**
+		 * Load an array of StewardshipContribution objects,
+		 * by CreatedByLoginId Index(es)
+		 * @param integer $intCreatedByLoginId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipContribution[]
+		*/
+		public static function LoadArrayByCreatedByLoginId($intCreatedByLoginId, $objOptionalClauses = null) {
+			// Call StewardshipContribution::QueryArray to perform the LoadArrayByCreatedByLoginId query
+			try {
+				return StewardshipContribution::QueryArray(
+					QQ::Equal(QQN::StewardshipContribution()->CreatedByLoginId, $intCreatedByLoginId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count StewardshipContributions
+		 * by CreatedByLoginId Index(es)
+		 * @param integer $intCreatedByLoginId
+		 * @return int
+		*/
+		public static function CountByCreatedByLoginId($intCreatedByLoginId) {
+			// Call StewardshipContribution::QueryCount to perform the CountByCreatedByLoginId query
+			return StewardshipContribution::QueryCount(
+				QQ::Equal(QQN::StewardshipContribution()->CreatedByLoginId, $intCreatedByLoginId)
+			);
+		}
 
 
 
@@ -991,7 +1052,8 @@
 							`check_number`,
 							`authorization_number`,
 							`alternate_source`,
-							`note`
+							`note`,
+							`created_by_login_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipContributionType) . ',
@@ -1004,7 +1066,8 @@
 							' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
-							' . $objDatabase->SqlVariable($this->strNote) . '
+							' . $objDatabase->SqlVariable($this->strNote) . ',
+							' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . '
 						)
 					');
 
@@ -1031,7 +1094,8 @@
 							`check_number` = ' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							`authorization_number` = ' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
 							`alternate_source` = ' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
-							`note` = ' . $objDatabase->SqlVariable($this->strNote) . '
+							`note` = ' . $objDatabase->SqlVariable($this->strNote) . ',
+							`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1122,6 +1186,7 @@
 			$this->strAuthorizationNumber = $objReloaded->strAuthorizationNumber;
 			$this->strAlternateSource = $objReloaded->strAlternateSource;
 			$this->strNote = $objReloaded->strNote;
+			$this->CreatedByLoginId = $objReloaded->CreatedByLoginId;
 		}
 
 
@@ -1207,6 +1272,11 @@
 					// @return string
 					return $this->strNote;
 
+				case 'CreatedByLoginId':
+					// Gets the value for intCreatedByLoginId (Not Null)
+					// @return integer
+					return $this->intCreatedByLoginId;
+
 
 				///////////////////
 				// Member Objects
@@ -1254,6 +1324,18 @@
 						if ((!$this->objCheckingAccountLookup) && (!is_null($this->intCheckingAccountLookupId)))
 							$this->objCheckingAccountLookup = CheckingAccountLookup::Load($this->intCheckingAccountLookupId);
 						return $this->objCheckingAccountLookup;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CreatedByLogin':
+					// Gets the value for the Login object referenced by intCreatedByLoginId (Not Null)
+					// @return Login
+					try {
+						if ((!$this->objCreatedByLogin) && (!is_null($this->intCreatedByLoginId)))
+							$this->objCreatedByLogin = Login::Load($this->intCreatedByLoginId);
+						return $this->objCreatedByLogin;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1440,6 +1522,18 @@
 						throw $objExc;
 					}
 
+				case 'CreatedByLoginId':
+					// Sets the value for intCreatedByLoginId (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objCreatedByLogin = null;
+						return ($this->intCreatedByLoginId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1558,6 +1652,36 @@
 						// Update Local Member Variables
 						$this->objCheckingAccountLookup = $mixValue;
 						$this->intCheckingAccountLookupId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'CreatedByLogin':
+					// Sets the value for the Login object referenced by intCreatedByLoginId (Not Null)
+					// @param Login $mixValue
+					// @return Login
+					if (is_null($mixValue)) {
+						$this->intCreatedByLoginId = null;
+						$this->objCreatedByLogin = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Login object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Login');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Login object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved CreatedByLogin for this StewardshipContribution');
+
+						// Update Local Member Variables
+						$this->objCreatedByLogin = $mixValue;
+						$this->intCreatedByLoginId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1764,6 +1888,7 @@
 			$strToReturn .= '<element name="AuthorizationNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="AlternateSource" type="xsd:string"/>';
 			$strToReturn .= '<element name="Note" type="xsd:string"/>';
+			$strToReturn .= '<element name="CreatedByLogin" type="xsd1:Login"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1776,6 +1901,7 @@
 				StewardshipBatch::AlterSoapComplexTypeArray($strComplexTypeArray);
 				StewardshipStack::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CheckingAccountLookup::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Login::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1820,6 +1946,9 @@
 				$objToReturn->strAlternateSource = $objSoapObject->AlternateSource;
 			if (property_exists($objSoapObject, 'Note'))
 				$objToReturn->strNote = $objSoapObject->Note;
+			if ((property_exists($objSoapObject, 'CreatedByLogin')) &&
+				($objSoapObject->CreatedByLogin))
+				$objToReturn->CreatedByLogin = Login::GetObjectFromSoapObject($objSoapObject->CreatedByLogin);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1858,6 +1987,10 @@
 				$objObject->dttDateEntered = $objObject->dttDateEntered->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateCleared)
 				$objObject->dttDateCleared = $objObject->dttDateCleared->__toString(QDateTime::FormatSoap);
+			if ($objObject->objCreatedByLogin)
+				$objObject->objCreatedByLogin = Login::GetSoapObjectFromObject($objObject->objCreatedByLogin, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intCreatedByLoginId = null;
 			return $objObject;
 		}
 
@@ -1912,6 +2045,10 @@
 					return new QQNode('alternate_source', 'AlternateSource', 'string', $this);
 				case 'Note':
 					return new QQNode('note', 'Note', 'string', $this);
+				case 'CreatedByLoginId':
+					return new QQNode('created_by_login_id', 'CreatedByLoginId', 'integer', $this);
+				case 'CreatedByLogin':
+					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_contribution_id');
 
@@ -1968,6 +2105,10 @@
 					return new QQNode('alternate_source', 'AlternateSource', 'string', $this);
 				case 'Note':
 					return new QQNode('note', 'Note', 'string', $this);
+				case 'CreatedByLoginId':
+					return new QQNode('created_by_login_id', 'CreatedByLoginId', 'integer', $this);
+				case 'CreatedByLogin':
+					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_contribution_id');
 

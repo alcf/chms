@@ -27,6 +27,38 @@
 			return sprintf('StewardshipBatch Object %s',  $this->intId);
 		}
 
+		/**
+		 * Creates a new StewardshipBatch with a given description and Batch Date.  Will use Now() if no date is specified.
+		 * @param float $fltReportedTotalAmount optional
+		 * @param string $strDescription optional
+		 * @param QDateTime $dttBatchDate optional, or will use Now() if null
+		 */
+		public static function Create($fltReportedTotalAmount = null, $strDescription = null, QDateTime $dttBatchDate = null) {
+			if (!$dttBatchDate)
+				$dttBatchDate = QDateTime::Now();
+			else
+				$dttBatchDate = new QDateTime($dttBatchDate);
+			$dttBatchDate->SetTime(null, null, null);
+
+			$objBatch = new StewardshipBatch();
+			$objBatch->StewardshipBatchStatusTypeId = StewardshipBatchStatusType::NewBatch;
+			$objBatch->DateEntered = $dttBatchDate;
+
+			$objCurrentLastLetter = StewardshipBatch::QuerySingle(QQ::Equal(QQN::StewardshipBatch()->DateEntered, $dttBatchDate), QQ::OrderBy(QQN::StewardshipBatch()->BatchLabel, false));
+			if ($objCurrentLastLetter) {
+				$objBatch->BatchLabel = chr(ord($objCurrentLastLetter->BatchLabel) + 1);
+			} else {
+				$objBatch->BatchLabel = 'A';
+			}
+
+			$objBatch->ReportedTotalAmount = $fltReportedTotalAmount;
+			$objBatch->ActualTotalAmount = 0;
+			$objBatch->PostedTotalAmount = 0;
+			$objBatch->Description = $strDescription;
+			$objBatch->Save();
+
+			return $objBatch;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

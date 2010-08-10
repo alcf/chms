@@ -31,6 +31,7 @@
 		protected $txtReportedTotalAmount;
 		protected $txtActualTotalAmount;
 		protected $txtPostedTotalAmount;
+		protected $lstCreatedByLogin;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -65,6 +66,7 @@
 			$this->txtReportedTotalAmount = $this->mctStewardshipBatch->txtReportedTotalAmount_Create();
 			$this->txtActualTotalAmount = $this->mctStewardshipBatch->txtActualTotalAmount_Create();
 			$this->txtPostedTotalAmount = $this->mctStewardshipBatch->txtPostedTotalAmount_Create();
+			$this->lstCreatedByLogin = $this->mctStewardshipBatch->lstCreatedByLogin_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

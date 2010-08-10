@@ -310,6 +310,8 @@
 				case 'AuthorizationNumber': return QQN::StewardshipContribution()->AuthorizationNumber;
 				case 'AlternateSource': return QQN::StewardshipContribution()->AlternateSource;
 				case 'Note': return QQN::StewardshipContribution()->Note;
+				case 'CreatedByLoginId': return QQN::StewardshipContribution()->CreatedByLoginId;
+				case 'CreatedByLogin': return QQN::StewardshipContribution()->CreatedByLogin;
 				default: throw new QCallerException('Simple Property not found in StewardshipContributionDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
