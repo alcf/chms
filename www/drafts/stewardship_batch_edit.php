@@ -27,6 +27,7 @@
 		protected $lstStewardshipBatchStatusType;
 		protected $calDateEntered;
 		protected $txtBatchLabel;
+		protected $txtDescription;
 		protected $txtReportedTotalAmount;
 		protected $txtActualTotalAmount;
 		protected $txtPostedTotalAmount;
@@ -60,6 +61,7 @@
 			$this->lstStewardshipBatchStatusType = $this->mctStewardshipBatch->lstStewardshipBatchStatusType_Create();
 			$this->calDateEntered = $this->mctStewardshipBatch->calDateEntered_Create();
 			$this->txtBatchLabel = $this->mctStewardshipBatch->txtBatchLabel_Create();
+			$this->txtDescription = $this->mctStewardshipBatch->txtDescription_Create();
 			$this->txtReportedTotalAmount = $this->mctStewardshipBatch->txtReportedTotalAmount_Create();
 			$this->txtActualTotalAmount = $this->mctStewardshipBatch->txtActualTotalAmount_Create();
 			$this->txtPostedTotalAmount = $this->mctStewardshipBatch->txtPostedTotalAmount_Create();

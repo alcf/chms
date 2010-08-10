@@ -23,6 +23,8 @@
 
 		<?php $this->txtBatchLabel->RenderWithName(); ?>
 
+		<?php $this->txtDescription->RenderWithName(); ?>
+
 		<?php $this->txtReportedTotalAmount->RenderWithName(); ?>
 
 		<?php $this->txtActualTotalAmount->RenderWithName(); ?>

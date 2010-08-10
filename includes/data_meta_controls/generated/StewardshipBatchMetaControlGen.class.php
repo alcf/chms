@@ -24,6 +24,8 @@
 	 * property-read QLabel $DateEnteredLabel
 	 * property QTextBox $BatchLabelControl
 	 * property-read QLabel $BatchLabelLabel
+	 * property QTextBox $DescriptionControl
+	 * property-read QLabel $DescriptionLabel
 	 * property QFloatTextBox $ReportedTotalAmountControl
 	 * property-read QLabel $ReportedTotalAmountLabel
 	 * property QFloatTextBox $ActualTotalAmountControl
@@ -46,6 +48,7 @@
 		protected $lstStewardshipBatchStatusType;
 		protected $calDateEntered;
 		protected $txtBatchLabel;
+		protected $txtDescription;
 		protected $txtReportedTotalAmount;
 		protected $txtActualTotalAmount;
 		protected $txtPostedTotalAmount;
@@ -54,6 +57,7 @@
 		protected $lblStewardshipBatchStatusTypeId;
 		protected $lblDateEntered;
 		protected $lblBatchLabel;
+		protected $lblDescription;
 		protected $lblReportedTotalAmount;
 		protected $lblActualTotalAmount;
 		protected $lblPostedTotalAmount;
@@ -256,6 +260,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtDescription_Create($strControlId = null) {
+			$this->txtDescription = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtDescription->Name = QApplication::Translate('Description');
+			$this->txtDescription->Text = $this->objStewardshipBatch->Description;
+			$this->txtDescription->MaxLength = StewardshipBatch::DescriptionMaxLength;
+			return $this->txtDescription;
+		}
+
+		/**
+		 * Create and setup QLabel lblDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDescription_Create($strControlId = null) {
+			$this->lblDescription = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDescription->Name = QApplication::Translate('Description');
+			$this->lblDescription->Text = $this->objStewardshipBatch->Description;
+			return $this->lblDescription;
+		}
+
+		/**
 		 * Create and setup QFloatTextBox txtReportedTotalAmount
 		 * @param string $strControlId optional ControlId to use
 		 * @return QFloatTextBox
@@ -355,6 +384,9 @@
 			if ($this->txtBatchLabel) $this->txtBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
 			if ($this->lblBatchLabel) $this->lblBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
 
+			if ($this->txtDescription) $this->txtDescription->Text = $this->objStewardshipBatch->Description;
+			if ($this->lblDescription) $this->lblDescription->Text = $this->objStewardshipBatch->Description;
+
 			if ($this->txtReportedTotalAmount) $this->txtReportedTotalAmount->Text = $this->objStewardshipBatch->ReportedTotalAmount;
 			if ($this->lblReportedTotalAmount) $this->lblReportedTotalAmount->Text = $this->objStewardshipBatch->ReportedTotalAmount;
 
@@ -390,6 +422,7 @@
 				if ($this->lstStewardshipBatchStatusType) $this->objStewardshipBatch->StewardshipBatchStatusTypeId = $this->lstStewardshipBatchStatusType->SelectedValue;
 				if ($this->calDateEntered) $this->objStewardshipBatch->DateEntered = $this->calDateEntered->DateTime;
 				if ($this->txtBatchLabel) $this->objStewardshipBatch->BatchLabel = $this->txtBatchLabel->Text;
+				if ($this->txtDescription) $this->objStewardshipBatch->Description = $this->txtDescription->Text;
 				if ($this->txtReportedTotalAmount) $this->objStewardshipBatch->ReportedTotalAmount = $this->txtReportedTotalAmount->Text;
 				if ($this->txtActualTotalAmount) $this->objStewardshipBatch->ActualTotalAmount = $this->txtActualTotalAmount->Text;
 				if ($this->txtPostedTotalAmount) $this->objStewardshipBatch->PostedTotalAmount = $this->txtPostedTotalAmount->Text;
@@ -459,6 +492,12 @@
 				case 'BatchLabelLabel':
 					if (!$this->lblBatchLabel) return $this->lblBatchLabel_Create();
 					return $this->lblBatchLabel;
+				case 'DescriptionControl':
+					if (!$this->txtDescription) return $this->txtDescription_Create();
+					return $this->txtDescription;
+				case 'DescriptionLabel':
+					if (!$this->lblDescription) return $this->lblDescription_Create();
+					return $this->lblDescription;
 				case 'ReportedTotalAmountControl':
 					if (!$this->txtReportedTotalAmount) return $this->txtReportedTotalAmount_Create();
 					return $this->txtReportedTotalAmount;
@@ -507,6 +546,8 @@
 						return ($this->calDateEntered = QType::Cast($mixValue, 'QControl'));
 					case 'BatchLabelControl':
 						return ($this->txtBatchLabel = QType::Cast($mixValue, 'QControl'));
+					case 'DescriptionControl':
+						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'ReportedTotalAmountControl':
 						return ($this->txtReportedTotalAmount = QType::Cast($mixValue, 'QControl'));
 					case 'ActualTotalAmountControl':

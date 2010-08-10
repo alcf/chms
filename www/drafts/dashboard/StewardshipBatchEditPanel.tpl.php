@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->txtBatchLabel->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtDescription->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtReportedTotalAmount->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtActualTotalAmount->RenderWithName(); ?>
