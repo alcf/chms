@@ -29,11 +29,13 @@
 
 		/**
 		 * Creates a new StewardshipBatch with a given description and Batch Date.  Will use Now() if no date is specified.
-		 * @param float $fltReportedTotalAmount optional
+		 * @param Login $objLogin the login responsible for creating this
+		 * @param float $fltReportedTotalAmountArray[] optional
 		 * @param string $strDescription optional
 		 * @param QDateTime $dttBatchDate optional, or will use Now() if null
+		 * @return StewardshipBatch
 		 */
-		public static function Create($fltReportedTotalAmount = null, $strDescription = null, QDateTime $dttBatchDate = null) {
+		public static function Create(Login $objLogin, $fltReportedTotalAmountArray = null, $strDescription = null, QDateTime $dttBatchDate = null) {
 			if (!$dttBatchDate)
 				$dttBatchDate = QDateTime::Now();
 			else
@@ -41,6 +43,7 @@
 			$dttBatchDate->SetTime(null, null, null);
 
 			$objBatch = new StewardshipBatch();
+			$objBatch->CreatedByLogin = $objLogin;
 			$objBatch->StewardshipBatchStatusTypeId = StewardshipBatchStatusType::NewBatch;
 			$objBatch->DateEntered = $dttBatchDate;
 
@@ -51,13 +54,39 @@
 				$objBatch->BatchLabel = 'A';
 			}
 
-			$objBatch->ReportedTotalAmount = $fltReportedTotalAmount;
+			if ($fltReportedTotalAmountArray) {
+				$objBatch->ReportedTotalAmount = null;
+				foreach ($fltReportedTotalAmountArray as $fltReportedTotalAmount)
+					$objBatch->ReportedTotalAmount += $fltReportedTotalAmount;
+			}
 			$objBatch->ActualTotalAmount = 0;
 			$objBatch->PostedTotalAmount = 0;
 			$objBatch->Description = $strDescription;
 			$objBatch->Save();
 
+			// Create Stacks
+			if ($fltReportedTotalAmountArray) {
+				foreach ($fltReportedTotalAmountArray as $fltReportedTotalAmount) {
+					$objBatch->CreateStack($fltReportedTotalAmount);
+				}
+			}
+
 			return $objBatch;
+		}
+
+		/**
+		 * Creates a new stack for this batch
+		 * @param float $fltReportedTotalAmount optional
+		 * @return StewardshipStack
+		 */
+		public function CreateStack($fltReportedTotalAmount = null) {
+			$objStack = new StewardshipStack();
+			$objStack->StewardshipBatch = $this;
+			$objStack->StackNumber = $this->CountStewardshipStacks() + 1;
+			$objStack->ReportedTotalAmount = $fltReportedTotalAmount;
+			$objStack->ActualTotalAmount = 9;
+			$objStack->Save();
+			return $objStack;
 		}
 
 		// Override or Create New Load/Count methods

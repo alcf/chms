@@ -46,7 +46,8 @@
 		public static $OldestChildBirthDate;
 		public static $UserArray;
 		public static $MaxPersonId;
-
+		public static $StewardshipUserArray = array();
+		
 		// Cached Data
 		public static $CommentCategoryArray;
 
@@ -93,7 +94,14 @@
 			while ($dttDate->IsEarlierThan(QDateTime::Now())) {
 				print ($strDate = '[' . $dttDate->ToString('YYYY-MMM-DD') . ']');
 
-				$objBatch = StewardshipBatch::Create(null, self::GenerateFromArray(array('Weekend T/O', 'Weekend Giving', 'Tithes and Offerings', 'Tithes & Offerings')), $dttDate);
+				$intCheckCount = rand(10, 90);
+				$arrStack = array();
+				for ($i = 0; $i < floor(($intCheckCount - 1) / 25) + 1; $i++) $arrStack[] = null;
+				$objBatch = StewardshipBatch::Create(
+					self::GenerateFromArray(self::$StewardshipUserArray),
+					$arrStack,
+					self::GenerateFromArray(array('Weekend T/O', 'Weekend Giving', 'Tithes and Offerings', 'Tithes & Offerings', null)),
+					$dttDate);
 				$dttDate->Day += 7;
 
 				print (str_repeat(chr(8) . ' ' . chr(8), strlen($strDate)));
@@ -288,6 +296,12 @@
 				$blnAdminGenerated = true;
 			}
 			self::$UserArray = Login::LoadAll();
+
+			foreach (self::$UserArray as $objLogin) {
+				if ($objLogin->IsPermissionAllowed(PermissionType::AccessStewardship)) {
+					self::$StewardshipUserArray[] = $objLogin;
+				}
+			}
 		}
 
 
