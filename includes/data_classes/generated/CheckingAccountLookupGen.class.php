@@ -16,8 +16,8 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
+	 * @property string $TransitHash the value for strTransitHash 
 	 * @property string $AccountHash the value for strAccountHash 
-	 * @property string $RoutingHash the value for strRoutingHash 
 	 * @property Person $_PersonAsCheckaccountlookup the value for the private _objPersonAsCheckaccountlookup (Read-Only) if set due to an expansion on the checkaccountlookup_person_assn association table
 	 * @property Person[] $_PersonAsCheckaccountlookupArray the value for the private _objPersonAsCheckaccountlookupArray (Read-Only) if set due to an ExpandAsArray on the checkaccountlookup_person_assn association table
 	 * @property StewardshipContribution $_StewardshipContribution the value for the private _objStewardshipContribution (Read-Only) if set due to an expansion on the stewardship_contribution.checking_account_lookup_id reverse relationship
@@ -39,21 +39,21 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column checking_account_lookup.transit_hash
+		 * @var string strTransitHash
+		 */
+		protected $strTransitHash;
+		const TransitHashMaxLength = 32;
+		const TransitHashDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column checking_account_lookup.account_hash
 		 * @var string strAccountHash
 		 */
 		protected $strAccountHash;
 		const AccountHashMaxLength = 32;
 		const AccountHashDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column checking_account_lookup.routing_hash
-		 * @var string strRoutingHash
-		 */
-		protected $strRoutingHash;
-		const RoutingHashMaxLength = 32;
-		const RoutingHashDefault = null;
 
 
 		/**
@@ -399,8 +399,8 @@
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
+			$objBuilder->AddSelectItem($strTableName, 'transit_hash', $strAliasPrefix . 'transit_hash');
 			$objBuilder->AddSelectItem($strTableName, 'account_hash', $strAliasPrefix . 'account_hash');
-			$objBuilder->AddSelectItem($strTableName, 'routing_hash', $strAliasPrefix . 'routing_hash');
 		}
 
 
@@ -480,10 +480,10 @@
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'transit_hash', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'transit_hash'] : $strAliasPrefix . 'transit_hash';
+			$objToReturn->strTransitHash = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'account_hash', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'account_hash'] : $strAliasPrefix . 'account_hash';
 			$objToReturn->strAccountHash = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'routing_hash', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'routing_hash'] : $strAliasPrefix . 'routing_hash';
-			$objToReturn->strRoutingHash = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -602,6 +602,22 @@
 				QQ::Equal(QQN::CheckingAccountLookup()->Id, $intId)
 			);
 		}
+			
+		/**
+		 * Load a single CheckingAccountLookup object,
+		 * by TransitHash, AccountHash Index(es)
+		 * @param string $strTransitHash
+		 * @param string $strAccountHash
+		 * @return CheckingAccountLookup
+		*/
+		public static function LoadByTransitHashAccountHash($strTransitHash, $strAccountHash) {
+			return CheckingAccountLookup::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::CheckingAccountLookup()->TransitHash, $strTransitHash),
+				QQ::Equal(QQN::CheckingAccountLookup()->AccountHash, $strAccountHash)
+				)
+			);
+		}
 
 
 
@@ -664,11 +680,11 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `checking_account_lookup` (
-							`account_hash`,
-							`routing_hash`
+							`transit_hash`,
+							`account_hash`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->strAccountHash) . ',
-							' . $objDatabase->SqlVariable($this->strRoutingHash) . '
+							' . $objDatabase->SqlVariable($this->strTransitHash) . ',
+							' . $objDatabase->SqlVariable($this->strAccountHash) . '
 						)
 					');
 
@@ -684,8 +700,8 @@
 						UPDATE
 							`checking_account_lookup`
 						SET
-							`account_hash` = ' . $objDatabase->SqlVariable($this->strAccountHash) . ',
-							`routing_hash` = ' . $objDatabase->SqlVariable($this->strRoutingHash) . '
+							`transit_hash` = ' . $objDatabase->SqlVariable($this->strTransitHash) . ',
+							`account_hash` = ' . $objDatabase->SqlVariable($this->strAccountHash) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -764,8 +780,8 @@
 			$objReloaded = CheckingAccountLookup::Load($this->intId);
 
 			// Update $this's local variables to match
+			$this->strTransitHash = $objReloaded->strTransitHash;
 			$this->strAccountHash = $objReloaded->strAccountHash;
-			$this->strRoutingHash = $objReloaded->strRoutingHash;
 		}
 
 
@@ -791,15 +807,15 @@
 					// @return integer
 					return $this->intId;
 
+				case 'TransitHash':
+					// Gets the value for strTransitHash 
+					// @return string
+					return $this->strTransitHash;
+
 				case 'AccountHash':
 					// Gets the value for strAccountHash 
 					// @return string
 					return $this->strAccountHash;
-
-				case 'RoutingHash':
-					// Gets the value for strRoutingHash 
-					// @return string
-					return $this->strRoutingHash;
 
 
 				///////////////////
@@ -862,23 +878,23 @@
 				///////////////////
 				// Member Variables
 				///////////////////
+				case 'TransitHash':
+					// Sets the value for strTransitHash 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strTransitHash = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'AccountHash':
 					// Sets the value for strAccountHash 
 					// @param string $mixValue
 					// @return string
 					try {
 						return ($this->strAccountHash = QType::Cast($mixValue, QType::String));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'RoutingHash':
-					// Sets the value for strRoutingHash 
-					// @param string $mixValue
-					// @return string
-					try {
-						return ($this->strRoutingHash = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1198,8 +1214,8 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="CheckingAccountLookup"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
+			$strToReturn .= '<element name="TransitHash" type="xsd:string"/>';
 			$strToReturn .= '<element name="AccountHash" type="xsd:string"/>';
-			$strToReturn .= '<element name="RoutingHash" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1224,10 +1240,10 @@
 			$objToReturn = new CheckingAccountLookup();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
+			if (property_exists($objSoapObject, 'TransitHash'))
+				$objToReturn->strTransitHash = $objSoapObject->TransitHash;
 			if (property_exists($objSoapObject, 'AccountHash'))
 				$objToReturn->strAccountHash = $objSoapObject->AccountHash;
-			if (property_exists($objSoapObject, 'RoutingHash'))
-				$objToReturn->strRoutingHash = $objSoapObject->RoutingHash;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1295,10 +1311,10 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'TransitHash':
+					return new QQNode('transit_hash', 'TransitHash', 'string', $this);
 				case 'AccountHash':
 					return new QQNode('account_hash', 'AccountHash', 'string', $this);
-				case 'RoutingHash':
-					return new QQNode('routing_hash', 'RoutingHash', 'string', $this);
 				case 'PersonAsCheckaccountlookup':
 					return new QQNodeCheckingAccountLookupPersonAsCheckaccountlookup($this);
 				case 'StewardshipContribution':
@@ -1325,10 +1341,10 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'TransitHash':
+					return new QQNode('transit_hash', 'TransitHash', 'string', $this);
 				case 'AccountHash':
 					return new QQNode('account_hash', 'AccountHash', 'string', $this);
-				case 'RoutingHash':
-					return new QQNode('routing_hash', 'RoutingHash', 'string', $this);
 				case 'PersonAsCheckaccountlookup':
 					return new QQNodeCheckingAccountLookupPersonAsCheckaccountlookup($this);
 				case 'StewardshipContribution':

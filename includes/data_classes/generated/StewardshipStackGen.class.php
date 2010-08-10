@@ -602,6 +602,46 @@
 			
 		/**
 		 * Load an array of StewardshipStack objects,
+		 * by StewardshipBatchId, StackNumber Index(es)
+		 * @param integer $intStewardshipBatchId
+		 * @param integer $intStackNumber
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipStack[]
+		*/
+		public static function LoadArrayByStewardshipBatchIdStackNumber($intStewardshipBatchId, $intStackNumber, $objOptionalClauses = null) {
+			// Call StewardshipStack::QueryArray to perform the LoadArrayByStewardshipBatchIdStackNumber query
+			try {
+				return StewardshipStack::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::StewardshipStack()->StewardshipBatchId, $intStewardshipBatchId),
+					QQ::Equal(QQN::StewardshipStack()->StackNumber, $intStackNumber)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count StewardshipStacks
+		 * by StewardshipBatchId, StackNumber Index(es)
+		 * @param integer $intStewardshipBatchId
+		 * @param integer $intStackNumber
+		 * @return int
+		*/
+		public static function CountByStewardshipBatchIdStackNumber($intStewardshipBatchId, $intStackNumber) {
+			// Call StewardshipStack::QueryCount to perform the CountByStewardshipBatchIdStackNumber query
+			return StewardshipStack::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::StewardshipStack()->StewardshipBatchId, $intStewardshipBatchId),
+				QQ::Equal(QQN::StewardshipStack()->StackNumber, $intStackNumber)
+				)
+			);
+		}
+			
+		/**
+		 * Load an array of StewardshipStack objects,
 		 * by StewardshipBatchId Index(es)
 		 * @param integer $intStewardshipBatchId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query

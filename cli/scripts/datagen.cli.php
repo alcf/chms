@@ -45,6 +45,7 @@
 		public static $LifeStartDate;
 		public static $OldestChildBirthDate;
 		public static $UserArray;
+		public static $HouseholdArray;
 		public static $MaxPersonId;
 		public static $StewardshipUserArray = array();
 		
@@ -102,8 +103,22 @@
 					$arrStack,
 					self::GenerateFromArray(array('Weekend T/O', 'Weekend Giving', 'Tithes and Offerings', 'Tithes & Offerings', null)),
 					$dttDate);
-				$dttDate->Day += 7;
 
+				$intStackCount = $objBatch->CountStewardshipStacks();
+				for ($i = 0; $i < $intStackCount; $i++) {
+					if ($i == ($intStackCount - 1))
+						$intChecksInStackCount = $intCheckCount % 25;
+					else
+						$intChecksInStackCount = 25;
+
+					$objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($objBatch->Id, $i+1);
+					for ($j = 0; $j < $intChecksInStackCount; $j++) {
+						StewardshipContribution::Create();
+					}
+				}
+
+
+				$dttDate->Day += 7;
 				print (str_repeat(chr(8) . ' ' . chr(8), strlen($strDate)));
 			}
 			print "Done.\r\n";
@@ -352,6 +367,8 @@
 					$objPerson->RefreshPrimaryContactInfo();
 				}
 			}
+
+			self::$HouseholdArray = Household::LoadAll();
 		}
 
 		protected static function GenerateAddressesForHousehold(Household $objHousehold) {

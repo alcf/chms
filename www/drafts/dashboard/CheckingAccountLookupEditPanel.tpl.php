@@ -7,9 +7,9 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtAccountHash->RenderWithName(); ?>
+		<?php $_CONTROL->txtTransitHash->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtRoutingHash->RenderWithName(); ?>
+		<?php $_CONTROL->txtAccountHash->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstPeopleAsCheckaccountlookup->RenderWithName(true, "Rows=7"); ?>
 

@@ -294,8 +294,8 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "checking_account_lookup".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::CheckingAccountLookup()->Id;
+				case 'TransitHash': return QQN::CheckingAccountLookup()->TransitHash;
 				case 'AccountHash': return QQN::CheckingAccountLookup()->AccountHash;
-				case 'RoutingHash': return QQN::CheckingAccountLookup()->RoutingHash;
 				default: throw new QCallerException('Simple Property not found in CheckingAccountLookupDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

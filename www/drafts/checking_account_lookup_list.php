@@ -56,8 +56,8 @@
 			// Create the Other Columns (note that you can use strings for checking_account_lookup's properties, or you
 			// can traverse down QQN::checking_account_lookup() to display fields that are down the hierarchy)
 			$this->dtgCheckingAccountLookups->MetaAddColumn('Id');
+			$this->dtgCheckingAccountLookups->MetaAddColumn('TransitHash');
 			$this->dtgCheckingAccountLookups->MetaAddColumn('AccountHash');
-			$this->dtgCheckingAccountLookups->MetaAddColumn('RoutingHash');
 		}
 	}
 

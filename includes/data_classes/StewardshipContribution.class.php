@@ -27,6 +27,9 @@
 			return sprintf('StewardshipContribution Object %s',  $this->intId);
 		}
 
+		public function Create() {
+			
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

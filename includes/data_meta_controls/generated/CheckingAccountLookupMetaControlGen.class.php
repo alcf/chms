@@ -18,10 +18,10 @@
 	 * property-read CheckingAccountLookup $CheckingAccountLookup the actual CheckingAccountLookup data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
+	 * property QTextBox $TransitHashControl
+	 * property-read QLabel $TransitHashLabel
 	 * property QTextBox $AccountHashControl
 	 * property-read QLabel $AccountHashLabel
-	 * property QTextBox $RoutingHashControl
-	 * property-read QLabel $RoutingHashLabel
 	 * property QListBox $PersonAsCheckaccountlookupControl
 	 * property-read QLabel $PersonAsCheckaccountlookupLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -37,12 +37,12 @@
 
 		// Controls that allow the editing of CheckingAccountLookup's individual data fields
 		protected $lblId;
+		protected $txtTransitHash;
 		protected $txtAccountHash;
-		protected $txtRoutingHash;
 
 		// Controls that allow the viewing of CheckingAccountLookup's individual data fields
+		protected $lblTransitHash;
 		protected $lblAccountHash;
-		protected $lblRoutingHash;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstPeopleAsCheckaccountlookup;
@@ -159,6 +159,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtTransitHash
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtTransitHash_Create($strControlId = null) {
+			$this->txtTransitHash = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtTransitHash->Name = QApplication::Translate('Transit Hash');
+			$this->txtTransitHash->Text = $this->objCheckingAccountLookup->TransitHash;
+			$this->txtTransitHash->MaxLength = CheckingAccountLookup::TransitHashMaxLength;
+			return $this->txtTransitHash;
+		}
+
+		/**
+		 * Create and setup QLabel lblTransitHash
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblTransitHash_Create($strControlId = null) {
+			$this->lblTransitHash = new QLabel($this->objParentObject, $strControlId);
+			$this->lblTransitHash->Name = QApplication::Translate('Transit Hash');
+			$this->lblTransitHash->Text = $this->objCheckingAccountLookup->TransitHash;
+			return $this->lblTransitHash;
+		}
+
+		/**
 		 * Create and setup QTextBox txtAccountHash
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -181,31 +206,6 @@
 			$this->lblAccountHash->Name = QApplication::Translate('Account Hash');
 			$this->lblAccountHash->Text = $this->objCheckingAccountLookup->AccountHash;
 			return $this->lblAccountHash;
-		}
-
-		/**
-		 * Create and setup QTextBox txtRoutingHash
-		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
-		 */
-		public function txtRoutingHash_Create($strControlId = null) {
-			$this->txtRoutingHash = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtRoutingHash->Name = QApplication::Translate('Routing Hash');
-			$this->txtRoutingHash->Text = $this->objCheckingAccountLookup->RoutingHash;
-			$this->txtRoutingHash->MaxLength = CheckingAccountLookup::RoutingHashMaxLength;
-			return $this->txtRoutingHash;
-		}
-
-		/**
-		 * Create and setup QLabel lblRoutingHash
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblRoutingHash_Create($strControlId = null) {
-			$this->lblRoutingHash = new QLabel($this->objParentObject, $strControlId);
-			$this->lblRoutingHash->Name = QApplication::Translate('Routing Hash');
-			$this->lblRoutingHash->Text = $this->objCheckingAccountLookup->RoutingHash;
-			return $this->lblRoutingHash;
 		}
 
 		/**
@@ -272,11 +272,11 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objCheckingAccountLookup->Id;
 
+			if ($this->txtTransitHash) $this->txtTransitHash->Text = $this->objCheckingAccountLookup->TransitHash;
+			if ($this->lblTransitHash) $this->lblTransitHash->Text = $this->objCheckingAccountLookup->TransitHash;
+
 			if ($this->txtAccountHash) $this->txtAccountHash->Text = $this->objCheckingAccountLookup->AccountHash;
 			if ($this->lblAccountHash) $this->lblAccountHash->Text = $this->objCheckingAccountLookup->AccountHash;
-
-			if ($this->txtRoutingHash) $this->txtRoutingHash->Text = $this->objCheckingAccountLookup->RoutingHash;
-			if ($this->lblRoutingHash) $this->lblRoutingHash->Text = $this->objCheckingAccountLookup->RoutingHash;
 
 			if ($this->lstPeopleAsCheckaccountlookup) {
 				$this->lstPeopleAsCheckaccountlookup->RemoveAllItems();
@@ -332,8 +332,8 @@
 		public function SaveCheckingAccountLookup() {
 			try {
 				// Update any fields for controls that have been created
+				if ($this->txtTransitHash) $this->objCheckingAccountLookup->TransitHash = $this->txtTransitHash->Text;
 				if ($this->txtAccountHash) $this->objCheckingAccountLookup->AccountHash = $this->txtAccountHash->Text;
-				if ($this->txtRoutingHash) $this->objCheckingAccountLookup->RoutingHash = $this->txtRoutingHash->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -384,18 +384,18 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
+				case 'TransitHashControl':
+					if (!$this->txtTransitHash) return $this->txtTransitHash_Create();
+					return $this->txtTransitHash;
+				case 'TransitHashLabel':
+					if (!$this->lblTransitHash) return $this->lblTransitHash_Create();
+					return $this->lblTransitHash;
 				case 'AccountHashControl':
 					if (!$this->txtAccountHash) return $this->txtAccountHash_Create();
 					return $this->txtAccountHash;
 				case 'AccountHashLabel':
 					if (!$this->lblAccountHash) return $this->lblAccountHash_Create();
 					return $this->lblAccountHash;
-				case 'RoutingHashControl':
-					if (!$this->txtRoutingHash) return $this->txtRoutingHash_Create();
-					return $this->txtRoutingHash;
-				case 'RoutingHashLabel':
-					if (!$this->lblRoutingHash) return $this->lblRoutingHash_Create();
-					return $this->lblRoutingHash;
 				case 'PersonAsCheckaccountlookupControl':
 					if (!$this->lstPeopleAsCheckaccountlookup) return $this->lstPeopleAsCheckaccountlookup_Create();
 					return $this->lstPeopleAsCheckaccountlookup;
@@ -426,10 +426,10 @@
 					// Controls that point to CheckingAccountLookup fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
+					case 'TransitHashControl':
+						return ($this->txtTransitHash = QType::Cast($mixValue, 'QControl'));
 					case 'AccountHashControl':
 						return ($this->txtAccountHash = QType::Cast($mixValue, 'QControl'));
-					case 'RoutingHashControl':
-						return ($this->txtRoutingHash = QType::Cast($mixValue, 'QControl'));
 					case 'PersonAsCheckaccountlookupControl':
 						return ($this->lstPeopleAsCheckaccountlookup = QType::Cast($mixValue, 'QControl'));
 					default:

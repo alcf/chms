@@ -24,8 +24,8 @@
 
 		// Controls for CheckingAccountLookup's Data Fields
 		protected $lblId;
+		protected $txtTransitHash;
 		protected $txtAccountHash;
-		protected $txtRoutingHash;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 		protected $lstPeopleAsCheckaccountlookup;
@@ -54,8 +54,8 @@
 
 			// Call MetaControl's methods to create qcontrols based on CheckingAccountLookup's data fields
 			$this->lblId = $this->mctCheckingAccountLookup->lblId_Create();
+			$this->txtTransitHash = $this->mctCheckingAccountLookup->txtTransitHash_Create();
 			$this->txtAccountHash = $this->mctCheckingAccountLookup->txtAccountHash_Create();
-			$this->txtRoutingHash = $this->mctCheckingAccountLookup->txtRoutingHash_Create();
 			$this->lstPeopleAsCheckaccountlookup = $this->mctCheckingAccountLookup->lstPeopleAsCheckaccountlookup_Create();
 
 			// Create Buttons and Actions on this Form
