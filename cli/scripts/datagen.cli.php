@@ -79,11 +79,22 @@
 			ChmsDataGen::GenerateMinistries();
 			ChmsDataGen::GenerateUsers();
 			ChmsDataGen::GenerateHouseholds();
+			ChmsDataGen::GenerateStewardship();
 
 			self::$MaxPersonId = Person::CountAll();
 
 			ChmsDataGen::GenerateCommunicationLists();
 			ChmsDataGen::GenerateGroups();
+		}
+
+		public static function GenerateStewardship() {
+			$dttDate = new QDateTime('2004-01-05');
+			print 'Generating Stewardship... ';
+			while ($dttDate->IsEarlierThan(QDateTime::Now())) {
+				print ($strDate = '[' . $dttDate->ToString('YYYY-MMM-DD') . ']');
+				
+				$dttDate->Day += 7;
+			}
 		}
 
 		public static function GenerateCommunicationLists() {
@@ -211,6 +222,12 @@
 				$objMinistry->Name = $strMinistry;
 				$objMinistry->ActiveFlag = true;
 				$objMinistry->Save();
+
+				$objFund = new StewardshipFund();
+				$objFund->Ministry = $objMinistry;
+				$objFund->Name = 'Ministry - ' . $objMinistry->Name;
+				$objFund->AccountNumber = rand(100, 999);
+				$objFund->Save();
 
 				$strArray = array(
 					'Member' => GroupRoleType::Participant,

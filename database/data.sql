@@ -231,4 +231,8 @@ INSERT INTO query_node VALUES (null, 'Date of Birth', 'DateOfBirth', 3, null, nu
 INSERT INTO query_node VALUES (null, 'Date Baptized', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId Equal 11');
 INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId Equal 12');
 
+INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null);
+INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null);
+INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null);
+
 INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
