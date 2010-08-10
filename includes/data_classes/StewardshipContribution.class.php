@@ -32,7 +32,7 @@
 				case 'Folder':
 					$intModulo = $this->intId % 36;
 					if ($intModulo >= 10) {
-						$strSubFolderLetter = chr(ord('a') + $intModulo);
+						$strSubFolderLetter = chr(ord('a') + $intModulo - 10);
 					} else {
 						$strSubFolderLetter = $intModulo;
 					}
