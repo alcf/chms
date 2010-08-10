@@ -76,7 +76,8 @@
 
 			// Erase Directories
 			exec('rm -r -f ' . __DOCROOT__ . '/../file_assets/head_shots');
-
+			exec('rm -r -f ' . __DOCROOT__ . '/../file_assets/contribution_images');
+			
 			// Generate Stuff
 			ChmsDataGen::GenerateMinistries();
 			ChmsDataGen::GenerateUsers();
@@ -122,7 +123,7 @@
 					$objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($objBatch->Id, $i+1);
 					for ($j = 0; $j < $intChecksInStackCount; $j++) {
 						$objHousehold = self::GenerateFromArray(self::$HouseholdArray);
-						$objHouseholdParticipant = self::GenerateFromArray($objHousehold->GetHouseholdParticipantArray);
+						$objHouseholdParticipant = self::GenerateFromArray($objHousehold->GetHouseholdParticipationArray());
 
 						$mixAmountArray = array();
 						if (rand(0, 50))
@@ -134,12 +135,15 @@
 							$mixAmountArray[] = array(self::GenerateFromArray($objFundArray)->Id, rand(1000, 150000) / 100);
 						}
 
-						StewardshipContribution::Create(
+						$objContribution = StewardshipContribution::Create(
 							$objBatch->CreatedByLogin, $objHouseholdParticipant->Person, $objStack,
 							StewardshipContributionType::Check, rand(1000, 9999),
-							$intStewardshipContributionTypeId, $strSource, $mixAmountArray, self::GenerateDateTime($dttStart, $dttEnd),
+							$mixAmountArray, self::GenerateDateTime($dttStart, $dttEnd),
 							null, null, null, false);
+
+						if (rand(0, 5)) $objContribution->SaveImageFile(__DEVTOOLS_CLI__ . '/datagen_file_assets/check.tif');
 					}
+
 					$objStack->RefreshActualTotalAmount();
 				}
 
@@ -357,6 +361,7 @@
 		public static function GenerateHouseholds() {
 			while (QDataGen::DisplayWhileTask('Generating Households', self::HouseholdCount, false)) {
 				$objHousehold = null;
+				$objPerson = null;
 
 				switch (rand(0, 9)) {
 					case 0:
@@ -390,7 +395,7 @@
 					foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
 						$objParticipation->Person->RefreshPrimaryContactInfo();
 					}
-				} else {
+				} else if ($objPerson) {
 					$objPerson->RefreshPrimaryContactInfo();
 				}
 			}

@@ -27,11 +27,34 @@
 			return sprintf('StewardshipContribution Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Folder':
+					$intModulo = $this->intId % 36;
+					if ($intModulo >= 10) {
+						$strSubFolderLetter = chr(ord('a') + $intModulo);
+					} else {
+						$strSubFolderLetter = $intModulo;
+					}
+					return __DOCROOT__ . '/../file_assets/contribution_images/' . $strSubFolderLetter;
+
+				case 'Path': return $this->Folder . '/' . $this->Id . '.tif';
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		/**
 		 * Creates a new Contribution record.  The $mixAmountArray shouuld be an array of array items, where each array item is
 		 * indexed with
-		 * 	0 - the amount (as a float)
-		 * 	1 - the StewardshipFundId that shoudl be credited
+		 * 	0 - the StewardshipFundId that should be credited (as an integer)
+		 * 	1 - the amount (as a float)
 		 * 
 		 * @param Login $objLogin
 		 * @param Person $objPerson
@@ -50,6 +73,7 @@
 			QDateTime $dttEntered = null, QDateTime $dttCleared = null, CheckingAccountLookup $objCheckingAccountLookup = null, $strNote = null,
 			$blnRefreshOtherTotalAmounts = true) {
 			$objContribution = new StewardshipContribution();
+			$objContribution->CreatedByLogin = $objLogin;
 			$objContribution->Person = $objPerson;
 			$objContribution->StewardshipContributionTypeId = $intStewardshipContributionTypeId;
 			$objContribution->StewardshipBatchId = $objStack->StewardshipBatchId;
@@ -101,13 +125,36 @@
 		}
 
 		/**
+		 * Given a path to a TIFF image, this will save that image file
+		 * to the contribution_image repository
+		 * @param string $strTemporaryFilePath
+		 */
+		public function SaveImageFile($strTemporaryFilePath) {
+			if (!$this->Id) throw new QCallerException('Cannot Save Image File on an unsaved Contribution record');
+			$this->DeleteImageFile();
+
+			if (!is_dir($this->Folder)) QApplication::MakeDirectory($this->Folder, 0777);
+			copy($strTemporaryFilePath, $this->Path);
+			chmod($this->Path, 0777);
+		}
+
+		/**
+		 * This will delete (if applicable) any contribution_image TIFF image file
+		 * associated with this Contribution record
+		 */
+		public function DeleteImageFile() {
+			if (!$this->Id) throw new QCallerException('Cannot Delete Image File on an unsaved Contribution record');
+			if (file_exists($this->Path) && is_file($this->Path)) unlink($this->Path);
+		}
+
+		/**
 		 * Creates a new StewardshipContributionAmount record for a given amount and fund ID.
-		 * @param float $fltAmount
 		 * @param integer $intStewardshipFundId
+		 * @param float $fltAmount
 		 * @param boolean $blnRefreshTotalAmount whether or not to make the call to Refresh();
 		 * @return StewardshipContributionAmount
 		 */
-		public function CreateAmount($fltAmount, $intStewardshipFundId, $blnRefreshTotalAmount = true) {
+		public function CreateAmount($intStewardshipFundId, $fltAmount, $blnRefreshTotalAmount = true) {
 			$objAmount = new StewardshipContributionAmount();
 			$objAmount->StewardshipContribution = $this;
 			$objAmount->StewardshipFundId = $intStewardshipFundId;
