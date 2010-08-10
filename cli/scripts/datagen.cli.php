@@ -92,6 +92,9 @@
 		public static function GenerateStewardship() {
 			$dttDate = new QDateTime('2004-01-05');
 			print 'Generating Stewardship... ';
+			
+			$objFundArray = StewardshipFund::QueryArray(QQ::NotEqual(QQN::StewardshipFund()->Id, 1));
+			
 			while ($dttDate->IsEarlierThan(QDateTime::Now())) {
 				print ($strDate = '[' . $dttDate->ToString('YYYY-MMM-DD') . ']');
 
@@ -105,6 +108,11 @@
 					$dttDate);
 
 				$intStackCount = $objBatch->CountStewardshipStacks();
+				$dttStart = new QDateTime($dttDate);
+				$dttStart->SetTime(8, 0, 0);
+				$dttEnd = new QDateTime($dttDate);
+				$dttEnd->SetTime(16, 0, 0);
+
 				for ($i = 0; $i < $intStackCount; $i++) {
 					if ($i == ($intStackCount - 1))
 						$intChecksInStackCount = $intCheckCount % 25;
@@ -113,10 +121,29 @@
 
 					$objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($objBatch->Id, $i+1);
 					for ($j = 0; $j < $intChecksInStackCount; $j++) {
-						StewardshipContribution::Create();
+						$objHousehold = self::GenerateFromArray(self::$HouseholdArray);
+						$objHouseholdParticipant = self::GenerateFromArray($objHousehold->GetHouseholdParticipantArray);
+
+						$mixAmountArray = array();
+						if (rand(0, 50))
+							$mixAmountArray[] = array(1, rand(1000, 150000) / 100);
+						else
+							$mixAmountArray[] = array(self::GenerateFromArray($objFundArray)->Id, rand(1000, 150000) / 100);
+
+						if (!rand(0, 20)) {
+							$mixAmountArray[] = array(self::GenerateFromArray($objFundArray)->Id, rand(1000, 150000) / 100);
+						}
+
+						StewardshipContribution::Create(
+							$objBatch->CreatedByLogin, $objHouseholdParticipant->Person, $objStack,
+							StewardshipContributionType::Check, rand(1000, 9999),
+							$intStewardshipContributionTypeId, $strSource, $mixAmountArray, self::GenerateDateTime($dttStart, $dttEnd),
+							null, null, null, false);
 					}
+					$objStack->RefreshActualTotalAmount();
 				}
 
+				$objBatch->RefreshActualTotalAmount();
 
 				$dttDate->Day += 7;
 				print (str_repeat(chr(8) . ' ' . chr(8), strlen($strDate)));

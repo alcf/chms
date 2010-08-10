@@ -33,6 +33,7 @@
 		 * 	0 - the amount (as a float)
 		 * 	1 - the StewardshipFundId that shoudl be credited
 		 * 
+		 * @param Login $objLogin
 		 * @param Person $objPerson
 		 * @param StewardshipStack $objStack
 		 * @param integer $intStewardshipContributionTypeId
@@ -42,16 +43,93 @@
 		 * @param QDateTime $dttCleared optional (will remain as null if null)
 		 * @param CheckingAccountLookup $objCheckingAccountLookup optional
 		 * @param string $strNote optional
+		 * @param boolean $blnRefreshOtherTotalAmounts whether or not to refresh the Stack's and Batch's ActualTotalAmount (defaults to true)
 		 * @return StewardshipContribution
 		 */
-		public function Create(Person $objPerson, StewardshipStack $objStack, $intStewardshipContributionTypeId, $strSource, $mixAmountArray, 
-			QDateTime $dttEntered = null, QDateTime $dttCleared = null, CheckingAccountLookup $objCheckingAccountLookup = null, $strNote = null) {
+		public static function Create(Login $objLogin, Person $objPerson, StewardshipStack $objStack, $intStewardshipContributionTypeId, $strSource, $mixAmountArray, 
+			QDateTime $dttEntered = null, QDateTime $dttCleared = null, CheckingAccountLookup $objCheckingAccountLookup = null, $strNote = null,
+			$blnRefreshOtherTotalAmounts = true) {
 			$objContribution = new StewardshipContribution();
 			$objContribution->Person = $objPerson;
 			$objContribution->StewardshipContributionTypeId = $intStewardshipContributionTypeId;
 			$objContribution->StewardshipBatchId = $objStack->StewardshipBatchId;
 			$objContribution->StewardshipStack = $objStack;
-			$objContribution
+			$objContribution->CheckingAccountLookup = $objCheckingAccountLookup;
+			if ($dttEntered)
+				$objContribution->DateEntered = $dttEntered;
+			else
+				$objContribution->DateEntered = QDateTime::Now();
+			$objContribution->DateCleared = $dttCleared;
+			$objContribution->Note = $strNote;
+
+			switch ($objContribution->StewardshipContributionTypeId) {
+				case StewardshipContributionType::Check:
+				case StewardshipContributionType::ReturnedCheck:
+					$objContribution->CheckNumber = $strSource;
+					break;
+
+				case StewardshipContributionType::CreditCard:
+				case StewardshipContributionType::CreditCardRecurring:
+					$objContribution->AuthorizationNumber = $strSource;
+					break;
+
+				case StewardshipContributionType::Cash:
+				case StewardshipContributionType::CorporateMatch:
+				case StewardshipContributionType::CorporateMatchNonDeductible:
+				case StewardshipContributionType::StockDonation:
+				case StewardshipContributionType::Automobile:
+				case StewardshipContributionType::Other:
+					$objContribution->AlternateSource = $strSource;
+					break;
+
+				default:
+					throw new Exception('Unhandled ContributionTypeId');				
+			}
+
+			$objContribution->Save();
+
+			foreach ($mixAmountArray as $mixAmount) {
+				$objContribution->CreateAmount($mixAmount[0], $mixAmount[1], false);
+			}
+
+			$objContribution->RefreshTotalAmount();
+			if ($blnRefreshOtherTotalAmounts) {
+				$objContribution->StewardshipStack->RefreshActualTotalAmount();
+				$objContribution->StewardshipBatch->RefreshActualTotalAmount();
+			}
+			return $objContribution;
+		}
+
+		/**
+		 * Creates a new StewardshipContributionAmount record for a given amount and fund ID.
+		 * @param float $fltAmount
+		 * @param integer $intStewardshipFundId
+		 * @param boolean $blnRefreshTotalAmount whether or not to make the call to Refresh();
+		 * @return StewardshipContributionAmount
+		 */
+		public function CreateAmount($fltAmount, $intStewardshipFundId, $blnRefreshTotalAmount = true) {
+			$objAmount = new StewardshipContributionAmount();
+			$objAmount->StewardshipContribution = $this;
+			$objAmount->StewardshipFundId = $intStewardshipFundId;
+			$objAmount->Amount = $fltAmount;
+			$objAmount->Save();
+
+			if ($blnRefreshTotalAmount) $this->RefreshTotalAmount();
+			return $objAmount;
+		}
+
+		/**
+		 * Recalculates TotalAmount based on all linked StewradshipContributionAmount records in the database.
+		 * @param boolean $blnSave whether or not to make the call to Save() after TotalAmount has been updated.
+		 */
+		public function RefreshTotalAmount($blnSave = true) {
+			$fltTotalAmount = 0;
+
+			foreach ($this->GetStewardshipContributionAmountArray() as $objAmount)
+				$fltTotalAmount += $objAmount->Amount;
+
+			$this->TotalAmount = $fltTotalAmount;
+			if ($blnSave) $this->Save();
 		}
 
 		// Override or Create New Load/Count methods

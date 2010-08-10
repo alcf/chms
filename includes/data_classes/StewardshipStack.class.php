@@ -27,6 +27,20 @@
 			return sprintf('StewardshipStack Object %s',  $this->intId);
 		}
 
+		/**
+		 * Refreshes the Stack's ActualTotalAmount based on StewardshipContribution records from the database.
+		 * If Saving, then also will make a call to refresh the Batch's ActualTotalAmount as well.
+		 * @param boolean $blnSave whether or not to save this record (defaults to true)
+		 */
+		public function RefreshActualTotalAmount($blnSave = true) {
+			$fltTotalAmount = 0;
+			foreach ($this->GetStewardshipContributionArray() as $objContribution)
+				$fltTotalAmount += $objContribution->TotalAmount;
+
+			$this->fltActualTotalAmount = $fltTotalAmount;
+
+			if ($blnSave) $this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

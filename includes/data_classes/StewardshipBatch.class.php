@@ -89,6 +89,21 @@
 			return $objStack;
 		}
 
+
+		/**
+		 * Recalculates ActualTotalAmount based on all linked StewradshipContribution records in the database.
+		 * @param boolean $blnSave whether or not to make the call to Save() after ActualTotalAmount has been updated.
+		 */
+		public function RefreshActualTotalAmount($blnSave = true) {
+			$fltTotalAmount = 0;
+
+			foreach ($this->GetStewardshipContributionAmountArray() as $objAmount)
+				$fltTotalAmount += $objAmount->Amount;
+
+			$this->TotalAmount = $fltTotalAmount;
+			if ($blnSave) $this->Save();
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
