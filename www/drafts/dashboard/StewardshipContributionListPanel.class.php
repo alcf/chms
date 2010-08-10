@@ -67,7 +67,7 @@
 			// can traverse down QQN::stewardship_contribution() to display fields that are down the hierarchy)
 			$this->dtgStewardshipContributions->MetaAddColumn('Id');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->Person);
-			$this->dtgStewardshipContributions->MetaAddTypeColumn('StewardshipContributionType', 'StewardshipContributionType');
+			$this->dtgStewardshipContributions->MetaAddColumn('StewardshipContributionTypeId');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->StewardshipBatch);
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->StewardshipStack);
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->CheckingAccountLookup);

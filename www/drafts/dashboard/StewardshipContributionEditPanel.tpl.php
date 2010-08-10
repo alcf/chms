@@ -9,7 +9,7 @@
 
 		<?php $_CONTROL->lstPerson->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstStewardshipContributionTypeObject->RenderWithName(); ?>
+		<?php $_CONTROL->txtStewardshipContributionTypeId->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstStewardshipBatch->RenderWithName(); ?>
 

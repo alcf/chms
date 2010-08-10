@@ -296,7 +296,7 @@
 				case 'Id': return QQN::StewardshipContribution()->Id;
 				case 'PersonId': return QQN::StewardshipContribution()->PersonId;
 				case 'Person': return QQN::StewardshipContribution()->Person;
-				case 'StewardshipContributionType': return QQN::StewardshipContribution()->StewardshipContributionType;
+				case 'StewardshipContributionTypeId': return QQN::StewardshipContribution()->StewardshipContributionTypeId;
 				case 'StewardshipBatchId': return QQN::StewardshipContribution()->StewardshipBatchId;
 				case 'StewardshipBatch': return QQN::StewardshipContribution()->StewardshipBatch;
 				case 'StewardshipStackId': return QQN::StewardshipContribution()->StewardshipStackId;

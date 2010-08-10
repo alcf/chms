@@ -19,7 +19,7 @@
 
 		<?php $this->lstPerson->RenderWithName(); ?>
 
-		<?php $this->lstStewardshipContributionTypeObject->RenderWithName(); ?>
+		<?php $this->txtStewardshipContributionTypeId->RenderWithName(); ?>
 
 		<?php $this->lstStewardshipBatch->RenderWithName(); ?>
 

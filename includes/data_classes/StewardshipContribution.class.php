@@ -27,8 +27,31 @@
 			return sprintf('StewardshipContribution Object %s',  $this->intId);
 		}
 
-		public function Create() {
-			
+		/**
+		 * Creates a new Contribution record.  The $mixAmountArray shouuld be an array of array items, where each array item is
+		 * indexed with
+		 * 	0 - the amount (as a float)
+		 * 	1 - the StewardshipFundId that shoudl be credited
+		 * 
+		 * @param Person $objPerson
+		 * @param StewardshipStack $objStack
+		 * @param integer $intStewardshipContributionTypeId
+		 * @param string $strSource the "source" of the contribution (e.g. for checks, it's the check number, for CC, it's the authorization number)
+		 * @param mixed[][] $mixAmountArray the array of arrays containing amounts and fund ids
+		 * @param QDateTime $dttEntered optional (will use Now() if null)
+		 * @param QDateTime $dttCleared optional (will remain as null if null)
+		 * @param CheckingAccountLookup $objCheckingAccountLookup optional
+		 * @param string $strNote optional
+		 * @return StewardshipContribution
+		 */
+		public function Create(Person $objPerson, StewardshipStack $objStack, $intStewardshipContributionTypeId, $strSource, $mixAmountArray, 
+			QDateTime $dttEntered = null, QDateTime $dttCleared = null, CheckingAccountLookup $objCheckingAccountLookup = null, $strNote = null) {
+			$objContribution = new StewardshipContribution();
+			$objContribution->Person = $objPerson;
+			$objContribution->StewardshipContributionTypeId = $intStewardshipContributionTypeId;
+			$objContribution->StewardshipBatchId = $objStack->StewardshipBatchId;
+			$objContribution->StewardshipStack = $objStack;
+			$objContribution
 		}
 
 		// Override or Create New Load/Count methods

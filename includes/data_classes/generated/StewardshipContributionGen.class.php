@@ -17,7 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
-	 * @property integer $StewardshipContributionType the value for intStewardshipContributionType (Not Null)
+	 * @property integer $StewardshipContributionTypeId the value for intStewardshipContributionTypeId (Not Null)
 	 * @property integer $StewardshipBatchId the value for intStewardshipBatchId (Not Null)
 	 * @property integer $StewardshipStackId the value for intStewardshipStackId 
 	 * @property integer $CheckingAccountLookupId the value for intCheckingAccountLookupId 
@@ -61,11 +61,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column stewardship_contribution.stewardship_contribution_type
-		 * @var integer intStewardshipContributionType
+		 * Protected member variable that maps to the database column stewardship_contribution.stewardship_contribution_type_id
+		 * @var integer intStewardshipContributionTypeId
 		 */
-		protected $intStewardshipContributionType;
-		const StewardshipContributionTypeDefault = null;
+		protected $intStewardshipContributionTypeId;
+		const StewardshipContributionTypeIdDefault = null;
 
 
 		/**
@@ -537,7 +537,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
-			$objBuilder->AddSelectItem($strTableName, 'stewardship_contribution_type', $strAliasPrefix . 'stewardship_contribution_type');
+			$objBuilder->AddSelectItem($strTableName, 'stewardship_contribution_type_id', $strAliasPrefix . 'stewardship_contribution_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_batch_id', $strAliasPrefix . 'stewardship_batch_id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_stack_id', $strAliasPrefix . 'stewardship_stack_id');
 			$objBuilder->AddSelectItem($strTableName, 'checking_account_lookup_id', $strAliasPrefix . 'checking_account_lookup_id');
@@ -616,8 +616,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_contribution_type', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_contribution_type'] : $strAliasPrefix . 'stewardship_contribution_type';
-			$objToReturn->intStewardshipContributionType = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_contribution_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_contribution_type_id'] : $strAliasPrefix . 'stewardship_contribution_type_id';
+			$objToReturn->intStewardshipContributionTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_batch_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_batch_id'] : $strAliasPrefix . 'stewardship_batch_id';
 			$objToReturn->intStewardshipBatchId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_stack_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_stack_id'] : $strAliasPrefix . 'stewardship_stack_id';
@@ -781,19 +781,19 @@
 			
 		/**
 		 * Load an array of StewardshipContribution objects,
-		 * by PersonId, StewardshipContributionType Index(es)
+		 * by PersonId, StewardshipContributionTypeId Index(es)
 		 * @param integer $intPersonId
-		 * @param integer $intStewardshipContributionType
+		 * @param integer $intStewardshipContributionTypeId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return StewardshipContribution[]
 		*/
-		public static function LoadArrayByPersonIdStewardshipContributionType($intPersonId, $intStewardshipContributionType, $objOptionalClauses = null) {
-			// Call StewardshipContribution::QueryArray to perform the LoadArrayByPersonIdStewardshipContributionType query
+		public static function LoadArrayByPersonIdStewardshipContributionTypeId($intPersonId, $intStewardshipContributionTypeId, $objOptionalClauses = null) {
+			// Call StewardshipContribution::QueryArray to perform the LoadArrayByPersonIdStewardshipContributionTypeId query
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::AndCondition(
 					QQ::Equal(QQN::StewardshipContribution()->PersonId, $intPersonId),
-					QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionType, $intStewardshipContributionType)
+					QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId)
 					),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
@@ -804,17 +804,17 @@
 
 		/**
 		 * Count StewardshipContributions
-		 * by PersonId, StewardshipContributionType Index(es)
+		 * by PersonId, StewardshipContributionTypeId Index(es)
 		 * @param integer $intPersonId
-		 * @param integer $intStewardshipContributionType
+		 * @param integer $intStewardshipContributionTypeId
 		 * @return int
 		*/
-		public static function CountByPersonIdStewardshipContributionType($intPersonId, $intStewardshipContributionType) {
-			// Call StewardshipContribution::QueryCount to perform the CountByPersonIdStewardshipContributionType query
+		public static function CountByPersonIdStewardshipContributionTypeId($intPersonId, $intStewardshipContributionTypeId) {
+			// Call StewardshipContribution::QueryCount to perform the CountByPersonIdStewardshipContributionTypeId query
 			return StewardshipContribution::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipContribution()->PersonId, $intPersonId),
-				QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionType, $intStewardshipContributionType)
+				QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId)
 				)
 			);
 		}
@@ -853,16 +853,16 @@
 			
 		/**
 		 * Load an array of StewardshipContribution objects,
-		 * by StewardshipContributionType Index(es)
-		 * @param integer $intStewardshipContributionType
+		 * by StewardshipContributionTypeId Index(es)
+		 * @param integer $intStewardshipContributionTypeId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return StewardshipContribution[]
 		*/
-		public static function LoadArrayByStewardshipContributionType($intStewardshipContributionType, $objOptionalClauses = null) {
-			// Call StewardshipContribution::QueryArray to perform the LoadArrayByStewardshipContributionType query
+		public static function LoadArrayByStewardshipContributionTypeId($intStewardshipContributionTypeId, $objOptionalClauses = null) {
+			// Call StewardshipContribution::QueryArray to perform the LoadArrayByStewardshipContributionTypeId query
 			try {
 				return StewardshipContribution::QueryArray(
-					QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionType, $intStewardshipContributionType),
+					QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -872,14 +872,14 @@
 
 		/**
 		 * Count StewardshipContributions
-		 * by StewardshipContributionType Index(es)
-		 * @param integer $intStewardshipContributionType
+		 * by StewardshipContributionTypeId Index(es)
+		 * @param integer $intStewardshipContributionTypeId
 		 * @return int
 		*/
-		public static function CountByStewardshipContributionType($intStewardshipContributionType) {
-			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipContributionType query
+		public static function CountByStewardshipContributionTypeId($intStewardshipContributionTypeId) {
+			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipContributionTypeId query
 			return StewardshipContribution::QueryCount(
-				QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionType, $intStewardshipContributionType)
+				QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId)
 			);
 		}
 			
@@ -1042,7 +1042,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `stewardship_contribution` (
 							`person_id`,
-							`stewardship_contribution_type`,
+							`stewardship_contribution_type_id`,
 							`stewardship_batch_id`,
 							`stewardship_stack_id`,
 							`checking_account_lookup_id`,
@@ -1056,7 +1056,7 @@
 							`created_by_login_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->intStewardshipContributionType) . ',
+							' . $objDatabase->SqlVariable($this->intStewardshipContributionTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipStackId) . ',
 							' . $objDatabase->SqlVariable($this->intCheckingAccountLookupId) . ',
@@ -1084,7 +1084,7 @@
 							`stewardship_contribution`
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`stewardship_contribution_type` = ' . $objDatabase->SqlVariable($this->intStewardshipContributionType) . ',
+							`stewardship_contribution_type_id` = ' . $objDatabase->SqlVariable($this->intStewardshipContributionTypeId) . ',
 							`stewardship_batch_id` = ' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 							`stewardship_stack_id` = ' . $objDatabase->SqlVariable($this->intStewardshipStackId) . ',
 							`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intCheckingAccountLookupId) . ',
@@ -1175,7 +1175,7 @@
 
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
-			$this->StewardshipContributionType = $objReloaded->StewardshipContributionType;
+			$this->intStewardshipContributionTypeId = $objReloaded->intStewardshipContributionTypeId;
 			$this->StewardshipBatchId = $objReloaded->StewardshipBatchId;
 			$this->StewardshipStackId = $objReloaded->StewardshipStackId;
 			$this->CheckingAccountLookupId = $objReloaded->CheckingAccountLookupId;
@@ -1217,10 +1217,10 @@
 					// @return integer
 					return $this->intPersonId;
 
-				case 'StewardshipContributionType':
-					// Gets the value for intStewardshipContributionType (Not Null)
+				case 'StewardshipContributionTypeId':
+					// Gets the value for intStewardshipContributionTypeId (Not Null)
 					// @return integer
-					return $this->intStewardshipContributionType;
+					return $this->intStewardshipContributionTypeId;
 
 				case 'StewardshipBatchId':
 					// Gets the value for intStewardshipBatchId (Not Null)
@@ -1398,12 +1398,12 @@
 						throw $objExc;
 					}
 
-				case 'StewardshipContributionType':
-					// Sets the value for intStewardshipContributionType (Not Null)
+				case 'StewardshipContributionTypeId':
+					// Sets the value for intStewardshipContributionTypeId (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
-						return ($this->intStewardshipContributionType = QType::Cast($mixValue, QType::Integer));
+						return ($this->intStewardshipContributionTypeId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1877,7 +1877,7 @@
 			$strToReturn = '<complexType name="StewardshipContribution"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
-			$strToReturn .= '<element name="StewardshipContributionType" type="xsd:int"/>';
+			$strToReturn .= '<element name="StewardshipContributionTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="StewardshipBatch" type="xsd1:StewardshipBatch"/>';
 			$strToReturn .= '<element name="StewardshipStack" type="xsd1:StewardshipStack"/>';
 			$strToReturn .= '<element name="CheckingAccountLookup" type="xsd1:CheckingAccountLookup"/>';
@@ -1921,8 +1921,8 @@
 			if ((property_exists($objSoapObject, 'Person')) &&
 				($objSoapObject->Person))
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
-			if (property_exists($objSoapObject, 'StewardshipContributionType'))
-				$objToReturn->intStewardshipContributionType = $objSoapObject->StewardshipContributionType;
+			if (property_exists($objSoapObject, 'StewardshipContributionTypeId'))
+				$objToReturn->intStewardshipContributionTypeId = $objSoapObject->StewardshipContributionTypeId;
 			if ((property_exists($objSoapObject, 'StewardshipBatch')) &&
 				($objSoapObject->StewardshipBatch))
 				$objToReturn->StewardshipBatch = StewardshipBatch::GetObjectFromSoapObject($objSoapObject->StewardshipBatch);
@@ -2017,8 +2017,8 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
-				case 'StewardshipContributionType':
-					return new QQNode('stewardship_contribution_type', 'StewardshipContributionType', 'integer', $this);
+				case 'StewardshipContributionTypeId':
+					return new QQNode('stewardship_contribution_type_id', 'StewardshipContributionTypeId', 'integer', $this);
 				case 'StewardshipBatchId':
 					return new QQNode('stewardship_batch_id', 'StewardshipBatchId', 'integer', $this);
 				case 'StewardshipBatch':
@@ -2077,8 +2077,8 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
-				case 'StewardshipContributionType':
-					return new QQNode('stewardship_contribution_type', 'StewardshipContributionType', 'integer', $this);
+				case 'StewardshipContributionTypeId':
+					return new QQNode('stewardship_contribution_type_id', 'StewardshipContributionTypeId', 'integer', $this);
 				case 'StewardshipBatchId':
 					return new QQNode('stewardship_batch_id', 'StewardshipBatchId', 'integer', $this);
 				case 'StewardshipBatch':

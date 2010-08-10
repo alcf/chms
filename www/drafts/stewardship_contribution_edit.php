@@ -25,7 +25,7 @@
 		// Controls for StewardshipContribution's Data Fields
 		protected $lblId;
 		protected $lstPerson;
-		protected $lstStewardshipContributionTypeObject;
+		protected $txtStewardshipContributionTypeId;
 		protected $lstStewardshipBatch;
 		protected $lstStewardshipStack;
 		protected $lstCheckingAccountLookup;
@@ -65,7 +65,7 @@
 			// Call MetaControl's methods to create qcontrols based on StewardshipContribution's data fields
 			$this->lblId = $this->mctStewardshipContribution->lblId_Create();
 			$this->lstPerson = $this->mctStewardshipContribution->lstPerson_Create();
-			$this->lstStewardshipContributionTypeObject = $this->mctStewardshipContribution->lstStewardshipContributionTypeObject_Create();
+			$this->txtStewardshipContributionTypeId = $this->mctStewardshipContribution->txtStewardshipContributionTypeId_Create();
 			$this->lstStewardshipBatch = $this->mctStewardshipContribution->lstStewardshipBatch_Create();
 			$this->lstStewardshipStack = $this->mctStewardshipContribution->lstStewardshipStack_Create();
 			$this->lstCheckingAccountLookup = $this->mctStewardshipContribution->lstCheckingAccountLookup_Create();

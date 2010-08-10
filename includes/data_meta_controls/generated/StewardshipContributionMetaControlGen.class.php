@@ -20,8 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
-	 * property QListBox $StewardshipContributionTypeControl
-	 * property-read QLabel $StewardshipContributionTypeLabel
+	 * property QIntegerTextBox $StewardshipContributionTypeIdControl
+	 * property-read QLabel $StewardshipContributionTypeIdLabel
 	 * property QListBox $StewardshipBatchIdControl
 	 * property-read QLabel $StewardshipBatchIdLabel
 	 * property QListBox $StewardshipStackIdControl
@@ -58,7 +58,7 @@
 		// Controls that allow the editing of StewardshipContribution's individual data fields
 		protected $lblId;
 		protected $lstPerson;
-		protected $lstStewardshipContributionTypeObject;
+		protected $txtStewardshipContributionTypeId;
 		protected $lstStewardshipBatch;
 		protected $lstStewardshipStack;
 		protected $lstCheckingAccountLookup;
@@ -73,7 +73,7 @@
 
 		// Controls that allow the viewing of StewardshipContribution's individual data fields
 		protected $lblPersonId;
-		protected $lblStewardshipContributionType;
+		protected $lblStewardshipContributionTypeId;
 		protected $lblStewardshipBatchId;
 		protected $lblStewardshipStackId;
 		protected $lblCheckingAccountLookupId;
@@ -242,30 +242,31 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstStewardshipContributionTypeObject
+		 * Create and setup QIntegerTextBox txtStewardshipContributionTypeId
 		 * @param string $strControlId optional ControlId to use
-		 * @return QListBox
+		 * @return QIntegerTextBox
 		 */
-		public function lstStewardshipContributionTypeObject_Create($strControlId = null) {
-			$this->lstStewardshipContributionTypeObject = new QListBox($this->objParentObject, $strControlId);
-			$this->lstStewardshipContributionTypeObject->Name = QApplication::Translate('Stewardship Contribution Type Object');
-			$this->lstStewardshipContributionTypeObject->Required = true;
-			foreach (StewardshipContributionType::$NameArray as $intId => $strValue)
-				$this->lstStewardshipContributionTypeObject->AddItem(new QListItem($strValue, $intId, $this->objStewardshipContribution->StewardshipContributionType == $intId));
-			return $this->lstStewardshipContributionTypeObject;
+		public function txtStewardshipContributionTypeId_Create($strControlId = null) {
+			$this->txtStewardshipContributionTypeId = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtStewardshipContributionTypeId->Name = QApplication::Translate('Stewardship Contribution Type Id');
+			$this->txtStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
+			$this->txtStewardshipContributionTypeId->Required = true;
+			return $this->txtStewardshipContributionTypeId;
 		}
 
 		/**
-		 * Create and setup QLabel lblStewardshipContributionType
+		 * Create and setup QLabel lblStewardshipContributionTypeId
 		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblStewardshipContributionType_Create($strControlId = null) {
-			$this->lblStewardshipContributionType = new QLabel($this->objParentObject, $strControlId);
-			$this->lblStewardshipContributionType->Name = QApplication::Translate('Stewardship Contribution Type Object');
-			$this->lblStewardshipContributionType->Text = ($this->objStewardshipContribution->StewardshipContributionType) ? StewardshipContributionType::$NameArray[$this->objStewardshipContribution->StewardshipContributionType] : null;
-			$this->lblStewardshipContributionType->Required = true;
-			return $this->lblStewardshipContributionType;
+		public function lblStewardshipContributionTypeId_Create($strControlId = null, $strFormat = null) {
+			$this->lblStewardshipContributionTypeId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStewardshipContributionTypeId->Name = QApplication::Translate('Stewardship Contribution Type Id');
+			$this->lblStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
+			$this->lblStewardshipContributionTypeId->Required = true;
+			$this->lblStewardshipContributionTypeId->Format = $strFormat;
+			return $this->lblStewardshipContributionTypeId;
 		}
 
 		/**
@@ -647,8 +648,8 @@
 			}
 			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objStewardshipContribution->Person) ? $this->objStewardshipContribution->Person->__toString() : null;
 
-			if ($this->lstStewardshipContributionTypeObject) $this->lstStewardshipContributionTypeObject->SelectedValue = $this->objStewardshipContribution->StewardshipContributionType;
-			if ($this->lblStewardshipContributionType) $this->lblStewardshipContributionType->Text = ($this->objStewardshipContribution->StewardshipContributionType) ? StewardshipContributionType::$NameArray[$this->objStewardshipContribution->StewardshipContributionType] : null;
+			if ($this->txtStewardshipContributionTypeId) $this->txtStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
+			if ($this->lblStewardshipContributionTypeId) $this->lblStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
 
 			if ($this->lstStewardshipBatch) {
 					$this->lstStewardshipBatch->RemoveAllItems();
@@ -749,7 +750,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objStewardshipContribution->PersonId = $this->lstPerson->SelectedValue;
-				if ($this->lstStewardshipContributionTypeObject) $this->objStewardshipContribution->StewardshipContributionType = $this->lstStewardshipContributionTypeObject->SelectedValue;
+				if ($this->txtStewardshipContributionTypeId) $this->objStewardshipContribution->StewardshipContributionTypeId = $this->txtStewardshipContributionTypeId->Text;
 				if ($this->lstStewardshipBatch) $this->objStewardshipContribution->StewardshipBatchId = $this->lstStewardshipBatch->SelectedValue;
 				if ($this->lstStewardshipStack) $this->objStewardshipContribution->StewardshipStackId = $this->lstStewardshipStack->SelectedValue;
 				if ($this->lstCheckingAccountLookup) $this->objStewardshipContribution->CheckingAccountLookupId = $this->lstCheckingAccountLookup->SelectedValue;
@@ -815,12 +816,12 @@
 				case 'PersonIdLabel':
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
-				case 'StewardshipContributionTypeControl':
-					if (!$this->lstStewardshipContributionTypeObject) return $this->lstStewardshipContributionTypeObject_Create();
-					return $this->lstStewardshipContributionTypeObject;
-				case 'StewardshipContributionTypeLabel':
-					if (!$this->lblStewardshipContributionType) return $this->lblStewardshipContributionType_Create();
-					return $this->lblStewardshipContributionType;
+				case 'StewardshipContributionTypeIdControl':
+					if (!$this->txtStewardshipContributionTypeId) return $this->txtStewardshipContributionTypeId_Create();
+					return $this->txtStewardshipContributionTypeId;
+				case 'StewardshipContributionTypeIdLabel':
+					if (!$this->lblStewardshipContributionTypeId) return $this->lblStewardshipContributionTypeId_Create();
+					return $this->lblStewardshipContributionTypeId;
 				case 'StewardshipBatchIdControl':
 					if (!$this->lstStewardshipBatch) return $this->lstStewardshipBatch_Create();
 					return $this->lstStewardshipBatch;
@@ -913,8 +914,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
-					case 'StewardshipContributionTypeControl':
-						return ($this->lstStewardshipContributionTypeObject = QType::Cast($mixValue, 'QControl'));
+					case 'StewardshipContributionTypeIdControl':
+						return ($this->txtStewardshipContributionTypeId = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipBatchIdControl':
 						return ($this->lstStewardshipBatch = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipStackIdControl':
