@@ -99,7 +99,7 @@
 			while ($dttDate->IsEarlierThan(QDateTime::Now())) {
 				print ($strDate = '[' . $dttDate->ToString('YYYY-MMM-DD') . ']');
 
-				$intCheckCount = rand(10, 90);
+				$intCheckCount = rand(10, 55);
 				$arrStack = array();
 				for ($i = 0; $i < floor(($intCheckCount - 1) / 25) + 1; $i++) $arrStack[] = null;
 				$objBatch = StewardshipBatch::Create(
@@ -107,7 +107,6 @@
 					$arrStack,
 					self::GenerateFromArray(array('Weekend T/O', 'Weekend Giving', 'Tithes and Offerings', 'Tithes & Offerings', null)),
 					$dttDate);
-
 				$intStackCount = $objBatch->CountStewardshipStacks();
 				$dttStart = new QDateTime($dttDate);
 				$dttStart->SetTime(8, 0, 0);
@@ -115,9 +114,12 @@
 				$dttEnd->SetTime(16, 0, 0);
 
 				for ($i = 0; $i < $intStackCount; $i++) {
-					if ($i == ($intStackCount - 1))
-						$intChecksInStackCount = $intCheckCount % 25;
-					else
+					if ($i == ($intStackCount - 1)) {
+						if (($intCheckCount % 25) == 0)
+							$intChecksInStackCount = 25;
+						else
+							$intChecksInStackCount = $intCheckCount % 25;
+					} else
 						$intChecksInStackCount = 25;
 
 					$objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($objBatch->Id, $i+1);
@@ -147,6 +149,9 @@
 					$objStack->RefreshActualTotalAmount();
 				}
 
+				if ($intCheckCount != $objBatch->CountStewardshipContributions()) {
+					print ("\r\n" . 'MISCOUNT: ' . $objBatch->Id . "\r\n");
+				}
 				$objBatch->RefreshActualTotalAmount();
 
 				$dttDate->Day += 7;
