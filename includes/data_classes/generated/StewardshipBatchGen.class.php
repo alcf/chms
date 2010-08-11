@@ -20,6 +20,7 @@
 	 * @property QDateTime $DateEntered the value for dttDateEntered (Not Null)
 	 * @property string $BatchLabel the value for strBatchLabel (Not Null)
 	 * @property string $Description the value for strDescription 
+	 * @property integer $ItemCount the value for intItemCount 
 	 * @property double $ReportedTotalAmount the value for fltReportedTotalAmount 
 	 * @property double $ActualTotalAmount the value for fltActualTotalAmount 
 	 * @property double $PostedTotalAmount the value for fltPostedTotalAmount 
@@ -79,6 +80,14 @@
 		protected $strDescription;
 		const DescriptionMaxLength = 255;
 		const DescriptionDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_batch.item_count
+		 * @var integer intItemCount
+		 */
+		protected $intItemCount;
+		const ItemCountDefault = null;
 
 
 		/**
@@ -486,6 +495,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'date_entered', $strAliasPrefix . 'date_entered');
 			$objBuilder->AddSelectItem($strTableName, 'batch_label', $strAliasPrefix . 'batch_label');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
+			$objBuilder->AddSelectItem($strTableName, 'item_count', $strAliasPrefix . 'item_count');
 			$objBuilder->AddSelectItem($strTableName, 'reported_total_amount', $strAliasPrefix . 'reported_total_amount');
 			$objBuilder->AddSelectItem($strTableName, 'actual_total_amount', $strAliasPrefix . 'actual_total_amount');
 			$objBuilder->AddSelectItem($strTableName, 'posted_total_amount', $strAliasPrefix . 'posted_total_amount');
@@ -591,6 +601,8 @@
 			$objToReturn->strBatchLabel = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'item_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'item_count'] : $strAliasPrefix . 'item_count';
+			$objToReturn->intItemCount = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'reported_total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'reported_total_amount'] : $strAliasPrefix . 'reported_total_amount';
 			$objToReturn->fltReportedTotalAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'actual_total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'actual_total_amount'] : $strAliasPrefix . 'actual_total_amount';
@@ -848,6 +860,7 @@
 							`date_entered`,
 							`batch_label`,
 							`description`,
+							`item_count`,
 							`reported_total_amount`,
 							`actual_total_amount`,
 							`posted_total_amount`,
@@ -857,6 +870,7 @@
 							' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
 							' . $objDatabase->SqlVariable($this->strBatchLabel) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
+							' . $objDatabase->SqlVariable($this->intItemCount) . ',
 							' . $objDatabase->SqlVariable($this->fltReportedTotalAmount) . ',
 							' . $objDatabase->SqlVariable($this->fltActualTotalAmount) . ',
 							' . $objDatabase->SqlVariable($this->fltPostedTotalAmount) . ',
@@ -880,6 +894,7 @@
 							`date_entered` = ' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
 							`batch_label` = ' . $objDatabase->SqlVariable($this->strBatchLabel) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
+							`item_count` = ' . $objDatabase->SqlVariable($this->intItemCount) . ',
 							`reported_total_amount` = ' . $objDatabase->SqlVariable($this->fltReportedTotalAmount) . ',
 							`actual_total_amount` = ' . $objDatabase->SqlVariable($this->fltActualTotalAmount) . ',
 							`posted_total_amount` = ' . $objDatabase->SqlVariable($this->fltPostedTotalAmount) . ',
@@ -966,6 +981,7 @@
 			$this->dttDateEntered = $objReloaded->dttDateEntered;
 			$this->strBatchLabel = $objReloaded->strBatchLabel;
 			$this->strDescription = $objReloaded->strDescription;
+			$this->intItemCount = $objReloaded->intItemCount;
 			$this->fltReportedTotalAmount = $objReloaded->fltReportedTotalAmount;
 			$this->fltActualTotalAmount = $objReloaded->fltActualTotalAmount;
 			$this->fltPostedTotalAmount = $objReloaded->fltPostedTotalAmount;
@@ -1014,6 +1030,11 @@
 					// Gets the value for strDescription 
 					// @return string
 					return $this->strDescription;
+
+				case 'ItemCount':
+					// Gets the value for intItemCount 
+					// @return integer
+					return $this->intItemCount;
 
 				case 'ReportedTotalAmount':
 					// Gets the value for fltReportedTotalAmount 
@@ -1159,6 +1180,17 @@
 					// @return string
 					try {
 						return ($this->strDescription = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ItemCount':
+					// Sets the value for intItemCount 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intItemCount = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1735,6 +1767,7 @@
 			$strToReturn .= '<element name="DateEntered" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="BatchLabel" type="xsd:string"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
+			$strToReturn .= '<element name="ItemCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ReportedTotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="ActualTotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="PostedTotalAmount" type="xsd:float"/>';
@@ -1772,6 +1805,8 @@
 				$objToReturn->strBatchLabel = $objSoapObject->BatchLabel;
 			if (property_exists($objSoapObject, 'Description'))
 				$objToReturn->strDescription = $objSoapObject->Description;
+			if (property_exists($objSoapObject, 'ItemCount'))
+				$objToReturn->intItemCount = $objSoapObject->ItemCount;
 			if (property_exists($objSoapObject, 'ReportedTotalAmount'))
 				$objToReturn->fltReportedTotalAmount = $objSoapObject->ReportedTotalAmount;
 			if (property_exists($objSoapObject, 'ActualTotalAmount'))
@@ -1835,6 +1870,8 @@
 					return new QQNode('batch_label', 'BatchLabel', 'string', $this);
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
+				case 'ItemCount':
+					return new QQNode('item_count', 'ItemCount', 'integer', $this);
 				case 'ReportedTotalAmount':
 					return new QQNode('reported_total_amount', 'ReportedTotalAmount', 'double', $this);
 				case 'ActualTotalAmount':
@@ -1881,6 +1918,8 @@
 					return new QQNode('batch_label', 'BatchLabel', 'string', $this);
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
+				case 'ItemCount':
+					return new QQNode('item_count', 'ItemCount', 'integer', $this);
 				case 'ReportedTotalAmount':
 					return new QQNode('reported_total_amount', 'ReportedTotalAmount', 'double', $this);
 				case 'ActualTotalAmount':

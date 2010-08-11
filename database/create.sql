@@ -164,6 +164,7 @@ CREATE TABLE `stewardship_batch`
 `date_entered` DATE NOT NULL,
 `batch_label` VARCHAR(1) NOT NULL,
 `description` VARCHAR(255),
+`item_count` INTEGER,
 `reported_total_amount` DECIMAL(10,2),
 `actual_total_amount` DECIMAL(10,2),
 `posted_total_amount` DECIMAL(10,2),
@@ -198,6 +199,7 @@ CREATE TABLE `stewardship_stack`
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `stewardship_batch_id` INTEGER UNSIGNED NOT NULL,
 `stack_number` INTEGER UNSIGNED NOT NULL,
+`item_count` INTEGER,
 `reported_total_amount` DECIMAL(10,2),
 `actual_total_amount` DECIMAL(10,2),
 PRIMARY KEY (`id`)

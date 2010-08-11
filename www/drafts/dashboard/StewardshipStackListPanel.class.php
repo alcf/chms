@@ -68,6 +68,7 @@
 			$this->dtgStewardshipStacks->MetaAddColumn('Id');
 			$this->dtgStewardshipStacks->MetaAddColumn(QQN::StewardshipStack()->StewardshipBatch);
 			$this->dtgStewardshipStacks->MetaAddColumn('StackNumber');
+			$this->dtgStewardshipStacks->MetaAddColumn('ItemCount');
 			$this->dtgStewardshipStacks->MetaAddColumn('ReportedTotalAmount');
 			$this->dtgStewardshipStacks->MetaAddColumn('ActualTotalAmount');
 

@@ -29,16 +29,17 @@
 
 		/**
 		 * Refreshes the Stack's ActualTotalAmount based on StewardshipContribution records from the database.
-		 * If Saving, then also will make a call to refresh the Batch's ActualTotalAmount as well.
 		 * @param boolean $blnSave whether or not to save this record (defaults to true)
 		 */
 		public function RefreshActualTotalAmount($blnSave = true) {
 			$fltTotalAmount = 0;
-			foreach ($this->GetStewardshipContributionArray() as $objContribution)
+
+			$objContributionArray = $this->GetStewardshipContributionArray();
+			foreach ($objContributionArray as $objContribution)
 				$fltTotalAmount += $objContribution->TotalAmount;
 
-			$this->fltActualTotalAmount = $fltTotalAmount;
-
+			$this->ItemCount = count($objArray);
+			$this->ActualTotalAmount = $fltTotalAmount;
 			if ($blnSave) $this->Save();
 		}
 

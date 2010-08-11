@@ -298,6 +298,7 @@
 				case 'DateEntered': return QQN::StewardshipBatch()->DateEntered;
 				case 'BatchLabel': return QQN::StewardshipBatch()->BatchLabel;
 				case 'Description': return QQN::StewardshipBatch()->Description;
+				case 'ItemCount': return QQN::StewardshipBatch()->ItemCount;
 				case 'ReportedTotalAmount': return QQN::StewardshipBatch()->ReportedTotalAmount;
 				case 'ActualTotalAmount': return QQN::StewardshipBatch()->ActualTotalAmount;
 				case 'PostedTotalAmount': return QQN::StewardshipBatch()->PostedTotalAmount;

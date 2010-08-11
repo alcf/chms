@@ -70,6 +70,7 @@
 			$this->dtgStewardshipBatches->MetaAddColumn('DateEntered');
 			$this->dtgStewardshipBatches->MetaAddColumn('BatchLabel');
 			$this->dtgStewardshipBatches->MetaAddColumn('Description');
+			$this->dtgStewardshipBatches->MetaAddColumn('ItemCount');
 			$this->dtgStewardshipBatches->MetaAddColumn('ReportedTotalAmount');
 			$this->dtgStewardshipBatches->MetaAddColumn('ActualTotalAmount');
 			$this->dtgStewardshipBatches->MetaAddColumn('PostedTotalAmount');

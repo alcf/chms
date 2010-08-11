@@ -21,6 +21,8 @@
 
 		<?php $this->txtStackNumber->RenderWithName(); ?>
 
+		<?php $this->txtItemCount->RenderWithName(); ?>
+
 		<?php $this->txtReportedTotalAmount->RenderWithName(); ?>
 
 		<?php $this->txtActualTotalAmount->RenderWithName(); ?>

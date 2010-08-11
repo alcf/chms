@@ -97,9 +97,11 @@
 		public function RefreshActualTotalAmount($blnSave = true) {
 			$fltTotalAmount = 0;
 
-			foreach ($this->GetStewardshipContributionArray() as $objAmount)
-				$fltTotalAmount += $objAmount->TotalAmount;
+			$objContributionArray = $this->GetStewardshipContributionArray();
+			foreach ($objContributionArray as $objContribution)
+				$fltTotalAmount += $objContribution->TotalAmount;
 
+			$this->ItemCount = count($objArray);
 			$this->ActualTotalAmount = $fltTotalAmount;
 			if ($blnSave) $this->Save();
 		}

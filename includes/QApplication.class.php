@@ -121,21 +121,33 @@
 		 * Verifies that the user is logged in, and if not, will redirect user to the login page
 		 * If authenticated, it will then check the array of acceptible RoleTypeIds (if applicable)
 		 * @param integer[] $intAcceptableRoleTypeIdArray optional array of acceptable RoleTypeIds -- if none is passed in, then this check is not done
+		 * @param integer[] $intRequiredPermissionArray optional array of permissions that are REQUIRED -- if none is passed in, then this check is not done
 		 * @return void
 		 */
-		public static function Authenticate($intAcceptableRoleTypeIdArray = null) {
+		public static function Authenticate($intAcceptableRoleTypeIdArray = null, $intRequiredPermissionArray = null) {
 			if (!QApplication::$Login) QApplication::Redirect('/index.php/2');
-			
+
 			// Check against RoleTypeIdArray (if applicable)
 			if (is_array($intAcceptableRoleTypeIdArray)) {
+				$blnAcceptible = false;
 				foreach ($intAcceptableRoleTypeIdArray as $intRoleTypeId) {
 					if ($intRoleTypeId == QApplication::$Login->RoleTypeId)
-						return;
+						$blnAcceptible = true;
 				}
-				
-				// If we are here, then we failed finding the acceptable role type id
-				QApplication::Redirect('/main/');
+
+				// Have we failed finding the acceptable role type id?  If not, redirect to 'main'
+				if (!$blnAcceptible) QApplication::Redirect('/main/');
 			}
+
+			// Check against Permissions (if applicable)
+			if (is_array($intRequiredPermissionArray)) {
+				foreach($intRequiredPermissionArray as $intPermissionId) {
+					if (!QApplication::$Login->IsPermissionAllowed($intPermissionId)) QApplication::Redirect('/main/');
+				}
+			}
+
+			// If we're here, then we're good
+			return;
 		}
 
 		/**
@@ -250,6 +262,14 @@
 
 			return (@file_get_contents($strPidFilePath) == getmypid());
 			return false;
+		}
+		
+		/**
+		 * Displays a currency value
+		 * @param float $fltAmount
+		 */
+		public static function DisplayCurrency($fltAmount) {
+			return '$' . number_format($fltAmount, 2);
 		}
 	}
 ?>

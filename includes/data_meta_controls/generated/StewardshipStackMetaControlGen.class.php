@@ -22,6 +22,8 @@
 	 * property-read QLabel $StewardshipBatchIdLabel
 	 * property QIntegerTextBox $StackNumberControl
 	 * property-read QLabel $StackNumberLabel
+	 * property QIntegerTextBox $ItemCountControl
+	 * property-read QLabel $ItemCountLabel
 	 * property QFloatTextBox $ReportedTotalAmountControl
 	 * property-read QLabel $ReportedTotalAmountLabel
 	 * property QFloatTextBox $ActualTotalAmountControl
@@ -41,12 +43,14 @@
 		protected $lblId;
 		protected $lstStewardshipBatch;
 		protected $txtStackNumber;
+		protected $txtItemCount;
 		protected $txtReportedTotalAmount;
 		protected $txtActualTotalAmount;
 
 		// Controls that allow the viewing of StewardshipStack's individual data fields
 		protected $lblStewardshipBatchId;
 		protected $lblStackNumber;
+		protected $lblItemCount;
 		protected $lblReportedTotalAmount;
 		protected $lblActualTotalAmount;
 
@@ -234,6 +238,32 @@
 		}
 
 		/**
+		 * Create and setup QIntegerTextBox txtItemCount
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtItemCount_Create($strControlId = null) {
+			$this->txtItemCount = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtItemCount->Name = QApplication::Translate('Item Count');
+			$this->txtItemCount->Text = $this->objStewardshipStack->ItemCount;
+			return $this->txtItemCount;
+		}
+
+		/**
+		 * Create and setup QLabel lblItemCount
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblItemCount_Create($strControlId = null, $strFormat = null) {
+			$this->lblItemCount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblItemCount->Name = QApplication::Translate('Item Count');
+			$this->lblItemCount->Text = $this->objStewardshipStack->ItemCount;
+			$this->lblItemCount->Format = $strFormat;
+			return $this->lblItemCount;
+		}
+
+		/**
 		 * Create and setup QFloatTextBox txtReportedTotalAmount
 		 * @param string $strControlId optional ControlId to use
 		 * @return QFloatTextBox
@@ -315,6 +345,9 @@
 			if ($this->txtStackNumber) $this->txtStackNumber->Text = $this->objStewardshipStack->StackNumber;
 			if ($this->lblStackNumber) $this->lblStackNumber->Text = $this->objStewardshipStack->StackNumber;
 
+			if ($this->txtItemCount) $this->txtItemCount->Text = $this->objStewardshipStack->ItemCount;
+			if ($this->lblItemCount) $this->lblItemCount->Text = $this->objStewardshipStack->ItemCount;
+
 			if ($this->txtReportedTotalAmount) $this->txtReportedTotalAmount->Text = $this->objStewardshipStack->ReportedTotalAmount;
 			if ($this->lblReportedTotalAmount) $this->lblReportedTotalAmount->Text = $this->objStewardshipStack->ReportedTotalAmount;
 
@@ -346,6 +379,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstStewardshipBatch) $this->objStewardshipStack->StewardshipBatchId = $this->lstStewardshipBatch->SelectedValue;
 				if ($this->txtStackNumber) $this->objStewardshipStack->StackNumber = $this->txtStackNumber->Text;
+				if ($this->txtItemCount) $this->objStewardshipStack->ItemCount = $this->txtItemCount->Text;
 				if ($this->txtReportedTotalAmount) $this->objStewardshipStack->ReportedTotalAmount = $this->txtReportedTotalAmount->Text;
 				if ($this->txtActualTotalAmount) $this->objStewardshipStack->ActualTotalAmount = $this->txtActualTotalAmount->Text;
 
@@ -408,6 +442,12 @@
 				case 'StackNumberLabel':
 					if (!$this->lblStackNumber) return $this->lblStackNumber_Create();
 					return $this->lblStackNumber;
+				case 'ItemCountControl':
+					if (!$this->txtItemCount) return $this->txtItemCount_Create();
+					return $this->txtItemCount;
+				case 'ItemCountLabel':
+					if (!$this->lblItemCount) return $this->lblItemCount_Create();
+					return $this->lblItemCount;
 				case 'ReportedTotalAmountControl':
 					if (!$this->txtReportedTotalAmount) return $this->txtReportedTotalAmount_Create();
 					return $this->txtReportedTotalAmount;
@@ -448,6 +488,8 @@
 						return ($this->lstStewardshipBatch = QType::Cast($mixValue, 'QControl'));
 					case 'StackNumberControl':
 						return ($this->txtStackNumber = QType::Cast($mixValue, 'QControl'));
+					case 'ItemCountControl':
+						return ($this->txtItemCount = QType::Cast($mixValue, 'QControl'));
 					case 'ReportedTotalAmountControl':
 						return ($this->txtReportedTotalAmount = QType::Cast($mixValue, 'QControl'));
 					case 'ActualTotalAmountControl':

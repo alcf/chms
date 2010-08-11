@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $StewardshipBatchId the value for intStewardshipBatchId (Not Null)
 	 * @property integer $StackNumber the value for intStackNumber (Not Null)
+	 * @property integer $ItemCount the value for intItemCount 
 	 * @property double $ReportedTotalAmount the value for fltReportedTotalAmount 
 	 * @property double $ActualTotalAmount the value for fltActualTotalAmount 
 	 * @property StewardshipBatch $StewardshipBatch the value for the StewardshipBatch object referenced by intStewardshipBatchId (Not Null)
@@ -53,6 +54,14 @@
 		 */
 		protected $intStackNumber;
 		const StackNumberDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_stack.item_count
+		 * @var integer intItemCount
+		 */
+		protected $intItemCount;
+		const ItemCountDefault = null;
 
 
 		/**
@@ -410,6 +419,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_batch_id', $strAliasPrefix . 'stewardship_batch_id');
 			$objBuilder->AddSelectItem($strTableName, 'stack_number', $strAliasPrefix . 'stack_number');
+			$objBuilder->AddSelectItem($strTableName, 'item_count', $strAliasPrefix . 'item_count');
 			$objBuilder->AddSelectItem($strTableName, 'reported_total_amount', $strAliasPrefix . 'reported_total_amount');
 			$objBuilder->AddSelectItem($strTableName, 'actual_total_amount', $strAliasPrefix . 'actual_total_amount');
 		}
@@ -481,6 +491,8 @@
 			$objToReturn->intStewardshipBatchId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stack_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stack_number'] : $strAliasPrefix . 'stack_number';
 			$objToReturn->intStackNumber = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'item_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'item_count'] : $strAliasPrefix . 'item_count';
+			$objToReturn->intItemCount = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'reported_total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'reported_total_amount'] : $strAliasPrefix . 'reported_total_amount';
 			$objToReturn->fltReportedTotalAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'actual_total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'actual_total_amount'] : $strAliasPrefix . 'actual_total_amount';
@@ -680,11 +692,13 @@
 						INSERT INTO `stewardship_stack` (
 							`stewardship_batch_id`,
 							`stack_number`,
+							`item_count`,
 							`reported_total_amount`,
 							`actual_total_amount`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 							' . $objDatabase->SqlVariable($this->intStackNumber) . ',
+							' . $objDatabase->SqlVariable($this->intItemCount) . ',
 							' . $objDatabase->SqlVariable($this->fltReportedTotalAmount) . ',
 							' . $objDatabase->SqlVariable($this->fltActualTotalAmount) . '
 						)
@@ -704,6 +718,7 @@
 						SET
 							`stewardship_batch_id` = ' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 							`stack_number` = ' . $objDatabase->SqlVariable($this->intStackNumber) . ',
+							`item_count` = ' . $objDatabase->SqlVariable($this->intItemCount) . ',
 							`reported_total_amount` = ' . $objDatabase->SqlVariable($this->fltReportedTotalAmount) . ',
 							`actual_total_amount` = ' . $objDatabase->SqlVariable($this->fltActualTotalAmount) . '
 						WHERE
@@ -786,6 +801,7 @@
 			// Update $this's local variables to match
 			$this->StewardshipBatchId = $objReloaded->StewardshipBatchId;
 			$this->intStackNumber = $objReloaded->intStackNumber;
+			$this->intItemCount = $objReloaded->intItemCount;
 			$this->fltReportedTotalAmount = $objReloaded->fltReportedTotalAmount;
 			$this->fltActualTotalAmount = $objReloaded->fltActualTotalAmount;
 		}
@@ -822,6 +838,11 @@
 					// Gets the value for intStackNumber (Not Null)
 					// @return integer
 					return $this->intStackNumber;
+
+				case 'ItemCount':
+					// Gets the value for intItemCount 
+					// @return integer
+					return $this->intItemCount;
 
 				case 'ReportedTotalAmount':
 					// Gets the value for fltReportedTotalAmount 
@@ -912,6 +933,17 @@
 					// @return integer
 					try {
 						return ($this->intStackNumber = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ItemCount':
+					// Sets the value for intItemCount 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intItemCount = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1163,6 +1195,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="StewardshipBatch" type="xsd1:StewardshipBatch"/>';
 			$strToReturn .= '<element name="StackNumber" type="xsd:int"/>';
+			$strToReturn .= '<element name="ItemCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ReportedTotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="ActualTotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1195,6 +1228,8 @@
 				$objToReturn->StewardshipBatch = StewardshipBatch::GetObjectFromSoapObject($objSoapObject->StewardshipBatch);
 			if (property_exists($objSoapObject, 'StackNumber'))
 				$objToReturn->intStackNumber = $objSoapObject->StackNumber;
+			if (property_exists($objSoapObject, 'ItemCount'))
+				$objToReturn->intItemCount = $objSoapObject->ItemCount;
 			if (property_exists($objSoapObject, 'ReportedTotalAmount'))
 				$objToReturn->fltReportedTotalAmount = $objSoapObject->ReportedTotalAmount;
 			if (property_exists($objSoapObject, 'ActualTotalAmount'))
@@ -1249,6 +1284,8 @@
 					return new QQNodeStewardshipBatch('stewardship_batch_id', 'StewardshipBatch', 'integer', $this);
 				case 'StackNumber':
 					return new QQNode('stack_number', 'StackNumber', 'integer', $this);
+				case 'ItemCount':
+					return new QQNode('item_count', 'ItemCount', 'integer', $this);
 				case 'ReportedTotalAmount':
 					return new QQNode('reported_total_amount', 'ReportedTotalAmount', 'double', $this);
 				case 'ActualTotalAmount':
@@ -1283,6 +1320,8 @@
 					return new QQNodeStewardshipBatch('stewardship_batch_id', 'StewardshipBatch', 'integer', $this);
 				case 'StackNumber':
 					return new QQNode('stack_number', 'StackNumber', 'integer', $this);
+				case 'ItemCount':
+					return new QQNode('item_count', 'ItemCount', 'integer', $this);
 				case 'ReportedTotalAmount':
 					return new QQNode('reported_total_amount', 'ReportedTotalAmount', 'double', $this);
 				case 'ActualTotalAmount':

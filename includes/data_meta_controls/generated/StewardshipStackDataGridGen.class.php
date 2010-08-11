@@ -297,6 +297,7 @@
 				case 'StewardshipBatchId': return QQN::StewardshipStack()->StewardshipBatchId;
 				case 'StewardshipBatch': return QQN::StewardshipStack()->StewardshipBatch;
 				case 'StackNumber': return QQN::StewardshipStack()->StackNumber;
+				case 'ItemCount': return QQN::StewardshipStack()->ItemCount;
 				case 'ReportedTotalAmount': return QQN::StewardshipStack()->ReportedTotalAmount;
 				case 'ActualTotalAmount': return QQN::StewardshipStack()->ActualTotalAmount;
 				default: throw new QCallerException('Simple Property not found in StewardshipStackDataGrid content: ' . $mixContent);

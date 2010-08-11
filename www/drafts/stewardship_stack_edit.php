@@ -26,6 +26,7 @@
 		protected $lblId;
 		protected $lstStewardshipBatch;
 		protected $txtStackNumber;
+		protected $txtItemCount;
 		protected $txtReportedTotalAmount;
 		protected $txtActualTotalAmount;
 
@@ -57,6 +58,7 @@
 			$this->lblId = $this->mctStewardshipStack->lblId_Create();
 			$this->lstStewardshipBatch = $this->mctStewardshipStack->lstStewardshipBatch_Create();
 			$this->txtStackNumber = $this->mctStewardshipStack->txtStackNumber_Create();
+			$this->txtItemCount = $this->mctStewardshipStack->txtItemCount_Create();
 			$this->txtReportedTotalAmount = $this->mctStewardshipStack->txtReportedTotalAmount_Create();
 			$this->txtActualTotalAmount = $this->mctStewardshipStack->txtActualTotalAmount_Create();
 

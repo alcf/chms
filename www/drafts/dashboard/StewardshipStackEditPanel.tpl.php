@@ -11,6 +11,8 @@
 
 		<?php $_CONTROL->txtStackNumber->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtItemCount->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtReportedTotalAmount->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtActualTotalAmount->RenderWithName(); ?>

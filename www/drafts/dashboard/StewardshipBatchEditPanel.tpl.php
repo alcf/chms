@@ -15,6 +15,8 @@
 
 		<?php $_CONTROL->txtDescription->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtItemCount->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtReportedTotalAmount->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtActualTotalAmount->RenderWithName(); ?>
