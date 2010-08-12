@@ -28,3 +28,7 @@ function HouseholdSelectorHashContent() {
 
 	return strToReturn;
 };
+
+function ScrollToBottom() {
+	window.scroll(0, window.document.height);
+};

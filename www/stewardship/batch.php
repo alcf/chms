@@ -107,18 +107,16 @@
 		<div class="cleaner"></div>
 		<div class="left">Reported</div><div class="right">%s</div>
 		<div class="cleaner"></div>
-		<div class="left">Difference</div><div class="right">%s%s</div>
+		<div class="left">Difference</div><div class="right">%s</div>
 		<div class="cleaner"></div>
 	</div>
 </a>
 template;
-				$fltDifference = $objStack->ActualTotalAmount - $objStack->ReportedTotalAmount;
 				$pnlStack->Text = sprintf($strTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
 					$objStack->ItemCount,
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount),
 					QApplication::DisplayCurrency($objStack->ReportedTotalAmount),
-					($fltDifference < 0) ? '-' : '',
-					QApplication::DisplayCurrency(abs($fltDifference)));
+					QApplication::DisplayCurrency($objStack->ActualTotalAmount - $objStack->ReportedTotalAmount));
 			} else {
 				$strTemplate = <<<template
 <a href="#%s" class="%s">Stack #%s

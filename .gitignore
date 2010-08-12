@@ -13,3 +13,5 @@ configuration.local
 /cli/*.lock
 /cli/scripts/test.cli.php
 /www/cache/*.jpg
+/www/cache/*.png
+/www/cache/*.gif

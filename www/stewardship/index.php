@@ -63,7 +63,7 @@
 
 		public function FormatNumber($fltAmount) {
 			if ($fltAmount < 0)
-				return '<span style="color: #933;">-' . QApplication::DisplayCurrency(-1 * $fltAmount) . '</span>';
+				return '<span style="color: #933;">' . QApplication::DisplayCurrency($fltAmount) . '</span>';
 			if ($fltAmount > 0)
 				return QApplication::DisplayCurrency($fltAmount);
 			return '<span style="color: #999;">$0.00</span>';

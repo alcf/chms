@@ -40,6 +40,27 @@
 
 				case 'Path': return $this->Folder . '/' . $this->Id . '.tif';
 
+				case 'Source':
+					switch ($this->StewardshipContributionTypeId) {
+						case StewardshipContributionType::Check:
+						case StewardshipContributionType::ReturnedCheck:
+							return $this->CheckNumber;
+
+						case StewardshipContributionType::CreditCard:
+						case StewardshipContributionType::CreditCardRecurring:
+							return $this->AuthorizationNumber;
+
+						case StewardshipContributionType::Cash:
+						case StewardshipContributionType::CorporateMatch:
+						case StewardshipContributionType::CorporateMatchNonDeductible:
+						case StewardshipContributionType::StockDonation:
+						case StewardshipContributionType::Automobile:
+						case StewardshipContributionType::Other:
+							return $this->AlternateSource;
+
+						default: throw new Exception('Unhandled ContributionTypeId');				
+					}
+
 				default:
 					try {
 						return parent::__get($strName);
