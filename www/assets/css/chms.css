@@ -130,12 +130,19 @@
 	ul.subnavSideSmall li a {
 		font-size: 12px; padding: 2px 4px;
 	}
+
 	ul.subnavSide li a.selected { background-color: #fff; border-color: #fff; 
 		font-style: italic;
 		font-weight: bold; 
 		color: #00679c;
 		text-shadow: 1px 1px #abc; 
 	}
+
+	ul.subnavSideStewardship li a { }
+	ul.subnavSideStewardship li a div.info div.left { float : left; font-size: 10px; position:relative; top: 2px; font-weight: normal; }
+	ul.subnavSideStewardship li a div.info div.right { float : right;  text-align: right; }
+	ul.subnavSideStewardship li a.selected div.info { font-style: normal; color: #555; text-shadow: none; }
+
 	ul.subnavSide li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; text-shadow: 1px 1px #9ab; }
 
 	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; }
@@ -192,6 +199,8 @@
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 	div.subnavContent div.section { border-color: #ddf; }
 
+	div.sectionBatchInfo { background-color: #5a768e; color: #fff; }
+
 	div.section p { font-family: arial, helvetica, sans-serif; font-size: 14px; color: #333; }
 
 	div.filterBy { margin-left: 15px; float: left; color: #5a768e; font-size: 11px; font-style: italic; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; }
@@ -199,7 +208,6 @@
 	div.filterBy input.textbox { width: 120px; font-size: 11px; padding: 1px; }
 	div.filterBy select.listbox { font-size: 11px; }
 	
-
 	div.buttonBar { font-family: arial; font-size: 13px; text-align: right; font-weight: normal; }
 	div.buttonBarLeft { text-align: left; }
 	div.buttonBar a.delete { margin-left: 25px; color: #966; font-size: 11px; }
@@ -218,6 +226,25 @@
 
 	div.householdSplit { color: #ddd; font-family: arial, helvetica, sans-serif; font-size: 11px; }
 	div.householdSplit ul { padding: 0 0 0 12px; margin: 0; font-size: 10px; }
+
+	div.batchInfo { font-family: arial, helvetica, sans-serif; font-size: 12px; }
+		div.batchInfo div.batchTitle {font-size: 18px; font-weight: bold;}
+		div.batchInfo div.batchDescription { font-size: 14px; }
+		
+		div.batchInfo div.batchInfoLeft { float: left; }
+		div.batchInfo div.batchInfoRight { float: right; }
+
+		div.batchInfo div.batchInfoLeft div.batchLabel { float: left; font-size: 10px; width: 60px; color: #aac6de; }
+		div.batchInfo div.batchInfoLeft div.batchValue { float: left; font-weight: bold; color: #cad6fe}
+
+		div.batchInfo div.batchInfoRight div.batchLabel { float: left; width: 70px; font-size: 10px; color: #aac6de; }
+		div.batchInfo div.batchInfoRight div.batchValue { float: right; font-weight: bold; font-size: 14px;}
+
+div.shopInfo div.shopLeft { float: left; }
+		div.shopInfo div.shopName { font-weight: bold; font-size: 16px; }
+		div.shopInfo div.shopAddress {  }
+		div.shopInfo div.shopContact { color: #bdc; font-size: 10px; float: right; text-align: right;}
+		div.shopInfo div.shopContact strong { font-size: 12px; }
 
 	div.messageBody { width: 490px; height: 400px; border: 1px solid #666; overflow: auto; font-size: 11px; padding: 5px; }
 		div.messageBody pre { padding: 0; margin: 0; }

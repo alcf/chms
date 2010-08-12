@@ -17,8 +17,8 @@
 			$this->dtgBatches->Paginator = new QPaginator($this->dtgBatches);
 			$this->dtgBatches->MetaAddColumn('DateEntered', 'Name=Batch Label', 'Html=<?= $_FORM->RenderBatchLabel($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
 			$this->dtgBatches->MetaAddTypeColumn('StewardshipBatchStatusTypeId', 'StewardshipBatchStatusType', 'Name=Status', 'Width=80px');
-			$this->dtgBatches->MetaAddColumn('Description', 'Width=210px');
-			$this->dtgBatches->MetaAddColumn('ItemCount', 'Name=Items', 'Width=80px');
+			$this->dtgBatches->MetaAddColumn('Description', 'Width=230px');
+			$this->dtgBatches->MetaAddColumn('ItemCount', 'Name=Items', 'Width=50px');
 			$this->dtgBatches->MetaAddColumn('ActualTotalAmount', 'Name=Total', 'Html=<?= $_FORM->FormatNumber($_ITEM->ActualTotalAmount); ?>', 'Width=90px', 'HtmlEntities=false');
 			$this->dtgBatches->MetaAddColumn('ReportedTotalAmount', 'Name=Reported', 'Html=<?= $_FORM->FormatNumber($_ITEM->ReportedTotalAmount); ?>','Width=90px', 'HtmlEntities=false');
 			$this->dtgBatches->MetaAddColumn('PostedTotalAmount', 'Name=Posted', 'Html=<?= $_FORM->FormatNumber($_ITEM->PostedTotalAmount); ?>','Width=90px', 'HtmlEntities=false');
@@ -55,9 +55,9 @@
 		}
 
 		public function RenderBatchLabel(StewardshipBatch $objBatch) {
-			return sprintf('<div style="width: 90px; float: left;"><a href="/stewardship/view_batch.php/%s">%s</a></div>'.
+			return sprintf('<div style="width: 90px; float: left;"><a href="/stewardship/batch.php/%s#1">%s</a></div>'.
 				'<div style="float: left; font-size:11px; font-weight: bold;">' . 
-				'<a style="color: #888;" href="/stewardship/view_batch.php/%s">Batch %s</a></div>',
+				'<a style="color: #888;" href="/stewardship/batch.php/%s#1">Batch %s</a></div>',
 				$objBatch->Id, $objBatch->DateEntered->ToString('MMM D YYYY'), $objBatch->Id, $objBatch->BatchLabel);
 		}
 

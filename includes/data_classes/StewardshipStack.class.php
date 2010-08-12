@@ -38,7 +38,7 @@
 			foreach ($objContributionArray as $objContribution)
 				$fltTotalAmount += $objContribution->TotalAmount;
 
-			$this->ItemCount = count($objArray);
+			$this->ItemCount = count($objContributionArray);
 			$this->ActualTotalAmount = $fltTotalAmount;
 			if ($blnSave) $this->Save();
 		}

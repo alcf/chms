@@ -101,8 +101,41 @@
 			foreach ($objContributionArray as $objContribution)
 				$fltTotalAmount += $objContribution->TotalAmount;
 
-			$this->ItemCount = count($objArray);
+			$this->ItemCount = count($objContributionArray);
 			$this->ActualTotalAmount = $fltTotalAmount;
+			if ($blnSave) $this->Save();
+		}
+		
+		
+		/**
+		 * Recalculated PostedTotalAmount based on all linked StewardshipPost records in the database.
+		 * @param boolean $blnSave whether or not to make the call to Save() after PostedTotalAmount has been updated.
+		 */
+		public function RefreshPostedTotalAmount($blnSave = true) {
+			$fltTotalAmount = 0;
+			
+			foreach ($this->GetStewardshipPostArray() as $objPost)
+				$fltTotalAmount += $objPost->TotalAmount;
+
+			$this->PostedTotalAmount = $fltTotalAmount;
+			if ($blnSave) $this->Save();
+		}
+
+
+		/**
+		 * Refreshes this batch's current Status
+		 * @param boolean $blnSave whether or not to make the call to Save() after Status has been updated.
+		 */
+		public function RefreshStatus($blnSave = true) {
+			if ($this->CountStewardshipPosts()) {
+				$this->RefreshActualTotalAmount(false);
+				$this->RefreshPostedTotalAmount(false);
+				$this->StewardshipBatchStatusTypeId = ($this->PostedTotalAmount == $this->ActualTotalAmount) ?
+					StewardshipBatchStatusType::PostedInFull : StewardshipBatchStatusType::UnpostedChangesExist;
+			} else {
+				$this->StewardshipBatchStatusTypeId = StewardshipBatchStatusType::NewBatch;
+			}
+			
 			if ($blnSave) $this->Save();
 		}
 		

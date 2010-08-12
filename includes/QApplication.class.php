@@ -29,6 +29,9 @@
 				} else if (substr($strClassName, 0, 8) == 'CpGroup_') {
 					$strFile = sprintf('%s/content_panels/group/%s.class.php', __INCLUDES__, $strClassName);
 					if (is_file($strFile)) require($strFile);
+				} else if (substr($strClassName, 0, 14) == 'CpStewardship_') {
+					$strFile = sprintf('%s/content_panels/stewardship/%s.class.php', __INCLUDES__, $strClassName);
+					if (is_file($strFile)) require($strFile);
 				}
 			}
 		}
@@ -269,7 +272,10 @@
 		 * @param float $fltAmount
 		 */
 		public static function DisplayCurrency($fltAmount) {
-			return '$' . number_format($fltAmount, 2);
+			if ($fltAmount < 0)
+				return '-$' . number_format(abs($fltAmount), 2);
+			else
+				return '$' . number_format($fltAmount, 2);
 		}
 	}
 ?>
