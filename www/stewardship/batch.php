@@ -2,6 +2,8 @@
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 	QApplication::Authenticate(null, array(PermissionType::AccessStewardship));
 
+	QLog::$LogFileWidth = 180;
+	
 	class ViewStewardshipBatchForm extends ChmsForm {
 		protected $strPageTitle = 'Stewardship - View Batch - ';
 		protected $intNavSectionId = ChmsForm::NavSectionStewardship;
@@ -12,6 +14,8 @@
 		public $pnlBatchTitle;
 		public $pnlStacks;
 		public $pnlContent;
+
+		public $dtgContributions;
 
 		protected function Form_Create() {
 			$this->objBatch = StewardshipBatch::Load(QApplication::PathInfo(0));
@@ -29,36 +33,79 @@
 			$this->pnlContent = new QPanel($this);
 			$this->pnlContent->AutoRenderChildren = true;
 
+			$this->dtgContributions = new StewardshipContributionDataGrid($this);
+			$this->dtgContributions->SetDataBinder('dtgContributions_Bind');
+
+			$this->dtgContributions->AddColumn(new QDataGridColumn('Contributor', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=160px'));
+			$this->dtgContributions->AddColumn(new QDataGridColumn('Number', '<?= $_FORM->RenderNumber($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
+			$this->dtgContributions->AddColumn(new QDataGridColumn('Amount', '<?= $_FORM->RenderAmount($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
+			
 			$this->pnlStacks_Refresh();
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
 
+		public function RenderName(StewardshipContribution $objContribution) {
+			return $objContribution->Person->LinkHtml; 
+		}
+				
+		public function RenderNumber(StewardshipContribution $objContribution) {
+			return QApplication::HtmlEntities($objContribution->Source);
+		}
+				
+		public function RenderAmount(StewardshipContribution $objContribution) {
+			return QApplication::DisplayCurrency($objContribution->TotalAmount);
+		}
+		
+		public function dtgContributions_Bind() {
+			if ($this->objStack) {
+				$objCondition = QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $this->objStack->Id);
+				$this->dtgContributions->MetaDataBinder($objCondition, QQ::OrderBy(QQN::StewardshipContribution()->Id));
+			}
+		}
+
 		public function Form_ProcessHash() {
+			// /stewardship/batch.php/X#Y/verb/Z
+			// X = Batch ID
+			// Y = Stack # (*NOT* Stack ID)
+			
+			
 			// Cleanup and Tokenize UrlHash Contents
 			$strUrlHash = trim(strtolower($this->strUrlHash));
 			$strUrlHashTokens = explode('/', $strUrlHash);
 
-			$objOldStack = null;
-			if ($this->objStack) $objOldStack = $this->objStack;
+			// Get Values
+			$intStackNumber = $strUrlHashTokens[0];
+			$strCommand = (array_key_exists(1, $strUrlHashTokens)) ? $strUrlHashTokens[1] : null;
+			$strUrlHashArgument = (array_key_exists(2, $strUrlHashTokens)) ? $strUrlHashTokens[2] : null;
 
-			$this->objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($this->objBatch->Id, $strUrlHashTokens[0]);
-			if (!$this->objStack) QApplication::Redirect('/stewardship/');
+			// Did we switch the stack?
+			if (!$this->objStack || ($this->objStack->StackNumber != $intStackNumber)) {
+				// Save the "Old" Stack (if applicable)
+				$objOldStack = null;
+				if ($this->objStack) $objOldStack = $this->objStack;
 
-			$this->pnlStack_Refresh($this->objStack);
-			if ($objOldStack) $this->pnlStack_Refresh($objOldStack);
+				// Set the "New" stack (and validate!)
+				$this->objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($this->objBatch->Id, $intStackNumber);
+				if (!$this->objStack) QApplication::Redirect('/stewardship/');
+
+				// Refresh teh DataGrid and Stack in the stacklist
+				$this->dtgContributions->Refresh();
+				$this->pnlStack_Refresh($this->objStack);
+				if ($objOldStack) $this->pnlStack_Refresh($objOldStack);
+			}
 
 			$this->pnlContent->RemoveChildControls(true);
 
-			if (!array_key_exists(1, $strUrlHashTokens)) $strUrlHashTokens[1] = 'view';
+			// Setup the Command
+			if (!$strCommand) $strCommand = 'view';
 
-			// Setup the UrlHash Argument
-			if (array_key_exists(2, $strUrlHashTokens))
-				$strUrlHashArgument = $strUrlHashTokens[2];
-			else
-				$strUrlHashArgument = null;
-
-			$strClassName = sprintf('CpStewardship_%s', QString::ConvertToCamelCase($strUrlHashTokens[1]));
-			new $strClassName($this->pnlContent, 'content', $this->objBatch, $this->objStack, $strUrlHashArgument);
+			$strClassName = sprintf('CpStewardship_%s', QString::ConvertToCamelCase($strCommand));
+			if (class_exists($strClassName, true)) {
+				new $strClassName($this->pnlContent, 'content', $this->objBatch, $this->objStack, $strUrlHashArgument);
+				QApplication::ExecuteJavaScript('ScrollToBottom();');
+			} else {
+				QApplication::Redirect('#1');
+			}
 		}
 
 		public function pnlStacks_Refresh() {

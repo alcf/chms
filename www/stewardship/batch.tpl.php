@@ -6,6 +6,10 @@
 	</div>
 
 	<div class="subnavContent">
+		<div class="section" style="width: 340px; height: 500px; overflow: auto;">
+			<?php $this->dtgContributions->Render(); ?>
+		</div>
+
 		<?php $this->pnlContent->Render(); ?>
 	</div>
 
