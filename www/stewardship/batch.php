@@ -46,7 +46,8 @@
 		}
 
 		public function RenderName(StewardshipContribution $objContribution) {
-			return $objContribution->Person->LinkHtml; 
+			$strToReturn = $objContribution->Person->LinkHtml;
+			return $strToReturn; 
 		}
 				
 		public function RenderNumber(StewardshipContribution $objContribution) {
@@ -54,7 +55,14 @@
 		}
 				
 		public function RenderAmount(StewardshipContribution $objContribution) {
-			return QApplication::DisplayCurrency($objContribution->TotalAmount);
+			$strToReturn = '<div class="stewardshipAmount">' . QApplication::DisplayCurrency($objContribution->TotalAmount) . '</div>';
+			$strToReturn .= '<div class="stewardshipActionBackground">&nbsp;</div>';
+			$strToReturn .= '<div class="stewardshipAction">';
+			$strToReturn .= sprintf('<a href="#%s/delete/%s"><img src="/assets/images/icons/cross.png" title="Delete"/></a>', $this->objStack->StackNumber, $objContribution->Id);
+			$strToReturn .= sprintf('<a href="#%s/edit/%s"><img src="/assets/images/icons/pencil.png" title="Edit"/></a>', $this->objStack->StackNumber, $objContribution->Id);
+			$strToReturn .= sprintf('<a href="#%s/view/%s"><img src="/assets/images/icons/magnifier.png" title="View"/></a>', $this->objStack->StackNumber, $objContribution->Id);
+			$strToReturn .= '</div>';
+			return $strToReturn;
 		}
 		
 		public function dtgContributions_Bind() {

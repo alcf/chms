@@ -253,6 +253,14 @@ div.shopInfo div.shopLeft { float: left; }
 
 	div.dashboardIcon { float: left; width: 191px; height:30px; text-align: center; padding-top: 161px; font-size: 16px; font-family: arial, helvetica, sans-serif; font-weight: bold; cursor: pointer; }
 
+	table.datagrid tr div.stewardshipAmount { position: relative; float: left; width: 0;}
+	table.datagrid tr div.stewardshipAction { position: relative; display: none; }
+	table.datagrid tr div.stewardshipActionBackground { position: relative; display: none; } 
+
+	table.datagrid tr div.stewardshipAmount { }
+	table.datagrid tr:hover div.stewardshipActionBackground { position: absolute; background-color: #6c9; width: 70px; height: 26px; display: block; opacity: 0.75; margin-top: -5px; margin-left: 14px; -moz-border-radius: 8px 0 0 8px; }
+	table.datagrid tr:hover div.stewardshipAction { display: block; left: 6px; }
+	table.datagrid tr:hover div.stewardshipAction a { display: block; width: 16px; height: 16px; float: right; margin: 0 3px; }
 
 	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }
