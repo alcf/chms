@@ -31,6 +31,7 @@
 			$this->pnlStacks->AutoRenderChildren = true;
 
 			$this->pnlContent = new QPanel($this);
+			$this->pnlContent->CssClass = 'stewardshipContent';
 			$this->pnlContent->AutoRenderChildren = true;
 
 			$this->dtgContributions = new StewardshipContributionDataGrid($this);
@@ -144,39 +145,19 @@
 			if ($this->objStack && ($this->objStack->Id == $objStack->Id))
 				$strClassName = 'selected';
 
+			// Since there are so many calculated values in the HTML, we'll store the template as a
+			// sprintf-formatted string (e.g. with a bunch of %s) as a textfile and use sprintf to manually set the text of the 
+			// pnlStack, instead of doing a full fledged QPanel template
 			if ($objStack->ReportedTotalAmount) {
-				$strTemplate = <<<template
-<a href="#%s" class="%s">Stack #%s
-	<div class="info">
-		<div class="left">Item Count</div><div class="right">%s</div>
-		<div class="cleaner"></div>
-		<div class="left">Actual</div><div class="right">%s</div>
-		<div class="cleaner"></div>
-		<div class="left">Reported</div><div class="right">%s</div>
-		<div class="cleaner"></div>
-		<div class="left">Difference</div><div class="right">%s</div>
-		<div class="cleaner"></div>
-	</div>
-</a>
-template;
-				$pnlStack->Text = sprintf($strTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
+				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithReportedAmount.txt');
+				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
 					$objStack->ItemCount,
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount),
 					QApplication::DisplayCurrency($objStack->ReportedTotalAmount),
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount - $objStack->ReportedTotalAmount));
 			} else {
-				$strTemplate = <<<template
-<a href="#%s" class="%s">Stack #%s
-	<div class="info">
-		<div class="left">Item Count</div><div class="right">%s</div>
-		<div class="cleaner"></div>
-		<div class="left">Actual</div><div class="right">%s</div>
-		<div class="cleaner"></div>
-	</div>
-</a>
-template;
-
-				$pnlStack->Text = sprintf($strTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
+				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithoutReportedAmount.txt');
+				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
 					$objStack->ItemCount,
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount));
 			}
