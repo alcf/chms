@@ -8,6 +8,7 @@
 		public $txtReportedTotals;
 
 		protected function SetupPanel() {
+			if ($this->objStack) return $this->ReturnTo('#/edit_batch');
 			$this->mctStewardshipBatch = new StewardshipBatchMetaControl($this, $this->objBatch);
 			$this->txtDescription = $this->mctStewardshipBatch->txtDescription_Create();
 
@@ -34,11 +35,19 @@
 			$this->lstStackCount->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstStackCount_Change'));
 			$this->lstStackCount_Change();
 		}
-		
+
 		public function lstStackCount_Change() {
 			foreach ($this->txtReportedTotals as $i => $txtReportedTotal) {
 				$txtReportedTotal->Visible = ($this->lstStackCount->SelectedValue >= $i);
 			}
+		}
+
+		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
+			return $this->ReturnTo('#1');
+		}
+
+		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			
 		}
 	}
 ?>

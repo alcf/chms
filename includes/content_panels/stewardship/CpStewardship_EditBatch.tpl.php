@@ -1,3 +1,4 @@
+<h1>Edit Batch Information</h1>
 <div class="section">
 	<?php $_CONTROL->txtDescription->RenderWithName(); ?>
 	<?php $_CONTROL->lstStackCount->RenderWithName(); ?>
