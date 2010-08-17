@@ -33,9 +33,12 @@
 			$this->pnlContent->CssClass = 'stewardshipContent';
 			$this->pnlContent->AutoRenderChildren = true;
 
-			$this->dtgContributions = new StewardshipContributionDataGrid($this);
+			$this->dtgContributions = new StewardshipContributionDataGrid($this, 'dtgContributions');
 			$this->dtgContributions->SetDataBinder('dtgContributions_Bind');
-			
+			$this->dtgContributions->HtmlBefore = '<div class="section" style="width: 340px; height: 500px; overflow: auto; float: left; margin-right: 10px;">';
+			$this->dtgContributions->HtmlAfter = '</div>';
+			$this->dtgContributions->NoDataHtml = '<p>Start this <strong>Stack</strong> and begin entering contributions.</p>';
+
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Contributor', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=160px'));
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Number', '<?= $_FORM->RenderNumber($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Amount', '<?= $_FORM->RenderAmount($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
@@ -73,12 +76,12 @@
 			return $strToReturn;
 		}
 		
+		public function dtgContributions_Refresh() {
+			$this->dtgContributions->Refresh();
+			$this->dtgContributions->Visible = ($this->objStack) ? true : false;
+		}
+
 		public function dtgContributions_Bind() {
-			if ($this->objBatch->CountStewardshipStacks())
-				$this->dtgContributions->NoDataHtml = '<p>Select a <strong>Stack</strong> to your left to begin entering contributions.</p>';
-			else
-				$this->dtgContributions->NoDataHtml = '<p>Click on <strong>Create Stack</strong> to your left to create your first stack.</p>';
-			
 			if ($this->objStack) {
 				$objCondition = QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $this->objStack->Id);
 				$this->dtgContributions->MetaDataBinder($objCondition, QQ::OrderBy(QQN::StewardshipContribution()->Id));
@@ -130,9 +133,10 @@
 				}
 
 				// Refresh teh DataGrid and Stack in the stacklist
-				$this->dtgContributions->Refresh();
+				$this->dtgContributions_Refresh();
 				if ($this->objStack) $this->pnlStack_Refresh($this->objStack);
 				if ($objOldStack) $this->pnlStack_Refresh($objOldStack);
+				$this->pnlContent->CssClass = ($this->objStack) ? 'stewardshipContent' : null;
 			}
 
 			$this->pnlContent->RemoveChildControls(true);

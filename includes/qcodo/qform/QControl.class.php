@@ -70,5 +70,21 @@
 			return $this->RenderOutput($strToReturn, $blnDisplayOutput);
 			////////////////////////////////////////////
 		}
+
+		public function RenderWithHtml($blnDisplayOutput = true) {
+			////////////////////
+			// Call RenderHelper
+			$this->RenderHelper(func_get_args(), __FUNCTION__);
+			////////////////////
+
+			// Custom Render Functionality Here
+			$strToReturn = $this->GetControlHtml();
+			$strToReturn = $this->strHtmlBefore . $strToReturn . $this->strHtmlAfter;
+
+			////////////////////////////////////////////
+			// Call RenderOutput, Returning its Contents
+			return $this->RenderOutput($strToReturn, $blnDisplayOutput);
+			////////////////////////////////////////////
+		}
 	}
 ?>

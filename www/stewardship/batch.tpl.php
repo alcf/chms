@@ -13,9 +13,7 @@
 	</div>
 
 	<div class="subnavContent">
-		<div class="section" style="width: 340px; height: 500px; overflow: auto; float: left;">
-			<?php $this->dtgContributions->Render(); ?>
-		</div>
+		<?php $this->dtgContributions->RenderWithHtml(); ?>
 		<?php $this->pnlContent->Render(); ?>
 	</div>
 
