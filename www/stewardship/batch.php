@@ -2,8 +2,6 @@
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 	QApplication::Authenticate(null, array(PermissionType::AccessStewardship));
 
-	QLog::$LogFileWidth = 180;
-	
 	class ViewStewardshipBatchForm extends ChmsForm {
 		protected $strPageTitle = 'Stewardship - View Batch - ';
 		protected $intNavSectionId = ChmsForm::NavSectionStewardship;
@@ -16,6 +14,7 @@
 		public $pnlContent;
 
 		public $dtgContributions;
+		public $pxyDeleteContribution;
 
 		protected function Form_Create() {
 			$this->objBatch = StewardshipBatch::Load(QApplication::PathInfo(0));
@@ -36,11 +35,20 @@
 
 			$this->dtgContributions = new StewardshipContributionDataGrid($this);
 			$this->dtgContributions->SetDataBinder('dtgContributions_Bind');
-
+			
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Contributor', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=160px'));
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Number', '<?= $_FORM->RenderNumber($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Amount', '<?= $_FORM->RenderAmount($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
 			
+			$this->pxyDeleteContribution = new QControlProxy($this);
+			if ($this->objBatch->StewardshipBatchStatusTypeId != StewardshipBatchStatusType::NewBatch) {
+				$this->pxyDeleteContribution->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to DELETE this contribution?  This will require you to re-post the stack with updates.'));
+			} else {
+				$this->pxyDeleteContribution->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to DELETE this contribution?'));
+			}
+			$this->pxyDeleteContribution->AddAction(new QClickEvent(), new QAjaxAction('pxyDeleteContribution_Click'));
+			$this->pxyDeleteContribution->AddAction(new QClickEvent(), new QTerminateAction());
+
 			$this->pnlStacks_Refresh();
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
@@ -58,18 +66,38 @@
 			$strToReturn = '<div class="stewardshipAmount">' . QApplication::DisplayCurrency($objContribution->TotalAmount) . '</div>';
 			$strToReturn .= '<div class="stewardshipActionBackground">&nbsp;</div>';
 			$strToReturn .= '<div class="stewardshipAction">';
-			$strToReturn .= sprintf('<a href="#%s/delete/%s"><img src="/assets/images/icons/cross.png" title="Delete"/></a>', $this->objStack->StackNumber, $objContribution->Id);
-			$strToReturn .= sprintf('<a href="#%s/edit/%s"><img src="/assets/images/icons/pencil.png" title="Edit"/></a>', $this->objStack->StackNumber, $objContribution->Id);
-			$strToReturn .= sprintf('<a href="#%s/view/%s"><img src="/assets/images/icons/magnifier.png" title="View"/></a>', $this->objStack->StackNumber, $objContribution->Id);
+			$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/cross.png" title="Delete Contribution"/></a>', $this->pxyDeleteContribution->RenderAsEvents($objContribution->Id, false));
+			$strToReturn .= sprintf('<a href="#%s/edit/%s"><img src="/assets/images/icons/pencil.png" title="Edit Contribution"/></a>', $this->objStack->StackNumber, $objContribution->Id);
+			$strToReturn .= sprintf('<a href="#%s/view/%s"><img src="/assets/images/icons/magnifier.png" title="View Details"/></a>', $this->objStack->StackNumber, $objContribution->Id);
 			$strToReturn .= '</div>';
 			return $strToReturn;
 		}
 		
 		public function dtgContributions_Bind() {
+			if ($this->objBatch->CountStewardshipStacks())
+				$this->dtgContributions->NoDataHtml = '<p>Select a <strong>Stack</strong> to your left to begin entering contributions.</p>';
+			else
+				$this->dtgContributions->NoDataHtml = '<p>Click on <strong>Create Stack</strong> to your left to create your first stack.</p>';
+			
 			if ($this->objStack) {
 				$objCondition = QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $this->objStack->Id);
 				$this->dtgContributions->MetaDataBinder($objCondition, QQ::OrderBy(QQN::StewardshipContribution()->Id));
 			}
+		}
+
+		public function pxyDeleteContribution_Click($strFormId, $strControlId, $strParameter) {
+			$objContribution = StewardshipContribution::Load($strParameter);
+			if (!$objContribution || ($objContribution->StewardshipStackId != $this->objStack->Id) || ($objContribution->StewardshipBatchId != $this->objBatch->Id)) {
+				return;
+			}
+			$objContribution->DeleteAllStewardshipContributionAmounts();
+			$objContribution->Delete();
+			$this->objStack->RefreshActualTotalAmount();
+			$this->objBatch->RefreshActualTotalAmount(false);
+			$this->objBatch->RefreshStatus();
+			$this->pnlStack_Refresh($this->objStack);
+			$this->pnlBatchTitle->Refresh();
+			$this->dtgContributions->Refresh();
 		}
 
 		public function Form_ProcessHash() {
@@ -94,12 +122,16 @@
 				if ($this->objStack) $objOldStack = $this->objStack;
 
 				// Set the "New" stack (and validate!)
-				$this->objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($this->objBatch->Id, $intStackNumber);
-				if (!$this->objStack) QApplication::Redirect('/stewardship/');
+				if ($intStackNumber) {
+					$this->objStack = StewardshipStack::LoadByStewardshipBatchIdStackNumber($this->objBatch->Id, $intStackNumber);
+					if (!$this->objStack) QApplication::Redirect('/stewardship/');
+				} else {
+					$this->objStack = null;
+				}
 
 				// Refresh teh DataGrid and Stack in the stacklist
 				$this->dtgContributions->Refresh();
-				$this->pnlStack_Refresh($this->objStack);
+				if ($this->objStack) $this->pnlStack_Refresh($this->objStack);
 				if ($objOldStack) $this->pnlStack_Refresh($objOldStack);
 			}
 

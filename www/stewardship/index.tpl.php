@@ -1,5 +1,7 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
-	<h1>Stewardship - View All Batches</h1>
+	<h1>Stewardship - View All Batches
+		<button class="primary" onclick="document.location='/stewardship/new.php'; return false;">Create New Batch</button>
+	</h1>
 	
 	<div class="section">
 		<div class="filterBy">Filter by Status<br/><?php $this->lstStatus->Render(); ?></div>

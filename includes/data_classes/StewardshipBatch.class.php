@@ -84,7 +84,7 @@
 			$objStack->StewardshipBatch = $this;
 			$objStack->StackNumber = $this->CountStewardshipStacks() + 1;
 			$objStack->ReportedTotalAmount = $fltReportedTotalAmount;
-			$objStack->ActualTotalAmount = 9;
+			$objStack->ActualTotalAmount = 0;
 			$objStack->Save();
 			return $objStack;
 		}
