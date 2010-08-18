@@ -277,5 +277,21 @@
 			else
 				return '$' . number_format($fltAmount, 2);
 		}
+
+		public static function DisplayCurrencyHtml($fltAmount, $blnAddSpaces = false) {
+			$strText = number_format(abs($fltAmount), 2);
+			$strBlank = null;
+			if ($blnAddSpaces) {
+				$strText = str_repeat('&nbsp;', 9-strlen($strText)) . $strText;
+				$strBlank = '&nbsp;';
+			}
+
+			if ($fltAmount < 0)
+				return '<span class="negative">$-' . $strText . '</span>';
+			else if (!$fltAmount)
+				return '<span class="zero">$' . $strBlank . $strText . '</span>';
+			else
+				return '<span class="positive">$' . $strBlank . $strText . '</span>';
+		}
 	}
 ?>

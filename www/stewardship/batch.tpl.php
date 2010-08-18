@@ -8,7 +8,6 @@
 			<h4>Batch Management</h4>
 			<button class="alternate" style="margin-bottom: 6px;" onclick="document.location='#/edit_batch'; return false;">Edit Batch Info</button>
 			<button class="alternate" style="margin-bottom: 6px;" onclick="document.location='#/post_batch'; return false;">Post Batch</button>
-			<button class="alternate" style="margin-bottom: 6px;" onclick="document.location='#/edit_stack'; return false;">Add New Stack</button>
 		</div>
 	</div>
 

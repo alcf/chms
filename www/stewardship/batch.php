@@ -66,7 +66,7 @@
 		}
 				
 		public function RenderAmount(StewardshipContribution $objContribution) {
-			$strToReturn = '<div class="stewardshipAmount">' . QApplication::DisplayCurrency($objContribution->TotalAmount) . '</div>';
+			$strToReturn = '<div class="stewardshipAmount">' . QApplication::DisplayCurrencyHtml($objContribution->TotalAmount, true) . '</div>';
 			$strToReturn .= '<div class="stewardshipActionBackground">&nbsp;</div>';
 			$strToReturn .= '<div class="stewardshipAction">';
 			$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/cross.png" title="Delete Contribution"/></a>', $this->pxyDeleteContribution->RenderAsEvents($objContribution->Id, false));
@@ -195,10 +195,10 @@
 			if ($objStack->ReportedTotalAmount) {
 				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithReportedAmount.txt');
 				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
-					$objStack->ItemCount,
+					number_format($objStack->ItemCount, 0),
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount),
 					QApplication::DisplayCurrency($objStack->ReportedTotalAmount),
-					QApplication::DisplayCurrency($objStack->ActualTotalAmount - $objStack->ReportedTotalAmount));
+					QApplication::DisplayCurrencyHtml($objStack->ActualTotalAmount - $objStack->ReportedTotalAmount));
 			} else {
 				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithoutReportedAmount.txt');
 				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,

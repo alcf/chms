@@ -10,11 +10,17 @@
 	<div class="batchInfoRight">
 		<div class="batchLabel">Actual</div><div class="batchValue"><?php _p(QApplication::DisplayCurrency($this->objBatch->ActualTotalAmount)); ?></div>
 		<div class="cleaner"></div>
+<?php if ($this->objBatch->ReportedTotalAmount) { ?>
 		<div class="batchLabel">Reported</div><div class="batchValue"><?php _p(QApplication::DisplayCurrency($this->objBatch->ReportedTotalAmount)); ?></div>
 		<div class="cleaner"></div>
-		<div class="batchLabel">Difference</div><div class="batchValue"><?php _p(QApplication::DisplayCurrency($this->objBatch->ActualTotalAmount - $this->objBatch->ReportedTotalAmount)); ?></div>
+		<div class="batchLabel">Difference</div><div class="batchValue"><?php _p(QApplication::DisplayCurrencyHtml($this->objBatch->ActualTotalAmount - $this->objBatch->ReportedTotalAmount), false); ?></div>
 		<div class="cleaner"></div>
+<?php } ?>
+<?php if ($this->objBatch->PostedTotalAmount) { ?>
 		<div class="batchLabel">Posted</div><div class="batchValue"><?php _p(QApplication::DisplayCurrency($this->objBatch->PostedTotalAmount)); ?></div>
+<?php } else { ?>
+		<div class="batchLabel">Posted</div><div class="batchValue">n/a</div>
+<?php } ?>
 	</div>
 	<div class="cleaner"></div>
 </div>

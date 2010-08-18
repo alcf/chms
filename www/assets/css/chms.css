@@ -42,6 +42,10 @@
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
 
+	span.negative { color: #922; text-shadow: none; }
+	span.positive { color: #4c4; text-shadow: none; }
+	span.zero { color: #999; text-shadow: none; }
+
 	/*** TYPOGRAPHY ***/
 
 	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
@@ -253,9 +257,11 @@ div.shopInfo div.shopLeft { float: left; }
 
 	div.dashboardIcon { float: left; width: 191px; height:30px; text-align: center; padding-top: 161px; font-size: 16px; font-family: arial, helvetica, sans-serif; font-weight: bold; cursor: pointer; }
 
-	table.datagrid tr div.stewardshipAmount { position: relative; float: left; width: 0;}
+	table.datagrid tr div.stewardshipAmount { position: relative; float: left; width: 0; font-family: lucida console, courier, courier new, monospaced; }
 	table.datagrid tr div.stewardshipAction { position: relative; display: none; }
 	table.datagrid tr div.stewardshipActionBackground { position: relative; display: none; } 
+	table.datagrid tr div.stewardshipAmount span.positive { color: #272; }
+	
 
 	table.datagrid tr div.stewardshipAmount { }
 	table.datagrid tr:hover div.stewardshipActionBackground { position: absolute; background-color: #6c9; width: 70px; height: 26px; display: block; opacity: 0.75; margin-top: -5px; margin-left: 14px; -moz-border-radius: 8px 0 0 8px; }
