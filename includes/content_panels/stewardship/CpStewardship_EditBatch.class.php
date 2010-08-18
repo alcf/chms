@@ -25,6 +25,7 @@
 				$txtReportedTotal = new QFloatTextBox($this, 'txtReportedTotal' . $i);
 				$txtReportedTotal->Name = 'Reported Total for Stack #' . $i;
 				$txtReportedTotal->Visible = false;
+				$txtReportedTotal->ActionParameter = $i;
 				if (array_key_exists($i, $objStackArray)) $txtReportedTotal->Text = $objStackArray[$i]->ReportedTotalAmount;
 				$this->txtReportedTotals[$i] = $txtReportedTotal;
 			}
@@ -47,7 +48,39 @@
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			
+			$objStackArray = array();
+			foreach ($this->objBatch->GetStewardshipStackArray() as $objStack) {
+				$objStackArray[$objStack->StackNumber] = $objStack;
+			}
+
+			$fltTotalAmount = 0;
+			foreach ($this->txtReportedTotals as $txtReportedTotal) {
+				if ($txtReportedTotal->Visible) {
+					$intStackNumber = intval($txtReportedTotal->ActionParameter);
+					
+					if ($fltAmount = trim($txtReportedTotal->Text))
+						$fltTotalAmount += $fltAmount;
+					else
+						$fltAmount = null;
+
+					if (array_key_exists($intStackNumber, $objStackArray))
+						$objStack = $objStackArray[$intStackNumber];
+					else {
+						$objStack = new StewardshipStack();
+						$objStack->StewardshipBatch = $this->objBatch;
+						$objStack->StackNumber = $intStackNumber;
+					}
+					
+					$objStack->ReportedTotalAmount = $fltAmount;
+					$objStack->Save();
+				}
+			}
+
+			$this->mctStewardshipBatch->StewardshipBatch->ReportedTotalAmount = $fltTotalAmount;
+			$this->mctStewardshipBatch->SaveStewardshipBatch();
+			$this->objForm->pnlBatchTitle->Refresh();
+			$this->objForm->pnlStacks_Refresh();
+			return $this->ReturnTo('#1');
 		}
 	}
 ?>

@@ -70,11 +70,5 @@
 		}
 
 		abstract protected function SetupPanel();
-
-		public function Validate() {
-			$blnToReturn = parent::Validate();
-			if (!$this->ValidateToken()) $blnToReturn = false;
-			return $blnToReturn;
-		}
 	}
 ?>
