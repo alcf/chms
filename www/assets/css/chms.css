@@ -92,6 +92,8 @@
 	div.content { width: 980px; margin: 0 auto; padding-top: 10px; }
 
 	div.stewardshipContent { float: left; width: 416px; }
+	div.stewardshipContent div.lvp div.left {width: 100px; }
+	div.stewardshipContent div.lvp div.right {width: 284px; }
 
 
 	/*** MAIN NAVBAR **/
