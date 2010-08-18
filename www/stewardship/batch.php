@@ -20,6 +20,8 @@
 			$this->objBatch = StewardshipBatch::Load(QApplication::PathInfo(0));
 			if (!$this->objBatch) QApplication::Redirect('/stewardship/');
 
+			$this->strPageTitle .= $this->objBatch->DateEntered->ToString('MMM D YYYY') . ' :: Batch ' . $this->objBatch->BatchLabel; 
+
 			$this->pnlBatchTitle = new QPanel($this);
 			$this->pnlBatchTitle->Template = dirname(__FILE__) . '/pnlBatchTitle.tpl.php';
 			$this->pnlBatchTitle->CssClass = 'section sectionBatchInfo';
@@ -62,7 +64,10 @@
 		}
 				
 		public function RenderNumber(StewardshipContribution $objContribution) {
-			return QApplication::HtmlEntities($objContribution->Source);
+			if (strlen($objContribution->Source) > 7)
+				return QApplication::HtmlEntities(substr($objContribution->Source, 0, 5) . '...');
+			else
+				return QApplication::HtmlEntities($objContribution->Source);
 		}
 				
 		public function RenderAmount(StewardshipContribution $objContribution) {

@@ -38,6 +38,7 @@
 
 	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
+	input.textbox:disabled { background-color: #bbb; color: #999; }
 	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
@@ -91,9 +92,6 @@
 	div.contentBackground { width: 100%; background: url(/assets/images/main_content_background.png); height: 500px; }
 	div.content { width: 980px; margin: 0 auto; padding-top: 10px; }
 
-	div.stewardshipContent { float: left; width: 416px; }
-	div.stewardshipContent div.lvp div.left {width: 100px; }
-	div.stewardshipContent div.lvp div.right {width: 284px; }
 
 
 	/*** MAIN NAVBAR **/
@@ -263,12 +261,24 @@ div.shopInfo div.shopLeft { float: left; }
 	table.datagrid tr div.stewardshipAction { position: relative; display: none; }
 	table.datagrid tr div.stewardshipActionBackground { position: relative; display: none; } 
 	table.datagrid tr div.stewardshipAmount span.positive { color: #272; }
-	
 
 	table.datagrid tr div.stewardshipAmount { }
 	table.datagrid tr:hover div.stewardshipActionBackground { position: absolute; background-color: #6c9; width: 70px; height: 26px; display: block; opacity: 0.75; margin-top: -5px; margin-left: 14px; -moz-border-radius: 8px 0 0 8px; }
 	table.datagrid tr:hover div.stewardshipAction { display: block; left: 6px; }
 	table.datagrid tr:hover div.stewardshipAction a { display: block; width: 16px; height: 16px; float: right; margin: 0 3px; }
+
+	div.stewardshipContent { float: left; width: 416px; }
+	div.stewardshipContent div.lvp div.left {width: 100px; }
+	div.stewardshipContent div.lvp div.right {width: 284px; }
+	div.stewardshipContent div.renderWithName div.left {width: 100px; }
+
+	div.sectionStewardshipAmount { padding: 0; }
+	div.sectionStewardshipAmount div.amount { font-family: arial, helvetica, sans-serif; font-size: 14px; border-width: 0 0 1px 0; padding: 5px; border-style: solid; border-color: #ccc; }
+	div.sectionStewardshipAmount div.amount div.fund { float: left; width: 300px; }
+	div.sectionStewardshipAmount div.amount div.fund select { width: 280px; padding: 2px 2px; }
+	div.sectionStewardshipAmount div.amount div.value { float: right; width: 100px; text-align: right;}
+	div.sectionStewardshipAmount div.amount div.value input.textbox { text-align: right; width: 80px; }
+	div.sectionStewardshipAmount div.amountTotal { background-color: #5a768e; font-weight: bold; -moz-border-radius: 0 0 5px 5px;} 
 
 	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }

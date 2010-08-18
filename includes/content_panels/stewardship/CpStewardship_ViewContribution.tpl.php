@@ -74,24 +74,30 @@
 
 	}
 ?>
-
-	<div class="lvp">
-		<div class="left">Total Amount</div>
-		<div class="right"><?php _p(QApplication::DisplayCurrencyHtml($_CONTROL->objContribution->TotalAmount), false); ?></div>
-		<div class="cleaner"></div>
-	</div>
 	<div class="cleaner"></div>
 </div>
 
 <h3>Funding Accounts</h3>
-<div class="section">
+<div class="section sectionStewardshipAmount">
 <?php foreach ($_CONTROL->objContribution->GetStewardshipContributionAmountArray() as $objAmount) { ?>
-	<div class="lvp">
-		<div class="left"><?php _p($objAmount->StewardshipFund->Name); ?></div>
-		<div class="right"><?php _p(QApplication::DisplayCurrencyHtml($objAmount->Amount), false); ?></div>
+	<div class="amount">
+		<div class="fund"><?php _p($objAmount->StewardshipFund->Name); ?></div>
+		<div class="value"><?php _p(QApplication::DisplayCurrencyHtml($objAmount->Amount), false); ?></div>
 		<div class="cleaner"></div>
 	</div>
 <?php } ?>
+	<div class="amount amountTotal">
+		<div class="fund">TOTAL</div>
+		<div class="value"><?php _p(QApplication::DisplayCurrencyHtml($_CONTROL->objContribution->TotalAmount), false); ?></div>
+		<div class="cleaner"></div>
+	</div>
 
 	<div class="cleaner"></div>
+</div>
+<br/>
+
+<div class="buttonBar">
+	<button class="primary" onclick="document.location='#<?php _p($_CONTROL->objStack->StackNumber); ?>'; return false;">Close</button>
+	 &nbsp;or&nbsp; 
+	<a href="#<?php _p($_CONTROL->objStack->StackNumber); ?>/edit_contribution/<?php _p($_CONTROL->objContribution->Id); ?>" class="cancel">Edit</button>
 </div>
