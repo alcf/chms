@@ -3,6 +3,9 @@
 		protected $objContribution;
 		public $objSelectedPerson;
 
+		protected $objMethodCallback;
+		protected $strMethodCallback;
+
 		public $txtFirstName;
 		public $txtLastName;
 		public $txtAddress;
@@ -11,6 +14,7 @@
 		public $dtgPeople;
 
 		public $imgCheckImage;
+		public $imgPersonCheckImageArray;
 		
 		public $pnlPerson;
 		public $pxySelectPerson;
@@ -19,7 +23,7 @@
 		public $lblOr;
 		public $btnCancel;
 
-		public function __construct($objParentObject, $strControlId = null, StewardshipContribution $objContribution = null) {
+		public function __construct($objParentObject, $strControlId = null, StewardshipContribution $objContribution = null, $objMethodCallback, $strMethodCallback) {
 			try {
 				parent::__construct($objParentObject, $strControlId);
 			} catch (QCallerException $objExc) {
@@ -28,7 +32,9 @@
 			}
 
 			$this->objContribution = $objContribution;
-			
+			$this->objMethodCallback = $objMethodCallback;
+			$this->strMethodCallback = $strMethodCallback;
+
 			$this->Template = dirname(__FILE__) . '/StewardshipSelectPersonDialogBox.tpl.php';
 			$this->HideDialogBox();
 			$this->MatteClickable = false;
@@ -121,10 +127,30 @@
 			$this->pnlPerson->Visible = true;
 			$this->pnlPerson->Template = dirname(__FILE__) . '/StewardshipSelectPersonPanel.tpl.php';
 			$this->pnlPerson->CssClass = 'section personSection';
+
+			$this->pnlPerson->RemoveChildControls(true);
+			$this->imgPersonCheckImageArray = array();
+			foreach ($this->objSelectedPerson->GetStewardshipContributionArray(array(QQ::OrderBy(QQN::StewardshipContribution()->Id, false), QQ::LimitInfo(5))) as $objContribution) {
+				if (is_file($objContribution->Path)) {
+					$imgPersonCheckImage = new TiffImageControl($this->pnlPerson);
+					$imgPersonCheckImage->ImagePath = $objContribution->Path;
+					$imgPersonCheckImage->Width = '380';
+					$this->imgPersonCheckImageArray[] = $imgPersonCheckImage;
+				}
+			}
 		}
 
 		public function btnSelect_Click() {
-			
+			$objMethodCallback = $this->objMethodCallback;
+			$strMethodCallback = $this->strMethodCallback;
+			$objMethodCallback->$strMethodCallback($this->objSelectedPerson);
+			$this->txtFirstName->Text = null;
+			$this->txtLastName->Text = null;
+			$this->txtPhone->Text = null;
+			$this->txtAddress->Text = null;
+			$this->txtCity->Text = null;
+			$this->dtgPeople_Refresh(null, null, null);
+			$this->HideDialogBox();
 		}
 
 		public function RenderName(Person $objPerson) {

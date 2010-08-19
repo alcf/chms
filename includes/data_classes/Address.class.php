@@ -118,6 +118,19 @@
 				case 'ShortName':
 					return $this->Address1;
 
+				case 'AddressShortLine':
+					$strToReturn = null;
+					if ($this->Address1) {
+						$strToReturn .= $this->strAddress1;
+						if ($this->strAddress2)
+							$strToReturn .= ', ' . $this->strAddress2;
+					}
+					if ($this->strCity) {
+						if ($strToReturn) $strToReturn .= ', ';
+						$strToReturn .= $this->strCity;
+					}
+					return $strToReturn;
+
 				default:
 					try {
 						return parent::__get($strName);

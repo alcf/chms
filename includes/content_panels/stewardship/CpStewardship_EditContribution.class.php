@@ -85,7 +85,7 @@
 			$this->mctAmountArray[0]->AmountControl->Select();
 			
 			// Setup ChangePerson Dialog stuff
-			$this->dlgChangePerson = new StewardshipSelectPersonDialogBox($this, null, $objContribution);
+			$this->dlgChangePerson = new StewardshipSelectPersonDialogBox($this, null, $objContribution, $this, 'dlgChangePerson_Select');
 			
 			$this->btnChangePerson = new QButton($this);
 			$this->btnChangePerson->Text = 'Change';
@@ -145,6 +145,14 @@
 
 		public function btnChangePerson_Click() {
 			$this->dlgChangePerson->ShowDialogBox();
+		}
+
+		public function dlgChangePerson_Select(Person $objPerson) {
+			$blnRefresh = ($this->mctContribution->StewardshipContribution->PersonId != $objPerson->Id);
+			if ($blnRefresh) {
+				$this->mctContribution->StewardshipContribution->Person = $objPerson;
+				$this->Refresh();
+			}
 		}
 	}
 ?>
