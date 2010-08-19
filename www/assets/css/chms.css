@@ -280,6 +280,7 @@ div.shopInfo div.shopLeft { float: left; }
 	div.sectionStewardshipAmount div.amount div.value input.textbox { text-align: right; width: 80px; }
 	div.sectionStewardshipAmount div.amountTotal { background-color: #5a768e; font-weight: bold; -moz-border-radius: 0 0 5px 5px;} 
 
+	
 	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }
 		table.datagrid caption, table.datagrid tfoot { padding-bottom: 4px; overflow: auto; }
@@ -307,6 +308,8 @@ div.shopInfo div.shopLeft { float: left; }
 	/* QDialogBox */
 	div.dialogbox { border: 5px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; font-size: 16px; font-family: arial, helvetica, sans-serif; color: #333; -moz-border-radius: 10px; }
 	div.dialogbox div.buttonBar { margin-top: 24px; }
+
+	div.stewardshipDialogbox { width: 800px; height: 600px; }
 
 	/* QDateTimePicker */
 	span.datetimepicker { }

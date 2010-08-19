@@ -288,7 +288,7 @@
 
 			if ($fltAmount < 0)
 				return '<span class="negative">$-' . $strText . '</span>';
-			else if (!$fltAmount)
+			else if ($strText == '0.00')
 				return '<span class="zero">$' . $strBlank . $strText . '</span>';
 			else
 				return '<span class="positive">$' . $strBlank . $strText . '</span>';

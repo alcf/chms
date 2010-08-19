@@ -1,9 +1,10 @@
-<div class="section">
-	<div class="lvp">
+<div class="section" style="padding: 3px;">
+	<div class="sectionButtons"><?php $_CONTROL->btnChangePerson->Render(); ?></div>
+	<div class="lvp" style="padding: 7px;">
 		<div class="left">Contributed By</div>
 		<div class="right"><?php _p($_CONTROL->mctContribution->StewardshipContribution->Person->LinkHtml, false); ?></div>
 	</div>
-	<div class="lvp">
+	<div class="lvp" style="padding: 7px;">
 		<div class="left">Primary Address</div>
 		<div class="right">
 <?php 
@@ -59,3 +60,5 @@
 	 &nbsp;or&nbsp; 
 	<?php $_CONTROL->btnCancel->Render(); ?>
 </div>
+
+<?php $_CONTROL->dlgChangePerson->Render(); ?>

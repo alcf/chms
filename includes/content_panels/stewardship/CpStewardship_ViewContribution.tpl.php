@@ -74,8 +74,15 @@
 
 	}
 ?>
+
+<?php if ($_CONTROL->imgCheckImage) { ?>
+	<br/>
+	<?php $_CONTROL->imgCheckImage->Render(); ?>
+<?php } ?>
+
 	<div class="cleaner"></div>
 </div>
+
 
 <h3>Funding Accounts</h3>
 <div class="section sectionStewardshipAmount">
