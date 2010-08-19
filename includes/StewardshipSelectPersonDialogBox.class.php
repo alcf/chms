@@ -91,16 +91,15 @@
 				$this->txtCity->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 				$this->pnlPerson = new QPanel($this);
-				$this->pnlPerson->Visible = false;
+				$this->pnlPerson->Template = dirname(__FILE__) . '/StewardshipSelectPersonPanel.tpl.php';
+				$this->pnlPerson->CssClass = 'section personSection';
 
 				$this->btnSelect = new QButton($this);
 				$this->btnSelect->Text = 'Select';
 				$this->btnSelect->CssClass = 'primary';
-				$this->btnSelect->Visible = false;
 				$this->btnSelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSelect_Click'));
 
 				$this->lblOr = new QLabel($this);
-				$this->lblOr->Visible = false;
 				$this->lblOr->Text = ' &nbsp;or&nbsp; ';
 				$this->lblOr->HtmlEntities = false;
 
@@ -114,7 +113,18 @@
 					$this->imgCheckImage->Width = '424';
 					$this->imgCheckImage->Height = '200';
 				}
+				
 			}
+
+			$this->objSelectedPerson = $this->objContribution->Person;
+			$this->pnlPerson_Refresh();
+
+			$this->txtFirstName->Text = null;
+			$this->txtLastName->Text = null;
+			$this->txtPhone->Text = null;
+			$this->txtAddress->Text = null;
+			$this->txtCity->Text = null;
+			$this->dtgPeople_Refresh(null, null, null);
 
 			parent::ShowDialogBox();
 			$this->txtFirstName->Focus();
@@ -122,12 +132,10 @@
 
 		public function pxySelectPerson_Click($strFormId, $strControlId, $strParameter) {
 			$this->objSelectedPerson = Person::Load($strParameter);
-			$this->btnSelect->Visible = true;
-			$this->lblOr->Visible = true;
-			$this->pnlPerson->Visible = true;
-			$this->pnlPerson->Template = dirname(__FILE__) . '/StewardshipSelectPersonPanel.tpl.php';
-			$this->pnlPerson->CssClass = 'section personSection';
-
+			$this->pnlPerson_Refresh();
+		}
+		
+		public function pnlPerson_Refresh() {
 			$this->pnlPerson->RemoveChildControls(true);
 			$this->imgPersonCheckImageArray = array();
 			foreach ($this->objSelectedPerson->GetStewardshipContributionArray(array(QQ::OrderBy(QQN::StewardshipContribution()->Id, false), QQ::LimitInfo(5))) as $objContribution) {
@@ -144,12 +152,6 @@
 			$objMethodCallback = $this->objMethodCallback;
 			$strMethodCallback = $this->strMethodCallback;
 			$objMethodCallback->$strMethodCallback($this->objSelectedPerson);
-			$this->txtFirstName->Text = null;
-			$this->txtLastName->Text = null;
-			$this->txtPhone->Text = null;
-			$this->txtAddress->Text = null;
-			$this->txtCity->Text = null;
-			$this->dtgPeople_Refresh(null, null, null);
 			$this->HideDialogBox();
 		}
 
