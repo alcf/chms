@@ -1,3 +1,5 @@
 <div class="section">
-	<p>The file is <strong><?php _p(__FILE__); ?></strong>. Woot.</p>
+	<?php $_CONTROL->btnScanCheck->Render(); ?>
 </div>
+
+<?php $_CONTROL->dlgScanCheck->Render(); ?>

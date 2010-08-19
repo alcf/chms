@@ -18,6 +18,7 @@
 					// only applies if there is a configuration.local file saved in
 					// the includes/ directory with the contents "mike"
 					define ('__DOCROOT__', '/var/www/alcf/chms/www');
+					define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
 					break;
 				case 'harris':
 					define ('__DOCROOT__', 'c:/chms/www');

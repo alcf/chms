@@ -9,6 +9,7 @@ configuration.local
 /mybin
 /qcodo_log/*.log.txt
 /error_log
+/micrimage
 /groups_server_password.txt
 /cli/*.lock
 /cli/scripts/test.cli.php
