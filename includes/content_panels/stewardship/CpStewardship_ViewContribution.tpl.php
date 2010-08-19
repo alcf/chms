@@ -75,9 +75,11 @@
 	}
 ?>
 
-<?php if ($_CONTROL->imgCheckImage) { ?>
 	<br/>
+<?php if ($_CONTROL->imgCheckImage) { ?>
 	<?php $_CONTROL->imgCheckImage->Render(); ?>
+<?php } else { ?>
+	<img src="/assets/images/no_check_image.png" style="width: 390px; height: 184px;"/>
 <?php } ?>
 
 	<div class="cleaner"></div>
