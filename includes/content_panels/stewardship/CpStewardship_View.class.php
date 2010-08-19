@@ -12,7 +12,7 @@
 
 			$this->dlgScanCheck = new QDialogBox($this);
 			$this->dlgScanCheck->Template = dirname(__FILE__) . '/dlgScanCheck.tpl.php';
-			$this->dlgScanCheck->MatteClickable = true;
+			$this->dlgScanCheck->MatteClickable = false;
 			$this->dlgScanCheck->HideDialogBox();
 
 			$this->btnScanCheckCancel = new QLinkButton($this->dlgScanCheck);
