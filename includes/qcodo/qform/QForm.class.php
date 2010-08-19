@@ -46,8 +46,8 @@
 		 *
 		 * @var array
 		 */
-//		protected $strIgnoreJavaScriptFileArray = array();
-		protected $strIgnoreJavaScriptFileArray = array('_core');
+		protected $strIgnoreJavaScriptFileArray = array();
+//		protected $strIgnoreJavaScriptFileArray = array('_core');
 		
 		/**
 		 * This should be very rarely used.

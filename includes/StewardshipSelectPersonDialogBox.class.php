@@ -1,6 +1,7 @@
 <?php
 	class StewardshipSelectPersonDialogBox extends QDialogBox {
 		protected $objContribution;
+		public $objSelectedPerson;
 
 		public $txtFirstName;
 		public $txtLastName;
@@ -8,6 +9,11 @@
 		public $txtCity;
 		public $txtPhone;
 		public $dtgPeople;
+
+		public $imgCheckImage;
+		
+		public $pnlPerson;
+		public $pxySelectPerson;
 
 		public $btnSelect;
 		public $lblOr;
@@ -39,14 +45,13 @@
 
 				$this->dtgPeople = new PersonDataGrid($this);
 				$this->dtgPeople->Paginator = new QPaginator($this->dtgPeople);
-				$this->dtgPeople->MetaAddColumn('FirstName','Html=<?=$_FORM->GetControl("' . $this->strControlId . '")->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
-				$this->dtgPeople->MetaAddColumn('LastName','Html=<?=$_FORM->GetControl("' . $this->strControlId . '")->RenderLastName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
-				$this->dtgPeople->MetaAddColumn('PrimaryAddressText', 'Name=Address', 'Width=240px', 'FontSize=11px');
-				$this->dtgPeople->MetaAddColumn('PrimaryCityText', 'Name=City', 'Width=130px', 'FontSize=11px');
-				$this->dtgPeople->MetaAddColumn('PrimaryPhoneText', 'Name=Phone', 'Width=115px', 'FontSize=11px');
+				$this->dtgPeople->MetaAddColumn('LastName', 'Name=Name', 'Html=<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=220px', 'FontSize=11px');
+				$this->dtgPeople->MetaAddColumn('PrimaryAddressText', 'Name=Primary Address and City', 'Html=<?= $_ITEM->PrimaryAddressText . ", " . $_ITEM->PrimaryCityText; ?>', 'Width=310px', 'FontSize=11px');
+				$this->dtgPeople->MetaAddColumn('PrimaryPhoneText', 'Name=Phone', 'Width=80px', 'FontSize=10px');
 				$this->dtgPeople->SetDataBinder('dtgPeople_Bind', $this);
+				$this->dtgPeople->NoDataHtml = '<p>Enter in a search criteria above.</p>';
 
-				$this->dtgPeople->SortColumnIndex = 1;
+				$this->dtgPeople->SortColumnIndex = 0;
 				$this->dtgPeople->ItemsPerPage = 20;
 
 				$this->txtFirstName = new QTextBox($this);
@@ -78,59 +83,99 @@
 				$this->txtCity->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
 				$this->txtCity->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
 				$this->txtCity->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+
+				$this->pnlPerson = new QPanel($this);
+				$this->pnlPerson->Visible = false;
+
+				$this->btnSelect = new QButton($this);
+				$this->btnSelect->Text = 'Select';
+				$this->btnSelect->CssClass = 'primary';
+				$this->btnSelect->Visible = false;
+				$this->btnSelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSelect_Click'));
+
+				$this->lblOr = new QLabel($this);
+				$this->lblOr->Visible = false;
+				$this->lblOr->Text = ' &nbsp;or&nbsp; ';
+				$this->lblOr->HtmlEntities = false;
+
+				$this->pxySelectPerson = new QControlProxy($this);
+				$this->pxySelectPerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySelectPerson_Click'));
+				$this->pxySelectPerson->AddAction(new QClickEvent(), new QTerminateAction());
+
+				if (is_file($this->objContribution->Path)) {
+					$this->imgCheckImage = new TiffImageControl($this);
+					$this->imgCheckImage->ImagePath = $this->objContribution->Path;
+					$this->imgCheckImage->Width = '424';
+					$this->imgCheckImage->Height = '200';
+				}
 			}
 
 			parent::ShowDialogBox();
+			$this->txtFirstName->Focus();
 		}
 
-		public function RenderFirstName(Person $objPerson) {
-			if (!strlen(trim($objPerson->FirstName))) return '&nbsp;';
-			return sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->FirstName));
-		}
-		
-		public function RenderLastName(Person $objPerson) {
-			if (!strlen(trim($objPerson->LastName))) return '&nbsp;';
-			return sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->LastName));
+		public function pxySelectPerson_Click($strFormId, $strControlId, $strParameter) {
+			$this->objSelectedPerson = Person::Load($strParameter);
+			$this->btnSelect->Visible = true;
+			$this->lblOr->Visible = true;
+			$this->pnlPerson->Visible = true;
+			$this->pnlPerson->Template = dirname(__FILE__) . '/StewardshipSelectPersonPanel.tpl.php';
+			$this->pnlPerson->CssClass = 'section personSection';
 		}
 
-		public function dtgPeople_Refresh() {
+		public function btnSelect_Click() {
+			
+		}
+
+		public function RenderName(Person $objPerson) {
+			return sprintf('<a href="#" %s>%s</a>', $this->pxySelectPerson->RenderAsEvents($objPerson->Id, false), $objPerson->Name);
+		}
+
+		public function dtgPeople_Refresh($strFormId, $strControlId, $strParameter) {
 			$this->dtgPeople->PageNumber = 1;
 			$this->dtgPeople->Refresh();
 		}
 
 		public function dtgPeople_Bind() {
 			$objConditions = QQ::All();
+			$blnSearch = false;
 
 			if ($strName = trim($this->txtFirstName->Text)) {
+				$blnSearch = true;
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Like( QQN::Person()->FirstName, $strName . '%')
 				);
 			}
 
 			if ($strName = trim($this->txtLastName->Text)) {
+				$blnSearch = true;
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Like( QQN::Person()->LastName, $strName . '%')
 				);
 			}
 
 			if ($strName = trim($this->txtCity->Text)) {
+				$blnSearch = true;
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Like( QQN::Person()->PrimaryCityText, $strName . '%')
 				);
 			}
 
 			if ($strName = trim($this->txtAddress->Text)) {
+				$blnSearch = true;
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Like( QQN::Person()->PrimaryAddressText, $strName . '%')
 				);
 			}
 
 			if ($strName = trim($this->txtPhone->Text)) {
+				$blnSearch = true;
 				$objConditions = QQ::AndCondition($objConditions,
-					QQ::Like( QQN::Person()->PrimaryPhoneText->Phone, $strName . '%')
+					QQ::Like( QQN::Person()->PrimaryPhoneText, $strName . '%')
 				);
 			}
 
+			if (!$blnSearch) $objConditions = QQ::None();
 			$this->dtgPeople->MetaDataBinder($objConditions);
 		}
 	}

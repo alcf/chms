@@ -309,7 +309,10 @@ div.shopInfo div.shopLeft { float: left; }
 	div.dialogbox { border: 5px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; font-size: 16px; font-family: arial, helvetica, sans-serif; color: #333; -moz-border-radius: 10px; }
 	div.dialogbox div.buttonBar { margin-top: 24px; }
 
-	div.stewardshipDialogbox { width: 800px; height: 600px; }
+	div.stewardshipDialogbox { width: 1100px; height: 710px; padding: 5px; background: url(/assets/images/main_content_background.png); }
+	div.stewardshipDialogbox div.resultsSection { width: 650px; height: 570px; padding: 5px; overflow: auto; float: left; margin-right: 10px;  }
+	div.stewardshipDialogbox div.personSection { width: 415px; height: 332px; padding: 5px; overflow: auto; float: left; margin-top: 10px; }
+
 
 	/* QDateTimePicker */
 	span.datetimepicker { }
