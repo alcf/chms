@@ -37,7 +37,7 @@
 
 			$this->dtgContributions = new StewardshipContributionDataGrid($this, 'dtgContributions');
 			$this->dtgContributions->SetDataBinder('dtgContributions_Bind');
-			$this->dtgContributions->HtmlBefore = '<div class="section" style="width: 340px; height: 500px; overflow: auto; float: left; margin-right: 10px;">';
+			$this->dtgContributions->HtmlBefore = '<div id="dtgContributionsDiv" class="section" style="width: 340px; height: 500px; overflow: auto; float: left; margin-right: 10px;">';
 			$this->dtgContributions->HtmlAfter = '</div>';
 			$this->dtgContributions->NoDataHtml = '<p>Start this <strong>Stack</strong> and begin entering contributions.</p>';
 

@@ -12,6 +12,7 @@
 		public $lblTotalAmount;
 
 		public $mctAmountArray;
+		public $btnSaveAndScanAgain;
 
 		protected function SetupPanel() {
 			// Editing an existing
@@ -103,11 +104,20 @@
 
 			$this->btnChangePerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnChangePerson_Click'));
 
-			if (!$this->mctContribution->EditMode) $this->ProcessNewCheck();
+			if (!$this->mctContribution->EditMode) {
+				$this->ProcessNewCheck();
+				$this->btnSaveAndScanAgain = new QButton($this);
+				$this->btnSaveAndScanAgain->Text = 'Save and Scan Next Check';
+				$this->btnSaveAndScanAgain->CssClass = 'primary';
+				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+			} else {
+				$this->btnSave->Text = 'Update';
+			}
 		}
 
 		// Dependning on the status/state of the new check, we need to do different things
 		public function ProcessNewCheck() {
+
 			// We found one unique person -- woot!
 			if ($this->mctContribution->StewardshipContribution->Person) {
 				return;
@@ -183,11 +193,16 @@
 			$this->objForm->pnlBatchTitle->Refresh();
 			$this->objForm->dtgContributions_Refresh();
 			$this->objForm->pnlStack_Refresh($this->objStack);
-			$this->ReturnTo('#' . $this->objStack->StackNumber . '/view_contribution/' . $this->mctContribution->StewardshipContribution->Id);
+			
+			if ($strControlId == $this->btnSaveAndScanAgain->ControlId) {
+				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view/scan');
+			} else {
+				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view_contribution/' . $this->mctContribution->StewardshipContribution->Id);
+			}
 		}
 
 		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-			$this->ReturnTo('#' . $this->objStack->StackNumber . '/view_contribution/' . $this->mctContribution->StewardshipContribution->Id);
+			return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view_contribution/' . $this->mctContribution->StewardshipContribution->Id);
 		}
 
 		public function btnChangePerson_Click() {

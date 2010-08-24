@@ -32,3 +32,8 @@ function HouseholdSelectorHashContent() {
 function ScrollToBottom() {
 	window.scroll(0, window.document.height);
 };
+
+function ScrollDivToBottom(strControlId) {
+	var objDiv = document.getElementById(strControlId);
+	objDiv.scrollTop = objDiv.scrollHeight;
+};

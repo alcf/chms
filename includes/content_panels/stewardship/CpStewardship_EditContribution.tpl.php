@@ -62,7 +62,9 @@
 <br/>
 
 <div class="buttonBar">
-	<?php $_CONTROL->btnSave->Render('Text=Update'); ?>
+	<?php if ($_CONTROL->btnSaveAndScanAgain) $_CONTROL->btnSaveAndScanAgain->Render(); ?>
+
+	<?php $_CONTROL->btnSave->Render(); ?>
 	 &nbsp;or&nbsp; 
 	<?php $_CONTROL->btnCancel->Render(); ?>
 </div>

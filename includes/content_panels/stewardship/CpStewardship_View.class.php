@@ -20,6 +20,11 @@
 			$this->btnScanCheckCancel->CssClass = 'cancel';
 			$this->btnScanCheckCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnScanCheckCancel_Click'));
 			$this->btnScanCheckCancel->AddAction(new QClickEvent(), new QTerminateAction());
+
+			if ($this->strUrlHashArgument == 'scan') {
+				QApplication::ExecuteJavaScript('ScrollDivToBottom("dtgContributionsDiv");');
+				$this->btnScanCheck_Click();
+			}
 		}
 
 		public function btnScanCheck_Click() {
