@@ -41,6 +41,24 @@
 			return self::LoadByTransitHashAccountHash($strTransitHash, $strAccountHash);
 		}
 
+		/**
+		 * This will calculate the hash value and return a new, unsaved object
+		 * @param string $strTransitNumber
+		 * @param string $strAccountNumber
+		 * @return CheckingAccountLookup
+		 */
+		public static function CreateUnsavedForTransitAndAccount($strTransitNumber, $strAccountNumber) {
+			$strTransitHash = md5(self::HashSalt . $strTransitNumber);
+			$strAccountHash = md5(self::HashSalt . $strAccountNumber);
+			if (self::LoadByTransitHashAccountHash($strTransitHash, $strAccountHash))
+				throw new Exception('Transit and Account already exists');
+
+			$objCheckingAccountLookup = new CheckingAccountLookup();
+			$objCheckingAccountLookup->TransitHash = $strTransitHash;
+			$objCheckingAccountLookup->AccountHash = $strAccountHash;
+			return $objCheckingAccountLookup;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

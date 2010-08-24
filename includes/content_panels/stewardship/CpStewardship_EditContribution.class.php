@@ -26,8 +26,6 @@
 			// Creating New?
 			} else if ($this->strUrlHashArgument2) {
 				$objContribution = StewardshipContribution::CreateFromCheckImage($this->strUrlHashArgument2);
-				$objContribution->StewardshipStack = $this->objStack;
-				$objContribution->StewardshipBatch = $this->objBatch;
 
 			// Error -- go back
 			} else {

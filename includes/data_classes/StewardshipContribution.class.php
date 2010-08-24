@@ -14,6 +14,9 @@
 	 * 
 	 */
 	class StewardshipContribution extends StewardshipContributionGen {
+		protected $objPossiblePeopleArray;
+		protected $objUnsavedCheckingAccountLookup;
+
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -61,6 +64,12 @@
 						default: throw new Exception('Unhandled ContributionTypeId');				
 					}
 
+				case 'PossiblePeopleArray':
+					return $this->objPossiblePeopleArray;
+
+				case 'UnsavedCheckingAccountLookup':
+					return $this->objUnsavedCheckingAccountLookup;
+
 				default:
 					try {
 						return parent::__get($strName);
@@ -83,11 +92,26 @@
 			if (array_key_exists('ImageDescription', $arrTiffData)) {
 				$arrCheckingData = self::ParseCheckingInformation($arrTiffData['ImageDescription']);
 				if ($arrCheckingData) {
-					$objCheckingAccountLookup = CheckingAccountLookup::LoadByTransitAndAccount($arrCheckingData[0], $arrCheckingData[1])
+					$objCheckingAccountLookup = CheckingAccountLookup::LoadByTransitAndAccount($arrCheckingData[0], $arrCheckingData[1]);
+					if ($objCheckingAccountLookup) {
+						$this->CheckingAccountLookup = $objCheckingAccountLookup;
+						$objPersonArray = $objCheckingAccountLookup->GetPersonArray();
+						if (!count($objPersonArray)) {
+							$this->objPossiblePeopleArray = null;
+						} else if (count($objPersonArray) == 1) {
+							$this->Person = $objPersonArray[0];
+						} else {
+							$this->objPossiblePeopleArray = $objPersonArray;
+						}
+					} else {
+						$this->objUnsavedCheckingAccountLookup = CheckingAccountLookup::CreateUnsavedForTransitAndAccount($arrCheckingData[0], $arrCheckingData[1]);
+					}
 				}
 			}
+
+			return $objContribution;
 		}
-		
+
 		/**
 		 * Returns an string array of check information indexed by:
 		 * 	0:	Routing Number
