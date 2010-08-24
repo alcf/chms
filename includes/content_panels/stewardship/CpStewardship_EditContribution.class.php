@@ -102,6 +102,34 @@
 			$this->btnChangePerson->CssClass = 'primary';
 
 			$this->btnChangePerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnChangePerson_Click'));
+
+			if (!$this->mctContribution->EditMode) $this->ProcessNewCheck();
+		}
+
+		// Dependning on the status/state of the new check, we need to do different things
+		public function ProcessNewCheck() {
+			// We found one unique person -- woot!
+			if ($this->mctContribution->StewardshipContribution->Person) {
+				return;
+			}
+
+			// We found a bunch of people tied to this account
+			if ($this->mctContribution->StewardshipContribution->PossiblePeopleArray) {
+				// TODO
+				QApplication::DisplayAlert('TODO - deal with multiple people found');
+				return;
+			}
+
+			// We didn't find anyone, but do have a valid check MICR read
+			if ($this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup) {
+				$this->btnChangePerson_Click(null, null, null);
+				return;
+			}
+
+			// If we're here ,then it's clear We don't even have a good check read
+			// TODO
+			QApplication::DisplayAlert('TODO - not a valid check read');
+			return;
 		}
 
 		public function lstFund_Change($strFormId, $strControlId, $strParameter) {
@@ -128,8 +156,12 @@
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			if ($this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup) {
+				$this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup->Save();
+				$this->mctContribution->StewardshipContribution->CheckingAccountLookup = $this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup;
+			}
 			$this->mctContribution->SaveStewardshipContribution();
-			
+
 			foreach ($this->mctAmountArray as $mctAmount) {
 				$lstFund = $mctAmount->StewardshipFundIdControl;
 				$txtAmount = $mctAmount->AmountControl;
@@ -142,6 +174,10 @@
 			}
 
 			$this->mctContribution->StewardshipContribution->RefreshTotalAmount();
+			$this->mctContribution->StewardshipContribution->SetupCheckingAccountLookup();
+			if ($this->mctContribution->StewardshipContribution->TempPath && is_file($this->mctContribution->StewardshipContribution->TempPath))
+				$this->mctContribution->StewardshipContribution->SaveImageFile($this->mctContribution->StewardshipContribution->TempPath);
+
 			$this->objStack->RefreshActualTotalAmount();
 			$this->objBatch->RefreshActualTotalAmount();
 			$this->objForm->pnlBatchTitle->Refresh();

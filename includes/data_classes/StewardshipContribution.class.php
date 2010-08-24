@@ -42,10 +42,14 @@
 					}
 					return __DOCROOT__ . '/../file_assets/contribution_images/' . $strSubFolderLetter;
 
-				case 'Path': return $this->Folder . '/' . $this->Id . '.tif';
+				case 'Path':
+					if (!$this->Id) return null;
+					return $this->Folder . '/' . $this->Id . '.tif';
 
 				// For recently scanned (and not yet saved) check images
-				case 'TempPath': return __MICRIMAGE_TEMP_FOLDER__ . '/' . $this->strCheckImageFileHash . '.tiff';
+				case 'TempPath':
+					if (!$this->strCheckImageFileHash) return null;
+					return __MICRIMAGE_TEMP_FOLDER__ . '/' . $this->strCheckImageFileHash . '.tiff';
 
 				case 'Source':
 					switch ($this->StewardshipContributionTypeId) {
@@ -287,6 +291,18 @@
 
 			$this->TotalAmount = $fltTotalAmount;
 			if ($blnSave) $this->Save();
+		}
+
+		/**
+		 * If there is an associated CheckingAccontLookup, then make sure the person on this contribution
+		 * is linked to the checkingaccountlookup.  if not, go ahead and make the link.
+		 * @return void
+		 */
+		public function SetupCheckingAccountLookup() {
+			if ($this->CheckingAccountLookup) {
+				if (!$this->CheckingAccountLookup->IsPersonAssociated($this->Person))
+					$this->CheckingAccountLookup->AssociatePerson($this->Person);
+			}
 		}
 
 		// Override or Create New Load/Count methods

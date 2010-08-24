@@ -8,7 +8,7 @@
 			if ((!$this->objContribution) ||
 				($this->objContribution->StewardshipStackId != $this->objStack->Id) ||
 				($this->objContribution->StewardshipBatchId != $this->objBatch->Id)) {
-				$this->ReturnTo('#' . $this->objStack->StackNumber);
+				return $this->ReturnTo('#' . $this->objStack->StackNumber);
 			}
 
 			if (is_file($this->objContribution->Path)) {
