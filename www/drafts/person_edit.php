@@ -53,7 +53,7 @@
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 		protected $lstHouseholdAsHead;
-		protected $lstCheckingAccountLookupsAsCheckaccountlookup;
+		protected $lstCheckingAccountLookups;
 		protected $lstCommunicationLists;
 		protected $lstNameItems;
 
@@ -108,7 +108,7 @@
 			$this->txtPrimaryCityText = $this->mctPerson->txtPrimaryCityText_Create();
 			$this->txtPrimaryPhoneText = $this->mctPerson->txtPrimaryPhoneText_Create();
 			$this->lstHouseholdAsHead = $this->mctPerson->lstHouseholdAsHead_Create();
-			$this->lstCheckingAccountLookupsAsCheckaccountlookup = $this->mctPerson->lstCheckingAccountLookupsAsCheckaccountlookup_Create();
+			$this->lstCheckingAccountLookups = $this->mctPerson->lstCheckingAccountLookups_Create();
 			$this->lstCommunicationLists = $this->mctPerson->lstCommunicationLists_Create();
 			$this->lstNameItems = $this->mctPerson->lstNameItems_Create();
 

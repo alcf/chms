@@ -71,7 +71,7 @@
 
 		<?php $this->lstHouseholdAsHead->RenderWithName(); ?>
 
-		<?php $this->lstCheckingAccountLookupsAsCheckaccountlookup->RenderWithName(true, "Rows=7"); ?>
+		<?php $this->lstCheckingAccountLookups->RenderWithName(true, "Rows=7"); ?>
 
 		<?php $this->lstCommunicationLists->RenderWithName(true, "Rows=7"); ?>
 

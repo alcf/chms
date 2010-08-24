@@ -48,8 +48,8 @@
 	 * @property Phone $PrimaryPhone the value for the Phone object referenced by intPrimaryPhoneId 
 	 * @property Email $PrimaryEmail the value for the Email object referenced by intPrimaryEmailId (Unique)
 	 * @property Household $HouseholdAsHead the value for the Household object that uniquely references this Person
-	 * @property CheckingAccountLookup $_CheckingAccountLookupAsCheckaccountlookup the value for the private _objCheckingAccountLookupAsCheckaccountlookup (Read-Only) if set due to an expansion on the checkaccountlookup_person_assn association table
-	 * @property CheckingAccountLookup[] $_CheckingAccountLookupAsCheckaccountlookupArray the value for the private _objCheckingAccountLookupAsCheckaccountlookupArray (Read-Only) if set due to an ExpandAsArray on the checkaccountlookup_person_assn association table
+	 * @property CheckingAccountLookup $_CheckingAccountLookup the value for the private _objCheckingAccountLookup (Read-Only) if set due to an expansion on the checkingaccountlookup_person_assn association table
+	 * @property CheckingAccountLookup[] $_CheckingAccountLookupArray the value for the private _objCheckingAccountLookupArray (Read-Only) if set due to an ExpandAsArray on the checkingaccountlookup_person_assn association table
 	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the communicationlist_person_assn association table
 	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_person_assn association table
 	 * @property NameItem $_NameItem the value for the private _objNameItem (Read-Only) if set due to an expansion on the person_nameitem_assn association table
@@ -323,20 +323,20 @@
 
 
 		/**
-		 * Private member variable that stores a reference to a single CheckingAccountLookupAsCheckaccountlookup object
+		 * Private member variable that stores a reference to a single CheckingAccountLookup object
 		 * (of type CheckingAccountLookup), if this Person object was restored with
-		 * an expansion on the checkaccountlookup_person_assn association table.
-		 * @var CheckingAccountLookup _objCheckingAccountLookupAsCheckaccountlookup;
+		 * an expansion on the checkingaccountlookup_person_assn association table.
+		 * @var CheckingAccountLookup _objCheckingAccountLookup;
 		 */
-		private $_objCheckingAccountLookupAsCheckaccountlookup;
+		private $_objCheckingAccountLookup;
 
 		/**
-		 * Private member variable that stores a reference to an array of CheckingAccountLookupAsCheckaccountlookup objects
+		 * Private member variable that stores a reference to an array of CheckingAccountLookup objects
 		 * (of type CheckingAccountLookup[]), if this Person object was restored with
-		 * an ExpandAsArray on the checkaccountlookup_person_assn association table.
-		 * @var CheckingAccountLookup[] _objCheckingAccountLookupAsCheckaccountlookupArray;
+		 * an ExpandAsArray on the checkingaccountlookup_person_assn association table.
+		 * @var CheckingAccountLookup[] _objCheckingAccountLookupArray;
 		 */
-		private $_objCheckingAccountLookupAsCheckaccountlookupArray = array();
+		private $_objCheckingAccountLookupArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single CommunicationList object
@@ -1068,17 +1068,17 @@
 				if (!$strAliasPrefix)
 					$strAliasPrefix = 'person__';
 
-				$strAlias = $strAliasPrefix . 'checkingaccountlookupascheckaccountlookup__checking_account_lookup_id__id';
+				$strAlias = $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objCheckingAccountLookupAsCheckaccountlookupArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objCheckingAccountLookupAsCheckaccountlookupArray[$intPreviousChildItemCount - 1];
-						$objChildItem = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookupascheckaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objCheckingAccountLookupArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objCheckingAccountLookupArray[$intPreviousChildItemCount - 1];
+						$objChildItem = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objCheckingAccountLookupAsCheckaccountlookupArray[] = $objChildItem;
+							$objPreviousItem->_objCheckingAccountLookupArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objCheckingAccountLookupAsCheckaccountlookupArray[] = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookupascheckaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objCheckingAccountLookupArray[] = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -1457,14 +1457,14 @@
 			}
 
 
-			// Check for CheckingAccountLookupAsCheckaccountlookup Virtual Binding
-			$strAlias = $strAliasPrefix . 'checkingaccountlookupascheckaccountlookup__checking_account_lookup_id__id';
+			// Check for CheckingAccountLookup Virtual Binding
+			$strAlias = $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objCheckingAccountLookupAsCheckaccountlookupArray[] = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookupascheckaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objCheckingAccountLookupArray[] = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objCheckingAccountLookupAsCheckaccountlookup = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookupascheckaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objCheckingAccountLookup = CheckingAccountLookup::InstantiateDbRow($objDbRow, $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for CommunicationList Virtual Binding
@@ -1921,17 +1921,17 @@
 		// INDEX-BASED LOAD METHODS (Array via Many to Many)
 		////////////////////////////////////////////////////
 			/**
-		 * Load an array of CheckingAccountLookup objects for a given CheckingAccountLookupAsCheckaccountlookup
-		 * via the checkaccountlookup_person_assn table
+		 * Load an array of CheckingAccountLookup objects for a given CheckingAccountLookup
+		 * via the checkingaccountlookup_person_assn table
 		 * @param integer $intCheckingAccountLookupId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return Person[]
 		*/
-		public static function LoadArrayByCheckingAccountLookupAsCheckaccountlookup($intCheckingAccountLookupId, $objOptionalClauses = null) {
-			// Call Person::QueryArray to perform the LoadArrayByCheckingAccountLookupAsCheckaccountlookup query
+		public static function LoadArrayByCheckingAccountLookup($intCheckingAccountLookupId, $objOptionalClauses = null) {
+			// Call Person::QueryArray to perform the LoadArrayByCheckingAccountLookup query
 			try {
 				return Person::QueryArray(
-					QQ::Equal(QQN::Person()->CheckingAccountLookupAsCheckaccountlookup->CheckingAccountLookupId, $intCheckingAccountLookupId),
+					QQ::Equal(QQN::Person()->CheckingAccountLookup->CheckingAccountLookupId, $intCheckingAccountLookupId),
 					$objOptionalClauses
 				);
 			} catch (QCallerException $objExc) {
@@ -1941,14 +1941,14 @@
 		}
 
 		/**
-		 * Count People for a given CheckingAccountLookupAsCheckaccountlookup
-		 * via the checkaccountlookup_person_assn table
+		 * Count People for a given CheckingAccountLookup
+		 * via the checkingaccountlookup_person_assn table
 		 * @param integer $intCheckingAccountLookupId
 		 * @return int
 		*/
-		public static function CountByCheckingAccountLookupAsCheckaccountlookup($intCheckingAccountLookupId) {
+		public static function CountByCheckingAccountLookup($intCheckingAccountLookupId) {
 			return Person::QueryCount(
-				QQ::Equal(QQN::Person()->CheckingAccountLookupAsCheckaccountlookup->CheckingAccountLookupId, $intCheckingAccountLookupId)
+				QQ::Equal(QQN::Person()->CheckingAccountLookup->CheckingAccountLookupId, $intCheckingAccountLookupId)
 			);
 		}
 			/**
@@ -2508,17 +2508,17 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_CheckingAccountLookupAsCheckaccountlookup':
-					// Gets the value for the private _objCheckingAccountLookupAsCheckaccountlookup (Read-Only)
-					// if set due to an expansion on the checkaccountlookup_person_assn association table
+				case '_CheckingAccountLookup':
+					// Gets the value for the private _objCheckingAccountLookup (Read-Only)
+					// if set due to an expansion on the checkingaccountlookup_person_assn association table
 					// @return CheckingAccountLookup
-					return $this->_objCheckingAccountLookupAsCheckaccountlookup;
+					return $this->_objCheckingAccountLookup;
 
-				case '_CheckingAccountLookupAsCheckaccountlookupArray':
-					// Gets the value for the private _objCheckingAccountLookupAsCheckaccountlookupArray (Read-Only)
-					// if set due to an ExpandAsArray on the checkaccountlookup_person_assn association table
+				case '_CheckingAccountLookupArray':
+					// Gets the value for the private _objCheckingAccountLookupArray (Read-Only)
+					// if set due to an ExpandAsArray on the checkingaccountlookup_person_assn association table
 					// @return CheckingAccountLookup[]
-					return (array) $this->_objCheckingAccountLookupAsCheckaccountlookupArray;
+					return (array) $this->_objCheckingAccountLookupArray;
 
 				case '_CommunicationList':
 					// Gets the value for the private _objCommunicationList (Read-Only)
@@ -5673,20 +5673,20 @@
 		}
 
 			
-		// Related Many-to-Many Objects' Methods for CheckingAccountLookupAsCheckaccountlookup
+		// Related Many-to-Many Objects' Methods for CheckingAccountLookup
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all many-to-many associated CheckingAccountLookupsAsCheckaccountlookup as an array of CheckingAccountLookup objects
+		 * Gets all many-to-many associated CheckingAccountLookups as an array of CheckingAccountLookup objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return CheckingAccountLookup[]
 		*/ 
-		public function GetCheckingAccountLookupAsCheckaccountlookupArray($objOptionalClauses = null) {
+		public function GetCheckingAccountLookupArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return CheckingAccountLookup::LoadArrayByPersonAsCheckaccountlookup($this->intId, $objOptionalClauses);
+				return CheckingAccountLookup::LoadArrayByPerson($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -5694,31 +5694,31 @@
 		}
 
 		/**
-		 * Counts all many-to-many associated CheckingAccountLookupsAsCheckaccountlookup
+		 * Counts all many-to-many associated CheckingAccountLookups
 		 * @return int
 		*/ 
-		public function CountCheckingAccountLookupsAsCheckaccountlookup() {
+		public function CountCheckingAccountLookups() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return CheckingAccountLookup::CountByPersonAsCheckaccountlookup($this->intId);
+			return CheckingAccountLookup::CountByPerson($this->intId);
 		}
 
 		/**
-		 * Checks to see if an association exists with a specific CheckingAccountLookupAsCheckaccountlookup
+		 * Checks to see if an association exists with a specific CheckingAccountLookup
 		 * @param CheckingAccountLookup $objCheckingAccountLookup
 		 * @return bool
 		*/
-		public function IsCheckingAccountLookupAsCheckaccountlookupAssociated(CheckingAccountLookup $objCheckingAccountLookup) {
+		public function IsCheckingAccountLookupAssociated(CheckingAccountLookup $objCheckingAccountLookup) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call IsCheckingAccountLookupAsCheckaccountlookupAssociated on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call IsCheckingAccountLookupAssociated on this unsaved Person.');
 			if ((is_null($objCheckingAccountLookup->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call IsCheckingAccountLookupAsCheckaccountlookupAssociated on this Person with an unsaved CheckingAccountLookup.');
+				throw new QUndefinedPrimaryKeyException('Unable to call IsCheckingAccountLookupAssociated on this Person with an unsaved CheckingAccountLookup.');
 
 			$intRowCount = Person::QueryCount(
 				QQ::AndCondition(
 					QQ::Equal(QQN::Person()->Id, $this->intId),
-					QQ::Equal(QQN::Person()->CheckingAccountLookupAsCheckaccountlookup->CheckingAccountLookupId, $objCheckingAccountLookup->Id)
+					QQ::Equal(QQN::Person()->CheckingAccountLookup->CheckingAccountLookupId, $objCheckingAccountLookup->Id)
 				)
 			);
 
@@ -5726,22 +5726,22 @@
 		}
 
 		/**
-		 * Associates a CheckingAccountLookupAsCheckaccountlookup
+		 * Associates a CheckingAccountLookup
 		 * @param CheckingAccountLookup $objCheckingAccountLookup
 		 * @return void
 		*/ 
-		public function AssociateCheckingAccountLookupAsCheckaccountlookup(CheckingAccountLookup $objCheckingAccountLookup) {
+		public function AssociateCheckingAccountLookup(CheckingAccountLookup $objCheckingAccountLookup) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCheckingAccountLookupAsCheckaccountlookup on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCheckingAccountLookup on this unsaved Person.');
 			if ((is_null($objCheckingAccountLookup->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCheckingAccountLookupAsCheckaccountlookup on this Person with an unsaved CheckingAccountLookup.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCheckingAccountLookup on this Person with an unsaved CheckingAccountLookup.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
-				INSERT INTO `checkaccountlookup_person_assn` (
+				INSERT INTO `checkingaccountlookup_person_assn` (
 					`person_id`,
 					`checking_account_lookup_id`
 				) VALUES (
@@ -5752,15 +5752,15 @@
 		}
 
 		/**
-		 * Unassociates a CheckingAccountLookupAsCheckaccountlookup
+		 * Unassociates a CheckingAccountLookup
 		 * @param CheckingAccountLookup $objCheckingAccountLookup
 		 * @return void
 		*/ 
-		public function UnassociateCheckingAccountLookupAsCheckaccountlookup(CheckingAccountLookup $objCheckingAccountLookup) {
+		public function UnassociateCheckingAccountLookup(CheckingAccountLookup $objCheckingAccountLookup) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCheckingAccountLookupAsCheckaccountlookup on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCheckingAccountLookup on this unsaved Person.');
 			if ((is_null($objCheckingAccountLookup->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCheckingAccountLookupAsCheckaccountlookup on this Person with an unsaved CheckingAccountLookup.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCheckingAccountLookup on this Person with an unsaved CheckingAccountLookup.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -5768,7 +5768,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`checkaccountlookup_person_assn`
+					`checkingaccountlookup_person_assn`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($objCheckingAccountLookup->Id) . '
@@ -5776,12 +5776,12 @@
 		}
 
 		/**
-		 * Unassociates all CheckingAccountLookupsAsCheckaccountlookup
+		 * Unassociates all CheckingAccountLookups
 		 * @return void
 		*/ 
-		public function UnassociateAllCheckingAccountLookupsAsCheckaccountlookup() {
+		public function UnassociateAllCheckingAccountLookups() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllCheckingAccountLookupAsCheckaccountlookupArray on this unsaved Person.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllCheckingAccountLookupArray on this unsaved Person.');
 
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
@@ -5789,7 +5789,7 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`checkaccountlookup_person_assn`
+					`checkingaccountlookup_person_assn`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -6217,11 +6217,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodePersonCheckingAccountLookupAsCheckaccountlookup extends QQAssociationNode {
+	class QQNodePersonCheckingAccountLookup extends QQAssociationNode {
 		protected $strType = 'association';
-		protected $strName = 'checkingaccountlookupascheckaccountlookup';
+		protected $strName = 'checkingaccountlookup';
 
-		protected $strTableName = 'checkaccountlookup_person_assn';
+		protected $strTableName = 'checkingaccountlookup_person_assn';
 		protected $strPrimaryKey = 'person_id';
 		protected $strClassName = 'CheckingAccountLookup';
 
@@ -6368,8 +6368,8 @@
 					return new QQNode('primary_city_text', 'PrimaryCityText', 'string', $this);
 				case 'PrimaryPhoneText':
 					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
-				case 'CheckingAccountLookupAsCheckaccountlookup':
-					return new QQNodePersonCheckingAccountLookupAsCheckaccountlookup($this);
+				case 'CheckingAccountLookup':
+					return new QQNodePersonCheckingAccountLookup($this);
 				case 'CommunicationList':
 					return new QQNodePersonCommunicationList($this);
 				case 'NameItem':
@@ -6492,8 +6492,8 @@
 					return new QQNode('primary_city_text', 'PrimaryCityText', 'string', $this);
 				case 'PrimaryPhoneText':
 					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
-				case 'CheckingAccountLookupAsCheckaccountlookup':
-					return new QQNodePersonCheckingAccountLookupAsCheckaccountlookup($this);
+				case 'CheckingAccountLookup':
+					return new QQNodePersonCheckingAccountLookup($this);
 				case 'CommunicationList':
 					return new QQNodePersonCommunicationList($this);
 				case 'NameItem':

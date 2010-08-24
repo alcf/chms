@@ -72,8 +72,8 @@
 	 * property-read QLabel $PrimaryPhoneTextLabel
 	 * property QListBox $HouseholdAsHeadControl
 	 * property-read QLabel $HouseholdAsHeadLabel
-	 * property QListBox $CheckingAccountLookupAsCheckaccountlookupControl
-	 * property-read QLabel $CheckingAccountLookupAsCheckaccountlookupLabel
+	 * property QListBox $CheckingAccountLookupControl
+	 * property-read QLabel $CheckingAccountLookupLabel
 	 * property QListBox $CommunicationListControl
 	 * property-read QLabel $CommunicationListLabel
 	 * property QListBox $NameItemControl
@@ -148,13 +148,13 @@
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstHouseholdAsHead;
-		protected $lstCheckingAccountLookupsAsCheckaccountlookup;
+		protected $lstCheckingAccountLookups;
 		protected $lstCommunicationLists;
 		protected $lstNameItems;
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblHouseholdAsHead;
-		protected $lblCheckingAccountLookupsAsCheckaccountlookup;
+		protected $lblCheckingAccountLookups;
 		protected $lblCommunicationLists;
 		protected $lblNameItems;
 
@@ -1043,19 +1043,19 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstCheckingAccountLookupsAsCheckaccountlookup
+		 * Create and setup QListBox lstCheckingAccountLookups
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstCheckingAccountLookupsAsCheckaccountlookup_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstCheckingAccountLookupsAsCheckaccountlookup = new QListBox($this->objParentObject, $strControlId);
-			$this->lstCheckingAccountLookupsAsCheckaccountlookup->Name = QApplication::Translate('Checking Account Lookups As Checkaccountlookup');
-			$this->lstCheckingAccountLookupsAsCheckaccountlookup->SelectionMode = QSelectionMode::Multiple;
+		public function lstCheckingAccountLookups_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCheckingAccountLookups = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCheckingAccountLookups->Name = QApplication::Translate('Checking Account Lookups');
+			$this->lstCheckingAccountLookups->SelectionMode = QSelectionMode::Multiple;
 
 			// We need to know which items to "Pre-Select"
-			$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupAsCheckaccountlookupArray();
+			$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupArray();
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -1068,29 +1068,29 @@
 					if ($objAssociated->Id == $objCheckingAccountLookup->Id)
 						$objListItem->Selected = true;
 				}
-				$this->lstCheckingAccountLookupsAsCheckaccountlookup->AddItem($objListItem);
+				$this->lstCheckingAccountLookups->AddItem($objListItem);
 			}
 
 			// Return the QListControl
-			return $this->lstCheckingAccountLookupsAsCheckaccountlookup;
+			return $this->lstCheckingAccountLookups;
 		}
 
 		/**
-		 * Create and setup QLabel lblCheckingAccountLookupsAsCheckaccountlookup
+		 * Create and setup QLabel lblCheckingAccountLookups
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strGlue glue to display in between each associated object
 		 * @return QLabel
 		 */
-		public function lblCheckingAccountLookupsAsCheckaccountlookup_Create($strControlId = null, $strGlue = ', ') {
-			$this->lblCheckingAccountLookupsAsCheckaccountlookup = new QLabel($this->objParentObject, $strControlId);
-			$this->lstCheckingAccountLookupsAsCheckaccountlookup->Name = QApplication::Translate('Checking Account Lookups As Checkaccountlookup');
+		public function lblCheckingAccountLookups_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblCheckingAccountLookups = new QLabel($this->objParentObject, $strControlId);
+			$this->lstCheckingAccountLookups->Name = QApplication::Translate('Checking Account Lookups');
 			
-			$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupAsCheckaccountlookupArray();
+			$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupArray();
 			$strItems = array();
 			foreach ($objAssociatedArray as $objAssociated)
 				$strItems[] = $objAssociated->__toString();
-			$this->lblCheckingAccountLookupsAsCheckaccountlookup->Text = implode($strGlue, $strItems);
-			return $this->lblCheckingAccountLookupsAsCheckaccountlookup;
+			$this->lblCheckingAccountLookups->Text = implode($strGlue, $strItems);
+			return $this->lblCheckingAccountLookups;
 		}
 
 		/**
@@ -1354,9 +1354,9 @@
 			}
 			if ($this->lblHouseholdAsHead) $this->lblHouseholdAsHead->Text = ($this->objPerson->HouseholdAsHead) ? $this->objPerson->HouseholdAsHead->__toString() : null;
 
-			if ($this->lstCheckingAccountLookupsAsCheckaccountlookup) {
-				$this->lstCheckingAccountLookupsAsCheckaccountlookup->RemoveAllItems();
-				$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupAsCheckaccountlookupArray();
+			if ($this->lstCheckingAccountLookups) {
+				$this->lstCheckingAccountLookups->RemoveAllItems();
+				$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupArray();
 				$objCheckingAccountLookupArray = CheckingAccountLookup::LoadAll();
 				if ($objCheckingAccountLookupArray) foreach ($objCheckingAccountLookupArray as $objCheckingAccountLookup) {
 					$objListItem = new QListItem($objCheckingAccountLookup->__toString(), $objCheckingAccountLookup->Id);
@@ -1364,15 +1364,15 @@
 						if ($objAssociated->Id == $objCheckingAccountLookup->Id)
 							$objListItem->Selected = true;
 					}
-					$this->lstCheckingAccountLookupsAsCheckaccountlookup->AddItem($objListItem);
+					$this->lstCheckingAccountLookups->AddItem($objListItem);
 				}
 			}
-			if ($this->lblCheckingAccountLookupsAsCheckaccountlookup) {
-				$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupAsCheckaccountlookupArray();
+			if ($this->lblCheckingAccountLookups) {
+				$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupArray();
 				$strItems = array();
 				foreach ($objAssociatedArray as $objAssociated)
 					$strItems[] = $objAssociated->__toString();
-				$this->lblCheckingAccountLookupsAsCheckaccountlookup->Text = implode($strGlue, $strItems);
+				$this->lblCheckingAccountLookups->Text = implode($strGlue, $strItems);
 			}
 
 			if ($this->lstCommunicationLists) {
@@ -1425,12 +1425,12 @@
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
 
-		protected function lstCheckingAccountLookupsAsCheckaccountlookup_Update() {
-			if ($this->lstCheckingAccountLookupsAsCheckaccountlookup) {
-				$this->objPerson->UnassociateAllCheckingAccountLookupsAsCheckaccountlookup();
-				$objSelectedListItems = $this->lstCheckingAccountLookupsAsCheckaccountlookup->SelectedItems;
+		protected function lstCheckingAccountLookups_Update() {
+			if ($this->lstCheckingAccountLookups) {
+				$this->objPerson->UnassociateAllCheckingAccountLookups();
+				$objSelectedListItems = $this->lstCheckingAccountLookups->SelectedItems;
 				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
-					$this->objPerson->AssociateCheckingAccountLookupAsCheckaccountlookup(CheckingAccountLookup::Load($objListItem->Value));
+					$this->objPerson->AssociateCheckingAccountLookup(CheckingAccountLookup::Load($objListItem->Value));
 				}
 			}
 		}
@@ -1504,7 +1504,7 @@
 				$this->objPerson->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
-				$this->lstCheckingAccountLookupsAsCheckaccountlookup_Update();
+				$this->lstCheckingAccountLookups_Update();
 				$this->lstCommunicationLists_Update();
 				$this->lstNameItems_Update();
 			} catch (QCallerException $objExc) {
@@ -1518,7 +1518,7 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeletePerson() {
-			$this->objPerson->UnassociateAllCheckingAccountLookupsAsCheckaccountlookup();
+			$this->objPerson->UnassociateAllCheckingAccountLookups();
 			$this->objPerson->UnassociateAllCommunicationLists();
 			$this->objPerson->UnassociateAllNameItems();
 			$this->objPerson->Delete();
@@ -1713,12 +1713,12 @@
 				case 'HouseholdAsHeadLabel':
 					if (!$this->lblHouseholdAsHead) return $this->lblHouseholdAsHead_Create();
 					return $this->lblHouseholdAsHead;
-				case 'CheckingAccountLookupAsCheckaccountlookupControl':
-					if (!$this->lstCheckingAccountLookupsAsCheckaccountlookup) return $this->lstCheckingAccountLookupsAsCheckaccountlookup_Create();
-					return $this->lstCheckingAccountLookupsAsCheckaccountlookup;
-				case 'CheckingAccountLookupAsCheckaccountlookupLabel':
-					if (!$this->lblCheckingAccountLookupsAsCheckaccountlookup) return $this->lblCheckingAccountLookupsAsCheckaccountlookup_Create();
-					return $this->lblCheckingAccountLookupsAsCheckaccountlookup;
+				case 'CheckingAccountLookupControl':
+					if (!$this->lstCheckingAccountLookups) return $this->lstCheckingAccountLookups_Create();
+					return $this->lstCheckingAccountLookups;
+				case 'CheckingAccountLookupLabel':
+					if (!$this->lblCheckingAccountLookups) return $this->lblCheckingAccountLookups_Create();
+					return $this->lblCheckingAccountLookups;
 				case 'CommunicationListControl':
 					if (!$this->lstCommunicationLists) return $this->lstCommunicationLists_Create();
 					return $this->lstCommunicationLists;
@@ -1809,8 +1809,8 @@
 						return ($this->txtPrimaryPhoneText = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':
 						return ($this->lstHouseholdAsHead = QType::Cast($mixValue, 'QControl'));
-					case 'CheckingAccountLookupAsCheckaccountlookupControl':
-						return ($this->lstCheckingAccountLookupsAsCheckaccountlookup = QType::Cast($mixValue, 'QControl'));
+					case 'CheckingAccountLookupControl':
+						return ($this->lstCheckingAccountLookups = QType::Cast($mixValue, 'QControl'));
 					case 'CommunicationListControl':
 						return ($this->lstCommunicationLists = QType::Cast($mixValue, 'QControl'));
 					case 'NameItemControl':

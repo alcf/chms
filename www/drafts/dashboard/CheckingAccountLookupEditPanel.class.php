@@ -25,7 +25,7 @@
 		public $txtAccountHash;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		public $lstPeopleAsCheckaccountlookup;
+		public $lstPeople;
 
 		// Other Controls
 		public $btnSave;
@@ -56,7 +56,7 @@
 			$this->lblId = $this->mctCheckingAccountLookup->lblId_Create();
 			$this->txtTransitHash = $this->mctCheckingAccountLookup->txtTransitHash_Create();
 			$this->txtAccountHash = $this->mctCheckingAccountLookup->txtAccountHash_Create();
-			$this->lstPeopleAsCheckaccountlookup = $this->mctCheckingAccountLookup->lstPeopleAsCheckaccountlookup_Create();
+			$this->lstPeople = $this->mctCheckingAccountLookup->lstPeople_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

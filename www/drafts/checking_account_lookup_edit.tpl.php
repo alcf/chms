@@ -21,7 +21,7 @@
 
 		<?php $this->txtAccountHash->RenderWithName(); ?>
 
-		<?php $this->lstPeopleAsCheckaccountlookup->RenderWithName(true, "Rows=7"); ?>
+		<?php $this->lstPeople->RenderWithName(true, "Rows=7"); ?>
 
 	</div>
 
