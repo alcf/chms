@@ -2,8 +2,12 @@
 	<div class="sectionButtons"><?php $_CONTROL->btnChangePerson->Render(); ?></div>
 	<div class="lvp" style="padding: 7px;">
 		<div class="left">Contributed By</div>
-		<div class="right"><?php _p($_CONTROL->mctContribution->StewardshipContribution->Person->LinkHtml, false); ?></div>
+		<div class="right"><?php _p($_CONTROL->mctContribution->StewardshipContribution->Person ?
+									$_CONTROL->mctContribution->StewardshipContribution->Person->LinkHtml :
+									'None', false); ?></div>
 	</div>
+
+<?php if ($_CONTROL->mctContribution->StewardshipContribution->Person) { ?>
 	<div class="lvp" style="padding: 7px;">
 		<div class="left">Primary Address</div>
 		<div class="right">
@@ -19,6 +23,8 @@
 ?>
 		</div>
 	</div>
+<?php } ?>
+
 	<div class="cleaner"></div>
 </div>
 

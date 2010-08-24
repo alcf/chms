@@ -25,7 +25,7 @@
 
 			// Creating New?
 			} else if ($this->strUrlHashArgument2) {
-				$objContribution = StewardshipContribution::CreateFromCheckImage($this->strUrlHashArgument2);
+				$objContribution = StewardshipContribution::CreateFromCheckImage(QApplication::$Login, $this->objStack, $this->strUrlHashArgument2);
 
 			// Error -- go back
 			} else {
@@ -70,7 +70,6 @@
 					$objAmount = $objAmountArray[$i];
 				else {
 					$objAmount = new StewardshipContributionAmount();
-					$objAmount->StewardshipContribution = $this->mctContribution->StewardshipContribution;
 				}
 
 				$mctAmount = new StewardshipContributionAmountMetaControl($this, $objAmount);
@@ -135,6 +134,7 @@
 				$lstFund = $mctAmount->StewardshipFundIdControl;
 				$txtAmount = $mctAmount->AmountControl;
 				if ($lstFund->SelectedValue && (floatval($txtAmount->Text))) {
+					$mctAmount->StewardshipContributionAmount->StewardshipContribution = $this->mctContribution->StewardshipContribution;
 					$mctAmount->SaveStewardshipContributionAmount();
 				} else if ($mctAmount->EditMode) {
 					$mctAmount->DeleteStewardshipContributionAmount();

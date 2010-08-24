@@ -107,7 +107,13 @@
 				$this->pxySelectPerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySelectPerson_Click'));
 				$this->pxySelectPerson->AddAction(new QClickEvent(), new QTerminateAction());
 
-				if (is_file($this->objContribution->Path)) {
+				if (!$this->objContribution->Id && is_file($this->objContribution->TempPath)) {
+					$this->imgCheckImage = new TiffImageControl($this);
+					$this->imgCheckImage->ImagePath = $this->objContribution->TempPath;
+					$this->imgCheckImage->Width = '424';
+					$this->imgCheckImage->Height = '200';
+
+				} else if ($this->objContribution->Id && is_file($this->objContribution->Path)) {
 					$this->imgCheckImage = new TiffImageControl($this);
 					$this->imgCheckImage->ImagePath = $this->objContribution->Path;
 					$this->imgCheckImage->Width = '424';
@@ -138,12 +144,14 @@
 		public function pnlPerson_Refresh() {
 			$this->pnlPerson->RemoveChildControls(true);
 			$this->imgPersonCheckImageArray = array();
-			foreach ($this->objSelectedPerson->GetStewardshipContributionArray(array(QQ::OrderBy(QQN::StewardshipContribution()->Id, false), QQ::LimitInfo(5))) as $objContribution) {
-				if (is_file($objContribution->Path)) {
-					$imgPersonCheckImage = new TiffImageControl($this->pnlPerson);
-					$imgPersonCheckImage->ImagePath = $objContribution->Path;
-					$imgPersonCheckImage->Width = '380';
-					$this->imgPersonCheckImageArray[] = $imgPersonCheckImage;
+			if ($this->objSelectedPerson) {
+				foreach ($this->objSelectedPerson->GetStewardshipContributionArray(array(QQ::OrderBy(QQN::StewardshipContribution()->Id, false), QQ::LimitInfo(5))) as $objContribution) {
+					if (is_file($objContribution->Path)) {
+						$imgPersonCheckImage = new TiffImageControl($this->pnlPerson);
+						$imgPersonCheckImage->ImagePath = $objContribution->Path;
+						$imgPersonCheckImage->Width = '380';
+						$this->imgPersonCheckImageArray[] = $imgPersonCheckImage;
+					}
 				}
 			}
 		}

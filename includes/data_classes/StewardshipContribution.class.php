@@ -16,6 +16,7 @@
 	class StewardshipContribution extends StewardshipContributionGen {
 		protected $objPossiblePeopleArray;
 		protected $objUnsavedCheckingAccountLookup;
+		protected $strCheckImageFileHash;
 
 		/**
 		 * Default "to string" handler
@@ -42,6 +43,9 @@
 					return __DOCROOT__ . '/../file_assets/contribution_images/' . $strSubFolderLetter;
 
 				case 'Path': return $this->Folder . '/' . $this->Id . '.tif';
+
+				// For recently scanned (and not yet saved) check images
+				case 'TempPath': return __MICRIMAGE_TEMP_FOLDER__ . '/' . $this->strCheckImageFileHash . '.tiff';
 
 				case 'Source':
 					switch ($this->StewardshipContributionTypeId) {
@@ -88,23 +92,26 @@
 			$objContribution->StewardshipStack = $objStack;
 			$objContribution->DateEntered = QDateTime::Now();
 
-			$arrTiffData = exif_read_data(__MICRIMAGE_TEMP_FOLDER__ . '/' . $strCheckImageFileHash . '.tiff');
+			$objContribution->strCheckImageFileHash = $strCheckImageFileHash;
+
+			$arrTiffData = exif_read_data($objContribution->TempPath);
 			if (array_key_exists('ImageDescription', $arrTiffData)) {
 				$arrCheckingData = self::ParseCheckingInformation($arrTiffData['ImageDescription']);
 				if ($arrCheckingData) {
+					$objContribution->CheckNumber = $arrCheckingData[2];
 					$objCheckingAccountLookup = CheckingAccountLookup::LoadByTransitAndAccount($arrCheckingData[0], $arrCheckingData[1]);
 					if ($objCheckingAccountLookup) {
-						$this->CheckingAccountLookup = $objCheckingAccountLookup;
+						$objContribution->CheckingAccountLookup = $objCheckingAccountLookup;
 						$objPersonArray = $objCheckingAccountLookup->GetPersonArray();
 						if (!count($objPersonArray)) {
-							$this->objPossiblePeopleArray = null;
+							$objContribution->objPossiblePeopleArray = null;
 						} else if (count($objPersonArray) == 1) {
-							$this->Person = $objPersonArray[0];
+							$objContribution->Person = $objPersonArray[0];
 						} else {
-							$this->objPossiblePeopleArray = $objPersonArray;
+							$objContribution->objPossiblePeopleArray = $objPersonArray;
 						}
 					} else {
-						$this->objUnsavedCheckingAccountLookup = CheckingAccountLookup::CreateUnsavedForTransitAndAccount($arrCheckingData[0], $arrCheckingData[1]);
+						$objContribution->objUnsavedCheckingAccountLookup = CheckingAccountLookup::CreateUnsavedForTransitAndAccount($arrCheckingData[0], $arrCheckingData[1]);
 					}
 				}
 			}
