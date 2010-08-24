@@ -36,14 +36,28 @@
 			}
 		}
 
+		protected $strCheckFilePath;
+
 		public function Form_Polling() {
 			$objDir = opendir(__MICRIMAGE_DROP_FOLDER__);
 			while ($strFilename = readdir($objDir)) {
 				if (($strFilename != '.') && ($strFilename != '..')) {
 					if ($this->objForm->IsPollingActive()) $this->objForm->ClearPollingProcessor();			
 					$this->dlgScanCheck->HideDialogBox();
+
+					// Capture the check image
+					$strHash = md5(microtime());
+					$this->strCheckFilePath = __MICRIMAGE_TEMP_FOLDER__ . '/' . $strHash . '.tiff';
+					rename(__MICRIMAGE_DROP_FOLDER__ . '/' . $strFilename, $this->strCheckFilePath);
+
+					// Move to Next Step
+					return $this->ReturnTo(sprintf('#%s/edit_contribution/0/%s', $this->objStack->StackNumber, $strHash));
 				}
 			}
+
+			// If we're here, then there was nothing
+			// Therefore, do nothing so that the polling processor activates again
+			return;
 		}
 
 		public function btnScanCheckCancel_Click() {

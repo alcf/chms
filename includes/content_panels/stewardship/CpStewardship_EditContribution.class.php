@@ -14,10 +14,23 @@
 		public $mctAmountArray;
 
 		protected function SetupPanel() {
-			$objContribution = StewardshipContribution::Load($this->strUrlHashArgument);
-			if ((!$objContribution) ||
-				($objContribution->StewardshipStackId != $this->objStack->Id) ||
-				($objContribution->StewardshipBatchId != $this->objBatch->Id)) {
+			// Editing an existing
+			if ($this->strUrlHashArgument) {
+				$objContribution = StewardshipContribution::Load($this->strUrlHashArgument);
+				if ((!$objContribution) ||
+					($objContribution->StewardshipStackId != $this->objStack->Id) ||
+					($objContribution->StewardshipBatchId != $this->objBatch->Id)) {
+					$this->ReturnTo('#' . $this->objStack->StackNumber);
+				}
+
+			// Creating New?
+			} else if ($this->strUrlHashArgument2) {
+				$objContribution = StewardshipContribution::CreateFromCheckImage($this->strUrlHashArgument2);
+				$objContribution->StewardshipStack = $this->objStack;
+				$objContribution->StewardshipBatch = $this->objBatch;
+
+			// Error -- go back
+			} else {
 				$this->ReturnTo('#' . $this->objStack->StackNumber);
 			}
 			

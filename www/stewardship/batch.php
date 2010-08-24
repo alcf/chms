@@ -122,7 +122,8 @@
 			$intStackNumber = $strUrlHashTokens[0];
 			$strCommand = (array_key_exists(1, $strUrlHashTokens)) ? $strUrlHashTokens[1] : null;
 			$strUrlHashArgument = (array_key_exists(2, $strUrlHashTokens)) ? $strUrlHashTokens[2] : null;
-
+			$strUrlHashArgument2 = (array_key_exists(3, $strUrlHashTokens)) ? $strUrlHashTokens[3] : null;
+			
 			// Did we switch the stack?
 			if (!$this->objStack || ($this->objStack->StackNumber != $intStackNumber)) {
 				// Save the "Old" Stack (if applicable)
@@ -151,7 +152,7 @@
 
 			$strClassName = sprintf('CpStewardship_%s', QString::ConvertToCamelCase($strCommand));
 			if (class_exists($strClassName, true)) {
-				new $strClassName($this->pnlContent, 'content', $this->objBatch, $this->objStack, $strUrlHashArgument);
+				new $strClassName($this->pnlContent, 'content', $this->objBatch, $this->objStack, $strUrlHashArgument, $strUrlHashArgument2);
 				QApplication::ExecuteJavaScript('ScrollToBottom();');
 			} else {
 				QApplication::Redirect('#1');

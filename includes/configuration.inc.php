@@ -19,6 +19,7 @@
 					// the includes/ directory with the contents "mike"
 					define ('__DOCROOT__', '/var/www/alcf/chms/www');
 					define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
+					define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
 					break;
 				case 'harris':
 					define ('__DOCROOT__', 'c:/chms/www');

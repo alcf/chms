@@ -14,6 +14,8 @@
 	 * 
 	 */
 	class CheckingAccountLookup extends CheckingAccountLookupGen {
+		const HashSalt = '$0jfdas@&UIJf)Dfsjg39-138k';
+
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -27,6 +29,17 @@
 			return sprintf('CheckingAccountLookup Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will calculate the hash value and return an object, if exists
+		 * @param string $strTransitNumber
+		 * @param string $strAccountNumber
+		 * @return CheckingAccountLookup or null if doesn't exist
+		 */
+		public static function LoadByTransitAndAccount($strTransitNumber, $strAccountNumber) {
+			$strTransitHash = md5(self::HashSalt . $strTransitNumber);
+			$strAccountHash = md5(self::HashSalt . $strAccountNumber);
+			return self::LoadByTransitHashAccountHash($strTransitHash, $strAccountHash);
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

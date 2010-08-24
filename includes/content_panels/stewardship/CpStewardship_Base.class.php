@@ -16,6 +16,11 @@
 		public $strUrlHashArgument;
 
 		/**
+		 * @var string
+		 */
+		public $strUrlHashArgument2;
+
+		/**
 		 * @var QButton
 		 */
 		public $btnSave;
@@ -25,7 +30,7 @@
 		 */
 		public $btnCancel;
 
-		public function __construct($objParentObject, $strControlId = null, StewardshipBatch $objBatch, StewardshipStack $objStack = null, $strUrlHashArgument) {
+		public function __construct($objParentObject, $strControlId = null, StewardshipBatch $objBatch, StewardshipStack $objStack = null, $strUrlHashArgument1 = null, $strUrlHashArgument2 = null) {
 			try {
 				parent::__construct($objParentObject, $strControlId);
 			} catch (QCallerException $objExc) {
@@ -36,7 +41,8 @@
 			$this->strTemplate = dirname(__FILE__) . '/' . get_class($this) . '.tpl.php';
 			$this->objBatch = $objBatch;
 			$this->objStack = $objStack;
-			$this->strUrlHashArgument = $strUrlHashArgument;
+			$this->strUrlHashArgument = $strUrlHashArgument1;
+			$this->strUrlHashArgument2 = $strUrlHashArgument2;
 
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
