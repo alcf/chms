@@ -271,7 +271,7 @@
 
 			$this->SaveSelectedFundsToSession();
 
-			if ($strControlId == $this->btnSaveAndScanAgain->ControlId) {
+			if ($this->btnSaveAndScanAgain && ($strControlId == $this->btnSaveAndScanAgain->ControlId)) {
 				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view/scan');
 			} else {
 				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view_contribution/' . $this->mctContribution->StewardshipContribution->Id);
