@@ -280,6 +280,8 @@ div.shopInfo div.shopLeft { float: left; }
 	div.sectionStewardshipAmount div.amount div.value input.textbox { text-align: right; width: 80px; }
 	div.sectionStewardshipAmount div.amountTotal { background-color: #5a768e; font-weight: bold; -moz-border-radius: 0 0 5px 5px;} 
 
+	div.errorMessage { padding: 5px; border-width: 1px; border-style: solid; border-color: #600; font: 12px 'Arial', 'Helvetica'; color: #600; background-color: #fee; margin: 5px; }
+	
 	
 	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }
@@ -290,6 +292,7 @@ div.shopInfo div.shopLeft { float: left; }
 			table.datagrid tr.alternate { background-color: #e3e3e3; }
 			table.datagrid tr td { border-style: solid; border-width: 1px 0 0 0; border-color: #cec0ce; }
 			table.datagrid tr:hover {background-color: #eee3ee;}
+			table.datagrid tr.selected {background-color: #e3eee3; font-weight: bold; }
 		table.datagrid th { background: url(/assets/images/datagrid_header_background.png); padding: 5px 5px 5px 5px; text-align: left; font-family: trebuchet ms; }
 			table.datagrid th a { color: #000; text-decoration: none; }
 			table.datagrid th a:hover { color: #000; text-decoration: underline;}

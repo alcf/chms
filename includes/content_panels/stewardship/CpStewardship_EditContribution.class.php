@@ -14,6 +14,36 @@
 		public $mctAmountArray;
 		public $btnSaveAndScanAgain;
 
+		public $pnlPersonError;
+		public $pnlFundingError;
+
+		/**
+		 * This methods will save the currently selected funds to session, so that the next time
+		 * this pops up, it will "remember" the last used funds
+		 */
+		public function SaveSelectedFundsToSession() {
+			$strArray = array();
+			foreach ($this->mctAmountArray as $mctAmount) {
+				$lstFund = $mctAmount->StewardshipFundIdControl;
+				if ($lstFund->SelectedValue) $strArray[] = $lstFund->SelectedValue;
+			}
+
+			$_SESSION['strSelectedFundArray'] = implode(',', $strArray);
+		}
+
+		/**
+		 * This method will restore the "last used funds" and pre-select them for here
+		 */
+		public function LoadSelectedFundsFromSession() {
+			if (array_key_exists('strSelectedFundArray', $_SESSION)) {
+				$strArray = explode(',', $_SESSION['strSelectedFundArray']);
+				foreach ($strArray as $intIndex => $intFundId) {
+					$this->mctAmountArray[$intIndex]->StewardshipFundIdControl->SelectedValue = $intFundId;
+					$this->lstFund_Change(null, $this->mctAmountArray[$intIndex]->StewardshipFundIdControl->ControlId, $intIndex);
+				}
+			}
+		}
+
 		protected function SetupPanel() {
 			// Editing an existing
 			if ($this->strUrlHashArgument) {
@@ -39,11 +69,14 @@
 				case StewardshipContributionType::Check:
 				case StewardshipContributionType::ReturnedCheck:
 					$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
+					$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+					$this->txtCheckNumber->Select();
 					break;
 
 				case StewardshipContributionType::CreditCard:
 				case StewardshipContributionType::CreditCardRecurring:
 					$this->txtAuthorization = $this->mctContribution->txtAuthorizationNumber_Create();
+					$this->txtAuthorization->Select();
 					break;
 
 				case StewardshipContributionType::Cash:
@@ -53,6 +86,7 @@
 				case StewardshipContributionType::Automobile:
 				case StewardshipContributionType::Other:
 					$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
+					$this->txtAlternateSource->Select();
 					break;
 
 				default:
@@ -62,6 +96,14 @@
 			// Setup Total Amount
 			$this->lblTotalAmount = new QLabel($this);
 			$this->lblTotalAmount->HtmlEntities = false;
+
+			// Setup Error Panels
+			$this->pnlFundingError = new QPanel($this);
+			$this->pnlFundingError->Visible = false;
+			$this->pnlFundingError->CssClass = 'errorMessage';
+			$this->pnlPersonError = new QPanel($this);
+			$this->pnlPersonError->Visible = false;
+			$this->pnlPersonError->CssClass = 'errorMessage';
 
 			// Setup AmountArray
 			$this->mctAmountArray = array();
@@ -88,13 +130,11 @@
 				$this->lstFund_Change(null, null, $i);
 
 				$txtAmount->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblTotalAmount_Refresh'));
-				$txtAmount->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'lblTotalAmount_Refresh'));
+				$txtAmount->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtAmount_Enter'));
 				$txtAmount->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 				$this->lblTotalAmount_Refresh(null, null, null);
 			}
 
-			$this->mctAmountArray[0]->AmountControl->Select();
-			
 			// Setup ChangePerson Dialog stuff
 			$this->dlgChangePerson = new StewardshipSelectPersonDialogBox($this, null, $objContribution, $this, 'dlgChangePerson_Select');
 			
@@ -110,6 +150,7 @@
 				$this->btnSaveAndScanAgain->Text = 'Save and Scan Next Check';
 				$this->btnSaveAndScanAgain->CssClass = 'primary';
 				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+				$this->LoadSelectedFundsFromSession();
 			} else {
 				$this->btnSave->Text = 'Update';
 			}
@@ -125,24 +166,29 @@
 
 			// We found a bunch of people tied to this account
 			if ($this->mctContribution->StewardshipContribution->PossiblePeopleArray) {
-				// TODO
-				QApplication::DisplayAlert('TODO - deal with multiple people found');
+				$this->btnChangePerson_Click(null, null, null);
 				return;
 			}
 
 			// We didn't find anyone, but do have a valid check MICR read
 			if ($this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup) {
 				$this->btnChangePerson_Click(null, null, null);
+				$this->dlgChangePerson->dtgPeople->NoDataHtml = '<div class="section sectionBatchInfo"><strong>No Linked Individuals</strong><br/><br/>' .
+					'No records found that matched this checking account and transit information.<br/>' .
+					'Use above fields to find the appropriate individual.</div>';			
 				return;
 			}
 
 			// If we're here ,then it's clear We don't even have a good check read
-			// TODO
-			QApplication::DisplayAlert('TODO - not a valid check read');
+			$this->btnChangePerson_Click(null, null, null);
+			$this->dlgChangePerson->dtgPeople->NoDataHtml = '<div class="section sectionBatchInfo"><strong>MICR Read Error</strong><br/><br/>Check MICR was not scanned cleanly.<br/>' .
+				'You may proceed, but note that the checking account and transit information will not be saved.</div>';	
 			return;
 		}
 
 		public function lstFund_Change($strFormId, $strControlId, $strParameter) {
+			$this->pnlFundingError->Visible = false;
+
 			$mctAmount = $this->mctAmountArray[$strParameter];
 			$lstFund = $mctAmount->StewardshipFundIdControl;
 			$txtAmount = $mctAmount->AmountControl;
@@ -153,8 +199,18 @@
 				$txtAmount->Text = '0.00';
 			}
 
-			// Refresh the Totals (if via ajax call)
-			if ($strFormId) $this->lblTotalAmount_Refresh(null, null, null);
+			// Refresh the Totals (if via ajax call) and select the textbox
+			if ($strFormId) {
+				$this->lblTotalAmount_Refresh(null, null, null);
+				$txtAmount->Select();
+			}
+		}
+
+
+		public function txtAmount_Enter($strFormId, $strControlId, $strParameter) {
+			$this->lblTotalAmount_Refresh($strFormId, $strControlId, $strParameter);
+			if ($this->btnSaveAndScanAgain) $this->btnSave_Click($strFormId, $this->btnSaveAndScanAgain->ControlId, $strParameter);
+			else $this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter);
 		}
 
 		public function lblTotalAmount_Refresh($strFormId, $strControlId, $strParameter) {
@@ -166,6 +222,25 @@
 		}
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			// Validate
+			if (!$this->mctContribution->StewardshipContribution->PersonId) {
+				$this->pnlPersonError->Text = 'You must select a person';
+				$this->pnlPersonError->Visible = true;
+			}
+
+			$blnFound = false;
+			foreach ($this->mctAmountArray as $mctAmount) {
+				$lstFund = $mctAmount->StewardshipFundIdControl;
+				if ($lstFund->SelectedValue) $blnFound = true;
+			}
+			if (!$blnFound) {
+				$this->pnlFundingError->Text = 'You must select at least one fund';
+				$this->pnlFundingError->Visible = true;
+			}
+
+			if ($this->pnlFundingError->Visible || $this->pnlPersonError->Visible)
+				return;
+
 			if ($this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup) {
 				$this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup->Save();
 				$this->mctContribution->StewardshipContribution->CheckingAccountLookup = $this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup;
@@ -193,7 +268,9 @@
 			$this->objForm->pnlBatchTitle->Refresh();
 			$this->objForm->dtgContributions_Refresh();
 			$this->objForm->pnlStack_Refresh($this->objStack);
-			
+
+			$this->SaveSelectedFundsToSession();
+
 			if ($strControlId == $this->btnSaveAndScanAgain->ControlId) {
 				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view/scan');
 			} else {
@@ -206,6 +283,7 @@
 		}
 
 		public function btnChangePerson_Click() {
+			$this->pnlPersonError->Visible = false;
 			$this->dlgChangePerson->ShowDialogBox();
 		}
 
@@ -215,6 +293,10 @@
 				$this->mctContribution->StewardshipContribution->Person = $objPerson;
 				$this->Refresh();
 			}
+
+			if ($this->txtCheckNumber) $this->txtCheckNumber->Select();
+			if ($this->txtAuthorization) $this->txtAuthorization->Select();
+			if ($this->txtAlternateSource) $this->txtAlternateSource->Select();
 		}
 	}
 ?>

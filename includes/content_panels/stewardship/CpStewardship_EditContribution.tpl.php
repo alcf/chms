@@ -1,4 +1,5 @@
 <div class="section" style="padding: 3px;">
+	<?php $_CONTROL->pnlPersonError->Render(); ?>
 	<div class="sectionButtons"><?php $_CONTROL->btnChangePerson->Render(); ?></div>
 	<div class="lvp" style="padding: 7px;">
 		<div class="left">Contributed By</div>
@@ -44,6 +45,7 @@
 
 <h3>Funding Accounts</h3>
 <div class="section sectionStewardshipAmount">
+	<?php $_CONTROL->pnlFundingError->Render(); ?>
 <?php foreach ($_CONTROL->mctAmountArray as $intIndex => $mctAmount) { ?>
 	<div class="amount">
 		<div class="fund"><?php $mctAmount->StewardshipFundIdControl->Render(); ?></div>

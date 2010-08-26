@@ -46,8 +46,14 @@
 				$this->btnCancel = new QLinkButton($this);
 				$this->btnCancel->Text = 'Cancel';
 				$this->btnCancel->CssClass = 'cancel';
-				$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
-				$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+				if ($this->objParentControl->mctContribution->EditMode) {
+					$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
+					$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+				} else {
+					$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
+					$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction("document.location='#" . $this->objParentControl->objStack->StackNumber . "/view/scan';"));
+					$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+				}
 
 				$this->dtgPeople = new PersonDataGrid($this);
 				$this->dtgPeople->Paginator = new QPaginator($this->dtgPeople);
@@ -139,6 +145,7 @@
 		public function pxySelectPerson_Click($strFormId, $strControlId, $strParameter) {
 			$this->objSelectedPerson = Person::Load($strParameter);
 			$this->pnlPerson_Refresh();
+			$this->dtgPeople->Refresh();
 		}
 		
 		public function pnlPerson_Refresh() {
@@ -157,6 +164,11 @@
 		}
 
 		public function btnSelect_Click() {
+			if (!$this->objSelectedPerson) {
+				QApplication::DisplayAlert('Please select a person before proceeding');
+				return;
+			}
+
 			$objMethodCallback = $this->objMethodCallback;
 			$strMethodCallback = $this->strMethodCallback;
 			$objMethodCallback->$strMethodCallback($this->objSelectedPerson);
@@ -164,6 +176,15 @@
 		}
 
 		public function RenderName(Person $objPerson) {
+			if ($this->objSelectedPerson && ($this->objSelectedPerson->Id == $objPerson->Id)) {
+				$objRowStyle = new QDataGridRowStyle();
+				$objRowStyle->CssClass = 'selected';
+			} else {
+				$objRowStyle = null;
+			}
+
+			$this->dtgPeople->OverrideRowStyle($this->dtgPeople->CurrentRowIndex, $objRowStyle);
+
 			return sprintf('<a href="#" %s>%s</a>', $this->pxySelectPerson->RenderAsEvents($objPerson->Id, false), $objPerson->Name);
 		}
 
@@ -211,7 +232,17 @@
 				);
 			}
 
-			if (!$blnSearch) $objConditions = QQ::None();
+			// No Search Parameters -- Let's see if we should find the check account folks first
+			if (!$blnSearch) {
+				if ($this->objParentControl->mctContribution->StewardshipContribution->PossiblePeopleArray) {
+					$objConditions = QQ::Equal(QQN::Person()->CheckingAccountLookup->CheckingAccountLookupId, $this->objParentControl->mctContribution->StewardshipContribution->CheckingAccountLookupId);
+				} else {
+					$objConditions = QQ::None();
+				}
+			} else {
+				$this->dtgPeople->NoDataHtml = 'No results found.  Please re-specify a search criteria above.';
+			}
+
 			$this->dtgPeople->MetaDataBinder($objConditions);
 		}
 	}
