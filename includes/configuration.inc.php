@@ -18,9 +18,12 @@
 					// only applies if there is a configuration.local file saved in
 					// the includes/ directory with the contents "mike"
 					define ('__DOCROOT__', '/var/www/alcf/chms/www');
-					define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
 					define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
+
+					define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');	// For Local Dev
+					// define ('__MICRIMAGE_DROP_FOLDER__', '/Volumes/magtek');				// For CheckReader Testing -- Make sure you set this up in Finder
 					break;
+
 				case 'harris':
 					define ('__DOCROOT__', 'c:/chms/www');
 					define('ACS_DATA_PATH', 'c:/ACSNET/ACSDATA');
