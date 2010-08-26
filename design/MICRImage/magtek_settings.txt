@@ -27,6 +27,8 @@ PR18=
 PR19=
 HW =00011000
 
+FC = 70 00
+
 
 ED
 Link detected.

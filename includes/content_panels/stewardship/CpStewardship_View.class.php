@@ -46,7 +46,7 @@
 		public function Form_Polling() {
 			$objDir = opendir(__MICRIMAGE_DROP_FOLDER__);
 			while ($strFilename = readdir($objDir)) {
-				if (($strFilename != '.') && ($strFilename != '..')) {
+				if (($strFilename != '.') && ($strFilename != '..') && @exif_read_data(__MICRIMAGE_DROP_FOLDER__ . '/' . $strFilename)) {
 					if ($this->objForm->IsPollingActive()) $this->objForm->ClearPollingProcessor();			
 					$this->dlgScanCheck->HideDialogBox();
 

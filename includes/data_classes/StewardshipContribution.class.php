@@ -102,7 +102,7 @@
 			if (array_key_exists('ImageDescription', $arrTiffData)) {
 				$arrCheckingData = self::ParseCheckingInformation($arrTiffData['ImageDescription']);
 				if ($arrCheckingData) {
-					$objContribution->CheckNumber = $arrCheckingData[2];
+					if (intval($arrCheckingData[2])) $objContribution->CheckNumber = intval($arrCheckingData[2]);
 					$objCheckingAccountLookup = CheckingAccountLookup::LoadByTransitAndAccount($arrCheckingData[0], $arrCheckingData[1]);
 					if ($objCheckingAccountLookup) {
 						$objContribution->CheckingAccountLookup = $objCheckingAccountLookup;
@@ -128,6 +128,7 @@
 		 * 	0:	Routing Number
 		 *	1:	Checking Account Number
 		 *	2:	Check Number
+		 *	3:	Amount (optional)
 		 * @param string $strCheckInfo
 		 * @return string[]
 		 */
@@ -138,32 +139,15 @@
 				return null;
 			}
 
-			if (substr($strCheckInfo, 0, 1) == 'T') {
-				$strCheckInfo = substr($strCheckInfo, 1);
-				
-				if (strpos($strCheckInfo, 'T') === false) {
-					QLog::Log('Cannot Read Check Info: ' . $strCheckInfo);
-					return null;
-				}
-				$strTokens = explode('T', $strCheckInfo);
-				$strRouting = trim($strTokens[0]);
-				$strRemainder = trim($strTokens[1]);
-
-				if (strpos($strRemainder, 'U') === false) {
-					QLog::Log('Cannot Read Check Info: ' . $strCheckInfo);
-					return null;
-				}
-				$strTokens = explode('U', $strRemainder);
-				$strAccountNumber = trim($strTokens[0]);
-				$strCheckNumber = trim($strTokens[1]);
-
-				return array($strRouting, $strAccountNumber, $strCheckNumber);
-			} else {
-				QLog::Log('Cannot Read Check Info: ' . $strCheckInfo);
-				return null;
+			$strTokens = explode(',', $strCheckInfo);
+			if ((count($strTokens) == 3) || (count($strTokens) == 4)) {
+				if ((strlen($strTokens[0]) == 9) && (strlen($strTokens[1]) > 4)) return $strTokens;
 			}
+
+			QLog::Log('Cannot Read Check Info: ' . $strCheckInfo);
+			return null;
 		}
-		
+
 		/**
 		 * Creates a new Contribution record.  The $mixAmountArray shouuld be an array of array items, where each array item is
 		 * indexed with
