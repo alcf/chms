@@ -24,6 +24,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $AccountNumberControl
 	 * property-read QLabel $AccountNumberLabel
+	 * property QCheckBox $ActiveFlagControl
+	 * property-read QLabel $ActiveFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -40,11 +42,13 @@
 		protected $lstMinistry;
 		protected $txtName;
 		protected $txtAccountNumber;
+		protected $chkActiveFlag;
 
 		// Controls that allow the viewing of StewardshipFund's individual data fields
 		protected $lblMinistryId;
 		protected $lblName;
 		protected $lblAccountNumber;
+		protected $lblActiveFlag;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -248,6 +252,30 @@
 			return $this->lblAccountNumber;
 		}
 
+		/**
+		 * Create and setup QCheckBox chkActiveFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkActiveFlag_Create($strControlId = null) {
+			$this->chkActiveFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkActiveFlag->Name = QApplication::Translate('Active Flag');
+			$this->chkActiveFlag->Checked = $this->objStewardshipFund->ActiveFlag;
+			return $this->chkActiveFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblActiveFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblActiveFlag_Create($strControlId = null) {
+			$this->lblActiveFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblActiveFlag->Name = QApplication::Translate('Active Flag');
+			$this->lblActiveFlag->Text = ($this->objStewardshipFund->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblActiveFlag;
+		}
+
 
 
 		/**
@@ -280,6 +308,9 @@
 			if ($this->txtAccountNumber) $this->txtAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 			if ($this->lblAccountNumber) $this->lblAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 
+			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objStewardshipFund->ActiveFlag;
+			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objStewardshipFund->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 		}
 
 
@@ -306,6 +337,7 @@
 				if ($this->lstMinistry) $this->objStewardshipFund->MinistryId = $this->lstMinistry->SelectedValue;
 				if ($this->txtName) $this->objStewardshipFund->Name = $this->txtName->Text;
 				if ($this->txtAccountNumber) $this->objStewardshipFund->AccountNumber = $this->txtAccountNumber->Text;
+				if ($this->chkActiveFlag) $this->objStewardshipFund->ActiveFlag = $this->chkActiveFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -372,6 +404,12 @@
 				case 'AccountNumberLabel':
 					if (!$this->lblAccountNumber) return $this->lblAccountNumber_Create();
 					return $this->lblAccountNumber;
+				case 'ActiveFlagControl':
+					if (!$this->chkActiveFlag) return $this->chkActiveFlag_Create();
+					return $this->chkActiveFlag;
+				case 'ActiveFlagLabel':
+					if (!$this->lblActiveFlag) return $this->lblActiveFlag_Create();
+					return $this->lblActiveFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -402,6 +440,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'AccountNumberControl':
 						return ($this->txtAccountNumber = QType::Cast($mixValue, 'QControl'));
+					case 'ActiveFlagControl':
+						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

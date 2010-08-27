@@ -193,6 +193,7 @@ INSERT INTO other_contact_method VALUES(null, 'AOL Instant Messenger');
 INSERT INTO other_contact_method VALUES(null, 'Yahoo! Messenger');
 
 INSERT INTO attribute VALUES (null, 4, 'ACS Individual Number');
+INSERT INTO attribute VALUES (null, 4, 'ACS Individual ID');
 INSERT INTO attribute VALUES (null, 4, 'ACS Family Number');
 INSERT INTO attribute VALUES (null, 4, 'ACS Family Position');
 INSERT INTO attribute VALUES (null, 5, 'Method of Joining ALCF');

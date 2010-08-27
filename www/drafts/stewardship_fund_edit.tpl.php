@@ -23,6 +23,8 @@
 
 		<?php $this->txtAccountNumber->RenderWithName(); ?>
 
+		<?php $this->chkActiveFlag->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

@@ -69,6 +69,7 @@
 			$this->dtgStewardshipFunds->MetaAddColumn(QQN::StewardshipFund()->Ministry);
 			$this->dtgStewardshipFunds->MetaAddColumn('Name');
 			$this->dtgStewardshipFunds->MetaAddColumn('AccountNumber');
+			$this->dtgStewardshipFunds->MetaAddColumn('ActiveFlag');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);
