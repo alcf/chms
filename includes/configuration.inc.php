@@ -36,6 +36,7 @@
 						'password' => '',
 						'profiling' => false)));
 					break;
+
 				case 'acs':
 					define ('__DOCROOT__', 'c:/chms/www');
 					define('ACS_DATA_PATH', 'c:/ACSNET/ACSDATA');
@@ -50,9 +51,11 @@
 						'password' => '',
 						'profiling' => false)));
 					break;
+
 				case 'john':
 					define ('__DOCROOT__', 'C:/xampplite/htdocs/alcf/www');
 					break;
+
 				default:
 					// Default Development Configuration (unless otherwise overridden)
 					define ('__DOCROOT__', '/var/www/chms.alcf.dev/www');
@@ -75,6 +78,9 @@
 
 		case 'stage':
 			define ('__DOCROOT__', '/var/www/stage.chms.alcf.net/www');
+			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
+			define ('__MICRIMAGE_DROP_FOLDER__', '/home/magtek');
+
 			define('DB_CONNECTION_1', serialize(array(
 				'adapter' => 'MySqli5',
 				'server' => 'localhost',
