@@ -68,6 +68,8 @@
 			switch ($this->mctContribution->StewardshipContribution->StewardshipContributionTypeId) {
 				case StewardshipContributionType::Check:
 				case StewardshipContributionType::ReturnedCheck:
+				case StewardshipContributionType::CorporateMatch:
+				case StewardshipContributionType::CorporateMatchNonDeductible:
 					$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
 					$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 					$this->txtCheckNumber->Select();
@@ -80,8 +82,6 @@
 					break;
 
 				case StewardshipContributionType::Cash:
-				case StewardshipContributionType::CorporateMatch:
-				case StewardshipContributionType::CorporateMatchNonDeductible:
 				case StewardshipContributionType::StockDonation:
 				case StewardshipContributionType::Automobile:
 				case StewardshipContributionType::Other:
