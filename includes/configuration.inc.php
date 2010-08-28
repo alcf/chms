@@ -20,6 +20,7 @@
 					define ('__DOCROOT__', '/var/www/alcf/chms/www');
 					define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
 					define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
+					define ('MICRIMAGE_IP', '10.128.2.88');
 					break;
 
 				case 'harris':
@@ -80,6 +81,7 @@
 			define ('__DOCROOT__', '/var/www/stage.chms.alcf.net/www');
 			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
 			define ('__MICRIMAGE_DROP_FOLDER__', '/home/magtek');
+			define ('MICRIMAGE_IP', '10.128.2.88');
 
 			define('DB_CONNECTION_1', serialize(array(
 				'adapter' => 'MySqli5',
