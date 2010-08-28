@@ -31,7 +31,7 @@
 	 */
 
 	// Versioning Information
-	define('QCODO_VERSION', '0.4.16');
+	define('QCODO_VERSION', '0.4.17');
 
 	// Preload Required Framework Classes
 	require(__QCODO_CORE__ . '/framework/QBaseClass.class.php');
@@ -106,7 +106,8 @@
 
 	QApplicationBase::$ClassFile['qcalendar'] = __QCODO_CORE__ . '/qform/QCalendar.class.php';
 	QApplicationBase::$ClassFile['qcalendarpopup'] = __QCODO_CORE__ . '/qform/QCalendarPopup.class.php';
-	QApplicationBase::$ClassFile['qdatetimepicker'] = __QCODO_CORE__ . '/qform/QDateTimePicker.class.php';
+	QApplicationBase::$ClassFile['qdatetimepicker'] = __QCODO__ . '/qform/QDateTimePicker.class.php';
+	QApplicationBase::$ClassFile['qdatetimepickerbase'] = __QCODO_CORE__ . '/qform/QDateTimePickerBase.class.php';
 	QApplicationBase::$ClassFile['qdatetimetextbox'] = __QCODO_CORE__ . '/qform/QDateTimeTextBox.class.php';
 
 	QApplicationBase::$ClassFile['qcheckbox'] = __QCODO_CORE__ . '/qform/QCheckBox.class.php';
