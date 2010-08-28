@@ -17,6 +17,6 @@
 			ChmsForm::NavSectionCommunications => array('Email Lists', '/communications/'),
 			ChmsForm::NavSectionStewardship => array('Stewardship', '/stewardship/'),
 			ChmsForm::NavSectionAdministration => array('Administration', '/admin/')
-			);
+		);
 	}
 ?>
