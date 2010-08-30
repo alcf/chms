@@ -34,8 +34,6 @@
 	}
 	QDataGen::DisplayForEachTaskEnd('Refreshing Household data');
 
-
-
 	$objStewardshipCursor = StewardshipContribution::QueryCursor(QQ::All());
 	QDataGEn::DisplayForEachTaskStart('Refreshing Contributions', StewardshipContribution::CountAll());
 	while ($objContribution = StewardshipContribution::InstantiateCursor($objStewardshipCursor)) {
@@ -52,11 +50,9 @@
 	}
 
 	$objStewardshipCursor = StewardshipBatch::QueryCursor(QQ::All());
-	QDataGEn::DisplayForEachTaskStart('Refreshing Batchs', StewardshipBatch::CountAll());
+	QDataGEn::DisplayForEachTaskStart('Refreshing Batches', StewardshipBatch::CountAll());
 	while ($objBatch = StewardshipBatch::InstantiateCursor($objStewardshipCursor)) {
 		QDataGen::DisplayForEachTaskNext('Refreshing Batches');
-		$objBatch->RefreshActualTotalAmount(false);
-		$objBatch->RefreshPostedTotalAmount(false);
-		$objBatch->RefreshStatus();
+		$objBatch->PostBalance(Login::Load(1));
 	}
 ?>

@@ -107,6 +107,10 @@
 				if (QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator) {
 					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
 				}
+
+				if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
+					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
+				}
 			}
 		}
 

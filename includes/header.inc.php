@@ -30,10 +30,11 @@
 <?php if (QApplication::$Login) { ?>
 	<div class="navbar"><ul class="navbar">
 <?php
+		$intWidth = floor(980 / count(ChmsForm::$NavSectionArray));
 		foreach (ChmsForm::$NavSectionArray as $intNavSectionId => $strNavSectionArray) {
 			$strClassInfo = ($intNavSectionId == $this->intNavSectionId) ? 'class="selected"' : null;
-			printf('<li><a href="%s" %s title="%s">%s</a></li>',
-				$strNavSectionArray[1], $strClassInfo, $strNavSectionArray[0], strtoupper($strNavSectionArray[0])
+			printf('<li style="width: %spx;"><a href="%s" %s title="%s">%s</a></li>',
+				$intWidth, $strNavSectionArray[1], $strClassInfo, $strNavSectionArray[0], strtoupper($strNavSectionArray[0])
 			);
 		}
 ?>

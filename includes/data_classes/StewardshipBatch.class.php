@@ -127,18 +127,121 @@
 		 * @param boolean $blnSave whether or not to make the call to Save() after Status has been updated.
 		 */
 		public function RefreshStatus($blnSave = true) {
+			$this->RefreshActualTotalAmount(false);
+			$this->RefreshPostedTotalAmount(false);
+
 			if ($this->CountStewardshipPosts()) {
-				$this->RefreshActualTotalAmount(false);
-				$this->RefreshPostedTotalAmount(false);
-				$this->StewardshipBatchStatusTypeId = ($this->PostedTotalAmount == $this->ActualTotalAmount) ?
-					StewardshipBatchStatusType::PostedInFull : StewardshipBatchStatusType::UnpostedChangesExist;
+				$this->StewardshipBatchStatusTypeId = (count($this->GetUnpostedBalanceByStewardshipFundId())) ?
+					StewardshipBatchStatusType::UnpostedChangesExist : StewardshipBatchStatusType::PostedInFull;
 			} else {
 				$this->StewardshipBatchStatusTypeId = StewardshipBatchStatusType::NewBatch;
 			}
-			
+
 			if ($blnSave) $this->Save();
 		}
+
+		/**
+		 * Performs a Post of any balance on the batch.
+		 * @param Login $objLogin
+		 */
+		public function PostBalance(Login $objLogin) {
+			$fltBalanceArray = $this->GetUnpostedBalanceByStewardshipFundId();
+			if (count($fltBalanceArray)) {
+				$objLastPost = StewardshipPost::QuerySingle(QQ::Equal(QQN::StewardshipPost()->StewardshipBatchId, $this->intId), QQ::OrderBy(QQN::StewardshipPost()->PostNumber, false));
+				if ($objLastPost)
+					$intPostNumber = $objLastPost->PostNumber + 1;
+				else
+					$intPostNumber = 1;
+
+				$objPost = new StewardshipPost();
+				$objPost->StewardshipBatch = $this;
+				$objPost->PostNumber = $intPostNumber;
+				$objPost->DatePosted = QDateTime::Now();
+				$objPost->CreatedByLoginId = $objLogin->Id;
+				$objPost->Save();
+
+				$fltTotalAmount = 0;
+				foreach ($fltBalanceArray as $intFundId => $fltAmount) {
+					$objPostAmount = new StewardshipPostAmount();
+					$objPostAmount->StewardshipPostId = $objPost->Id;
+					$objPostAmount->StewardshipFundId = $intFundId;
+					$objPostAmount->Amount = $fltAmount;
+					$objPostAmount->Save();
+
+					$fltTotalAmount += $fltAmount;
+				}
+
+				$objPost->TotalAmount = $fltTotalAmount;
+				$objPost->Save();
+			}
+			$this->RefreshStatus();
+		}
+
+		/**
+		 * Gets the total UNPOSTED amount to each Fund for this batch.  Returns as an array of float values, indexed by the StewardshipFundId
+		 * @return float[]
+		 */
+		public function GetUnpostedBalanceByStewardshipFundId() {
+			$fltTotalAmountArray = $this->GetAmountTotalsByStewardshipFundId();
+			$fltTotalPostedArray = $this->GetPostedTotalsByStewardshipFundId();
+
+			// Add Zero values for non-existing indexes
+			foreach ($fltTotalAmountArray as $intFundId => $fltAmount)
+				if (!array_key_exists($intFundId, $fltTotalPostedArray)) $fltTotalPostedArray[$intFundId] = 0;
+			foreach ($fltTotalPostedArray as $intFundId => $fltAmount)
+				if (!array_key_exists($intFundId, $fltTotalAmountArray)) $fltTotalAmountArray[$intFundId] = 0;
+
+			// Calculate the Balance by Fund ID
+			$fltBalanceArray = array();
+
+			foreach ($fltTotalAmountArray as $intFundId => $fltAmount) {
+				$fltAmount = $fltTotalAmountArray[$intFundId] - $fltTotalPostedArray[$intFundId];
+				if ($fltAmount) $fltBalanceArray[$intFundId] = $fltAmount;
+			}
+
+			return $fltBalanceArray;
+		}
+
+		/**
+		 * Gets the total amount CONTRIBUTED to each Fund for this batch.  Returns as an array of float values, indexed by the StewardshipFundId
+		 * @return float[]
+		 */
+		public function GetAmountTotalsByStewardshipFundId() {
+			$strQuery = 'SELECT SUM(amount) AS amount_sum, stewardship_fund_id ' .
+				'FROM stewardship_contribution_amount, stewardship_contribution ' .
+				'WHERE stewardship_contribution_id  = stewardship_contribution.id ' .
+				'AND stewardship_batch_id=%s ' .
+				'GROUP BY stewardship_fund_id';
+			$strQuery = sprintf($strQuery, $this->intId);
+			$objResult = StewardshipBatch::GetDatabase()->Query($strQuery);
+
+			$fltArrayToReturn = array();
+			while ($objRow = $objResult->GetNextRow()) {
+				$fltArrayToReturn[$objRow->GetColumn('stewardship_fund_id')] = $objRow->GetColumn('amount_sum');
+			}
+			return $fltArrayToReturn;
+		}
 		
+		/**
+		 * Gets the total amount POSTED to each Fund for this batch.  Returns as an array of float values, indexed by the StewardshipFundId
+		 * @return float[]
+		 */
+		public function GetPostedTotalsByStewardshipFundId() {
+			$strQuery = 'SELECT SUM(amount) AS amount_sum, stewardship_fund_id ' .
+				'FROM stewardship_post_amount, stewardship_post ' .
+				'WHERE stewardship_post_id  = stewardship_post.id ' .
+				'AND stewardship_batch_id=%s ' .
+				'GROUP BY stewardship_fund_id';
+			$strQuery = sprintf($strQuery, $this->intId);
+			$objResult = StewardshipBatch::GetDatabase()->Query($strQuery);
+
+			$fltArrayToReturn = array();
+			while ($objRow = $objResult->GetNextRow()) {
+				$fltArrayToReturn[$objRow->GetColumn('stewardship_fund_id')] = $objRow->GetColumn('amount_sum');
+			}
+			return $fltArrayToReturn;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
