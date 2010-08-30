@@ -14,7 +14,7 @@
 	while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
 		QDataGen::DisplayForEachTaskNext('Refreshing Household data');
 		$objHousehold->RefreshMembers(false);
-		
+
 		$objMarriedPersonArray = array();
 		foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
 			if (($objParticipation->Person->MaritalStatusTypeId == MaritalStatusType::Married) &&
@@ -29,8 +29,34 @@
 		} else if (count($objMarriedPersonArray)) {
 			print "\r\nWhat!?  Household " . $objHousehold->Id . " has a marriage count of " . count($objMarriedPersonArray) . "!\r\n";
 		}
-		
+
 		$objHousehold->Save();
 	}
 	QDataGen::DisplayForEachTaskEnd('Refreshing Household data');
+
+
+
+	$objStewardshipCursor = StewardshipContribution::QueryCursor(QQ::All());
+	QDataGEn::DisplayForEachTaskStart('Refreshing Contributions', StewardshipContribution::CountAll());
+	while ($objContribution = StewardshipContribution::InstantiateCursor($objStewardshipCursor)) {
+		QDataGen::DisplayForEachTaskNext('Refreshing Contributions');
+		$objContribution->RefreshTotalAmount();
+	}
+
+	$objStewardshipCursor = StewardshipStack::QueryCursor(QQ::All());
+	QDataGEn::DisplayForEachTaskStart('Refreshing Stacks', StewardshipStack::CountAll());
+	while ($objStack = StewardshipStack::InstantiateCursor($objStewardshipCursor)) {
+		QDataGen::DisplayForEachTaskNext('Refreshing Stacks');
+		$objStack->RefreshActualTotalAmount();
+		
+	}
+
+	$objStewardshipCursor = StewardshipBatch::QueryCursor(QQ::All());
+	QDataGEn::DisplayForEachTaskStart('Refreshing Batchs', StewardshipBatch::CountAll());
+	while ($objBatch = StewardshipBatch::InstantiateCursor($objStewardshipCursor)) {
+		QDataGen::DisplayForEachTaskNext('Refreshing Batches');
+		$objBatch->RefreshActualTotalAmount(false);
+		$objBatch->RefreshPostedTotalAmount(false);
+		$objBatch->RefreshStatus();
+	}
 ?>
