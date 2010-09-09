@@ -289,6 +289,29 @@
 			}
 		}
 
+		/**
+		 * @return Zend_Pdf
+		 */
+		public static function GeneratePdfReceipt($objPersonOrHousehold, $intYear) {
+			// Setup Zend Framework load
+			set_include_path(get_include_path() . ':' . __INCLUDES__);
+			require_once('Zend/Loader.php');
+			Zend_Loader::loadClass('Zend_Pdf'); 
+
+			// Create the PDF Object
+			$objPdf = new Zend_Pdf();
+			$objPage = $objPdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
+			$objPdf->pages[] = $objPage;
+
+			// Set font 
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 20); 
+
+			// Draw text 
+			$objPage->drawText('Hello world!', 100, 510);
+
+			return $objPdf;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
