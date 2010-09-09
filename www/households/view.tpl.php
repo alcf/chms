@@ -15,6 +15,15 @@
 		<button class="alternate" onclick="document.location = '/households/merge.php/<?php _p($this->objHousehold->Id); ?>'; return false;" style="margin-top: 8px;">Merge Households</button>
 	</div>
 
+<?php if ($this->lblStewardship) { ?>
+	<div class="subnavSideContent">
+		<h4>Stewardship Preferences</h4>
+		<p><?php $this->lblStewardship->Render(); ?>
+		<br/><br/><a href="" <?php $this->pxyStewardship->RenderAsEvents(); ?>>Toggle</a>
+		</p>
+	</div>
+<?php } ?>
+
 <?php if ($objSplitArray = $this->objHousehold->GetSplitArray()) { ?>
 	<div class="subnavSideContent">
 		<h4>Household Split History</h4>

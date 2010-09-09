@@ -15,6 +15,9 @@
 		protected $dtgHomeAddresses;
 		protected $pxySetCurrentHomeAddress;
 		
+		protected $lblStewardship;
+		protected $pxyStewardship;
+		
 		protected function Form_Create() {
 			// Setup Household Object
 			$this->objHousehold = Household::Load(QApplication::PathInfo(0));
@@ -48,6 +51,31 @@
 			$this->pxySetCurrentHomeAddress = new QControlProxy($this);
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QAjaxAction('pxySetCurrentHomeAddress_Click'));
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QTerminateAction());
+
+			// Display Stewardship Preferences?
+			if (QApplication::IsLoginHasPermission(PermissionType::AccessStewardship)) {
+				$this->lblStewardship = new QLabel($this);
+				$this->lblStewardship->HtmlEntities = false;
+				$this->lblStewardship_Refresh();
+				
+				$this->pxyStewardship = new QControlProxy($this);
+				$this->pxyStewardship->AddAction(new QClickEvent(), new QAjaxAction('pxyStewardship_Click'));
+				$this->pxyStewardship->AddAction(new QClickEvent(), new QTerminateAction());
+			}
+		}
+
+		public function pxyStewardship_Click() {
+			$this->objHousehold->CombinedStewardshipFlag = !$this->objHousehold->CombinedStewardshipFlag;
+			$this->objHousehold->Save();
+			$this->lblStewardship_Refresh();
+		}
+
+		public function lblStewardship_Refresh() {
+			if ($this->objHousehold->CombinedStewardshipFlag) {
+				$this->lblStewardship->Text = 'Household requests <strong>COMBINED</strong> stewardship receipts.';
+			} else {
+				$this->lblStewardship->Text = 'Household requests <strong>INDIVIDUAL</strong> stewardship receipts.';
+			}
 		}
 
 		public function dtgHomeAddresses_Bind() {
