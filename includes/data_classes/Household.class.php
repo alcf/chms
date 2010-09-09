@@ -27,6 +27,27 @@
 			return sprintf('Household Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'StewardshipHouseholdName':
+					$strToReturn = $this->HeadPerson->ActiveMailingLabel;
+					$objCurrentMarriage = $this->HeadPerson->GetMostRecentMarriage();
+					if ($objCurrentMarriage && $objCurrentMarriage->MarriedToPerson &&
+						HouseholdParticipation::LoadByPersonIdHouseholdId($objCurrentMarriage->MarriedToPerson->Id, $this->Id)) {
+						$strToReturn .= ' & ' . $objCurrentMarriage->MarriedToPerson->ActiveMailingLabel;
+					}
+					return $strToReturn;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		public function Delete() {
 			try {
 				foreach ($this->GetAddressArray() as $objAddress) $objAddress->Delete();

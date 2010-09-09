@@ -58,6 +58,9 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Name':
+					return $this->strFirstName . ' ' . $this->strLastName;
+
+				case 'NameWithNickname':
 					if ($this->strNickname)
 						return sprintf('%s "%s" %s', $this->strFirstName, $this->strNickname, $this->strLastName);
 					else

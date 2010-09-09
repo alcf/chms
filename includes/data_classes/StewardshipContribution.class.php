@@ -348,14 +348,8 @@
 			$intXRight = 8 * 72;
 			$intY = STEWARDSHIP_TOP - (1.7125 * 72);
 
-			if ($objPersonOrHousehold instanceof Person) {
-				$strText = 'Individual Giving Receipt';
-			} else {
-				$strText = 'Household Giving Receipt';
-			}
-
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12);
-			self::DrawTextRight($objPage, $intXRight, $intY, $strText);
+			self::DrawTextRight($objPage, $intXRight, $intY, 'Giving Receipt');
 
 			$intY -= 13.2;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 12);
@@ -472,7 +466,7 @@
 			if ($objPersonOrHousehold instanceof Person)
 				$strNameToPrint = $objPersonOrHousehold->ActiveMailingLabel;
 			else
-				$strNameToPrint = $objPersonOrHousehold->Name;
+				$strNameToPrint = $objPersonOrHousehold->StewardshipHouseholdName;
 
 			$intY -= 12.1;
 			$objPage->drawText($strNameToPrint, 36, $intY);
