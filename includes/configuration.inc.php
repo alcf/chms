@@ -68,7 +68,7 @@
 				'adapter' => 'MySqli5',
 				'server' => 'localhost',
 				'port' => null,
-				'database' => 'alcf_chms_codegen',
+				'database' => 'alcf_chms',
 				'username' => 'root',
 				'password' => '',
 				'profiling' => false)));
@@ -145,7 +145,7 @@
 	define('STEWARDSHIP_TOP', '792');
 
 	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_1', 'Thank you for your generous contributions.  If you have any questions regarding your statement, please call');
-	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_2', 'Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.  Thank you and God Bless.');
+	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_2', 'Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.  Thank you again and God Bless.');
 
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_1', 'This document is necessary for any available federal income tax deduction for your contribution. Please retain it for your records.');
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_2', 'No goods or services were provided in exchange for the gifts other than intangible religious benefits.');

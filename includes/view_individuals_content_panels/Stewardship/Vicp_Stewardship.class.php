@@ -72,10 +72,7 @@
 		}
 		
 		public function RenderTransaction(StewardshipContributionAmount $objAmount) {
-			if ($objAmount->StewardshipContribution->Source)
-				return sprintf('%s (%s)', StewardshipContributionType::$NameArray[$objAmount->StewardshipContribution->StewardshipContributionTypeId], $objAmount->StewardshipContribution->Source);
-			else
-				return sprintf('%s', StewardshipContributionType::$NameArray[$objAmount->StewardshipContribution->StewardshipContributionTypeId]);
+			return ($objAmount->StewardshipContribution->Transaction);
 		}
 		
 		public function RenderAmount(StewardshipContributionAmount $objAmount) {
