@@ -303,13 +303,57 @@
 			$objPage = $objPdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
 			$objPdf->pages[] = $objPage;
 
-			// Set font 
-			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 20); 
+			// Draw Header
+			self::DrawHeader($objPage);
 
-			// Draw text 
-			$objPage->drawText('Hello world!', 100, 510);
-
+			// Draw Logo
+			self::DrawAddress($objPage, $objPersonOrHousehold);
+			
+			// Draw Footer
+			self::DrawFooter($objPage, $objPersonOrHousehold);
+			
 			return $objPdf;
+		}
+
+		protected static function DrawAddress(Zend_Pdf_Page $objPage, $objPersonOrHousehold) {
+			$objAddress = $objPersonOrHousehold->GetStewardshipAddress();
+
+			$intY = STEWARDSHIP_TOP - 72;
+
+			$intY -= 13.2;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12); 
+		}
+
+		protected static function DrawFooter(Zend_Pdf_Page $objPage) {
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
+			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_1, 36, (72 * 1/4) + 8.8);
+			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_2, 36, (72 * 1/4));
+
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 10); 
+			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_1, 36, (72 * 5/8) + 11.5);
+			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_2, 36, (72 * 5/8));
+		}
+
+		protected static function DrawHeader(Zend_Pdf_Page $objPage) {	
+			$intY = STEWARDSHIP_TOP - 72;
+
+			$intY -= 13.2;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12); 
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_1, 36, $intY);
+
+			$intY -= 8.8;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_2, 36, $intY);
+
+			$intY -= 12.1;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 11); 
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_3, 36, $intY);
+
+			$intY -= 12.1;
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_4, 36, $intY);
+
+			$objImage = Zend_Pdf_Image::imageWithPath(__DOCROOT__ . __IMAGE_ASSETS__ . '/alcf_logo_stewardship.png');
+			$objPage->drawImage($objImage, 424, STEWARDSHIP_TOP - 108, 576, STEWARDSHIP_TOP - 36);
 		}
 
 		// Override or Create New Load/Count methods

@@ -161,6 +161,35 @@
 			}
 		}
 
+
+		/**
+		 * Attempts to get the StewardshipAddress record for this person
+		 * @return Address
+		 */
+		public function GetStewardshipAddress() {
+			if ($this->StewardshipAddress) return $this->StewardshipAddress;
+			if ($this->MailingAddress) return $this->MailingAddress;
+
+			// Try to find any valid, current HomeAddress if member of a household
+			$objHouseholdParticipationArray = $this->GetHouseholdParticipationArray();
+			if (count($objHouseholdParticipationArray)) {
+				$objHouseholdParticipation = $objHouseholdParticipationArray[0];
+				$objAddressArray = Address::LoadArrayByHouseholdIdCurrentFlag($objHouseholdParticipation->HouseholdId, true);
+				foreach ($objAddressArray as $objAddressToTest) {
+					if (!$objAddressToTest->InvalidFlag) return $objAddressToTest;
+				}
+			}
+
+			// Otherwise, just return any current and valid address that can be found
+			foreach ($this->GetAddressArray(QQ::OrderBy(QQN::Address()->AddressTypeId, QQN::Address()->Id, false)) as $objAddress) {
+				if ($objAddress->CurrentFlag && !$objAddress->InvalidFlag) {
+					return $objAddress;
+				}
+			}
+
+			return null;
+		}
+
 		/**
 		 * This single method will refresh all the denormalized PrimaryFooText fields for Address, Phone and City.
 		 * (Note that PrimaryEmailText does not exist -- it simply uses the PrimaryEmail object)

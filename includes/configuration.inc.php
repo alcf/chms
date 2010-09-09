@@ -138,6 +138,18 @@
 	define('GROUPS_SERVER_BOUNCE_EMAIL', 'ALCF Groups Subsystem <mailer-daemon@groups.alcf.net>');
 	define('GROUPS_SERVER_BOUNCE_SUBJECT', 'Delivery Status Notification');
 
+	define('STEWARDSHIP_STATEMENT_LINE_1', 'Abundant Life Christian Fellowship');
+	define('STEWARDSHIP_STATEMENT_LINE_2', 'STEWARDSHIP AND GIVING');
+	define('STEWARDSHIP_STATEMENT_LINE_3', '2581 Leghorn Street');
+	define('STEWARDSHIP_STATEMENT_LINE_4', 'Mountain View, CA  94043');
+	define('STEWARDSHIP_TOP', '792');
+
+	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_1', 'Thank you for your generous contributions.  If you have any questions regarding your statement, please call');
+	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_2', 'Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.  Thank you and God Bless.');
+
+	define('STEWARDSHIP_FOOTER_LEGAL_LINE_1', 'This document is necessary for any available federal income tax deduction for your contribution. Please retain it for your records.');
+	define('STEWARDSHIP_FOOTER_LEGAL_LINE_2', 'No goods or services were provided in exchange for the gifts other than intangible religious benefits.');
+
 	define('SMTP_SERVER', '10.128.2.37');
 	define('SMTP_TEST_MODE', false);
 	

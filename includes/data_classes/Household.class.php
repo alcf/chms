@@ -421,6 +421,25 @@
 			return Household::InstantiateDbResult(Household::GetDatabase()->Query($strQuery));
 		}
 
+
+		/**
+		 * Attempts to get the StewardshipAddress record for this Household
+		 * @return Address
+		 */
+		public function GetStewardshipAddress() {
+			if ($this->HeadPerson->StewardshipAddress) return $this->HeadPerson->StewardshipAddress;
+			if ($this->HeadPerson->MailingAddress) return $this->HeadPerson->MailingAddress;
+
+			// Try to find any valid, current HomeAddress
+			$objAddressArray = Address::LoadArrayByHouseholdIdCurrentFlag($this->Id, true);
+			foreach ($objAddressArray as $objAddressToTest) {
+				if (!$objAddressToTest->InvalidFlag) return $objAddressToTest;
+			}
+
+			// Otherwise, just return any current and valid address that can be found
+			return $this->HeadPerson->GetStewardshipAddress();
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
