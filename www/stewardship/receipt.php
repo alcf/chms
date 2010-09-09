@@ -22,7 +22,8 @@
 	// Get PDF document as a string 
 	$strData = $objPdf->render(); 
 
-//	header("Content-Disposition: inline; filename=result.pdf"); 
-	header("Content-type: application/x-pdf"); 
+	if (QApplication::PathInfo(3))
+		header('Content-Disposition: attachment; filename=' . QApplication::PathInfo(3)); 
+	header('Content-type: application/x-pdf'); 
 	echo $strData;
 ?>
