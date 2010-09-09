@@ -33,13 +33,16 @@
 			$this->txtPassword = new QTextBox($this);
 			$this->txtPassword->Name = 'Password';
 			$this->txtPassword->TextMode = QTextMode::Password;
-
+			$this->txtPassword->Required = true;
+			$this->txtPassword->CausesValidation = true;
+			
 			$this->chkRemember = new QCheckBox($this);
 			$this->chkRemember->Name = 'Remember Login';
 			$this->chkRemember->Text = 'Check this box to remember your username for two weeks';
 
 			$this->btnLogin = new QButton($this);
 			$this->btnLogin->Text = 'Login';
+			$this->btnLogin->CausesValidation = true;
 
 			$this->txtUsername->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtPassword));
 			$this->txtUsername->AddAction(new QEnterKeyEvent(), new QTerminateAction());
