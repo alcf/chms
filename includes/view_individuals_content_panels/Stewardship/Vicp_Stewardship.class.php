@@ -56,7 +56,20 @@
 		}
 
 		public function pxyPrint_Click() {
-			
+			if (!$this->lstYear->SelectedValue) {
+				QApplication::DisplayAlert('Please specify a year to print');
+				return;
+			}
+
+			if ($this->objForm->objHousehold && $this->objForm->objHousehold->CombinedStewardshipFlag) {
+				$strUrl = sprintf('/stewardship/receipt.php/%s/%s/%s/Statement%s.pdf',
+					$this->objPerson->Id, $this->objForm->objHousehold->Id, $this->lstYear->SelectedValue, $this->lstYear->SelectedValue);
+			} else {
+				$strUrl = sprintf('/stewardship/receipt.php/%s/%s/%s/Statement%s.pdf',
+					$this->objPerson->Id, 0, $this->lstYear->SelectedValue, $this->lstYear->SelectedValue);
+			}
+
+			QApplication::Redirect($strUrl);
 		}
 
 		public function Filter() {

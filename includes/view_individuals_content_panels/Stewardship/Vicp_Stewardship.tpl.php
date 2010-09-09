@@ -1,5 +1,5 @@
 <h3>Stewardship
-	<button class="primary" <?php $_CONTROL->pxyPrint->RenderAsEvents(); ?>>Print</button>
+	<button class="primary" <?php $_CONTROL->pxyPrint->RenderAsEvents(); ?>>Print Receipt</button>
 </h3>
 
 <div class="section">

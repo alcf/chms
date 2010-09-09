@@ -328,6 +328,9 @@
 			// Draw Header
 			self::DrawHeader($objPage);
 
+			// Draw Header
+			self::DrawInfo($objPage, $objPersonOrHousehold, $intYear);
+
 			// Draw Logo
 			self::DrawAddress($objPage, $objPersonOrHousehold);
 
@@ -339,6 +342,28 @@
 			self::DrawFooter($objPage, $objPersonOrHousehold);
 
 			return $objPdf;
+		}
+
+		protected static function DrawInfo(Zend_Pdf_Page $objPage, $objPersonOrHousehold, $intYear) {
+			$intXRight = 8 * 72;
+			$intY = STEWARDSHIP_TOP - (1.7125 * 72);
+
+			if ($objPersonOrHousehold instanceof Person) {
+				$strText = 'Individual Giving Receipt';
+			} else {
+				$strText = 'Household Giving Receipt';
+			}
+
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12);
+			self::DrawTextRight($objPage, $intXRight, $intY, $strText);
+
+			$intY -= 13.2;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 12);
+			self::DrawTextRight($objPage, $intXRight, $intY, 'Reflects ' . $intYear . ' Gifts');
+
+			$intY -= 15;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_ITALIC), 8);
+			self::DrawTextRight($objPage, $intXRight, $intY, 'Receipt generated on ' . QDateTime::NowToString('MMMM D, YYYY'));
 		}
 
 		protected static function DrawSummary(Zend_Pdf_Page $objPage, $objContributionAmountArray, $intYear) {
@@ -488,7 +513,7 @@
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12); 
 			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_1, 36, $intY);
 
-			$intY -= 8.8;
+			$intY -= 9.2;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
 			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_2, 36, $intY);
 

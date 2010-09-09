@@ -141,7 +141,7 @@
 	define('STEWARDSHIP_STATEMENT_LINE_1', 'Abundant Life Christian Fellowship');
 	define('STEWARDSHIP_STATEMENT_LINE_2', 'STEWARDSHIP AND GIVING');
 	define('STEWARDSHIP_STATEMENT_LINE_3', '2581 Leghorn Street');
-	define('STEWARDSHIP_STATEMENT_LINE_4', 'Mountain View, CA  94043');
+	define('STEWARDSHIP_STATEMENT_LINE_4', 'Mountain View, CA  94043-1613');
 	define('STEWARDSHIP_TOP', '792');
 
 	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_1', 'Thank you for your generous contributions.  If you have any questions regarding your statement, please call');
