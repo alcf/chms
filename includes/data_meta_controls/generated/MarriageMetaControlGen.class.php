@@ -38,33 +38,127 @@
 
 	class MarriageMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Marriage objMarriage
+		 * @access protected
+		 */
 		protected $objMarriage;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Marriage's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstLinkedMarriage;
+         * @access protected
+         */
 		protected $lstLinkedMarriage;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstMarriedToPerson;
+         * @access protected
+         */
 		protected $lstMarriedToPerson;
+
+        /**
+         * @var QListBox lstMarriageStatusType;
+         * @access protected
+         */
 		protected $lstMarriageStatusType;
+
+        /**
+         * @var QDateTimePicker calDateStart;
+         * @access protected
+         */
 		protected $calDateStart;
+
+        /**
+         * @var QDateTimePicker calDateEnd;
+         * @access protected
+         */
 		protected $calDateEnd;
 
+
 		// Controls that allow the viewing of Marriage's individual data fields
+        /**
+         * @var QLabel lblLinkedMarriageId
+         * @access protected
+         */
 		protected $lblLinkedMarriageId;
+
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblMarriedToPersonId
+         * @access protected
+         */
 		protected $lblMarriedToPersonId;
+
+        /**
+         * @var QLabel lblMarriageStatusTypeId
+         * @access protected
+         */
 		protected $lblMarriageStatusTypeId;
+
+        /**
+         * @var QLabel lblDateStart
+         * @access protected
+         */
 		protected $lblDateStart;
+
+        /**
+         * @var QLabel lblDateEnd
+         * @access protected
+         */
 		protected $lblDateEnd;
 
+
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstMarriageAsLinked
+         * @access protected
+         */
 		protected $lstMarriageAsLinked;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblMarriageAsLinked
+         * @access protected
+         */
 		protected $lblMarriageAsLinked;
+
 
 
 		/**

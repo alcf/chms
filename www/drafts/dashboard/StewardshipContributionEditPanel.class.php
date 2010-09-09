@@ -22,13 +22,14 @@
 		// Controls for StewardshipContribution's Data Fields
 		public $lblId;
 		public $lstPerson;
-		public $txtStewardshipContributionTypeId;
+		public $lstStewardshipContributionType;
 		public $lstStewardshipBatch;
 		public $lstStewardshipStack;
 		public $lstCheckingAccountLookup;
 		public $txtTotalAmount;
 		public $calDateEntered;
 		public $calDateCleared;
+		public $calDateCredited;
 		public $txtCheckNumber;
 		public $txtAuthorizationNumber;
 		public $txtAlternateSource;
@@ -65,13 +66,14 @@
 			// Call MetaControl's methods to create qcontrols based on StewardshipContribution's data fields
 			$this->lblId = $this->mctStewardshipContribution->lblId_Create();
 			$this->lstPerson = $this->mctStewardshipContribution->lstPerson_Create();
-			$this->txtStewardshipContributionTypeId = $this->mctStewardshipContribution->txtStewardshipContributionTypeId_Create();
+			$this->lstStewardshipContributionType = $this->mctStewardshipContribution->lstStewardshipContributionType_Create();
 			$this->lstStewardshipBatch = $this->mctStewardshipContribution->lstStewardshipBatch_Create();
 			$this->lstStewardshipStack = $this->mctStewardshipContribution->lstStewardshipStack_Create();
 			$this->lstCheckingAccountLookup = $this->mctStewardshipContribution->lstCheckingAccountLookup_Create();
 			$this->txtTotalAmount = $this->mctStewardshipContribution->txtTotalAmount_Create();
 			$this->calDateEntered = $this->mctStewardshipContribution->calDateEntered_Create();
 			$this->calDateCleared = $this->mctStewardshipContribution->calDateCleared_Create();
+			$this->calDateCredited = $this->mctStewardshipContribution->calDateCredited_Create();
 			$this->txtCheckNumber = $this->mctStewardshipContribution->txtCheckNumber_Create();
 			$this->txtAuthorizationNumber = $this->mctStewardshipContribution->txtAuthorizationNumber_Create();
 			$this->txtAlternateSource = $this->mctStewardshipContribution->txtAlternateSource_Create();

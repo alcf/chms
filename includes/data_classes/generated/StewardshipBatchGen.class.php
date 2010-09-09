@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $StewardshipBatchStatusTypeId the value for intStewardshipBatchStatusTypeId (Not Null)
 	 * @property QDateTime $DateEntered the value for dttDateEntered (Not Null)
+	 * @property QDateTime $DateCredited the value for dttDateCredited (Not Null)
 	 * @property string $BatchLabel the value for strBatchLabel (Not Null)
 	 * @property string $Description the value for strDescription 
 	 * @property integer $ItemCount the value for intItemCount 
@@ -62,6 +63,14 @@
 		 */
 		protected $dttDateEntered;
 		const DateEnteredDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_batch.date_credited
+		 * @var QDateTime dttDateCredited
+		 */
+		protected $dttDateCredited;
+		const DateCreditedDefault = null;
 
 
 		/**
@@ -341,9 +350,31 @@
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new StewardshipBatch object
+			// Perform the Query
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return StewardshipBatch::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
+
+			// Instantiate a new StewardshipBatch object and return it
+
+			// Do we have to expand anything?
+			if ($objQueryBuilder->ExpandAsArrayNodes) {
+				$objToReturn = array();
+				while ($objDbRow = $objDbResult->GetNextRow()) {
+					$objItem = StewardshipBatch::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
+					if ($objItem) $objToReturn[] = $objItem;
+				}
+
+				if (count($objToReturn)) {
+					// Since we only want the object to return, lets return the object and not the array.
+					return $objToReturn[0];
+				} else {
+					return null;
+				}
+			} else {
+				// No expands just return the first row
+				$objDbRow = $objDbResult->GetNextRow();
+				if (is_null($objDbRow)) return null;
+				return StewardshipBatch::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
+			}
 		}
 
 		/**
@@ -493,6 +524,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_batch_status_type_id', $strAliasPrefix . 'stewardship_batch_status_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_entered', $strAliasPrefix . 'date_entered');
+			$objBuilder->AddSelectItem($strTableName, 'date_credited', $strAliasPrefix . 'date_credited');
 			$objBuilder->AddSelectItem($strTableName, 'batch_label', $strAliasPrefix . 'batch_label');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'item_count', $strAliasPrefix . 'item_count');
@@ -597,6 +629,8 @@
 			$objToReturn->intStewardshipBatchStatusTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_entered', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_entered'] : $strAliasPrefix . 'date_entered';
 			$objToReturn->dttDateEntered = $objDbRow->GetColumn($strAliasName, 'Date');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_credited', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_credited'] : $strAliasPrefix . 'date_credited';
+			$objToReturn->dttDateCredited = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAliasName = array_key_exists($strAliasPrefix . 'batch_label', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'batch_label'] : $strAliasPrefix . 'batch_label';
 			$objToReturn->strBatchLabel = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
@@ -858,6 +892,7 @@
 						INSERT INTO `stewardship_batch` (
 							`stewardship_batch_status_type_id`,
 							`date_entered`,
+							`date_credited`,
 							`batch_label`,
 							`description`,
 							`item_count`,
@@ -868,6 +903,7 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intStewardshipBatchStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
+							' . $objDatabase->SqlVariable($this->dttDateCredited) . ',
 							' . $objDatabase->SqlVariable($this->strBatchLabel) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->intItemCount) . ',
@@ -892,6 +928,7 @@
 						SET
 							`stewardship_batch_status_type_id` = ' . $objDatabase->SqlVariable($this->intStewardshipBatchStatusTypeId) . ',
 							`date_entered` = ' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
+							`date_credited` = ' . $objDatabase->SqlVariable($this->dttDateCredited) . ',
 							`batch_label` = ' . $objDatabase->SqlVariable($this->strBatchLabel) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`item_count` = ' . $objDatabase->SqlVariable($this->intItemCount) . ',
@@ -979,6 +1016,7 @@
 			// Update $this's local variables to match
 			$this->StewardshipBatchStatusTypeId = $objReloaded->StewardshipBatchStatusTypeId;
 			$this->dttDateEntered = $objReloaded->dttDateEntered;
+			$this->dttDateCredited = $objReloaded->dttDateCredited;
 			$this->strBatchLabel = $objReloaded->strBatchLabel;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->intItemCount = $objReloaded->intItemCount;
@@ -1020,6 +1058,11 @@
 					// Gets the value for dttDateEntered (Not Null)
 					// @return QDateTime
 					return $this->dttDateEntered;
+
+				case 'DateCredited':
+					// Gets the value for dttDateCredited (Not Null)
+					// @return QDateTime
+					return $this->dttDateCredited;
 
 				case 'BatchLabel':
 					// Gets the value for strBatchLabel (Not Null)
@@ -1158,6 +1201,17 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateEntered = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateCredited':
+					// Sets the value for dttDateCredited (Not Null)
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateCredited = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1765,6 +1819,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="StewardshipBatchStatusTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="DateEntered" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateCredited" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="BatchLabel" type="xsd:string"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="ItemCount" type="xsd:int"/>';
@@ -1801,6 +1856,8 @@
 				$objToReturn->intStewardshipBatchStatusTypeId = $objSoapObject->StewardshipBatchStatusTypeId;
 			if (property_exists($objSoapObject, 'DateEntered'))
 				$objToReturn->dttDateEntered = new QDateTime($objSoapObject->DateEntered);
+			if (property_exists($objSoapObject, 'DateCredited'))
+				$objToReturn->dttDateCredited = new QDateTime($objSoapObject->DateCredited);
 			if (property_exists($objSoapObject, 'BatchLabel'))
 				$objToReturn->strBatchLabel = $objSoapObject->BatchLabel;
 			if (property_exists($objSoapObject, 'Description'))
@@ -1836,6 +1893,8 @@
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
 			if ($objObject->dttDateEntered)
 				$objObject->dttDateEntered = $objObject->dttDateEntered->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateCredited)
+				$objObject->dttDateCredited = $objObject->dttDateCredited->__toString(QDateTime::FormatSoap);
 			if ($objObject->objCreatedByLogin)
 				$objObject->objCreatedByLogin = Login::GetSoapObjectFromObject($objObject->objCreatedByLogin, false);
 			else if (!$blnBindRelatedObjects)
@@ -1866,6 +1925,8 @@
 					return new QQNode('stewardship_batch_status_type_id', 'StewardshipBatchStatusTypeId', 'integer', $this);
 				case 'DateEntered':
 					return new QQNode('date_entered', 'DateEntered', 'QDateTime', $this);
+				case 'DateCredited':
+					return new QQNode('date_credited', 'DateCredited', 'QDateTime', $this);
 				case 'BatchLabel':
 					return new QQNode('batch_label', 'BatchLabel', 'string', $this);
 				case 'Description':
@@ -1914,6 +1975,8 @@
 					return new QQNode('stewardship_batch_status_type_id', 'StewardshipBatchStatusTypeId', 'integer', $this);
 				case 'DateEntered':
 					return new QQNode('date_entered', 'DateEntered', 'QDateTime', $this);
+				case 'DateCredited':
+					return new QQNode('date_credited', 'DateCredited', 'QDateTime', $this);
 				case 'BatchLabel':
 					return new QQNode('batch_label', 'BatchLabel', 'string', $this);
 				case 'Description':

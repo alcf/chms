@@ -32,23 +32,87 @@
 
 	class QueryConditionMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var QueryCondition objQueryCondition
+		 * @access protected
+		 */
 		protected $objQueryCondition;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of QueryCondition's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstSearchQuery;
+         * @access protected
+         */
 		protected $lstSearchQuery;
+
+        /**
+         * @var QListBox lstQueryOperation;
+         * @access protected
+         */
 		protected $lstQueryOperation;
+
+        /**
+         * @var QListBox lstQueryNode;
+         * @access protected
+         */
 		protected $lstQueryNode;
+
+        /**
+         * @var QTextBox txtValue;
+         * @access protected
+         */
 		protected $txtValue;
 
+
 		// Controls that allow the viewing of QueryCondition's individual data fields
+        /**
+         * @var QLabel lblSearchQueryId
+         * @access protected
+         */
 		protected $lblSearchQueryId;
+
+        /**
+         * @var QLabel lblQueryOperationId
+         * @access protected
+         */
 		protected $lblQueryOperationId;
+
+        /**
+         * @var QLabel lblQueryNodeId
+         * @access protected
+         */
 		protected $lblQueryNodeId;
+
+        /**
+         * @var QLabel lblValue
+         * @access protected
+         */
 		protected $lblValue;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

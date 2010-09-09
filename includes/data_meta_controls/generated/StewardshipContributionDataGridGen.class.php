@@ -306,6 +306,7 @@
 				case 'TotalAmount': return QQN::StewardshipContribution()->TotalAmount;
 				case 'DateEntered': return QQN::StewardshipContribution()->DateEntered;
 				case 'DateCleared': return QQN::StewardshipContribution()->DateCleared;
+				case 'DateCredited': return QQN::StewardshipContribution()->DateCredited;
 				case 'CheckNumber': return QQN::StewardshipContribution()->CheckNumber;
 				case 'AuthorizationNumber': return QQN::StewardshipContribution()->AuthorizationNumber;
 				case 'AlternateSource': return QQN::StewardshipContribution()->AlternateSource;

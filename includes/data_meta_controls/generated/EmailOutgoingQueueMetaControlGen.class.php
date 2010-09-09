@@ -32,23 +32,87 @@
 
 	class EmailOutgoingQueueMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var EmailOutgoingQueue objEmailOutgoingQueue
+		 * @access protected
+		 */
 		protected $objEmailOutgoingQueue;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of EmailOutgoingQueue's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstEmailMessage;
+         * @access protected
+         */
 		protected $lstEmailMessage;
+
+        /**
+         * @var QTextBox txtToAddress;
+         * @access protected
+         */
 		protected $txtToAddress;
+
+        /**
+         * @var QCheckBox chkErrorFlag;
+         * @access protected
+         */
 		protected $chkErrorFlag;
+
+        /**
+         * @var QTextBox txtToken;
+         * @access protected
+         */
 		protected $txtToken;
 
+
 		// Controls that allow the viewing of EmailOutgoingQueue's individual data fields
+        /**
+         * @var QLabel lblEmailMessageId
+         * @access protected
+         */
 		protected $lblEmailMessageId;
+
+        /**
+         * @var QLabel lblToAddress
+         * @access protected
+         */
 		protected $lblToAddress;
+
+        /**
+         * @var QLabel lblErrorFlag
+         * @access protected
+         */
 		protected $lblErrorFlag;
+
+        /**
+         * @var QLabel lblToken
+         * @access protected
+         */
 		protected $lblToken;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

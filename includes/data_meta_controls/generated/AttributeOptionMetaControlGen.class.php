@@ -30,25 +30,71 @@
 
 	class AttributeOptionMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var AttributeOption objAttributeOption
+		 * @access protected
+		 */
 		protected $objAttributeOption;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of AttributeOption's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstAttribute;
+         * @access protected
+         */
 		protected $lstAttribute;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
 
+
 		// Controls that allow the viewing of AttributeOption's individual data fields
+        /**
+         * @var QLabel lblAttributeId
+         * @access protected
+         */
 		protected $lblAttributeId;
+
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstAttributeValuesAsMultiple;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblAttributeValuesAsMultiple;
+
 
 
 		/**

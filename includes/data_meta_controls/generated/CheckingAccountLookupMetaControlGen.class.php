@@ -30,25 +30,71 @@
 
 	class CheckingAccountLookupMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var CheckingAccountLookup objCheckingAccountLookup
+		 * @access protected
+		 */
 		protected $objCheckingAccountLookup;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of CheckingAccountLookup's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtTransitHash;
+         * @access protected
+         */
 		protected $txtTransitHash;
+
+        /**
+         * @var QTextBox txtAccountHash;
+         * @access protected
+         */
 		protected $txtAccountHash;
 
+
 		// Controls that allow the viewing of CheckingAccountLookup's individual data fields
+        /**
+         * @var QLabel lblTransitHash
+         * @access protected
+         */
 		protected $lblTransitHash;
+
+        /**
+         * @var QLabel lblAccountHash
+         * @access protected
+         */
 		protected $lblAccountHash;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstPeople;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblPeople;
+
 
 
 		/**

@@ -68,7 +68,7 @@
 				'adapter' => 'MySqli5',
 				'server' => 'localhost',
 				'port' => null,
-				'database' => 'alcf_chms',
+				'database' => 'alcf_chms_codegen',
 				'username' => 'root',
 				'password' => '',
 				'profiling' => false)));

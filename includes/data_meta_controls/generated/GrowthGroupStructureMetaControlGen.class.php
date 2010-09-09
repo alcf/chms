@@ -28,23 +28,59 @@
 
 	class GrowthGroupStructureMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var GrowthGroupStructure objGrowthGroupStructure
+		 * @access protected
+		 */
 		protected $objGrowthGroupStructure;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of GrowthGroupStructure's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
 
+
 		// Controls that allow the viewing of GrowthGroupStructure's individual data fields
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstGrowthGroups;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblGrowthGroups;
+
 
 
 		/**

@@ -22,6 +22,8 @@
 	 * property-read QLabel $StewardshipBatchStatusTypeIdLabel
 	 * property QDateTimePicker $DateEnteredControl
 	 * property-read QLabel $DateEnteredLabel
+	 * property QDateTimePicker $DateCreditedControl
+	 * property-read QLabel $DateCreditedLabel
 	 * property QTextBox $BatchLabelControl
 	 * property-read QLabel $BatchLabelLabel
 	 * property QTextBox $DescriptionControl
@@ -42,33 +44,159 @@
 
 	class StewardshipBatchMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var StewardshipBatch objStewardshipBatch
+		 * @access protected
+		 */
 		protected $objStewardshipBatch;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of StewardshipBatch's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstStewardshipBatchStatusType;
+         * @access protected
+         */
 		protected $lstStewardshipBatchStatusType;
+
+        /**
+         * @var QDateTimePicker calDateEntered;
+         * @access protected
+         */
 		protected $calDateEntered;
+
+        /**
+         * @var QDateTimePicker calDateCredited;
+         * @access protected
+         */
+		protected $calDateCredited;
+
+        /**
+         * @var QTextBox txtBatchLabel;
+         * @access protected
+         */
 		protected $txtBatchLabel;
+
+        /**
+         * @var QTextBox txtDescription;
+         * @access protected
+         */
 		protected $txtDescription;
+
+        /**
+         * @var QIntegerTextBox txtItemCount;
+         * @access protected
+         */
 		protected $txtItemCount;
+
+        /**
+         * @var QFloatTextBox txtReportedTotalAmount;
+         * @access protected
+         */
 		protected $txtReportedTotalAmount;
+
+        /**
+         * @var QFloatTextBox txtActualTotalAmount;
+         * @access protected
+         */
 		protected $txtActualTotalAmount;
+
+        /**
+         * @var QFloatTextBox txtPostedTotalAmount;
+         * @access protected
+         */
 		protected $txtPostedTotalAmount;
+
+        /**
+         * @var QListBox lstCreatedByLogin;
+         * @access protected
+         */
 		protected $lstCreatedByLogin;
 
+
 		// Controls that allow the viewing of StewardshipBatch's individual data fields
+        /**
+         * @var QLabel lblStewardshipBatchStatusTypeId
+         * @access protected
+         */
 		protected $lblStewardshipBatchStatusTypeId;
+
+        /**
+         * @var QLabel lblDateEntered
+         * @access protected
+         */
 		protected $lblDateEntered;
+
+        /**
+         * @var QLabel lblDateCredited
+         * @access protected
+         */
+		protected $lblDateCredited;
+
+        /**
+         * @var QLabel lblBatchLabel
+         * @access protected
+         */
 		protected $lblBatchLabel;
+
+        /**
+         * @var QLabel lblDescription
+         * @access protected
+         */
 		protected $lblDescription;
+
+        /**
+         * @var QLabel lblItemCount
+         * @access protected
+         */
 		protected $lblItemCount;
+
+        /**
+         * @var QLabel lblReportedTotalAmount
+         * @access protected
+         */
 		protected $lblReportedTotalAmount;
+
+        /**
+         * @var QLabel lblActualTotalAmount
+         * @access protected
+         */
 		protected $lblActualTotalAmount;
+
+        /**
+         * @var QLabel lblPostedTotalAmount
+         * @access protected
+         */
 		protected $lblPostedTotalAmount;
+
+        /**
+         * @var QLabel lblCreatedByLoginId
+         * @access protected
+         */
 		protected $lblCreatedByLoginId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -239,6 +367,37 @@
 		}
 
 		protected $strDateEnteredDateTimeFormat;
+
+		/**
+		 * Create and setup QDateTimePicker calDateCredited
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateCredited_Create($strControlId = null) {
+			$this->calDateCredited = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateCredited->Name = QApplication::Translate('Date Credited');
+			$this->calDateCredited->DateTime = $this->objStewardshipBatch->DateCredited;
+			$this->calDateCredited->DateTimePickerType = QDateTimePickerType::Date;
+			$this->calDateCredited->Required = true;
+			return $this->calDateCredited;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateCredited
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateCredited_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateCredited = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateCredited->Name = QApplication::Translate('Date Credited');
+			$this->strDateCreditedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateCredited->Text = sprintf($this->objStewardshipBatch->DateCredited) ? $this->objStewardshipBatch->DateCredited->__toString($this->strDateCreditedDateTimeFormat) : null;
+			$this->lblDateCredited->Required = true;
+			return $this->lblDateCredited;
+		}
+
+		protected $strDateCreditedDateTimeFormat;
 
 		/**
 		 * Create and setup QTextBox txtBatchLabel
@@ -458,6 +617,9 @@
 			if ($this->calDateEntered) $this->calDateEntered->DateTime = $this->objStewardshipBatch->DateEntered;
 			if ($this->lblDateEntered) $this->lblDateEntered->Text = sprintf($this->objStewardshipBatch->DateEntered) ? $this->objStewardshipBatch->__toString($this->strDateEnteredDateTimeFormat) : null;
 
+			if ($this->calDateCredited) $this->calDateCredited->DateTime = $this->objStewardshipBatch->DateCredited;
+			if ($this->lblDateCredited) $this->lblDateCredited->Text = sprintf($this->objStewardshipBatch->DateCredited) ? $this->objStewardshipBatch->__toString($this->strDateCreditedDateTimeFormat) : null;
+
 			if ($this->txtBatchLabel) $this->txtBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
 			if ($this->lblBatchLabel) $this->lblBatchLabel->Text = $this->objStewardshipBatch->BatchLabel;
 
@@ -515,6 +677,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstStewardshipBatchStatusType) $this->objStewardshipBatch->StewardshipBatchStatusTypeId = $this->lstStewardshipBatchStatusType->SelectedValue;
 				if ($this->calDateEntered) $this->objStewardshipBatch->DateEntered = $this->calDateEntered->DateTime;
+				if ($this->calDateCredited) $this->objStewardshipBatch->DateCredited = $this->calDateCredited->DateTime;
 				if ($this->txtBatchLabel) $this->objStewardshipBatch->BatchLabel = $this->txtBatchLabel->Text;
 				if ($this->txtDescription) $this->objStewardshipBatch->Description = $this->txtDescription->Text;
 				if ($this->txtItemCount) $this->objStewardshipBatch->ItemCount = $this->txtItemCount->Text;
@@ -582,6 +745,12 @@
 				case 'DateEnteredLabel':
 					if (!$this->lblDateEntered) return $this->lblDateEntered_Create();
 					return $this->lblDateEntered;
+				case 'DateCreditedControl':
+					if (!$this->calDateCredited) return $this->calDateCredited_Create();
+					return $this->calDateCredited;
+				case 'DateCreditedLabel':
+					if (!$this->lblDateCredited) return $this->lblDateCredited_Create();
+					return $this->lblDateCredited;
 				case 'BatchLabelControl':
 					if (!$this->txtBatchLabel) return $this->txtBatchLabel_Create();
 					return $this->txtBatchLabel;
@@ -652,6 +821,8 @@
 						return ($this->lstStewardshipBatchStatusType = QType::Cast($mixValue, 'QControl'));
 					case 'DateEnteredControl':
 						return ($this->calDateEntered = QType::Cast($mixValue, 'QControl'));
+					case 'DateCreditedControl':
+						return ($this->calDateCredited = QType::Cast($mixValue, 'QControl'));
 					case 'BatchLabelControl':
 						return ($this->txtBatchLabel = QType::Cast($mixValue, 'QControl'));
 					case 'DescriptionControl':

@@ -68,6 +68,7 @@
 			$this->dtgStewardshipBatches->MetaAddColumn('Id');
 			$this->dtgStewardshipBatches->MetaAddTypeColumn('StewardshipBatchStatusTypeId', 'StewardshipBatchStatusType');
 			$this->dtgStewardshipBatches->MetaAddColumn('DateEntered');
+			$this->dtgStewardshipBatches->MetaAddColumn('DateCredited');
 			$this->dtgStewardshipBatches->MetaAddColumn('BatchLabel');
 			$this->dtgStewardshipBatches->MetaAddColumn('Description');
 			$this->dtgStewardshipBatches->MetaAddColumn('ItemCount');

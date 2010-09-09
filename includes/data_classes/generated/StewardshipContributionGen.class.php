@@ -24,6 +24,7 @@
 	 * @property double $TotalAmount the value for fltTotalAmount 
 	 * @property QDateTime $DateEntered the value for dttDateEntered (Not Null)
 	 * @property QDateTime $DateCleared the value for dttDateCleared 
+	 * @property QDateTime $DateCredited the value for dttDateCredited 
 	 * @property string $CheckNumber the value for strCheckNumber 
 	 * @property string $AuthorizationNumber the value for strAuthorizationNumber 
 	 * @property string $AlternateSource the value for strAlternateSource 
@@ -114,6 +115,14 @@
 		 */
 		protected $dttDateCleared;
 		const DateClearedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_contribution.date_credited
+		 * @var QDateTime dttDateCredited
+		 */
+		protected $dttDateCredited;
+		const DateCreditedDefault = null;
 
 
 		/**
@@ -386,9 +395,31 @@
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new StewardshipContribution object
+			// Perform the Query
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return StewardshipContribution::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
+
+			// Instantiate a new StewardshipContribution object and return it
+
+			// Do we have to expand anything?
+			if ($objQueryBuilder->ExpandAsArrayNodes) {
+				$objToReturn = array();
+				while ($objDbRow = $objDbResult->GetNextRow()) {
+					$objItem = StewardshipContribution::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
+					if ($objItem) $objToReturn[] = $objItem;
+				}
+
+				if (count($objToReturn)) {
+					// Since we only want the object to return, lets return the object and not the array.
+					return $objToReturn[0];
+				} else {
+					return null;
+				}
+			} else {
+				// No expands just return the first row
+				$objDbRow = $objDbResult->GetNextRow();
+				if (is_null($objDbRow)) return null;
+				return StewardshipContribution::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
+			}
 		}
 
 		/**
@@ -544,6 +575,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'total_amount', $strAliasPrefix . 'total_amount');
 			$objBuilder->AddSelectItem($strTableName, 'date_entered', $strAliasPrefix . 'date_entered');
 			$objBuilder->AddSelectItem($strTableName, 'date_cleared', $strAliasPrefix . 'date_cleared');
+			$objBuilder->AddSelectItem($strTableName, 'date_credited', $strAliasPrefix . 'date_credited');
 			$objBuilder->AddSelectItem($strTableName, 'check_number', $strAliasPrefix . 'check_number');
 			$objBuilder->AddSelectItem($strTableName, 'authorization_number', $strAliasPrefix . 'authorization_number');
 			$objBuilder->AddSelectItem($strTableName, 'alternate_source', $strAliasPrefix . 'alternate_source');
@@ -630,6 +662,8 @@
 			$objToReturn->dttDateEntered = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_cleared', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_cleared'] : $strAliasPrefix . 'date_cleared';
 			$objToReturn->dttDateCleared = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_credited', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_credited'] : $strAliasPrefix . 'date_credited';
+			$objToReturn->dttDateCredited = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAliasName = array_key_exists($strAliasPrefix . 'check_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'check_number'] : $strAliasPrefix . 'check_number';
 			$objToReturn->strCheckNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'authorization_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'authorization_number'] : $strAliasPrefix . 'authorization_number';
@@ -1049,6 +1083,7 @@
 							`total_amount`,
 							`date_entered`,
 							`date_cleared`,
+							`date_credited`,
 							`check_number`,
 							`authorization_number`,
 							`alternate_source`,
@@ -1063,6 +1098,7 @@
 							' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
 							' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
 							' . $objDatabase->SqlVariable($this->dttDateCleared) . ',
+							' . $objDatabase->SqlVariable($this->dttDateCredited) . ',
 							' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
@@ -1091,6 +1127,7 @@
 							`total_amount` = ' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
 							`date_entered` = ' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
 							`date_cleared` = ' . $objDatabase->SqlVariable($this->dttDateCleared) . ',
+							`date_credited` = ' . $objDatabase->SqlVariable($this->dttDateCredited) . ',
 							`check_number` = ' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							`authorization_number` = ' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
 							`alternate_source` = ' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
@@ -1175,13 +1212,14 @@
 
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
-			$this->intStewardshipContributionTypeId = $objReloaded->intStewardshipContributionTypeId;
+			$this->StewardshipContributionTypeId = $objReloaded->StewardshipContributionTypeId;
 			$this->StewardshipBatchId = $objReloaded->StewardshipBatchId;
 			$this->StewardshipStackId = $objReloaded->StewardshipStackId;
 			$this->CheckingAccountLookupId = $objReloaded->CheckingAccountLookupId;
 			$this->fltTotalAmount = $objReloaded->fltTotalAmount;
 			$this->dttDateEntered = $objReloaded->dttDateEntered;
 			$this->dttDateCleared = $objReloaded->dttDateCleared;
+			$this->dttDateCredited = $objReloaded->dttDateCredited;
 			$this->strCheckNumber = $objReloaded->strCheckNumber;
 			$this->strAuthorizationNumber = $objReloaded->strAuthorizationNumber;
 			$this->strAlternateSource = $objReloaded->strAlternateSource;
@@ -1251,6 +1289,11 @@
 					// Gets the value for dttDateCleared 
 					// @return QDateTime
 					return $this->dttDateCleared;
+
+				case 'DateCredited':
+					// Gets the value for dttDateCredited 
+					// @return QDateTime
+					return $this->dttDateCredited;
 
 				case 'CheckNumber':
 					// Gets the value for strCheckNumber 
@@ -1473,6 +1516,17 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateCleared = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateCredited':
+					// Sets the value for dttDateCredited 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateCredited = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1884,6 +1938,7 @@
 			$strToReturn .= '<element name="TotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="DateEntered" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateCleared" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateCredited" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="CheckNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="AuthorizationNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="AlternateSource" type="xsd:string"/>';
@@ -1938,6 +1993,8 @@
 				$objToReturn->dttDateEntered = new QDateTime($objSoapObject->DateEntered);
 			if (property_exists($objSoapObject, 'DateCleared'))
 				$objToReturn->dttDateCleared = new QDateTime($objSoapObject->DateCleared);
+			if (property_exists($objSoapObject, 'DateCredited'))
+				$objToReturn->dttDateCredited = new QDateTime($objSoapObject->DateCredited);
 			if (property_exists($objSoapObject, 'CheckNumber'))
 				$objToReturn->strCheckNumber = $objSoapObject->CheckNumber;
 			if (property_exists($objSoapObject, 'AuthorizationNumber'))
@@ -1987,6 +2044,8 @@
 				$objObject->dttDateEntered = $objObject->dttDateEntered->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateCleared)
 				$objObject->dttDateCleared = $objObject->dttDateCleared->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateCredited)
+				$objObject->dttDateCredited = $objObject->dttDateCredited->__toString(QDateTime::FormatSoap);
 			if ($objObject->objCreatedByLogin)
 				$objObject->objCreatedByLogin = Login::GetSoapObjectFromObject($objObject->objCreatedByLogin, false);
 			else if (!$blnBindRelatedObjects)
@@ -2037,6 +2096,8 @@
 					return new QQNode('date_entered', 'DateEntered', 'QDateTime', $this);
 				case 'DateCleared':
 					return new QQNode('date_cleared', 'DateCleared', 'QDateTime', $this);
+				case 'DateCredited':
+					return new QQNode('date_credited', 'DateCredited', 'QDateTime', $this);
 				case 'CheckNumber':
 					return new QQNode('check_number', 'CheckNumber', 'string', $this);
 				case 'AuthorizationNumber':
@@ -2097,6 +2158,8 @@
 					return new QQNode('date_entered', 'DateEntered', 'QDateTime', $this);
 				case 'DateCleared':
 					return new QQNode('date_cleared', 'DateCleared', 'QDateTime', $this);
+				case 'DateCredited':
+					return new QQNode('date_credited', 'DateCredited', 'QDateTime', $this);
 				case 'CheckNumber':
 					return new QQNode('check_number', 'CheckNumber', 'string', $this);
 				case 'AuthorizationNumber':

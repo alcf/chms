@@ -11,6 +11,8 @@
 
 		<?php $_CONTROL->calDateEntered->RenderWithName(); ?>
 
+		<?php $_CONTROL->calDateCredited->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtBatchLabel->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtDescription->RenderWithName(); ?>

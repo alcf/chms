@@ -28,19 +28,63 @@
 
 	class CommentCategoryMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var CommentCategory objCommentCategory
+		 * @access protected
+		 */
 		protected $objCommentCategory;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of CommentCategory's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QIntegerTextBox txtOrderNumber;
+         * @access protected
+         */
 		protected $txtOrderNumber;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
 
+
 		// Controls that allow the viewing of CommentCategory's individual data fields
+        /**
+         * @var QLabel lblOrderNumber
+         * @access protected
+         */
 		protected $lblOrderNumber;
+
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

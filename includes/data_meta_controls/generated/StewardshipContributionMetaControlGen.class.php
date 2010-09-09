@@ -20,7 +20,7 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
-	 * property QIntegerTextBox $StewardshipContributionTypeIdControl
+	 * property QListBox $StewardshipContributionTypeIdControl
 	 * property-read QLabel $StewardshipContributionTypeIdLabel
 	 * property QListBox $StewardshipBatchIdControl
 	 * property-read QLabel $StewardshipBatchIdLabel
@@ -34,6 +34,8 @@
 	 * property-read QLabel $DateEnteredLabel
 	 * property QDateTimePicker $DateClearedControl
 	 * property-read QLabel $DateClearedLabel
+	 * property QDateTimePicker $DateCreditedControl
+	 * property-read QLabel $DateCreditedLabel
 	 * property QTextBox $CheckNumberControl
 	 * property-read QLabel $CheckNumberLabel
 	 * property QTextBox $AuthorizationNumberControl
@@ -50,41 +52,207 @@
 
 	class StewardshipContributionMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var StewardshipContribution objStewardshipContribution
+		 * @access protected
+		 */
 		protected $objStewardshipContribution;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of StewardshipContribution's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
-		protected $txtStewardshipContributionTypeId;
+
+        /**
+         * @var QListBox lstStewardshipContributionType;
+         * @access protected
+         */
+		protected $lstStewardshipContributionType;
+
+        /**
+         * @var QListBox lstStewardshipBatch;
+         * @access protected
+         */
 		protected $lstStewardshipBatch;
+
+        /**
+         * @var QListBox lstStewardshipStack;
+         * @access protected
+         */
 		protected $lstStewardshipStack;
+
+        /**
+         * @var QListBox lstCheckingAccountLookup;
+         * @access protected
+         */
 		protected $lstCheckingAccountLookup;
+
+        /**
+         * @var QFloatTextBox txtTotalAmount;
+         * @access protected
+         */
 		protected $txtTotalAmount;
+
+        /**
+         * @var QDateTimePicker calDateEntered;
+         * @access protected
+         */
 		protected $calDateEntered;
+
+        /**
+         * @var QDateTimePicker calDateCleared;
+         * @access protected
+         */
 		protected $calDateCleared;
+
+        /**
+         * @var QDateTimePicker calDateCredited;
+         * @access protected
+         */
+		protected $calDateCredited;
+
+        /**
+         * @var QTextBox txtCheckNumber;
+         * @access protected
+         */
 		protected $txtCheckNumber;
+
+        /**
+         * @var QTextBox txtAuthorizationNumber;
+         * @access protected
+         */
 		protected $txtAuthorizationNumber;
+
+        /**
+         * @var QTextBox txtAlternateSource;
+         * @access protected
+         */
 		protected $txtAlternateSource;
+
+        /**
+         * @var QTextBox txtNote;
+         * @access protected
+         */
 		protected $txtNote;
+
+        /**
+         * @var QListBox lstCreatedByLogin;
+         * @access protected
+         */
 		protected $lstCreatedByLogin;
 
+
 		// Controls that allow the viewing of StewardshipContribution's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblStewardshipContributionTypeId
+         * @access protected
+         */
 		protected $lblStewardshipContributionTypeId;
+
+        /**
+         * @var QLabel lblStewardshipBatchId
+         * @access protected
+         */
 		protected $lblStewardshipBatchId;
+
+        /**
+         * @var QLabel lblStewardshipStackId
+         * @access protected
+         */
 		protected $lblStewardshipStackId;
+
+        /**
+         * @var QLabel lblCheckingAccountLookupId
+         * @access protected
+         */
 		protected $lblCheckingAccountLookupId;
+
+        /**
+         * @var QLabel lblTotalAmount
+         * @access protected
+         */
 		protected $lblTotalAmount;
+
+        /**
+         * @var QLabel lblDateEntered
+         * @access protected
+         */
 		protected $lblDateEntered;
+
+        /**
+         * @var QLabel lblDateCleared
+         * @access protected
+         */
 		protected $lblDateCleared;
+
+        /**
+         * @var QLabel lblDateCredited
+         * @access protected
+         */
+		protected $lblDateCredited;
+
+        /**
+         * @var QLabel lblCheckNumber
+         * @access protected
+         */
 		protected $lblCheckNumber;
+
+        /**
+         * @var QLabel lblAuthorizationNumber
+         * @access protected
+         */
 		protected $lblAuthorizationNumber;
+
+        /**
+         * @var QLabel lblAlternateSource
+         * @access protected
+         */
 		protected $lblAlternateSource;
+
+        /**
+         * @var QLabel lblNote
+         * @access protected
+         */
 		protected $lblNote;
+
+        /**
+         * @var QLabel lblCreatedByLoginId
+         * @access protected
+         */
 		protected $lblCreatedByLoginId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -242,30 +410,29 @@
 		}
 
 		/**
-		 * Create and setup QIntegerTextBox txtStewardshipContributionTypeId
+		 * Create and setup QListBox lstStewardshipContributionType
 		 * @param string $strControlId optional ControlId to use
-		 * @return QIntegerTextBox
+		 * @return QListBox
 		 */
-		public function txtStewardshipContributionTypeId_Create($strControlId = null) {
-			$this->txtStewardshipContributionTypeId = new QIntegerTextBox($this->objParentObject, $strControlId);
-			$this->txtStewardshipContributionTypeId->Name = QApplication::Translate('Stewardship Contribution Type Id');
-			$this->txtStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
-			$this->txtStewardshipContributionTypeId->Required = true;
-			return $this->txtStewardshipContributionTypeId;
+		public function lstStewardshipContributionType_Create($strControlId = null) {
+			$this->lstStewardshipContributionType = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStewardshipContributionType->Name = QApplication::Translate('Stewardship Contribution Type');
+			$this->lstStewardshipContributionType->Required = true;
+			foreach (StewardshipContributionType::$NameArray as $intId => $strValue)
+				$this->lstStewardshipContributionType->AddItem(new QListItem($strValue, $intId, $this->objStewardshipContribution->StewardshipContributionTypeId == $intId));
+			return $this->lstStewardshipContributionType;
 		}
 
 		/**
 		 * Create and setup QLabel lblStewardshipContributionTypeId
 		 * @param string $strControlId optional ControlId to use
-		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblStewardshipContributionTypeId_Create($strControlId = null, $strFormat = null) {
+		public function lblStewardshipContributionTypeId_Create($strControlId = null) {
 			$this->lblStewardshipContributionTypeId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblStewardshipContributionTypeId->Name = QApplication::Translate('Stewardship Contribution Type Id');
-			$this->lblStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
+			$this->lblStewardshipContributionTypeId->Name = QApplication::Translate('Stewardship Contribution Type');
+			$this->lblStewardshipContributionTypeId->Text = ($this->objStewardshipContribution->StewardshipContributionTypeId) ? StewardshipContributionType::$NameArray[$this->objStewardshipContribution->StewardshipContributionTypeId] : null;
 			$this->lblStewardshipContributionTypeId->Required = true;
-			$this->lblStewardshipContributionTypeId->Format = $strFormat;
 			return $this->lblStewardshipContributionTypeId;
 		}
 
@@ -479,6 +646,35 @@
 		protected $strDateClearedDateTimeFormat;
 
 		/**
+		 * Create and setup QDateTimePicker calDateCredited
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateCredited_Create($strControlId = null) {
+			$this->calDateCredited = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateCredited->Name = QApplication::Translate('Date Credited');
+			$this->calDateCredited->DateTime = $this->objStewardshipContribution->DateCredited;
+			$this->calDateCredited->DateTimePickerType = QDateTimePickerType::Date;
+			return $this->calDateCredited;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateCredited
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateCredited_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateCredited = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateCredited->Name = QApplication::Translate('Date Credited');
+			$this->strDateCreditedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateCredited->Text = sprintf($this->objStewardshipContribution->DateCredited) ? $this->objStewardshipContribution->DateCredited->__toString($this->strDateCreditedDateTimeFormat) : null;
+			return $this->lblDateCredited;
+		}
+
+		protected $strDateCreditedDateTimeFormat;
+
+		/**
 		 * Create and setup QTextBox txtCheckNumber
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -648,8 +844,8 @@
 			}
 			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objStewardshipContribution->Person) ? $this->objStewardshipContribution->Person->__toString() : null;
 
-			if ($this->txtStewardshipContributionTypeId) $this->txtStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
-			if ($this->lblStewardshipContributionTypeId) $this->lblStewardshipContributionTypeId->Text = $this->objStewardshipContribution->StewardshipContributionTypeId;
+			if ($this->lstStewardshipContributionType) $this->lstStewardshipContributionType->SelectedValue = $this->objStewardshipContribution->StewardshipContributionTypeId;
+			if ($this->lblStewardshipContributionTypeId) $this->lblStewardshipContributionTypeId->Text = ($this->objStewardshipContribution->StewardshipContributionTypeId) ? StewardshipContributionType::$NameArray[$this->objStewardshipContribution->StewardshipContributionTypeId] : null;
 
 			if ($this->lstStewardshipBatch) {
 					$this->lstStewardshipBatch->RemoveAllItems();
@@ -699,6 +895,9 @@
 
 			if ($this->calDateCleared) $this->calDateCleared->DateTime = $this->objStewardshipContribution->DateCleared;
 			if ($this->lblDateCleared) $this->lblDateCleared->Text = sprintf($this->objStewardshipContribution->DateCleared) ? $this->objStewardshipContribution->__toString($this->strDateClearedDateTimeFormat) : null;
+
+			if ($this->calDateCredited) $this->calDateCredited->DateTime = $this->objStewardshipContribution->DateCredited;
+			if ($this->lblDateCredited) $this->lblDateCredited->Text = sprintf($this->objStewardshipContribution->DateCredited) ? $this->objStewardshipContribution->__toString($this->strDateCreditedDateTimeFormat) : null;
 
 			if ($this->txtCheckNumber) $this->txtCheckNumber->Text = $this->objStewardshipContribution->CheckNumber;
 			if ($this->lblCheckNumber) $this->lblCheckNumber->Text = $this->objStewardshipContribution->CheckNumber;
@@ -750,13 +949,14 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objStewardshipContribution->PersonId = $this->lstPerson->SelectedValue;
-				if ($this->txtStewardshipContributionTypeId) $this->objStewardshipContribution->StewardshipContributionTypeId = $this->txtStewardshipContributionTypeId->Text;
+				if ($this->lstStewardshipContributionType) $this->objStewardshipContribution->StewardshipContributionTypeId = $this->lstStewardshipContributionType->SelectedValue;
 				if ($this->lstStewardshipBatch) $this->objStewardshipContribution->StewardshipBatchId = $this->lstStewardshipBatch->SelectedValue;
 				if ($this->lstStewardshipStack) $this->objStewardshipContribution->StewardshipStackId = $this->lstStewardshipStack->SelectedValue;
 				if ($this->lstCheckingAccountLookup) $this->objStewardshipContribution->CheckingAccountLookupId = $this->lstCheckingAccountLookup->SelectedValue;
 				if ($this->txtTotalAmount) $this->objStewardshipContribution->TotalAmount = $this->txtTotalAmount->Text;
 				if ($this->calDateEntered) $this->objStewardshipContribution->DateEntered = $this->calDateEntered->DateTime;
 				if ($this->calDateCleared) $this->objStewardshipContribution->DateCleared = $this->calDateCleared->DateTime;
+				if ($this->calDateCredited) $this->objStewardshipContribution->DateCredited = $this->calDateCredited->DateTime;
 				if ($this->txtCheckNumber) $this->objStewardshipContribution->CheckNumber = $this->txtCheckNumber->Text;
 				if ($this->txtAuthorizationNumber) $this->objStewardshipContribution->AuthorizationNumber = $this->txtAuthorizationNumber->Text;
 				if ($this->txtAlternateSource) $this->objStewardshipContribution->AlternateSource = $this->txtAlternateSource->Text;
@@ -817,8 +1017,8 @@
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
 				case 'StewardshipContributionTypeIdControl':
-					if (!$this->txtStewardshipContributionTypeId) return $this->txtStewardshipContributionTypeId_Create();
-					return $this->txtStewardshipContributionTypeId;
+					if (!$this->lstStewardshipContributionType) return $this->lstStewardshipContributionType_Create();
+					return $this->lstStewardshipContributionType;
 				case 'StewardshipContributionTypeIdLabel':
 					if (!$this->lblStewardshipContributionTypeId) return $this->lblStewardshipContributionTypeId_Create();
 					return $this->lblStewardshipContributionTypeId;
@@ -858,6 +1058,12 @@
 				case 'DateClearedLabel':
 					if (!$this->lblDateCleared) return $this->lblDateCleared_Create();
 					return $this->lblDateCleared;
+				case 'DateCreditedControl':
+					if (!$this->calDateCredited) return $this->calDateCredited_Create();
+					return $this->calDateCredited;
+				case 'DateCreditedLabel':
+					if (!$this->lblDateCredited) return $this->lblDateCredited_Create();
+					return $this->lblDateCredited;
 				case 'CheckNumberControl':
 					if (!$this->txtCheckNumber) return $this->txtCheckNumber_Create();
 					return $this->txtCheckNumber;
@@ -915,7 +1121,7 @@
 					case 'PersonIdControl':
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipContributionTypeIdControl':
-						return ($this->txtStewardshipContributionTypeId = QType::Cast($mixValue, 'QControl'));
+						return ($this->lstStewardshipContributionType = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipBatchIdControl':
 						return ($this->lstStewardshipBatch = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipStackIdControl':
@@ -928,6 +1134,8 @@
 						return ($this->calDateEntered = QType::Cast($mixValue, 'QControl'));
 					case 'DateClearedControl':
 						return ($this->calDateCleared = QType::Cast($mixValue, 'QControl'));
+					case 'DateCreditedControl':
+						return ($this->calDateCredited = QType::Cast($mixValue, 'QControl'));
 					case 'CheckNumberControl':
 						return ($this->txtCheckNumber = QType::Cast($mixValue, 'QControl'));
 					case 'AuthorizationNumberControl':

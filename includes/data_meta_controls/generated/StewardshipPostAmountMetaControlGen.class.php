@@ -30,21 +30,75 @@
 
 	class StewardshipPostAmountMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var StewardshipPostAmount objStewardshipPostAmount
+		 * @access protected
+		 */
 		protected $objStewardshipPostAmount;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of StewardshipPostAmount's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstStewardshipPost;
+         * @access protected
+         */
 		protected $lstStewardshipPost;
+
+        /**
+         * @var QListBox lstStewardshipFund;
+         * @access protected
+         */
 		protected $lstStewardshipFund;
+
+        /**
+         * @var QFloatTextBox txtAmount;
+         * @access protected
+         */
 		protected $txtAmount;
 
+
 		// Controls that allow the viewing of StewardshipPostAmount's individual data fields
+        /**
+         * @var QLabel lblStewardshipPostId
+         * @access protected
+         */
 		protected $lblStewardshipPostId;
+
+        /**
+         * @var QLabel lblStewardshipFundId
+         * @access protected
+         */
 		protected $lblStewardshipFundId;
+
+        /**
+         * @var QLabel lblAmount
+         * @access protected
+         */
 		protected $lblAmount;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

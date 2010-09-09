@@ -30,21 +30,75 @@
 
 	class HouseholdSplitMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var HouseholdSplit objHouseholdSplit
+		 * @access protected
+		 */
 		protected $objHouseholdSplit;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of HouseholdSplit's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstHousehold;
+         * @access protected
+         */
 		protected $lstHousehold;
+
+        /**
+         * @var QListBox lstSplitHousehold;
+         * @access protected
+         */
 		protected $lstSplitHousehold;
+
+        /**
+         * @var QDateTimePicker calDateSplit;
+         * @access protected
+         */
 		protected $calDateSplit;
 
+
 		// Controls that allow the viewing of HouseholdSplit's individual data fields
+        /**
+         * @var QLabel lblHouseholdId
+         * @access protected
+         */
 		protected $lblHouseholdId;
+
+        /**
+         * @var QLabel lblSplitHouseholdId
+         * @access protected
+         */
 		protected $lblSplitHouseholdId;
+
+        /**
+         * @var QLabel lblDateSplit
+         * @access protected
+         */
 		protected $lblDateSplit;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

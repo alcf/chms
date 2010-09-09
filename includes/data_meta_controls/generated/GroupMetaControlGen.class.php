@@ -48,43 +48,187 @@
 
 	class GroupMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Group objGroup
+		 * @access protected
+		 */
 		protected $objGroup;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Group's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstGroupType;
+         * @access protected
+         */
 		protected $lstGroupType;
+
+        /**
+         * @var QListBox lstMinistry;
+         * @access protected
+         */
 		protected $lstMinistry;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QTextBox txtDescription;
+         * @access protected
+         */
 		protected $txtDescription;
+
+        /**
+         * @var QListBox lstParentGroup;
+         * @access protected
+         */
 		protected $lstParentGroup;
+
+        /**
+         * @var QIntegerTextBox txtHierarchyLevel;
+         * @access protected
+         */
 		protected $txtHierarchyLevel;
+
+        /**
+         * @var QIntegerTextBox txtHierarchyOrderNumber;
+         * @access protected
+         */
 		protected $txtHierarchyOrderNumber;
+
+        /**
+         * @var QCheckBox chkConfidentialFlag;
+         * @access protected
+         */
 		protected $chkConfidentialFlag;
+
+        /**
+         * @var QListBox lstEmailBroadcastType;
+         * @access protected
+         */
 		protected $lstEmailBroadcastType;
+
+        /**
+         * @var QTextBox txtToken;
+         * @access protected
+         */
 		protected $txtToken;
 
+
 		// Controls that allow the viewing of Group's individual data fields
+        /**
+         * @var QLabel lblGroupTypeId
+         * @access protected
+         */
 		protected $lblGroupTypeId;
+
+        /**
+         * @var QLabel lblMinistryId
+         * @access protected
+         */
 		protected $lblMinistryId;
+
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblDescription
+         * @access protected
+         */
 		protected $lblDescription;
+
+        /**
+         * @var QLabel lblParentGroupId
+         * @access protected
+         */
 		protected $lblParentGroupId;
+
+        /**
+         * @var QLabel lblHierarchyLevel
+         * @access protected
+         */
 		protected $lblHierarchyLevel;
+
+        /**
+         * @var QLabel lblHierarchyOrderNumber
+         * @access protected
+         */
 		protected $lblHierarchyOrderNumber;
+
+        /**
+         * @var QLabel lblConfidentialFlag
+         * @access protected
+         */
 		protected $lblConfidentialFlag;
+
+        /**
+         * @var QLabel lblEmailBroadcastTypeId
+         * @access protected
+         */
 		protected $lblEmailBroadcastTypeId;
+
+        /**
+         * @var QLabel lblToken
+         * @access protected
+         */
 		protected $lblToken;
 
+
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstGrowthGroup
+         * @access protected
+         */
 		protected $lstGrowthGroup;
+
+        /**
+         * @var QListBox lstSmartGroup
+         * @access protected
+         */
 		protected $lstSmartGroup;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblGrowthGroup
+         * @access protected
+         */
 		protected $lblGrowthGroup;
+
+        /**
+         * @var QLabel lblSmartGroup
+         * @access protected
+         */
 		protected $lblSmartGroup;
+
 
 
 		/**

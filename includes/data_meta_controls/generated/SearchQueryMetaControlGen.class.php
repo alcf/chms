@@ -28,23 +28,67 @@
 
 	class SearchQueryMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var SearchQuery objSearchQuery
+		 * @access protected
+		 */
 		protected $objSearchQuery;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of SearchQuery's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtDescription;
+         * @access protected
+         */
 		protected $txtDescription;
 
+
 		// Controls that allow the viewing of SearchQuery's individual data fields
+        /**
+         * @var QLabel lblDescription
+         * @access protected
+         */
 		protected $lblDescription;
 
+
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstSmartGroup
+         * @access protected
+         */
 		protected $lstSmartGroup;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblSmartGroup
+         * @access protected
+         */
 		protected $lblSmartGroup;
+
 
 
 		/**

@@ -84,79 +84,379 @@
 
 	class PersonMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Person objPerson
+		 * @access protected
+		 */
 		protected $objPerson;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Person's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstMembershipStatusType;
+         * @access protected
+         */
 		protected $lstMembershipStatusType;
+
+        /**
+         * @var QListBox lstMaritalStatusType;
+         * @access protected
+         */
 		protected $lstMaritalStatusType;
+
+        /**
+         * @var QTextBox txtFirstName;
+         * @access protected
+         */
 		protected $txtFirstName;
+
+        /**
+         * @var QTextBox txtMiddleName;
+         * @access protected
+         */
 		protected $txtMiddleName;
+
+        /**
+         * @var QTextBox txtLastName;
+         * @access protected
+         */
 		protected $txtLastName;
+
+        /**
+         * @var QTextBox txtMailingLabel;
+         * @access protected
+         */
 		protected $txtMailingLabel;
+
+        /**
+         * @var QTextBox txtPriorLastNames;
+         * @access protected
+         */
 		protected $txtPriorLastNames;
+
+        /**
+         * @var QTextBox txtNickname;
+         * @access protected
+         */
 		protected $txtNickname;
+
+        /**
+         * @var QTextBox txtTitle;
+         * @access protected
+         */
 		protected $txtTitle;
+
+        /**
+         * @var QTextBox txtSuffix;
+         * @access protected
+         */
 		protected $txtSuffix;
+
+        /**
+         * @var QTextBox txtGender;
+         * @access protected
+         */
 		protected $txtGender;
+
+        /**
+         * @var QDateTimePicker calDateOfBirth;
+         * @access protected
+         */
 		protected $calDateOfBirth;
+
+        /**
+         * @var QCheckBox chkDobApproximateFlag;
+         * @access protected
+         */
 		protected $chkDobApproximateFlag;
+
+        /**
+         * @var QCheckBox chkDeceasedFlag;
+         * @access protected
+         */
 		protected $chkDeceasedFlag;
+
+        /**
+         * @var QDateTimePicker calDateDeceased;
+         * @access protected
+         */
 		protected $calDateDeceased;
+
+        /**
+         * @var QListBox lstCurrentHeadShot;
+         * @access protected
+         */
 		protected $lstCurrentHeadShot;
+
+        /**
+         * @var QListBox lstMailingAddress;
+         * @access protected
+         */
 		protected $lstMailingAddress;
+
+        /**
+         * @var QListBox lstStewardshipAddress;
+         * @access protected
+         */
 		protected $lstStewardshipAddress;
+
+        /**
+         * @var QListBox lstPrimaryPhone;
+         * @access protected
+         */
 		protected $lstPrimaryPhone;
+
+        /**
+         * @var QListBox lstPrimaryEmail;
+         * @access protected
+         */
 		protected $lstPrimaryEmail;
+
+        /**
+         * @var QCheckBox chkCanMailFlag;
+         * @access protected
+         */
 		protected $chkCanMailFlag;
+
+        /**
+         * @var QCheckBox chkCanPhoneFlag;
+         * @access protected
+         */
 		protected $chkCanPhoneFlag;
+
+        /**
+         * @var QCheckBox chkCanEmailFlag;
+         * @access protected
+         */
 		protected $chkCanEmailFlag;
+
+        /**
+         * @var QTextBox txtPrimaryAddressText;
+         * @access protected
+         */
 		protected $txtPrimaryAddressText;
+
+        /**
+         * @var QTextBox txtPrimaryCityText;
+         * @access protected
+         */
 		protected $txtPrimaryCityText;
+
+        /**
+         * @var QTextBox txtPrimaryPhoneText;
+         * @access protected
+         */
 		protected $txtPrimaryPhoneText;
 
+
 		// Controls that allow the viewing of Person's individual data fields
+        /**
+         * @var QLabel lblMembershipStatusTypeId
+         * @access protected
+         */
 		protected $lblMembershipStatusTypeId;
+
+        /**
+         * @var QLabel lblMaritalStatusTypeId
+         * @access protected
+         */
 		protected $lblMaritalStatusTypeId;
+
+        /**
+         * @var QLabel lblFirstName
+         * @access protected
+         */
 		protected $lblFirstName;
+
+        /**
+         * @var QLabel lblMiddleName
+         * @access protected
+         */
 		protected $lblMiddleName;
+
+        /**
+         * @var QLabel lblLastName
+         * @access protected
+         */
 		protected $lblLastName;
+
+        /**
+         * @var QLabel lblMailingLabel
+         * @access protected
+         */
 		protected $lblMailingLabel;
+
+        /**
+         * @var QLabel lblPriorLastNames
+         * @access protected
+         */
 		protected $lblPriorLastNames;
+
+        /**
+         * @var QLabel lblNickname
+         * @access protected
+         */
 		protected $lblNickname;
+
+        /**
+         * @var QLabel lblTitle
+         * @access protected
+         */
 		protected $lblTitle;
+
+        /**
+         * @var QLabel lblSuffix
+         * @access protected
+         */
 		protected $lblSuffix;
+
+        /**
+         * @var QLabel lblGender
+         * @access protected
+         */
 		protected $lblGender;
+
+        /**
+         * @var QLabel lblDateOfBirth
+         * @access protected
+         */
 		protected $lblDateOfBirth;
+
+        /**
+         * @var QLabel lblDobApproximateFlag
+         * @access protected
+         */
 		protected $lblDobApproximateFlag;
+
+        /**
+         * @var QLabel lblDeceasedFlag
+         * @access protected
+         */
 		protected $lblDeceasedFlag;
+
+        /**
+         * @var QLabel lblDateDeceased
+         * @access protected
+         */
 		protected $lblDateDeceased;
+
+        /**
+         * @var QLabel lblCurrentHeadShotId
+         * @access protected
+         */
 		protected $lblCurrentHeadShotId;
+
+        /**
+         * @var QLabel lblMailingAddressId
+         * @access protected
+         */
 		protected $lblMailingAddressId;
+
+        /**
+         * @var QLabel lblStewardshipAddressId
+         * @access protected
+         */
 		protected $lblStewardshipAddressId;
+
+        /**
+         * @var QLabel lblPrimaryPhoneId
+         * @access protected
+         */
 		protected $lblPrimaryPhoneId;
+
+        /**
+         * @var QLabel lblPrimaryEmailId
+         * @access protected
+         */
 		protected $lblPrimaryEmailId;
+
+        /**
+         * @var QLabel lblCanMailFlag
+         * @access protected
+         */
 		protected $lblCanMailFlag;
+
+        /**
+         * @var QLabel lblCanPhoneFlag
+         * @access protected
+         */
 		protected $lblCanPhoneFlag;
+
+        /**
+         * @var QLabel lblCanEmailFlag
+         * @access protected
+         */
 		protected $lblCanEmailFlag;
+
+        /**
+         * @var QLabel lblPrimaryAddressText
+         * @access protected
+         */
 		protected $lblPrimaryAddressText;
+
+        /**
+         * @var QLabel lblPrimaryCityText
+         * @access protected
+         */
 		protected $lblPrimaryCityText;
+
+        /**
+         * @var QLabel lblPrimaryPhoneText
+         * @access protected
+         */
 		protected $lblPrimaryPhoneText;
 
+
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstHouseholdAsHead
+         * @access protected
+         */
 		protected $lstHouseholdAsHead;
+
 		protected $lstCheckingAccountLookups;
+
 		protected $lstCommunicationLists;
+
 		protected $lstNameItems;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblHouseholdAsHead
+         * @access protected
+         */
 		protected $lblHouseholdAsHead;
+
 		protected $lblCheckingAccountLookups;
+
 		protected $lblCommunicationLists;
+
 		protected $lblNameItems;
+
 
 
 		/**

@@ -34,25 +34,99 @@
 
 	class StewardshipPostMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var StewardshipPost objStewardshipPost
+		 * @access protected
+		 */
 		protected $objStewardshipPost;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of StewardshipPost's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstStewardshipBatch;
+         * @access protected
+         */
 		protected $lstStewardshipBatch;
+
+        /**
+         * @var QIntegerTextBox txtPostNumber;
+         * @access protected
+         */
 		protected $txtPostNumber;
+
+        /**
+         * @var QDateTimePicker calDatePosted;
+         * @access protected
+         */
 		protected $calDatePosted;
+
+        /**
+         * @var QFloatTextBox txtTotalAmount;
+         * @access protected
+         */
 		protected $txtTotalAmount;
+
+        /**
+         * @var QListBox lstCreatedByLogin;
+         * @access protected
+         */
 		protected $lstCreatedByLogin;
 
+
 		// Controls that allow the viewing of StewardshipPost's individual data fields
+        /**
+         * @var QLabel lblStewardshipBatchId
+         * @access protected
+         */
 		protected $lblStewardshipBatchId;
+
+        /**
+         * @var QLabel lblPostNumber
+         * @access protected
+         */
 		protected $lblPostNumber;
+
+        /**
+         * @var QLabel lblDatePosted
+         * @access protected
+         */
 		protected $lblDatePosted;
+
+        /**
+         * @var QLabel lblTotalAmount
+         * @access protected
+         */
 		protected $lblTotalAmount;
+
+        /**
+         * @var QLabel lblCreatedByLoginId
+         * @access protected
+         */
 		protected $lblCreatedByLoginId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

@@ -36,27 +36,111 @@
 
 	class EmailMessageRouteMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var EmailMessageRoute objEmailMessageRoute
+		 * @access protected
+		 */
 		protected $objEmailMessageRoute;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of EmailMessageRoute's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstEmailMessage;
+         * @access protected
+         */
 		protected $lstEmailMessage;
+
+        /**
+         * @var QListBox lstGroup;
+         * @access protected
+         */
 		protected $lstGroup;
+
+        /**
+         * @var QListBox lstCommunicationList;
+         * @access protected
+         */
 		protected $lstCommunicationList;
+
+        /**
+         * @var QListBox lstLogin;
+         * @access protected
+         */
 		protected $lstLogin;
+
+        /**
+         * @var QListBox lstCommunicationListEntry;
+         * @access protected
+         */
 		protected $lstCommunicationListEntry;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
 
+
 		// Controls that allow the viewing of EmailMessageRoute's individual data fields
+        /**
+         * @var QLabel lblEmailMessageId
+         * @access protected
+         */
 		protected $lblEmailMessageId;
+
+        /**
+         * @var QLabel lblGroupId
+         * @access protected
+         */
 		protected $lblGroupId;
+
+        /**
+         * @var QLabel lblCommunicationListId
+         * @access protected
+         */
 		protected $lblCommunicationListId;
+
+        /**
+         * @var QLabel lblLoginId
+         * @access protected
+         */
 		protected $lblLoginId;
+
+        /**
+         * @var QLabel lblCommunicationListEntryId
+         * @access protected
+         */
 		protected $lblCommunicationListEntryId;
+
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

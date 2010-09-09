@@ -52,43 +52,207 @@
 
 	class AddressMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Address objAddress
+		 * @access protected
+		 */
 		protected $objAddress;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Address's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstAddressType;
+         * @access protected
+         */
 		protected $lstAddressType;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstHousehold;
+         * @access protected
+         */
 		protected $lstHousehold;
+
+        /**
+         * @var QListBox lstPrimaryPhone;
+         * @access protected
+         */
 		protected $lstPrimaryPhone;
+
+        /**
+         * @var QTextBox txtAddress1;
+         * @access protected
+         */
 		protected $txtAddress1;
+
+        /**
+         * @var QTextBox txtAddress2;
+         * @access protected
+         */
 		protected $txtAddress2;
+
+        /**
+         * @var QTextBox txtAddress3;
+         * @access protected
+         */
 		protected $txtAddress3;
+
+        /**
+         * @var QTextBox txtCity;
+         * @access protected
+         */
 		protected $txtCity;
+
+        /**
+         * @var QTextBox txtState;
+         * @access protected
+         */
 		protected $txtState;
+
+        /**
+         * @var QTextBox txtZipCode;
+         * @access protected
+         */
 		protected $txtZipCode;
+
+        /**
+         * @var QTextBox txtCountry;
+         * @access protected
+         */
 		protected $txtCountry;
+
+        /**
+         * @var QCheckBox chkCurrentFlag;
+         * @access protected
+         */
 		protected $chkCurrentFlag;
+
+        /**
+         * @var QCheckBox chkInvalidFlag;
+         * @access protected
+         */
 		protected $chkInvalidFlag;
+
+        /**
+         * @var QDateTimePicker calDateUntilWhen;
+         * @access protected
+         */
 		protected $calDateUntilWhen;
 
+
 		// Controls that allow the viewing of Address's individual data fields
+        /**
+         * @var QLabel lblAddressTypeId
+         * @access protected
+         */
 		protected $lblAddressTypeId;
+
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblHouseholdId
+         * @access protected
+         */
 		protected $lblHouseholdId;
+
+        /**
+         * @var QLabel lblPrimaryPhoneId
+         * @access protected
+         */
 		protected $lblPrimaryPhoneId;
+
+        /**
+         * @var QLabel lblAddress1
+         * @access protected
+         */
 		protected $lblAddress1;
+
+        /**
+         * @var QLabel lblAddress2
+         * @access protected
+         */
 		protected $lblAddress2;
+
+        /**
+         * @var QLabel lblAddress3
+         * @access protected
+         */
 		protected $lblAddress3;
+
+        /**
+         * @var QLabel lblCity
+         * @access protected
+         */
 		protected $lblCity;
+
+        /**
+         * @var QLabel lblState
+         * @access protected
+         */
 		protected $lblState;
+
+        /**
+         * @var QLabel lblZipCode
+         * @access protected
+         */
 		protected $lblZipCode;
+
+        /**
+         * @var QLabel lblCountry
+         * @access protected
+         */
 		protected $lblCountry;
+
+        /**
+         * @var QLabel lblCurrentFlag
+         * @access protected
+         */
 		protected $lblCurrentFlag;
+
+        /**
+         * @var QLabel lblInvalidFlag
+         * @access protected
+         */
 		protected $lblInvalidFlag;
+
+        /**
+         * @var QLabel lblDateUntilWhen
+         * @access protected
+         */
 		protected $lblDateUntilWhen;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

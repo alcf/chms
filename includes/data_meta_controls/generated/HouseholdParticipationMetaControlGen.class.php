@@ -30,21 +30,75 @@
 
 	class HouseholdParticipationMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var HouseholdParticipation objHouseholdParticipation
+		 * @access protected
+		 */
 		protected $objHouseholdParticipation;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of HouseholdParticipation's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstHousehold;
+         * @access protected
+         */
 		protected $lstHousehold;
+
+        /**
+         * @var QTextBox txtRole;
+         * @access protected
+         */
 		protected $txtRole;
 
+
 		// Controls that allow the viewing of HouseholdParticipation's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblHouseholdId
+         * @access protected
+         */
 		protected $lblHouseholdId;
+
+        /**
+         * @var QLabel lblRole
+         * @access protected
+         */
 		protected $lblRole;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

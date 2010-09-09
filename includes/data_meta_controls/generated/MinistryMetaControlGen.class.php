@@ -34,29 +34,95 @@
 
 	class MinistryMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Ministry objMinistry
+		 * @access protected
+		 */
 		protected $objMinistry;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Ministry's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtToken;
+         * @access protected
+         */
 		protected $txtToken;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QListBox lstParentMinistry;
+         * @access protected
+         */
 		protected $lstParentMinistry;
+
+        /**
+         * @var QCheckBox chkActiveFlag;
+         * @access protected
+         */
 		protected $chkActiveFlag;
 
+
 		// Controls that allow the viewing of Ministry's individual data fields
+        /**
+         * @var QLabel lblToken
+         * @access protected
+         */
 		protected $lblToken;
+
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblParentMinistryId
+         * @access protected
+         */
 		protected $lblParentMinistryId;
+
+        /**
+         * @var QLabel lblActiveFlag
+         * @access protected
+         */
 		protected $lblActiveFlag;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstLogins;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblLogins;
+
 
 
 		/**

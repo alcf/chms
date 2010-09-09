@@ -40,35 +40,131 @@
 
 	class AttributeValueMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var AttributeValue objAttributeValue
+		 * @access protected
+		 */
 		protected $objAttributeValue;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of AttributeValue's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstAttribute;
+         * @access protected
+         */
 		protected $lstAttribute;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QDateTimePicker calDateValue;
+         * @access protected
+         */
 		protected $calDateValue;
+
+        /**
+         * @var QDateTimePicker calDatetimeValue;
+         * @access protected
+         */
 		protected $calDatetimeValue;
+
+        /**
+         * @var QTextBox txtTextValue;
+         * @access protected
+         */
 		protected $txtTextValue;
+
+        /**
+         * @var QCheckBox chkBooleanValue;
+         * @access protected
+         */
 		protected $chkBooleanValue;
+
+        /**
+         * @var QListBox lstSingleAttributeOption;
+         * @access protected
+         */
 		protected $lstSingleAttributeOption;
 
+
 		// Controls that allow the viewing of AttributeValue's individual data fields
+        /**
+         * @var QLabel lblAttributeId
+         * @access protected
+         */
 		protected $lblAttributeId;
+
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblDateValue
+         * @access protected
+         */
 		protected $lblDateValue;
+
+        /**
+         * @var QLabel lblDatetimeValue
+         * @access protected
+         */
 		protected $lblDatetimeValue;
+
+        /**
+         * @var QLabel lblTextValue
+         * @access protected
+         */
 		protected $lblTextValue;
+
+        /**
+         * @var QLabel lblBooleanValue
+         * @access protected
+         */
 		protected $lblBooleanValue;
+
+        /**
+         * @var QLabel lblSingleAttributeOptionId
+         * @access protected
+         */
 		protected $lblSingleAttributeOptionId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstAttributeOptionsAsMultiple;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblAttributeOptionsAsMultiple;
+
 
 
 		/**

@@ -28,19 +28,63 @@
 
 	class RegistryMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Registry objRegistry
+		 * @access protected
+		 */
 		protected $objRegistry;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Registry's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QTextBox txtValue;
+         * @access protected
+         */
 		protected $txtValue;
 
+
 		// Controls that allow the viewing of Registry's individual data fields
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblValue
+         * @access protected
+         */
 		protected $lblValue;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

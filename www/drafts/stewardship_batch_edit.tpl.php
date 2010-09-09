@@ -21,6 +21,8 @@
 
 		<?php $this->calDateEntered->RenderWithName(); ?>
 
+		<?php $this->calDateCredited->RenderWithName(); ?>
+
 		<?php $this->txtBatchLabel->RenderWithName(); ?>
 
 		<?php $this->txtDescription->RenderWithName(); ?>

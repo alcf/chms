@@ -32,24 +32,93 @@
 
 	class SmartGroupMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var SmartGroup objSmartGroup
+		 * @access protected
+		 */
 		protected $objSmartGroup;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of SmartGroup's individual data fields
+        /**
+         * @var QListBox lstGroup;
+         * @access protected
+         */
 		protected $lstGroup;
+
+        /**
+         * @var QListBox lstSearchQuery;
+         * @access protected
+         */
 		protected $lstSearchQuery;
+
+        /**
+         * @var QTextBox txtQuery;
+         * @access protected
+         */
 		protected $txtQuery;
+
+        /**
+         * @var QDateTimePicker calDateRefreshed;
+         * @access protected
+         */
 		protected $calDateRefreshed;
+
+        /**
+         * @var QIntegerTextBox txtProcessTimeMs;
+         * @access protected
+         */
 		protected $txtProcessTimeMs;
 
+
 		// Controls that allow the viewing of SmartGroup's individual data fields
+        /**
+         * @var QLabel lblGroupId
+         * @access protected
+         */
 		protected $lblGroupId;
+
+        /**
+         * @var QLabel lblSearchQueryId
+         * @access protected
+         */
 		protected $lblSearchQueryId;
+
+        /**
+         * @var QLabel lblQuery
+         * @access protected
+         */
 		protected $lblQuery;
+
+        /**
+         * @var QLabel lblDateRefreshed
+         * @access protected
+         */
 		protected $lblDateRefreshed;
+
+        /**
+         * @var QLabel lblProcessTimeMs
+         * @access protected
+         */
 		protected $lblProcessTimeMs;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

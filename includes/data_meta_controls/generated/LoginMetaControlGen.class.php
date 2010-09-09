@@ -50,45 +50,191 @@
 
 	class LoginMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Login objLogin
+		 * @access protected
+		 */
 		protected $objLogin;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Login's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstRoleType;
+         * @access protected
+         */
 		protected $lstRoleType;
+
+        /**
+         * @var QIntegerTextBox txtPermissionBitmap;
+         * @access protected
+         */
 		protected $txtPermissionBitmap;
+
+        /**
+         * @var QTextBox txtUsername;
+         * @access protected
+         */
 		protected $txtUsername;
+
+        /**
+         * @var QTextBox txtPasswordCache;
+         * @access protected
+         */
 		protected $txtPasswordCache;
+
+        /**
+         * @var QTextBox txtPasswordLastSet;
+         * @access protected
+         */
 		protected $txtPasswordLastSet;
+
+        /**
+         * @var QDateTimePicker calDateLastLogin;
+         * @access protected
+         */
 		protected $calDateLastLogin;
+
+        /**
+         * @var QCheckBox chkDomainActiveFlag;
+         * @access protected
+         */
 		protected $chkDomainActiveFlag;
+
+        /**
+         * @var QCheckBox chkLoginActiveFlag;
+         * @access protected
+         */
 		protected $chkLoginActiveFlag;
+
+        /**
+         * @var QTextBox txtEmail;
+         * @access protected
+         */
 		protected $txtEmail;
+
+        /**
+         * @var QTextBox txtFirstName;
+         * @access protected
+         */
 		protected $txtFirstName;
+
+        /**
+         * @var QTextBox txtMiddleInitial;
+         * @access protected
+         */
 		protected $txtMiddleInitial;
+
+        /**
+         * @var QTextBox txtLastName;
+         * @access protected
+         */
 		protected $txtLastName;
 
+
 		// Controls that allow the viewing of Login's individual data fields
+        /**
+         * @var QLabel lblRoleTypeId
+         * @access protected
+         */
 		protected $lblRoleTypeId;
+
+        /**
+         * @var QLabel lblPermissionBitmap
+         * @access protected
+         */
 		protected $lblPermissionBitmap;
+
+        /**
+         * @var QLabel lblUsername
+         * @access protected
+         */
 		protected $lblUsername;
+
+        /**
+         * @var QLabel lblPasswordCache
+         * @access protected
+         */
 		protected $lblPasswordCache;
+
+        /**
+         * @var QLabel lblPasswordLastSet
+         * @access protected
+         */
 		protected $lblPasswordLastSet;
+
+        /**
+         * @var QLabel lblDateLastLogin
+         * @access protected
+         */
 		protected $lblDateLastLogin;
+
+        /**
+         * @var QLabel lblDomainActiveFlag
+         * @access protected
+         */
 		protected $lblDomainActiveFlag;
+
+        /**
+         * @var QLabel lblLoginActiveFlag
+         * @access protected
+         */
 		protected $lblLoginActiveFlag;
+
+        /**
+         * @var QLabel lblEmail
+         * @access protected
+         */
 		protected $lblEmail;
+
+        /**
+         * @var QLabel lblFirstName
+         * @access protected
+         */
 		protected $lblFirstName;
+
+        /**
+         * @var QLabel lblMiddleInitial
+         * @access protected
+         */
 		protected $lblMiddleInitial;
+
+        /**
+         * @var QLabel lblLastName
+         * @access protected
+         */
 		protected $lblLastName;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstMinistries;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblMinistries;
+
 
 
 		/**

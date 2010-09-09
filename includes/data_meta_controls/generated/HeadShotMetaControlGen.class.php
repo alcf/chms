@@ -32,27 +32,91 @@
 
 	class HeadShotMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var HeadShot objHeadShot
+		 * @access protected
+		 */
 		protected $objHeadShot;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of HeadShot's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QDateTimePicker calDateUploaded;
+         * @access protected
+         */
 		protected $calDateUploaded;
+
+        /**
+         * @var QListBox lstImageType;
+         * @access protected
+         */
 		protected $lstImageType;
 
+
 		// Controls that allow the viewing of HeadShot's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblDateUploaded
+         * @access protected
+         */
 		protected $lblDateUploaded;
+
+        /**
+         * @var QLabel lblImageTypeId
+         * @access protected
+         */
 		protected $lblImageTypeId;
 
+
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstPersonAsCurrent
+         * @access protected
+         */
 		protected $lstPersonAsCurrent;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblPersonAsCurrent
+         * @access protected
+         */
 		protected $lblPersonAsCurrent;
+
 
 
 		/**

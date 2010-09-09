@@ -34,25 +34,99 @@
 
 	class QueryNodeMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var QueryNode objQueryNode
+		 * @access protected
+		 */
 		protected $objQueryNode;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of QueryNode's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QTextBox txtQcodoQueryNode;
+         * @access protected
+         */
 		protected $txtQcodoQueryNode;
+
+        /**
+         * @var QListBox lstQueryDataType;
+         * @access protected
+         */
 		protected $lstQueryDataType;
+
+        /**
+         * @var QTextBox txtTypeDetail;
+         * @access protected
+         */
 		protected $txtTypeDetail;
+
+        /**
+         * @var QTextBox txtQcodoQueryCondition;
+         * @access protected
+         */
 		protected $txtQcodoQueryCondition;
 
+
 		// Controls that allow the viewing of QueryNode's individual data fields
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblQcodoQueryNode
+         * @access protected
+         */
 		protected $lblQcodoQueryNode;
+
+        /**
+         * @var QLabel lblQueryDataTypeId
+         * @access protected
+         */
 		protected $lblQueryDataTypeId;
+
+        /**
+         * @var QLabel lblTypeDetail
+         * @access protected
+         */
 		protected $lblTypeDetail;
+
+        /**
+         * @var QLabel lblQcodoQueryCondition
+         * @access protected
+         */
 		protected $lblQcodoQueryCondition;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

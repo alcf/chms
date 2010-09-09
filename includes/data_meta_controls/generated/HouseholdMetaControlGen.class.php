@@ -32,23 +32,87 @@
 
 	class HouseholdMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Household objHousehold
+		 * @access protected
+		 */
 		protected $objHousehold;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Household's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QListBox lstHeadPerson;
+         * @access protected
+         */
 		protected $lstHeadPerson;
+
+        /**
+         * @var QCheckBox chkCombinedStewardshipFlag;
+         * @access protected
+         */
 		protected $chkCombinedStewardshipFlag;
+
+        /**
+         * @var QTextBox txtMembers;
+         * @access protected
+         */
 		protected $txtMembers;
 
+
 		// Controls that allow the viewing of Household's individual data fields
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblHeadPersonId
+         * @access protected
+         */
 		protected $lblHeadPersonId;
+
+        /**
+         * @var QLabel lblCombinedStewardshipFlag
+         * @access protected
+         */
 		protected $lblCombinedStewardshipFlag;
+
+        /**
+         * @var QLabel lblMembers
+         * @access protected
+         */
 		protected $lblMembers;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

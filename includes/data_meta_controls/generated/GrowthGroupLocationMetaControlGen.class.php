@@ -32,23 +32,87 @@
 
 	class GrowthGroupLocationMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var GrowthGroupLocation objGrowthGroupLocation
+		 * @access protected
+		 */
 		protected $objGrowthGroupLocation;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of GrowthGroupLocation's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtLocation;
+         * @access protected
+         */
 		protected $txtLocation;
+
+        /**
+         * @var QFloatTextBox txtLongitude;
+         * @access protected
+         */
 		protected $txtLongitude;
+
+        /**
+         * @var QFloatTextBox txtLatitude;
+         * @access protected
+         */
 		protected $txtLatitude;
+
+        /**
+         * @var QIntegerTextBox txtZoom;
+         * @access protected
+         */
 		protected $txtZoom;
 
+
 		// Controls that allow the viewing of GrowthGroupLocation's individual data fields
+        /**
+         * @var QLabel lblLocation
+         * @access protected
+         */
 		protected $lblLocation;
+
+        /**
+         * @var QLabel lblLongitude
+         * @access protected
+         */
 		protected $lblLongitude;
+
+        /**
+         * @var QLabel lblLatitude
+         * @access protected
+         */
 		protected $lblLatitude;
+
+        /**
+         * @var QLabel lblZoom
+         * @access protected
+         */
 		protected $lblZoom;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

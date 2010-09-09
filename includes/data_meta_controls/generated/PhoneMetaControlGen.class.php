@@ -32,23 +32,87 @@
 
 	class PhoneMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Phone objPhone
+		 * @access protected
+		 */
 		protected $objPhone;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Phone's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPhoneType;
+         * @access protected
+         */
 		protected $lstPhoneType;
+
+        /**
+         * @var QListBox lstAddress;
+         * @access protected
+         */
 		protected $lstAddress;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QTextBox txtNumber;
+         * @access protected
+         */
 		protected $txtNumber;
 
+
 		// Controls that allow the viewing of Phone's individual data fields
+        /**
+         * @var QLabel lblPhoneTypeId
+         * @access protected
+         */
 		protected $lblPhoneTypeId;
+
+        /**
+         * @var QLabel lblAddressId
+         * @access protected
+         */
 		protected $lblAddressId;
+
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblNumber
+         * @access protected
+         */
 		protected $lblNumber;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

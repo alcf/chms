@@ -34,25 +34,99 @@
 
 	class GroupParticipationMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var GroupParticipation objGroupParticipation
+		 * @access protected
+		 */
 		protected $objGroupParticipation;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of GroupParticipation's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstGroup;
+         * @access protected
+         */
 		protected $lstGroup;
+
+        /**
+         * @var QListBox lstGroupRole;
+         * @access protected
+         */
 		protected $lstGroupRole;
+
+        /**
+         * @var QDateTimePicker calDateStart;
+         * @access protected
+         */
 		protected $calDateStart;
+
+        /**
+         * @var QDateTimePicker calDateEnd;
+         * @access protected
+         */
 		protected $calDateEnd;
 
+
 		// Controls that allow the viewing of GroupParticipation's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblGroupId
+         * @access protected
+         */
 		protected $lblGroupId;
+
+        /**
+         * @var QLabel lblGroupRoleId
+         * @access protected
+         */
 		protected $lblGroupRoleId;
+
+        /**
+         * @var QLabel lblDateStart
+         * @access protected
+         */
 		protected $lblDateStart;
+
+        /**
+         * @var QLabel lblDateEnd
+         * @access protected
+         */
 		protected $lblDateEnd;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

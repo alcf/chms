@@ -23,6 +23,7 @@
 		public $lblId;
 		public $lstStewardshipBatchStatusType;
 		public $calDateEntered;
+		public $calDateCredited;
 		public $txtBatchLabel;
 		public $txtDescription;
 		public $txtItemCount;
@@ -62,6 +63,7 @@
 			$this->lblId = $this->mctStewardshipBatch->lblId_Create();
 			$this->lstStewardshipBatchStatusType = $this->mctStewardshipBatch->lstStewardshipBatchStatusType_Create();
 			$this->calDateEntered = $this->mctStewardshipBatch->calDateEntered_Create();
+			$this->calDateCredited = $this->mctStewardshipBatch->calDateCredited_Create();
 			$this->txtBatchLabel = $this->mctStewardshipBatch->txtBatchLabel_Create();
 			$this->txtDescription = $this->mctStewardshipBatch->txtDescription_Create();
 			$this->txtItemCount = $this->mctStewardshipBatch->txtItemCount_Create();

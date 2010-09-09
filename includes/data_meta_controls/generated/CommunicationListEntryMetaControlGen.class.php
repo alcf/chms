@@ -34,29 +34,95 @@
 
 	class CommunicationListEntryMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var CommunicationListEntry objCommunicationListEntry
+		 * @access protected
+		 */
 		protected $objCommunicationListEntry;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of CommunicationListEntry's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtFirstName;
+         * @access protected
+         */
 		protected $txtFirstName;
+
+        /**
+         * @var QTextBox txtMiddleName;
+         * @access protected
+         */
 		protected $txtMiddleName;
+
+        /**
+         * @var QTextBox txtLastName;
+         * @access protected
+         */
 		protected $txtLastName;
+
+        /**
+         * @var QTextBox txtEmail;
+         * @access protected
+         */
 		protected $txtEmail;
 
+
 		// Controls that allow the viewing of CommunicationListEntry's individual data fields
+        /**
+         * @var QLabel lblFirstName
+         * @access protected
+         */
 		protected $lblFirstName;
+
+        /**
+         * @var QLabel lblMiddleName
+         * @access protected
+         */
 		protected $lblMiddleName;
+
+        /**
+         * @var QLabel lblLastName
+         * @access protected
+         */
 		protected $lblLastName;
+
+        /**
+         * @var QLabel lblEmail
+         * @access protected
+         */
 		protected $lblEmail;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstCommunicationLists;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblCommunicationLists;
+
 
 
 		/**

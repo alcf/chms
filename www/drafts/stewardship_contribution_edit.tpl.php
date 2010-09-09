@@ -19,7 +19,7 @@
 
 		<?php $this->lstPerson->RenderWithName(); ?>
 
-		<?php $this->txtStewardshipContributionTypeId->RenderWithName(); ?>
+		<?php $this->lstStewardshipContributionType->RenderWithName(); ?>
 
 		<?php $this->lstStewardshipBatch->RenderWithName(); ?>
 
@@ -32,6 +32,8 @@
 		<?php $this->calDateEntered->RenderWithName(); ?>
 
 		<?php $this->calDateCleared->RenderWithName(); ?>
+
+		<?php $this->calDateCredited->RenderWithName(); ?>
 
 		<?php $this->txtCheckNumber->RenderWithName(); ?>
 

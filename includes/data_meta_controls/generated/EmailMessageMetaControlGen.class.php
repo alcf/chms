@@ -42,33 +42,147 @@
 
 	class EmailMessageMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var EmailMessage objEmailMessage
+		 * @access protected
+		 */
 		protected $objEmailMessage;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of EmailMessage's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstEmailMessageStatusType;
+         * @access protected
+         */
 		protected $lstEmailMessageStatusType;
+
+        /**
+         * @var QDateTimePicker calDateReceived;
+         * @access protected
+         */
 		protected $calDateReceived;
+
+        /**
+         * @var QTextBox txtRawMessage;
+         * @access protected
+         */
 		protected $txtRawMessage;
+
+        /**
+         * @var QTextBox txtMessageIdentifier;
+         * @access protected
+         */
 		protected $txtMessageIdentifier;
+
+        /**
+         * @var QTextBox txtSubject;
+         * @access protected
+         */
 		protected $txtSubject;
+
+        /**
+         * @var QTextBox txtFromAddress;
+         * @access protected
+         */
 		protected $txtFromAddress;
+
+        /**
+         * @var QTextBox txtResponseHeader;
+         * @access protected
+         */
 		protected $txtResponseHeader;
+
+        /**
+         * @var QTextBox txtResponseBody;
+         * @access protected
+         */
 		protected $txtResponseBody;
+
+        /**
+         * @var QTextBox txtErrorMessage;
+         * @access protected
+         */
 		protected $txtErrorMessage;
 
+
 		// Controls that allow the viewing of EmailMessage's individual data fields
+        /**
+         * @var QLabel lblEmailMessageStatusTypeId
+         * @access protected
+         */
 		protected $lblEmailMessageStatusTypeId;
+
+        /**
+         * @var QLabel lblDateReceived
+         * @access protected
+         */
 		protected $lblDateReceived;
+
+        /**
+         * @var QLabel lblRawMessage
+         * @access protected
+         */
 		protected $lblRawMessage;
+
+        /**
+         * @var QLabel lblMessageIdentifier
+         * @access protected
+         */
 		protected $lblMessageIdentifier;
+
+        /**
+         * @var QLabel lblSubject
+         * @access protected
+         */
 		protected $lblSubject;
+
+        /**
+         * @var QLabel lblFromAddress
+         * @access protected
+         */
 		protected $lblFromAddress;
+
+        /**
+         * @var QLabel lblResponseHeader
+         * @access protected
+         */
 		protected $lblResponseHeader;
+
+        /**
+         * @var QLabel lblResponseBody
+         * @access protected
+         */
 		protected $lblResponseBody;
+
+        /**
+         * @var QLabel lblErrorMessage
+         * @access protected
+         */
 		protected $lblErrorMessage;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

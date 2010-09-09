@@ -296,6 +296,7 @@
 				case 'Id': return QQN::StewardshipBatch()->Id;
 				case 'StewardshipBatchStatusTypeId': return QQN::StewardshipBatch()->StewardshipBatchStatusTypeId;
 				case 'DateEntered': return QQN::StewardshipBatch()->DateEntered;
+				case 'DateCredited': return QQN::StewardshipBatch()->DateCredited;
 				case 'BatchLabel': return QQN::StewardshipBatch()->BatchLabel;
 				case 'Description': return QQN::StewardshipBatch()->Description;
 				case 'ItemCount': return QQN::StewardshipBatch()->ItemCount;

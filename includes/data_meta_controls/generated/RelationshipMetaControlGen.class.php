@@ -30,21 +30,75 @@
 
 	class RelationshipMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Relationship objRelationship
+		 * @access protected
+		 */
 		protected $objRelationship;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Relationship's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstRelatedToPerson;
+         * @access protected
+         */
 		protected $lstRelatedToPerson;
+
+        /**
+         * @var QListBox lstRelationshipType;
+         * @access protected
+         */
 		protected $lstRelationshipType;
 
+
 		// Controls that allow the viewing of Relationship's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblRelatedToPersonId
+         * @access protected
+         */
 		protected $lblRelatedToPersonId;
+
+        /**
+         * @var QLabel lblRelationshipTypeId
+         * @access protected
+         */
 		protected $lblRelationshipTypeId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

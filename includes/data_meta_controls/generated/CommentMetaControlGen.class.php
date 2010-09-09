@@ -36,27 +36,111 @@
 
 	class CommentMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Comment objComment
+		 * @access protected
+		 */
 		protected $objComment;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Comment's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstPostedByLogin;
+         * @access protected
+         */
 		protected $lstPostedByLogin;
+
+        /**
+         * @var QListBox lstCommentPrivacyType;
+         * @access protected
+         */
 		protected $lstCommentPrivacyType;
+
+        /**
+         * @var QListBox lstCommentCategory;
+         * @access protected
+         */
 		protected $lstCommentCategory;
+
+        /**
+         * @var QTextBox txtComment;
+         * @access protected
+         */
 		protected $txtComment;
+
+        /**
+         * @var QDateTimePicker calDatePosted;
+         * @access protected
+         */
 		protected $calDatePosted;
 
+
 		// Controls that allow the viewing of Comment's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblPostedByLoginId
+         * @access protected
+         */
 		protected $lblPostedByLoginId;
+
+        /**
+         * @var QLabel lblCommentPrivacyTypeId
+         * @access protected
+         */
 		protected $lblCommentPrivacyTypeId;
+
+        /**
+         * @var QLabel lblCommentCategoryId
+         * @access protected
+         */
 		protected $lblCommentCategoryId;
+
+        /**
+         * @var QLabel lblComment
+         * @access protected
+         */
 		protected $lblComment;
+
+        /**
+         * @var QLabel lblDatePosted
+         * @access protected
+         */
 		protected $lblDatePosted;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

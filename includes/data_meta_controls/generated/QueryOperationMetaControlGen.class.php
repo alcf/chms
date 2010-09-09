@@ -34,25 +34,99 @@
 
 	class QueryOperationMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var QueryOperation objQueryOperation
+		 * @access protected
+		 */
 		protected $objQueryOperation;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of QueryOperation's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QTextBox txtQqFactoryName;
+         * @access protected
+         */
 		protected $txtQqFactoryName;
+
+        /**
+         * @var QCheckBox chkArgumentFlag;
+         * @access protected
+         */
 		protected $chkArgumentFlag;
+
+        /**
+         * @var QTextBox txtArgumentPrepend;
+         * @access protected
+         */
 		protected $txtArgumentPrepend;
+
+        /**
+         * @var QTextBox txtArgumentPostpend;
+         * @access protected
+         */
 		protected $txtArgumentPostpend;
 
+
 		// Controls that allow the viewing of QueryOperation's individual data fields
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblQqFactoryName
+         * @access protected
+         */
 		protected $lblQqFactoryName;
+
+        /**
+         * @var QLabel lblArgumentFlag
+         * @access protected
+         */
 		protected $lblArgumentFlag;
+
+        /**
+         * @var QLabel lblArgumentPrepend
+         * @access protected
+         */
 		protected $lblArgumentPrepend;
+
+        /**
+         * @var QLabel lblArgumentPostpend
+         * @access protected
+         */
 		protected $lblArgumentPostpend;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

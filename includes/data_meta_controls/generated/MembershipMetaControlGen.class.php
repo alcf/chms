@@ -32,23 +32,87 @@
 
 	class MembershipMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Membership objMembership
+		 * @access protected
+		 */
 		protected $objMembership;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Membership's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QDateTimePicker calDateStart;
+         * @access protected
+         */
 		protected $calDateStart;
+
+        /**
+         * @var QDateTimePicker calDateEnd;
+         * @access protected
+         */
 		protected $calDateEnd;
+
+        /**
+         * @var QTextBox txtTerminationReason;
+         * @access protected
+         */
 		protected $txtTerminationReason;
 
+
 		// Controls that allow the viewing of Membership's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblDateStart
+         * @access protected
+         */
 		protected $lblDateStart;
+
+        /**
+         * @var QLabel lblDateEnd
+         * @access protected
+         */
 		protected $lblDateEnd;
+
+        /**
+         * @var QLabel lblTerminationReason
+         * @access protected
+         */
 		protected $lblTerminationReason;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

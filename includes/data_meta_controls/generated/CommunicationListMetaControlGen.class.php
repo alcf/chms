@@ -36,31 +36,99 @@
 
 	class CommunicationListMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var CommunicationList objCommunicationList
+		 * @access protected
+		 */
 		protected $objCommunicationList;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of CommunicationList's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstEmailBroadcastType;
+         * @access protected
+         */
 		protected $lstEmailBroadcastType;
+
+        /**
+         * @var QListBox lstMinistry;
+         * @access protected
+         */
 		protected $lstMinistry;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QTextBox txtToken;
+         * @access protected
+         */
 		protected $txtToken;
 
+
 		// Controls that allow the viewing of CommunicationList's individual data fields
+        /**
+         * @var QLabel lblEmailBroadcastTypeId
+         * @access protected
+         */
 		protected $lblEmailBroadcastTypeId;
+
+        /**
+         * @var QLabel lblMinistryId
+         * @access protected
+         */
 		protected $lblMinistryId;
+
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblToken
+         * @access protected
+         */
 		protected $lblToken;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstCommunicationListEntries;
+
 		protected $lstPeople;
+
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblCommunicationListEntries;
+
 		protected $lblPeople;
+
 
 
 		/**

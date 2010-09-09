@@ -52,48 +52,209 @@
 
 	class GrowthGroupMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var GrowthGroup objGrowthGroup
+		 * @access protected
+		 */
 		protected $objGrowthGroup;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of GrowthGroup's individual data fields
+        /**
+         * @var QListBox lstGroup;
+         * @access protected
+         */
 		protected $lstGroup;
+
+        /**
+         * @var QListBox lstGrowthGroupLocation;
+         * @access protected
+         */
 		protected $lstGrowthGroupLocation;
+
+        /**
+         * @var QListBox lstGrowthGroupDayType;
+         * @access protected
+         */
 		protected $lstGrowthGroupDayType;
+
+        /**
+         * @var QIntegerTextBox txtMeetingBitmap;
+         * @access protected
+         */
 		protected $txtMeetingBitmap;
+
+        /**
+         * @var QIntegerTextBox txtStartTime;
+         * @access protected
+         */
 		protected $txtStartTime;
+
+        /**
+         * @var QIntegerTextBox txtEndTime;
+         * @access protected
+         */
 		protected $txtEndTime;
+
+        /**
+         * @var QTextBox txtAddress1;
+         * @access protected
+         */
 		protected $txtAddress1;
+
+        /**
+         * @var QTextBox txtAddress2;
+         * @access protected
+         */
 		protected $txtAddress2;
+
+        /**
+         * @var QTextBox txtCrossStreet1;
+         * @access protected
+         */
 		protected $txtCrossStreet1;
+
+        /**
+         * @var QTextBox txtCrossStreet2;
+         * @access protected
+         */
 		protected $txtCrossStreet2;
+
+        /**
+         * @var QTextBox txtZipCode;
+         * @access protected
+         */
 		protected $txtZipCode;
+
+        /**
+         * @var QFloatTextBox txtLongitude;
+         * @access protected
+         */
 		protected $txtLongitude;
+
+        /**
+         * @var QFloatTextBox txtLatitude;
+         * @access protected
+         */
 		protected $txtLatitude;
+
+        /**
+         * @var QIntegerTextBox txtAccuracy;
+         * @access protected
+         */
 		protected $txtAccuracy;
 
+
 		// Controls that allow the viewing of GrowthGroup's individual data fields
+        /**
+         * @var QLabel lblGroupId
+         * @access protected
+         */
 		protected $lblGroupId;
+
+        /**
+         * @var QLabel lblGrowthGroupLocationId
+         * @access protected
+         */
 		protected $lblGrowthGroupLocationId;
+
+        /**
+         * @var QLabel lblGrowthGroupDayTypeId
+         * @access protected
+         */
 		protected $lblGrowthGroupDayTypeId;
+
+        /**
+         * @var QLabel lblMeetingBitmap
+         * @access protected
+         */
 		protected $lblMeetingBitmap;
+
+        /**
+         * @var QLabel lblStartTime
+         * @access protected
+         */
 		protected $lblStartTime;
+
+        /**
+         * @var QLabel lblEndTime
+         * @access protected
+         */
 		protected $lblEndTime;
+
+        /**
+         * @var QLabel lblAddress1
+         * @access protected
+         */
 		protected $lblAddress1;
+
+        /**
+         * @var QLabel lblAddress2
+         * @access protected
+         */
 		protected $lblAddress2;
+
+        /**
+         * @var QLabel lblCrossStreet1
+         * @access protected
+         */
 		protected $lblCrossStreet1;
+
+        /**
+         * @var QLabel lblCrossStreet2
+         * @access protected
+         */
 		protected $lblCrossStreet2;
+
+        /**
+         * @var QLabel lblZipCode
+         * @access protected
+         */
 		protected $lblZipCode;
+
+        /**
+         * @var QLabel lblLongitude
+         * @access protected
+         */
 		protected $lblLongitude;
+
+        /**
+         * @var QLabel lblLatitude
+         * @access protected
+         */
 		protected $lblLatitude;
+
+        /**
+         * @var QLabel lblAccuracy
+         * @access protected
+         */
 		protected $lblAccuracy;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 		protected $lstGrowthGroupStructures;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
 		protected $lblGrowthGroupStructures;
+
 
 
 		/**

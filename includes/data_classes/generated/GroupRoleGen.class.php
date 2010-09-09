@@ -250,9 +250,31 @@
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new GroupRole object
+			// Perform the Query
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return GroupRole::InstantiateDbRow($objDbResult->GetNextRow(), null, null, null, $objQueryBuilder->ColumnAliasArray);
+
+			// Instantiate a new GroupRole object and return it
+
+			// Do we have to expand anything?
+			if ($objQueryBuilder->ExpandAsArrayNodes) {
+				$objToReturn = array();
+				while ($objDbRow = $objDbResult->GetNextRow()) {
+					$objItem = GroupRole::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
+					if ($objItem) $objToReturn[] = $objItem;
+				}
+
+				if (count($objToReturn)) {
+					// Since we only want the object to return, lets return the object and not the array.
+					return $objToReturn[0];
+				} else {
+					return null;
+				}
+			} else {
+				// No expands just return the first row
+				$objDbRow = $objDbResult->GetNextRow();
+				if (is_null($objDbRow)) return null;
+				return GroupRole::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
+			}
 		}
 
 		/**

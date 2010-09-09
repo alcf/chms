@@ -34,25 +34,99 @@
 
 	class StewardshipStackMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var StewardshipStack objStewardshipStack
+		 * @access protected
+		 */
 		protected $objStewardshipStack;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of StewardshipStack's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstStewardshipBatch;
+         * @access protected
+         */
 		protected $lstStewardshipBatch;
+
+        /**
+         * @var QIntegerTextBox txtStackNumber;
+         * @access protected
+         */
 		protected $txtStackNumber;
+
+        /**
+         * @var QIntegerTextBox txtItemCount;
+         * @access protected
+         */
 		protected $txtItemCount;
+
+        /**
+         * @var QFloatTextBox txtReportedTotalAmount;
+         * @access protected
+         */
 		protected $txtReportedTotalAmount;
+
+        /**
+         * @var QFloatTextBox txtActualTotalAmount;
+         * @access protected
+         */
 		protected $txtActualTotalAmount;
 
+
 		// Controls that allow the viewing of StewardshipStack's individual data fields
+        /**
+         * @var QLabel lblStewardshipBatchId
+         * @access protected
+         */
 		protected $lblStewardshipBatchId;
+
+        /**
+         * @var QLabel lblStackNumber
+         * @access protected
+         */
 		protected $lblStackNumber;
+
+        /**
+         * @var QLabel lblItemCount
+         * @access protected
+         */
 		protected $lblItemCount;
+
+        /**
+         * @var QLabel lblReportedTotalAmount
+         * @access protected
+         */
 		protected $lblReportedTotalAmount;
+
+        /**
+         * @var QLabel lblActualTotalAmount
+         * @access protected
+         */
 		protected $lblActualTotalAmount;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

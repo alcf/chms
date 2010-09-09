@@ -30,25 +30,79 @@
 
 	class EmailMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var Email objEmail
+		 * @access protected
+		 */
 		protected $objEmail;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of Email's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QTextBox txtAddress;
+         * @access protected
+         */
 		protected $txtAddress;
 
+
 		// Controls that allow the viewing of Email's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblAddress
+         * @access protected
+         */
 		protected $lblAddress;
 
+
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstPersonAsPrimary
+         * @access protected
+         */
 		protected $lstPersonAsPrimary;
 
+
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblPersonAsPrimary
+         * @access protected
+         */
 		protected $lblPersonAsPrimary;
+
 
 
 		/**

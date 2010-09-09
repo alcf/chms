@@ -30,21 +30,75 @@
 
 	class OtherContactInfoMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var OtherContactInfo objOtherContactInfo
+		 * @access protected
+		 */
 		protected $objOtherContactInfo;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of OtherContactInfo's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
 		protected $lstPerson;
+
+        /**
+         * @var QListBox lstOtherContactMethod;
+         * @access protected
+         */
 		protected $lstOtherContactMethod;
+
+        /**
+         * @var QTextBox txtValue;
+         * @access protected
+         */
 		protected $txtValue;
 
+
 		// Controls that allow the viewing of OtherContactInfo's individual data fields
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblOtherContactMethodId
+         * @access protected
+         */
 		protected $lblOtherContactMethodId;
+
+        /**
+         * @var QLabel lblValue
+         * @access protected
+         */
 		protected $lblValue;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 

@@ -30,21 +30,75 @@
 
 	class GroupRoleMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var GroupRole objGroupRole
+		 * @access protected
+		 */
 		protected $objGroupRole;
+
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+
+		/**
+		 * @var string  strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of GroupRole's individual data fields
+        /**
+         * @var QLabel lblId;
+         * @access protected
+         */
 		protected $lblId;
+
+        /**
+         * @var QListBox lstMinistry;
+         * @access protected
+         */
 		protected $lstMinistry;
+
+        /**
+         * @var QTextBox txtName;
+         * @access protected
+         */
 		protected $txtName;
+
+        /**
+         * @var QListBox lstGroupRoleType;
+         * @access protected
+         */
 		protected $lstGroupRoleType;
 
+
 		// Controls that allow the viewing of GroupRole's individual data fields
+        /**
+         * @var QLabel lblMinistryId
+         * @access protected
+         */
 		protected $lblMinistryId;
+
+        /**
+         * @var QLabel lblName
+         * @access protected
+         */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblGroupRoleTypeId
+         * @access protected
+         */
 		protected $lblGroupRoleTypeId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
