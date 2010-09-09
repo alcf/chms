@@ -4,7 +4,7 @@
 
 	<h3>Filter Results</h3>
 	<div class="section">
-		<div class="filterBy">First Name<br/><?php $this->txtFirstName->Render(); ?></div>
+		<div class="filterBy filterByFirst">First Name<br/><?php $this->txtFirstName->Render(); ?></div>
 		<div class="filterBy">Last Name<br/><?php $this->txtLastName->Render(); ?></div>
 		<div class="filterBy">Gender<br/><?php $this->lstGender->Render('Width=70px'); ?></div>
 		<div class="filterBy">Member Status<br/><?php $this->lstMemberStatus->Render('Width=90px'); ?></div>
