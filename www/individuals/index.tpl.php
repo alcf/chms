@@ -1,6 +1,10 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<h1>Search Individuals</h1>
+	<h1>Search Individuals
+	<?php if (QApplication::IsLoginHasPermission(PermissionType::AddNewIndividual)) { ?>
+		<button type="primary" onclick="document.location='/individuals/new.php'; return false;" class="primary">Add New Individual</button>
+	<?php } ?>
+	</h1>
 
 	<h3>Filter Results</h3>
 	<div class="section">

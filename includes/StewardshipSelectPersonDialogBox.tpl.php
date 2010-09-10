@@ -19,6 +19,9 @@
 	<div class="cleaner"></div>
 
 	<div class="buttonBar">
+<?php if (QApplication::IsLoginHasPermission(PermissionType::AddNewIndividual)) { ?>
+		<a href="/individuals/new.php" style="float: left;" class="cancel">Add New Individual</a>
+<?php } ?>
 		<?php $_CONTROL->btnSelect->Render(); ?>
 		<?php $_CONTROL->lblOr->Render(); ?>
 		<?php $_CONTROL->btnCancel->Render(); ?>
