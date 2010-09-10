@@ -24,6 +24,7 @@
 
 			$this->calDateCredited = new QDateTimePicker($this);
 			$this->calDateCredited->MaximumYear = date('Y') + 5;
+			$this->calDateCredited->DateTime = QDateTime::Now();
 
 			$this->txtReportedTotals = array();
 			for ($i = 1; $i <= 10; $i++) {

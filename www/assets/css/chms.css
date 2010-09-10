@@ -286,6 +286,7 @@ div.shopInfo div.shopLeft { float: left; }
 
 	div.errorMessage { padding: 5px; border-width: 1px; border-style: solid; border-color: #600; font: 12px 'Arial', 'Helvetica'; color: #600; background-color: #fee; margin: 5px; }
 	
+	div.recordInfo { font: 10px Arial, Helvetica, Sans-Serif; font-style: italic; color: #335;}
 	
 	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }

@@ -113,8 +113,24 @@
 			$this->ActualTotalAmount = $fltTotalAmount;
 			if ($blnSave) $this->Save();
 		}
-		
-		
+
+
+		/**
+		 * Recalculates ReportedTotalAmount based on all linked StewradshipContribution records in the database.
+		 * @param boolean $blnSave whether or not to make the call to Save() after ReportedTotalAmount has been updated.
+		 */
+		public function RefreshReportedTotalAmount($blnSave = true) {
+			$fltTotalAmount = 0;
+
+			$objStackArray = $this->GetStewardshipStackArray();
+			foreach ($objStackArray as $objStack)
+				$fltTotalAmount += $objStack->ReportedTotalAmount;
+
+			$this->ReportedTotalAmount = $fltTotalAmount;
+			if ($blnSave) $this->Save();
+		}
+
+
 		/**
 		 * Recalculated PostedTotalAmount based on all linked StewardshipPost records in the database.
 		 * @param boolean $blnSave whether or not to make the call to Save() after PostedTotalAmount has been updated.
@@ -146,6 +162,25 @@
 			}
 
 			if ($blnSave) $this->Save();
+		}
+
+		public function RefreshStackNumbering() {
+			$intStackNumber = 1;
+			foreach ($this->GetStewardshipStackArray(QQ::OrderBy(QQN::StewardshipStack()->StackNumber)) as $objStack) {
+				$objStack->StackNumber = $intStackNumber;
+				$objStack->Save();
+				$intStackNumber++;
+			}
+		}
+
+		public static function RefreshBatchLettering(QDateTime $dttDateEntered) {
+			$objBatchArray = StewardshipBatch::QueryArray(QQ::Equal(QQN::StewardshipBatch()->DateEntered, $dttDateEntered), QQ::OrderBy(QQN::StewardshipBatch()->BatchLabel));
+			$intOrd = ord('A');
+			foreach ($objBatchArray as $objBatch) {
+				$objBatch->BatchLabel = chr($intOrd);
+				$objBatch->Save();
+				$intOrd++;
+			}
 		}
 
 		/**

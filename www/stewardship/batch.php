@@ -15,6 +15,7 @@
 
 		public $dtgContributions;
 		public $pxyDeleteContribution;
+		public $pxyDeleteStack;
 
 		protected function Form_Create() {
 			$this->objBatch = StewardshipBatch::Load(QApplication::PathInfo(0));
@@ -39,7 +40,6 @@
 			$this->dtgContributions->SetDataBinder('dtgContributions_Bind');
 			$this->dtgContributions->HtmlBefore = '<div id="dtgContributionsDiv" class="section" style="width: 340px; height: 500px; overflow: auto; float: left; margin-right: 10px;">';
 			$this->dtgContributions->HtmlAfter = '</div>';
-			$this->dtgContributions->NoDataHtml = '<p>Start this <strong>Stack</strong> and begin entering contributions.</p>';
 
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Contributor', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=160px'));
 			$this->dtgContributions->AddColumn(new QDataGridColumn('Number', '<?= $_FORM->RenderNumber($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
@@ -53,6 +53,8 @@
 			}
 			$this->pxyDeleteContribution->AddAction(new QClickEvent(), new QAjaxAction('pxyDeleteContribution_Click'));
 			$this->pxyDeleteContribution->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->pxyDeleteStack = new QControlProxy($this);
 
 			$this->pnlStacks_Refresh();
 			$this->SetUrlHashProcessor('Form_ProcessHash');
@@ -84,6 +86,48 @@
 		public function dtgContributions_Refresh() {
 			$this->dtgContributions->Refresh();
 			$this->dtgContributions->Visible = ($this->objStack) ? true : false;
+
+			if ($this->objStack) {
+				if ($this->objBatch->StewardshipBatchStatusTypeId == StewardshipBatchStatusType::NewBatch) {
+					$this->pxyDeleteStack->RemoveAllActions(QClickEvent::EventName);
+					if ($this->objBatch->CountStewardshipStacks() == 1) {
+						$strMessage = 'Are you SURE you want to delete this SINGLE stack?  Doing so will also delete the batch altogether.';
+					} else {
+						$strMessage = 'Are you SURE you want to delete Stack #' . $this->objStack->StackNumber . '?';
+					}
+
+					$this->pxyDeleteStack->AddAction(new QClickEvent(), new QConfirmAction($strMessage));	
+					$this->pxyDeleteStack->AddAction(new QClickEvent(), new QAjaxAction('pxyDeleteStack_Click'));
+					$this->pxyDeleteStack->AddAction(new QClickEvent(), new QTerminateAction());
+
+					$this->dtgContributions->NoDataHtml = sprintf('<p>Start <strong>Stack #%s</strong> and begin entering contributions.</p><div class="buttonBar"><a href="#" %s class="delete">Delete Stack</div>',
+						$this->objStack->StackNumber, $this->pxyDeleteStack->RenderAsEvents(null, false));
+				} else {
+					$this->dtgContributions->NoDataHtml = sprintf('<p>Start <strong>Stack #%s</strong> and begin entering contributions.</p>', $this->objStack->StackNumber);
+				}
+			} else {
+				$this->dtgContributions->NoDataHtml = null;
+			}
+		}
+
+		public function pxyDeleteStack_Click($strFormId, $strControlId, $strParameter) {
+			if ($this->objStack && !$this->objStack->CountStewardshipContributions()) {
+				$this->objStack->Delete();
+
+				if ($this->objBatch->CountStewardshipStacks()) {
+					$this->objBatch->RefreshStackNumbering();
+
+					$this->pnlStacks_Refresh(true);
+					$this->pnlBatchTitle->Refresh();
+					$this->objBatch->RefreshReportedTotalAmount();
+					QApplication::ExecuteJavaScript(sprintf('document.location="/stewardship/batch.php/%s";', $this->objBatch->Id));
+				} else {
+					$this->objBatch->Delete();
+					$dttDateEntered = $this->objBatch->DateEntered;
+					StewardshipBatch::RefreshBatchLettering($dttDateEntered);
+					QApplication::Redirect('/stewardship/');
+				}
+			}
 		}
 
 		public function dtgContributions_Bind() {
@@ -159,7 +203,12 @@
 			}
 		}
 
-		public function pnlStacks_Refresh() {
+		public function pnlStacks_Refresh($blnClearChildren = false) {
+			if ($blnClearChildren) {
+				$this->pnlStacks->RemoveChildControls(true);
+				$this->pnlStacks->Refresh();
+			}
+
 			$objStackArray = $this->objBatch->GetStewardshipStackArray(QQ::OrderBy(QQN::StewardshipStack()->StackNumber));
 
 			$pnlStack = null;
@@ -190,6 +239,8 @@
 		public function pnlStack_Refresh(StewardshipStack $objStack) {
 			$strControlId = 'pnlStack' . $objStack->Id;
 			$pnlStack = $this->GetControl($strControlId);
+			
+			if (!$pnlStack) return;
 
 			$strClassName = null;
 			if ($this->objStack && ($this->objStack->Id == $objStack->Id))

@@ -103,8 +103,10 @@
 
 	<div class="cleaner"></div>
 </div>
-<br/>
+<div class="recordInfo">Record originally created by <strong><?php _p($_CONTROL->objContribution->CreatedByLogin->Name); ?></strong> on
+	<strong><?php _p($_CONTROL->objContribution->DateEntered->ToString('MMMM D, YYYY')); ?></strong> at <?php _p($_CONTROL->objContribution->DateEntered->ToString('h:mmz')); ?>.</div>
 
+<br/>
 <div class="buttonBar">
 	<button class="primary" onclick="document.location='#<?php _p($_CONTROL->objStack->StackNumber); ?>'; return false;">Close</button>
 	 &nbsp;or&nbsp; 
