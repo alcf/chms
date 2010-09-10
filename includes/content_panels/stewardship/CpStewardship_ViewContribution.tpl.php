@@ -78,7 +78,7 @@
 	<br/>
 <?php if ($_CONTROL->imgCheckImage) { ?>
 	<?php $_CONTROL->imgCheckImage->Render(); ?>
-<?php } else { ?>
+<?php } else if ($_CONTROL->objContribution->StewardshipContributionTypeId == StewardshipContributionType::Check) { ?>
 	<img src="/assets/images/no_check_image.png" style="width: 390px; height: 184px;"/>
 <?php } ?>
 

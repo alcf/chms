@@ -101,6 +101,7 @@
 			$objContribution->StewardshipBatchId = $objStack->StewardshipBatchId;
 			$objContribution->StewardshipStack = $objStack;
 			$objContribution->DateEntered = QDateTime::Now();
+			$objContribution->DateCredited = new QDateTime($objStack->StewardshipBatch->DateCredited);
 
 			$objContribution->strCheckImageFileHash = $strCheckImageFileHash;
 

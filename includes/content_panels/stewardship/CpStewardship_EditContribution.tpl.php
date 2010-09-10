@@ -30,15 +30,19 @@
 </div>
 
 <div class="section">
+<?php if ($_CONTROL->lstStewardshipContributionType) { ?>
+	<?php $_CONTROL->lstStewardshipContributionType->RenderWithName('Name=Type'); ?>
+<?php } else { ?>
 	<div class="lvp">
 		<div class="left">Type</div>
 		<div class="right"><?php _p(StewardshipContributionType::$NameArray[$_CONTROL->mctContribution->StewardshipContribution->StewardshipContributionTypeId]); ?></div>
 	</div>
+<?php } ?>
 
 <?php
 	if ($_CONTROL->txtCheckNumber) $_CONTROL->txtCheckNumber->RenderWithName();
-	if ($_CONTROL->txtAuthorization) $_CONTROL->txtAuthorization->RenderWithName('Name=Authorization Number');
-	if ($_CONTROL->txtAlternateSource) $_CONTROL->txtAlternateSource->RenderWithName('Name=Source Information');
+	if ($_CONTROL->txtAuthorization) $_CONTROL->txtAuthorization->RenderWithName('Name=CC Authorization');
+	if ($_CONTROL->txtAlternateSource) $_CONTROL->txtAlternateSource->RenderWithName('Name=Trans. Info');
 ?>
 	<div class="cleaner"></div>
 </div>

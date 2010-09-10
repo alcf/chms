@@ -6,6 +6,7 @@
 		public $btnChangePerson;
 		public $dlgChangePerson;
 
+		public $lstStewardshipContributionType;
 		public $txtCheckNumber;
 		public $txtAuthorization;
 		public $txtAlternateSource;
@@ -46,6 +47,8 @@
 		}
 
 		protected function SetupPanel() {
+			$blnScanFlag = false;
+
 			// Creating New?
 			if ($this->strUrlHashArgument == 'new') {
 				$objContribution = new StewardshipContribution();
@@ -53,6 +56,7 @@
 				$objContribution->StewardshipStack = $this->objStack;
 				$objContribution->DateEntered = QDateTime::Now();
 				$objContribution->CreatedByLogin = QApplication::$Login;
+				$objContribution->DateCredited = new QDateTime($this->objBatch->DateCredited);
 				$objContribution->StewardshipContributionTypeId = StewardshipContributionType::Cash;
 
 			// Editing an existing
@@ -76,32 +80,43 @@
 			
 			$this->mctContribution = new StewardshipContributionMetaControl($this, $objContribution);
 
-			switch ($this->mctContribution->StewardshipContribution->StewardshipContributionTypeId) {
-				case StewardshipContributionType::Check:
-				case StewardshipContributionType::ReturnedCheck:
-				case StewardshipContributionType::CorporateMatch:
-				case StewardshipContributionType::CorporateMatchNonDeductible:
-					$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
-					$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-					$this->txtCheckNumber->Select();
-					break;
+			if (!$this->mctContribution->EditMode && !$blnScanFlag) {
+				$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();
+				$this->lstStewardshipContributionType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstStewardshipContributionType_Change'));
 
-				case StewardshipContributionType::CreditCard:
-				case StewardshipContributionType::CreditCardRecurring:
-					$this->txtAuthorization = $this->mctContribution->txtAuthorizationNumber_Create();
-					$this->txtAuthorization->Select();
-					break;
+				$this->txtAuthorization = $this->mctContribution->txtAuthorizationNumber_Create();
+				$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
+				$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
 
-				case StewardshipContributionType::Cash:
-				case StewardshipContributionType::StockDonation:
-				case StewardshipContributionType::Automobile:
-				case StewardshipContributionType::Other:
-					$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
-					$this->txtAlternateSource->Select();
-					break;
-
-				default:
-					throw new Exception('Unhandled Stewardship Contribution Type');
+				$this->lstStewardshipContributionType_Change();
+			} else {
+				switch ($this->mctContribution->StewardshipContribution->StewardshipContributionTypeId) {
+					case StewardshipContributionType::Check:
+					case StewardshipContributionType::ReturnedCheck:
+					case StewardshipContributionType::CorporateMatch:
+					case StewardshipContributionType::CorporateMatchNonDeductible:
+						$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
+						$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+						$this->txtCheckNumber->Select();
+						break;
+	
+					case StewardshipContributionType::CreditCard:
+					case StewardshipContributionType::CreditCardRecurring:
+						$this->txtAuthorization = $this->mctContribution->txtAuthorizationNumber_Create();
+						$this->txtAuthorization->Select();
+						break;
+	
+					case StewardshipContributionType::Cash:
+					case StewardshipContributionType::StockDonation:
+					case StewardshipContributionType::Automobile:
+					case StewardshipContributionType::Other:
+						$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
+						$this->txtAlternateSource->Select();
+						break;
+	
+					default:
+						throw new Exception('Unhandled Stewardship Contribution Type');
+				}
 			}
 
 			// Setup Total Amount
@@ -129,7 +144,12 @@
 				$mctAmount = new StewardshipContributionAmountMetaControl($this, $objAmount);
 				$this->mctAmountArray[] = $mctAmount;
 
-				$lstFund = $mctAmount->lstStewardshipFund_Create();
+				if ($mctAmount->EditMode) {
+					$lstFund = $mctAmount->lstStewardshipFund_Create();
+				} else {
+					$lstFund = $mctAmount->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true));
+				}
+
 				$lstFund->Required = false;
 				$lstFund->ActionParameter = $i;
 
@@ -308,9 +328,39 @@
 				$this->Refresh();
 			}
 
-			if ($this->txtCheckNumber) $this->txtCheckNumber->Select();
-			if ($this->txtAuthorization) $this->txtAuthorization->Select();
-			if ($this->txtAlternateSource) $this->txtAlternateSource->Select();
+			if ($this->txtCheckNumber && $this->txtCheckNumber->Visible) $this->txtCheckNumber->Select();
+			if ($this->txtAuthorization && $this->txtAuthorization->Visible) $this->txtAuthorization->Select();
+			if ($this->txtAlternateSource && $this->txtAlternateSource->Visible) $this->txtAlternateSource->Select();
+		}
+
+		public function lstStewardshipContributionType_Change() {
+			$this->txtCheckNumber->Visible = false;
+			$this->txtAuthorization->Visible = false;
+			$this->txtAlternateSource->Visible = false;
+
+			switch ($this->lstStewardshipContributionType->SelectedValue) {
+					case StewardshipContributionType::Check:
+					case StewardshipContributionType::ReturnedCheck:
+					case StewardshipContributionType::CorporateMatch:
+					case StewardshipContributionType::CorporateMatchNonDeductible:
+						$this->txtCheckNumber->Visible = true;
+						break;
+	
+					case StewardshipContributionType::CreditCard:
+					case StewardshipContributionType::CreditCardRecurring:
+						$this->txtAuthorization->Visible = true;
+						break;
+	
+					case StewardshipContributionType::Cash:
+					case StewardshipContributionType::StockDonation:
+					case StewardshipContributionType::Automobile:
+					case StewardshipContributionType::Other:
+						$this->txtAlternateSource->Visible = true;
+						break;
+	
+					default:
+						throw new Exception('Unhandled Stewardship Contribution Type');
+			}
 		}
 	}
 ?>
