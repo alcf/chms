@@ -150,6 +150,7 @@
 			$this->pnlStack_Refresh($this->objStack);
 			$this->pnlBatchTitle->Refresh();
 			$this->dtgContributions->Refresh();
+			QApplication::ExecuteJavaScript(sprintf('document.location="#%s";', $this->objStack->StackNumber));
 		}
 
 		public function Form_ProcessHash() {
