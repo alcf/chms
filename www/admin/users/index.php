@@ -19,7 +19,7 @@
 			$this->dtgStaff->MetaAddTypeColumn('RoleTypeId', 'RoleType', 'Name=Role', 'Width=140px');
 
 			foreach (PermissionType::$NameArray as $intId => $strName) {
-				$this->dtgStaff->AddColumn(new QDataGridColumn($strName, '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=72px'));
+				$this->dtgStaff->AddColumn(new QDataGridColumn($strName, '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=63px'));
 			}
 
 			$this->dtgStaff->SetDataBinder('dtgStaff_Bind');

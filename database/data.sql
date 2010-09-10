@@ -145,6 +145,7 @@ INSERT INTO permission_type VALUES(2, 'Access Stewardship');
 INSERT INTO permission_type VALUES(4, 'Access Confidential Notes');
 INSERT INTO permission_type VALUES(8, 'Merge Individuals');
 INSERT INTO permission_type VALUES(16, 'Edit Membership Status');
+INSERT INTO permission_type VALUES(32, 'Add New Individual');
 
 INSERT INTO phone_type VALUES(1, 'Home');
 INSERT INTO phone_type VALUES(2, 'Work');

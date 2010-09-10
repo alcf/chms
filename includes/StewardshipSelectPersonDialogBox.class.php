@@ -18,6 +18,7 @@
 		
 		public $pnlPerson;
 		public $pxySelectPerson;
+		public $pxyViewPerson;
 
 		public $btnSelect;
 		public $lblOr;
@@ -46,12 +47,14 @@
 				$this->btnCancel = new QLinkButton($this);
 				$this->btnCancel->Text = 'Cancel';
 				$this->btnCancel->CssClass = 'cancel';
-				if ($this->objParentControl->mctContribution->EditMode) {
+
+				// If no one has been selected AND we are scanning a check, cancel should redirect back to scan
+				if ($this->objParentControl->blnScanFlag && (!$this->objParentControl->mctContribution->StewardshipContribution->Person)) {
 					$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
+					$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction("document.location='#" . $this->objParentControl->objStack->StackNumber . "/view/scan';"));
 					$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 				} else {
 					$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
-					$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction("document.location='#" . $this->objParentControl->objStack->StackNumber . "/view/scan';"));
 					$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 				}
 
@@ -100,6 +103,10 @@
 				$this->pnlPerson->Template = dirname(__FILE__) . '/StewardshipSelectPersonPanel.tpl.php';
 				$this->pnlPerson->CssClass = 'section personSection';
 
+				$this->pxyViewPerson = new QControlProxy($this);
+				$this->pxyViewPerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyViewPerson_Click'));
+				$this->pxyViewPerson->AddAction(new QClickEvent(), new QTerminateAction());
+
 				$this->btnSelect = new QButton($this);
 				$this->btnSelect->Text = 'Select';
 				$this->btnSelect->CssClass = 'primary';
@@ -147,7 +154,27 @@
 			$this->pnlPerson_Refresh();
 			$this->dtgPeople->Refresh();
 		}
-		
+
+		public function pxyViewPerson_Click() {
+//			if ($this->objSelectedPerson) {
+//				if ($this->objParentControl->mctContribution->EditMode) {
+//					$_SESSION['stewardship_return_url'] = sprintf('/stewardship/batch.php/%s#%s/edit_contribution/%s',
+//						$this->objForm->objBatch->Id, $this->objForm->objStack->StackNumber, $this->objParentControl->mctContribution->StewardshipContribution->Id);
+//				} else if ($this->objParentControl->blnScanFlag) {
+//					$_SESSION['stewardship_return_url'] = sprintf('/stewardship/batch.php/%s#%s/edit_contribution/0/%s',
+//						$this->objForm->objBatch->Id, $this->objForm->objStack->StackNumber, $this->objParentControl->strUrlHashArgument2);
+//				} else {
+//					$_SESSION['stewardship_return_url'] = sprintf('/stewardship/batch.php/%s#%s/edit_contribution/new',
+//						$this->objForm->objBatch->Id, $this->objForm->objStack->StackNumber);
+//				}
+//			} else {
+//				$_SESSION['stewardship_return_url'] = null;
+//				unset($_SESSION['stewardship_return_url']);
+//			}
+
+			return $this->objParentControl->ReturnTo($this->objSelectedPerson->LinkUrl);
+		}
+
 		public function pnlPerson_Refresh() {
 			$this->pnlPerson->RemoveChildControls(true);
 			$this->imgPersonCheckImageArray = array();
@@ -161,6 +188,8 @@
 					}
 				}
 			}
+
+			$this->pnlPerson->Refresh();
 		}
 
 		public function btnSelect_Click() {
