@@ -2,6 +2,7 @@
 <div class="section">
 	<?php $_CONTROL->txtDescription->RenderWithName(); ?>
 	<?php $_CONTROL->lstStackCount->RenderWithName(); ?>
+	<?php $_CONTROL->calDateCredited->RenderWithName('Required=true', 'Name=Post Date'); ?>
 </div>
 
 <h3>Reported Stack Totals</h3>

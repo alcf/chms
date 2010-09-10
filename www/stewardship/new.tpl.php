@@ -4,6 +4,7 @@
 	<div class="section">
 		<?php $this->txtDescription->RenderWithName(); ?>
 		<?php $this->lstStackCount->RenderWithName(); ?>
+		<?php $this->calDateCredited->RenderWithName('Required=true', 'Name=Post Date'); ?>
 	</div>
 
 	<h3>Reported Stack Totals</h3>

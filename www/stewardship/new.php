@@ -8,7 +8,8 @@
 
 		public $txtDescription;
 		public $lstStackCount;
-
+		public $calDateCredited;
+		
 		public $txtReportedTotals;
 
 		public $btnSave;
@@ -20,6 +21,9 @@
 
 			$this->lstStackCount = new QListBox($this);
 			$this->lstStackCount->Name = 'Number of Stacks';
+
+			$this->calDateCredited = new QDateTimePicker($this);
+			$this->calDateCredited->MaximumYear = date('Y') + 5;
 
 			$this->txtReportedTotals = array();
 			for ($i = 1; $i <= 10; $i++) {
@@ -63,7 +67,7 @@
 				}
 			}
 
-			$objBatch = StewardshipBatch::Create(QApplication::$Login, $fltArray, trim($this->txtDescription->Text));
+			$objBatch = StewardshipBatch::Create(QApplication::$Login, $fltArray, trim($this->txtDescription->Text), null, $this->calDateCredited->DateTime);
 			QApplication::Redirect('/stewardship/batch.php/' . $objBatch->Id . '#1');
 		}
 

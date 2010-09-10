@@ -1,6 +1,7 @@
 <?php 
 	class CpStewardship_EditContribution extends CpStewardship_Base {
 		public $mctContribution;
+		public $blnScanFlag = false;
 
 		public $btnChangePerson;
 		public $dlgChangePerson;
@@ -45,8 +46,17 @@
 		}
 
 		protected function SetupPanel() {
+			// Creating New?
+			if ($this->strUrlHashArgument == 'new') {
+				$objContribution = new StewardshipContribution();
+				$objContribution->StewardshipBatch = $this->objBatch;
+				$objContribution->StewardshipStack = $this->objStack;
+				$objContribution->DateEntered = QDateTime::Now();
+				$objContribution->CreatedByLogin = QApplication::$Login;
+				$objContribution->StewardshipContributionTypeId = StewardshipContributionType::Cash;
+
 			// Editing an existing
-			if ($this->strUrlHashArgument) {
+			} else if ($this->strUrlHashArgument) {
 				$objContribution = StewardshipContribution::Load($this->strUrlHashArgument);
 				if ((!$objContribution) ||
 					($objContribution->StewardshipStackId != $this->objStack->Id) ||
@@ -54,9 +64,10 @@
 					$this->ReturnTo('#' . $this->objStack->StackNumber);
 				}
 
-			// Creating New?
+			// Scanning?
 			} else if ($this->strUrlHashArgument2) {
 				$objContribution = StewardshipContribution::CreateFromCheckImage(QApplication::$Login, $this->objStack, $this->strUrlHashArgument2);
+				$this->blnScanFlag = true;
 
 			// Error -- go back
 			} else {
@@ -144,12 +155,15 @@
 
 			$this->btnChangePerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnChangePerson_Click'));
 
-			if (!$this->mctContribution->EditMode) {
+			if ($this->blnScanFlag) {
 				$this->ProcessNewCheck();
 				$this->btnSaveAndScanAgain = new QButton($this);
 				$this->btnSaveAndScanAgain->Text = 'Save and Scan Next Check';
 				$this->btnSaveAndScanAgain->CssClass = 'primary';
 				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+			}
+
+			if (!$this->mctContribution->EditMode) {
 				$this->LoadSelectedFundsFromSession();
 			} else {
 				$this->btnSave->Text = 'Update';

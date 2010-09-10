@@ -1,7 +1,8 @@
 <div class="batchInfo">
 	<div class="batchInfoLeft">
-		<div class="batchTitle"><?php _p($this->objBatch->DateEntered->ToString('MMM D YYYY')); ?> :: Batch <?php _p($this->objBatch->BatchLabel); ?></div>
-		<div class="batchDescription"><?php _p($this->objBatch->Description); ?></div>
+		<div class="batchTitle"><?php _p($this->objBatch->DateEntered->ToString('MMM D YYYY')); ?> :: Batch <?php _p($this->objBatch->BatchLabel); ?> &mdash; &ldquo;<?php _p($this->objBatch->Description); ?>&rdquo;</div>
+		<div class="batchLabel">Post Date</div><div class="batchValue"><?php _p($this->objBatch->DateCredited->ToString('MMMM D, YYYY')); ?></div>
+		<div class="cleaner"></div>
 		<div class="batchLabel">Status</div><div class="batchValue"><?php _p(StewardshipBatchStatusType::$NameArray[$this->objBatch->StewardshipBatchStatusTypeId]); ?></div>
 		<div class="cleaner"></div>
 		<div class="batchLabel">Created By</div><div class="batchValue"><?php _p($this->objBatch->CreatedByLogin->Name); ?></div>

@@ -4,7 +4,8 @@
 
 		public $txtDescription;
 		public $lstStackCount;
-		
+		public $calDateCredited;
+
 		public $txtReportedTotals;
 
 		protected function SetupPanel() {
@@ -15,6 +16,9 @@
 			$this->lstStackCount = new QListBox($this);
 			$this->lstStackCount->Name = 'Number of Stacks';
 
+			$this->calDateCredited = $this->mctStewardshipBatch->calDateCredited_Create();
+			$this->calDateCredited->MaximumYear = date('Y') + 5;
+			
 			$objStackArray = array();
 			foreach ($this->objBatch->GetStewardshipStackArray() as $objStack) {
 				$objStackArray[$objStack->StackNumber] = $objStack;

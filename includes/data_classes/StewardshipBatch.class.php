@@ -33,19 +33,27 @@
 		 * @param float $fltReportedTotalAmountArray[] optional
 		 * @param string $strDescription optional
 		 * @param QDateTime $dttBatchDate optional, or will use Now() if null
+		 * @param QDateTime $dttDateCredited optional, or will use $dttBatchDate if null
 		 * @return StewardshipBatch
 		 */
-		public static function Create(Login $objLogin, $fltReportedTotalAmountArray = null, $strDescription = null, QDateTime $dttBatchDate = null) {
+		public static function Create(Login $objLogin, $fltReportedTotalAmountArray = null, $strDescription = null, QDateTime $dttBatchDate = null, QDateTime $dttDateCredited = null) {
 			if (!$dttBatchDate)
 				$dttBatchDate = QDateTime::Now();
 			else
 				$dttBatchDate = new QDateTime($dttBatchDate);
 			$dttBatchDate->SetTime(null, null, null);
 
+			if (!$dttDateCredited)
+				$dttDateCredited = new QDateTime($dttBatchDate);
+			else
+				$dttDateCredited = new QDateTime($dttDateCredited);
+			$dttDateCredited->SetTime(null, null, null);
+
 			$objBatch = new StewardshipBatch();
 			$objBatch->CreatedByLogin = $objLogin;
 			$objBatch->StewardshipBatchStatusTypeId = StewardshipBatchStatusType::NewBatch;
 			$objBatch->DateEntered = $dttBatchDate;
+			$objBatch->DateCredited = $dttDateCredited;
 
 			$objCurrentLastLetter = StewardshipBatch::QuerySingle(QQ::Equal(QQN::StewardshipBatch()->DateEntered, $dttBatchDate), QQ::OrderBy(QQN::StewardshipBatch()->BatchLabel, false));
 			if ($objCurrentLastLetter) {

@@ -106,7 +106,7 @@
 					self::GenerateFromArray(self::$StewardshipUserArray),
 					$arrStack,
 					self::GenerateFromArray(array('Weekend T/O', 'Weekend Giving', 'Tithes and Offerings', 'Tithes & Offerings', null)),
-					$dttDate);
+					$dttDate, $dttDate);
 				$intStackCount = $objBatch->CountStewardshipStacks();
 				$dttStart = new QDateTime($dttDate);
 				$dttStart->SetTime(8, 0, 0);

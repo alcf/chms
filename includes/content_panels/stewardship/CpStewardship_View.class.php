@@ -6,6 +6,10 @@
 		public $btnScanCheckTest;
 		
 		protected function SetupPanel() {
+			if (!$this->objStack) {
+				return $this->ReturnTo('#1');
+			}
+
 			$this->btnScanCheck = new QButton($this);
 			$this->btnScanCheck->Text = 'Scan Check';
 			$this->btnScanCheck->CssClass = 'primary';

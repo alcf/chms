@@ -14,15 +14,17 @@
 
 		protected function Form_Create() {
 			$this->dtgBatches = new StewardshipBatchDataGrid($this);
+			$this->dtgBatches->FontSize = '10px';
 			$this->dtgBatches->Paginator = new QPaginator($this->dtgBatches);
-			$this->dtgBatches->MetaAddColumn('DateEntered', 'Name=Batch Label', 'Html=<?= $_FORM->RenderBatchLabel($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
+			$this->dtgBatches->MetaAddColumn('DateEntered', 'Name=Batch Label', 'Html=<?= $_FORM->RenderBatchLabel($_ITEM); ?>', 'HtmlEntities=false', 'Width=100px');
+			$this->dtgBatches->MetaAddColumn('DateCredited', 'Name=Post Date', 'Html=<?= $_FORM->RenderPostDate($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px');
 			$this->dtgBatches->MetaAddTypeColumn('StewardshipBatchStatusTypeId', 'StewardshipBatchStatusType', 'Name=Status', 'Width=80px');
-			$this->dtgBatches->MetaAddColumn('Description', 'Width=230px');
-			$this->dtgBatches->MetaAddColumn('ItemCount', 'Name=Items', 'Width=50px');
-			$this->dtgBatches->MetaAddColumn('ActualTotalAmount', 'Name=Total', 'Html=<?= $_FORM->FormatNumber($_ITEM->ActualTotalAmount); ?>', 'Width=90px', 'HtmlEntities=false');
-			$this->dtgBatches->MetaAddColumn('ReportedTotalAmount', 'Name=Reported', 'Html=<?= $_FORM->FormatNumber($_ITEM->ReportedTotalAmount); ?>','Width=90px', 'HtmlEntities=false');
-			$this->dtgBatches->MetaAddColumn('PostedTotalAmount', 'Name=Posted', 'Html=<?= $_FORM->FormatNumber($_ITEM->PostedTotalAmount); ?>','Width=90px', 'HtmlEntities=false');
-			$this->dtgBatches->MetaAddColumn(QQN::StewardshipBatch()->CreatedByLogin->LastName, 'Name=Created By', 'Html=<?= ($_ITEM->CreatedByLogin->Name); ?>', 'FontSize=10px', 'Width=100px');
+			$this->dtgBatches->MetaAddColumn('Description', 'Width=210px');
+			$this->dtgBatches->MetaAddColumn('ItemCount', 'Name=Items', 'Width=40px');
+			$this->dtgBatches->MetaAddColumn('ActualTotalAmount', 'Name=Total', 'Html=<?= $_FORM->FormatNumber($_ITEM->ActualTotalAmount); ?>', 'Width=85px', 'HtmlEntities=false');
+			$this->dtgBatches->MetaAddColumn('ReportedTotalAmount', 'Name=Reported', 'Html=<?= $_FORM->FormatNumber($_ITEM->ReportedTotalAmount); ?>','Width=85px', 'HtmlEntities=false');
+			$this->dtgBatches->MetaAddColumn('PostedTotalAmount', 'Name=Posted', 'Html=<?= $_FORM->FormatNumber($_ITEM->PostedTotalAmount); ?>','Width=85px', 'HtmlEntities=false');
+			$this->dtgBatches->MetaAddColumn(QQN::StewardshipBatch()->CreatedByLogin->LastName, 'Name=Created By', 'Html=<?= ($_ITEM->CreatedByLogin->Name); ?>', 'Width=100px');
 			$this->dtgBatches->SetDataBinder('dtgBatches_Bind');
 
 			$this->dtgBatches->SortColumnIndex = 0;
@@ -55,10 +57,18 @@
 		}
 
 		public function RenderBatchLabel(StewardshipBatch $objBatch) {
-			return sprintf('<div style="width: 90px; float: left;"><a href="/stewardship/batch.php/%s#1">%s</a></div>'.
-				'<div style="float: left; font-size:11px; font-weight: bold;">' . 
-				'<a style="color: #888;" href="/stewardship/batch.php/%s#1">Batch %s</a></div>',
-				$objBatch->Id, $objBatch->DateEntered->ToString('MMM D YYYY'), $objBatch->Id, $objBatch->BatchLabel);
+			return sprintf('<a href="/stewardship/batch.php/%s#1">%s</a> '.
+				'<span style="font-size:11px; color: #888;">' . 
+				'(<strong>%s</strong>)</span>',
+				$objBatch->Id, $objBatch->DateEntered->ToString('MMM D YYYY'), $objBatch->BatchLabel);
+//			return sprintf('<div style="width: 90px; float: left;"><a href="/stewardship/batch.php/%s#1">%s</a></div>'.
+//				'<div style="float: left; font-size:11px; font-weight: bold;">' . 
+//				'<a style="color: #888;" href="/stewardship/batch.php/%s#1">Batch %s</a></div>',
+//				$objBatch->Id, $objBatch->DateEntered->ToString('MMM D YYYY'), $objBatch->Id, $objBatch->BatchLabel);
+		}
+
+		public function RenderPostDate(StewardshipBatch $objBatch) {
+			if ($objBatch->DateCredited) return $objBatch->DateCredited->ToString('MMM D YYYY');
 		}
 
 		public function FormatNumber($fltAmount) {
@@ -78,7 +88,7 @@
 			if ($this->lstStatus->SelectedValue)
 				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::StewardshipBatch()->StewardshipBatchStatusTypeId, $this->lstStatus->SelectedValue));
 			
-			$this->dtgBatches->MetaDataBinder($objCondition, array(QQ::OrderBy(QQN::StewardshipBatch()->Id, false)));
+			$this->dtgBatches->MetaDataBinder($objCondition);
 		}
 	}
 
