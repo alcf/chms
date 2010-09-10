@@ -9,7 +9,7 @@
 		
 		protected function SetupPanel() {
 			$this->dtgStewardshipContributionAmount = new StewardshipContributionAmountDataGrid($this);
-			$this->dtgStewardshipContributionAmount->MetaAddColumn(QQN::StewardshipContributionAmount()->StewardshipContribution->DateEntered, 'Html=<?= $_CONTROL->ParentControl->RenderDate($_ITEM); ?>', 'Name=Date', 'Width=100px');
+			$this->dtgStewardshipContributionAmount->MetaAddColumn(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, 'Html=<?= $_CONTROL->ParentControl->RenderDate($_ITEM); ?>', 'Name=Date', 'Width=100px', 'HtmlEntities=false');
 			$this->dtgStewardshipContributionAmount->MetaAddColumn(QQN::StewardshipContributionAmount()->StewardshipContribution->Person->LastName, 'Html=<?= $_CONTROL->ParentControl->RenderPerson($_ITEM); ?>', 'Name=Person', 'Width=180px');
 			$this->dtgStewardshipContributionAmount->MetaAddColumn(QQN::StewardshipContributionAmount()->StewardshipFund->Name, 'Name=Fund', 'Width=180px');
 			$this->dtgStewardshipContributionAmount->MetaAddColumn(QQN::StewardshipContributionAmount()->StewardshipContribution->StewardshipContributionTypeId, 'Html=<?= $_CONTROL->ParentControl->RenderTransaction($_ITEM); ?>', 'Name=Transaction', 'Width=170px');
@@ -77,7 +77,11 @@
 		}
 
 		public function RenderDate(StewardshipContributionAmount $objAmount) {
-			return $objAmount->StewardshipContribution->DateEntered->ToString('MMM D YYYY');
+			return sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
+				$objAmount->StewardshipContribution->StewardshipBatchId,
+				$objAmount->StewardshipContribution->StewardshipStack->StackNumber,
+				$objAmount->StewardshipContributionId,
+				$objAmount->StewardshipContribution->DateCredited->ToString('MMM D YYYY'));
 		}
 		
 		public function RenderPerson(StewardshipContributionAmount $objAmount) {
