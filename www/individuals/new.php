@@ -7,14 +7,30 @@
 		protected $intNavSectionId = ChmsForm::NavSectionPeople;
 
 		protected $txtFirstName;
+		protected $txtMiddleName;
 		protected $txtLastName;
+		protected $txtNickname;
+		protected $dtxDateOfBirth;
+		protected $calDateOfBirth;
+		protected $lstMarriageStatusType;
+		protected $dtxDateOfMarriage;
+		protected $calDateOfMarriage;
 		protected $lstGender;
-		protected $lstMemberStatus;
+		protected $txtHomePhone;
+		protected $txtCellPhone;
+		protected $txtWorkPhone;
 		protected $txtEmail;
-		protected $txtPhone;
-		protected $txtCity;
 
-		protected $dtgPeople;
+		protected $txtAddress1;
+		protected $txtAddress2;
+		protected $txtAddress3;
+		protected $txtCity;
+		protected $lstState;
+		protected $txtZipCode;
+
+		protected $lstMembershipStatusType;
+		protected $dtxDateOfMembership;
+		protected $calDateOfMembership;
 
 		protected function Form_Create() {
 			$this->dtgPeople = new PersonDataGrid($this);
