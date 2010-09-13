@@ -42,6 +42,8 @@
 	 * property-read QLabel $AuthorizationNumberLabel
 	 * property QTextBox $AlternateSourceControl
 	 * property-read QLabel $AlternateSourceLabel
+	 * property QCheckBox $NonDeductibleFlagControl
+	 * property-read QLabel $NonDeductibleFlagLabel
 	 * property QTextBox $NoteControl
 	 * property-read QLabel $NoteLabel
 	 * property QListBox $CreatedByLoginIdControl
@@ -156,6 +158,12 @@
 		protected $txtAlternateSource;
 
         /**
+         * @var QCheckBox chkNonDeductibleFlag;
+         * @access protected
+         */
+		protected $chkNonDeductibleFlag;
+
+        /**
          * @var QTextBox txtNote;
          * @access protected
          */
@@ -240,6 +248,12 @@
          * @access protected
          */
 		protected $lblAlternateSource;
+
+        /**
+         * @var QLabel lblNonDeductibleFlag
+         * @access protected
+         */
+		protected $lblNonDeductibleFlag;
 
         /**
          * @var QLabel lblNote
@@ -655,6 +669,7 @@
 			$this->calDateCredited->Name = QApplication::Translate('Date Credited');
 			$this->calDateCredited->DateTime = $this->objStewardshipContribution->DateCredited;
 			$this->calDateCredited->DateTimePickerType = QDateTimePickerType::Date;
+			$this->calDateCredited->Required = true;
 			return $this->calDateCredited;
 		}
 
@@ -669,6 +684,7 @@
 			$this->lblDateCredited->Name = QApplication::Translate('Date Credited');
 			$this->strDateCreditedDateTimeFormat = $strDateTimeFormat;
 			$this->lblDateCredited->Text = sprintf($this->objStewardshipContribution->DateCredited) ? $this->objStewardshipContribution->DateCredited->__toString($this->strDateCreditedDateTimeFormat) : null;
+			$this->lblDateCredited->Required = true;
 			return $this->lblDateCredited;
 		}
 
@@ -747,6 +763,30 @@
 			$this->lblAlternateSource->Name = QApplication::Translate('Alternate Source');
 			$this->lblAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
 			return $this->lblAlternateSource;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkNonDeductibleFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkNonDeductibleFlag_Create($strControlId = null) {
+			$this->chkNonDeductibleFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkNonDeductibleFlag->Name = QApplication::Translate('Non Deductible Flag');
+			$this->chkNonDeductibleFlag->Checked = $this->objStewardshipContribution->NonDeductibleFlag;
+			return $this->chkNonDeductibleFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblNonDeductibleFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblNonDeductibleFlag_Create($strControlId = null) {
+			$this->lblNonDeductibleFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblNonDeductibleFlag->Name = QApplication::Translate('Non Deductible Flag');
+			$this->lblNonDeductibleFlag->Text = ($this->objStewardshipContribution->NonDeductibleFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblNonDeductibleFlag;
 		}
 
 		/**
@@ -908,6 +948,9 @@
 			if ($this->txtAlternateSource) $this->txtAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
 			if ($this->lblAlternateSource) $this->lblAlternateSource->Text = $this->objStewardshipContribution->AlternateSource;
 
+			if ($this->chkNonDeductibleFlag) $this->chkNonDeductibleFlag->Checked = $this->objStewardshipContribution->NonDeductibleFlag;
+			if ($this->lblNonDeductibleFlag) $this->lblNonDeductibleFlag->Text = ($this->objStewardshipContribution->NonDeductibleFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->txtNote) $this->txtNote->Text = $this->objStewardshipContribution->Note;
 			if ($this->lblNote) $this->lblNote->Text = $this->objStewardshipContribution->Note;
 
@@ -960,6 +1003,7 @@
 				if ($this->txtCheckNumber) $this->objStewardshipContribution->CheckNumber = $this->txtCheckNumber->Text;
 				if ($this->txtAuthorizationNumber) $this->objStewardshipContribution->AuthorizationNumber = $this->txtAuthorizationNumber->Text;
 				if ($this->txtAlternateSource) $this->objStewardshipContribution->AlternateSource = $this->txtAlternateSource->Text;
+				if ($this->chkNonDeductibleFlag) $this->objStewardshipContribution->NonDeductibleFlag = $this->chkNonDeductibleFlag->Checked;
 				if ($this->txtNote) $this->objStewardshipContribution->Note = $this->txtNote->Text;
 				if ($this->lstCreatedByLogin) $this->objStewardshipContribution->CreatedByLoginId = $this->lstCreatedByLogin->SelectedValue;
 
@@ -1082,6 +1126,12 @@
 				case 'AlternateSourceLabel':
 					if (!$this->lblAlternateSource) return $this->lblAlternateSource_Create();
 					return $this->lblAlternateSource;
+				case 'NonDeductibleFlagControl':
+					if (!$this->chkNonDeductibleFlag) return $this->chkNonDeductibleFlag_Create();
+					return $this->chkNonDeductibleFlag;
+				case 'NonDeductibleFlagLabel':
+					if (!$this->lblNonDeductibleFlag) return $this->lblNonDeductibleFlag_Create();
+					return $this->lblNonDeductibleFlag;
 				case 'NoteControl':
 					if (!$this->txtNote) return $this->txtNote_Create();
 					return $this->txtNote;
@@ -1142,6 +1192,8 @@
 						return ($this->txtAuthorizationNumber = QType::Cast($mixValue, 'QControl'));
 					case 'AlternateSourceControl':
 						return ($this->txtAlternateSource = QType::Cast($mixValue, 'QControl'));
+					case 'NonDeductibleFlagControl':
+						return ($this->chkNonDeductibleFlag = QType::Cast($mixValue, 'QControl'));
 					case 'NoteControl':
 						return ($this->txtNote = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedByLoginIdControl':

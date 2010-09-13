@@ -68,6 +68,7 @@
 			$this->dtgStewardshipContributions->MetaAddColumn('CheckNumber');
 			$this->dtgStewardshipContributions->MetaAddColumn('AuthorizationNumber');
 			$this->dtgStewardshipContributions->MetaAddColumn('AlternateSource');
+			$this->dtgStewardshipContributions->MetaAddColumn('NonDeductibleFlag');
 			$this->dtgStewardshipContributions->MetaAddColumn('Note');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->CreatedByLogin);
 		}

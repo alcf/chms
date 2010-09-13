@@ -24,10 +24,11 @@
 	 * @property double $TotalAmount the value for fltTotalAmount 
 	 * @property QDateTime $DateEntered the value for dttDateEntered (Not Null)
 	 * @property QDateTime $DateCleared the value for dttDateCleared 
-	 * @property QDateTime $DateCredited the value for dttDateCredited 
+	 * @property QDateTime $DateCredited the value for dttDateCredited (Not Null)
 	 * @property string $CheckNumber the value for strCheckNumber 
 	 * @property string $AuthorizationNumber the value for strAuthorizationNumber 
 	 * @property string $AlternateSource the value for strAlternateSource 
+	 * @property boolean $NonDeductibleFlag the value for blnNonDeductibleFlag 
 	 * @property string $Note the value for strNote 
 	 * @property integer $CreatedByLoginId the value for intCreatedByLoginId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
@@ -150,6 +151,14 @@
 		protected $strAlternateSource;
 		const AlternateSourceMaxLength = 200;
 		const AlternateSourceDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_contribution.non_deductible_flag
+		 * @var boolean blnNonDeductibleFlag
+		 */
+		protected $blnNonDeductibleFlag;
+		const NonDeductibleFlagDefault = null;
 
 
 		/**
@@ -579,6 +588,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'check_number', $strAliasPrefix . 'check_number');
 			$objBuilder->AddSelectItem($strTableName, 'authorization_number', $strAliasPrefix . 'authorization_number');
 			$objBuilder->AddSelectItem($strTableName, 'alternate_source', $strAliasPrefix . 'alternate_source');
+			$objBuilder->AddSelectItem($strTableName, 'non_deductible_flag', $strAliasPrefix . 'non_deductible_flag');
 			$objBuilder->AddSelectItem($strTableName, 'note', $strAliasPrefix . 'note');
 			$objBuilder->AddSelectItem($strTableName, 'created_by_login_id', $strAliasPrefix . 'created_by_login_id');
 		}
@@ -670,6 +680,8 @@
 			$objToReturn->strAuthorizationNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'alternate_source', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'alternate_source'] : $strAliasPrefix . 'alternate_source';
 			$objToReturn->strAlternateSource = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'non_deductible_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'non_deductible_flag'] : $strAliasPrefix . 'non_deductible_flag';
+			$objToReturn->blnNonDeductibleFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'note', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'note'] : $strAliasPrefix . 'note';
 			$objToReturn->strNote = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'created_by_login_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created_by_login_id'] : $strAliasPrefix . 'created_by_login_id';
@@ -1087,6 +1099,7 @@
 							`check_number`,
 							`authorization_number`,
 							`alternate_source`,
+							`non_deductible_flag`,
 							`note`,
 							`created_by_login_id`
 						) VALUES (
@@ -1102,6 +1115,7 @@
 							' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
 							' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
+							' . $objDatabase->SqlVariable($this->blnNonDeductibleFlag) . ',
 							' . $objDatabase->SqlVariable($this->strNote) . ',
 							' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . '
 						)
@@ -1131,6 +1145,7 @@
 							`check_number` = ' . $objDatabase->SqlVariable($this->strCheckNumber) . ',
 							`authorization_number` = ' . $objDatabase->SqlVariable($this->strAuthorizationNumber) . ',
 							`alternate_source` = ' . $objDatabase->SqlVariable($this->strAlternateSource) . ',
+							`non_deductible_flag` = ' . $objDatabase->SqlVariable($this->blnNonDeductibleFlag) . ',
 							`note` = ' . $objDatabase->SqlVariable($this->strNote) . ',
 							`created_by_login_id` = ' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . '
 						WHERE
@@ -1223,6 +1238,7 @@
 			$this->strCheckNumber = $objReloaded->strCheckNumber;
 			$this->strAuthorizationNumber = $objReloaded->strAuthorizationNumber;
 			$this->strAlternateSource = $objReloaded->strAlternateSource;
+			$this->blnNonDeductibleFlag = $objReloaded->blnNonDeductibleFlag;
 			$this->strNote = $objReloaded->strNote;
 			$this->CreatedByLoginId = $objReloaded->CreatedByLoginId;
 		}
@@ -1291,7 +1307,7 @@
 					return $this->dttDateCleared;
 
 				case 'DateCredited':
-					// Gets the value for dttDateCredited 
+					// Gets the value for dttDateCredited (Not Null)
 					// @return QDateTime
 					return $this->dttDateCredited;
 
@@ -1309,6 +1325,11 @@
 					// Gets the value for strAlternateSource 
 					// @return string
 					return $this->strAlternateSource;
+
+				case 'NonDeductibleFlag':
+					// Gets the value for blnNonDeductibleFlag 
+					// @return boolean
+					return $this->blnNonDeductibleFlag;
 
 				case 'Note':
 					// Gets the value for strNote 
@@ -1522,7 +1543,7 @@
 					}
 
 				case 'DateCredited':
-					// Sets the value for dttDateCredited 
+					// Sets the value for dttDateCredited (Not Null)
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
@@ -1560,6 +1581,17 @@
 					// @return string
 					try {
 						return ($this->strAlternateSource = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'NonDeductibleFlag':
+					// Sets the value for blnNonDeductibleFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnNonDeductibleFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1942,6 +1974,7 @@
 			$strToReturn .= '<element name="CheckNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="AuthorizationNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="AlternateSource" type="xsd:string"/>';
+			$strToReturn .= '<element name="NonDeductibleFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Note" type="xsd:string"/>';
 			$strToReturn .= '<element name="CreatedByLogin" type="xsd1:Login"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -2001,6 +2034,8 @@
 				$objToReturn->strAuthorizationNumber = $objSoapObject->AuthorizationNumber;
 			if (property_exists($objSoapObject, 'AlternateSource'))
 				$objToReturn->strAlternateSource = $objSoapObject->AlternateSource;
+			if (property_exists($objSoapObject, 'NonDeductibleFlag'))
+				$objToReturn->blnNonDeductibleFlag = $objSoapObject->NonDeductibleFlag;
 			if (property_exists($objSoapObject, 'Note'))
 				$objToReturn->strNote = $objSoapObject->Note;
 			if ((property_exists($objSoapObject, 'CreatedByLogin')) &&
@@ -2104,6 +2139,8 @@
 					return new QQNode('authorization_number', 'AuthorizationNumber', 'string', $this);
 				case 'AlternateSource':
 					return new QQNode('alternate_source', 'AlternateSource', 'string', $this);
+				case 'NonDeductibleFlag':
+					return new QQNode('non_deductible_flag', 'NonDeductibleFlag', 'boolean', $this);
 				case 'Note':
 					return new QQNode('note', 'Note', 'string', $this);
 				case 'CreatedByLoginId':
@@ -2166,6 +2203,8 @@
 					return new QQNode('authorization_number', 'AuthorizationNumber', 'string', $this);
 				case 'AlternateSource':
 					return new QQNode('alternate_source', 'AlternateSource', 'string', $this);
+				case 'NonDeductibleFlag':
+					return new QQNode('non_deductible_flag', 'NonDeductibleFlag', 'boolean', $this);
 				case 'Note':
 					return new QQNode('note', 'Note', 'string', $this);
 				case 'CreatedByLoginId':
