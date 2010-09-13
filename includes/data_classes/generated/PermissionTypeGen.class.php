@@ -24,7 +24,7 @@
 		const MergeIndividuals = 8;
 		const EditMembershipStatus = 16;
 		const AddNewIndividual = 32;
-		
+
 		const MaxId = 32;
 
 		public static $NameArray = array(

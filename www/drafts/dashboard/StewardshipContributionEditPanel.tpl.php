@@ -31,6 +31,8 @@
 
 		<?php $_CONTROL->txtAlternateSource->RenderWithName(); ?>
 
+		<?php $_CONTROL->chkNonDeductibleFlag->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtNote->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstCreatedByLogin->RenderWithName(); ?>

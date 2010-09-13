@@ -307,6 +307,13 @@
 		QApplicationBase::$ClassFile['stewardshipfundmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipFundMetaControl.class.php';
 		QApplicationBase::$ClassFile['stewardshipfunddatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipFundDataGrid.class.php';
 
+	// ClassPaths for the StewardshipPledge class
+		QApplicationBase::$ClassFile['stewardshippledge'] = __DATA_CLASSES__ . '/StewardshipPledge.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshippledge'] = __DATA_CLASSES__ . '/StewardshipPledge.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshippledge'] = __DATA_CLASSES__ . '/StewardshipPledge.class.php';
+		QApplicationBase::$ClassFile['stewardshippledgemetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipPledgeMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshippledgedatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipPledgeDataGrid.class.php';
+
 	// ClassPaths for the StewardshipPost class
 		QApplicationBase::$ClassFile['stewardshippost'] = __DATA_CLASSES__ . '/StewardshipPost.class.php';
 		QApplicationBase::$ClassFile['qqnodestewardshippost'] = __DATA_CLASSES__ . '/StewardshipPost.class.php';

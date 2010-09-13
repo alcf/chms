@@ -171,12 +171,11 @@ INSERT INTO stewardship_contribution_type VALUES (1, 'Check');
 INSERT INTO stewardship_contribution_type VALUES (2, 'Cash');
 INSERT INTO stewardship_contribution_type VALUES (3, 'Credit Card');
 INSERT INTO stewardship_contribution_type VALUES (4, 'Credit Card, Recurring');
-INSERT INTO stewardship_contribution_type VALUES (5, 'Corporate Match');
-INSERT INTO stewardship_contribution_type VALUES (6, 'Corporate Match, Non-Deductible');
-INSERT INTO stewardship_contribution_type VALUES (7, 'Stock Donation');
-INSERT INTO stewardship_contribution_type VALUES (8, 'Automobile');
-INSERT INTO stewardship_contribution_type VALUES (9, 'Returned Check');
-INSERT INTO stewardship_contribution_type VALUES (10, 'Other');
+INSERT INTO stewardship_contribution_type VALUES (5, 'Stock');
+INSERT INTO stewardship_contribution_type VALUES (6, 'Automobile');
+INSERT INTO stewardship_contribution_type VALUES (7, 'Returned Check');
+INSERT INTO stewardship_contribution_type VALUES (8, 'Summary');
+INSERT INTO stewardship_contribution_type VALUES (9, 'Other');
 
 INSERT INTO stewardship_batch_status_type VALUES(1, 'New Batch');
 INSERT INTO stewardship_batch_status_type VALUES(2, 'Posted In Full');

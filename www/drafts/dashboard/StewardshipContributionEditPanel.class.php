@@ -33,6 +33,7 @@
 		public $txtCheckNumber;
 		public $txtAuthorizationNumber;
 		public $txtAlternateSource;
+		public $chkNonDeductibleFlag;
 		public $txtNote;
 		public $lstCreatedByLogin;
 
@@ -77,6 +78,7 @@
 			$this->txtCheckNumber = $this->mctStewardshipContribution->txtCheckNumber_Create();
 			$this->txtAuthorizationNumber = $this->mctStewardshipContribution->txtAuthorizationNumber_Create();
 			$this->txtAlternateSource = $this->mctStewardshipContribution->txtAlternateSource_Create();
+			$this->chkNonDeductibleFlag = $this->mctStewardshipContribution->chkNonDeductibleFlag_Create();
 			$this->txtNote = $this->mctStewardshipContribution->txtNote_Create();
 			$this->lstCreatedByLogin = $this->mctStewardshipContribution->lstCreatedByLogin_Create();
 

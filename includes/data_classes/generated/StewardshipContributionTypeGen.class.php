@@ -22,38 +22,35 @@
 		const Cash = 2;
 		const CreditCard = 3;
 		const CreditCardRecurring = 4;
-		const CorporateMatch = 5;
-		const CorporateMatchNonDeductible = 6;
-		const StockDonation = 7;
-		const Automobile = 8;
-		const ReturnedCheck = 9;
-		const Other = 10;
+		const Stock = 5;
+		const Automobile = 6;
+		const ReturnedCheck = 7;
+		const Summary = 8;
+		const Other = 9;
 
-		const MaxId = 10;
+		const MaxId = 9;
 
 		public static $NameArray = array(
 			1 => 'Check',
 			2 => 'Cash',
 			3 => 'Credit Card',
 			4 => 'Credit Card, Recurring',
-			5 => 'Corporate Match',
-			6 => 'Corporate Match, Non-Deductible',
-			7 => 'Stock Donation',
-			8 => 'Automobile',
-			9 => 'Returned Check',
-			10 => 'Other');
+			5 => 'Stock',
+			6 => 'Automobile',
+			7 => 'Returned Check',
+			8 => 'Summary',
+			9 => 'Other');
 
 		public static $TokenArray = array(
 			1 => 'Check',
 			2 => 'Cash',
 			3 => 'CreditCard',
 			4 => 'CreditCardRecurring',
-			5 => 'CorporateMatch',
-			6 => 'CorporateMatchNonDeductible',
-			7 => 'StockDonation',
-			8 => 'Automobile',
-			9 => 'ReturnedCheck',
-			10 => 'Other');
+			5 => 'Stock',
+			6 => 'Automobile',
+			7 => 'ReturnedCheck',
+			8 => 'Summary',
+			9 => 'Other');
 
 		public static function ToString($intStewardshipContributionTypeId) {
 			switch ($intStewardshipContributionTypeId) {
@@ -61,12 +58,11 @@
 				case 2: return 'Cash';
 				case 3: return 'Credit Card';
 				case 4: return 'Credit Card, Recurring';
-				case 5: return 'Corporate Match';
-				case 6: return 'Corporate Match, Non-Deductible';
-				case 7: return 'Stock Donation';
-				case 8: return 'Automobile';
-				case 9: return 'Returned Check';
-				case 10: return 'Other';
+				case 5: return 'Stock';
+				case 6: return 'Automobile';
+				case 7: return 'Returned Check';
+				case 8: return 'Summary';
+				case 9: return 'Other';
 				default:
 					throw new QCallerException(sprintf('Invalid intStewardshipContributionTypeId: %s', $intStewardshipContributionTypeId));
 			}
@@ -78,12 +74,11 @@
 				case 2: return 'Cash';
 				case 3: return 'CreditCard';
 				case 4: return 'CreditCardRecurring';
-				case 5: return 'CorporateMatch';
-				case 6: return 'CorporateMatchNonDeductible';
-				case 7: return 'StockDonation';
-				case 8: return 'Automobile';
-				case 9: return 'ReturnedCheck';
-				case 10: return 'Other';
+				case 5: return 'Stock';
+				case 6: return 'Automobile';
+				case 7: return 'ReturnedCheck';
+				case 8: return 'Summary';
+				case 9: return 'Other';
 				default:
 					throw new QCallerException(sprintf('Invalid intStewardshipContributionTypeId: %s', $intStewardshipContributionTypeId));
 			}

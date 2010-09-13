@@ -41,6 +41,8 @@
 
 		<?php $this->txtAlternateSource->RenderWithName(); ?>
 
+		<?php $this->chkNonDeductibleFlag->RenderWithName(); ?>
+
 		<?php $this->txtNote->RenderWithName(); ?>
 
 		<?php $this->lstCreatedByLogin->RenderWithName(); ?>

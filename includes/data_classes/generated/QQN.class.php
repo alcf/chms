@@ -265,6 +265,12 @@
 			return new QQNodeStewardshipFund('stewardship_fund', null, null);
 		}
 		/**
+		 * @return QQNodeStewardshipPledge
+		 */
+		static public function StewardshipPledge() {
+			return new QQNodeStewardshipPledge('stewardship_pledge', null, null);
+		}
+		/**
 		 * @return QQNodeStewardshipPost
 		 */
 		static public function StewardshipPost() {

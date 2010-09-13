@@ -86,6 +86,8 @@
 	 * @property Relationship[] $_RelationshipAsRelatedToArray the value for the private _objRelationshipAsRelatedToArray (Read-Only) if set due to an ExpandAsArray on the relationship.related_to_person_id reverse relationship
 	 * @property StewardshipContribution $_StewardshipContribution the value for the private _objStewardshipContribution (Read-Only) if set due to an expansion on the stewardship_contribution.person_id reverse relationship
 	 * @property StewardshipContribution[] $_StewardshipContributionArray the value for the private _objStewardshipContributionArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution.person_id reverse relationship
+	 * @property StewardshipPledge $_StewardshipPledge the value for the private _objStewardshipPledge (Read-Only) if set due to an expansion on the stewardship_pledge.person_id reverse relationship
+	 * @property StewardshipPledge[] $_StewardshipPledgeArray the value for the private _objStewardshipPledgeArray (Read-Only) if set due to an ExpandAsArray on the stewardship_pledge.person_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class PersonGen extends QBaseClass {
@@ -625,6 +627,22 @@
 		 * @var StewardshipContribution[] _objStewardshipContributionArray;
 		 */
 		private $_objStewardshipContributionArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipPledge object
+		 * (of type StewardshipPledge), if this Person object was restored with
+		 * an expansion on the stewardship_pledge association table.
+		 * @var StewardshipPledge _objStewardshipPledge;
+		 */
+		private $_objStewardshipPledge;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipPledge objects
+		 * (of type StewardshipPledge[]), if this Person object was restored with
+		 * an ExpandAsArray on the stewardship_pledge association table.
+		 * @var StewardshipPledge[] _objStewardshipPledgeArray;
+		 */
+		private $_objStewardshipPledgeArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -1357,6 +1375,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'stewardshippledge__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipPledgeArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipPledgeArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipPledge::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippledge__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipPledgeArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipPledgeArray[] = StewardshipPledge::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippledge__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -1668,6 +1700,16 @@
 					$objToReturn->_objStewardshipContributionArray[] = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontribution__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objStewardshipContribution = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshipcontribution__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for StewardshipPledge Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshippledge__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipPledgeArray[] = StewardshipPledge::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippledge__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipPledge = StewardshipPledge::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippledge__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -2757,6 +2799,18 @@
 					// if set due to an ExpandAsArray on the stewardship_contribution.person_id reverse relationship
 					// @return StewardshipContribution[]
 					return (array) $this->_objStewardshipContributionArray;
+
+				case '_StewardshipPledge':
+					// Gets the value for the private _objStewardshipPledge (Read-Only)
+					// if set due to an expansion on the stewardship_pledge.person_id reverse relationship
+					// @return StewardshipPledge
+					return $this->_objStewardshipPledge;
+
+				case '_StewardshipPledgeArray':
+					// Gets the value for the private _objStewardshipPledgeArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_pledge.person_id reverse relationship
+					// @return StewardshipPledge[]
+					return (array) $this->_objStewardshipPledgeArray;
 
 
 				case '__Restored':
@@ -5695,6 +5749,156 @@
 		}
 
 			
+		
+		// Related Objects' Methods for StewardshipPledge
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipPledges as an array of StewardshipPledge objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipPledge[]
+		*/ 
+		public function GetStewardshipPledgeArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipPledge::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipPledges
+		 * @return int
+		*/ 
+		public function CountStewardshipPledges() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipPledge::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipPledge
+		 * @param StewardshipPledge $objStewardshipPledge
+		 * @return void
+		*/ 
+		public function AssociateStewardshipPledge(StewardshipPledge $objStewardshipPledge) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPledge on this unsaved Person.');
+			if ((is_null($objStewardshipPledge->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPledge on this Person with an unsaved StewardshipPledge.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_pledge`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPledge->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a StewardshipPledge
+		 * @param StewardshipPledge $objStewardshipPledge
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipPledge(StewardshipPledge $objStewardshipPledge) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPledge on this unsaved Person.');
+			if ((is_null($objStewardshipPledge->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPledge on this Person with an unsaved StewardshipPledge.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_pledge`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPledge->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all StewardshipPledges
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipPledges() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPledge on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_pledge`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipPledge
+		 * @param StewardshipPledge $objStewardshipPledge
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipPledge(StewardshipPledge $objStewardshipPledge) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPledge on this unsaved Person.');
+			if ((is_null($objStewardshipPledge->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPledge on this Person with an unsaved StewardshipPledge.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_pledge`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPledge->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated StewardshipPledges
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipPledges() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPledge on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_pledge`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
 		// Related Many-to-Many Objects' Methods for CheckingAccountLookup
 		//-------------------------------------------------------------------
 
@@ -6430,6 +6634,8 @@
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'person_id');
+				case 'StewardshipPledge':
+					return new QQReverseReferenceNodeStewardshipPledge($this, 'stewardshippledge', 'reverse_reference', 'person_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -6554,6 +6760,8 @@
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'person_id');
+				case 'StewardshipPledge':
+					return new QQReverseReferenceNodeStewardshipPledge($this, 'stewardshippledge', 'reverse_reference', 'person_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
