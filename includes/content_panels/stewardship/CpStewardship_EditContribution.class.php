@@ -93,8 +93,6 @@
 				switch ($this->mctContribution->StewardshipContribution->StewardshipContributionTypeId) {
 					case StewardshipContributionType::Check:
 					case StewardshipContributionType::ReturnedCheck:
-					case StewardshipContributionType::CorporateMatch:
-					case StewardshipContributionType::CorporateMatchNonDeductible:
 						$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
 						$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 						$this->txtCheckNumber->Select();
@@ -107,7 +105,8 @@
 						break;
 	
 					case StewardshipContributionType::Cash:
-					case StewardshipContributionType::StockDonation:
+					case StewardshipContributionType::Stock:
+					case StewardshipContributionType::Summary:
 					case StewardshipContributionType::Automobile:
 					case StewardshipContributionType::Other:
 						$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
@@ -341,8 +340,6 @@
 			switch ($this->lstStewardshipContributionType->SelectedValue) {
 					case StewardshipContributionType::Check:
 					case StewardshipContributionType::ReturnedCheck:
-					case StewardshipContributionType::CorporateMatch:
-					case StewardshipContributionType::CorporateMatchNonDeductible:
 						$this->txtCheckNumber->Visible = true;
 						break;
 	
@@ -352,7 +349,8 @@
 						break;
 	
 					case StewardshipContributionType::Cash:
-					case StewardshipContributionType::StockDonation:
+					case StewardshipContributionType::Stock:
+					case StewardshipContributionType::Summary:
 					case StewardshipContributionType::Automobile:
 					case StewardshipContributionType::Other:
 						$this->txtAlternateSource->Visible = true;

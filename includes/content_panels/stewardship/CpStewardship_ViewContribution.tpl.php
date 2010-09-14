@@ -31,8 +31,6 @@
 	switch ($_CONTROL->objContribution->StewardshipContributionTypeId) {
 		case StewardshipContributionType::Check:
 		case StewardshipContributionType::ReturnedCheck:
-		case StewardshipContributionType::CorporateMatch:
-		case StewardshipContributionType::CorporateMatchNonDeductible:
 			if ($_CONTROL->objContribution->CheckNumber) {
 ?>
 				<div class="lvp">
@@ -56,7 +54,8 @@
 			break;
 
 		case StewardshipContributionType::Cash:
-		case StewardshipContributionType::StockDonation:
+		case StewardshipContributionType::Stock:
+		case StewardshipContributionType::Summary:
 		case StewardshipContributionType::Automobile:
 		case StewardshipContributionType::Other:
 			if ($_CONTROL->objContribution->AlternateSource) {

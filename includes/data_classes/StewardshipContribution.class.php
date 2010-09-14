@@ -55,8 +55,6 @@
 					switch ($this->StewardshipContributionTypeId) {
 						case StewardshipContributionType::Check:
 						case StewardshipContributionType::ReturnedCheck:
-						case StewardshipContributionType::CorporateMatch:
-						case StewardshipContributionType::CorporateMatchNonDeductible:
 							return $this->CheckNumber;
 
 						case StewardshipContributionType::CreditCard:
@@ -64,7 +62,8 @@
 							return $this->AuthorizationNumber;
 
 						case StewardshipContributionType::Cash:
-						case StewardshipContributionType::StockDonation:
+						case StewardshipContributionType::Stock:
+						case StewardshipContributionType::Summary:
 						case StewardshipContributionType::Automobile:
 						case StewardshipContributionType::Other:
 							return $this->AlternateSource;
@@ -194,8 +193,6 @@
 			switch ($objContribution->StewardshipContributionTypeId) {
 				case StewardshipContributionType::Check:
 				case StewardshipContributionType::ReturnedCheck:
-				case StewardshipContributionType::CorporateMatch:
-				case StewardshipContributionType::CorporateMatchNonDeductible:
 					$objContribution->CheckNumber = $strSource;
 					break;
 
@@ -205,7 +202,8 @@
 					break;
 
 				case StewardshipContributionType::Cash:
-				case StewardshipContributionType::StockDonation:
+				case StewardshipContributionType::Stock:
+				case StewardshipContributionType::Summary:
 				case StewardshipContributionType::Automobile:
 				case StewardshipContributionType::Other:
 					$objContribution->AlternateSource = $strSource;

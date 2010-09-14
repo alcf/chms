@@ -237,4 +237,4 @@ INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, tru
 INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, true);
 INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null, true);
 
-INSERT INTO login VALUES(null, 3, 0, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
+INSERT INTO login VALUES(null, 3, 65535, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
