@@ -75,6 +75,19 @@
 			break;
 
 		case 'test':
+			define ('__DOCROOT__', '/var/www/chms.alcf.test/www');
+			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
+			define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
+			define ('MICRIMAGE_IP', '10.128.2.88');
+
+			define('DB_CONNECTION_1', serialize(array(
+				'adapter' => 'MySqli5',
+				'server' => 'localhost',
+				'port' => null,
+				'database' => 'alcf_chms_test',
+				'username' => 'root',
+				'password' => '',
+				'profiling' => false)));
 			break;
 
 		case 'stage':
