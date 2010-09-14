@@ -30,6 +30,9 @@
 </div>
 
 <div class="section">
+<?php $_CONTROL->calDateCredited->RenderWithName(); ?>
+<?php $_CONTROL->chkNonDeductibleFlag->RenderWithName(); ?>
+
 <?php if ($_CONTROL->lstStewardshipContributionType) { ?>
 	<?php $_CONTROL->lstStewardshipContributionType->RenderWithName('Name=Type'); ?>
 <?php } else { ?>

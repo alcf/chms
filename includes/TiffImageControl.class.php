@@ -8,6 +8,60 @@
 		protected $blnScaleImageUp = true;
 		protected $strImagePath;
 
+		protected function GetControlHtml() {
+			try {
+				// Figure Out the Path
+				$strPath = $this->RenderAsImgSrc(false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			if ($this->strCachedActualFilePath) {
+				$objDimensions = getimagesize($this->strCachedActualFilePath);
+
+				// Setup Style and Other Attribute Information (EXCEPT for "BackColor")
+				// Use actual "Width" and "Height" values from cached image
+				$strBackColor = $this->strBackColor;
+				$strWidth = $this->strWidth;
+				$strHeight = $this->strHeight;
+				$this->strBackColor = null;
+				$this->strWidth = $objDimensions[0];
+				$this->strHeight = $objDimensions[1];
+				$strStyle = $this->GetStyleAttributes();
+				if ($strStyle)
+					$strStyle = sprintf(' style="%s"', $strStyle);
+				$this->strBackColor = $strBackColor;
+				$this->strWidth = $strWidth;
+				$this->strHeight = $strHeight;
+			} else {
+				// Setup Style and Other Attribute Information (EXCEPT for "BackColor", "Width" and "Height")
+				$strBackColor = $this->strBackColor;
+				$strWidth = $this->strWidth;
+				$strHeight = $this->strHeight;
+				$this->strBackColor = null;
+				$this->strWidth = null;
+				$this->strHeight = null;
+				$strStyle = $this->GetStyleAttributes();
+				if ($strStyle)
+					$strStyle = sprintf(' style="%s"', $strStyle);
+				$this->strBackColor = $strBackColor;
+				$this->strWidth= $strWidth;
+				$this->strHeight = $strHeight;
+			}
+
+			$strAlt = null;
+			if ($this->strAlternateText)
+				$strAlt = ' alt="' . QApplication::HtmlEntities($this->strAlternateText) . '"';
+
+			// Render final "IMG SRC" tag
+			$objDimensions = getimagesize($this->ImagePath);
+			$intRenderedHeight = $objDimensions[1]*$this->strWidth / $objDimensions[0];
+			$intDisplayedHeight = round($intRenderedHeight * .85);
+			$strToReturn = sprintf('<div style="background: url(%s); width: %spx; height: %spx; border: 2px solid #aaa;"></div>', $strPath, $this->strWidth, $intDisplayedHeight);
+			return $strToReturn;
+		}
+
 		public function RenderImage($strPath = null) {
 			$objImage = new Imagick();
 			$objImage->ReadImage($this->strImagePath);

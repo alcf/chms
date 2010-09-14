@@ -10,6 +10,9 @@
 		public $txtCheckNumber;
 		public $txtAuthorization;
 		public $txtAlternateSource;
+		
+		public $calDateCredited;
+		public $chkNonDeductibleFlag;
 
 		public $lblTotalAmount;
 
@@ -78,7 +81,18 @@
 				$this->ReturnTo('#' . $this->objStack->StackNumber);
 			}
 			
+			// Setup Fields
 			$this->mctContribution = new StewardshipContributionMetaControl($this, $objContribution);
+
+			$this->chkNonDeductibleFlag = $this->mctContribution->chkNonDeductibleFlag_Create();
+			$this->chkNonDeductibleFlag->Name = 'Non-Deductibile?';
+			$this->chkNonDeductibleFlag->Text = 'Check if contribution is <strong>NOT</strong> deductible';
+			$this->chkNonDeductibleFlag->HtmlEntities=false;
+
+			$this->calDateCredited = $this->mctContribution->calDateCredited_Create();
+			$this->calDateCredited->Name = 'Post Date';
+			$this->calDateCredited->MinimumYear = '1995';
+			$this->calDateCredited->MaximumYear = date('Y') + 1;
 
 			if (!$this->mctContribution->EditMode && !$blnScanFlag) {
 				$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();

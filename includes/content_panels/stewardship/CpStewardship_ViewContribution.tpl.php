@@ -23,6 +23,14 @@
 
 <div class="section">
 	<div class="lvp">
+		<div class="left">Post Date</div>
+		<div class="right"><?php _p($_CONTROL->objContribution->DateCredited->ToString('MMMM D, YYYY')); ?></div>
+	</div>
+	<div class="lvp">
+		<div class="left">Deductibility</div>
+		<div class="right"><?php _p(($_CONTROL->objContribution->NonDeductibleFlag) ? 'Non-Deductible Contribution' : 'Deductible'); ?></div>
+	</div>
+	<div class="lvp">
 		<div class="left">Type</div>
 		<div class="right"><?php _p(StewardshipContributionType::$NameArray[$_CONTROL->objContribution->StewardshipContributionTypeId]); ?></div>
 	</div>
@@ -43,10 +51,10 @@
 
 		case StewardshipContributionType::CreditCard:
 		case StewardshipContributionType::CreditCardRecurring:
-			if ($_CONTROL->objContribution->CheckNumber) {
+			if ($_CONTROL->objContribution->AuthorizationNumber) {
 ?>
 				<div class="lvp">
-					<div class="left">Authorization Number</div>
+					<div class="left">CC Authorization</div>
 					<div class="right"><?php _p($_CONTROL->objContribution->AuthorizationNumber); ?></div>
 				</div>
 <?php				
@@ -61,7 +69,7 @@
 			if ($_CONTROL->objContribution->AlternateSource) {
 ?>
 				<div class="lvp">
-					<div class="left">Source Information</div>
+					<div class="left">Trans. Info</div>
 					<div class="right"><?php _p($_CONTROL->objContribution->AlternateSource); ?></div>
 				</div>
 <?php				
@@ -73,17 +81,18 @@
 
 	}
 ?>
-
-	<br/>
-<?php if ($_CONTROL->imgCheckImage) { ?>
-	<?php $_CONTROL->imgCheckImage->Render(); ?>
-<?php } else if ($_CONTROL->objContribution->StewardshipContributionTypeId == StewardshipContributionType::Check) { ?>
-	<img src="/assets/images/no_check_image.png" style="width: 390px; height: 184px;"/>
-<?php } ?>
-
 	<div class="cleaner"></div>
 </div>
 
+<?php if ($_CONTROL->imgCheckImage) { ?>
+	<div class="section">
+		<?php $_CONTROL->imgCheckImage->Render(); ?>
+	</div>
+<?php } else if ($_CONTROL->objContribution->StewardshipContributionTypeId == StewardshipContributionType::Check) { ?>
+	<div class="section">
+		<img src="/assets/images/no_check_image.png" style="width: 390px; height: 184px;"/>
+	</div>
+<?php } ?>
 
 <h3>Funding Accounts</h3>
 <div class="section sectionStewardshipAmount">
