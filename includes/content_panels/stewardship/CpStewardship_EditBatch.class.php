@@ -25,7 +25,7 @@
 			}
 
 			$this->txtReportedTotals = array();
-			for ($i = 1; $i <= 10; $i++) {
+			for ($i = 1; $i <= 20; $i++) {
 				$txtReportedTotal = new QFloatTextBox($this, 'txtReportedTotal' . $i);
 				$txtReportedTotal->Name = 'Reported Total for Stack #' . $i;
 				$txtReportedTotal->Visible = false;

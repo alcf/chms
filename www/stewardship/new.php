@@ -27,7 +27,7 @@
 			$this->calDateCredited->DateTime = QDateTime::Now();
 
 			$this->txtReportedTotals = array();
-			for ($i = 1; $i <= 10; $i++) {
+			for ($i = 1; $i <= 20; $i++) {
 				$this->lstStackCount->AddItem($i, $i, $i==1);
 				$txtReportedTotal = new QFloatTextBox($this, 'txtReportedTotal' . $i);
 				$txtReportedTotal->Name = 'Reported Total for Stack #' . $i;
