@@ -59,6 +59,10 @@
 	h1 button.primary, h3 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
 	h1 input.primary, h3 input.primary { *margin-top: -15px; margin-left: 10px; float: right; }
 
+	h1 p.notice {
+		margin: 0; padding: 0; font-size: 15px; font-family: arial, helvetica, sans-serif; color: #633; font-weight: normal; 
+	}
+
 	/*** PAGE STRUCTURE ***/
 
 	div.headerBackground { width: 100%; position: absolute; font-size: 1px; left: 0; background-color: #deeaee; height: 80px; }
@@ -201,6 +205,8 @@
 	div.renderWithName div.right label { font-size: 12px; position: relative; top: 2px; left: 2px; color: #333;}
 	div.renderWithName div.right span { font-size: 14px; color: #444; }
 
+	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
+
 	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; }
 
 	/*** OTHER ***/
@@ -209,6 +215,9 @@
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 	div.subnavContent div.section { border-color: #ddf; }
+
+	div.sectionTwoCol { width: 478px; float: left; border-right: 1px dotted #ccc; }
+	div.sectionTwoColRight { border-right: 0; border-left: 1px dotted #ccc; }
 
 	div.sectionBatchInfo { background-color: #5a768e; color: #fff; }
 
