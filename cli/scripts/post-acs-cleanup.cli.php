@@ -40,14 +40,15 @@
 		QDataGen::DisplayForEachTaskNext('Refreshing Contributions');
 		$objContribution->RefreshTotalAmount();
 	}
+	QDataGen::DisplayForEachTaskEnd('Refreshing Contributions');
 
 	$objStewardshipCursor = StewardshipStack::QueryCursor(QQ::All());
 	QDataGEn::DisplayForEachTaskStart('Refreshing Stacks', StewardshipStack::CountAll());
 	while ($objStack = StewardshipStack::InstantiateCursor($objStewardshipCursor)) {
 		QDataGen::DisplayForEachTaskNext('Refreshing Stacks');
 		$objStack->RefreshActualTotalAmount();
-		
 	}
+	QDataGen::DisplayForEachTaskEnd('Refreshing Stacks');
 
 	$objStewardshipCursor = StewardshipBatch::QueryCursor(QQ::All());
 	QDataGEn::DisplayForEachTaskStart('Refreshing Batches', StewardshipBatch::CountAll());
@@ -55,4 +56,13 @@
 		QDataGen::DisplayForEachTaskNext('Refreshing Batches');
 		$objBatch->PostBalance(Login::Load(1));
 	}
+	QDataGen::DisplayForEachTaskEnd('Refreshing Batches');
+
+	$objStewardshipCursor = StewardshipPledge::QueryCursor(QQ::All());
+	QDataGEn::DisplayForEachTaskStart('Refreshing Pledges', StewardshipPledge::CountAll());
+	while ($objPledge = StewardshipPledge::InstantiateCursor($objStewardshipCursor)) {
+		QDataGen::DisplayForEachTaskNext('Refreshing Pledges');
+		$objPledge->Refresh();
+	}
+	QDataGen::DisplayForEachTaskEnd('Refreshing Pledges');
 ?>

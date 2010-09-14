@@ -27,6 +27,29 @@
 			return sprintf('StewardshipPledge Object %s',  $this->intId);
 		}
 
+		/**
+		 * Refreshes pledge infromation (e.g. amount contributed, status, etc.)
+		 * @param boolean $blnSave whether or not to save
+		 */
+		public function Refresh($blnSave = true) {
+			$objAmountArray = StewardshipContributionAmount::QueryArray(QQ::AndCondition(
+				QQ::Equal(QQN::StewardshipContributionAmount()->StewardshipFundId, $this->StewardshipFundId),
+				QQ::Equal(QQN::StewardshipContributionAmount()->StewardshipContribution->PersonId, $this->PersonId)
+			));
+
+			$fltTotal = 0;
+			foreach ($objAmountArray as $objAmount) {
+				$fltTotal += $objAmount->Amount;
+			}
+
+			$this->fltContributedAmount = $fltTotal;
+			$this->fltRemainingAmount = max(0, $this->fltPledgeAmount - $this->fltContributedAmount);
+
+			$this->blnFulfilledFlag = ($this->fltRemainingAmount < 1.00);
+			if ($this->blnFulfilledFlag) $this->blnActiveFlag = false;
+
+			if ($blnSave) $this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
