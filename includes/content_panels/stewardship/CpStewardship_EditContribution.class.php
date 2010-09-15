@@ -270,18 +270,29 @@
 
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
 			// Validate
+			$this->pnlFundingError->Visible = false;
+			$this->pnlPersonError->Visible = false;
+
 			if (!$this->mctContribution->StewardshipContribution->PersonId) {
 				$this->pnlPersonError->Text = 'You must select a person';
 				$this->pnlPersonError->Visible = true;
 			}
 
 			$blnFound = false;
+			$fltTotal = 0;
 			foreach ($this->mctAmountArray as $mctAmount) {
 				$lstFund = $mctAmount->StewardshipFundIdControl;
-				if ($lstFund->SelectedValue) $blnFound = true;
+				$txtAmount = $mctAmount->AmountControl;
+				if ($lstFund->SelectedValue) {
+					$blnFound = true;
+					$fltTotal += $txtAmount->Text;
+				}
 			}
 			if (!$blnFound) {
 				$this->pnlFundingError->Text = 'You must select at least one fund';
+				$this->pnlFundingError->Visible = true;
+			} else if (!$fltTotal) {
+				$this->pnlFundingError->Text = 'Total of Funds must be non-zero';
 				$this->pnlFundingError->Visible = true;
 			}
 
@@ -311,7 +322,10 @@
 				$this->mctContribution->StewardshipContribution->SaveImageFile($this->mctContribution->StewardshipContribution->TempPath);
 
 			$this->objStack->RefreshActualTotalAmount();
-			$this->objBatch->RefreshActualTotalAmount();
+
+			$this->objBatch->RefreshActualTotalAmount(false);
+			$this->objBatch->RefreshStatus(true);
+
 			$this->objForm->pnlBatchTitle->Refresh();
 			$this->objForm->dtgContributions_Refresh();
 			$this->objForm->pnlStack_Refresh($this->objStack);
