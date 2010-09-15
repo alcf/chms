@@ -5,7 +5,7 @@
 		protected function SetupPanel() {
 			$this->imgHeadShot = new QImageControl($this);
 			$this->imgHeadShot->ScaleCanvasDown = true;
-			if ($this->objPerson->CurrentHeadShot) {
+			if ($this->objPerson->CurrentHeadShot && is_file($this->objPerson->CurrentHeadShot->Path)) {
 				$this->imgHeadShot->Width = 145;
 				$this->imgHeadShot->Height = 145;
 				$this->imgHeadShot->BorderWidth = 2;

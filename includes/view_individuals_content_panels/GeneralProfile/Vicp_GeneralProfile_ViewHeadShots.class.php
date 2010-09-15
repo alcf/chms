@@ -37,7 +37,10 @@
 			if ($mixSource instanceof QFileUploader) {
 				$imgHeadShot->SetImagePathFromFileUploader($mixSource);
 			} else {
-				$imgHeadShot->ImagePath = $mixSource;
+				if (is_file($mixSource))
+					$imgHeadShot->ImagePath = $mixSource;
+				else
+					$imgHeadShot->ImagePath = __DOCROOT__ . __IMAGE_ASSETS__ . '/no_headshot.png';
 			}
 
 			$imgHeadShot->Width = 160;

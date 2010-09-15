@@ -2,6 +2,11 @@
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 	QApplication::Authenticate(null, array(PermissionType::AccessStewardship));
 
+	// Setup Zend Framework load
+	set_include_path(get_include_path() . ':' . __INCLUDES__);
+	require_once('Zend/Loader.php');
+	Zend_Loader::loadClass('Zend_Pdf'); 
+
 	// Expected PathInfo to be PersonId/HouseholdId/Year
 	// Note that HouseholdId is OPTIONAL -- if HouseholdId, then it is a combined statement for the entire household
 	// Otherwise, if no HouseholdId (e.g. "0"), then it is just a individual statement
@@ -17,7 +22,9 @@
 	if (!((QApplication::PathInfo(2) >= 1950) && (QApplication::PathInfo(2) <= 2500)))
 		 QApplication::Redirect('/main/');
 
-	$objPdf = StewardshipContribution::GeneratePdfReceipt($objObject, QApplication::PathInfo(2));
+	// Create the PDF Object
+	$objPdf = new Zend_Pdf();
+	StewardshipContribution::GenerateReceiptInPdf($objPdf, $objObject, QApplication::PathInfo(2));
 
 	// Get PDF document as a string 
 	$strData = $objPdf->render(); 

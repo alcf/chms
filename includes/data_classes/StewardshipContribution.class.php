@@ -298,17 +298,7 @@
 		/**
 		 * @return Zend_Pdf
 		 */
-		public static function GeneratePdfReceipt($objPersonOrHousehold, $intYear) {
-			// Setup Zend Framework load
-			set_include_path(get_include_path() . ':' . __INCLUDES__);
-			require_once('Zend/Loader.php');
-			Zend_Loader::loadClass('Zend_Pdf'); 
-
-			// Create the PDF Object
-			$objPdf = new Zend_Pdf();
-			$objPage = $objPdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
-			$objPdf->pages[] = $objPage;
-
+		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear) {
 			// Get the PersonArray
 			if ($objPersonOrHousehold instanceof Person)
 				$intPersonIdArray = array($objPersonOrHousehold->Id);
@@ -325,28 +315,82 @@
 				QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-12-31 23:59:59')));
 			$objContributionAmountArray = StewardshipContributionAmount::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, QQN::StewardshipContributionAmount()->Id));
 
-			// Draw Header
-			self::DrawHeader($objPage);
+			// Get the Pledges
+			$objCondition = QQ::AndCondition(
+				QQ::In(QQN::StewardshipPledge()->PersonId, $intPersonIdArray),
+				QQ::OrCondition(
+					QQ::Equal(QQN::StewardshipPledge()->ActiveFlag, true),
+					QQ::GreaterOrEqual(QQN::StewardshipPledge()->DateEnded, new QDateTime($intYear . '-01-01 00:00:00')),
+					QQ::LessOrEqual(QQN::StewardshipPledge()->DateStarted, new QDateTime($intYear . '-12-31 23:59:59'))));
+			$objPledgeArray = StewardshipPledge::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipPledge()->DateStarted, QQN::StewardshipPledge()->DateEnded));
 
-			// Draw Header
-			self::DrawInfo($objPage, $objPersonOrHousehold, $intYear);
+			// New Page every 38
+			$intPageNumber = 1;
+			$intTotalPages = floor((count($objContributionAmountArray) - 1 ) / 38) + 1;
+			for ($intIndex = 0 ; $intIndex < count($objContributionAmountArray); $intIndex += 38) {
+				$objPage = $objPdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
+				$objPdf->pages[] = $objPage;
 
-			// Draw Logo
-			self::DrawAddress($objPage, $objPersonOrHousehold);
+				// Draw Header
+				if ($intPageNumber == 1) {
+					self::DrawHeader($objPage);
+					self::DrawAddress($objPage, $objPersonOrHousehold);
+					self::DrawFooter($objPage, $objPersonOrHousehold);
+					self::DrawSummary($objPage, $objContributionAmountArray, $intYear);
+					self::DrawPledges($objPage, $objPledgeArray);
+				}
 
-			// Draw Items
-			self::DrawItems($objPage, $objContributionAmountArray);
-			self::DrawSummary($objPage, $objContributionAmountArray, $intYear);
-			
-			// Draw Footer
-			self::DrawFooter($objPage, $objPersonOrHousehold);
+				// Draw Page Info
+				$intY = ($intPageNumber == 1) ? STEWARDSHIP_TOP - (1.7125 * 72) : STEWARDSHIP_TOP - (.5 * 72);
+				self::DrawInfo($objPage, $objPersonOrHousehold, $intYear, $intY, $intPageNumber, $intTotalPages);
 
-			return $objPdf;
+				// Draw Items
+				$intY = ($intPageNumber == 1) ? STEWARDSHIP_TOP - ((3.5) * 72) : STEWARDSHIP_TOP - ((1.5) * 72);
+				self::DrawItems($objPage, array_slice($objContributionAmountArray, $intIndex, 38), $intY);
+
+				// Draw Footer
+				$intPageNumber++;
+			}
 		}
 
-		protected static function DrawInfo(Zend_Pdf_Page $objPage, $objPersonOrHousehold, $intYear) {
+		protected static function DrawPledges(Zend_Pdf_Page $objPage, $objPledgeArray) {
+			if (!$objPledgeArray || !count($objPledgeArray)) return;
+
+			$intY = STEWARDSHIP_TOP - (9.25 * 72);
+			$intXArray = array(20, 130, 240, 310, 380, 472, 588);
+			
+			$objPage->setLineColor(new Zend_Pdf_Color_GrayScale(0.2));
+			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0.2));
+			$objPage->drawRectangle($intXArray[0] - 6, $intY, $intXArray[6] + 6, $intY-10);
+
+			$intY -= 7.5;
+			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(1));
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 7); 
+			$objPage->drawText('PLEDGED BY',		$intXArray[0], $intY);
+			$objPage->drawText('FUND', 				$intXArray[1], $intY);
+			$objPage->drawText('START DATE', 		$intXArray[2], $intY);
+			$objPage->drawText('END DATE', 			$intXArray[3], $intY);
+			$objPage->drawText('AMOUNT PLEDGED',	$intXArray[4], $intY);
+			$objPage->drawText('CONTRIBUTED',		$intXArray[5], $intY);
+			self::DrawTextRight($objPage, 			$intXArray[6], $intY, 'REMAINING');
+			
+			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
+			$intY -= 3.5;
+
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 9);
+			foreach ($objPledgeArray as $objPledge) {
+				$intY -= 10;
+				$objPage->drawText($objPledge->Person->Name, 										$intXArray[0], $intY);
+				$objPage->drawText($objPledge->StewardshipFund->Name, 								$intXArray[1], $intY);
+				$objPage->drawText($objPledge->DateStarted->ToString('MMM D YYYY'),					$intXArray[2], $intY);
+				$objPage->drawText($objPledge->DateEnded->ToString('MMM D YYYY'),					$intXArray[3], $intY);
+				$objPage->drawText(QApplication::DisplayCurrency($objPledge->PledgeAmount), 		$intXArray[4], $intY);
+				$objPage->drawText(QApplication::DisplayCurrency($objPledge->ContributedAmount), 	$intXArray[5], $intY);
+				self::DrawTextRight($objPage, 														$intXArray[6], $intY, QApplication::DisplayCurrency($objPledge->RemainingAmount));
+			}
+		}
+		protected static function DrawInfo(Zend_Pdf_Page $objPage, $objPersonOrHousehold, $intYear, $intY, $intPageNumber, $intTotalPages) {
 			$intXRight = 8 * 72;
-			$intY = STEWARDSHIP_TOP - (1.7125 * 72);
 
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12);
 			self::DrawTextRight($objPage, $intXRight, $intY, 'Giving Receipt');
@@ -358,6 +402,10 @@
 			$intY -= 15;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_ITALIC), 8);
 			self::DrawTextRight($objPage, $intXRight, $intY, 'Receipt generated on ' . QDateTime::NowToString('MMMM D, YYYY'));
+
+			$intY -= 10;
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_ITALIC), 8);
+			self::DrawTextRight($objPage, $intXRight, $intY, sprintf('Page %s of %s', $intPageNumber, $intTotalPages));
 		}
 
 		protected static function DrawSummary(Zend_Pdf_Page $objPage, $objContributionAmountArray, $intYear) {
@@ -375,7 +423,7 @@
 			$intX = 6.625 * 72;
 			$intXRight = 8.125 * 72;
 			$intY = STEWARDSHIP_TOP - ((3.5) * 72);
-			$intYBottom = 1.5 * 72;
+			$intYBottom = 2.0625 * 72;
 
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(.9));
 			$objPage->setLineColor(new Zend_Pdf_Color_GrayScale(.9));
@@ -425,8 +473,7 @@
 			$objPage->drawText($strText, $intX - $fltWidth, $intY);
 		}
 
-		protected static function DrawItems(Zend_Pdf_Page $objPage, $objContributionAmountArray) {
-			$intY = STEWARDSHIP_TOP - ((3.5) * 72);
+		protected static function DrawItems(Zend_Pdf_Page $objPage, $objContributionAmountArray, $intY) {
 			$intXArray = array(20, 92, 200, 308, 452);
 
 			$objPage->setLineColor(new Zend_Pdf_Color_GrayScale(0.2));
