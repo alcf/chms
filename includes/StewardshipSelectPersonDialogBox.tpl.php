@@ -17,6 +17,9 @@
 		<?php } ?>
 
 		<?php $_CONTROL->pnlPerson->Render(); ?>
+
+		<h3 style="margin-bottom: 6px;">Check Image Lookup</h3>
+		<?php $_CONTROL->imgHistoricCheckImage->Render(); ?>
 	</div>
 	<div class="cleaner"></div>
 

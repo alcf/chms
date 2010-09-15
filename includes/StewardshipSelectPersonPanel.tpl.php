@@ -14,9 +14,17 @@
 <?php } ?>
 </ul>
 
-<?php if ($_CONTROL->ParentControl->imgPersonCheckImageArray && count($_CONTROL->ParentControl->imgPersonCheckImageArray)) { ?>
-	<h4>Recent Check Images (up to 5)</h4>
-	<?php foreach ($_CONTROL->ParentControl->imgPersonCheckImageArray as $imgPersonCheckImage) $imgPersonCheckImage->Render(); ?>
+<h4>Recent Contributions (up to 15)</h4>
+
+<ul>
+<?php foreach ($_CONTROL->ParentControl->objSelectedPerson->GetStewardshipContributionArray(array(QQ::OrderBy(QQN::StewardshipContribution()->Id, false), QQ::LimitInfo(15))) as $objContribution) { ?>
+	<li>
+		<?php _p($objContribution->LineDescription); ?>
+		<?php if (is_file($objContribution->Path)) { ?>
+			&nbsp;|&nbsp; <a href="#" <?php $_CONTROL->ParentControl->pxyViewCheckImage->RenderAsEvents($objContribution->Id); ?>>View Image</a>
+		<?php } ?>
+	</li>
 <?php } ?>
+</ul>
 
 <?php } ?>

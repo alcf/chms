@@ -55,9 +55,12 @@
 				$strAlt = ' alt="' . QApplication::HtmlEntities($this->strAlternateText) . '"';
 
 			// Render final "IMG SRC" tag
-			$objDimensions = getimagesize($this->ImagePath);
-			$intRenderedHeight = $objDimensions[1]*$this->strWidth / $objDimensions[0];
-			$intDisplayedHeight = round($intRenderedHeight * .85);
+			if (!$this->strHeight) {
+				$objDimensions = getimagesize($this->ImagePath);
+				$intRenderedHeight = $objDimensions[1]*$this->strWidth / $objDimensions[0];
+				$intDisplayedHeight = round($intRenderedHeight * .85);
+			} else
+				$intDisplayedHeight = $this->strHeight;
 			$strToReturn = sprintf('<div style="background: url(%s); width: %spx; height: %spx; border: 2px solid #aaa;"></div>', $strPath, $this->strWidth, $intDisplayedHeight);
 			return $strToReturn;
 		}

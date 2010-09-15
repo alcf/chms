@@ -14,8 +14,9 @@
 		public $dtgPeople;
 
 		public $imgCheckImage;
-		public $imgPersonCheckImageArray;
-		
+		public $imgHistoricCheckImage;
+		public $pxyViewCheckImage;
+
 		public $pnlPerson;
 		public $pxySelectPerson;
 		public $pxyViewPerson;
@@ -130,7 +131,15 @@
 					$this->imgCheckImage->ImagePath = $this->objContribution->Path;
 					$this->imgCheckImage->Width = '424';
 				}
-				
+
+				$this->imgHistoricCheckImage = new TiffImageControl($this);
+				$this->imgHistoricCheckImage->ImagePath = __DOCROOT__ . __IMAGE_ASSETS__ . '/no_check_image.tiff';
+				$this->imgHistoricCheckImage->Width = '212';
+				$this->imgHistoricCheckImage->Height = '100';
+
+				$this->pxyViewCheckImage = new QControlProxy($this);
+				$this->pxyViewCheckImage->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyViewCheckImage_Click'));
+				$this->pxyViewCheckImage->AddAction(new QClickEvent(), new QTerminateAction());
 			}
 
 			$this->objSelectedPerson = $this->objContribution->Person;
@@ -151,6 +160,17 @@
 			$this->objSelectedPerson = Person::Load($strParameter);
 			$this->pnlPerson_Refresh();
 			$this->dtgPeople->Refresh();
+		}
+
+		public function pxyViewCheckImage_Click($strFormId, $strControlId, $strParameter) {
+			if (($objContribution = StewardshipContribution::Load($strParameter)) &&
+				(is_file($objContribution->Path))) {
+				$this->imgHistoricCheckImage->ImagePath = $objContribution->Path;
+				$this->imgHistoricCheckImage->Height = null;
+			} else {
+				$this->imgHistoricCheckImage->ImagePath = __DOCROOT__ . __IMAGE_ASSETS__ . '/no_check_image.tiff';
+				$this->imgHistoricCheckImage->Height = '100';
+			}
 		}
 
 		public function pxyViewPerson_Click() {
@@ -174,19 +194,7 @@
 		}
 
 		public function pnlPerson_Refresh() {
-			$this->pnlPerson->RemoveChildControls(true);
-			$this->imgPersonCheckImageArray = array();
-			if ($this->objSelectedPerson) {
-				foreach ($this->objSelectedPerson->GetStewardshipContributionArray(array(QQ::OrderBy(QQN::StewardshipContribution()->Id, false), QQ::LimitInfo(5))) as $objContribution) {
-					if (is_file($objContribution->Path)) {
-						$imgPersonCheckImage = new TiffImageControl($this->pnlPerson);
-						$imgPersonCheckImage->ImagePath = $objContribution->Path;
-						$imgPersonCheckImage->Width = '380';
-						$this->imgPersonCheckImageArray[] = $imgPersonCheckImage;
-					}
-				}
-			}
-
+			$this->pxyViewCheckImage_Click(null, null, null);
 			$this->pnlPerson->Refresh();
 		}
 

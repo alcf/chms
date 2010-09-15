@@ -78,6 +78,12 @@
 				case 'UnsavedCheckingAccountLookup':
 					return $this->objUnsavedCheckingAccountLookup;
 
+				case 'LineDescription':
+					return sprintf('[%s] %s via %s',
+						$this->DateCredited->ToString('YYYY-MM-DD'),
+						QApplication::DisplayCurrency($this->TotalAmount), 
+						StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
+
 				default:
 					try {
 						return parent::__get($strName);
