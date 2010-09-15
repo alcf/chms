@@ -6,6 +6,7 @@
 configuration.local
 /file_assets/head_shots
 /file_assets/contribution_images
+/file_assets/receipt_pdf
 /mybin
 /qcodo_log/*.log.txt
 /error_log

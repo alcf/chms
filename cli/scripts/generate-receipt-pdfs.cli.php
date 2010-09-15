@@ -1,15 +1,24 @@
 <?php
 	ini_set("memory_limit", "1024M");
 
+	// Make the Directory, clean up the directory
+	if (!is_dir(RECEIPT_PDF_PATH)) QApplication::MakeDirectory(RECEIPT_PDF_PATH, 0777);
+
+	// Anything to Load?
+	if (is_file(RECEIPT_PDF_PATH . '/run.txt')) {
+		$intYear = intval(trim(file_get_contents(RECEIPT_PDF_PATH . '/run.txt')));
+		exec('rm -r -f ' . RECEIPT_PDF_PATH . '/run.txt');
+	} else {
+		exit(0);
+	}
+
+	if (($intYear < 1950) || ($intYear > 2500)) exit(0);
+
 	// Setup Zend Framework load
 	set_include_path(get_include_path() . ':' . __INCLUDES__);
 	require_once('Zend/Loader.php');
 	Zend_Loader::loadClass('Zend_Pdf'); 
 
-	$intYear = 2010;
-
-	// Make the Directory, clean up the directory
-	if (!is_dir(RECEIPT_PDF_PATH)) QApplication::MakeDirectory(RECEIPT_PDF_PATH, 0777);
 	exec('rm -r -f ' . RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '*.pdf');
 
 	// Create the PDF Object for the Single and Multiple-page PDFs
