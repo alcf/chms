@@ -63,7 +63,7 @@
 
 					// Capture the check image
 					$strHash = md5(microtime());
-					$this->strCheckFilePath = __MICRIMAGE_TEMP_FOLDER__ . '/' . $strHash . '.tiff';
+					$this->strCheckFilePath = __MICRIMAGE_TEMP_FOLDER__ . '/' . $strHash . '.tif';
 					rename(__MICRIMAGE_DROP_FOLDER__ . '/' . $strFilename, $this->strCheckFilePath);
 
 					// Move to Next Step
