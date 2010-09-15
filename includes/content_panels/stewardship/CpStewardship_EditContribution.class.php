@@ -50,7 +50,7 @@
 		}
 
 		protected function SetupPanel() {
-			$blnScanFlag = false;
+			$this->blnScanFlag = false;
 
 			// Creating New?
 			if ($this->strUrlHashArgument == 'new') {
@@ -94,7 +94,7 @@
 			$this->calDateCredited->MinimumYear = '1995';
 			$this->calDateCredited->MaximumYear = date('Y') + 1;
 
-			if (!$this->mctContribution->EditMode && !$blnScanFlag) {
+			if (!$this->mctContribution->EditMode && !$this->blnScanFlag) {
 				$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();
 				$this->lstStewardshipContributionType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstStewardshipContributionType_Change'));
 
@@ -104,6 +104,19 @@
 
 				$this->lstStewardshipContributionType_Change();
 			} else {
+				// If we're scanning, then make sure we allow selecti onof Check or ReturnedCheck
+				if ($this->blnScanFlag) {
+					$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();
+					$intIndex = 0;
+					while ($intIndex < count($this->lstStewardshipContributionType->GetAllItems())) {
+						$objListItem = $this->lstStewardshipContributionType->GetItem($intIndex);
+						if (($objListItem->Value == StewardshipContributionType::Check) || ($objListItem->Value == StewardshipContributionType::ReturnedCheck))
+							$intIndex++;
+						else
+							$this->lstStewardshipContributionType->RemoveItem($intIndex);
+					}
+				}
+
 				switch ($this->mctContribution->StewardshipContribution->StewardshipContributionTypeId) {
 					case StewardshipContributionType::Check:
 					case StewardshipContributionType::ReturnedCheck:
