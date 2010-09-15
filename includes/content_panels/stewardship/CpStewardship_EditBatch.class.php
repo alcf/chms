@@ -39,6 +39,8 @@
 			}
 			$this->lstStackCount->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstStackCount_Change'));
 			$this->lstStackCount_Change();
+
+			$this->lstStackCount->Enabled = ($this->objBatch->StewardshipBatchStatusTypeId == StewardshipBatchStatusType::NewBatch);
 		}
 
 		public function lstStackCount_Change() {
