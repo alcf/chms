@@ -10,12 +10,14 @@
 
 	<div class="section resultsSection"><?php $_CONTROL->dtgPeople->Render(); ?></div>
 
-	<h3 style="float: left; margin-bottom: 6px;">Current Check Image</h3>
-	<?php if ($_CONTROL->imgCheckImage) $_CONTROL->imgCheckImage->Render(); else { ?>
-		<img src="/assets/images/no_check_image.png" style="width: 424px; height: 200px;" />
-	<?php } ?>
+	<div style="float: left;">
+		<h3 style="margin-bottom: 6px;">Current Check Image</h3>
+		<?php if ($_CONTROL->imgCheckImage) $_CONTROL->imgCheckImage->Render(); else { ?>
+			<img src="/assets/images/no_check_image.png" style="width: 424px; height: 200px;" />
+		<?php } ?>
 
-	<?php $_CONTROL->pnlPerson->Render(); ?>
+		<?php $_CONTROL->pnlPerson->Render(); ?>
+	</div>
 	<div class="cleaner"></div>
 
 	<div class="buttonBar">

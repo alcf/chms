@@ -124,13 +124,11 @@
 					$this->imgCheckImage = new TiffImageControl($this);
 					$this->imgCheckImage->ImagePath = $this->objContribution->TempPath;
 					$this->imgCheckImage->Width = '424';
-					$this->imgCheckImage->Height = '200';
 
 				} else if ($this->objContribution->Id && is_file($this->objContribution->Path)) {
 					$this->imgCheckImage = new TiffImageControl($this);
 					$this->imgCheckImage->ImagePath = $this->objContribution->Path;
 					$this->imgCheckImage->Width = '424';
-					$this->imgCheckImage->Height = '200';
 				}
 				
 			}
