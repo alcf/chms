@@ -1,13 +1,13 @@
 <?php
 	ini_set("memory_limit", "1024M");
 
-	// Make the Directory, clean up the directory
+	// Make the Directory
 	if (!is_dir(RECEIPT_PDF_PATH)) QApplication::MakeDirectory(RECEIPT_PDF_PATH, 0777);
 
 	// Anything to Load?
 	if (is_file(RECEIPT_PDF_PATH . '/run.txt')) {
 		$intYear = intval(trim(file_get_contents(RECEIPT_PDF_PATH . '/run.txt')));
-		exec('rm -r -f ' . RECEIPT_PDF_PATH . '/run.txt');
+		unlink(RECEIPT_PDF_PATH . '/run.txt');
 	} else {
 		exit(0);
 	}
@@ -56,6 +56,7 @@
 		// Separate into New File?
 		if (count($objSinglePagePdf->pages) > 500) {
 			$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
+			chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf', 0777);
 			$objSinglePagePdf = new Zend_Pdf();
 			$intSingplePageCount++;
 		}
@@ -63,5 +64,8 @@
 	QDataGen::DisplayForEachTaskEnd('Generating Receipt for Household');
 
 	$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
+	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf', 0777);
+	
 	$objMultiplePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Multiple.pdf');
+	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Multiple.pdf', 0777);
 ?>
