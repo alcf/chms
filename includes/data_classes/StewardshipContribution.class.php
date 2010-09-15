@@ -34,13 +34,8 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Folder':
-					$intModulo = $this->intId % 36;
-					if ($intModulo >= 10) {
-						$strSubFolderLetter = chr(ord('a') + $intModulo - 10);
-					} else {
-						$strSubFolderLetter = $intModulo;
-					}
-					return __DOCROOT__ . '/../file_assets/contribution_images/' . $strSubFolderLetter;
+					$strHash = md5($this->intId);
+					return __DOCROOT__ . '/../file_assets/contribution_images/' . $strHash[0] . '/' . $strHash[1];
 
 				case 'Path':
 					if (!$this->Id) return null;
@@ -49,7 +44,7 @@
 				// For recently scanned (and not yet saved) check images
 				case 'TempPath':
 					if (!$this->strCheckImageFileHash) return null;
-					return __MICRIMAGE_TEMP_FOLDER__ . '/' . $this->strCheckImageFileHash . '.tiff';
+					return __MICRIMAGE_TEMP_FOLDER__ . '/' . $this->strCheckImageFileHash . '.tif';
 
 				case 'Source':
 					switch ($this->StewardshipContributionTypeId) {
