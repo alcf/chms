@@ -260,7 +260,7 @@
 				} else {
 					$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithoutReportedAmount.txt');
 					$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
-						$objStack->ItemCount,
+						number_format($objStack->ItemCount, 0),
 						QApplication::DisplayCurrency($objStack->ActualTotalAmount));
 				}
 
@@ -268,7 +268,7 @@
 			} else {
 				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_Unselected.txt');
 				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
-					$objStack->ItemCount,
+					number_format($objStack->ItemCount, 0),
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount));
 			}
 		}

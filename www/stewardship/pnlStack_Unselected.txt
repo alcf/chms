@@ -1,1 +1,8 @@
-<a href="#%s" class="%s">Stack #%s</a>
+<a href="#%s" class="%s">
+	<div class="info">
+		<div class="left leftStack">Stack #%s</div><div class="right rightSmall">Item Count %s</div>
+		<div class="cleaner"></div>
+		<div class="left">Actual</div><div class="right rightSmall">%s</div>
+		<div class="cleaner"></div>
+	</div>
+</a>
