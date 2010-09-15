@@ -14,6 +14,8 @@
 	 * 
 	 */
 	class StewardshipContribution extends StewardshipContributionGen {
+		public static $ZendImage;
+
 		protected $objPossiblePeopleArray;
 		protected $objUnsavedCheckingAccountLookup;
 		protected $strCheckImageFileHash;
@@ -296,9 +298,9 @@
 		}
 
 		/**
-		 * @return Zend_Pdf
+		 * @return integer[]
 		 */
-		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear) {
+		public static function GetPersonIdArrayForPersonOrHousehold($objPersonOrHousehold) {
 			// Get the PersonArray
 			if ($objPersonOrHousehold instanceof Person)
 				$intPersonIdArray = array($objPersonOrHousehold->Id);
@@ -308,20 +310,53 @@
 					$intPersonIdArray[] = $objParticipation->PersonId;
 			}
 
-			// Get the Contributions
+			return $intPersonIdArray;
+		}
+
+		/**
+		 * @param integer[] $intPersonIdArray
+		 * @param integer $intYear
+		 * @return StewardshipContributionAmount[]
+		 */
+		public static function GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear) {
 			$objCondition = QQ::AndCondition(
 				QQ::In(QQN::StewardshipContributionAmount()->StewardshipContribution->PersonId, $intPersonIdArray),
 				QQ::GreaterOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-01-01 00:00:00')),
 				QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-12-31 23:59:59')));
-			$objContributionAmountArray = StewardshipContributionAmount::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, QQN::StewardshipContributionAmount()->Id));
+			return StewardshipContributionAmount::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, QQN::StewardshipContributionAmount()->Id));
+		}
+
+		/**
+		 * Given an existing Zend_Pdf record, this will generate the PDF Receipt page(s) for this Person or Household for the given year.
+		 * @param Zend_Pdf $objPdf
+		 * @param mixed $objPersonOrHousehold
+		 * @param integer $intYear
+		 */
+		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear) {
+			$intPersonIdArray = self::GetPersonIdArrayForPersonOrHousehold($objPersonOrHousehold);
+
+			// Get the Contributions
+			$objContributionAmountArray = self::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear);
 
 			// Get the Pledges
 			$objCondition = QQ::AndCondition(
 				QQ::In(QQN::StewardshipPledge()->PersonId, $intPersonIdArray),
 				QQ::OrCondition(
 					QQ::Equal(QQN::StewardshipPledge()->ActiveFlag, true),
-					QQ::GreaterOrEqual(QQN::StewardshipPledge()->DateEnded, new QDateTime($intYear . '-01-01 00:00:00')),
-					QQ::LessOrEqual(QQN::StewardshipPledge()->DateStarted, new QDateTime($intYear . '-12-31 23:59:59'))));
+					QQ::AndCondition(
+						QQ::GreaterOrEqual(QQN::StewardshipPledge()->DateStarted, new QDateTime($intYear . '-01-01 00:00:00')),
+						QQ::LessOrEqual(QQN::StewardshipPledge()->DateStarted, new QDateTime($intYear . '-12-31 23:59:59'))
+					),
+					QQ::AndCondition(
+						QQ::GreaterOrEqual(QQN::StewardshipPledge()->DateEnded, new QDateTime($intYear . '-01-01 00:00:00')),
+						QQ::LessOrEqual(QQN::StewardshipPledge()->DateEnded, new QDateTime($intYear . '-12-31 23:59:59'))
+					),
+					QQ::AndCondition(
+						QQ::GreaterOrEqual(QQN::StewardshipPledge()->DateEnded, new QDateTime($intYear . '-12-31 23:59:59')),
+						QQ::LessOrEqual(QQN::StewardshipPledge()->DateStarted, new QDateTime($intYear . '-01-01 00:00:00'))
+					)
+				)
+			);
 			$objPledgeArray = StewardshipPledge::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipPledge()->DateStarted, QQN::StewardshipPledge()->DateEnded));
 
 			// New Page every 38
@@ -565,8 +600,8 @@
 			$intY -= 12.1;
 			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_4, 36, $intY);
 
-			$objImage = Zend_Pdf_Image::imageWithPath(__DOCROOT__ . __IMAGE_ASSETS__ . '/alcf_logo_stewardship.png');
-			$objPage->drawImage($objImage, 424, STEWARDSHIP_TOP - 108, 576, STEWARDSHIP_TOP - 36);
+			if (!self::$ZendImage) self::$ZendImage = Zend_Pdf_Image::imageWithPath(__DOCROOT__ . __IMAGE_ASSETS__ . '/alcf_logo_stewardship.png');
+			$objPage->drawImage(self::$ZendImage, 424, STEWARDSHIP_TOP - 108, 576, STEWARDSHIP_TOP - 36);
 		}
 
 		// Override or Create New Load/Count methods
