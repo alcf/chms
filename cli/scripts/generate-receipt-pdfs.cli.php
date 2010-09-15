@@ -19,6 +19,9 @@
 	require_once('Zend/Loader.php');
 	Zend_Loader::loadClass('Zend_Pdf'); 
 
+	print "Generating Receipts PDF for " . $intYear . "\r\n";
+
+	// Delete Old Files
 	exec('rm -r -f ' . RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '*.pdf');
 
 	// Create the PDF Object for the Single and Multiple-page PDFs
@@ -52,13 +55,13 @@
 
 		// Separate into New File?
 		if (count($objSinglePagePdf->pages) > 500) {
-			$objSinglePagePdf->save(__DOCROOT__ . '/../ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
+			$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
 			$objSinglePagePdf = new Zend_Pdf();
 			$intSingplePageCount++;
 		}
 	}
 	QDataGen::DisplayForEachTaskEnd('Generating Receipt for Household');
 
-	$objSinglePagePdf->save(__DOCROOT__ . '/../ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
-	$objMultiplePagePdf->save(__DOCROOT__ . '/../ReceiptsFor' . $intYear . '_Multiple.pdf');
+	$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
+	$objMultiplePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Multiple.pdf');
 ?>
