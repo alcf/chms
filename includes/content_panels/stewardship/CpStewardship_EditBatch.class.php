@@ -34,7 +34,7 @@
 				$this->txtReportedTotals[$i] = $txtReportedTotal;
 			}
 			
-			for ($i = max(1, count($objStackArray)); $i <= 10; $i++) {
+			for ($i = max(1, count($objStackArray)); $i <= 20; $i++) {
 				$this->lstStackCount->AddItem($i, $i, $i==max(1, count($objStackArray)));
 			}
 			$this->lstStackCount->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstStackCount_Change'));

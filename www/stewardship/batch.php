@@ -244,21 +244,29 @@
 			if (!$pnlStack) return;
 
 			$strClassName = null;
-			if ($this->objStack && ($this->objStack->Id == $objStack->Id))
+			if ($this->objStack && ($this->objStack->Id == $objStack->Id)) {
 				$strClassName = 'selected';
 
-			// Since there are so many calculated values in the HTML, we'll store the template as a
-			// sprintf-formatted string (e.g. with a bunch of %s) as a textfile and use sprintf to manually set the text of the 
-			// pnlStack, instead of doing a full fledged QPanel template
-			if ($objStack->ReportedTotalAmount) {
-				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithReportedAmount.txt');
-				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
-					number_format($objStack->ItemCount, 0),
-					QApplication::DisplayCurrency($objStack->ActualTotalAmount),
-					QApplication::DisplayCurrency($objStack->ReportedTotalAmount),
-					QApplication::DisplayCurrencyHtml($objStack->ActualTotalAmount - $objStack->ReportedTotalAmount));
+				// Since there are so many calculated values in the HTML, we'll store the template as a
+				// sprintf-formatted string (e.g. with a bunch of %s) as a textfile and use sprintf to manually set the text of the 
+				// pnlStack, instead of doing a full fledged QPanel template
+				if ($objStack->ReportedTotalAmount) {
+					$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithReportedAmount.txt');
+					$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
+						number_format($objStack->ItemCount, 0),
+						QApplication::DisplayCurrency($objStack->ActualTotalAmount),
+						QApplication::DisplayCurrency($objStack->ReportedTotalAmount),
+						QApplication::DisplayCurrencyHtml($objStack->ActualTotalAmount - $objStack->ReportedTotalAmount));
+				} else {
+					$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithoutReportedAmount.txt');
+					$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
+						$objStack->ItemCount,
+						QApplication::DisplayCurrency($objStack->ActualTotalAmount));
+				}
+
+			// For "Unselected"
 			} else {
-				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_WithoutReportedAmount.txt');
+				$strSprintfTemplate = file_get_contents(dirname(__FILE__) . '/pnlStack_Unselected.txt');
 				$pnlStack->Text = sprintf($strSprintfTemplate, $objStack->StackNumber, $strClassName, $objStack->StackNumber,
 					$objStack->ItemCount,
 					QApplication::DisplayCurrency($objStack->ActualTotalAmount));
