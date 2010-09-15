@@ -18,7 +18,7 @@
 			print '>Delete Receipts for ' . $intYear . '</button></div>';
 			print '<ul style="font-family: arial, helvetica, sans-serif; font-size: 12px;">';
 			foreach ($strFileArray as $strFile) {
-				printf('<li style="margin: 5px 0;"><strong><a href="/receipts/download.php/%s">%s</a></strong> &nbsp; &nbsp; <span style="font-size: 10px; color: #666;">%s &nbsp;|&nbsp; %s</span></li>',
+				printf('<li style="margin: 5px 0;"><strong><a href="/stewardship/receipts/download.php/%s">%s</a></strong> &nbsp; &nbsp; <span style="font-size: 10px; color: #666;">%s &nbsp;|&nbsp; %s</span></li>',
 					QApplication::HtmlEntities($strFile), QApplication::HtmlEntities($strFile),
 					QDateTime::FromTimestamp(filectime(RECEIPT_PDF_PATH . '/' . $strFile))->ToString('MMM D YYYY, h:mm z'),
 					QString::GetByteSize(filesize(RECEIPT_PDF_PATH . '/' . $strFile)));
