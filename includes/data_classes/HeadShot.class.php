@@ -29,7 +29,7 @@
 
 		public function __get($strName) {
 			switch ($strName) {
-				case 'Folder': return __DOCROOT__ . '/../file_assets/head_shots';
+				case 'Folder': return __DOCROOT__ . '/../file_assets/head_shots/' . substr(md5($this->Id), 0, 1);
 				case 'Path': return $this->Folder . '/' . $this->Id . '.' . ImageType::$NameArray[$this->intImageTypeId];
 
 				default:
