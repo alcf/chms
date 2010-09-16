@@ -1,4 +1,6 @@
 <?php
+	QApplication::Authenticate(null, array(PermissionType::AccessStewardship));
+
 	class Vicp_Stewardship extends Vicp_Base {
 		public $dtgStewardshipContributionAmount;
 		public $chkCombined;
@@ -6,6 +8,8 @@
 		public $lstFund;
 
 		public $pxyPrint;
+		
+		public $dtgPledges;
 		
 		protected function SetupPanel() {
 			$this->dtgStewardshipContributionAmount = new StewardshipContributionAmountDataGrid($this);
@@ -53,6 +57,49 @@
 			$this->pxyPrint = new QControlProxy($this);
 			$this->pxyPrint->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyPrint_Click'));
 			$this->pxyPrint->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->dtgPledges = new StewardshipPledgeDataGrid($this);
+			$this->dtgPledges->FontSize = '11px';
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->Person->LastName, 'Name=Pledged By', 'HtmlEntities=false', 'Html=<?= $_CONTROL->ParentControl->RenderPledgePerson($_ITEM); ?>', 'Width=180px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->StewardshipFund->Name, 'Name=Fund', 'Width=150px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->DateStarted, 'Name=Start Date', 'Width=75px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->DateEnded, 'Name=End Date', 'Width=75px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->PledgeAmount, 'Name=Pledged', 'Html=<?= QApplication::DisplayCurrency($_ITEM->PledgeAmount); ?>', 'Width=70px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->ContributedAmount, 'Name=Contributed', 'Html=<?= QApplication::DisplayCurrency($_ITEM->ContributedAmount); ?>', 'Width=70px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->RemainingAmount, 'Name=Remaining', 'FontBold=true', 'Html=<?= QApplication::DisplayCurrency($_ITEM->RemainingAmount); ?>', 'Width=75px');
+			$this->dtgPledges->SetDataBinder('dtgPledges_Bind', $this);
+		}
+
+		public function RenderPledgePerson(StewardshipPledge $objPledge) {
+			if ($objPledge->ActiveFlag) {
+				$objStyle = null;
+			} else {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->BackColor = '#edd';
+			}
+
+			$this->dtgPledges->OverrideRowStyle($this->dtgPledges->CurrentRowIndex, $objStyle);
+
+			if ($objPledge->PersonId == $this->objPerson->Id)
+				return sprintf('<a href="#stewardship/edit_pledge/%s">%s</a>', $objPledge->Id, $objPledge->Person->Name);
+			else
+				return sprintf('<a href="/individuals/view.php/%s/%s#stewardship/edit_pledge/%s">%s</a>', $objPledge->PersonId, $this->objForm->objHousehold->Id, $objPledge->Id, $objPledge->Person->Name);
+		}
+
+		public function dtgPledges_Bind() {
+			if ($this->chkCombined && $this->chkCombined->Checked) {
+				$intPersonIdArray = array();
+				foreach ($this->objForm->objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
+					$intPersonIdArray[] = $objParticipation->PersonId;
+				}
+				$objCondition = QQ::In(QQN::StewardshipPledge()->PersonId, $intPersonIdArray);
+			} else
+				$objCondition = QQ::Equal(QQN::StewardshipPledge()->PersonId, $this->objPerson->Id);
+
+			$this->dtgPledges->MetaDataBinder($objCondition, QQ::Clause(
+				QQ::Expand(QQN::StewardshipPledge()->Person->LastName),
+				QQ::Expand(QQN::StewardshipPledge()->StewardshipFund->Name)
+			));
 		}
 
 		public function pxyPrint_Click() {

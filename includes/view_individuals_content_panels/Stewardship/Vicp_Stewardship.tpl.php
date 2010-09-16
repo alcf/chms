@@ -14,3 +14,9 @@
 <div class="section">
 	<?php $_CONTROL->dtgStewardshipContributionAmount->Render();?>
 </div>
+<br/>
+
+<h3>Pledges</h3>
+<div class="section">
+	<?php $_CONTROL->dtgPledges->Render();?>
+</div>
