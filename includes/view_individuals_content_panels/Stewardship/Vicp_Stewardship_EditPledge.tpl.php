@@ -9,4 +9,5 @@
 </div>
 <div class="buttonBar">
 <?php $_CONTROL->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $_CONTROL->btnCancel->Render(); ?>
+<?php if ($_CONTROL->btnDelete) $_CONTROL->btnDelete->Render(); ?>
 </div>

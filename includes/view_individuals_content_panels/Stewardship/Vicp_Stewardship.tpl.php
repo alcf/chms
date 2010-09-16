@@ -16,7 +16,9 @@
 </div>
 <br/>
 
-<h3>Pledges</h3>
+<h3>Pledges
+	<button class="primary" onclick="document.location='#stewardship/edit_pledge'; return false;">Create Pledge</button>
+</h3>
 <div class="section">
 	<?php $_CONTROL->dtgPledges->Render();?>
 </div>

@@ -68,6 +68,8 @@
 			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->ContributedAmount, 'Name=Contributed', 'Html=<?= QApplication::DisplayCurrency($_ITEM->ContributedAmount); ?>', 'Width=70px');
 			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->RemainingAmount, 'Name=Remaining', 'FontBold=true', 'Html=<?= QApplication::DisplayCurrency($_ITEM->RemainingAmount); ?>', 'Width=75px');
 			$this->dtgPledges->SetDataBinder('dtgPledges_Bind', $this);
+			
+			$this->dtgPledges->NoDataHtml = '<span style="font-size: 14px;">No pledge records given your filtering criteria above.</span>';
 		}
 
 		public function RenderPledgePerson(StewardshipPledge $objPledge) {
@@ -121,6 +123,7 @@
 
 		public function Filter() {
 			$this->dtgStewardshipContributionAmount->Refresh();
+			$this->dtgPledges->Refresh();
 		}
 
 		public function RenderDate(StewardshipContributionAmount $objAmount) {
