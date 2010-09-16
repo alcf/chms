@@ -54,6 +54,11 @@
 
 			// Creating New?
 			if ($this->strUrlHashArgument == 'new') {
+				// Creating New... Again?
+				if ($this->strUrlHashArgument2 == 'again') {
+					return $this->ReturnTo(sprintf('#%s/edit_contribution/new', $this->objStack->StackNumber));
+				}
+
 				$objContribution = new StewardshipContribution();
 				$objContribution->StewardshipBatch = $this->objBatch;
 				$objContribution->StewardshipStack = $this->objStack;
@@ -207,6 +212,15 @@
 				$this->btnSaveAndScanAgain->Text = 'Save and Scan Next Check';
 				$this->btnSaveAndScanAgain->CssClass = 'primary';
 				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+			} else if (!$this->mctContribution->EditMode) {
+				$this->btnChangePerson_Click(null, null, null);
+				$this->dlgChangePerson->dtgPeople->NoDataHtml = '<div class="section sectionBatchInfo"><strong>Search For Individual</strong><br/><br/>' .
+					'Use above fields to find the individual for this new entry.</div>';
+				$this->btnSaveAndScanAgain = new QButton($this);
+				$this->btnSaveAndScanAgain->Text = 'Save and Enter Next Entry';
+				$this->btnSaveAndScanAgain->ActionParameter = 'new';
+				$this->btnSaveAndScanAgain->CssClass = 'primary';
+				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			}
 
 			if (!$this->mctContribution->EditMode) {
@@ -346,7 +360,10 @@
 			$this->SaveSelectedFundsToSession();
 
 			if ($this->btnSaveAndScanAgain && ($strControlId == $this->btnSaveAndScanAgain->ControlId)) {
-				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view/scan');
+				if ($strParameter == 'new')
+					return $this->ReturnTo('#' . $this->objStack->StackNumber . '/edit_contribution/new/again');
+				else
+					return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view/scan');
 			} else {
 				return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view_contribution/' . $this->mctContribution->StewardshipContribution->Id);
 			}

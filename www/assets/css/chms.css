@@ -332,7 +332,7 @@ div.shopInfo div.shopLeft { float: left; }
 
 	div.stewardshipDialogbox { width: 1100px; height: 710px; padding: 5px; background: url(/assets/images/main_content_background.png); }
 	div.stewardshipDialogbox div.resultsSection { width: 650px; height: 570px; padding: 5px; overflow: auto; float: left; margin-right: 10px;  }
-	div.stewardshipDialogbox div.personSection { width: 415px; height: 200px; padding: 5px; overflow: auto; float: left; margin-top: 10px; font-size: 11px; }
+	div.stewardshipDialogbox div.personSection { width: 415px; height: 200px; padding: 5px; overflow: auto; margin-top: 10px; font-size: 11px; }
 	div.stewardshipDialogbox div.personSection h3 { }
 	div.stewardshipDialogbox div.personSection h4 { font-size: 12px; margin: 0 0 6px 0; }
 	div.stewardshipDialogbox div.personSection ul { margin: 0 0 12px 18px; padding: 0; }
