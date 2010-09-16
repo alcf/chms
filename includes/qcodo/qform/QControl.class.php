@@ -86,5 +86,25 @@
 			return $this->RenderOutput($strToReturn, $blnDisplayOutput);
 			////////////////////////////////////////////
 		}
+
+		public function RenderInSection($blnDisplayOutput = true) {
+			////////////////////
+			// Call RenderHelper
+			$this->RenderHelper(func_get_args(), __FUNCTION__);
+			////////////////////
+
+			// Custom Render Functionality Here
+			$this->blnIsBlockElement = true;
+			$strToReturn = $this->GetControlHtml();
+			if ($this->strActionParameter)
+				$strToReturn = '<div class="' . $this->strActionParameter . '">' . $strToReturn . '</div>';
+			else
+				$strToReturn = '<div class="section">' . $strToReturn . '</div>';
+				
+			////////////////////////////////////////////
+			// Call RenderOutput, Returning its Contents
+			return $this->RenderOutput($strToReturn, $blnDisplayOutput);
+			////////////////////////////////////////////
+		}
 	}
 ?>
