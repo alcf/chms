@@ -549,6 +549,31 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `us_state` (
+					`id`,
+					`name`,
+					`abbreviation`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAbbreviation) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this UsState
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -575,6 +600,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('us_state', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -590,6 +619,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -623,6 +655,9 @@
 					`us_state`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

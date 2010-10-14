@@ -762,6 +762,39 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `comment` (
+					`id`,
+					`person_id`,
+					`posted_by_login_id`,
+					`comment_privacy_type_id`,
+					`comment_category_id`,
+					`comment`,
+					`date_posted`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPostedByLoginId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCommentPrivacyTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCommentCategoryId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strComment) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDatePosted) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this Comment
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -796,6 +829,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('comment', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -815,6 +852,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -848,6 +888,9 @@
 					`comment`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

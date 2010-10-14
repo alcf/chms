@@ -2086,6 +2086,79 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `person` (
+					`id`,
+					`membership_status_type_id`,
+					`marital_status_type_id`,
+					`first_name`,
+					`middle_name`,
+					`last_name`,
+					`mailing_label`,
+					`prior_last_names`,
+					`nickname`,
+					`title`,
+					`suffix`,
+					`gender`,
+					`date_of_birth`,
+					`dob_approximate_flag`,
+					`deceased_flag`,
+					`date_deceased`,
+					`current_head_shot_id`,
+					`mailing_address_id`,
+					`stewardship_address_id`,
+					`primary_phone_id`,
+					`primary_email_id`,
+					`can_mail_flag`,
+					`can_phone_flag`,
+					`can_email_flag`,
+					`primary_address_text`,
+					`primary_city_text`,
+					`primary_phone_text`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intMembershipStatusTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intMaritalStatusTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strFirstName) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strMiddleName) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strLastName) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strMailingLabel) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strPriorLastNames) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strNickname) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strTitle) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strSuffix) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strGender) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateOfBirth) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnDobApproximateFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnDeceasedFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateDeceased) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCurrentHeadShotId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intMailingAddressId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipAddressId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPrimaryPhoneId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPrimaryEmailId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnCanMailFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnCanPhoneFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnCanEmailFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strPrimaryAddressText) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strPrimaryCityText) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strPrimaryPhoneText) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this Person
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -2160,6 +2233,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('person', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -2199,6 +2276,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 		
@@ -2261,6 +2341,9 @@
 					`person`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

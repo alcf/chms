@@ -1,4 +1,33 @@
 /**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO <%= $strEscapeIdentifierBegin %><%= $objTable->Name %><%= $strEscapeIdentifierEnd %> (
+<% foreach ($objTable->ColumnArray as $objColumn) { %>
+<% if (!$objColumn->Timestamp) { %>
+					<%= $strEscapeIdentifierBegin %><%= $objColumn->Name %><%= $strEscapeIdentifierEnd %>,
+<% } %>
+<% } %>
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+<% foreach ($objTable->ColumnArray as $objColumn) { %>
+<% if (!$objColumn->Timestamp) { %>
+					' . QApplication::$Database[2]->SqlVariable($this-><%= $objColumn->VariableName %>) . ',
+<% } %>
+<% } %>
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this <%= $objTable->ClassName %>
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -43,24 +72,7 @@
 %>
 
 					// Journaling
-					QApplication::$Database[2]->NonQuery('
-						INSERT INTO <%= $strEscapeIdentifierBegin %><%= $objTable->Name %><%= $strEscapeIdentifierEnd %> (
-<% foreach ($objTable->ColumnArray as $objColumn) { %>
-	<% if (!$objColumn->Timestamp) { %>
-							<%= $strEscapeIdentifierBegin %><%= $objColumn->Name %><%= $strEscapeIdentifierEnd %>,
-	<% } %>
-<% } %><%--%>
-						) VALUES (
-<% foreach ($objTable->ColumnArray as $objColumn) { %>
-	<% if ($objColumn->Identity && (!$objColumn->Timestamp)) { %>
-							' . $mixToReturn . ',
-	<% } %>
-	<% if ((!$objColumn->Identity) && (!$objColumn->Timestamp)) { %>
-							' . QApplication::$Database[2]->SqlVariable($this-><%= $objColumn->VariableName %>) . ',
-	<% } %>
-<% } %><%--%>
-						)
-					');
+					$this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -111,6 +123,9 @@
 	<% } %>
 <% } %><%-----%>
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 <% foreach ($objTable->ReverseReferenceArray as $objReverseReference) { %>

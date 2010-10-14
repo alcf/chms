@@ -693,6 +693,33 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `relationship` (
+					`id`,
+					`person_id`,
+					`related_to_person_id`,
+					`relationship_type_id`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intRelatedToPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intRelationshipTypeId) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this Relationship
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -721,6 +748,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('relationship', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -737,6 +768,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -770,6 +804,9 @@
 					`relationship`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

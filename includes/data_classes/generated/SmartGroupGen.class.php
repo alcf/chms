@@ -613,6 +613,35 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `smart_group` (
+					`group_id`,
+					`search_query_id`,
+					`query`,
+					`date_refreshed`,
+					`process_time_ms`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intSearchQueryId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strQuery) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateRefreshed) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intProcessTimeMs) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this SmartGroup
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -644,6 +673,10 @@
 					');
 
 
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -662,6 +695,9 @@
 						WHERE
 							`group_id` = ' . $objDatabase->SqlVariable($this->__intGroupId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -696,6 +732,9 @@
 					`smart_group`
 				WHERE
 					`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

@@ -1049,6 +1049,55 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `address` (
+					`id`,
+					`address_type_id`,
+					`person_id`,
+					`household_id`,
+					`primary_phone_id`,
+					`address_1`,
+					`address_2`,
+					`address_3`,
+					`city`,
+					`state`,
+					`zip_code`,
+					`country`,
+					`current_flag`,
+					`invalid_flag`,
+					`date_until_when`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intAddressTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intHouseholdId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPrimaryPhoneId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAddress1) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAddress2) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAddress3) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strCity) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strState) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strZipCode) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strCountry) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnCurrentFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnInvalidFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateUntilWhen) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this Address
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -1099,6 +1148,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('address', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -1126,6 +1179,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1159,6 +1215,9 @@
 					`address`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

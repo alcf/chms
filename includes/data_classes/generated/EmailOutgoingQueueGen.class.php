@@ -690,6 +690,35 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `email_outgoing_queue` (
+					`id`,
+					`email_message_id`,
+					`to_address`,
+					`error_flag`,
+					`token`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intEmailMessageId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strToAddress) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnErrorFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strToken) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this EmailOutgoingQueue
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -720,6 +749,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('email_outgoing_queue', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -737,6 +770,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -770,6 +806,9 @@
 					`email_outgoing_queue`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

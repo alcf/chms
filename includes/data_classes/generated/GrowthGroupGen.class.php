@@ -869,6 +869,53 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `growth_group` (
+					`group_id`,
+					`growth_group_location_id`,
+					`growth_group_day_type_id`,
+					`meeting_bitmap`,
+					`start_time`,
+					`end_time`,
+					`address_1`,
+					`address_2`,
+					`cross_street_1`,
+					`cross_street_2`,
+					`zip_code`,
+					`longitude`,
+					`latitude`,
+					`accuracy`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intGrowthGroupLocationId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intGrowthGroupDayTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intMeetingBitmap) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStartTime) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intEndTime) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAddress1) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAddress2) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strCrossStreet1) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strCrossStreet2) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strZipCode) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltLongitude) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltLatitude) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intAccuracy) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this GrowthGroup
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -918,6 +965,10 @@
 					');
 
 
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -945,6 +996,9 @@
 						WHERE
 							`group_id` = ' . $objDatabase->SqlVariable($this->__intGroupId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -979,6 +1033,9 @@
 					`growth_group`
 				WHERE
 					`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

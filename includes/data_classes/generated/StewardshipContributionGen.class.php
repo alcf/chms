@@ -1071,6 +1071,57 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `stewardship_contribution` (
+					`id`,
+					`person_id`,
+					`stewardship_contribution_type_id`,
+					`stewardship_batch_id`,
+					`stewardship_stack_id`,
+					`checking_account_lookup_id`,
+					`total_amount`,
+					`date_entered`,
+					`date_cleared`,
+					`date_credited`,
+					`check_number`,
+					`authorization_number`,
+					`alternate_source`,
+					`non_deductible_flag`,
+					`note`,
+					`created_by_login_id`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipContributionTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipBatchId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipStackId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCheckingAccountLookupId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltTotalAmount) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateEntered) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateCleared) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateCredited) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strCheckNumber) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAuthorizationNumber) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strAlternateSource) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnNonDeductibleFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strNote) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCreatedByLoginId) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this StewardshipContribution
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -1123,6 +1174,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('stewardship_contribution', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -1151,6 +1206,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1184,6 +1242,9 @@
 					`stewardship_contribution`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

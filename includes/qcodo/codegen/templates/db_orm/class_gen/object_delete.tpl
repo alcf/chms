@@ -46,6 +46,9 @@
 					<%= $strEscapeIdentifierBegin %><%= $objColumn->Name %><%= $strEscapeIdentifierEnd %> = ' . $objDatabase->SqlVariable($this-><%= $objColumn->VariableName %>) . ' AND
 	<% } %>
 <% } %><%-----%>');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

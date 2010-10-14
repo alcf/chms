@@ -745,6 +745,37 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `stewardship_post` (
+					`id`,
+					`stewardship_batch_id`,
+					`post_number`,
+					`date_posted`,
+					`total_amount`,
+					`created_by_login_id`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipBatchId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPostNumber) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDatePosted) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltTotalAmount) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCreatedByLoginId) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this StewardshipPost
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -777,6 +808,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('stewardship_post', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -795,6 +830,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -828,6 +866,9 @@
 					`stewardship_post`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

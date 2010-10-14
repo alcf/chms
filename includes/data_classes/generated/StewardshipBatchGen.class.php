@@ -874,6 +874,47 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `stewardship_batch` (
+					`id`,
+					`stewardship_batch_status_type_id`,
+					`date_entered`,
+					`date_credited`,
+					`batch_label`,
+					`description`,
+					`item_count`,
+					`reported_total_amount`,
+					`actual_total_amount`,
+					`posted_total_amount`,
+					`created_by_login_id`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipBatchStatusTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateEntered) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateCredited) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strBatchLabel) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strDescription) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intItemCount) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltReportedTotalAmount) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltActualTotalAmount) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->fltPostedTotalAmount) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intCreatedByLoginId) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this StewardshipBatch
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -916,6 +957,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('stewardship_batch', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -939,6 +984,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -972,6 +1020,9 @@
 					`stewardship_batch`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

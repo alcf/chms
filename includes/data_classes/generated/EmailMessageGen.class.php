@@ -768,6 +768,45 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `email_message` (
+					`id`,
+					`email_message_status_type_id`,
+					`date_received`,
+					`raw_message`,
+					`message_identifier`,
+					`subject`,
+					`from_address`,
+					`response_header`,
+					`response_body`,
+					`error_message`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intEmailMessageStatusTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateReceived) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strRawMessage) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strMessageIdentifier) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strSubject) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strFromAddress) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strResponseHeader) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strResponseBody) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strErrorMessage) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this EmailMessage
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -808,6 +847,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('email_message', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -830,6 +873,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -863,6 +909,9 @@
 					`email_message`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

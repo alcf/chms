@@ -665,6 +665,37 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `query_node` (
+					`id`,
+					`name`,
+					`qcodo_query_node`,
+					`query_data_type_id`,
+					`type_detail`,
+					`qcodo_query_condition`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strQcodoQueryNode) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intQueryDataTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strTypeDetail) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strQcodoQueryCondition) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this QueryNode
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -697,6 +728,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('query_node', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -715,6 +750,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -748,6 +786,9 @@
 					`query_node`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

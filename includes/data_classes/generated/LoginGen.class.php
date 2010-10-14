@@ -1019,6 +1019,51 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `login` (
+					`id`,
+					`role_type_id`,
+					`permission_bitmap`,
+					`username`,
+					`password_cache`,
+					`password_last_set`,
+					`date_last_login`,
+					`domain_active_flag`,
+					`login_active_flag`,
+					`email`,
+					`first_name`,
+					`middle_initial`,
+					`last_name`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intRoleTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPermissionBitmap) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strUsername) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strPasswordCache) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strPasswordLastSet) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateLastLogin) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnDomainActiveFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnLoginActiveFlag) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strEmail) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strFirstName) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strMiddleInitial) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strLastName) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this Login
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -1065,6 +1110,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('login', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -1090,6 +1139,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1123,6 +1175,9 @@
 					`login`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

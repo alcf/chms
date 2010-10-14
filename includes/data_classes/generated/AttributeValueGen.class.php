@@ -849,6 +849,41 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `attribute_value` (
+					`id`,
+					`attribute_id`,
+					`person_id`,
+					`date_value`,
+					`datetime_value`,
+					`text_value`,
+					`boolean_value`,
+					`single_attribute_option_id`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intAttributeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateValue) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDatetimeValue) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->strTextValue) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->blnBooleanValue) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intSingleAttributeOptionId) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this AttributeValue
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -885,6 +920,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('attribute_value', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -905,6 +944,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -938,6 +980,9 @@
 					`attribute_value`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**

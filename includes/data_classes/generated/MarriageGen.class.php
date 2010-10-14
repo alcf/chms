@@ -773,6 +773,39 @@
 		//////////////////////////
 
 		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `marriage` (
+					`id`,
+					`linked_marriage_id`,
+					`person_id`,
+					`married_to_person_id`,
+					`marriage_status_type_id`,
+					`date_start`,
+					`date_end`,
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intLinkedMarriageId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intMarriedToPersonId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->intMarriageStatusTypeId) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateStart) . ',
+					' . QApplication::$Database[2]->SqlVariable($this->dttDateEnd) . ',
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Save this Marriage
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
@@ -807,6 +840,10 @@
 
 					// Update Identity column and return its value
 					$mixToReturn = $this->intId = $objDatabase->InsertId('marriage', 'id');
+
+					// Journaling
+					$this->Journal('INSERT');
+
 				} else {
 					// Perform an UPDATE query
 
@@ -826,6 +863,9 @@
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
+
+					// Journaling
+					$this->Journal('UPDATE');
 				}
 
 		
@@ -889,6 +929,9 @@
 					`marriage`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
+
+			// Journaling
+			$this->Journal('DELETE');
 		}
 
 		/**
