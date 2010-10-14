@@ -20,7 +20,7 @@ echo "Done."
 echo -n "Building [$dblogname]... "
 mysql -uroot mysql -e "DROP DATABASE IF EXISTS $dblogname"
 mysql -uroot mysql -e "CREATE DATABASE $dblogname DEFAULT CHARACTER SET UTF8"
-sed s/InnoDB/MyISAM/ $dbpath/create.sql | mysql -uroot $dblogname
+sed -e s/InnoDB/MyISAM/ -e s/AUTO_INCREMENT// -e s/PRIMARY\ KEY/INDEX/ -e s/UNIQUE// $dbpath/create.sql | mysql -uroot $dblogname
 echo "Done."
 
 $dbpath/create_log.php

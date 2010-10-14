@@ -28,7 +28,7 @@
 					define('ACS_DATA_PATH', 'c:/ACSNET/ACSDATA');
 					define('ACS_ODBC', 'DBISAM ACS');
 
-					define('DB_CONNECTION_2', serialize(array(
+					define('DB_CONNECTION_3', serialize(array(
 						'adapter' => 'MySqli5',
 						'server' => 'chms.alcf.dev',
 						'port' => null,
@@ -43,7 +43,7 @@
 					define('ACS_DATA_PATH', 'c:/ACSNET/ACSDATA');
 					define('ACS_ODBC', 'DBISAM ACS');
 
-					define('DB_CONNECTION_2', serialize(array(
+					define('DB_CONNECTION_3', serialize(array(
 						'adapter' => 'MySqli5',
 						'server' => 'chms.ir.alcf.net',
 						'port' => null,
@@ -69,6 +69,15 @@
 				'server' => 'localhost',
 				'port' => null,
 				'database' => 'alcf_chms',
+				'username' => 'root',
+				'password' => '',
+				'profiling' => false)));
+
+			define('DB_CONNECTION_2', serialize(array(
+				'adapter' => 'MySqli5',
+				'server' => 'localhost',
+				'port' => null,
+				'database' => 'alcf_chms_log',
 				'username' => 'root',
 				'password' => '',
 				'profiling' => false)));

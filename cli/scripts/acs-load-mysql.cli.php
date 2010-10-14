@@ -28,7 +28,7 @@
 		print " Done.\r\n";
 	}
 
-	$strConnectionArray = unserialize(DB_CONNECTION_2);
+	$strConnectionArray = unserialize(DB_CONNECTION_3);
 	$objOdbc = odbc_connect(ACS_ODBC, null, null);
 	$objMySql = new MySqli($strConnectionArray['server'], $strConnectionArray['username']);
 	$objMySql->select_db($strConnectionArray['database']);

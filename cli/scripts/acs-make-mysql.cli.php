@@ -87,7 +87,7 @@
 	}
 
 	if (trim(strtolower($objParameters->GetDefaultValue('output_path'))) == 'run') {
-		$strConnectionArray = unserialize(DB_CONNECTION_2);
+		$strConnectionArray = unserialize(DB_CONNECTION_3);
 		$objMySql = new MySqli($strConnectionArray['server'], $strConnectionArray['username']);
 		$objMySql->select_db('mysql');
 		$objMySql->query('DROP DATABASE IF EXISTS `' . $strConnectionArray['database'] . '`;');
