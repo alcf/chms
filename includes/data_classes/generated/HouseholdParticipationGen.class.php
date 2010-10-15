@@ -673,9 +673,9 @@
 					`person_id`,
 					`household_id`,
 					`role`,
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
 					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
@@ -686,6 +686,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return HouseholdParticipation[]
+		 */
+		public static function GetJournalObjectsForId($intId) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM household_participation WHERE id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return HouseholdParticipation::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return HouseholdParticipation[]
+		 */
+		public function GetJournalObjects() {
+			return HouseholdParticipation::GetJournalObjectsForId($this->intId);
 		}
 
 		/**

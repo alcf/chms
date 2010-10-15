@@ -890,9 +890,9 @@
 					`longitude`,
 					`latitude`,
 					`accuracy`,
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
 					' . QApplication::$Database[2]->SqlVariable($this->intGrowthGroupLocationId) . ',
@@ -913,6 +913,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intGroupId
+		 * @return GrowthGroup[]
+		 */
+		public static function GetJournalObjectsForId($intGroupId) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM growth_group WHERE group_id = ' .
+				QApplication::$Database[2]->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
+
+			return GrowthGroup::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return GrowthGroup[]
+		 */
+		public function GetJournalObjects() {
+			return GrowthGroup::GetJournalObjectsForId($this->intGroupId);
 		}
 
 		/**
@@ -1566,9 +1588,9 @@
 				INSERT INTO `growthgroupstructure_growthgroup_assn` (
 					`growth_group_id`,
 					`growth_group_structure_id`
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intGroupId) . ',
 					' . $objDatabase->SqlVariable($intAssociatedId) . '

@@ -61,9 +61,9 @@
 				INSERT INTO <%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->Table %><%= $strEscapeIdentifierEnd %> (
 					<%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->Column %><%= $strEscapeIdentifierEnd %>,
 					<%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->OppositeColumn %><%= $strEscapeIdentifierEnd %>
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) . ',
 					' . $objDatabase->SqlVariable($intAssociatedId) . '

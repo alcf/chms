@@ -11,9 +11,9 @@
 					<%= $strEscapeIdentifierBegin %><%= $objColumn->Name %><%= $strEscapeIdentifierEnd %>,
 <% } %>
 <% } %>
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 <% foreach ($objTable->ColumnArray as $objColumn) { %>
 <% if (!$objColumn->Timestamp) { %>
@@ -25,6 +25,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer <%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>
+		 * @return <%= $objTable->ClassName %>[]
+		 */
+		public static function GetJournalObjectsForId($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM <%= $objTable->Name %> WHERE <%= $objTable->PrimaryKeyColumnArray[0]->Name %> = ' .
+				QApplication::$Database[2]->SqlVariable($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) . ' ORDER BY __sys_date');
+
+			return <%= $objTable->ClassName %>::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return <%= $objTable->ClassName %>[]
+		 */
+		public function GetJournalObjects() {
+			return <%= $objTable->ClassName %>::GetJournalObjectsForId($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>);
 		}
 
 		/**

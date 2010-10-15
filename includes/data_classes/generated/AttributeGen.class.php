@@ -680,9 +680,9 @@
 					`id`,
 					`attribute_data_type_id`,
 					`name`,
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
 					' . QApplication::$Database[2]->SqlVariable($this->intAttributeDataTypeId) . ',
@@ -692,6 +692,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Attribute[]
+		 */
+		public static function GetJournalObjectsForId($intId) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM attribute WHERE id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Attribute::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Attribute[]
+		 */
+		public function GetJournalObjects() {
+			return Attribute::GetJournalObjectsForId($this->intId);
 		}
 
 		/**

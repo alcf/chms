@@ -720,9 +720,9 @@
 					`middle_name`,
 					`last_name`,
 					`email`,
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
 					' . QApplication::$Database[2]->SqlVariable($this->strFirstName) . ',
@@ -734,6 +734,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return CommunicationListEntry[]
+		 */
+		public static function GetJournalObjectsForId($intId) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM communication_list_entry WHERE id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return CommunicationListEntry::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return CommunicationListEntry[]
+		 */
+		public function GetJournalObjects() {
+			return CommunicationListEntry::GetJournalObjectsForId($this->intId);
 		}
 
 		/**
@@ -1289,9 +1311,9 @@
 				INSERT INTO `communicationlist_communicationlistentry_assn` (
 					`communication_list_entry_id`,
 					`communication_list_id`
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($intAssociatedId) . '

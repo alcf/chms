@@ -625,9 +625,9 @@
 					`query`,
 					`date_refreshed`,
 					`process_time_ms`,
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
 					' . QApplication::$Database[2]->SqlVariable($this->intSearchQueryId) . ',
@@ -639,6 +639,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intGroupId
+		 * @return SmartGroup[]
+		 */
+		public static function GetJournalObjectsForId($intGroupId) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM smart_group WHERE group_id = ' .
+				QApplication::$Database[2]->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
+
+			return SmartGroup::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return SmartGroup[]
+		 */
+		public function GetJournalObjects() {
+			return SmartGroup::GetJournalObjectsForId($this->intGroupId);
 		}
 
 		/**

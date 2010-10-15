@@ -835,9 +835,9 @@
 					`group_role_id`,
 					`date_start`,
 					`date_end`,
-					sys_login_id,
-					sys_action,
-					sys_date
+					__sys_login_id,
+					__sys_action,
+					__sys_date
 				) VALUES (
 					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
 					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
@@ -850,6 +850,28 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return GroupParticipation[]
+		 */
+		public static function GetJournalObjectsForId($intId) {
+			$objResult = QApplication::$Database[2]->Query('SELECT * FROM group_participation WHERE id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return GroupParticipation::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return GroupParticipation[]
+		 */
+		public function GetJournalObjects() {
+			return GroupParticipation::GetJournalObjectsForId($this->intId);
 		}
 
 		/**
