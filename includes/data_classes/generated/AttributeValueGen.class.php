@@ -889,7 +889,7 @@
 		 * @param integer intId
 		 * @return AttributeValue[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM attribute_value WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -901,8 +901,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return AttributeValue[]
 		 */
-		public function GetJournalObjects() {
-			return AttributeValue::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return AttributeValue::GetJournalForId($this->intId);
 		}
 
 		/**
@@ -1474,6 +1474,24 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object's AttributeOptionAsMultiple relationship from the log database.
+		 * @param integer intId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalAttributeOptionAsMultipleAssociationForId($intId) {
+			return QApplication::$Database[2]->Query('SELECT * FROM attributevalue_multipleattributeoption_assn WHERE attribute_value_id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's AttributeOptionAsMultiple relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalAttributeOptionAsMultipleAssociation() {
+			return AttributeValue::GetJournalAttributeOptionAsMultipleAssociationForId($this->intId);
 		}
 
 		/**

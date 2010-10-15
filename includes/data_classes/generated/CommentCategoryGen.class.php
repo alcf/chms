@@ -626,7 +626,7 @@
 		 * @param integer intId
 		 * @return CommentCategory[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM comment_category WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -638,8 +638,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return CommentCategory[]
 		 */
-		public function GetJournalObjects() {
-			return CommentCategory::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return CommentCategory::GetJournalForId($this->intId);
 		}
 
 		/**

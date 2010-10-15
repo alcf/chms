@@ -812,7 +812,7 @@
 		 * @param integer intId
 		 * @return EmailMessage[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM email_message WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -824,8 +824,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return EmailMessage[]
 		 */
-		public function GetJournalObjects() {
-			return EmailMessage::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return EmailMessage::GetJournalForId($this->intId);
 		}
 
 		/**

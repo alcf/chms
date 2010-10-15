@@ -1069,7 +1069,7 @@
 		 * @param integer intId
 		 * @return Login[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM login WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -1081,8 +1081,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return Login[]
 		 */
-		public function GetJournalObjects() {
-			return Login::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return Login::GetJournalForId($this->intId);
 		}
 
 		/**
@@ -2545,6 +2545,24 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object's Ministry relationship from the log database.
+		 * @param integer intId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalMinistryAssociationForId($intId) {
+			return QApplication::$Database[2]->Query('SELECT * FROM ministry_login_assn WHERE login_id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's Ministry relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalMinistryAssociation() {
+			return Login::GetJournalMinistryAssociationForId($this->intId);
 		}
 
 		/**

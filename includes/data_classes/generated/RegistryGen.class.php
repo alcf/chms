@@ -578,7 +578,7 @@
 		 * @param integer intId
 		 * @return Registry[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM registry WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -590,8 +590,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return Registry[]
 		 */
-		public function GetJournalObjects() {
-			return Registry::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return Registry::GetJournalForId($this->intId);
 		}
 
 		/**

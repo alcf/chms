@@ -817,7 +817,7 @@
 		 * @param integer intId
 		 * @return StewardshipPledge[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM stewardship_pledge WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -829,8 +829,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return StewardshipPledge[]
 		 */
-		public function GetJournalObjects() {
-			return StewardshipPledge::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return StewardshipPledge::GetJournalForId($this->intId);
 		}
 
 		/**

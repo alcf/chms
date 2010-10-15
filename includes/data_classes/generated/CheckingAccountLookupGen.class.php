@@ -716,7 +716,7 @@
 		 * @param integer intId
 		 * @return CheckingAccountLookup[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM checking_account_lookup WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -728,8 +728,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return CheckingAccountLookup[]
 		 */
-		public function GetJournalObjects() {
-			return CheckingAccountLookup::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return CheckingAccountLookup::GetJournalForId($this->intId);
 		}
 
 		/**
@@ -1256,6 +1256,24 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object's Person relationship from the log database.
+		 * @param integer intId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalPersonAssociationForId($intId) {
+			return QApplication::$Database[2]->Query('SELECT * FROM checkingaccountlookup_person_assn WHERE checking_account_lookup_id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's Person relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalPersonAssociation() {
+			return CheckingAccountLookup::GetJournalPersonAssociationForId($this->intId);
 		}
 
 		/**

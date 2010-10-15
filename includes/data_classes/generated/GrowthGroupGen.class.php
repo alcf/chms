@@ -921,7 +921,7 @@
 		 * @param integer intGroupId
 		 * @return GrowthGroup[]
 		 */
-		public static function GetJournalObjectsForId($intGroupId) {
+		public static function GetJournalForId($intGroupId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM growth_group WHERE group_id = ' .
 				QApplication::$Database[2]->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
 
@@ -933,8 +933,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return GrowthGroup[]
 		 */
-		public function GetJournalObjects() {
-			return GrowthGroup::GetJournalObjectsForId($this->intGroupId);
+		public function GetJournal() {
+			return GrowthGroup::GetJournalForId($this->intGroupId);
 		}
 
 		/**
@@ -1599,6 +1599,24 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object's GrowthGroupStructure relationship from the log database.
+		 * @param integer intGroupId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalGrowthGroupStructureAssociationForId($intGroupId) {
+			return QApplication::$Database[2]->Query('SELECT * FROM growthgroupstructure_growthgroup_assn WHERE growth_group_id = ' .
+				QApplication::$Database[2]->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's GrowthGroupStructure relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalGrowthGroupStructureAssociation() {
+			return GrowthGroup::GetJournalGrowthGroupStructureAssociationForId($this->intGroupId);
 		}
 
 		/**

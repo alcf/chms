@@ -781,7 +781,7 @@
 		 * @param integer intId
 		 * @return StewardshipPost[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM stewardship_post WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -793,8 +793,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return StewardshipPost[]
 		 */
-		public function GetJournalObjects() {
-			return StewardshipPost::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return StewardshipPost::GetJournalForId($this->intId);
 		}
 
 		/**

@@ -894,7 +894,7 @@
 		 * @param integer intId
 		 * @return CommunicationList[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM communication_list WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -906,8 +906,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return CommunicationList[]
 		 */
-		public function GetJournalObjects() {
-			return CommunicationList::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return CommunicationList::GetJournalForId($this->intId);
 		}
 
 		/**
@@ -1532,6 +1532,24 @@
 		}
 
 		/**
+		 * Gets the historical journal for an object's CommunicationListEntry relationship from the log database.
+		 * @param integer intId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalCommunicationListEntryAssociationForId($intId) {
+			return QApplication::$Database[2]->Query('SELECT * FROM communicationlist_communicationlistentry_assn WHERE communication_list_id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's CommunicationListEntry relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalCommunicationListEntryAssociation() {
+			return CommunicationList::GetJournalCommunicationListEntryAssociationForId($this->intId);
+		}
+
+		/**
 		 * Associates a CommunicationListEntry
 		 * @param CommunicationListEntry $objCommunicationListEntry
 		 * @return void
@@ -1687,6 +1705,24 @@
 					NOW()
 				);
 			');
+		}
+
+		/**
+		 * Gets the historical journal for an object's Person relationship from the log database.
+		 * @param integer intId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalPersonAssociationForId($intId) {
+			return QApplication::$Database[2]->Query('SELECT * FROM communicationlist_person_assn WHERE communication_list_id = ' .
+				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's Person relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalPersonAssociation() {
+			return CommunicationList::GetJournalPersonAssociationForId($this->intId);
 		}
 
 		/**

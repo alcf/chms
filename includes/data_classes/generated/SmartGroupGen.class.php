@@ -647,7 +647,7 @@
 		 * @param integer intGroupId
 		 * @return SmartGroup[]
 		 */
-		public static function GetJournalObjectsForId($intGroupId) {
+		public static function GetJournalForId($intGroupId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM smart_group WHERE group_id = ' .
 				QApplication::$Database[2]->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
 
@@ -659,8 +659,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return SmartGroup[]
 		 */
-		public function GetJournalObjects() {
-			return SmartGroup::GetJournalObjectsForId($this->intGroupId);
+		public function GetJournal() {
+			return SmartGroup::GetJournalForId($this->intGroupId);
 		}
 
 		/**

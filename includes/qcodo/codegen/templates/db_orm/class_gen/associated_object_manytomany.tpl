@@ -75,6 +75,24 @@
 		}
 
 		/**
+		 * Gets the historical journal for an object's <%= $objManyToManyReference->ObjectDescription %> relationship from the log database.
+		 * @param integer <%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournal<%= $objManyToManyReference->ObjectDescription %>AssociationForId($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) {
+			return QApplication::$Database[2]->Query('SELECT * FROM <%= $objManyToManyReference->Table %> WHERE <%= $objManyToManyReference->Column %> = ' .
+				QApplication::$Database[2]->SqlVariable($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's <%= $objManyToManyReference->ObjectDescription %> relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournal<%= $objManyToManyReference->ObjectDescription %>Association() {
+			return <%= $objTable->ClassName %>::GetJournal<%= $objManyToManyReference->ObjectDescription %>AssociationForId($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>);
+		}
+
+		/**
 		 * Associates a <%= $objManyToManyReference->ObjectDescription %>
 		 * @param <%= $objManyToManyReference->VariableType %> $<%= $objManyToManyReference->VariableName %>
 		 * @return void

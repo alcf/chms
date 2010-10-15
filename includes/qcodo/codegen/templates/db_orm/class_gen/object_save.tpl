@@ -33,7 +33,7 @@
 		 * @param integer <%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>
 		 * @return <%= $objTable->ClassName %>[]
 		 */
-		public static function GetJournalObjectsForId($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) {
+		public static function GetJournalForId($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM <%= $objTable->Name %> WHERE <%= $objTable->PrimaryKeyColumnArray[0]->Name %> = ' .
 				QApplication::$Database[2]->SqlVariable($<%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) . ' ORDER BY __sys_date');
 
@@ -45,8 +45,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return <%= $objTable->ClassName %>[]
 		 */
-		public function GetJournalObjects() {
-			return <%= $objTable->ClassName %>::GetJournalObjectsForId($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>);
+		public function GetJournal() {
+			return <%= $objTable->ClassName %>::GetJournalForId($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>);
 		}
 
 		/**

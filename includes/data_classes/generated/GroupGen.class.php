@@ -1059,7 +1059,7 @@
 		 * @param integer intId
 		 * @return Group[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM group WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -1071,8 +1071,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return Group[]
 		 */
-		public function GetJournalObjects() {
-			return Group::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return Group::GetJournalForId($this->intId);
 		}
 
 		/**

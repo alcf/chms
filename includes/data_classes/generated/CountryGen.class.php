@@ -579,7 +579,7 @@
 		 * @param integer intId
 		 * @return Country[]
 		 */
-		public static function GetJournalObjectsForId($intId) {
+		public static function GetJournalForId($intId) {
 			$objResult = QApplication::$Database[2]->Query('SELECT * FROM country WHERE id = ' .
 				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
 
@@ -591,8 +591,8 @@
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @return Country[]
 		 */
-		public function GetJournalObjects() {
-			return Country::GetJournalObjectsForId($this->intId);
+		public function GetJournal() {
+			return Country::GetJournalForId($this->intId);
 		}
 
 		/**
