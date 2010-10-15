@@ -1310,13 +1310,13 @@
 			QApplication::$Database[2]->NonQuery('
 				INSERT INTO `communicationlist_communicationlistentry_assn` (
 					`communication_list_entry_id`,
-					`communication_list_id`
+					`communication_list_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . $objDatabase->SqlVariable($this->intId) . ',
-					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
 					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
 					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
 					NOW()

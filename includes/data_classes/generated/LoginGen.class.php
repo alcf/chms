@@ -2533,13 +2533,13 @@
 			QApplication::$Database[2]->NonQuery('
 				INSERT INTO `ministry_login_assn` (
 					`login_id`,
-					`ministry_id`
+					`ministry_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . $objDatabase->SqlVariable($this->intId) . ',
-					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
+					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
 					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
 					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
 					NOW()

@@ -1587,13 +1587,13 @@
 			QApplication::$Database[2]->NonQuery('
 				INSERT INTO `growthgroupstructure_growthgroup_assn` (
 					`growth_group_id`,
-					`growth_group_structure_id`
+					`growth_group_structure_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . $objDatabase->SqlVariable($this->intGroupId) . ',
-					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
+					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
 					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
 					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
 					NOW()

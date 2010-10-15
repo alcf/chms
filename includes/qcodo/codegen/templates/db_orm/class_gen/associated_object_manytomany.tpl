@@ -60,13 +60,13 @@
 			QApplication::$Database[2]->NonQuery('
 				INSERT INTO <%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->Table %><%= $strEscapeIdentifierEnd %> (
 					<%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->Column %><%= $strEscapeIdentifierEnd %>,
-					<%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->OppositeColumn %><%= $strEscapeIdentifierEnd %>
+					<%= $strEscapeIdentifierBegin %><%= $objManyToManyReference->OppositeColumn %><%= $strEscapeIdentifierEnd %>,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . $objDatabase->SqlVariable($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) . ',
-					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . QApplication::$Database[2]->SqlVariable($this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>) . ',
+					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
 					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
 					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
 					NOW()
