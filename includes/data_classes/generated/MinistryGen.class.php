@@ -1448,6 +1448,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
 			');
+
+			// Journaling
+			$objCommunicationList->MinistryId = $this->intId;
+			$objCommunicationList->Journal('UPDATE');
 		}
 
 		/**
@@ -1474,6 +1478,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objCommunicationList->MinistryId = null;
+			$objCommunicationList->Journal('UPDATE');
 		}
 
 		/**
@@ -1486,6 +1494,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (CommunicationList::LoadArrayByMinistryId($this->intId) as $objCommunicationList) {
+				$objCommunicationList->MinistryId = null;
+				$objCommunicationList->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1520,6 +1534,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objCommunicationList->Journal('DELETE');
 		}
 
 		/**
@@ -1532,6 +1549,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (CommunicationList::LoadArrayByMinistryId($this->intId) as $objCommunicationList) {
+				$objCommunicationList->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1598,6 +1620,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . '
 			');
+
+			// Journaling
+			$objGroup->MinistryId = $this->intId;
+			$objGroup->Journal('UPDATE');
 		}
 
 		/**
@@ -1624,6 +1650,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroup->MinistryId = null;
+			$objGroup->Journal('UPDATE');
 		}
 
 		/**
@@ -1636,6 +1666,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (Group::LoadArrayByMinistryId($this->intId) as $objGroup) {
+				$objGroup->MinistryId = null;
+				$objGroup->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1670,6 +1706,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroup->Journal('DELETE');
 		}
 
 		/**
@@ -1682,6 +1721,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (Group::LoadArrayByMinistryId($this->intId) as $objGroup) {
+				$objGroup->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1748,6 +1792,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . '
 			');
+
+			// Journaling
+			$objGroupRole->MinistryId = $this->intId;
+			$objGroupRole->Journal('UPDATE');
 		}
 
 		/**
@@ -1774,6 +1822,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroupRole->MinistryId = null;
+			$objGroupRole->Journal('UPDATE');
 		}
 
 		/**
@@ -1786,6 +1838,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (GroupRole::LoadArrayByMinistryId($this->intId) as $objGroupRole) {
+				$objGroupRole->MinistryId = null;
+				$objGroupRole->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1820,6 +1878,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroupRole->Journal('DELETE');
 		}
 
 		/**
@@ -1832,6 +1893,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (GroupRole::LoadArrayByMinistryId($this->intId) as $objGroupRole) {
+				$objGroupRole->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1898,6 +1964,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objMinistry->Id) . '
 			');
+
+			// Journaling
+			$objMinistry->ParentMinistryId = $this->intId;
+			$objMinistry->Journal('UPDATE');
 		}
 
 		/**
@@ -1924,6 +1994,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objMinistry->Id) . ' AND
 					`parent_ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objMinistry->ParentMinistryId = null;
+			$objMinistry->Journal('UPDATE');
 		}
 
 		/**
@@ -1936,6 +2010,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (Ministry::LoadArrayByParentMinistryId($this->intId) as $objMinistry) {
+				$objMinistry->ParentMinistryId = null;
+				$objMinistry->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1970,6 +2050,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objMinistry->Id) . ' AND
 					`parent_ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objMinistry->Journal('DELETE');
 		}
 
 		/**
@@ -1982,6 +2065,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (Ministry::LoadArrayByParentMinistryId($this->intId) as $objMinistry) {
+				$objMinistry->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2048,6 +2136,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . '
 			');
+
+			// Journaling
+			$objStewardshipFund->MinistryId = $this->intId;
+			$objStewardshipFund->Journal('UPDATE');
 		}
 
 		/**
@@ -2074,6 +2166,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipFund->MinistryId = null;
+			$objStewardshipFund->Journal('UPDATE');
 		}
 
 		/**
@@ -2086,6 +2182,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipFund::LoadArrayByMinistryId($this->intId) as $objStewardshipFund) {
+				$objStewardshipFund->MinistryId = null;
+				$objStewardshipFund->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2120,6 +2222,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . ' AND
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipFund->Journal('DELETE');
 		}
 
 		/**
@@ -2132,6 +2237,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipFund::LoadArrayByMinistryId($this->intId) as $objStewardshipFund) {
+				$objStewardshipFund->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2196,6 +2306,29 @@
 		}
 
 		/**
+		 * Journals the Login relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalLoginAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `ministry_login_assn` (
+					`ministry_id`,
+					`login_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a Login
 		 * @param Login $objLogin
 		 * @return void
@@ -2219,6 +2352,9 @@
 					' . $objDatabase->SqlVariable($objLogin->Id) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalLoginAssociation($objLogin->Id, 'INSERT');
 		}
 
 		/**
@@ -2243,6 +2379,9 @@
 					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`login_id` = ' . $objDatabase->SqlVariable($objLogin->Id) . '
 			');
+
+			// Journaling
+			$this->JournalLoginAssociation($objLogin->Id, 'DELETE');
 		}
 
 		/**
@@ -2255,6 +2394,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `login_id` AS associated_id FROM `ministry_login_assn` WHERE `ministry_id` = ' . $objDatabase->SqlVariable($this->intId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalLoginAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

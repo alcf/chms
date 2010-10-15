@@ -1812,6 +1812,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
+
+			// Journaling
+			$objPerson->MailingAddressId = $this->intId;
+			$objPerson->Journal('UPDATE');
 		}
 
 		/**
@@ -1838,6 +1842,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
 					`mailing_address_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPerson->MailingAddressId = null;
+			$objPerson->Journal('UPDATE');
 		}
 
 		/**
@@ -1850,6 +1858,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Address::GetDatabase();
+
+			// Journaling
+			foreach (Person::LoadArrayByMailingAddressId($this->intId) as $objPerson) {
+				$objPerson->MailingAddressId = null;
+				$objPerson->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1884,6 +1898,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
 					`mailing_address_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPerson->Journal('DELETE');
 		}
 
 		/**
@@ -1896,6 +1913,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Address::GetDatabase();
+
+			// Journaling
+			foreach (Person::LoadArrayByMailingAddressId($this->intId) as $objPerson) {
+				$objPerson->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1962,6 +1984,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
+
+			// Journaling
+			$objPerson->StewardshipAddressId = $this->intId;
+			$objPerson->Journal('UPDATE');
 		}
 
 		/**
@@ -1988,6 +2014,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
 					`stewardship_address_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPerson->StewardshipAddressId = null;
+			$objPerson->Journal('UPDATE');
 		}
 
 		/**
@@ -2000,6 +2030,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Address::GetDatabase();
+
+			// Journaling
+			foreach (Person::LoadArrayByStewardshipAddressId($this->intId) as $objPerson) {
+				$objPerson->StewardshipAddressId = null;
+				$objPerson->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2034,6 +2070,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
 					`stewardship_address_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPerson->Journal('DELETE');
 		}
 
 		/**
@@ -2046,6 +2085,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Address::GetDatabase();
+
+			// Journaling
+			foreach (Person::LoadArrayByStewardshipAddressId($this->intId) as $objPerson) {
+				$objPerson->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2112,6 +2156,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objPhone->Id) . '
 			');
+
+			// Journaling
+			$objPhone->AddressId = $this->intId;
+			$objPhone->Journal('UPDATE');
 		}
 
 		/**
@@ -2138,6 +2186,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objPhone->Id) . ' AND
 					`address_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPhone->AddressId = null;
+			$objPhone->Journal('UPDATE');
 		}
 
 		/**
@@ -2150,6 +2202,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Address::GetDatabase();
+
+			// Journaling
+			foreach (Phone::LoadArrayByAddressId($this->intId) as $objPhone) {
+				$objPhone->AddressId = null;
+				$objPhone->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2184,6 +2242,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objPhone->Id) . ' AND
 					`address_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPhone->Journal('DELETE');
 		}
 
 		/**
@@ -2196,6 +2257,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Address::GetDatabase();
+
+			// Journaling
+			foreach (Phone::LoadArrayByAddressId($this->intId) as $objPhone) {
+				$objPhone->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

@@ -1280,6 +1280,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->EmailMessageId = $this->intId;
+			$objEmailMessageRoute->Journal('UPDATE');
 		}
 
 		/**
@@ -1306,6 +1310,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->EmailMessageId = null;
+			$objEmailMessageRoute->Journal('UPDATE');
 		}
 
 		/**
@@ -1318,6 +1326,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = EmailMessage::GetDatabase();
+
+			// Journaling
+			foreach (EmailMessageRoute::LoadArrayByEmailMessageId($this->intId) as $objEmailMessageRoute) {
+				$objEmailMessageRoute->EmailMessageId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1352,6 +1366,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->Journal('DELETE');
 		}
 
 		/**
@@ -1364,6 +1381,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = EmailMessage::GetDatabase();
+
+			// Journaling
+			foreach (EmailMessageRoute::LoadArrayByEmailMessageId($this->intId) as $objEmailMessageRoute) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1430,6 +1452,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailOutgoingQueue->Id) . '
 			');
+
+			// Journaling
+			$objEmailOutgoingQueue->EmailMessageId = $this->intId;
+			$objEmailOutgoingQueue->Journal('UPDATE');
 		}
 
 		/**
@@ -1456,6 +1482,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailOutgoingQueue->Id) . ' AND
 					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailOutgoingQueue->EmailMessageId = null;
+			$objEmailOutgoingQueue->Journal('UPDATE');
 		}
 
 		/**
@@ -1468,6 +1498,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = EmailMessage::GetDatabase();
+
+			// Journaling
+			foreach (EmailOutgoingQueue::LoadArrayByEmailMessageId($this->intId) as $objEmailOutgoingQueue) {
+				$objEmailOutgoingQueue->EmailMessageId = null;
+				$objEmailOutgoingQueue->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1502,6 +1538,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailOutgoingQueue->Id) . ' AND
 					`email_message_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailOutgoingQueue->Journal('DELETE');
 		}
 
 		/**
@@ -1514,6 +1553,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = EmailMessage::GetDatabase();
+
+			// Journaling
+			foreach (EmailOutgoingQueue::LoadArrayByEmailMessageId($this->intId) as $objEmailOutgoingQueue) {
+				$objEmailOutgoingQueue->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

@@ -1312,6 +1312,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . '
 			');
+
+			// Journaling
+			$objAddress->PrimaryPhoneId = $this->intId;
+			$objAddress->Journal('UPDATE');
 		}
 
 		/**
@@ -1338,6 +1342,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . ' AND
 					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAddress->PrimaryPhoneId = null;
+			$objAddress->Journal('UPDATE');
 		}
 
 		/**
@@ -1350,6 +1358,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Phone::GetDatabase();
+
+			// Journaling
+			foreach (Address::LoadArrayByPrimaryPhoneId($this->intId) as $objAddress) {
+				$objAddress->PrimaryPhoneId = null;
+				$objAddress->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1384,6 +1398,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . ' AND
 					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAddress->Journal('DELETE');
 		}
 
 		/**
@@ -1396,6 +1413,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Phone::GetDatabase();
+
+			// Journaling
+			foreach (Address::LoadArrayByPrimaryPhoneId($this->intId) as $objAddress) {
+				$objAddress->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1462,6 +1484,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
+
+			// Journaling
+			$objPerson->PrimaryPhoneId = $this->intId;
+			$objPerson->Journal('UPDATE');
 		}
 
 		/**
@@ -1488,6 +1514,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
 					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPerson->PrimaryPhoneId = null;
+			$objPerson->Journal('UPDATE');
 		}
 
 		/**
@@ -1500,6 +1530,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Phone::GetDatabase();
+
+			// Journaling
+			foreach (Person::LoadArrayByPrimaryPhoneId($this->intId) as $objPerson) {
+				$objPerson->PrimaryPhoneId = null;
+				$objPerson->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1534,6 +1570,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
 					`primary_phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objPerson->Journal('DELETE');
 		}
 
 		/**
@@ -1546,6 +1585,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Phone::GetDatabase();
+
+			// Journaling
+			foreach (Person::LoadArrayByPrimaryPhoneId($this->intId) as $objPerson) {
+				$objPerson->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

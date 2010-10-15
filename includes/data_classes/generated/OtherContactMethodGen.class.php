@@ -908,6 +908,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objOtherContactInfo->Id) . '
 			');
+
+			// Journaling
+			$objOtherContactInfo->OtherContactMethodId = $this->intId;
+			$objOtherContactInfo->Journal('UPDATE');
 		}
 
 		/**
@@ -934,6 +938,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objOtherContactInfo->Id) . ' AND
 					`other_contact_method_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objOtherContactInfo->OtherContactMethodId = null;
+			$objOtherContactInfo->Journal('UPDATE');
 		}
 
 		/**
@@ -946,6 +954,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = OtherContactMethod::GetDatabase();
+
+			// Journaling
+			foreach (OtherContactInfo::LoadArrayByOtherContactMethodId($this->intId) as $objOtherContactInfo) {
+				$objOtherContactInfo->OtherContactMethodId = null;
+				$objOtherContactInfo->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -980,6 +994,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objOtherContactInfo->Id) . ' AND
 					`other_contact_method_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objOtherContactInfo->Journal('DELETE');
 		}
 
 		/**
@@ -992,6 +1009,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = OtherContactMethod::GetDatabase();
+
+			// Journaling
+			foreach (OtherContactInfo::LoadArrayByOtherContactMethodId($this->intId) as $objOtherContactInfo) {
+				$objOtherContactInfo->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

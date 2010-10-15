@@ -1044,6 +1044,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
 			');
+
+			// Journaling
+			$objStewardshipContribution->CheckingAccountLookupId = $this->intId;
+			$objStewardshipContribution->Journal('UPDATE');
 		}
 
 		/**
@@ -1070,6 +1074,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
 					`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipContribution->CheckingAccountLookupId = null;
+			$objStewardshipContribution->Journal('UPDATE');
 		}
 
 		/**
@@ -1082,6 +1090,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CheckingAccountLookup::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipContribution::LoadArrayByCheckingAccountLookupId($this->intId) as $objStewardshipContribution) {
+				$objStewardshipContribution->CheckingAccountLookupId = null;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1116,6 +1130,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
 					`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipContribution->Journal('DELETE');
 		}
 
 		/**
@@ -1128,6 +1145,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CheckingAccountLookup::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipContribution::LoadArrayByCheckingAccountLookupId($this->intId) as $objStewardshipContribution) {
+				$objStewardshipContribution->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1192,6 +1214,29 @@
 		}
 
 		/**
+		 * Journals the Person relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalPersonAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `checkingaccountlookup_person_assn` (
+					`checking_account_lookup_id`,
+					`person_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a Person
 		 * @param Person $objPerson
 		 * @return void
@@ -1215,6 +1260,9 @@
 					' . $objDatabase->SqlVariable($objPerson->Id) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalPersonAssociation($objPerson->Id, 'INSERT');
 		}
 
 		/**
@@ -1239,6 +1287,9 @@
 					`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`person_id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
+
+			// Journaling
+			$this->JournalPersonAssociation($objPerson->Id, 'DELETE');
 		}
 
 		/**
@@ -1251,6 +1302,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CheckingAccountLookup::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `person_id` AS associated_id FROM `checkingaccountlookup_person_assn` WHERE `checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalPersonAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

@@ -1100,6 +1100,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . '
 			');
+
+			// Journaling
+			$objGroupParticipation->GroupRoleId = $this->intId;
+			$objGroupParticipation->Journal('UPDATE');
 		}
 
 		/**
@@ -1126,6 +1130,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . ' AND
 					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroupParticipation->GroupRoleId = null;
+			$objGroupParticipation->Journal('UPDATE');
 		}
 
 		/**
@@ -1138,6 +1146,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = GroupRole::GetDatabase();
+
+			// Journaling
+			foreach (GroupParticipation::LoadArrayByGroupRoleId($this->intId) as $objGroupParticipation) {
+				$objGroupParticipation->GroupRoleId = null;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1172,6 +1186,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . ' AND
 					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroupParticipation->Journal('DELETE');
 		}
 
 		/**
@@ -1184,6 +1201,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = GroupRole::GetDatabase();
+
+			// Journaling
+			foreach (GroupParticipation::LoadArrayByGroupRoleId($this->intId) as $objGroupParticipation) {
+				$objGroupParticipation->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

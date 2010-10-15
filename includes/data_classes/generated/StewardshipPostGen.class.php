@@ -1243,6 +1243,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostAmount->Id) . '
 			');
+
+			// Journaling
+			$objStewardshipPostAmount->StewardshipPostId = $this->intId;
+			$objStewardshipPostAmount->Journal('UPDATE');
 		}
 
 		/**
@@ -1269,6 +1273,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostAmount->Id) . ' AND
 					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipPostAmount->StewardshipPostId = null;
+			$objStewardshipPostAmount->Journal('UPDATE');
 		}
 
 		/**
@@ -1281,6 +1289,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipPostAmount::LoadArrayByStewardshipPostId($this->intId) as $objStewardshipPostAmount) {
+				$objStewardshipPostAmount->StewardshipPostId = null;
+				$objStewardshipPostAmount->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1315,6 +1329,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostAmount->Id) . ' AND
 					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipPostAmount->Journal('DELETE');
 		}
 
 		/**
@@ -1327,6 +1344,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipPostAmount::LoadArrayByStewardshipPostId($this->intId) as $objStewardshipPostAmount) {
+				$objStewardshipPostAmount->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

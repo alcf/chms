@@ -1813,6 +1813,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->GroupId = $this->intId;
+			$objEmailMessageRoute->Journal('UPDATE');
 		}
 
 		/**
@@ -1839,6 +1843,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->GroupId = null;
+			$objEmailMessageRoute->Journal('UPDATE');
 		}
 
 		/**
@@ -1851,6 +1859,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			foreach (EmailMessageRoute::LoadArrayByGroupId($this->intId) as $objEmailMessageRoute) {
+				$objEmailMessageRoute->GroupId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1885,6 +1899,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->Journal('DELETE');
 		}
 
 		/**
@@ -1897,6 +1914,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			foreach (EmailMessageRoute::LoadArrayByGroupId($this->intId) as $objEmailMessageRoute) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1963,6 +1985,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . '
 			');
+
+			// Journaling
+			$objGroup->ParentGroupId = $this->intId;
+			$objGroup->Journal('UPDATE');
 		}
 
 		/**
@@ -1989,6 +2015,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . ' AND
 					`parent_group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroup->ParentGroupId = null;
+			$objGroup->Journal('UPDATE');
 		}
 
 		/**
@@ -2001,6 +2031,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			foreach (Group::LoadArrayByParentGroupId($this->intId) as $objGroup) {
+				$objGroup->ParentGroupId = null;
+				$objGroup->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2035,6 +2071,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . ' AND
 					`parent_group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroup->Journal('DELETE');
 		}
 
 		/**
@@ -2047,6 +2086,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			foreach (Group::LoadArrayByParentGroupId($this->intId) as $objGroup) {
+				$objGroup->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2113,6 +2157,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . '
 			');
+
+			// Journaling
+			$objGroupParticipation->GroupId = $this->intId;
+			$objGroupParticipation->Journal('UPDATE');
 		}
 
 		/**
@@ -2139,6 +2187,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . ' AND
 					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroupParticipation->GroupId = null;
+			$objGroupParticipation->Journal('UPDATE');
 		}
 
 		/**
@@ -2151,6 +2203,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			foreach (GroupParticipation::LoadArrayByGroupId($this->intId) as $objGroupParticipation) {
+				$objGroupParticipation->GroupId = null;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -2185,6 +2243,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . ' AND
 					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGroupParticipation->Journal('DELETE');
 		}
 
 		/**
@@ -2197,6 +2258,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			foreach (GroupParticipation::LoadArrayByGroupId($this->intId) as $objGroupParticipation) {
+				$objGroupParticipation->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

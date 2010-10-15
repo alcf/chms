@@ -1028,6 +1028,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objAttributeOption->Id) . '
 			');
+
+			// Journaling
+			$objAttributeOption->AttributeId = $this->intId;
+			$objAttributeOption->Journal('UPDATE');
 		}
 
 		/**
@@ -1054,6 +1058,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeOption->Id) . ' AND
 					`attribute_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAttributeOption->AttributeId = null;
+			$objAttributeOption->Journal('UPDATE');
 		}
 
 		/**
@@ -1066,6 +1074,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Attribute::GetDatabase();
+
+			// Journaling
+			foreach (AttributeOption::LoadArrayByAttributeId($this->intId) as $objAttributeOption) {
+				$objAttributeOption->AttributeId = null;
+				$objAttributeOption->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1100,6 +1114,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeOption->Id) . ' AND
 					`attribute_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAttributeOption->Journal('DELETE');
 		}
 
 		/**
@@ -1112,6 +1129,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Attribute::GetDatabase();
+
+			// Journaling
+			foreach (AttributeOption::LoadArrayByAttributeId($this->intId) as $objAttributeOption) {
+				$objAttributeOption->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1178,6 +1200,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 			');
+
+			// Journaling
+			$objAttributeValue->AttributeId = $this->intId;
+			$objAttributeValue->Journal('UPDATE');
 		}
 
 		/**
@@ -1204,6 +1230,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . ' AND
 					`attribute_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAttributeValue->AttributeId = null;
+			$objAttributeValue->Journal('UPDATE');
 		}
 
 		/**
@@ -1216,6 +1246,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Attribute::GetDatabase();
+
+			// Journaling
+			foreach (AttributeValue::LoadArrayByAttributeId($this->intId) as $objAttributeValue) {
+				$objAttributeValue->AttributeId = null;
+				$objAttributeValue->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1250,6 +1286,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . ' AND
 					`attribute_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAttributeValue->Journal('DELETE');
 		}
 
 		/**
@@ -1262,6 +1301,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Attribute::GetDatabase();
+
+			// Journaling
+			foreach (AttributeValue::LoadArrayByAttributeId($this->intId) as $objAttributeValue) {
+				$objAttributeValue->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

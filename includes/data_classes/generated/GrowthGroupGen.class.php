@@ -1557,6 +1557,29 @@
 		}
 
 		/**
+		 * Journals the GrowthGroupStructure relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalGrowthGroupStructureAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `growthgroupstructure_growthgroup_assn` (
+					`growth_group_id`,
+					`growth_group_structure_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intGroupId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a GrowthGroupStructure
 		 * @param GrowthGroupStructure $objGrowthGroupStructure
 		 * @return void
@@ -1580,6 +1603,9 @@
 					' . $objDatabase->SqlVariable($objGrowthGroupStructure->Id) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalGrowthGroupStructureAssociation($objGrowthGroupStructure->Id, 'INSERT');
 		}
 
 		/**
@@ -1604,6 +1630,9 @@
 					`growth_group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ' AND
 					`growth_group_structure_id` = ' . $objDatabase->SqlVariable($objGrowthGroupStructure->Id) . '
 			');
+
+			// Journaling
+			$this->JournalGrowthGroupStructureAssociation($objGrowthGroupStructure->Id, 'DELETE');
 		}
 
 		/**
@@ -1616,6 +1645,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = GrowthGroup::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `growth_group_structure_id` AS associated_id FROM `growthgroupstructure_growthgroup_assn` WHERE `growth_group_id` = ' . $objDatabase->SqlVariable($this->intGroupId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalGrowthGroupStructureAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

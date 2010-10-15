@@ -1047,6 +1047,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
+
+			// Journaling
+			$objQueryCondition->QueryOperationId = $this->intId;
+			$objQueryCondition->Journal('UPDATE');
 		}
 
 		/**
@@ -1073,6 +1077,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
 					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objQueryCondition->QueryOperationId = null;
+			$objQueryCondition->Journal('UPDATE');
 		}
 
 		/**
@@ -1085,6 +1093,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = QueryOperation::GetDatabase();
+
+			// Journaling
+			foreach (QueryCondition::LoadArrayByQueryOperationId($this->intId) as $objQueryCondition) {
+				$objQueryCondition->QueryOperationId = null;
+				$objQueryCondition->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1119,6 +1133,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . ' AND
 					`query_operation_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objQueryCondition->Journal('DELETE');
 		}
 
 		/**
@@ -1131,6 +1148,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = QueryOperation::GetDatabase();
+
+			// Journaling
+			foreach (QueryCondition::LoadArrayByQueryOperationId($this->intId) as $objQueryCondition) {
+				$objQueryCondition->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

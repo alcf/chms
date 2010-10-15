@@ -1432,6 +1432,29 @@
 		}
 
 		/**
+		 * Journals the AttributeOptionAsMultiple relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalAttributeOptionAsMultipleAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `attributevalue_multipleattributeoption_assn` (
+					`attribute_value_id`,
+					`attribute_option_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a AttributeOptionAsMultiple
 		 * @param AttributeOption $objAttributeOption
 		 * @return void
@@ -1455,6 +1478,9 @@
 					' . $objDatabase->SqlVariable($objAttributeOption->Id) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalAttributeOptionAsMultipleAssociation($objAttributeOption->Id, 'INSERT');
 		}
 
 		/**
@@ -1479,6 +1505,9 @@
 					`attribute_value_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`attribute_option_id` = ' . $objDatabase->SqlVariable($objAttributeOption->Id) . '
 			');
+
+			// Journaling
+			$this->JournalAttributeOptionAsMultipleAssociation($objAttributeOption->Id, 'DELETE');
 		}
 
 		/**
@@ -1491,6 +1520,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeValue::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `attribute_option_id` AS associated_id FROM `attributevalue_multipleattributeoption_assn` WHERE `attribute_value_id` = ' . $objDatabase->SqlVariable($this->intId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalAttributeOptionAsMultipleAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

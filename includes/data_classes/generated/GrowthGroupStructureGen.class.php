@@ -937,6 +937,29 @@
 		}
 
 		/**
+		 * Journals the GrowthGroup relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalGrowthGroupAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `growthgroupstructure_growthgroup_assn` (
+					`growth_group_structure_id`,
+					`growth_group_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a GrowthGroup
 		 * @param GrowthGroup $objGrowthGroup
 		 * @return void
@@ -960,6 +983,9 @@
 					' . $objDatabase->SqlVariable($objGrowthGroup->GroupId) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalGrowthGroupAssociation($objGrowthGroup->GroupId, 'INSERT');
 		}
 
 		/**
@@ -984,6 +1010,9 @@
 					`growth_group_structure_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`growth_group_id` = ' . $objDatabase->SqlVariable($objGrowthGroup->GroupId) . '
 			');
+
+			// Journaling
+			$this->JournalGrowthGroupAssociation($objGrowthGroup->GroupId, 'DELETE');
 		}
 
 		/**
@@ -996,6 +1025,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = GrowthGroupStructure::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `growth_group_id` AS associated_id FROM `growthgroupstructure_growthgroup_assn` WHERE `growth_group_structure_id` = ' . $objDatabase->SqlVariable($this->intId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalGrowthGroupAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

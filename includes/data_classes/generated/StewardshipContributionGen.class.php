@@ -1918,6 +1918,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . '
 			');
+
+			// Journaling
+			$objStewardshipContributionAmount->StewardshipContributionId = $this->intId;
+			$objStewardshipContributionAmount->Journal('UPDATE');
 		}
 
 		/**
@@ -1944,6 +1948,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . ' AND
 					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipContributionAmount->StewardshipContributionId = null;
+			$objStewardshipContributionAmount->Journal('UPDATE');
 		}
 
 		/**
@@ -1956,6 +1964,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipContributionAmount::LoadArrayByStewardshipContributionId($this->intId) as $objStewardshipContributionAmount) {
+				$objStewardshipContributionAmount->StewardshipContributionId = null;
+				$objStewardshipContributionAmount->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1990,6 +2004,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContributionAmount->Id) . ' AND
 					`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipContributionAmount->Journal('DELETE');
 		}
 
 		/**
@@ -2002,6 +2019,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipContribution::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipContributionAmount::LoadArrayByStewardshipContributionId($this->intId) as $objStewardshipContributionAmount) {
+				$objStewardshipContributionAmount->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

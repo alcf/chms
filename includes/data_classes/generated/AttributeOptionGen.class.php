@@ -1135,6 +1135,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 			');
+
+			// Journaling
+			$objAttributeValue->SingleAttributeOptionId = $this->intId;
+			$objAttributeValue->Journal('UPDATE');
 		}
 
 		/**
@@ -1161,6 +1165,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . ' AND
 					`single_attribute_option_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAttributeValue->SingleAttributeOptionId = null;
+			$objAttributeValue->Journal('UPDATE');
 		}
 
 		/**
@@ -1173,6 +1181,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeOption::GetDatabase();
+
+			// Journaling
+			foreach (AttributeValue::LoadArrayBySingleAttributeOptionId($this->intId) as $objAttributeValue) {
+				$objAttributeValue->SingleAttributeOptionId = null;
+				$objAttributeValue->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1207,6 +1221,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . ' AND
 					`single_attribute_option_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAttributeValue->Journal('DELETE');
 		}
 
 		/**
@@ -1219,6 +1236,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeOption::GetDatabase();
+
+			// Journaling
+			foreach (AttributeValue::LoadArrayBySingleAttributeOptionId($this->intId) as $objAttributeValue) {
+				$objAttributeValue->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1283,6 +1305,29 @@
 		}
 
 		/**
+		 * Journals the AttributeValueAsMultiple relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalAttributeValueAsMultipleAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `attributevalue_multipleattributeoption_assn` (
+					`attribute_option_id`,
+					`attribute_value_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a AttributeValueAsMultiple
 		 * @param AttributeValue $objAttributeValue
 		 * @return void
@@ -1306,6 +1351,9 @@
 					' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalAttributeValueAsMultipleAssociation($objAttributeValue->Id, 'INSERT');
 		}
 
 		/**
@@ -1330,6 +1378,9 @@
 					`attribute_option_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`attribute_value_id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 			');
+
+			// Journaling
+			$this->JournalAttributeValueAsMultipleAssociation($objAttributeValue->Id, 'DELETE');
 		}
 
 		/**
@@ -1342,6 +1393,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = AttributeOption::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `attribute_value_id` AS associated_id FROM `attributevalue_multipleattributeoption_assn` WHERE `attribute_option_id` = ' . $objDatabase->SqlVariable($this->intId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalAttributeValueAsMultipleAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

@@ -1245,6 +1245,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . '
 			');
+
+			// Journaling
+			$objAddress->HouseholdId = $this->intId;
+			$objAddress->Journal('UPDATE');
 		}
 
 		/**
@@ -1271,6 +1275,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . ' AND
 					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAddress->HouseholdId = null;
+			$objAddress->Journal('UPDATE');
 		}
 
 		/**
@@ -1283,6 +1291,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (Address::LoadArrayByHouseholdId($this->intId) as $objAddress) {
+				$objAddress->HouseholdId = null;
+				$objAddress->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1317,6 +1331,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . ' AND
 					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objAddress->Journal('DELETE');
 		}
 
 		/**
@@ -1329,6 +1346,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (Address::LoadArrayByHouseholdId($this->intId) as $objAddress) {
+				$objAddress->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1395,6 +1417,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdParticipation->Id) . '
 			');
+
+			// Journaling
+			$objHouseholdParticipation->HouseholdId = $this->intId;
+			$objHouseholdParticipation->Journal('UPDATE');
 		}
 
 		/**
@@ -1421,6 +1447,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdParticipation->Id) . ' AND
 					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objHouseholdParticipation->HouseholdId = null;
+			$objHouseholdParticipation->Journal('UPDATE');
 		}
 
 		/**
@@ -1433,6 +1463,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (HouseholdParticipation::LoadArrayByHouseholdId($this->intId) as $objHouseholdParticipation) {
+				$objHouseholdParticipation->HouseholdId = null;
+				$objHouseholdParticipation->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1467,6 +1503,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdParticipation->Id) . ' AND
 					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objHouseholdParticipation->Journal('DELETE');
 		}
 
 		/**
@@ -1479,6 +1518,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (HouseholdParticipation::LoadArrayByHouseholdId($this->intId) as $objHouseholdParticipation) {
+				$objHouseholdParticipation->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1545,6 +1589,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . '
 			');
+
+			// Journaling
+			$objHouseholdSplit->SplitHouseholdId = $this->intId;
+			$objHouseholdSplit->Journal('UPDATE');
 		}
 
 		/**
@@ -1571,6 +1619,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
 					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objHouseholdSplit->SplitHouseholdId = null;
+			$objHouseholdSplit->Journal('UPDATE');
 		}
 
 		/**
@@ -1583,6 +1635,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
+				$objHouseholdSplit->SplitHouseholdId = null;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1617,6 +1675,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
 					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objHouseholdSplit->Journal('DELETE');
 		}
 
 		/**
@@ -1629,6 +1690,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
+				$objHouseholdSplit->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1695,6 +1761,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . '
 			');
+
+			// Journaling
+			$objHouseholdSplit->HouseholdId = $this->intId;
+			$objHouseholdSplit->Journal('UPDATE');
 		}
 
 		/**
@@ -1721,6 +1791,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
 					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objHouseholdSplit->HouseholdId = null;
+			$objHouseholdSplit->Journal('UPDATE');
 		}
 
 		/**
@@ -1733,6 +1807,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (HouseholdSplit::LoadArrayByHouseholdId($this->intId) as $objHouseholdSplit) {
+				$objHouseholdSplit->HouseholdId = null;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1767,6 +1847,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
 					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objHouseholdSplit->Journal('DELETE');
 		}
 
 		/**
@@ -1779,6 +1862,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			foreach (HouseholdSplit::LoadArrayByHouseholdId($this->intId) as $objHouseholdSplit) {
+				$objHouseholdSplit->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

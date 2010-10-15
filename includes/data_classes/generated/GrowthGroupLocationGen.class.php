@@ -1010,6 +1010,10 @@
 				WHERE
 					`group_id` = ' . $objDatabase->SqlVariable($objGrowthGroup->GroupId) . '
 			');
+
+			// Journaling
+			$objGrowthGroup->GrowthGroupLocationId = $this->intId;
+			$objGrowthGroup->Journal('UPDATE');
 		}
 
 		/**
@@ -1036,6 +1040,10 @@
 					`group_id` = ' . $objDatabase->SqlVariable($objGrowthGroup->GroupId) . ' AND
 					`growth_group_location_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGrowthGroup->GrowthGroupLocationId = null;
+			$objGrowthGroup->Journal('UPDATE');
 		}
 
 		/**
@@ -1048,6 +1056,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = GrowthGroupLocation::GetDatabase();
+
+			// Journaling
+			foreach (GrowthGroup::LoadArrayByGrowthGroupLocationId($this->intId) as $objGrowthGroup) {
+				$objGrowthGroup->GrowthGroupLocationId = null;
+				$objGrowthGroup->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1082,6 +1096,9 @@
 					`group_id` = ' . $objDatabase->SqlVariable($objGrowthGroup->GroupId) . ' AND
 					`growth_group_location_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objGrowthGroup->Journal('DELETE');
 		}
 
 		/**
@@ -1094,6 +1111,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = GrowthGroupLocation::GetDatabase();
+
+			// Journaling
+			foreach (GrowthGroup::LoadArrayByGrowthGroupLocationId($this->intId) as $objGrowthGroup) {
+				$objGrowthGroup->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

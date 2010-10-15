@@ -1110,6 +1110,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->CommunicationListEntryId = $this->intId;
+			$objEmailMessageRoute->Journal('UPDATE');
 		}
 
 		/**
@@ -1136,6 +1140,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->CommunicationListEntryId = null;
+			$objEmailMessageRoute->Journal('UPDATE');
 		}
 
 		/**
@@ -1148,6 +1156,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Journaling
+			foreach (EmailMessageRoute::LoadArrayByCommunicationListEntryId($this->intId) as $objEmailMessageRoute) {
+				$objEmailMessageRoute->CommunicationListEntryId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1182,6 +1196,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . ' AND
 					`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objEmailMessageRoute->Journal('DELETE');
 		}
 
 		/**
@@ -1194,6 +1211,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Journaling
+			foreach (EmailMessageRoute::LoadArrayByCommunicationListEntryId($this->intId) as $objEmailMessageRoute) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1258,6 +1280,29 @@
 		}
 
 		/**
+		 * Journals the CommunicationList relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalCommunicationListAssociation($intAssociatedId, $strJournalCommand) {
+			QApplication::$Database[2]->NonQuery('
+				INSERT INTO `communicationlist_communicationlistentry_assn` (
+					`communication_list_entry_id`,
+					`communication_list_id`
+					sys_login_id,
+					sys_action,
+					sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . '
+					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
+					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
 		 * Associates a CommunicationList
 		 * @param CommunicationList $objCommunicationList
 		 * @return void
@@ -1281,6 +1326,9 @@
 					' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
 				)
 			');
+
+			// Journaling
+			$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'INSERT');
 		}
 
 		/**
@@ -1305,6 +1353,9 @@
 					`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
 					`communication_list_id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
 			');
+
+			// Journaling
+			$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'DELETE');
 		}
 
 		/**
@@ -1317,6 +1368,13 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
+
+
+			// Journaling
+			$objResult = $objDatabase->Query('SELECT `communication_list_id` AS associated_id FROM `communicationlist_communicationlistentry_assn` WHERE `communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId));
+			while ($objRow = $objResult->GetNextRow()) {
+				$this->JournalCommunicationListAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

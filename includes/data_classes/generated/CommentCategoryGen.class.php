@@ -942,6 +942,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objComment->Id) . '
 			');
+
+			// Journaling
+			$objComment->CommentCategoryId = $this->intId;
+			$objComment->Journal('UPDATE');
 		}
 
 		/**
@@ -968,6 +972,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objComment->Id) . ' AND
 					`comment_category_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objComment->CommentCategoryId = null;
+			$objComment->Journal('UPDATE');
 		}
 
 		/**
@@ -980,6 +988,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CommentCategory::GetDatabase();
+
+			// Journaling
+			foreach (Comment::LoadArrayByCommentCategoryId($this->intId) as $objComment) {
+				$objComment->CommentCategoryId = null;
+				$objComment->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1014,6 +1028,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objComment->Id) . ' AND
 					`comment_category_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objComment->Journal('DELETE');
 		}
 
 		/**
@@ -1026,6 +1043,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = CommentCategory::GetDatabase();
+
+			// Journaling
+			foreach (Comment::LoadArrayByCommentCategoryId($this->intId) as $objComment) {
+				$objComment->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('

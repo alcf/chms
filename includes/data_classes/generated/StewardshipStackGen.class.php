@@ -1151,6 +1151,10 @@
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
 			');
+
+			// Journaling
+			$objStewardshipContribution->StewardshipStackId = $this->intId;
+			$objStewardshipContribution->Journal('UPDATE');
 		}
 
 		/**
@@ -1177,6 +1181,10 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
 					`stewardship_stack_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipContribution->StewardshipStackId = null;
+			$objStewardshipContribution->Journal('UPDATE');
 		}
 
 		/**
@@ -1189,6 +1197,12 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipStack::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipContribution::LoadArrayByStewardshipStackId($this->intId) as $objStewardshipContribution) {
+				$objStewardshipContribution->StewardshipStackId = null;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1223,6 +1237,9 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . ' AND
 					`stewardship_stack_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
+
+			// Journaling
+			$objStewardshipContribution->Journal('DELETE');
 		}
 
 		/**
@@ -1235,6 +1252,11 @@
 
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipStack::GetDatabase();
+
+			// Journaling
+			foreach (StewardshipContribution::LoadArrayByStewardshipStackId($this->intId) as $objStewardshipContribution) {
+				$objStewardshipContribution->Journal('DELETE');
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
