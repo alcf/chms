@@ -314,6 +314,8 @@
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::InternetExplorer_7_0;
 					else if (strpos($strUserAgent, 'msie 8.0') !== false)
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::InternetExplorer_8_0;
+					else if (strpos($strUserAgent, 'msie 9.0') !== false)
+						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::InternetExplorer_9_0;
 					else
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Unsupported;
 
@@ -346,6 +348,8 @@
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Chrome_3_0;
 					else if (strpos($strUserAgent, 'chrome/4.') !== false)
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Chrome_4_0;
+					else if (strpos($strUserAgent, 'chrome/5.') !== false)
+						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Chrome_5_0;
 					else
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Unsupported;
 
@@ -359,6 +363,8 @@
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Safari_3_0;
 					else if (strpos($strUserAgent, 'version/4.') !== false)
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Safari_4_0;
+					else if (strpos($strUserAgent, 'version/5.') !== false)
+						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Safari_5_0;
 					else
 						QApplication::$BrowserType = QApplication::$BrowserType | QBrowserType::Unsupported;
 
@@ -475,12 +481,6 @@
 			// Did we ask for a script to be run?
 			if (!array_key_exists(1, $_SERVER['argv']) ||
 				(substr($_SERVER['argv'][1], 0, 1) == '-')) {
-				$strDefaultPath = __DEVTOOLS_CLI__;
-				$strDefaultPath = str_replace('/html/../', '/', $strDefaultPath);
-				$strDefaultPath = str_replace('/docroot/../', '/', $strDefaultPath);
-				$strDefaultPath = str_replace('/wwwroot/../', '/', $strDefaultPath);
-				$strDefaultPath = str_replace('/www/../', '/', $strDefaultPath);
-
 				print "Qcodo CLI Runner v" . QCODO_VERSION . "\r\n";
 				print "usage: qcodo SCRIPT [SCRIPT-SPECIFIC ARGS]\r\n";
 				print "\r\n";
@@ -493,9 +493,10 @@
 				print "  qcodo-updater  Updates your installed Qcodo framework to a new version\r\n";
 				print "  qpm-download   Download and installs an external QPM package\r\n";
 				print "  qpm-upload     Packages custom code you wrote into a QPM package\r\n";
+				print "  phpunit        Run bundled PHPUnit\r\n";
 				print "\r\n";
 				print "Other custom scripts can be created as well.\r\n";
-				print "See \"" . $strDefaultPath . "/scripts/_README.txt\" for more info";
+				print "See \"" . realpath(__DEVTOOLS_CLI__) . "/scripts/_README.txt\" for more info";
 				print "\r\n";
 				exit(1);
 			}
@@ -534,38 +535,56 @@
 				$strConstantName = sprintf('DB_CONNECTION_%s', $intIndex);
 
 				if (defined($strConstantName)) {
-					// Expected Keys to be Set
-					$strExpectedKeys = array(
-						'adapter', 'server', 'port', 'database',
-						'username', 'password', 'profiling'
-					);
-
 					// Lookup the Serialized Array from the DB_CONFIG constants and unserialize it
 					$strSerialArray = constant($strConstantName);
 					$objConfigArray = unserialize($strSerialArray);
 
-					// Set All Expected Keys
-					foreach ($strExpectedKeys as $strExpectedKey)
-						if (!array_key_exists($strExpectedKey, $objConfigArray))
-							$objConfigArray[$strExpectedKey] = null;
-
-					if (!$objConfigArray['adapter'])
-						throw new Exception('No Adapter Defined for ' . $strConstantName . ': ' . var_export($objConfigArray, true));
-
-					if (!$objConfigArray['server'])
-						throw new Exception('No Server Defined for ' . $strConstantName . ': ' . constant($strConstantName));
-
-					$strDatabaseType = 'Q' . $objConfigArray['adapter'] . 'Database';
-					if (!class_exists($strDatabaseType)) {
-						$strDatabaseAdapter = sprintf('%s/database/%s.class.php', __QCODO_CORE__, $strDatabaseType);
-						if (!file_exists($strDatabaseAdapter))
-							throw new Exception('Database Type is not valid: ' . $objConfigArray['adapter']);
-						require($strDatabaseAdapter);
-					}
-
-					QApplication::$Database[$intIndex] = new $strDatabaseType($intIndex, $objConfigArray);
+					// Use Helper Method to instantiate and store db connection/adapter
+					QApplication::$Database[$intIndex] = self::CreateDatabaseConnection($intIndex, $objConfigArray);
 				}
 			}
+		}
+
+		/**
+		 * Given a ConfigArray, create a QDatabaseBase adapter instance.  Only used internally by InitializeDatabaseConnections.
+		 * @param integer $intIndex
+		 * @param string[] $objConfigArray
+		 * @return QDatabaseBase
+		 */
+		protected static function CreateDatabaseConnection($intIndex, $objConfigArray) {
+			// Expected Keys to be Set
+			$strExpectedKeys = array(
+				'adapter', 'server', 'port', 'database',
+				'username', 'password', 'profiling'
+			);
+
+			// Set All Expected Keys
+			foreach ($strExpectedKeys as $strExpectedKey)
+				if (!array_key_exists($strExpectedKey, $objConfigArray))
+					$objConfigArray[$strExpectedKey] = null;
+
+			if (!$objConfigArray['adapter'])
+				throw new Exception('No Adapter Defined for ' . $strConstantName . ': ' . var_export($objConfigArray, true));
+
+			if (!$objConfigArray['server'])
+				throw new Exception('No Server Defined for ' . $strConstantName . ': ' . constant($strConstantName));
+
+			$strDatabaseType = 'Q' . $objConfigArray['adapter'] . 'Database';
+			if (!class_exists($strDatabaseType)) {
+				$strDatabaseAdapter = sprintf('%s/database/%s.class.php', __QCODO_CORE__, $strDatabaseType);
+				if (!file_exists($strDatabaseAdapter))
+					throw new Exception('Database Type is not valid: ' . $objConfigArray['adapter']);
+				require($strDatabaseAdapter);
+			}
+
+			$objToReturn = new $strDatabaseType($intIndex, $objConfigArray);
+
+			// Add Journaling (if applicable)
+			if (array_key_exists('journaling', $objConfigArray)) {
+				$objToReturn->JournalingDatabase = self::CreateDatabaseConnection($intIndex * 1000, $objConfigArray['journaling']);
+			}
+
+			return $objToReturn;
 		}
 
 		/**
@@ -1012,6 +1031,11 @@
 				// Don't display database password
 				$arrDb['password'] = '********';
 
+				// Don't display linked Journaling database password (if applicable)
+				if (array_key_exists('journaling', $arrDb)) {
+					$arrDb['journaling']['password'] = '********';
+				}
+
 				printf('<li>QApplication::$Database[%s] = %s</li>', $intKey, var_export($arrDb, true));
 			}
 			_p('</ul></div>', false);
@@ -1028,27 +1052,31 @@
 		const InternetExplorer_6_0 = 2;
 		const InternetExplorer_7_0 = 4;
 		const InternetExplorer_8_0 = 8;
+		const InternetExplorer_9_0 = 16;
 		
-		const Firefox = 16;
-		const Firefox_1_0 = 32;
-		const Firefox_1_5 = 64;
-		const Firefox_2_0 = 128;
-		const Firefox_3_0 = 256;
-		const Firefox_3_5 = 512;
+		const Firefox = 32;
+		const Firefox_1_0 = 64;
+		const Firefox_1_5 = 128;
+		const Firefox_2_0 = 256;
+		const Firefox_3_0 = 512;
+		const Firefox_3_5 = 1024;
+		const Firefox_4   = 2048;
 		
-		const Safari = 1024;
-		const Safari_2_0 = 2048;
-		const Safari_3_0 = 4096;
-		const Safari_4_0 = 8192;
+		const Safari = 4096;
+		const Safari_2_0 = 8192;
+		const Safari_3_0 = 16384;
+		const Safari_4_0 = 32768;
+		const Safari_5_0 = 65536;
 		
-		const Chrome = 16384;
-		const Chrome_2_0 = 32768;
-		const Chrome_3_0 = 65536;
-		const Chrome_4_0 = 131072;
+		const Chrome     = 131072;
+		const Chrome_2_0 = 262144;
+		const Chrome_3_0 = 524288;
+		const Chrome_4_0 = 1048576;
+		const Chrome_5_0 = 2097152;
 
-		const Macintosh = 262144;
-		const Iphone = 524288;
+		const Macintosh = 4194304;
+		const Iphone = 8388608;
 
-		const Unsupported = 1048576;
+		const Unsupported = 16777216;
 	}
 ?>
