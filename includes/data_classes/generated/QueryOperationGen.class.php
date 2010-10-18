@@ -630,62 +630,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `query_operation` (
-					`id`,
-					`name`,
-					`qq_factory_name`,
-					`argument_flag`,
-					`argument_prepend`,
-					`argument_postpend`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strQqFactoryName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnArgumentFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strArgumentPrepend) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strArgumentPostpend) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return QueryOperation[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM query_operation WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return QueryOperation::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return QueryOperation[]
-		 */
-		public function GetJournal() {
-			return QueryOperation::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this QueryOperation
@@ -722,7 +669,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('query_operation', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -744,7 +691,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -780,7 +727,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -829,6 +776,64 @@
 			$this->strArgumentPrepend = $objReloaded->strArgumentPrepend;
 			$this->strArgumentPostpend = $objReloaded->strArgumentPostpend;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = QueryOperation::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `query_operation` (
+					`id`,
+					`name`,
+					`qq_factory_name`,
+					`argument_flag`,
+					`argument_prepend`,
+					`argument_postpend`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->strQqFactoryName) . ',
+					' . $objDatabase->SqlVariable($this->blnArgumentFlag) . ',
+					' . $objDatabase->SqlVariable($this->strArgumentPrepend) . ',
+					' . $objDatabase->SqlVariable($this->strArgumentPostpend) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return QueryOperation[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = QueryOperation::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM query_operation WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return QueryOperation::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return QueryOperation[]
+		 */
+		public function GetJournal() {
+			return QueryOperation::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1070,9 +1075,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
 
-			// Journaling
-			$objQueryCondition->QueryOperationId = $this->intId;
-			$objQueryCondition->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->QueryOperationId = $this->intId;
+				$objQueryCondition->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1101,8 +1108,10 @@
 			');
 
 			// Journaling
-			$objQueryCondition->QueryOperationId = null;
-			$objQueryCondition->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->QueryOperationId = null;
+				$objQueryCondition->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1117,9 +1126,11 @@
 			$objDatabase = QueryOperation::GetDatabase();
 
 			// Journaling
-			foreach (QueryCondition::LoadArrayByQueryOperationId($this->intId) as $objQueryCondition) {
-				$objQueryCondition->QueryOperationId = null;
-				$objQueryCondition->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (QueryCondition::LoadArrayByQueryOperationId($this->intId) as $objQueryCondition) {
+					$objQueryCondition->QueryOperationId = null;
+					$objQueryCondition->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1157,7 +1168,9 @@
 			');
 
 			// Journaling
-			$objQueryCondition->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1172,8 +1185,10 @@
 			$objDatabase = QueryOperation::GetDatabase();
 
 			// Journaling
-			foreach (QueryCondition::LoadArrayByQueryOperationId($this->intId) as $objQueryCondition) {
-				$objQueryCondition->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (QueryCondition::LoadArrayByQueryOperationId($this->intId) as $objQueryCondition) {
+					$objQueryCondition->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1267,6 +1282,15 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $QqFactoryName
+	 * @property-read QQNode $ArgumentFlag
+	 * @property-read QQNode $ArgumentPrepend
+	 * @property-read QQNode $ArgumentPostpend
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
+	 */
 	class QQNodeQueryOperation extends QQNode {
 		protected $strTableName = 'query_operation';
 		protected $strPrimaryKey = 'id';
@@ -1300,7 +1324,17 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $QqFactoryName
+	 * @property-read QQNode $ArgumentFlag
+	 * @property-read QQNode $ArgumentPrepend
+	 * @property-read QQNode $ArgumentPostpend
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeQueryOperation extends QQReverseReferenceNode {
 		protected $strTableName = 'query_operation';
 		protected $strPrimaryKey = 'id';

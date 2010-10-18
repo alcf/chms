@@ -640,58 +640,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `stewardship_contribution_amount` (
-					`id`,
-					`stewardship_contribution_id`,
-					`stewardship_fund_id`,
-					`amount`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipContributionId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipFundId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltAmount) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return StewardshipContributionAmount[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM stewardship_contribution_amount WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return StewardshipContributionAmount::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return StewardshipContributionAmount[]
-		 */
-		public function GetJournal() {
-			return StewardshipContributionAmount::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this StewardshipContributionAmount
@@ -724,7 +675,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('stewardship_contribution_amount', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -744,7 +695,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -780,7 +731,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -827,6 +778,60 @@
 			$this->StewardshipFundId = $objReloaded->StewardshipFundId;
 			$this->fltAmount = $objReloaded->fltAmount;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = StewardshipContributionAmount::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `stewardship_contribution_amount` (
+					`id`,
+					`stewardship_contribution_id`,
+					`stewardship_fund_id`,
+					`amount`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipContributionId) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+					' . $objDatabase->SqlVariable($this->fltAmount) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return StewardshipContributionAmount[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = StewardshipContributionAmount::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM stewardship_contribution_amount WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return StewardshipContributionAmount::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return StewardshipContributionAmount[]
+		 */
+		public function GetJournal() {
+			return StewardshipContributionAmount::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1141,6 +1146,14 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $StewardshipContributionId
+	 * @property-read QQNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQNode $StewardshipFundId
+	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $Amount
+	 */
 	class QQNodeStewardshipContributionAmount extends QQNode {
 		protected $strTableName = 'stewardship_contribution_amount';
 		protected $strPrimaryKey = 'id';
@@ -1172,7 +1185,16 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $StewardshipContributionId
+	 * @property-read QQNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQNode $StewardshipFundId
+	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $Amount
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeStewardshipContributionAmount extends QQReverseReferenceNode {
 		protected $strTableName = 'stewardship_contribution_amount';
 		protected $strPrimaryKey = 'id';

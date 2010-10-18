@@ -675,60 +675,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `membership` (
-					`id`,
-					`person_id`,
-					`date_start`,
-					`date_end`,
-					`termination_reason`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateStart) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateEnd) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strTerminationReason) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Membership[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM membership WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Membership::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Membership[]
-		 */
-		public function GetJournal() {
-			return Membership::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Membership
@@ -763,7 +712,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('membership', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -784,7 +733,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -820,7 +769,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -868,6 +817,62 @@
 			$this->dttDateEnd = $objReloaded->dttDateEnd;
 			$this->strTerminationReason = $objReloaded->strTerminationReason;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Membership::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `membership` (
+					`id`,
+					`person_id`,
+					`date_start`,
+					`date_end`,
+					`termination_reason`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
+					' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+					' . $objDatabase->SqlVariable($this->strTerminationReason) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Membership[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Membership::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM membership WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Membership::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Membership[]
+		 */
+		public function GetJournal() {
+			return Membership::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1156,6 +1161,14 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $DateStart
+	 * @property-read QQNode $DateEnd
+	 * @property-read QQNode $TerminationReason
+	 */
 	class QQNodeMembership extends QQNode {
 		protected $strTableName = 'membership';
 		protected $strPrimaryKey = 'id';
@@ -1187,7 +1200,16 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $DateStart
+	 * @property-read QQNode $DateEnd
+	 * @property-read QQNode $TerminationReason
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeMembership extends QQReverseReferenceNode {
 		protected $strTableName = 'membership';
 		protected $strPrimaryKey = 'id';

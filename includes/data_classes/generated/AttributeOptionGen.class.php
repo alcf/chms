@@ -729,56 +729,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `attribute_option` (
-					`id`,
-					`attribute_id`,
-					`name`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intAttributeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return AttributeOption[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM attribute_option WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return AttributeOption::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return AttributeOption[]
-		 */
-		public function GetJournal() {
-			return AttributeOption::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this AttributeOption
@@ -809,7 +762,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('attribute_option', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -828,7 +781,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -864,7 +817,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -910,6 +863,58 @@
 			$this->AttributeId = $objReloaded->AttributeId;
 			$this->strName = $objReloaded->strName;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = AttributeOption::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `attribute_option` (
+					`id`,
+					`attribute_id`,
+					`name`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intAttributeId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return AttributeOption[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = AttributeOption::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM attribute_option WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return AttributeOption::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return AttributeOption[]
+		 */
+		public function GetJournal() {
+			return AttributeOption::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1158,9 +1163,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 			');
 
-			// Journaling
-			$objAttributeValue->SingleAttributeOptionId = $this->intId;
-			$objAttributeValue->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objAttributeValue->SingleAttributeOptionId = $this->intId;
+				$objAttributeValue->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1189,8 +1196,10 @@
 			');
 
 			// Journaling
-			$objAttributeValue->SingleAttributeOptionId = null;
-			$objAttributeValue->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAttributeValue->SingleAttributeOptionId = null;
+				$objAttributeValue->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1205,9 +1214,11 @@
 			$objDatabase = AttributeOption::GetDatabase();
 
 			// Journaling
-			foreach (AttributeValue::LoadArrayBySingleAttributeOptionId($this->intId) as $objAttributeValue) {
-				$objAttributeValue->SingleAttributeOptionId = null;
-				$objAttributeValue->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (AttributeValue::LoadArrayBySingleAttributeOptionId($this->intId) as $objAttributeValue) {
+					$objAttributeValue->SingleAttributeOptionId = null;
+					$objAttributeValue->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1245,7 +1256,9 @@
 			');
 
 			// Journaling
-			$objAttributeValue->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAttributeValue->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1260,8 +1273,10 @@
 			$objDatabase = AttributeOption::GetDatabase();
 
 			// Journaling
-			foreach (AttributeValue::LoadArrayBySingleAttributeOptionId($this->intId) as $objAttributeValue) {
-				$objAttributeValue->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (AttributeValue::LoadArrayBySingleAttributeOptionId($this->intId) as $objAttributeValue) {
+					$objAttributeValue->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1332,7 +1347,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalAttributeValueAsMultipleAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = AttributeOption::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `attributevalue_multipleattributeoption_assn` (
 					`attribute_option_id`,
 					`attribute_value_id`,
@@ -1340,10 +1357,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -1355,8 +1372,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalAttributeValueAsMultipleAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM attributevalue_multipleattributeoption_assn WHERE attribute_option_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = AttributeOption::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM attributevalue_multipleattributeoption_assn WHERE attribute_option_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -1392,8 +1411,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalAttributeValueAsMultipleAssociation($objAttributeValue->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalAttributeValueAsMultipleAssociation($objAttributeValue->Id, 'INSERT');
 		}
 
 		/**
@@ -1419,8 +1439,9 @@
 					`attribute_value_id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 			');
 
-			// Journaling
-			$this->JournalAttributeValueAsMultipleAssociation($objAttributeValue->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalAttributeValueAsMultipleAssociation($objAttributeValue->Id, 'DELETE');
 		}
 
 		/**
@@ -1434,11 +1455,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = AttributeOption::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `attribute_value_id` AS associated_id FROM `attributevalue_multipleattributeoption_assn` WHERE `attribute_option_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalAttributeValueAsMultipleAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `attribute_value_id` AS associated_id FROM `attributevalue_multipleattributeoption_assn` WHERE `attribute_option_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalAttributeValueAsMultipleAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1528,6 +1550,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $AttributeValueId
+	 * @property-read QQNodeAttributeValue $AttributeValue
+	 * @property-read QQNodeAttributeValue $_ChildTableNode
+	 */
 	class QQNodeAttributeOptionAttributeValueAsMultiple extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'attributevalueasmultiple';
@@ -1555,6 +1582,14 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $AttributeId
+	 * @property-read QQNodeAttribute $Attribute
+	 * @property-read QQNode $Name
+	 * @property-read QQNodeAttributeOptionAttributeValueAsMultiple $AttributeValueAsMultiple
+	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValueAsSingle
+	 */
 	class QQNodeAttributeOption extends QQNode {
 		protected $strTableName = 'attribute_option';
 		protected $strPrimaryKey = 'id';
@@ -1586,7 +1621,16 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $AttributeId
+	 * @property-read QQNodeAttribute $Attribute
+	 * @property-read QQNode $Name
+	 * @property-read QQNodeAttributeOptionAttributeValueAsMultiple $AttributeValueAsMultiple
+	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValueAsSingle
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeAttributeOption extends QQReverseReferenceNode {
 		protected $strTableName = 'attribute_option';
 		protected $strPrimaryKey = 'id';

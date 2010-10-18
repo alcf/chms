@@ -579,54 +579,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `other_contact_method` (
-					`id`,
-					`name`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return OtherContactMethod[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM other_contact_method WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return OtherContactMethod::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return OtherContactMethod[]
-		 */
-		public function GetJournal() {
-			return OtherContactMethod::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this OtherContactMethod
@@ -655,7 +610,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('other_contact_method', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -673,7 +628,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -709,7 +664,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -754,6 +709,56 @@
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = OtherContactMethod::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `other_contact_method` (
+					`id`,
+					`name`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return OtherContactMethod[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = OtherContactMethod::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM other_contact_method WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return OtherContactMethod::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return OtherContactMethod[]
+		 */
+		public function GetJournal() {
+			return OtherContactMethod::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -931,9 +936,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objOtherContactInfo->Id) . '
 			');
 
-			// Journaling
-			$objOtherContactInfo->OtherContactMethodId = $this->intId;
-			$objOtherContactInfo->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objOtherContactInfo->OtherContactMethodId = $this->intId;
+				$objOtherContactInfo->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -962,8 +969,10 @@
 			');
 
 			// Journaling
-			$objOtherContactInfo->OtherContactMethodId = null;
-			$objOtherContactInfo->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objOtherContactInfo->OtherContactMethodId = null;
+				$objOtherContactInfo->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -978,9 +987,11 @@
 			$objDatabase = OtherContactMethod::GetDatabase();
 
 			// Journaling
-			foreach (OtherContactInfo::LoadArrayByOtherContactMethodId($this->intId) as $objOtherContactInfo) {
-				$objOtherContactInfo->OtherContactMethodId = null;
-				$objOtherContactInfo->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (OtherContactInfo::LoadArrayByOtherContactMethodId($this->intId) as $objOtherContactInfo) {
+					$objOtherContactInfo->OtherContactMethodId = null;
+					$objOtherContactInfo->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1018,7 +1029,9 @@
 			');
 
 			// Journaling
-			$objOtherContactInfo->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objOtherContactInfo->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1033,8 +1046,10 @@
 			$objDatabase = OtherContactMethod::GetDatabase();
 
 			// Journaling
-			foreach (OtherContactInfo::LoadArrayByOtherContactMethodId($this->intId) as $objOtherContactInfo) {
-				$objOtherContactInfo->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (OtherContactInfo::LoadArrayByOtherContactMethodId($this->intId) as $objOtherContactInfo) {
+					$objOtherContactInfo->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1116,6 +1131,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
+	 */
 	class QQNodeOtherContactMethod extends QQNode {
 		protected $strTableName = 'other_contact_method';
 		protected $strPrimaryKey = 'id';
@@ -1141,7 +1161,13 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeOtherContactMethod extends QQReverseReferenceNode {
 		protected $strTableName = 'other_contact_method';
 		protected $strPrimaryKey = 'id';

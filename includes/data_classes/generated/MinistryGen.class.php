@@ -950,60 +950,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `ministry` (
-					`id`,
-					`token`,
-					`name`,
-					`parent_ministry_id`,
-					`active_flag`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strToken) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intParentMinistryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnActiveFlag) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Ministry[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM ministry WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Ministry::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Ministry[]
-		 */
-		public function GetJournal() {
-			return Ministry::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Ministry
@@ -1038,7 +987,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('ministry', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -1059,7 +1008,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1095,7 +1044,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1143,6 +1092,62 @@
 			$this->ParentMinistryId = $objReloaded->ParentMinistryId;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Ministry::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `ministry` (
+					`id`,
+					`token`,
+					`name`,
+					`parent_ministry_id`,
+					`active_flag`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strToken) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
+					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Ministry[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Ministry::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM ministry WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Ministry::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Ministry[]
+		 */
+		public function GetJournal() {
+			return Ministry::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1471,9 +1476,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
 			');
 
-			// Journaling
-			$objCommunicationList->MinistryId = $this->intId;
-			$objCommunicationList->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objCommunicationList->MinistryId = $this->intId;
+				$objCommunicationList->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1502,8 +1509,10 @@
 			');
 
 			// Journaling
-			$objCommunicationList->MinistryId = null;
-			$objCommunicationList->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objCommunicationList->MinistryId = null;
+				$objCommunicationList->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1518,9 +1527,11 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (CommunicationList::LoadArrayByMinistryId($this->intId) as $objCommunicationList) {
-				$objCommunicationList->MinistryId = null;
-				$objCommunicationList->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (CommunicationList::LoadArrayByMinistryId($this->intId) as $objCommunicationList) {
+					$objCommunicationList->MinistryId = null;
+					$objCommunicationList->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1558,7 +1569,9 @@
 			');
 
 			// Journaling
-			$objCommunicationList->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objCommunicationList->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1573,8 +1586,10 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (CommunicationList::LoadArrayByMinistryId($this->intId) as $objCommunicationList) {
-				$objCommunicationList->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (CommunicationList::LoadArrayByMinistryId($this->intId) as $objCommunicationList) {
+					$objCommunicationList->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1643,9 +1658,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . '
 			');
 
-			// Journaling
-			$objGroup->MinistryId = $this->intId;
-			$objGroup->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroup->MinistryId = $this->intId;
+				$objGroup->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1674,8 +1691,10 @@
 			');
 
 			// Journaling
-			$objGroup->MinistryId = null;
-			$objGroup->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroup->MinistryId = null;
+				$objGroup->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1690,9 +1709,11 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (Group::LoadArrayByMinistryId($this->intId) as $objGroup) {
-				$objGroup->MinistryId = null;
-				$objGroup->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Group::LoadArrayByMinistryId($this->intId) as $objGroup) {
+					$objGroup->MinistryId = null;
+					$objGroup->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1730,7 +1751,9 @@
 			');
 
 			// Journaling
-			$objGroup->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroup->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1745,8 +1768,10 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (Group::LoadArrayByMinistryId($this->intId) as $objGroup) {
-				$objGroup->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Group::LoadArrayByMinistryId($this->intId) as $objGroup) {
+					$objGroup->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1815,9 +1840,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupRole->Id) . '
 			');
 
-			// Journaling
-			$objGroupRole->MinistryId = $this->intId;
-			$objGroupRole->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupRole->MinistryId = $this->intId;
+				$objGroupRole->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1846,8 +1873,10 @@
 			');
 
 			// Journaling
-			$objGroupRole->MinistryId = null;
-			$objGroupRole->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupRole->MinistryId = null;
+				$objGroupRole->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1862,9 +1891,11 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (GroupRole::LoadArrayByMinistryId($this->intId) as $objGroupRole) {
-				$objGroupRole->MinistryId = null;
-				$objGroupRole->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupRole::LoadArrayByMinistryId($this->intId) as $objGroupRole) {
+					$objGroupRole->MinistryId = null;
+					$objGroupRole->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1902,7 +1933,9 @@
 			');
 
 			// Journaling
-			$objGroupRole->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupRole->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1917,8 +1950,10 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (GroupRole::LoadArrayByMinistryId($this->intId) as $objGroupRole) {
-				$objGroupRole->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupRole::LoadArrayByMinistryId($this->intId) as $objGroupRole) {
+					$objGroupRole->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1987,9 +2022,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objMinistry->Id) . '
 			');
 
-			// Journaling
-			$objMinistry->ParentMinistryId = $this->intId;
-			$objMinistry->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objMinistry->ParentMinistryId = $this->intId;
+				$objMinistry->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2018,8 +2055,10 @@
 			');
 
 			// Journaling
-			$objMinistry->ParentMinistryId = null;
-			$objMinistry->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMinistry->ParentMinistryId = null;
+				$objMinistry->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2034,9 +2073,11 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (Ministry::LoadArrayByParentMinistryId($this->intId) as $objMinistry) {
-				$objMinistry->ParentMinistryId = null;
-				$objMinistry->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Ministry::LoadArrayByParentMinistryId($this->intId) as $objMinistry) {
+					$objMinistry->ParentMinistryId = null;
+					$objMinistry->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2074,7 +2115,9 @@
 			');
 
 			// Journaling
-			$objMinistry->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMinistry->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2089,8 +2132,10 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (Ministry::LoadArrayByParentMinistryId($this->intId) as $objMinistry) {
-				$objMinistry->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Ministry::LoadArrayByParentMinistryId($this->intId) as $objMinistry) {
+					$objMinistry->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2159,9 +2204,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipFund->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipFund->MinistryId = $this->intId;
-			$objStewardshipFund->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipFund->MinistryId = $this->intId;
+				$objStewardshipFund->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2190,8 +2237,10 @@
 			');
 
 			// Journaling
-			$objStewardshipFund->MinistryId = null;
-			$objStewardshipFund->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipFund->MinistryId = null;
+				$objStewardshipFund->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2206,9 +2255,11 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipFund::LoadArrayByMinistryId($this->intId) as $objStewardshipFund) {
-				$objStewardshipFund->MinistryId = null;
-				$objStewardshipFund->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipFund::LoadArrayByMinistryId($this->intId) as $objStewardshipFund) {
+					$objStewardshipFund->MinistryId = null;
+					$objStewardshipFund->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2246,7 +2297,9 @@
 			');
 
 			// Journaling
-			$objStewardshipFund->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipFund->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2261,8 +2314,10 @@
 			$objDatabase = Ministry::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipFund::LoadArrayByMinistryId($this->intId) as $objStewardshipFund) {
-				$objStewardshipFund->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipFund::LoadArrayByMinistryId($this->intId) as $objStewardshipFund) {
+					$objStewardshipFund->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2333,7 +2388,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalLoginAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = Ministry::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `ministry_login_assn` (
 					`ministry_id`,
 					`login_id`,
@@ -2341,10 +2398,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -2356,8 +2413,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalLoginAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM ministry_login_assn WHERE ministry_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = Ministry::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM ministry_login_assn WHERE ministry_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -2393,8 +2452,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalLoginAssociation($objLogin->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalLoginAssociation($objLogin->Id, 'INSERT');
 		}
 
 		/**
@@ -2420,8 +2480,9 @@
 					`login_id` = ' . $objDatabase->SqlVariable($objLogin->Id) . '
 			');
 
-			// Journaling
-			$this->JournalLoginAssociation($objLogin->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalLoginAssociation($objLogin->Id, 'DELETE');
 		}
 
 		/**
@@ -2435,11 +2496,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = Ministry::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `login_id` AS associated_id FROM `ministry_login_assn` WHERE `ministry_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalLoginAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `login_id` AS associated_id FROM `ministry_login_assn` WHERE `ministry_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalLoginAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2535,6 +2597,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $LoginId
+	 * @property-read QQNodeLogin $Login
+	 * @property-read QQNodeLogin $_ChildTableNode
+	 */
 	class QQNodeMinistryLogin extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'login';
@@ -2562,6 +2629,20 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Token
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $ParentMinistryId
+	 * @property-read QQNodeMinistry $ParentMinistry
+	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNodeMinistryLogin $Login
+	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
+	 * @property-read QQReverseReferenceNodeGroup $Group
+	 * @property-read QQReverseReferenceNodeGroupRole $GroupRole
+	 * @property-read QQReverseReferenceNodeMinistry $ChildMinistry
+	 * @property-read QQReverseReferenceNodeStewardshipFund $StewardshipFund
+	 */
 	class QQNodeMinistry extends QQNode {
 		protected $strTableName = 'ministry';
 		protected $strPrimaryKey = 'id';
@@ -2605,7 +2686,22 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Token
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $ParentMinistryId
+	 * @property-read QQNodeMinistry $ParentMinistry
+	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNodeMinistryLogin $Login
+	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
+	 * @property-read QQReverseReferenceNodeGroup $Group
+	 * @property-read QQReverseReferenceNodeGroupRole $GroupRole
+	 * @property-read QQReverseReferenceNodeMinistry $ChildMinistry
+	 * @property-read QQReverseReferenceNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeMinistry extends QQReverseReferenceNode {
 		protected $strTableName = 'ministry';
 		protected $strPrimaryKey = 'id';

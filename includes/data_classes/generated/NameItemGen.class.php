@@ -622,54 +622,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `name_item` (
-					`id`,
-					`name`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return NameItem[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM name_item WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return NameItem::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return NameItem[]
-		 */
-		public function GetJournal() {
-			return NameItem::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this NameItem
@@ -698,7 +653,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('name_item', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -716,7 +671,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -752,7 +707,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -797,6 +752,56 @@
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = NameItem::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `name_item` (
+					`id`,
+					`name`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return NameItem[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = NameItem::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM name_item WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return NameItem::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return NameItem[]
+		 */
+		public function GetJournal() {
+			return NameItem::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -976,7 +981,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalPersonAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = NameItem::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `person_nameitem_assn` (
 					`name_item_id`,
 					`person_id`,
@@ -984,10 +991,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -999,8 +1006,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalPersonAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM person_nameitem_assn WHERE name_item_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = NameItem::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM person_nameitem_assn WHERE name_item_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -1036,8 +1045,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalPersonAssociation($objPerson->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalPersonAssociation($objPerson->Id, 'INSERT');
 		}
 
 		/**
@@ -1063,8 +1073,9 @@
 					`person_id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
 
-			// Journaling
-			$this->JournalPersonAssociation($objPerson->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalPersonAssociation($objPerson->Id, 'DELETE');
 		}
 
 		/**
@@ -1078,11 +1089,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = NameItem::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `person_id` AS associated_id FROM `person_nameitem_assn` WHERE `name_item_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalPersonAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `person_id` AS associated_id FROM `person_nameitem_assn` WHERE `name_item_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalPersonAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1163,6 +1175,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNodePerson $_ChildTableNode
+	 */
 	class QQNodeNameItemPerson extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'person';
@@ -1190,6 +1207,11 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNodeNameItemPerson $Person
+	 */
 	class QQNodeNameItem extends QQNode {
 		protected $strTableName = 'name_item';
 		protected $strPrimaryKey = 'id';
@@ -1215,7 +1237,13 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNodeNameItemPerson $Person
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeNameItem extends QQReverseReferenceNode {
 		protected $strTableName = 'name_item';
 		protected $strPrimaryKey = 'id';

@@ -768,70 +768,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `stewardship_pledge` (
-					`id`,
-					`person_id`,
-					`stewardship_fund_id`,
-					`date_started`,
-					`date_ended`,
-					`pledge_amount`,
-					`contributed_amount`,
-					`remaining_amount`,
-					`fulfilled_flag`,
-					`active_flag`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipFundId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateStarted) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateEnded) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltPledgeAmount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltContributedAmount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltRemainingAmount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnFulfilledFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnActiveFlag) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return StewardshipPledge[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM stewardship_pledge WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return StewardshipPledge::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return StewardshipPledge[]
-		 */
-		public function GetJournal() {
-			return StewardshipPledge::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this StewardshipPledge
@@ -876,7 +815,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('stewardship_pledge', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -902,7 +841,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -938,7 +877,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -991,6 +930,72 @@
 			$this->blnFulfilledFlag = $objReloaded->blnFulfilledFlag;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = StewardshipPledge::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `stewardship_pledge` (
+					`id`,
+					`person_id`,
+					`stewardship_fund_id`,
+					`date_started`,
+					`date_ended`,
+					`pledge_amount`,
+					`contributed_amount`,
+					`remaining_amount`,
+					`fulfilled_flag`,
+					`active_flag`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+					' . $objDatabase->SqlVariable($this->dttDateStarted) . ',
+					' . $objDatabase->SqlVariable($this->dttDateEnded) . ',
+					' . $objDatabase->SqlVariable($this->fltPledgeAmount) . ',
+					' . $objDatabase->SqlVariable($this->fltContributedAmount) . ',
+					' . $objDatabase->SqlVariable($this->fltRemainingAmount) . ',
+					' . $objDatabase->SqlVariable($this->blnFulfilledFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return StewardshipPledge[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = StewardshipPledge::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM stewardship_pledge WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return StewardshipPledge::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return StewardshipPledge[]
+		 */
+		public function GetJournal() {
+			return StewardshipPledge::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1423,6 +1428,20 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $StewardshipFundId
+	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $DateStarted
+	 * @property-read QQNode $DateEnded
+	 * @property-read QQNode $PledgeAmount
+	 * @property-read QQNode $ContributedAmount
+	 * @property-read QQNode $RemainingAmount
+	 * @property-read QQNode $FulfilledFlag
+	 * @property-read QQNode $ActiveFlag
+	 */
 	class QQNodeStewardshipPledge extends QQNode {
 		protected $strTableName = 'stewardship_pledge';
 		protected $strPrimaryKey = 'id';
@@ -1466,7 +1485,22 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $StewardshipFundId
+	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $DateStarted
+	 * @property-read QQNode $DateEnded
+	 * @property-read QQNode $PledgeAmount
+	 * @property-read QQNode $ContributedAmount
+	 * @property-read QQNode $RemainingAmount
+	 * @property-read QQNode $FulfilledFlag
+	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeStewardshipPledge extends QQReverseReferenceNode {
 		protected $strTableName = 'stewardship_pledge';
 		protected $strPrimaryKey = 'id';

@@ -1008,72 +1008,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `group` (
-					`id`,
-					`group_type_id`,
-					`ministry_id`,
-					`name`,
-					`description`,
-					`parent_group_id`,
-					`hierarchy_level`,
-					`hierarchy_order_number`,
-					`confidential_flag`,
-					`email_broadcast_type_id`,
-					`token`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intGroupTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMinistryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strDescription) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intParentGroupId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intHierarchyLevel) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intHierarchyOrderNumber) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnConfidentialFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intEmailBroadcastTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strToken) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Group[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM group WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Group::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Group[]
-		 */
-		public function GetJournal() {
-			return Group::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Group
@@ -1120,7 +1057,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('group', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -1147,7 +1084,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 		
@@ -1241,7 +1178,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1295,6 +1232,74 @@
 			$this->EmailBroadcastTypeId = $objReloaded->EmailBroadcastTypeId;
 			$this->strToken = $objReloaded->strToken;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Group::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `group` (
+					`id`,
+					`group_type_id`,
+					`ministry_id`,
+					`name`,
+					`description`,
+					`parent_group_id`,
+					`hierarchy_level`,
+					`hierarchy_order_number`,
+					`confidential_flag`,
+					`email_broadcast_type_id`,
+					`token`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intGroupTypeId) . ',
+					' . $objDatabase->SqlVariable($this->intMinistryId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->strDescription) . ',
+					' . $objDatabase->SqlVariable($this->intParentGroupId) . ',
+					' . $objDatabase->SqlVariable($this->intHierarchyLevel) . ',
+					' . $objDatabase->SqlVariable($this->intHierarchyOrderNumber) . ',
+					' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
+					' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
+					' . $objDatabase->SqlVariable($this->strToken) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Group[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Group::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM group WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Group::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Group[]
+		 */
+		public function GetJournal() {
+			return Group::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1836,9 +1841,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
 
-			// Journaling
-			$objEmailMessageRoute->GroupId = $this->intId;
-			$objEmailMessageRoute->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->GroupId = $this->intId;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1867,8 +1874,10 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->GroupId = null;
-			$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->GroupId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1883,9 +1892,11 @@
 			$objDatabase = Group::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByGroupId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->GroupId = null;
-				$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByGroupId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->GroupId = null;
+					$objEmailMessageRoute->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1923,7 +1934,9 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1938,8 +1951,10 @@
 			$objDatabase = Group::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByGroupId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByGroupId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2008,9 +2023,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroup->Id) . '
 			');
 
-			// Journaling
-			$objGroup->ParentGroupId = $this->intId;
-			$objGroup->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroup->ParentGroupId = $this->intId;
+				$objGroup->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2039,8 +2056,10 @@
 			');
 
 			// Journaling
-			$objGroup->ParentGroupId = null;
-			$objGroup->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroup->ParentGroupId = null;
+				$objGroup->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2055,9 +2074,11 @@
 			$objDatabase = Group::GetDatabase();
 
 			// Journaling
-			foreach (Group::LoadArrayByParentGroupId($this->intId) as $objGroup) {
-				$objGroup->ParentGroupId = null;
-				$objGroup->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Group::LoadArrayByParentGroupId($this->intId) as $objGroup) {
+					$objGroup->ParentGroupId = null;
+					$objGroup->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2095,7 +2116,9 @@
 			');
 
 			// Journaling
-			$objGroup->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroup->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2110,8 +2133,10 @@
 			$objDatabase = Group::GetDatabase();
 
 			// Journaling
-			foreach (Group::LoadArrayByParentGroupId($this->intId) as $objGroup) {
-				$objGroup->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Group::LoadArrayByParentGroupId($this->intId) as $objGroup) {
+					$objGroup->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2180,9 +2205,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . '
 			');
 
-			// Journaling
-			$objGroupParticipation->GroupId = $this->intId;
-			$objGroupParticipation->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->GroupId = $this->intId;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2211,8 +2238,10 @@
 			');
 
 			// Journaling
-			$objGroupParticipation->GroupId = null;
-			$objGroupParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->GroupId = null;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2227,9 +2256,11 @@
 			$objDatabase = Group::GetDatabase();
 
 			// Journaling
-			foreach (GroupParticipation::LoadArrayByGroupId($this->intId) as $objGroupParticipation) {
-				$objGroupParticipation->GroupId = null;
-				$objGroupParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupParticipation::LoadArrayByGroupId($this->intId) as $objGroupParticipation) {
+					$objGroupParticipation->GroupId = null;
+					$objGroupParticipation->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2267,7 +2298,9 @@
 			');
 
 			// Journaling
-			$objGroupParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2282,8 +2315,10 @@
 			$objDatabase = Group::GetDatabase();
 
 			// Journaling
-			foreach (GroupParticipation::LoadArrayByGroupId($this->intId) as $objGroupParticipation) {
-				$objGroupParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupParticipation::LoadArrayByGroupId($this->intId) as $objGroupParticipation) {
+					$objGroupParticipation->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2404,6 +2439,26 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $GroupTypeId
+	 * @property-read QQNode $MinistryId
+	 * @property-read QQNodeMinistry $Ministry
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $Description
+	 * @property-read QQNode $ParentGroupId
+	 * @property-read QQNodeGroup $ParentGroup
+	 * @property-read QQNode $HierarchyLevel
+	 * @property-read QQNode $HierarchyOrderNumber
+	 * @property-read QQNode $ConfidentialFlag
+	 * @property-read QQNode $EmailBroadcastTypeId
+	 * @property-read QQNode $Token
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
+	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
+	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
+	 */
 	class QQNodeGroup extends QQNode {
 		protected $strTableName = 'group';
 		protected $strPrimaryKey = 'id';
@@ -2459,7 +2514,28 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $GroupTypeId
+	 * @property-read QQNode $MinistryId
+	 * @property-read QQNodeMinistry $Ministry
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $Description
+	 * @property-read QQNode $ParentGroupId
+	 * @property-read QQNodeGroup $ParentGroup
+	 * @property-read QQNode $HierarchyLevel
+	 * @property-read QQNode $HierarchyOrderNumber
+	 * @property-read QQNode $ConfidentialFlag
+	 * @property-read QQNode $EmailBroadcastTypeId
+	 * @property-read QQNode $Token
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
+	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
+	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeGroup extends QQReverseReferenceNode {
 		protected $strTableName = 'group';
 		protected $strPrimaryKey = 'id';

@@ -608,60 +608,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `smart_group` (
-					`group_id`,
-					`search_query_id`,
-					`query`,
-					`date_refreshed`,
-					`process_time_ms`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intSearchQueryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strQuery) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateRefreshed) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intProcessTimeMs) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intGroupId
-		 * @return SmartGroup[]
-		 */
-		public static function GetJournalForId($intGroupId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM smart_group WHERE group_id = ' .
-				QApplication::$Database[2]->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
-
-			return SmartGroup::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return SmartGroup[]
-		 */
-		public function GetJournal() {
-			return SmartGroup::GetJournalForId($this->intGroupId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this SmartGroup
@@ -697,7 +646,7 @@
 
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -719,7 +668,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -756,7 +705,7 @@
 					`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -806,6 +755,62 @@
 			$this->dttDateRefreshed = $objReloaded->dttDateRefreshed;
 			$this->intProcessTimeMs = $objReloaded->intProcessTimeMs;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = SmartGroup::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `smart_group` (
+					`group_id`,
+					`search_query_id`,
+					`query`,
+					`date_refreshed`,
+					`process_time_ms`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intGroupId) . ',
+					' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
+					' . $objDatabase->SqlVariable($this->strQuery) . ',
+					' . $objDatabase->SqlVariable($this->dttDateRefreshed) . ',
+					' . $objDatabase->SqlVariable($this->intProcessTimeMs) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intGroupId
+		 * @return SmartGroup[]
+		 */
+		public static function GetJournalForId($intGroupId) {
+			$objDatabase = SmartGroup::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM smart_group WHERE group_id = ' .
+				$objDatabase->SqlVariable($intGroupId) . ' ORDER BY __sys_date');
+
+			return SmartGroup::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return SmartGroup[]
+		 */
+		public function GetJournal() {
+			return SmartGroup::GetJournalForId($this->intGroupId);
+		}
+
 
 
 
@@ -1152,6 +1157,15 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $GroupId
+	 * @property-read QQNodeGroup $Group
+	 * @property-read QQNode $SearchQueryId
+	 * @property-read QQNodeSearchQuery $SearchQuery
+	 * @property-read QQNode $Query
+	 * @property-read QQNode $DateRefreshed
+	 * @property-read QQNode $ProcessTimeMs
+	 */
 	class QQNodeSmartGroup extends QQNode {
 		protected $strTableName = 'smart_group';
 		protected $strPrimaryKey = 'group_id';
@@ -1185,7 +1199,17 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $GroupId
+	 * @property-read QQNodeGroup $Group
+	 * @property-read QQNode $SearchQueryId
+	 * @property-read QQNodeSearchQuery $SearchQuery
+	 * @property-read QQNode $Query
+	 * @property-read QQNode $DateRefreshed
+	 * @property-read QQNode $ProcessTimeMs
+	 * @property-read QQNodeGroup $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeSmartGroup extends QQReverseReferenceNode {
 		protected $strTableName = 'smart_group';
 		protected $strPrimaryKey = 'group_id';

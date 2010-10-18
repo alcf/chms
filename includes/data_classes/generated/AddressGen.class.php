@@ -1044,80 +1044,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `address` (
-					`id`,
-					`address_type_id`,
-					`person_id`,
-					`household_id`,
-					`primary_phone_id`,
-					`address_1`,
-					`address_2`,
-					`address_3`,
-					`city`,
-					`state`,
-					`zip_code`,
-					`country`,
-					`current_flag`,
-					`invalid_flag`,
-					`date_until_when`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intAddressTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intHouseholdId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPrimaryPhoneId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strAddress1) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strAddress2) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strAddress3) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strCity) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strState) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strZipCode) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strCountry) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnCurrentFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnInvalidFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateUntilWhen) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Address[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM address WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Address::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Address[]
-		 */
-		public function GetJournal() {
-			return Address::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Address
@@ -1172,7 +1101,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('address', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -1203,7 +1132,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1239,7 +1168,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1297,6 +1226,82 @@
 			$this->blnInvalidFlag = $objReloaded->blnInvalidFlag;
 			$this->dttDateUntilWhen = $objReloaded->dttDateUntilWhen;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Address::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `address` (
+					`id`,
+					`address_type_id`,
+					`person_id`,
+					`household_id`,
+					`primary_phone_id`,
+					`address_1`,
+					`address_2`,
+					`address_3`,
+					`city`,
+					`state`,
+					`zip_code`,
+					`country`,
+					`current_flag`,
+					`invalid_flag`,
+					`date_until_when`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intAddressTypeId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intHouseholdId) . ',
+					' . $objDatabase->SqlVariable($this->intPrimaryPhoneId) . ',
+					' . $objDatabase->SqlVariable($this->strAddress1) . ',
+					' . $objDatabase->SqlVariable($this->strAddress2) . ',
+					' . $objDatabase->SqlVariable($this->strAddress3) . ',
+					' . $objDatabase->SqlVariable($this->strCity) . ',
+					' . $objDatabase->SqlVariable($this->strState) . ',
+					' . $objDatabase->SqlVariable($this->strZipCode) . ',
+					' . $objDatabase->SqlVariable($this->strCountry) . ',
+					' . $objDatabase->SqlVariable($this->blnCurrentFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnInvalidFlag) . ',
+					' . $objDatabase->SqlVariable($this->dttDateUntilWhen) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Address[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Address::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM address WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Address::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Address[]
+		 */
+		public function GetJournal() {
+			return Address::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1835,9 +1840,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
 
-			// Journaling
-			$objPerson->MailingAddressId = $this->intId;
-			$objPerson->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->MailingAddressId = $this->intId;
+				$objPerson->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1866,8 +1873,10 @@
 			');
 
 			// Journaling
-			$objPerson->MailingAddressId = null;
-			$objPerson->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->MailingAddressId = null;
+				$objPerson->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1882,9 +1891,11 @@
 			$objDatabase = Address::GetDatabase();
 
 			// Journaling
-			foreach (Person::LoadArrayByMailingAddressId($this->intId) as $objPerson) {
-				$objPerson->MailingAddressId = null;
-				$objPerson->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByMailingAddressId($this->intId) as $objPerson) {
+					$objPerson->MailingAddressId = null;
+					$objPerson->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1922,7 +1933,9 @@
 			');
 
 			// Journaling
-			$objPerson->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1937,8 +1950,10 @@
 			$objDatabase = Address::GetDatabase();
 
 			// Journaling
-			foreach (Person::LoadArrayByMailingAddressId($this->intId) as $objPerson) {
-				$objPerson->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByMailingAddressId($this->intId) as $objPerson) {
+					$objPerson->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2007,9 +2022,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
 
-			// Journaling
-			$objPerson->StewardshipAddressId = $this->intId;
-			$objPerson->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->StewardshipAddressId = $this->intId;
+				$objPerson->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2038,8 +2055,10 @@
 			');
 
 			// Journaling
-			$objPerson->StewardshipAddressId = null;
-			$objPerson->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->StewardshipAddressId = null;
+				$objPerson->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2054,9 +2073,11 @@
 			$objDatabase = Address::GetDatabase();
 
 			// Journaling
-			foreach (Person::LoadArrayByStewardshipAddressId($this->intId) as $objPerson) {
-				$objPerson->StewardshipAddressId = null;
-				$objPerson->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByStewardshipAddressId($this->intId) as $objPerson) {
+					$objPerson->StewardshipAddressId = null;
+					$objPerson->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2094,7 +2115,9 @@
 			');
 
 			// Journaling
-			$objPerson->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2109,8 +2132,10 @@
 			$objDatabase = Address::GetDatabase();
 
 			// Journaling
-			foreach (Person::LoadArrayByStewardshipAddressId($this->intId) as $objPerson) {
-				$objPerson->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByStewardshipAddressId($this->intId) as $objPerson) {
+					$objPerson->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2179,9 +2204,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objPhone->Id) . '
 			');
 
-			// Journaling
-			$objPhone->AddressId = $this->intId;
-			$objPhone->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objPhone->AddressId = $this->intId;
+				$objPhone->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2210,8 +2237,10 @@
 			');
 
 			// Journaling
-			$objPhone->AddressId = null;
-			$objPhone->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPhone->AddressId = null;
+				$objPhone->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2226,9 +2255,11 @@
 			$objDatabase = Address::GetDatabase();
 
 			// Journaling
-			foreach (Phone::LoadArrayByAddressId($this->intId) as $objPhone) {
-				$objPhone->AddressId = null;
-				$objPhone->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Phone::LoadArrayByAddressId($this->intId) as $objPhone) {
+					$objPhone->AddressId = null;
+					$objPhone->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2266,7 +2297,9 @@
 			');
 
 			// Journaling
-			$objPhone->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPhone->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2281,8 +2314,10 @@
 			$objDatabase = Address::GetDatabase();
 
 			// Journaling
-			foreach (Phone::LoadArrayByAddressId($this->intId) as $objPhone) {
-				$objPhone->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Phone::LoadArrayByAddressId($this->intId) as $objPhone) {
+					$objPhone->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2423,6 +2458,29 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $AddressTypeId
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $HouseholdId
+	 * @property-read QQNodeHousehold $Household
+	 * @property-read QQNode $PrimaryPhoneId
+	 * @property-read QQNodePhone $PrimaryPhone
+	 * @property-read QQNode $Address1
+	 * @property-read QQNode $Address2
+	 * @property-read QQNode $Address3
+	 * @property-read QQNode $City
+	 * @property-read QQNode $State
+	 * @property-read QQNode $ZipCode
+	 * @property-read QQNode $Country
+	 * @property-read QQNode $CurrentFlag
+	 * @property-read QQNode $InvalidFlag
+	 * @property-read QQNode $DateUntilWhen
+	 * @property-read QQReverseReferenceNodePerson $PersonAsMailing
+	 * @property-read QQReverseReferenceNodePerson $PersonAsStewardship
+	 * @property-read QQReverseReferenceNodePhone $Phone
+	 */
 	class QQNodeAddress extends QQNode {
 		protected $strTableName = 'address';
 		protected $strPrimaryKey = 'id';
@@ -2484,7 +2542,31 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $AddressTypeId
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $HouseholdId
+	 * @property-read QQNodeHousehold $Household
+	 * @property-read QQNode $PrimaryPhoneId
+	 * @property-read QQNodePhone $PrimaryPhone
+	 * @property-read QQNode $Address1
+	 * @property-read QQNode $Address2
+	 * @property-read QQNode $Address3
+	 * @property-read QQNode $City
+	 * @property-read QQNode $State
+	 * @property-read QQNode $ZipCode
+	 * @property-read QQNode $Country
+	 * @property-read QQNode $CurrentFlag
+	 * @property-read QQNode $InvalidFlag
+	 * @property-read QQNode $DateUntilWhen
+	 * @property-read QQReverseReferenceNodePerson $PersonAsMailing
+	 * @property-read QQReverseReferenceNodePerson $PersonAsStewardship
+	 * @property-read QQReverseReferenceNodePhone $Phone
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeAddress extends QQReverseReferenceNode {
 		protected $strTableName = 'address';
 		protected $strPrimaryKey = 'id';

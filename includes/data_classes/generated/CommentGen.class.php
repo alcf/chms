@@ -757,64 +757,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `comment` (
-					`id`,
-					`person_id`,
-					`posted_by_login_id`,
-					`comment_privacy_type_id`,
-					`comment_category_id`,
-					`comment`,
-					`date_posted`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPostedByLoginId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intCommentPrivacyTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intCommentCategoryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strComment) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDatePosted) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Comment[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM comment WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Comment::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Comment[]
-		 */
-		public function GetJournal() {
-			return Comment::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Comment
@@ -853,7 +798,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('comment', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -876,7 +821,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -912,7 +857,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -962,6 +907,66 @@
 			$this->strComment = $objReloaded->strComment;
 			$this->dttDatePosted = $objReloaded->dttDatePosted;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Comment::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `comment` (
+					`id`,
+					`person_id`,
+					`posted_by_login_id`,
+					`comment_privacy_type_id`,
+					`comment_category_id`,
+					`comment`,
+					`date_posted`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intPostedByLoginId) . ',
+					' . $objDatabase->SqlVariable($this->intCommentPrivacyTypeId) . ',
+					' . $objDatabase->SqlVariable($this->intCommentCategoryId) . ',
+					' . $objDatabase->SqlVariable($this->strComment) . ',
+					' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Comment[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Comment::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM comment WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Comment::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Comment[]
+		 */
+		public function GetJournal() {
+			return Comment::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1384,6 +1389,18 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $PostedByLoginId
+	 * @property-read QQNodeLogin $PostedByLogin
+	 * @property-read QQNode $CommentPrivacyTypeId
+	 * @property-read QQNode $CommentCategoryId
+	 * @property-read QQNodeCommentCategory $CommentCategory
+	 * @property-read QQNode $Comment
+	 * @property-read QQNode $DatePosted
+	 */
 	class QQNodeComment extends QQNode {
 		protected $strTableName = 'comment';
 		protected $strPrimaryKey = 'id';
@@ -1423,7 +1440,20 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $PostedByLoginId
+	 * @property-read QQNodeLogin $PostedByLogin
+	 * @property-read QQNode $CommentPrivacyTypeId
+	 * @property-read QQNode $CommentCategoryId
+	 * @property-read QQNodeCommentCategory $CommentCategory
+	 * @property-read QQNode $Comment
+	 * @property-read QQNode $DatePosted
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeComment extends QQReverseReferenceNode {
 		protected $strTableName = 'comment';
 		protected $strPrimaryKey = 'id';

@@ -609,54 +609,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `search_query` (
-					`id`,
-					`description`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strDescription) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return SearchQuery[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM search_query WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return SearchQuery::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return SearchQuery[]
-		 */
-		public function GetJournal() {
-			return SearchQuery::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this SearchQuery
@@ -685,7 +640,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('search_query', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -703,7 +658,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 		
@@ -769,7 +724,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -814,6 +769,56 @@
 			// Update $this's local variables to match
 			$this->strDescription = $objReloaded->strDescription;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = SearchQuery::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `search_query` (
+					`id`,
+					`description`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strDescription) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return SearchQuery[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = SearchQuery::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM search_query WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return SearchQuery::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return SearchQuery[]
+		 */
+		public function GetJournal() {
+			return SearchQuery::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1046,9 +1051,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
 
-			// Journaling
-			$objQueryCondition->SearchQueryId = $this->intId;
-			$objQueryCondition->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->SearchQueryId = $this->intId;
+				$objQueryCondition->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1077,8 +1084,10 @@
 			');
 
 			// Journaling
-			$objQueryCondition->SearchQueryId = null;
-			$objQueryCondition->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->SearchQueryId = null;
+				$objQueryCondition->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1093,9 +1102,11 @@
 			$objDatabase = SearchQuery::GetDatabase();
 
 			// Journaling
-			foreach (QueryCondition::LoadArrayBySearchQueryId($this->intId) as $objQueryCondition) {
-				$objQueryCondition->SearchQueryId = null;
-				$objQueryCondition->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (QueryCondition::LoadArrayBySearchQueryId($this->intId) as $objQueryCondition) {
+					$objQueryCondition->SearchQueryId = null;
+					$objQueryCondition->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1133,7 +1144,9 @@
 			');
 
 			// Journaling
-			$objQueryCondition->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1148,8 +1161,10 @@
 			$objDatabase = SearchQuery::GetDatabase();
 
 			// Journaling
-			foreach (QueryCondition::LoadArrayBySearchQueryId($this->intId) as $objQueryCondition) {
-				$objQueryCondition->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (QueryCondition::LoadArrayBySearchQueryId($this->intId) as $objQueryCondition) {
+					$objQueryCondition->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1231,6 +1246,12 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Description
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
+	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
+	 */
 	class QQNodeSearchQuery extends QQNode {
 		protected $strTableName = 'search_query';
 		protected $strPrimaryKey = 'id';
@@ -1258,7 +1279,14 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Description
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
+	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeSearchQuery extends QQReverseReferenceNode {
 		protected $strTableName = 'search_query';
 		protected $strPrimaryKey = 'id';

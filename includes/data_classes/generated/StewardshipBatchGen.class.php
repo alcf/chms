@@ -869,72 +869,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `stewardship_batch` (
-					`id`,
-					`stewardship_batch_status_type_id`,
-					`date_entered`,
-					`date_credited`,
-					`batch_label`,
-					`description`,
-					`item_count`,
-					`reported_total_amount`,
-					`actual_total_amount`,
-					`posted_total_amount`,
-					`created_by_login_id`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipBatchStatusTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateEntered) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateCredited) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strBatchLabel) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strDescription) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intItemCount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltReportedTotalAmount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltActualTotalAmount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltPostedTotalAmount) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intCreatedByLoginId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return StewardshipBatch[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM stewardship_batch WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return StewardshipBatch::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return StewardshipBatch[]
-		 */
-		public function GetJournal() {
-			return StewardshipBatch::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this StewardshipBatch
@@ -981,7 +918,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('stewardship_batch', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -1008,7 +945,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1044,7 +981,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1098,6 +1035,74 @@
 			$this->fltPostedTotalAmount = $objReloaded->fltPostedTotalAmount;
 			$this->CreatedByLoginId = $objReloaded->CreatedByLoginId;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = StewardshipBatch::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `stewardship_batch` (
+					`id`,
+					`stewardship_batch_status_type_id`,
+					`date_entered`,
+					`date_credited`,
+					`batch_label`,
+					`description`,
+					`item_count`,
+					`reported_total_amount`,
+					`actual_total_amount`,
+					`posted_total_amount`,
+					`created_by_login_id`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipBatchStatusTypeId) . ',
+					' . $objDatabase->SqlVariable($this->dttDateEntered) . ',
+					' . $objDatabase->SqlVariable($this->dttDateCredited) . ',
+					' . $objDatabase->SqlVariable($this->strBatchLabel) . ',
+					' . $objDatabase->SqlVariable($this->strDescription) . ',
+					' . $objDatabase->SqlVariable($this->intItemCount) . ',
+					' . $objDatabase->SqlVariable($this->fltReportedTotalAmount) . ',
+					' . $objDatabase->SqlVariable($this->fltActualTotalAmount) . ',
+					' . $objDatabase->SqlVariable($this->fltPostedTotalAmount) . ',
+					' . $objDatabase->SqlVariable($this->intCreatedByLoginId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return StewardshipBatch[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = StewardshipBatch::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM stewardship_batch WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return StewardshipBatch::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return StewardshipBatch[]
+		 */
+		public function GetJournal() {
+			return StewardshipBatch::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1486,9 +1491,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipContribution->StewardshipBatchId = $this->intId;
-			$objStewardshipContribution->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->StewardshipBatchId = $this->intId;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1517,8 +1524,10 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->StewardshipBatchId = null;
-			$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->StewardshipBatchId = null;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1533,9 +1542,11 @@
 			$objDatabase = StewardshipBatch::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->StewardshipBatchId = null;
-				$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->StewardshipBatchId = null;
+					$objStewardshipContribution->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1573,7 +1584,9 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1588,8 +1601,10 @@
 			$objDatabase = StewardshipBatch::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1658,9 +1673,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipPost->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipPost->StewardshipBatchId = $this->intId;
-			$objStewardshipPost->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPost->StewardshipBatchId = $this->intId;
+				$objStewardshipPost->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1689,8 +1706,10 @@
 			');
 
 			// Journaling
-			$objStewardshipPost->StewardshipBatchId = null;
-			$objStewardshipPost->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPost->StewardshipBatchId = null;
+				$objStewardshipPost->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1705,9 +1724,11 @@
 			$objDatabase = StewardshipBatch::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipPost::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipPost) {
-				$objStewardshipPost->StewardshipBatchId = null;
-				$objStewardshipPost->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPost::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipPost) {
+					$objStewardshipPost->StewardshipBatchId = null;
+					$objStewardshipPost->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1745,7 +1766,9 @@
 			');
 
 			// Journaling
-			$objStewardshipPost->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPost->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1760,8 +1783,10 @@
 			$objDatabase = StewardshipBatch::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipPost::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipPost) {
-				$objStewardshipPost->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPost::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipPost) {
+					$objStewardshipPost->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1830,9 +1855,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipStack->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipStack->StewardshipBatchId = $this->intId;
-			$objStewardshipStack->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipStack->StewardshipBatchId = $this->intId;
+				$objStewardshipStack->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1861,8 +1888,10 @@
 			');
 
 			// Journaling
-			$objStewardshipStack->StewardshipBatchId = null;
-			$objStewardshipStack->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipStack->StewardshipBatchId = null;
+				$objStewardshipStack->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1877,9 +1906,11 @@
 			$objDatabase = StewardshipBatch::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipStack::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipStack) {
-				$objStewardshipStack->StewardshipBatchId = null;
-				$objStewardshipStack->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipStack::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipStack) {
+					$objStewardshipStack->StewardshipBatchId = null;
+					$objStewardshipStack->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1917,7 +1948,9 @@
 			');
 
 			// Journaling
-			$objStewardshipStack->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipStack->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1932,8 +1965,10 @@
 			$objDatabase = StewardshipBatch::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipStack::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipStack) {
-				$objStewardshipStack->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipStack::LoadArrayByStewardshipBatchId($this->intId) as $objStewardshipStack) {
+					$objStewardshipStack->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2052,6 +2087,23 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $StewardshipBatchStatusTypeId
+	 * @property-read QQNode $DateEntered
+	 * @property-read QQNode $DateCredited
+	 * @property-read QQNode $BatchLabel
+	 * @property-read QQNode $Description
+	 * @property-read QQNode $ItemCount
+	 * @property-read QQNode $ReportedTotalAmount
+	 * @property-read QQNode $ActualTotalAmount
+	 * @property-read QQNode $PostedTotalAmount
+	 * @property-read QQNode $CreatedByLoginId
+	 * @property-read QQNodeLogin $CreatedByLogin
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPost
+	 * @property-read QQReverseReferenceNodeStewardshipStack $StewardshipStack
+	 */
 	class QQNodeStewardshipBatch extends QQNode {
 		protected $strTableName = 'stewardship_batch';
 		protected $strPrimaryKey = 'id';
@@ -2101,7 +2153,25 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $StewardshipBatchStatusTypeId
+	 * @property-read QQNode $DateEntered
+	 * @property-read QQNode $DateCredited
+	 * @property-read QQNode $BatchLabel
+	 * @property-read QQNode $Description
+	 * @property-read QQNode $ItemCount
+	 * @property-read QQNode $ReportedTotalAmount
+	 * @property-read QQNode $ActualTotalAmount
+	 * @property-read QQNode $PostedTotalAmount
+	 * @property-read QQNode $CreatedByLoginId
+	 * @property-read QQNodeLogin $CreatedByLogin
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPost
+	 * @property-read QQReverseReferenceNodeStewardshipStack $StewardshipStack
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeStewardshipBatch extends QQReverseReferenceNode {
 		protected $strTableName = 'stewardship_batch';
 		protected $strPrimaryKey = 'id';

@@ -660,62 +660,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `query_node` (
-					`id`,
-					`name`,
-					`qcodo_query_node`,
-					`query_data_type_id`,
-					`type_detail`,
-					`qcodo_query_condition`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strQcodoQueryNode) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intQueryDataTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strTypeDetail) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strQcodoQueryCondition) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return QueryNode[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM query_node WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return QueryNode::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return QueryNode[]
-		 */
-		public function GetJournal() {
-			return QueryNode::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this QueryNode
@@ -752,7 +699,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('query_node', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -774,7 +721,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -810,7 +757,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -859,6 +806,64 @@
 			$this->strTypeDetail = $objReloaded->strTypeDetail;
 			$this->strQcodoQueryCondition = $objReloaded->strQcodoQueryCondition;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = QueryNode::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `query_node` (
+					`id`,
+					`name`,
+					`qcodo_query_node`,
+					`query_data_type_id`,
+					`type_detail`,
+					`qcodo_query_condition`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->strQcodoQueryNode) . ',
+					' . $objDatabase->SqlVariable($this->intQueryDataTypeId) . ',
+					' . $objDatabase->SqlVariable($this->strTypeDetail) . ',
+					' . $objDatabase->SqlVariable($this->strQcodoQueryCondition) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return QueryNode[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = QueryNode::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM query_node WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return QueryNode::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return QueryNode[]
+		 */
+		public function GetJournal() {
+			return QueryNode::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1100,9 +1105,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objQueryCondition->Id) . '
 			');
 
-			// Journaling
-			$objQueryCondition->QueryNodeId = $this->intId;
-			$objQueryCondition->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->QueryNodeId = $this->intId;
+				$objQueryCondition->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1131,8 +1138,10 @@
 			');
 
 			// Journaling
-			$objQueryCondition->QueryNodeId = null;
-			$objQueryCondition->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->QueryNodeId = null;
+				$objQueryCondition->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1147,9 +1156,11 @@
 			$objDatabase = QueryNode::GetDatabase();
 
 			// Journaling
-			foreach (QueryCondition::LoadArrayByQueryNodeId($this->intId) as $objQueryCondition) {
-				$objQueryCondition->QueryNodeId = null;
-				$objQueryCondition->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (QueryCondition::LoadArrayByQueryNodeId($this->intId) as $objQueryCondition) {
+					$objQueryCondition->QueryNodeId = null;
+					$objQueryCondition->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1187,7 +1198,9 @@
 			');
 
 			// Journaling
-			$objQueryCondition->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objQueryCondition->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1202,8 +1215,10 @@
 			$objDatabase = QueryNode::GetDatabase();
 
 			// Journaling
-			foreach (QueryCondition::LoadArrayByQueryNodeId($this->intId) as $objQueryCondition) {
-				$objQueryCondition->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (QueryCondition::LoadArrayByQueryNodeId($this->intId) as $objQueryCondition) {
+					$objQueryCondition->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1297,6 +1312,15 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $QcodoQueryNode
+	 * @property-read QQNode $QueryDataTypeId
+	 * @property-read QQNode $TypeDetail
+	 * @property-read QQNode $QcodoQueryCondition
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
+	 */
 	class QQNodeQueryNode extends QQNode {
 		protected $strTableName = 'query_node';
 		protected $strPrimaryKey = 'id';
@@ -1330,7 +1354,17 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $QcodoQueryNode
+	 * @property-read QQNode $QueryDataTypeId
+	 * @property-read QQNode $TypeDetail
+	 * @property-read QQNode $QcodoQueryCondition
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeQueryNode extends QQReverseReferenceNode {
 		protected $strTableName = 'query_node';
 		protected $strPrimaryKey = 'id';

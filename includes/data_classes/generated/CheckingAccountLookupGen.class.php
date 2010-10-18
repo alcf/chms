@@ -681,56 +681,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `checking_account_lookup` (
-					`id`,
-					`transit_hash`,
-					`account_hash`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strTransitHash) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strAccountHash) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return CheckingAccountLookup[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM checking_account_lookup WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return CheckingAccountLookup::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return CheckingAccountLookup[]
-		 */
-		public function GetJournal() {
-			return CheckingAccountLookup::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this CheckingAccountLookup
@@ -761,7 +714,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('checking_account_lookup', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -780,7 +733,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -816,7 +769,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -862,6 +815,58 @@
 			$this->strTransitHash = $objReloaded->strTransitHash;
 			$this->strAccountHash = $objReloaded->strAccountHash;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = CheckingAccountLookup::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `checking_account_lookup` (
+					`id`,
+					`transit_hash`,
+					`account_hash`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strTransitHash) . ',
+					' . $objDatabase->SqlVariable($this->strAccountHash) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return CheckingAccountLookup[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = CheckingAccountLookup::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM checking_account_lookup WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return CheckingAccountLookup::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return CheckingAccountLookup[]
+		 */
+		public function GetJournal() {
+			return CheckingAccountLookup::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1067,9 +1072,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipContribution->CheckingAccountLookupId = $this->intId;
-			$objStewardshipContribution->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->CheckingAccountLookupId = $this->intId;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1098,8 +1105,10 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->CheckingAccountLookupId = null;
-			$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->CheckingAccountLookupId = null;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1114,9 +1123,11 @@
 			$objDatabase = CheckingAccountLookup::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByCheckingAccountLookupId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->CheckingAccountLookupId = null;
-				$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByCheckingAccountLookupId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->CheckingAccountLookupId = null;
+					$objStewardshipContribution->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1154,7 +1165,9 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1169,8 +1182,10 @@
 			$objDatabase = CheckingAccountLookup::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByCheckingAccountLookupId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByCheckingAccountLookupId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1241,7 +1256,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalPersonAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = CheckingAccountLookup::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `checkingaccountlookup_person_assn` (
 					`checking_account_lookup_id`,
 					`person_id`,
@@ -1249,10 +1266,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -1264,8 +1281,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalPersonAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM checkingaccountlookup_person_assn WHERE checking_account_lookup_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = CheckingAccountLookup::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM checkingaccountlookup_person_assn WHERE checking_account_lookup_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -1301,8 +1320,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalPersonAssociation($objPerson->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalPersonAssociation($objPerson->Id, 'INSERT');
 		}
 
 		/**
@@ -1328,8 +1348,9 @@
 					`person_id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
 
-			// Journaling
-			$this->JournalPersonAssociation($objPerson->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalPersonAssociation($objPerson->Id, 'DELETE');
 		}
 
 		/**
@@ -1343,11 +1364,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = CheckingAccountLookup::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `person_id` AS associated_id FROM `checkingaccountlookup_person_assn` WHERE `checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalPersonAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `person_id` AS associated_id FROM `checkingaccountlookup_person_assn` WHERE `checking_account_lookup_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalPersonAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1431,6 +1453,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNodePerson $_ChildTableNode
+	 */
 	class QQNodeCheckingAccountLookupPerson extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'person';
@@ -1458,6 +1485,13 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $TransitHash
+	 * @property-read QQNode $AccountHash
+	 * @property-read QQNodeCheckingAccountLookupPerson $Person
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
+	 */
 	class QQNodeCheckingAccountLookup extends QQNode {
 		protected $strTableName = 'checking_account_lookup';
 		protected $strPrimaryKey = 'id';
@@ -1487,7 +1521,15 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $TransitHash
+	 * @property-read QQNode $AccountHash
+	 * @property-read QQNodeCheckingAccountLookupPerson $Person
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeCheckingAccountLookup extends QQReverseReferenceNode {
 		protected $strTableName = 'checking_account_lookup';
 		protected $strPrimaryKey = 'id';

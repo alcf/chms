@@ -71,16 +71,17 @@
 				'database' => 'alcf_chms',
 				'username' => 'root',
 				'password' => '',
-				'profiling' => false)));
-
-			define('DB_CONNECTION_2', serialize(array(
-				'adapter' => 'MySqli5',
-				'server' => 'localhost',
-				'port' => null,
-				'database' => 'alcf_chms_log',
-				'username' => 'root',
-				'password' => '',
-				'profiling' => false)));
+				'profiling' => false,
+				'journaling' => array(
+					'adapter' => 'MySqli5',
+					'server' => 'localhost',
+					'port' => null,
+					'database' => 'alcf_chms_log',
+					'username' => 'root',
+					'password' => '',
+					'profiling' => false,
+					'staticproperty' => 'LoginId')
+			)));
 			break;
 
 		case 'test':

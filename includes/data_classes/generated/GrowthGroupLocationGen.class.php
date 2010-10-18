@@ -615,60 +615,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `growth_group_location` (
-					`id`,
-					`location`,
-					`longitude`,
-					`latitude`,
-					`zoom`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strLocation) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltLongitude) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->fltLatitude) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intZoom) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return GrowthGroupLocation[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM growth_group_location WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return GrowthGroupLocation::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return GrowthGroupLocation[]
-		 */
-		public function GetJournal() {
-			return GrowthGroupLocation::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this GrowthGroupLocation
@@ -703,7 +652,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('growth_group_location', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -724,7 +673,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -760,7 +709,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -808,6 +757,62 @@
 			$this->fltLatitude = $objReloaded->fltLatitude;
 			$this->intZoom = $objReloaded->intZoom;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = GrowthGroupLocation::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `growth_group_location` (
+					`id`,
+					`location`,
+					`longitude`,
+					`latitude`,
+					`zoom`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strLocation) . ',
+					' . $objDatabase->SqlVariable($this->fltLongitude) . ',
+					' . $objDatabase->SqlVariable($this->fltLatitude) . ',
+					' . $objDatabase->SqlVariable($this->intZoom) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return GrowthGroupLocation[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = GrowthGroupLocation::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM growth_group_location WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return GrowthGroupLocation::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return GrowthGroupLocation[]
+		 */
+		public function GetJournal() {
+			return GrowthGroupLocation::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1033,9 +1038,11 @@
 					`group_id` = ' . $objDatabase->SqlVariable($objGrowthGroup->GroupId) . '
 			');
 
-			// Journaling
-			$objGrowthGroup->GrowthGroupLocationId = $this->intId;
-			$objGrowthGroup->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGrowthGroup->GrowthGroupLocationId = $this->intId;
+				$objGrowthGroup->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1064,8 +1071,10 @@
 			');
 
 			// Journaling
-			$objGrowthGroup->GrowthGroupLocationId = null;
-			$objGrowthGroup->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGrowthGroup->GrowthGroupLocationId = null;
+				$objGrowthGroup->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1080,9 +1089,11 @@
 			$objDatabase = GrowthGroupLocation::GetDatabase();
 
 			// Journaling
-			foreach (GrowthGroup::LoadArrayByGrowthGroupLocationId($this->intId) as $objGrowthGroup) {
-				$objGrowthGroup->GrowthGroupLocationId = null;
-				$objGrowthGroup->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GrowthGroup::LoadArrayByGrowthGroupLocationId($this->intId) as $objGrowthGroup) {
+					$objGrowthGroup->GrowthGroupLocationId = null;
+					$objGrowthGroup->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1120,7 +1131,9 @@
 			');
 
 			// Journaling
-			$objGrowthGroup->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGrowthGroup->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1135,8 +1148,10 @@
 			$objDatabase = GrowthGroupLocation::GetDatabase();
 
 			// Journaling
-			foreach (GrowthGroup::LoadArrayByGrowthGroupLocationId($this->intId) as $objGrowthGroup) {
-				$objGrowthGroup->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GrowthGroup::LoadArrayByGrowthGroupLocationId($this->intId) as $objGrowthGroup) {
+					$objGrowthGroup->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1227,6 +1242,14 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Location
+	 * @property-read QQNode $Longitude
+	 * @property-read QQNode $Latitude
+	 * @property-read QQNode $Zoom
+	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
+	 */
 	class QQNodeGrowthGroupLocation extends QQNode {
 		protected $strTableName = 'growth_group_location';
 		protected $strPrimaryKey = 'id';
@@ -1258,7 +1281,16 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Location
+	 * @property-read QQNode $Longitude
+	 * @property-read QQNode $Latitude
+	 * @property-read QQNode $Zoom
+	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeGrowthGroupLocation extends QQReverseReferenceNode {
 		protected $strTableName = 'growth_group_location';
 		protected $strPrimaryKey = 'id';

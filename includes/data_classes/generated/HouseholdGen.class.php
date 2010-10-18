@@ -771,60 +771,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `household` (
-					`id`,
-					`name`,
-					`head_person_id`,
-					`combined_stewardship_flag`,
-					`members`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intHeadPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnCombinedStewardshipFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strMembers) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Household[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM household WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Household::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Household[]
-		 */
-		public function GetJournal() {
-			return Household::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Household
@@ -859,7 +808,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('household', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -880,7 +829,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -916,7 +865,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -964,6 +913,62 @@
 			$this->blnCombinedStewardshipFlag = $objReloaded->blnCombinedStewardshipFlag;
 			$this->strMembers = $objReloaded->strMembers;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Household::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `household` (
+					`id`,
+					`name`,
+					`head_person_id`,
+					`combined_stewardship_flag`,
+					`members`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->intHeadPersonId) . ',
+					' . $objDatabase->SqlVariable($this->blnCombinedStewardshipFlag) . ',
+					' . $objDatabase->SqlVariable($this->strMembers) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Household[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Household::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM household WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Household::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Household[]
+		 */
+		public function GetJournal() {
+			return Household::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1268,9 +1273,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . '
 			');
 
-			// Journaling
-			$objAddress->HouseholdId = $this->intId;
-			$objAddress->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->HouseholdId = $this->intId;
+				$objAddress->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1299,8 +1306,10 @@
 			');
 
 			// Journaling
-			$objAddress->HouseholdId = null;
-			$objAddress->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->HouseholdId = null;
+				$objAddress->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1315,9 +1324,11 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (Address::LoadArrayByHouseholdId($this->intId) as $objAddress) {
-				$objAddress->HouseholdId = null;
-				$objAddress->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Address::LoadArrayByHouseholdId($this->intId) as $objAddress) {
+					$objAddress->HouseholdId = null;
+					$objAddress->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1355,7 +1366,9 @@
 			');
 
 			// Journaling
-			$objAddress->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1370,8 +1383,10 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (Address::LoadArrayByHouseholdId($this->intId) as $objAddress) {
-				$objAddress->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Address::LoadArrayByHouseholdId($this->intId) as $objAddress) {
+					$objAddress->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1440,9 +1455,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdParticipation->Id) . '
 			');
 
-			// Journaling
-			$objHouseholdParticipation->HouseholdId = $this->intId;
-			$objHouseholdParticipation->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdParticipation->HouseholdId = $this->intId;
+				$objHouseholdParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1471,8 +1488,10 @@
 			');
 
 			// Journaling
-			$objHouseholdParticipation->HouseholdId = null;
-			$objHouseholdParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdParticipation->HouseholdId = null;
+				$objHouseholdParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1487,9 +1506,11 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdParticipation::LoadArrayByHouseholdId($this->intId) as $objHouseholdParticipation) {
-				$objHouseholdParticipation->HouseholdId = null;
-				$objHouseholdParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdParticipation::LoadArrayByHouseholdId($this->intId) as $objHouseholdParticipation) {
+					$objHouseholdParticipation->HouseholdId = null;
+					$objHouseholdParticipation->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1527,7 +1548,9 @@
 			');
 
 			// Journaling
-			$objHouseholdParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdParticipation->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1542,8 +1565,10 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdParticipation::LoadArrayByHouseholdId($this->intId) as $objHouseholdParticipation) {
-				$objHouseholdParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdParticipation::LoadArrayByHouseholdId($this->intId) as $objHouseholdParticipation) {
+					$objHouseholdParticipation->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1612,9 +1637,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . '
 			');
 
-			// Journaling
-			$objHouseholdSplit->SplitHouseholdId = $this->intId;
-			$objHouseholdSplit->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->SplitHouseholdId = $this->intId;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1643,8 +1670,10 @@
 			');
 
 			// Journaling
-			$objHouseholdSplit->SplitHouseholdId = null;
-			$objHouseholdSplit->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->SplitHouseholdId = null;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1659,9 +1688,11 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
-				$objHouseholdSplit->SplitHouseholdId = null;
-				$objHouseholdSplit->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
+					$objHouseholdSplit->SplitHouseholdId = null;
+					$objHouseholdSplit->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1699,7 +1730,9 @@
 			');
 
 			// Journaling
-			$objHouseholdSplit->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1714,8 +1747,10 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
-				$objHouseholdSplit->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
+					$objHouseholdSplit->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1784,9 +1819,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . '
 			');
 
-			// Journaling
-			$objHouseholdSplit->HouseholdId = $this->intId;
-			$objHouseholdSplit->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->HouseholdId = $this->intId;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1815,8 +1852,10 @@
 			');
 
 			// Journaling
-			$objHouseholdSplit->HouseholdId = null;
-			$objHouseholdSplit->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->HouseholdId = null;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1831,9 +1870,11 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdSplit::LoadArrayByHouseholdId($this->intId) as $objHouseholdSplit) {
-				$objHouseholdSplit->HouseholdId = null;
-				$objHouseholdSplit->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdSplit::LoadArrayByHouseholdId($this->intId) as $objHouseholdSplit) {
+					$objHouseholdSplit->HouseholdId = null;
+					$objHouseholdSplit->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1871,7 +1912,9 @@
 			');
 
 			// Journaling
-			$objHouseholdSplit->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1886,8 +1929,10 @@
 			$objDatabase = Household::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdSplit::LoadArrayByHouseholdId($this->intId) as $objHouseholdSplit) {
-				$objHouseholdSplit->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdSplit::LoadArrayByHouseholdId($this->intId) as $objHouseholdSplit) {
+					$objHouseholdSplit->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1984,6 +2029,18 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $HeadPersonId
+	 * @property-read QQNodePerson $HeadPerson
+	 * @property-read QQNode $CombinedStewardshipFlag
+	 * @property-read QQNode $Members
+	 * @property-read QQReverseReferenceNodeAddress $Address
+	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
+	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
+	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplit
+	 */
 	class QQNodeHousehold extends QQNode {
 		protected $strTableName = 'household';
 		protected $strPrimaryKey = 'id';
@@ -2023,7 +2080,20 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $HeadPersonId
+	 * @property-read QQNodePerson $HeadPerson
+	 * @property-read QQNode $CombinedStewardshipFlag
+	 * @property-read QQNode $Members
+	 * @property-read QQReverseReferenceNodeAddress $Address
+	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
+	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
+	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplit
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeHousehold extends QQReverseReferenceNode {
 		protected $strTableName = 'household';
 		protected $strPrimaryKey = 'id';

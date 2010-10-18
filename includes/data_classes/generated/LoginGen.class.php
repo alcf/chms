@@ -1014,76 +1014,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `login` (
-					`id`,
-					`role_type_id`,
-					`permission_bitmap`,
-					`username`,
-					`password_cache`,
-					`password_last_set`,
-					`date_last_login`,
-					`domain_active_flag`,
-					`login_active_flag`,
-					`email`,
-					`first_name`,
-					`middle_initial`,
-					`last_name`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intRoleTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPermissionBitmap) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strUsername) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strPasswordCache) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strPasswordLastSet) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateLastLogin) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnDomainActiveFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnLoginActiveFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strEmail) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strFirstName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strMiddleInitial) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strLastName) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Login[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM login WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Login::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Login[]
-		 */
-		public function GetJournal() {
-			return Login::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Login
@@ -1134,7 +1067,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('login', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -1163,7 +1096,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1199,7 +1132,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1255,6 +1188,78 @@
 			$this->strMiddleInitial = $objReloaded->strMiddleInitial;
 			$this->strLastName = $objReloaded->strLastName;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Login::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `login` (
+					`id`,
+					`role_type_id`,
+					`permission_bitmap`,
+					`username`,
+					`password_cache`,
+					`password_last_set`,
+					`date_last_login`,
+					`domain_active_flag`,
+					`login_active_flag`,
+					`email`,
+					`first_name`,
+					`middle_initial`,
+					`last_name`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intRoleTypeId) . ',
+					' . $objDatabase->SqlVariable($this->intPermissionBitmap) . ',
+					' . $objDatabase->SqlVariable($this->strUsername) . ',
+					' . $objDatabase->SqlVariable($this->strPasswordCache) . ',
+					' . $objDatabase->SqlVariable($this->strPasswordLastSet) . ',
+					' . $objDatabase->SqlVariable($this->dttDateLastLogin) . ',
+					' . $objDatabase->SqlVariable($this->blnDomainActiveFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnLoginActiveFlag) . ',
+					' . $objDatabase->SqlVariable($this->strEmail) . ',
+					' . $objDatabase->SqlVariable($this->strFirstName) . ',
+					' . $objDatabase->SqlVariable($this->strMiddleInitial) . ',
+					' . $objDatabase->SqlVariable($this->strLastName) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Login[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Login::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM login WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Login::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Login[]
+		 */
+		public function GetJournal() {
+			return Login::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1668,9 +1673,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objComment->Id) . '
 			');
 
-			// Journaling
-			$objComment->PostedByLoginId = $this->intId;
-			$objComment->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->PostedByLoginId = $this->intId;
+				$objComment->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1699,8 +1706,10 @@
 			');
 
 			// Journaling
-			$objComment->PostedByLoginId = null;
-			$objComment->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->PostedByLoginId = null;
+				$objComment->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1715,9 +1724,11 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (Comment::LoadArrayByPostedByLoginId($this->intId) as $objComment) {
-				$objComment->PostedByLoginId = null;
-				$objComment->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Comment::LoadArrayByPostedByLoginId($this->intId) as $objComment) {
+					$objComment->PostedByLoginId = null;
+					$objComment->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1755,7 +1766,9 @@
 			');
 
 			// Journaling
-			$objComment->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1770,8 +1783,10 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (Comment::LoadArrayByPostedByLoginId($this->intId) as $objComment) {
-				$objComment->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Comment::LoadArrayByPostedByLoginId($this->intId) as $objComment) {
+					$objComment->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1840,9 +1855,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
 
-			// Journaling
-			$objEmailMessageRoute->LoginId = $this->intId;
-			$objEmailMessageRoute->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->LoginId = $this->intId;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1871,8 +1888,10 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->LoginId = null;
-			$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->LoginId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1887,9 +1906,11 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByLoginId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->LoginId = null;
-				$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByLoginId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->LoginId = null;
+					$objEmailMessageRoute->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1927,7 +1948,9 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1942,8 +1965,10 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByLoginId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByLoginId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2012,9 +2037,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipBatch->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipBatch->CreatedByLoginId = $this->intId;
-			$objStewardshipBatch->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipBatch->CreatedByLoginId = $this->intId;
+				$objStewardshipBatch->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2043,8 +2070,10 @@
 			');
 
 			// Journaling
-			$objStewardshipBatch->CreatedByLoginId = null;
-			$objStewardshipBatch->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipBatch->CreatedByLoginId = null;
+				$objStewardshipBatch->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2059,9 +2088,11 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipBatch::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipBatch) {
-				$objStewardshipBatch->CreatedByLoginId = null;
-				$objStewardshipBatch->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipBatch::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipBatch) {
+					$objStewardshipBatch->CreatedByLoginId = null;
+					$objStewardshipBatch->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2099,7 +2130,9 @@
 			');
 
 			// Journaling
-			$objStewardshipBatch->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipBatch->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2114,8 +2147,10 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipBatch::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipBatch) {
-				$objStewardshipBatch->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipBatch::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipBatch) {
+					$objStewardshipBatch->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2184,9 +2219,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipContribution->CreatedByLoginId = $this->intId;
-			$objStewardshipContribution->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->CreatedByLoginId = $this->intId;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2215,8 +2252,10 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->CreatedByLoginId = null;
-			$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->CreatedByLoginId = null;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2231,9 +2270,11 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->CreatedByLoginId = null;
-				$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->CreatedByLoginId = null;
+					$objStewardshipContribution->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2271,7 +2312,9 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2286,8 +2329,10 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2356,9 +2401,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipPost->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipPost->CreatedByLoginId = $this->intId;
-			$objStewardshipPost->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPost->CreatedByLoginId = $this->intId;
+				$objStewardshipPost->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2387,8 +2434,10 @@
 			');
 
 			// Journaling
-			$objStewardshipPost->CreatedByLoginId = null;
-			$objStewardshipPost->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPost->CreatedByLoginId = null;
+				$objStewardshipPost->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -2403,9 +2452,11 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipPost::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipPost) {
-				$objStewardshipPost->CreatedByLoginId = null;
-				$objStewardshipPost->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPost::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipPost) {
+					$objStewardshipPost->CreatedByLoginId = null;
+					$objStewardshipPost->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2443,7 +2494,9 @@
 			');
 
 			// Journaling
-			$objStewardshipPost->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPost->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -2458,8 +2511,10 @@
 			$objDatabase = Login::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipPost::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipPost) {
-				$objStewardshipPost->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPost::LoadArrayByCreatedByLoginId($this->intId) as $objStewardshipPost) {
+					$objStewardshipPost->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2530,7 +2585,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalMinistryAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = Login::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `ministry_login_assn` (
 					`login_id`,
 					`ministry_id`,
@@ -2538,10 +2595,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -2553,8 +2610,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalMinistryAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM ministry_login_assn WHERE login_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = Login::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM ministry_login_assn WHERE login_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -2590,8 +2649,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalMinistryAssociation($objMinistry->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalMinistryAssociation($objMinistry->Id, 'INSERT');
 		}
 
 		/**
@@ -2617,8 +2677,9 @@
 					`ministry_id` = ' . $objDatabase->SqlVariable($objMinistry->Id) . '
 			');
 
-			// Journaling
-			$this->JournalMinistryAssociation($objMinistry->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalMinistryAssociation($objMinistry->Id, 'DELETE');
 		}
 
 		/**
@@ -2632,11 +2693,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = Login::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `ministry_id` AS associated_id FROM `ministry_login_assn` WHERE `login_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalMinistryAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `ministry_id` AS associated_id FROM `ministry_login_assn` WHERE `login_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalMinistryAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -2752,6 +2814,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $MinistryId
+	 * @property-read QQNodeMinistry $Ministry
+	 * @property-read QQNodeMinistry $_ChildTableNode
+	 */
 	class QQNodeLoginMinistry extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'ministry';
@@ -2779,6 +2846,27 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $RoleTypeId
+	 * @property-read QQNode $PermissionBitmap
+	 * @property-read QQNode $Username
+	 * @property-read QQNode $PasswordCache
+	 * @property-read QQNode $PasswordLastSet
+	 * @property-read QQNode $DateLastLogin
+	 * @property-read QQNode $DomainActiveFlag
+	 * @property-read QQNode $LoginActiveFlag
+	 * @property-read QQNode $Email
+	 * @property-read QQNode $FirstName
+	 * @property-read QQNode $MiddleInitial
+	 * @property-read QQNode $LastName
+	 * @property-read QQNodeLoginMinistry $Ministry
+	 * @property-read QQReverseReferenceNodeComment $CommentAsPostedBy
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeStewardshipBatch $StewardshipBatchAsCreatedBy
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContributionAsCreatedBy
+	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPostAsCreatedBy
+	 */
 	class QQNodeLogin extends QQNode {
 		protected $strTableName = 'login';
 		protected $strPrimaryKey = 'id';
@@ -2836,7 +2924,29 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $RoleTypeId
+	 * @property-read QQNode $PermissionBitmap
+	 * @property-read QQNode $Username
+	 * @property-read QQNode $PasswordCache
+	 * @property-read QQNode $PasswordLastSet
+	 * @property-read QQNode $DateLastLogin
+	 * @property-read QQNode $DomainActiveFlag
+	 * @property-read QQNode $LoginActiveFlag
+	 * @property-read QQNode $Email
+	 * @property-read QQNode $FirstName
+	 * @property-read QQNode $MiddleInitial
+	 * @property-read QQNode $LastName
+	 * @property-read QQNodeLoginMinistry $Ministry
+	 * @property-read QQReverseReferenceNodeComment $CommentAsPostedBy
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeStewardshipBatch $StewardshipBatchAsCreatedBy
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContributionAsCreatedBy
+	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPostAsCreatedBy
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeLogin extends QQReverseReferenceNode {
 		protected $strTableName = 'login';
 		protected $strPrimaryKey = 'id';

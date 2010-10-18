@@ -703,60 +703,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `communication_list_entry` (
-					`id`,
-					`first_name`,
-					`middle_name`,
-					`last_name`,
-					`email`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strFirstName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strMiddleName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strLastName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strEmail) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return CommunicationListEntry[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM communication_list_entry WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return CommunicationListEntry::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return CommunicationListEntry[]
-		 */
-		public function GetJournal() {
-			return CommunicationListEntry::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this CommunicationListEntry
@@ -791,7 +740,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('communication_list_entry', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -812,7 +761,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -848,7 +797,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -896,6 +845,62 @@
 			$this->strLastName = $objReloaded->strLastName;
 			$this->strEmail = $objReloaded->strEmail;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = CommunicationListEntry::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `communication_list_entry` (
+					`id`,
+					`first_name`,
+					`middle_name`,
+					`last_name`,
+					`email`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->strFirstName) . ',
+					' . $objDatabase->SqlVariable($this->strMiddleName) . ',
+					' . $objDatabase->SqlVariable($this->strLastName) . ',
+					' . $objDatabase->SqlVariable($this->strEmail) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return CommunicationListEntry[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = CommunicationListEntry::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM communication_list_entry WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return CommunicationListEntry::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return CommunicationListEntry[]
+		 */
+		public function GetJournal() {
+			return CommunicationListEntry::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1133,9 +1138,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
 
-			// Journaling
-			$objEmailMessageRoute->CommunicationListEntryId = $this->intId;
-			$objEmailMessageRoute->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->CommunicationListEntryId = $this->intId;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1164,8 +1171,10 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->CommunicationListEntryId = null;
-			$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->CommunicationListEntryId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1180,9 +1189,11 @@
 			$objDatabase = CommunicationListEntry::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByCommunicationListEntryId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->CommunicationListEntryId = null;
-				$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByCommunicationListEntryId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->CommunicationListEntryId = null;
+					$objEmailMessageRoute->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1220,7 +1231,9 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1235,8 +1248,10 @@
 			$objDatabase = CommunicationListEntry::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByCommunicationListEntryId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByCommunicationListEntryId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1307,7 +1322,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalCommunicationListAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = CommunicationListEntry::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `communicationlist_communicationlistentry_assn` (
 					`communication_list_entry_id`,
 					`communication_list_id`,
@@ -1315,10 +1332,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -1330,8 +1347,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalCommunicationListAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM communicationlist_communicationlistentry_assn WHERE communication_list_entry_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = CommunicationListEntry::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM communicationlist_communicationlistentry_assn WHERE communication_list_entry_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -1367,8 +1386,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'INSERT');
 		}
 
 		/**
@@ -1394,8 +1414,9 @@
 					`communication_list_id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
 			');
 
-			// Journaling
-			$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'DELETE');
 		}
 
 		/**
@@ -1409,11 +1430,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = CommunicationListEntry::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `communication_list_id` AS associated_id FROM `communicationlist_communicationlistentry_assn` WHERE `communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalCommunicationListAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `communication_list_id` AS associated_id FROM `communicationlist_communicationlistentry_assn` WHERE `communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalCommunicationListAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1503,6 +1525,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $CommunicationListId
+	 * @property-read QQNodeCommunicationList $CommunicationList
+	 * @property-read QQNodeCommunicationList $_ChildTableNode
+	 */
 	class QQNodeCommunicationListEntryCommunicationList extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'communicationlist';
@@ -1530,6 +1557,15 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $FirstName
+	 * @property-read QQNode $MiddleName
+	 * @property-read QQNode $LastName
+	 * @property-read QQNode $Email
+	 * @property-read QQNodeCommunicationListEntryCommunicationList $CommunicationList
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 */
 	class QQNodeCommunicationListEntry extends QQNode {
 		protected $strTableName = 'communication_list_entry';
 		protected $strPrimaryKey = 'id';
@@ -1563,7 +1599,17 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $FirstName
+	 * @property-read QQNode $MiddleName
+	 * @property-read QQNode $LastName
+	 * @property-read QQNode $Email
+	 * @property-read QQNodeCommunicationListEntryCommunicationList $CommunicationList
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeCommunicationListEntry extends QQReverseReferenceNode {
 		protected $strTableName = 'communication_list_entry';
 		protected $strPrimaryKey = 'id';

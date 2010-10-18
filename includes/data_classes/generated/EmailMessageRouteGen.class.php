@@ -872,64 +872,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `email_message_route` (
-					`id`,
-					`email_message_id`,
-					`group_id`,
-					`communication_list_id`,
-					`login_id`,
-					`communication_list_entry_id`,
-					`person_id`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intEmailMessageId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intGroupId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intCommunicationListId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intLoginId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intCommunicationListEntryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return EmailMessageRoute[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM email_message_route WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return EmailMessageRoute::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return EmailMessageRoute[]
-		 */
-		public function GetJournal() {
-			return EmailMessageRoute::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this EmailMessageRoute
@@ -968,7 +913,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('email_message_route', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -991,7 +936,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -1027,7 +972,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1077,6 +1022,66 @@
 			$this->CommunicationListEntryId = $objReloaded->CommunicationListEntryId;
 			$this->PersonId = $objReloaded->PersonId;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = EmailMessageRoute::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `email_message_route` (
+					`id`,
+					`email_message_id`,
+					`group_id`,
+					`communication_list_id`,
+					`login_id`,
+					`communication_list_entry_id`,
+					`person_id`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intEmailMessageId) . ',
+					' . $objDatabase->SqlVariable($this->intGroupId) . ',
+					' . $objDatabase->SqlVariable($this->intCommunicationListId) . ',
+					' . $objDatabase->SqlVariable($this->intLoginId) . ',
+					' . $objDatabase->SqlVariable($this->intCommunicationListEntryId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return EmailMessageRoute[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = EmailMessageRoute::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM email_message_route WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return EmailMessageRoute::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return EmailMessageRoute[]
+		 */
+		public function GetJournal() {
+			return EmailMessageRoute::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1644,6 +1649,21 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $EmailMessageId
+	 * @property-read QQNodeEmailMessage $EmailMessage
+	 * @property-read QQNode $GroupId
+	 * @property-read QQNodeGroup $Group
+	 * @property-read QQNode $CommunicationListId
+	 * @property-read QQNodeCommunicationList $CommunicationList
+	 * @property-read QQNode $LoginId
+	 * @property-read QQNodeLogin $Login
+	 * @property-read QQNode $CommunicationListEntryId
+	 * @property-read QQNodeCommunicationListEntry $CommunicationListEntry
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 */
 	class QQNodeEmailMessageRoute extends QQNode {
 		protected $strTableName = 'email_message_route';
 		protected $strPrimaryKey = 'id';
@@ -1689,7 +1709,23 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $EmailMessageId
+	 * @property-read QQNodeEmailMessage $EmailMessage
+	 * @property-read QQNode $GroupId
+	 * @property-read QQNodeGroup $Group
+	 * @property-read QQNode $CommunicationListId
+	 * @property-read QQNodeCommunicationList $CommunicationList
+	 * @property-read QQNode $LoginId
+	 * @property-read QQNodeLogin $Login
+	 * @property-read QQNode $CommunicationListEntryId
+	 * @property-read QQNodeCommunicationListEntry $CommunicationListEntry
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeEmailMessageRoute extends QQReverseReferenceNode {
 		protected $strTableName = 'email_message_route';
 		protected $strPrimaryKey = 'id';

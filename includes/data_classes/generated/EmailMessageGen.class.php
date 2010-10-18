@@ -763,70 +763,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `email_message` (
-					`id`,
-					`email_message_status_type_id`,
-					`date_received`,
-					`raw_message`,
-					`message_identifier`,
-					`subject`,
-					`from_address`,
-					`response_header`,
-					`response_body`,
-					`error_message`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intEmailMessageStatusTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateReceived) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strRawMessage) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strMessageIdentifier) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strSubject) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strFromAddress) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strResponseHeader) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strResponseBody) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strErrorMessage) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return EmailMessage[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM email_message WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return EmailMessage::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return EmailMessage[]
-		 */
-		public function GetJournal() {
-			return EmailMessage::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this EmailMessage
@@ -871,7 +810,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('email_message', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -897,7 +836,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -933,7 +872,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -986,6 +925,72 @@
 			$this->strResponseBody = $objReloaded->strResponseBody;
 			$this->strErrorMessage = $objReloaded->strErrorMessage;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = EmailMessage::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `email_message` (
+					`id`,
+					`email_message_status_type_id`,
+					`date_received`,
+					`raw_message`,
+					`message_identifier`,
+					`subject`,
+					`from_address`,
+					`response_header`,
+					`response_body`,
+					`error_message`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intEmailMessageStatusTypeId) . ',
+					' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
+					' . $objDatabase->SqlVariable($this->strRawMessage) . ',
+					' . $objDatabase->SqlVariable($this->strMessageIdentifier) . ',
+					' . $objDatabase->SqlVariable($this->strSubject) . ',
+					' . $objDatabase->SqlVariable($this->strFromAddress) . ',
+					' . $objDatabase->SqlVariable($this->strResponseHeader) . ',
+					' . $objDatabase->SqlVariable($this->strResponseBody) . ',
+					' . $objDatabase->SqlVariable($this->strErrorMessage) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return EmailMessage[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = EmailMessage::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM email_message WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return EmailMessage::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return EmailMessage[]
+		 */
+		public function GetJournal() {
+			return EmailMessage::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1303,9 +1308,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
 
-			// Journaling
-			$objEmailMessageRoute->EmailMessageId = $this->intId;
-			$objEmailMessageRoute->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->EmailMessageId = $this->intId;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1334,8 +1341,10 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->EmailMessageId = null;
-			$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->EmailMessageId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1350,9 +1359,11 @@
 			$objDatabase = EmailMessage::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByEmailMessageId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->EmailMessageId = null;
-				$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByEmailMessageId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->EmailMessageId = null;
+					$objEmailMessageRoute->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1390,7 +1401,9 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1405,8 +1418,10 @@
 			$objDatabase = EmailMessage::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByEmailMessageId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByEmailMessageId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1475,9 +1490,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailOutgoingQueue->Id) . '
 			');
 
-			// Journaling
-			$objEmailOutgoingQueue->EmailMessageId = $this->intId;
-			$objEmailOutgoingQueue->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailOutgoingQueue->EmailMessageId = $this->intId;
+				$objEmailOutgoingQueue->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1506,8 +1523,10 @@
 			');
 
 			// Journaling
-			$objEmailOutgoingQueue->EmailMessageId = null;
-			$objEmailOutgoingQueue->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailOutgoingQueue->EmailMessageId = null;
+				$objEmailOutgoingQueue->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1522,9 +1541,11 @@
 			$objDatabase = EmailMessage::GetDatabase();
 
 			// Journaling
-			foreach (EmailOutgoingQueue::LoadArrayByEmailMessageId($this->intId) as $objEmailOutgoingQueue) {
-				$objEmailOutgoingQueue->EmailMessageId = null;
-				$objEmailOutgoingQueue->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailOutgoingQueue::LoadArrayByEmailMessageId($this->intId) as $objEmailOutgoingQueue) {
+					$objEmailOutgoingQueue->EmailMessageId = null;
+					$objEmailOutgoingQueue->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1562,7 +1583,9 @@
 			');
 
 			// Journaling
-			$objEmailOutgoingQueue->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailOutgoingQueue->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1577,8 +1600,10 @@
 			$objDatabase = EmailMessage::GetDatabase();
 
 			// Journaling
-			foreach (EmailOutgoingQueue::LoadArrayByEmailMessageId($this->intId) as $objEmailOutgoingQueue) {
-				$objEmailOutgoingQueue->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailOutgoingQueue::LoadArrayByEmailMessageId($this->intId) as $objEmailOutgoingQueue) {
+					$objEmailOutgoingQueue->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1686,6 +1711,20 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $EmailMessageStatusTypeId
+	 * @property-read QQNode $DateReceived
+	 * @property-read QQNode $RawMessage
+	 * @property-read QQNode $MessageIdentifier
+	 * @property-read QQNode $Subject
+	 * @property-read QQNode $FromAddress
+	 * @property-read QQNode $ResponseHeader
+	 * @property-read QQNode $ResponseBody
+	 * @property-read QQNode $ErrorMessage
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeEmailOutgoingQueue $EmailOutgoingQueue
+	 */
 	class QQNodeEmailMessage extends QQNode {
 		protected $strTableName = 'email_message';
 		protected $strPrimaryKey = 'id';
@@ -1729,7 +1768,22 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $EmailMessageStatusTypeId
+	 * @property-read QQNode $DateReceived
+	 * @property-read QQNode $RawMessage
+	 * @property-read QQNode $MessageIdentifier
+	 * @property-read QQNode $Subject
+	 * @property-read QQNode $FromAddress
+	 * @property-read QQNode $ResponseHeader
+	 * @property-read QQNode $ResponseBody
+	 * @property-read QQNode $ErrorMessage
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeEmailOutgoingQueue $EmailOutgoingQueue
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeEmailMessage extends QQReverseReferenceNode {
 		protected $strTableName = 'email_message';
 		protected $strPrimaryKey = 'id';

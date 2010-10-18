@@ -702,60 +702,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `query_condition` (
-					`id`,
-					`search_query_id`,
-					`query_operation_id`,
-					`query_node_id`,
-					`value`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intSearchQueryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intQueryOperationId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intQueryNodeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strValue) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return QueryCondition[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM query_condition WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return QueryCondition::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return QueryCondition[]
-		 */
-		public function GetJournal() {
-			return QueryCondition::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this QueryCondition
@@ -790,7 +739,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('query_condition', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -811,7 +760,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -847,7 +796,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -895,6 +844,62 @@
 			$this->QueryNodeId = $objReloaded->QueryNodeId;
 			$this->strValue = $objReloaded->strValue;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = QueryCondition::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `query_condition` (
+					`id`,
+					`search_query_id`,
+					`query_operation_id`,
+					`query_node_id`,
+					`value`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
+					' . $objDatabase->SqlVariable($this->intQueryOperationId) . ',
+					' . $objDatabase->SqlVariable($this->intQueryNodeId) . ',
+					' . $objDatabase->SqlVariable($this->strValue) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return QueryCondition[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = QueryCondition::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM query_condition WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return QueryCondition::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return QueryCondition[]
+		 */
+		public function GetJournal() {
+			return QueryCondition::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1277,6 +1282,16 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $SearchQueryId
+	 * @property-read QQNodeSearchQuery $SearchQuery
+	 * @property-read QQNode $QueryOperationId
+	 * @property-read QQNodeQueryOperation $QueryOperation
+	 * @property-read QQNode $QueryNodeId
+	 * @property-read QQNodeQueryNode $QueryNode
+	 * @property-read QQNode $Value
+	 */
 	class QQNodeQueryCondition extends QQNode {
 		protected $strTableName = 'query_condition';
 		protected $strPrimaryKey = 'id';
@@ -1312,7 +1327,18 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $SearchQueryId
+	 * @property-read QQNodeSearchQuery $SearchQuery
+	 * @property-read QQNode $QueryOperationId
+	 * @property-read QQNodeQueryOperation $QueryOperation
+	 * @property-read QQNode $QueryNodeId
+	 * @property-read QQNodeQueryNode $QueryNode
+	 * @property-read QQNode $Value
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeQueryCondition extends QQReverseReferenceNode {
 		protected $strTableName = 'query_condition';
 		protected $strPrimaryKey = 'id';

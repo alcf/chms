@@ -2081,104 +2081,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `person` (
-					`id`,
-					`membership_status_type_id`,
-					`marital_status_type_id`,
-					`first_name`,
-					`middle_name`,
-					`last_name`,
-					`mailing_label`,
-					`prior_last_names`,
-					`nickname`,
-					`title`,
-					`suffix`,
-					`gender`,
-					`date_of_birth`,
-					`dob_approximate_flag`,
-					`deceased_flag`,
-					`date_deceased`,
-					`current_head_shot_id`,
-					`mailing_address_id`,
-					`stewardship_address_id`,
-					`primary_phone_id`,
-					`primary_email_id`,
-					`can_mail_flag`,
-					`can_phone_flag`,
-					`can_email_flag`,
-					`primary_address_text`,
-					`primary_city_text`,
-					`primary_phone_text`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMembershipStatusTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMaritalStatusTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strFirstName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strMiddleName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strLastName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strMailingLabel) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strPriorLastNames) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strNickname) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strTitle) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strSuffix) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strGender) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateOfBirth) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnDobApproximateFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnDeceasedFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateDeceased) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intCurrentHeadShotId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMailingAddressId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intStewardshipAddressId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPrimaryPhoneId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPrimaryEmailId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnCanMailFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnCanPhoneFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->blnCanEmailFlag) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strPrimaryAddressText) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strPrimaryCityText) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strPrimaryPhoneText) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Person[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM person WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Person::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Person[]
-		 */
-		public function GetJournal() {
-			return Person::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Person
@@ -2257,7 +2162,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('person', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -2300,7 +2205,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 		
@@ -2365,7 +2270,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -2435,6 +2340,106 @@
 			$this->strPrimaryCityText = $objReloaded->strPrimaryCityText;
 			$this->strPrimaryPhoneText = $objReloaded->strPrimaryPhoneText;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `person` (
+					`id`,
+					`membership_status_type_id`,
+					`marital_status_type_id`,
+					`first_name`,
+					`middle_name`,
+					`last_name`,
+					`mailing_label`,
+					`prior_last_names`,
+					`nickname`,
+					`title`,
+					`suffix`,
+					`gender`,
+					`date_of_birth`,
+					`dob_approximate_flag`,
+					`deceased_flag`,
+					`date_deceased`,
+					`current_head_shot_id`,
+					`mailing_address_id`,
+					`stewardship_address_id`,
+					`primary_phone_id`,
+					`primary_email_id`,
+					`can_mail_flag`,
+					`can_phone_flag`,
+					`can_email_flag`,
+					`primary_address_text`,
+					`primary_city_text`,
+					`primary_phone_text`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
+					' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
+					' . $objDatabase->SqlVariable($this->strFirstName) . ',
+					' . $objDatabase->SqlVariable($this->strMiddleName) . ',
+					' . $objDatabase->SqlVariable($this->strLastName) . ',
+					' . $objDatabase->SqlVariable($this->strMailingLabel) . ',
+					' . $objDatabase->SqlVariable($this->strPriorLastNames) . ',
+					' . $objDatabase->SqlVariable($this->strNickname) . ',
+					' . $objDatabase->SqlVariable($this->strTitle) . ',
+					' . $objDatabase->SqlVariable($this->strSuffix) . ',
+					' . $objDatabase->SqlVariable($this->strGender) . ',
+					' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
+					' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
+					' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
+					' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
+					' . $objDatabase->SqlVariable($this->intMailingAddressId) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipAddressId) . ',
+					' . $objDatabase->SqlVariable($this->intPrimaryPhoneId) . ',
+					' . $objDatabase->SqlVariable($this->intPrimaryEmailId) . ',
+					' . $objDatabase->SqlVariable($this->blnCanMailFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnCanPhoneFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnCanEmailFlag) . ',
+					' . $objDatabase->SqlVariable($this->strPrimaryAddressText) . ',
+					' . $objDatabase->SqlVariable($this->strPrimaryCityText) . ',
+					' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Person[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM person WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Person::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Person[]
+		 */
+		public function GetJournal() {
+			return Person::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -3510,9 +3515,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . '
 			');
 
-			// Journaling
-			$objAddress->PersonId = $this->intId;
-			$objAddress->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->PersonId = $this->intId;
+				$objAddress->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -3541,8 +3548,10 @@
 			');
 
 			// Journaling
-			$objAddress->PersonId = null;
-			$objAddress->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->PersonId = null;
+				$objAddress->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -3557,9 +3566,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Address::LoadArrayByPersonId($this->intId) as $objAddress) {
-				$objAddress->PersonId = null;
-				$objAddress->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Address::LoadArrayByPersonId($this->intId) as $objAddress) {
+					$objAddress->PersonId = null;
+					$objAddress->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -3597,7 +3608,9 @@
 			');
 
 			// Journaling
-			$objAddress->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -3612,8 +3625,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Address::LoadArrayByPersonId($this->intId) as $objAddress) {
-				$objAddress->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Address::LoadArrayByPersonId($this->intId) as $objAddress) {
+					$objAddress->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -3682,9 +3697,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objAttributeValue->Id) . '
 			');
 
-			// Journaling
-			$objAttributeValue->PersonId = $this->intId;
-			$objAttributeValue->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objAttributeValue->PersonId = $this->intId;
+				$objAttributeValue->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -3713,8 +3730,10 @@
 			');
 
 			// Journaling
-			$objAttributeValue->PersonId = null;
-			$objAttributeValue->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAttributeValue->PersonId = null;
+				$objAttributeValue->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -3729,9 +3748,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (AttributeValue::LoadArrayByPersonId($this->intId) as $objAttributeValue) {
-				$objAttributeValue->PersonId = null;
-				$objAttributeValue->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (AttributeValue::LoadArrayByPersonId($this->intId) as $objAttributeValue) {
+					$objAttributeValue->PersonId = null;
+					$objAttributeValue->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -3769,7 +3790,9 @@
 			');
 
 			// Journaling
-			$objAttributeValue->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAttributeValue->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -3784,8 +3807,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (AttributeValue::LoadArrayByPersonId($this->intId) as $objAttributeValue) {
-				$objAttributeValue->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (AttributeValue::LoadArrayByPersonId($this->intId) as $objAttributeValue) {
+					$objAttributeValue->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -3854,9 +3879,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objComment->Id) . '
 			');
 
-			// Journaling
-			$objComment->PersonId = $this->intId;
-			$objComment->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->PersonId = $this->intId;
+				$objComment->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -3885,8 +3912,10 @@
 			');
 
 			// Journaling
-			$objComment->PersonId = null;
-			$objComment->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->PersonId = null;
+				$objComment->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -3901,9 +3930,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Comment::LoadArrayByPersonId($this->intId) as $objComment) {
-				$objComment->PersonId = null;
-				$objComment->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Comment::LoadArrayByPersonId($this->intId) as $objComment) {
+					$objComment->PersonId = null;
+					$objComment->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -3941,7 +3972,9 @@
 			');
 
 			// Journaling
-			$objComment->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -3956,8 +3989,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Comment::LoadArrayByPersonId($this->intId) as $objComment) {
-				$objComment->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Comment::LoadArrayByPersonId($this->intId) as $objComment) {
+					$objComment->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4026,9 +4061,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmail->Id) . '
 			');
 
-			// Journaling
-			$objEmail->PersonId = $this->intId;
-			$objEmail->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmail->PersonId = $this->intId;
+				$objEmail->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4057,8 +4094,10 @@
 			');
 
 			// Journaling
-			$objEmail->PersonId = null;
-			$objEmail->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmail->PersonId = null;
+				$objEmail->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4073,9 +4112,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Email::LoadArrayByPersonId($this->intId) as $objEmail) {
-				$objEmail->PersonId = null;
-				$objEmail->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Email::LoadArrayByPersonId($this->intId) as $objEmail) {
+					$objEmail->PersonId = null;
+					$objEmail->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4113,7 +4154,9 @@
 			');
 
 			// Journaling
-			$objEmail->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmail->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -4128,8 +4171,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Email::LoadArrayByPersonId($this->intId) as $objEmail) {
-				$objEmail->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Email::LoadArrayByPersonId($this->intId) as $objEmail) {
+					$objEmail->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4198,9 +4243,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objEmailMessageRoute->Id) . '
 			');
 
-			// Journaling
-			$objEmailMessageRoute->PersonId = $this->intId;
-			$objEmailMessageRoute->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->PersonId = $this->intId;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4229,8 +4276,10 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->PersonId = null;
-			$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->PersonId = null;
+				$objEmailMessageRoute->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4245,9 +4294,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByPersonId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->PersonId = null;
-				$objEmailMessageRoute->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByPersonId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->PersonId = null;
+					$objEmailMessageRoute->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4285,7 +4336,9 @@
 			');
 
 			// Journaling
-			$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objEmailMessageRoute->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -4300,8 +4353,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (EmailMessageRoute::LoadArrayByPersonId($this->intId) as $objEmailMessageRoute) {
-				$objEmailMessageRoute->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (EmailMessageRoute::LoadArrayByPersonId($this->intId) as $objEmailMessageRoute) {
+					$objEmailMessageRoute->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4370,9 +4425,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . '
 			');
 
-			// Journaling
-			$objGroupParticipation->PersonId = $this->intId;
-			$objGroupParticipation->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->PersonId = $this->intId;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4401,8 +4458,10 @@
 			');
 
 			// Journaling
-			$objGroupParticipation->PersonId = null;
-			$objGroupParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->PersonId = null;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4417,9 +4476,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (GroupParticipation::LoadArrayByPersonId($this->intId) as $objGroupParticipation) {
-				$objGroupParticipation->PersonId = null;
-				$objGroupParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupParticipation::LoadArrayByPersonId($this->intId) as $objGroupParticipation) {
+					$objGroupParticipation->PersonId = null;
+					$objGroupParticipation->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4457,7 +4518,9 @@
 			');
 
 			// Journaling
-			$objGroupParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -4472,8 +4535,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (GroupParticipation::LoadArrayByPersonId($this->intId) as $objGroupParticipation) {
-				$objGroupParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupParticipation::LoadArrayByPersonId($this->intId) as $objGroupParticipation) {
+					$objGroupParticipation->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4542,9 +4607,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objHeadShot->Id) . '
 			');
 
-			// Journaling
-			$objHeadShot->PersonId = $this->intId;
-			$objHeadShot->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objHeadShot->PersonId = $this->intId;
+				$objHeadShot->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4573,8 +4640,10 @@
 			');
 
 			// Journaling
-			$objHeadShot->PersonId = null;
-			$objHeadShot->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHeadShot->PersonId = null;
+				$objHeadShot->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4589,9 +4658,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (HeadShot::LoadArrayByPersonId($this->intId) as $objHeadShot) {
-				$objHeadShot->PersonId = null;
-				$objHeadShot->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HeadShot::LoadArrayByPersonId($this->intId) as $objHeadShot) {
+					$objHeadShot->PersonId = null;
+					$objHeadShot->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4629,7 +4700,9 @@
 			');
 
 			// Journaling
-			$objHeadShot->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHeadShot->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -4644,8 +4717,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (HeadShot::LoadArrayByPersonId($this->intId) as $objHeadShot) {
-				$objHeadShot->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HeadShot::LoadArrayByPersonId($this->intId) as $objHeadShot) {
+					$objHeadShot->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4714,9 +4789,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objHouseholdParticipation->Id) . '
 			');
 
-			// Journaling
-			$objHouseholdParticipation->PersonId = $this->intId;
-			$objHouseholdParticipation->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdParticipation->PersonId = $this->intId;
+				$objHouseholdParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4745,8 +4822,10 @@
 			');
 
 			// Journaling
-			$objHouseholdParticipation->PersonId = null;
-			$objHouseholdParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdParticipation->PersonId = null;
+				$objHouseholdParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4761,9 +4840,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdParticipation::LoadArrayByPersonId($this->intId) as $objHouseholdParticipation) {
-				$objHouseholdParticipation->PersonId = null;
-				$objHouseholdParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdParticipation::LoadArrayByPersonId($this->intId) as $objHouseholdParticipation) {
+					$objHouseholdParticipation->PersonId = null;
+					$objHouseholdParticipation->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4801,7 +4882,9 @@
 			');
 
 			// Journaling
-			$objHouseholdParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdParticipation->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -4816,8 +4899,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (HouseholdParticipation::LoadArrayByPersonId($this->intId) as $objHouseholdParticipation) {
-				$objHouseholdParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdParticipation::LoadArrayByPersonId($this->intId) as $objHouseholdParticipation) {
+					$objHouseholdParticipation->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4886,9 +4971,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objMarriage->Id) . '
 			');
 
-			// Journaling
-			$objMarriage->PersonId = $this->intId;
-			$objMarriage->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objMarriage->PersonId = $this->intId;
+				$objMarriage->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4917,8 +5004,10 @@
 			');
 
 			// Journaling
-			$objMarriage->PersonId = null;
-			$objMarriage->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMarriage->PersonId = null;
+				$objMarriage->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -4933,9 +5022,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Marriage::LoadArrayByPersonId($this->intId) as $objMarriage) {
-				$objMarriage->PersonId = null;
-				$objMarriage->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Marriage::LoadArrayByPersonId($this->intId) as $objMarriage) {
+					$objMarriage->PersonId = null;
+					$objMarriage->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -4973,7 +5064,9 @@
 			');
 
 			// Journaling
-			$objMarriage->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMarriage->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -4988,8 +5081,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Marriage::LoadArrayByPersonId($this->intId) as $objMarriage) {
-				$objMarriage->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Marriage::LoadArrayByPersonId($this->intId) as $objMarriage) {
+					$objMarriage->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5058,9 +5153,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objMarriage->Id) . '
 			');
 
-			// Journaling
-			$objMarriage->MarriedToPersonId = $this->intId;
-			$objMarriage->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objMarriage->MarriedToPersonId = $this->intId;
+				$objMarriage->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5089,8 +5186,10 @@
 			');
 
 			// Journaling
-			$objMarriage->MarriedToPersonId = null;
-			$objMarriage->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMarriage->MarriedToPersonId = null;
+				$objMarriage->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5105,9 +5204,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Marriage::LoadArrayByMarriedToPersonId($this->intId) as $objMarriage) {
-				$objMarriage->MarriedToPersonId = null;
-				$objMarriage->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Marriage::LoadArrayByMarriedToPersonId($this->intId) as $objMarriage) {
+					$objMarriage->MarriedToPersonId = null;
+					$objMarriage->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5145,7 +5246,9 @@
 			');
 
 			// Journaling
-			$objMarriage->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMarriage->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -5160,8 +5263,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Marriage::LoadArrayByMarriedToPersonId($this->intId) as $objMarriage) {
-				$objMarriage->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Marriage::LoadArrayByMarriedToPersonId($this->intId) as $objMarriage) {
+					$objMarriage->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5230,9 +5335,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objMembership->Id) . '
 			');
 
-			// Journaling
-			$objMembership->PersonId = $this->intId;
-			$objMembership->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objMembership->PersonId = $this->intId;
+				$objMembership->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5261,8 +5368,10 @@
 			');
 
 			// Journaling
-			$objMembership->PersonId = null;
-			$objMembership->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMembership->PersonId = null;
+				$objMembership->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5277,9 +5386,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Membership::LoadArrayByPersonId($this->intId) as $objMembership) {
-				$objMembership->PersonId = null;
-				$objMembership->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Membership::LoadArrayByPersonId($this->intId) as $objMembership) {
+					$objMembership->PersonId = null;
+					$objMembership->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5317,7 +5428,9 @@
 			');
 
 			// Journaling
-			$objMembership->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objMembership->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -5332,8 +5445,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Membership::LoadArrayByPersonId($this->intId) as $objMembership) {
-				$objMembership->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Membership::LoadArrayByPersonId($this->intId) as $objMembership) {
+					$objMembership->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5402,9 +5517,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objOtherContactInfo->Id) . '
 			');
 
-			// Journaling
-			$objOtherContactInfo->PersonId = $this->intId;
-			$objOtherContactInfo->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objOtherContactInfo->PersonId = $this->intId;
+				$objOtherContactInfo->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5433,8 +5550,10 @@
 			');
 
 			// Journaling
-			$objOtherContactInfo->PersonId = null;
-			$objOtherContactInfo->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objOtherContactInfo->PersonId = null;
+				$objOtherContactInfo->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5449,9 +5568,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (OtherContactInfo::LoadArrayByPersonId($this->intId) as $objOtherContactInfo) {
-				$objOtherContactInfo->PersonId = null;
-				$objOtherContactInfo->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (OtherContactInfo::LoadArrayByPersonId($this->intId) as $objOtherContactInfo) {
+					$objOtherContactInfo->PersonId = null;
+					$objOtherContactInfo->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5489,7 +5610,9 @@
 			');
 
 			// Journaling
-			$objOtherContactInfo->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objOtherContactInfo->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -5504,8 +5627,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (OtherContactInfo::LoadArrayByPersonId($this->intId) as $objOtherContactInfo) {
-				$objOtherContactInfo->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (OtherContactInfo::LoadArrayByPersonId($this->intId) as $objOtherContactInfo) {
+					$objOtherContactInfo->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5574,9 +5699,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objPhone->Id) . '
 			');
 
-			// Journaling
-			$objPhone->PersonId = $this->intId;
-			$objPhone->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objPhone->PersonId = $this->intId;
+				$objPhone->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5605,8 +5732,10 @@
 			');
 
 			// Journaling
-			$objPhone->PersonId = null;
-			$objPhone->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPhone->PersonId = null;
+				$objPhone->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5621,9 +5750,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Phone::LoadArrayByPersonId($this->intId) as $objPhone) {
-				$objPhone->PersonId = null;
-				$objPhone->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Phone::LoadArrayByPersonId($this->intId) as $objPhone) {
+					$objPhone->PersonId = null;
+					$objPhone->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5661,7 +5792,9 @@
 			');
 
 			// Journaling
-			$objPhone->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPhone->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -5676,8 +5809,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Phone::LoadArrayByPersonId($this->intId) as $objPhone) {
-				$objPhone->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Phone::LoadArrayByPersonId($this->intId) as $objPhone) {
+					$objPhone->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5746,9 +5881,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objRelationship->Id) . '
 			');
 
-			// Journaling
-			$objRelationship->PersonId = $this->intId;
-			$objRelationship->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objRelationship->PersonId = $this->intId;
+				$objRelationship->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5777,8 +5914,10 @@
 			');
 
 			// Journaling
-			$objRelationship->PersonId = null;
-			$objRelationship->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objRelationship->PersonId = null;
+				$objRelationship->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5793,9 +5932,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Relationship::LoadArrayByPersonId($this->intId) as $objRelationship) {
-				$objRelationship->PersonId = null;
-				$objRelationship->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Relationship::LoadArrayByPersonId($this->intId) as $objRelationship) {
+					$objRelationship->PersonId = null;
+					$objRelationship->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5833,7 +5974,9 @@
 			');
 
 			// Journaling
-			$objRelationship->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objRelationship->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -5848,8 +5991,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Relationship::LoadArrayByPersonId($this->intId) as $objRelationship) {
-				$objRelationship->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Relationship::LoadArrayByPersonId($this->intId) as $objRelationship) {
+					$objRelationship->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -5918,9 +6063,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objRelationship->Id) . '
 			');
 
-			// Journaling
-			$objRelationship->RelatedToPersonId = $this->intId;
-			$objRelationship->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objRelationship->RelatedToPersonId = $this->intId;
+				$objRelationship->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5949,8 +6096,10 @@
 			');
 
 			// Journaling
-			$objRelationship->RelatedToPersonId = null;
-			$objRelationship->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objRelationship->RelatedToPersonId = null;
+				$objRelationship->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -5965,9 +6114,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Relationship::LoadArrayByRelatedToPersonId($this->intId) as $objRelationship) {
-				$objRelationship->RelatedToPersonId = null;
-				$objRelationship->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Relationship::LoadArrayByRelatedToPersonId($this->intId) as $objRelationship) {
+					$objRelationship->RelatedToPersonId = null;
+					$objRelationship->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6005,7 +6156,9 @@
 			');
 
 			// Journaling
-			$objRelationship->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objRelationship->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -6020,8 +6173,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (Relationship::LoadArrayByRelatedToPersonId($this->intId) as $objRelationship) {
-				$objRelationship->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Relationship::LoadArrayByRelatedToPersonId($this->intId) as $objRelationship) {
+					$objRelationship->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6090,9 +6245,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipContribution->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipContribution->PersonId = $this->intId;
-			$objStewardshipContribution->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->PersonId = $this->intId;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -6121,8 +6278,10 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->PersonId = null;
-			$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->PersonId = null;
+				$objStewardshipContribution->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -6137,9 +6296,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByPersonId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->PersonId = null;
-				$objStewardshipContribution->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByPersonId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->PersonId = null;
+					$objStewardshipContribution->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6177,7 +6338,9 @@
 			');
 
 			// Journaling
-			$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipContribution->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -6192,8 +6355,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipContribution::LoadArrayByPersonId($this->intId) as $objStewardshipContribution) {
-				$objStewardshipContribution->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipContribution::LoadArrayByPersonId($this->intId) as $objStewardshipContribution) {
+					$objStewardshipContribution->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6262,9 +6427,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objStewardshipPledge->Id) . '
 			');
 
-			// Journaling
-			$objStewardshipPledge->PersonId = $this->intId;
-			$objStewardshipPledge->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPledge->PersonId = $this->intId;
+				$objStewardshipPledge->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -6293,8 +6460,10 @@
 			');
 
 			// Journaling
-			$objStewardshipPledge->PersonId = null;
-			$objStewardshipPledge->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPledge->PersonId = null;
+				$objStewardshipPledge->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -6309,9 +6478,11 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipPledge::LoadArrayByPersonId($this->intId) as $objStewardshipPledge) {
-				$objStewardshipPledge->PersonId = null;
-				$objStewardshipPledge->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPledge::LoadArrayByPersonId($this->intId) as $objStewardshipPledge) {
+					$objStewardshipPledge->PersonId = null;
+					$objStewardshipPledge->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6349,7 +6520,9 @@
 			');
 
 			// Journaling
-			$objStewardshipPledge->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPledge->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -6364,8 +6537,10 @@
 			$objDatabase = Person::GetDatabase();
 
 			// Journaling
-			foreach (StewardshipPledge::LoadArrayByPersonId($this->intId) as $objStewardshipPledge) {
-				$objStewardshipPledge->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPledge::LoadArrayByPersonId($this->intId) as $objStewardshipPledge) {
+					$objStewardshipPledge->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6436,7 +6611,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalCheckingAccountLookupAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `checkingaccountlookup_person_assn` (
 					`person_id`,
 					`checking_account_lookup_id`,
@@ -6444,10 +6621,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -6459,8 +6636,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalCheckingAccountLookupAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM checkingaccountlookup_person_assn WHERE person_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM checkingaccountlookup_person_assn WHERE person_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -6496,8 +6675,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalCheckingAccountLookupAssociation($objCheckingAccountLookup->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalCheckingAccountLookupAssociation($objCheckingAccountLookup->Id, 'INSERT');
 		}
 
 		/**
@@ -6523,8 +6703,9 @@
 					`checking_account_lookup_id` = ' . $objDatabase->SqlVariable($objCheckingAccountLookup->Id) . '
 			');
 
-			// Journaling
-			$this->JournalCheckingAccountLookupAssociation($objCheckingAccountLookup->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalCheckingAccountLookupAssociation($objCheckingAccountLookup->Id, 'DELETE');
 		}
 
 		/**
@@ -6538,11 +6719,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `checking_account_lookup_id` AS associated_id FROM `checkingaccountlookup_person_assn` WHERE `person_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalCheckingAccountLookupAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `checking_account_lookup_id` AS associated_id FROM `checkingaccountlookup_person_assn` WHERE `person_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalCheckingAccountLookupAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6612,7 +6794,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalCommunicationListAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `communicationlist_person_assn` (
 					`person_id`,
 					`communication_list_id`,
@@ -6620,10 +6804,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -6635,8 +6819,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalCommunicationListAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM communicationlist_person_assn WHERE person_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM communicationlist_person_assn WHERE person_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -6672,8 +6858,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'INSERT');
 		}
 
 		/**
@@ -6699,8 +6886,9 @@
 					`communication_list_id` = ' . $objDatabase->SqlVariable($objCommunicationList->Id) . '
 			');
 
-			// Journaling
-			$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalCommunicationListAssociation($objCommunicationList->Id, 'DELETE');
 		}
 
 		/**
@@ -6714,11 +6902,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `communication_list_id` AS associated_id FROM `communicationlist_person_assn` WHERE `person_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalCommunicationListAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `communication_list_id` AS associated_id FROM `communicationlist_person_assn` WHERE `person_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalCommunicationListAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -6788,7 +6977,9 @@
 		 * @param string $strJournalCommand
 		 */
 		public function JournalNameItemAssociation($intAssociatedId, $strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
 				INSERT INTO `person_nameitem_assn` (
 					`person_id`,
 					`name_item_id`,
@@ -6796,10 +6987,10 @@
 					__sys_action,
 					__sys_date
 				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($intAssociatedId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
 				);
 			');
@@ -6811,8 +7002,10 @@
 		 * @return QDatabaseResult $objResult
 		 */
 		public static function GetJournalNameItemAssociationForId($intId) {
-			return QApplication::$Database[2]->Query('SELECT * FROM person_nameitem_assn WHERE person_id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
+			$objDatabase = Person::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM person_nameitem_assn WHERE person_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 		}
 
 		/**
@@ -6848,8 +7041,9 @@
 				)
 			');
 
-			// Journaling
-			$this->JournalNameItemAssociation($objNameItem->Id, 'INSERT');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalNameItemAssociation($objNameItem->Id, 'INSERT');
 		}
 
 		/**
@@ -6875,8 +7069,9 @@
 					`name_item_id` = ' . $objDatabase->SqlVariable($objNameItem->Id) . '
 			');
 
-			// Journaling
-			$this->JournalNameItemAssociation($objNameItem->Id, 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalNameItemAssociation($objNameItem->Id, 'DELETE');
 		}
 
 		/**
@@ -6890,11 +7085,12 @@
 			// Get the Database Object for this Class
 			$objDatabase = Person::GetDatabase();
 
-
-			// Journaling
-			$objResult = $objDatabase->Query('SELECT `name_item_id` AS associated_id FROM `person_nameitem_assn` WHERE `person_id` = ' . $objDatabase->SqlVariable($this->intId));
-			while ($objRow = $objResult->GetNextRow()) {
-				$this->JournalNameItemAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `name_item_id` AS associated_id FROM `person_nameitem_assn` WHERE `person_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalNameItemAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -7084,6 +7280,11 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $CheckingAccountLookupId
+	 * @property-read QQNodeCheckingAccountLookup $CheckingAccountLookup
+	 * @property-read QQNodeCheckingAccountLookup $_ChildTableNode
+	 */
 	class QQNodePersonCheckingAccountLookup extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'checkingaccountlookup';
@@ -7111,6 +7312,11 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $CommunicationListId
+	 * @property-read QQNodeCommunicationList $CommunicationList
+	 * @property-read QQNodeCommunicationList $_ChildTableNode
+	 */
 	class QQNodePersonCommunicationList extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'communicationlist';
@@ -7138,6 +7344,11 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $NameItemId
+	 * @property-read QQNodeNameItem $NameItem
+	 * @property-read QQNodeNameItem $_ChildTableNode
+	 */
 	class QQNodePersonNameItem extends QQAssociationNode {
 		protected $strType = 'association';
 		protected $strName = 'nameitem';
@@ -7165,6 +7376,61 @@
 		}
 	}
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $MembershipStatusTypeId
+	 * @property-read QQNode $MaritalStatusTypeId
+	 * @property-read QQNode $FirstName
+	 * @property-read QQNode $MiddleName
+	 * @property-read QQNode $LastName
+	 * @property-read QQNode $MailingLabel
+	 * @property-read QQNode $PriorLastNames
+	 * @property-read QQNode $Nickname
+	 * @property-read QQNode $Title
+	 * @property-read QQNode $Suffix
+	 * @property-read QQNode $Gender
+	 * @property-read QQNode $DateOfBirth
+	 * @property-read QQNode $DobApproximateFlag
+	 * @property-read QQNode $DeceasedFlag
+	 * @property-read QQNode $DateDeceased
+	 * @property-read QQNode $CurrentHeadShotId
+	 * @property-read QQNodeHeadShot $CurrentHeadShot
+	 * @property-read QQNode $MailingAddressId
+	 * @property-read QQNodeAddress $MailingAddress
+	 * @property-read QQNode $StewardshipAddressId
+	 * @property-read QQNodeAddress $StewardshipAddress
+	 * @property-read QQNode $PrimaryPhoneId
+	 * @property-read QQNodePhone $PrimaryPhone
+	 * @property-read QQNode $PrimaryEmailId
+	 * @property-read QQNodeEmail $PrimaryEmail
+	 * @property-read QQNode $CanMailFlag
+	 * @property-read QQNode $CanPhoneFlag
+	 * @property-read QQNode $CanEmailFlag
+	 * @property-read QQNode $PrimaryAddressText
+	 * @property-read QQNode $PrimaryCityText
+	 * @property-read QQNode $PrimaryPhoneText
+	 * @property-read QQNodePersonCheckingAccountLookup $CheckingAccountLookup
+	 * @property-read QQNodePersonCommunicationList $CommunicationList
+	 * @property-read QQNodePersonNameItem $NameItem
+	 * @property-read QQReverseReferenceNodeAddress $Address
+	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
+	 * @property-read QQReverseReferenceNodeComment $Comment
+	 * @property-read QQReverseReferenceNodeEmail $Email
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQReverseReferenceNodeHeadShot $HeadShot
+	 * @property-read QQReverseReferenceNodeHousehold $HouseholdAsHead
+	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
+	 * @property-read QQReverseReferenceNodeMarriage $Marriage
+	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsMarriedTo
+	 * @property-read QQReverseReferenceNodeMembership $Membership
+	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
+	 * @property-read QQReverseReferenceNodePhone $Phone
+	 * @property-read QQReverseReferenceNodeRelationship $Relationship
+	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
+	 */
 	class QQNodePerson extends QQNode {
 		protected $strTableName = 'person';
 		protected $strPrimaryKey = 'id';
@@ -7290,7 +7556,63 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $MembershipStatusTypeId
+	 * @property-read QQNode $MaritalStatusTypeId
+	 * @property-read QQNode $FirstName
+	 * @property-read QQNode $MiddleName
+	 * @property-read QQNode $LastName
+	 * @property-read QQNode $MailingLabel
+	 * @property-read QQNode $PriorLastNames
+	 * @property-read QQNode $Nickname
+	 * @property-read QQNode $Title
+	 * @property-read QQNode $Suffix
+	 * @property-read QQNode $Gender
+	 * @property-read QQNode $DateOfBirth
+	 * @property-read QQNode $DobApproximateFlag
+	 * @property-read QQNode $DeceasedFlag
+	 * @property-read QQNode $DateDeceased
+	 * @property-read QQNode $CurrentHeadShotId
+	 * @property-read QQNodeHeadShot $CurrentHeadShot
+	 * @property-read QQNode $MailingAddressId
+	 * @property-read QQNodeAddress $MailingAddress
+	 * @property-read QQNode $StewardshipAddressId
+	 * @property-read QQNodeAddress $StewardshipAddress
+	 * @property-read QQNode $PrimaryPhoneId
+	 * @property-read QQNodePhone $PrimaryPhone
+	 * @property-read QQNode $PrimaryEmailId
+	 * @property-read QQNodeEmail $PrimaryEmail
+	 * @property-read QQNode $CanMailFlag
+	 * @property-read QQNode $CanPhoneFlag
+	 * @property-read QQNode $CanEmailFlag
+	 * @property-read QQNode $PrimaryAddressText
+	 * @property-read QQNode $PrimaryCityText
+	 * @property-read QQNode $PrimaryPhoneText
+	 * @property-read QQNodePersonCheckingAccountLookup $CheckingAccountLookup
+	 * @property-read QQNodePersonCommunicationList $CommunicationList
+	 * @property-read QQNodePersonNameItem $NameItem
+	 * @property-read QQReverseReferenceNodeAddress $Address
+	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
+	 * @property-read QQReverseReferenceNodeComment $Comment
+	 * @property-read QQReverseReferenceNodeEmail $Email
+	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQReverseReferenceNodeHeadShot $HeadShot
+	 * @property-read QQReverseReferenceNodeHousehold $HouseholdAsHead
+	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
+	 * @property-read QQReverseReferenceNodeMarriage $Marriage
+	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsMarriedTo
+	 * @property-read QQReverseReferenceNodeMembership $Membership
+	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
+	 * @property-read QQReverseReferenceNodePhone $Phone
+	 * @property-read QQReverseReferenceNodeRelationship $Relationship
+	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
+	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
+	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodePerson extends QQReverseReferenceNode {
 		protected $strTableName = 'person';
 		protected $strPrimaryKey = 'id';

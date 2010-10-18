@@ -591,56 +591,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `comment_category` (
-					`id`,
-					`order_number`,
-					`name`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intOrderNumber) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return CommentCategory[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM comment_category WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return CommentCategory::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return CommentCategory[]
-		 */
-		public function GetJournal() {
-			return CommentCategory::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this CommentCategory
@@ -671,7 +624,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('comment_category', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -690,7 +643,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -726,7 +679,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -772,6 +725,58 @@
 			$this->intOrderNumber = $objReloaded->intOrderNumber;
 			$this->strName = $objReloaded->strName;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = CommentCategory::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `comment_category` (
+					`id`,
+					`order_number`,
+					`name`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return CommentCategory[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = CommentCategory::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM comment_category WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return CommentCategory::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return CommentCategory[]
+		 */
+		public function GetJournal() {
+			return CommentCategory::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -965,9 +970,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objComment->Id) . '
 			');
 
-			// Journaling
-			$objComment->CommentCategoryId = $this->intId;
-			$objComment->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->CommentCategoryId = $this->intId;
+				$objComment->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -996,8 +1003,10 @@
 			');
 
 			// Journaling
-			$objComment->CommentCategoryId = null;
-			$objComment->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->CommentCategoryId = null;
+				$objComment->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1012,9 +1021,11 @@
 			$objDatabase = CommentCategory::GetDatabase();
 
 			// Journaling
-			foreach (Comment::LoadArrayByCommentCategoryId($this->intId) as $objComment) {
-				$objComment->CommentCategoryId = null;
-				$objComment->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Comment::LoadArrayByCommentCategoryId($this->intId) as $objComment) {
+					$objComment->CommentCategoryId = null;
+					$objComment->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1052,7 +1063,9 @@
 			');
 
 			// Journaling
-			$objComment->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objComment->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1067,8 +1080,10 @@
 			$objDatabase = CommentCategory::GetDatabase();
 
 			// Journaling
-			foreach (Comment::LoadArrayByCommentCategoryId($this->intId) as $objComment) {
-				$objComment->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Comment::LoadArrayByCommentCategoryId($this->intId) as $objComment) {
+					$objComment->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1153,6 +1168,12 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $OrderNumber
+	 * @property-read QQNode $Name
+	 * @property-read QQReverseReferenceNodeComment $Comment
+	 */
 	class QQNodeCommentCategory extends QQNode {
 		protected $strTableName = 'comment_category';
 		protected $strPrimaryKey = 'id';
@@ -1180,7 +1201,14 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $OrderNumber
+	 * @property-read QQNode $Name
+	 * @property-read QQReverseReferenceNodeComment $Comment
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeCommentCategory extends QQReverseReferenceNode {
 		protected $strTableName = 'comment_category';
 		protected $strPrimaryKey = 'id';

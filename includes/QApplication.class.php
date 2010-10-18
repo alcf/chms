@@ -79,6 +79,11 @@
 		public static $Login;
 
 		/**
+		 * @var integer
+		 */
+		public static $LoginId;
+
+		/**
 		 * Called by initialize_chms.inc.php to setup QApplication::$Login
 		 * from data in Session
 		 * @return void
@@ -101,6 +106,7 @@
 					QApplication::$Login = null;
 				} else {
 					QApplication::$Login->RefreshDateLastLogin();
+					QApplication::$LoginId = QApplication::$Login->Id;
 				}
 
 				// Update the NavBar based on Login
@@ -121,6 +127,7 @@
 		 */
 		public static function Login(Login $objLogin) {
 			QApplication::$Login = $objLogin;
+			QApplication::$LoginId = $objLogin->Id;
 			$_SESSION['intLoginId'] = $objLogin->Id;
 		}
 
@@ -178,6 +185,7 @@
 			$_SESSION['intLoginId'] = null;
 			unset($_SESSION['intLoginId']);
 			QApplication::$Login = null;
+			QApplication::$LoginId = null;
 			QApplication::Redirect('/index.php/1');
 		}
 

@@ -684,58 +684,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `group_role` (
-					`id`,
-					`ministry_id`,
-					`name`,
-					`group_role_type_id`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMinistryId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strName) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intGroupRoleTypeId) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return GroupRole[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM group_role WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return GroupRole::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return GroupRole[]
-		 */
-		public function GetJournal() {
-			return GroupRole::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this GroupRole
@@ -768,7 +719,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('group_role', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -788,7 +739,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -824,7 +775,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -871,6 +822,60 @@
 			$this->strName = $objReloaded->strName;
 			$this->GroupRoleTypeId = $objReloaded->GroupRoleTypeId;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = GroupRole::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `group_role` (
+					`id`,
+					`ministry_id`,
+					`name`,
+					`group_role_type_id`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intMinistryId) . ',
+					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->intGroupRoleTypeId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return GroupRole[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = GroupRole::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM group_role WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return GroupRole::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return GroupRole[]
+		 */
+		public function GetJournal() {
+			return GroupRole::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1123,9 +1128,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objGroupParticipation->Id) . '
 			');
 
-			// Journaling
-			$objGroupParticipation->GroupRoleId = $this->intId;
-			$objGroupParticipation->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->GroupRoleId = $this->intId;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1154,8 +1161,10 @@
 			');
 
 			// Journaling
-			$objGroupParticipation->GroupRoleId = null;
-			$objGroupParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->GroupRoleId = null;
+				$objGroupParticipation->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1170,9 +1179,11 @@
 			$objDatabase = GroupRole::GetDatabase();
 
 			// Journaling
-			foreach (GroupParticipation::LoadArrayByGroupRoleId($this->intId) as $objGroupParticipation) {
-				$objGroupParticipation->GroupRoleId = null;
-				$objGroupParticipation->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupParticipation::LoadArrayByGroupRoleId($this->intId) as $objGroupParticipation) {
+					$objGroupParticipation->GroupRoleId = null;
+					$objGroupParticipation->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1210,7 +1221,9 @@
 			');
 
 			// Journaling
-			$objGroupParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupParticipation->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1225,8 +1238,10 @@
 			$objDatabase = GroupRole::GetDatabase();
 
 			// Journaling
-			foreach (GroupParticipation::LoadArrayByGroupRoleId($this->intId) as $objGroupParticipation) {
-				$objGroupParticipation->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupParticipation::LoadArrayByGroupRoleId($this->intId) as $objGroupParticipation) {
+					$objGroupParticipation->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1320,6 +1335,14 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $MinistryId
+	 * @property-read QQNodeMinistry $Ministry
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $GroupRoleTypeId
+	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 */
 	class QQNodeGroupRole extends QQNode {
 		protected $strTableName = 'group_role';
 		protected $strPrimaryKey = 'id';
@@ -1351,7 +1374,16 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $MinistryId
+	 * @property-read QQNodeMinistry $Ministry
+	 * @property-read QQNode $Name
+	 * @property-read QQNode $GroupRoleTypeId
+	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeGroupRole extends QQReverseReferenceNode {
 		protected $strTableName = 'group_role';
 		protected $strPrimaryKey = 'id';

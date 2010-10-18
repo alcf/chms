@@ -819,60 +819,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `phone` (
-					`id`,
-					`phone_type_id`,
-					`address_id`,
-					`person_id`,
-					`number`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPhoneTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intAddressId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->strNumber) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Phone[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM phone WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Phone::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Phone[]
-		 */
-		public function GetJournal() {
-			return Phone::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Phone
@@ -907,7 +856,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('phone', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -928,7 +877,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 			} catch (QCallerException $objExc) {
@@ -964,7 +913,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1012,6 +961,62 @@
 			$this->PersonId = $objReloaded->PersonId;
 			$this->strNumber = $objReloaded->strNumber;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Phone::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `phone` (
+					`id`,
+					`phone_type_id`,
+					`address_id`,
+					`person_id`,
+					`number`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intPhoneTypeId) . ',
+					' . $objDatabase->SqlVariable($this->intAddressId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->strNumber) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Phone[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Phone::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM phone WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Phone::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Phone[]
+		 */
+		public function GetJournal() {
+			return Phone::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1335,9 +1340,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objAddress->Id) . '
 			');
 
-			// Journaling
-			$objAddress->PrimaryPhoneId = $this->intId;
-			$objAddress->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->PrimaryPhoneId = $this->intId;
+				$objAddress->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1366,8 +1373,10 @@
 			');
 
 			// Journaling
-			$objAddress->PrimaryPhoneId = null;
-			$objAddress->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->PrimaryPhoneId = null;
+				$objAddress->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1382,9 +1391,11 @@
 			$objDatabase = Phone::GetDatabase();
 
 			// Journaling
-			foreach (Address::LoadArrayByPrimaryPhoneId($this->intId) as $objAddress) {
-				$objAddress->PrimaryPhoneId = null;
-				$objAddress->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Address::LoadArrayByPrimaryPhoneId($this->intId) as $objAddress) {
+					$objAddress->PrimaryPhoneId = null;
+					$objAddress->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1422,7 +1433,9 @@
 			');
 
 			// Journaling
-			$objAddress->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objAddress->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1437,8 +1450,10 @@
 			$objDatabase = Phone::GetDatabase();
 
 			// Journaling
-			foreach (Address::LoadArrayByPrimaryPhoneId($this->intId) as $objAddress) {
-				$objAddress->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Address::LoadArrayByPrimaryPhoneId($this->intId) as $objAddress) {
+					$objAddress->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1507,9 +1522,11 @@
 					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
 			');
 
-			// Journaling
-			$objPerson->PrimaryPhoneId = $this->intId;
-			$objPerson->Journal('UPDATE');
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->PrimaryPhoneId = $this->intId;
+				$objPerson->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1538,8 +1555,10 @@
 			');
 
 			// Journaling
-			$objPerson->PrimaryPhoneId = null;
-			$objPerson->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->PrimaryPhoneId = null;
+				$objPerson->Journal('UPDATE');
+			}
 		}
 
 		/**
@@ -1554,9 +1573,11 @@
 			$objDatabase = Phone::GetDatabase();
 
 			// Journaling
-			foreach (Person::LoadArrayByPrimaryPhoneId($this->intId) as $objPerson) {
-				$objPerson->PrimaryPhoneId = null;
-				$objPerson->Journal('UPDATE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByPrimaryPhoneId($this->intId) as $objPerson) {
+					$objPerson->PrimaryPhoneId = null;
+					$objPerson->Journal('UPDATE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1594,7 +1615,9 @@
 			');
 
 			// Journaling
-			$objPerson->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->Journal('DELETE');
+			}
 		}
 
 		/**
@@ -1609,8 +1632,10 @@
 			$objDatabase = Phone::GetDatabase();
 
 			// Journaling
-			foreach (Person::LoadArrayByPrimaryPhoneId($this->intId) as $objPerson) {
-				$objPerson->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByPrimaryPhoneId($this->intId) as $objPerson) {
+					$objPerson->Journal('DELETE');
+				}
 			}
 
 			// Perform the SQL Query
@@ -1713,6 +1738,17 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PhoneTypeId
+	 * @property-read QQNode $AddressId
+	 * @property-read QQNodeAddress $Address
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $Number
+	 * @property-read QQReverseReferenceNodeAddress $AddressAsPrimary
+	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
+	 */
 	class QQNodePhone extends QQNode {
 		protected $strTableName = 'phone';
 		protected $strPrimaryKey = 'id';
@@ -1750,7 +1786,19 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $PhoneTypeId
+	 * @property-read QQNode $AddressId
+	 * @property-read QQNodeAddress $Address
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $Number
+	 * @property-read QQReverseReferenceNodeAddress $AddressAsPrimary
+	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodePhone extends QQReverseReferenceNode {
 		protected $strTableName = 'phone';
 		protected $strPrimaryKey = 'id';

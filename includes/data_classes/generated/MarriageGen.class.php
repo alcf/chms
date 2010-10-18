@@ -768,64 +768,9 @@
 
 
 
-		//////////////////////////
-		// SAVE, DELETE AND RELOAD
-		//////////////////////////
-
-		/**
-		 * Journals the current object into the Log database.
-		 * Used internally as a helper method.
-		 * @param string $strJournalCommand
-		 */
-		public function Journal($strJournalCommand) {
-			QApplication::$Database[2]->NonQuery('
-				INSERT INTO `marriage` (
-					`id`,
-					`linked_marriage_id`,
-					`person_id`,
-					`married_to_person_id`,
-					`marriage_status_type_id`,
-					`date_start`,
-					`date_end`,
-					__sys_login_id,
-					__sys_action,
-					__sys_date
-				) VALUES (
-					' . QApplication::$Database[2]->SqlVariable($this->intId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intLinkedMarriageId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMarriedToPersonId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->intMarriageStatusTypeId) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateStart) . ',
-					' . QApplication::$Database[2]->SqlVariable($this->dttDateEnd) . ',
-					' . ((QApplication::$Login) ? QApplication::$Login->Id : 'NULL') . ',
-					' . QApplication::$Database[2]->SqlVariable($strJournalCommand) . ',
-					NOW()
-				);
-			');
-		}
-
-		/**
-		 * Gets the historical journal for an object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @param integer intId
-		 * @return Marriage[]
-		 */
-		public static function GetJournalForId($intId) {
-			$objResult = QApplication::$Database[2]->Query('SELECT * FROM marriage WHERE id = ' .
-				QApplication::$Database[2]->SqlVariable($intId) . ' ORDER BY __sys_date');
-
-			return Marriage::InstantiateDbResult($objResult);
-		}
-
-		/**
-		 * Gets the historical journal for this object from the log database.
-		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return Marriage[]
-		 */
-		public function GetJournal() {
-			return Marriage::GetJournalForId($this->intId);
-		}
+		//////////////////////////////////////
+		// SAVE, DELETE, RELOAD and JOURNALING
+		//////////////////////////////////////
 
 		/**
 		 * Save this Marriage
@@ -864,7 +809,7 @@
 					$mixToReturn = $this->intId = $objDatabase->InsertId('marriage', 'id');
 
 					// Journaling
-					$this->Journal('INSERT');
+					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
 
 				} else {
 					// Perform an UPDATE query
@@ -887,7 +832,7 @@
 					');
 
 					// Journaling
-					$this->Journal('UPDATE');
+					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
 		
@@ -953,7 +898,7 @@
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
 			// Journaling
-			$this->Journal('DELETE');
+			if ($objDatabase->JournalingDatabase) $this->Journal('DELETE');
 		}
 
 		/**
@@ -1003,6 +948,66 @@
 			$this->dttDateStart = $objReloaded->dttDateStart;
 			$this->dttDateEnd = $objReloaded->dttDateEnd;
 		}
+
+		/**
+		 * Journals the current object into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function Journal($strJournalCommand) {
+			$objDatabase = Marriage::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `marriage` (
+					`id`,
+					`linked_marriage_id`,
+					`person_id`,
+					`married_to_person_id`,
+					`marriage_status_type_id`,
+					`date_start`,
+					`date_end`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intLinkedMarriageId) . ',
+					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intMarriedToPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intMarriageStatusTypeId) . ',
+					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
+					' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @param integer intId
+		 * @return Marriage[]
+		 */
+		public static function GetJournalForId($intId) {
+			$objDatabase = Marriage::GetDatabase()->JournalingDatabase;
+
+			$objResult = $objDatabase->Query('SELECT * FROM marriage WHERE id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+
+			return Marriage::InstantiateDbResult($objResult);
+		}
+
+		/**
+		 * Gets the historical journal for this object from the log database.
+		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
+		 * @return Marriage[]
+		 */
+		public function GetJournal() {
+			return Marriage::GetJournalForId($this->intId);
+		}
+
 
 
 
@@ -1482,6 +1487,19 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $LinkedMarriageId
+	 * @property-read QQNodeMarriage $LinkedMarriage
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $MarriedToPersonId
+	 * @property-read QQNodePerson $MarriedToPerson
+	 * @property-read QQNode $MarriageStatusTypeId
+	 * @property-read QQNode $DateStart
+	 * @property-read QQNode $DateEnd
+	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsLinked
+	 */
 	class QQNodeMarriage extends QQNode {
 		protected $strTableName = 'marriage';
 		protected $strPrimaryKey = 'id';
@@ -1523,7 +1541,21 @@
 			}
 		}
 	}
-
+	
+	/**
+	 * @property-read QQNode $Id
+	 * @property-read QQNode $LinkedMarriageId
+	 * @property-read QQNodeMarriage $LinkedMarriage
+	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $MarriedToPersonId
+	 * @property-read QQNodePerson $MarriedToPerson
+	 * @property-read QQNode $MarriageStatusTypeId
+	 * @property-read QQNode $DateStart
+	 * @property-read QQNode $DateEnd
+	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsLinked
+	 * @property-read QQNode $_PrimaryKeyNode
+	 */
 	class QQReverseReferenceNodeMarriage extends QQReverseReferenceNode {
 		protected $strTableName = 'marriage';
 		protected $strPrimaryKey = 'id';
