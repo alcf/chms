@@ -47,6 +47,8 @@
 
 		<?php $this->lstCreatedByLogin->RenderWithName(); ?>
 
+		<?php $this->chkUnpostedFlag->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

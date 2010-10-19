@@ -328,6 +328,13 @@
 		QApplicationBase::$ClassFile['stewardshippostamountmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipPostAmountMetaControl.class.php';
 		QApplicationBase::$ClassFile['stewardshippostamountdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipPostAmountDataGrid.class.php';
 
+	// ClassPaths for the StewardshipPostLineItem class
+		QApplicationBase::$ClassFile['stewardshippostlineitem'] = __DATA_CLASSES__ . '/StewardshipPostLineItem.class.php';
+		QApplicationBase::$ClassFile['qqnodestewardshippostlineitem'] = __DATA_CLASSES__ . '/StewardshipPostLineItem.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodestewardshippostlineitem'] = __DATA_CLASSES__ . '/StewardshipPostLineItem.class.php';
+		QApplicationBase::$ClassFile['stewardshippostlineitemmetacontrol'] = __DATA_META_CONTROLS__ . '/StewardshipPostLineItemMetaControl.class.php';
+		QApplicationBase::$ClassFile['stewardshippostlineitemdatagrid'] = __DATA_META_CONTROLS__ . '/StewardshipPostLineItemDataGrid.class.php';
+
 	// ClassPaths for the StewardshipStack class
 		QApplicationBase::$ClassFile['stewardshipstack'] = __DATA_CLASSES__ . '/StewardshipStack.class.php';
 		QApplicationBase::$ClassFile['qqnodestewardshipstack'] = __DATA_CLASSES__ . '/StewardshipStack.class.php';

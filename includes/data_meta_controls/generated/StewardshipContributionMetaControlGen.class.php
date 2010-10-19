@@ -48,6 +48,8 @@
 	 * property-read QLabel $NoteLabel
 	 * property QListBox $CreatedByLoginIdControl
 	 * property-read QLabel $CreatedByLoginIdLabel
+	 * property QCheckBox $UnpostedFlagControl
+	 * property-read QLabel $UnpostedFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -175,6 +177,12 @@
          */
 		protected $lstCreatedByLogin;
 
+        /**
+         * @var QCheckBox chkUnpostedFlag;
+         * @access protected
+         */
+		protected $chkUnpostedFlag;
+
 
 		// Controls that allow the viewing of StewardshipContribution's individual data fields
         /**
@@ -266,6 +274,12 @@
          * @access protected
          */
 		protected $lblCreatedByLoginId;
+
+        /**
+         * @var QLabel lblUnpostedFlag
+         * @access protected
+         */
+		protected $lblUnpostedFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -857,6 +871,30 @@
 			return $this->lblCreatedByLoginId;
 		}
 
+		/**
+		 * Create and setup QCheckBox chkUnpostedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkUnpostedFlag_Create($strControlId = null) {
+			$this->chkUnpostedFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkUnpostedFlag->Name = QApplication::Translate('Unposted Flag');
+			$this->chkUnpostedFlag->Checked = $this->objStewardshipContribution->UnpostedFlag;
+			return $this->chkUnpostedFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblUnpostedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblUnpostedFlag_Create($strControlId = null) {
+			$this->lblUnpostedFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblUnpostedFlag->Name = QApplication::Translate('Unposted Flag');
+			$this->lblUnpostedFlag->Text = ($this->objStewardshipContribution->UnpostedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblUnpostedFlag;
+		}
+
 
 
 		/**
@@ -968,6 +1006,9 @@
 			}
 			if ($this->lblCreatedByLoginId) $this->lblCreatedByLoginId->Text = ($this->objStewardshipContribution->CreatedByLogin) ? $this->objStewardshipContribution->CreatedByLogin->__toString() : null;
 
+			if ($this->chkUnpostedFlag) $this->chkUnpostedFlag->Checked = $this->objStewardshipContribution->UnpostedFlag;
+			if ($this->lblUnpostedFlag) $this->lblUnpostedFlag->Text = ($this->objStewardshipContribution->UnpostedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 		}
 
 
@@ -1006,6 +1047,7 @@
 				if ($this->chkNonDeductibleFlag) $this->objStewardshipContribution->NonDeductibleFlag = $this->chkNonDeductibleFlag->Checked;
 				if ($this->txtNote) $this->objStewardshipContribution->Note = $this->txtNote->Text;
 				if ($this->lstCreatedByLogin) $this->objStewardshipContribution->CreatedByLoginId = $this->lstCreatedByLogin->SelectedValue;
+				if ($this->chkUnpostedFlag) $this->objStewardshipContribution->UnpostedFlag = $this->chkUnpostedFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -1144,6 +1186,12 @@
 				case 'CreatedByLoginIdLabel':
 					if (!$this->lblCreatedByLoginId) return $this->lblCreatedByLoginId_Create();
 					return $this->lblCreatedByLoginId;
+				case 'UnpostedFlagControl':
+					if (!$this->chkUnpostedFlag) return $this->chkUnpostedFlag_Create();
+					return $this->chkUnpostedFlag;
+				case 'UnpostedFlagLabel':
+					if (!$this->lblUnpostedFlag) return $this->lblUnpostedFlag_Create();
+					return $this->lblUnpostedFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -1198,6 +1246,8 @@
 						return ($this->txtNote = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedByLoginIdControl':
 						return ($this->lstCreatedByLogin = QType::Cast($mixValue, 'QControl'));
+					case 'UnpostedFlagControl':
+						return ($this->chkUnpostedFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

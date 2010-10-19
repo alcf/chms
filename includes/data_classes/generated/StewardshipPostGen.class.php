@@ -25,6 +25,8 @@
 	 * @property Login $CreatedByLogin the value for the Login object referenced by intCreatedByLoginId (Not Null)
 	 * @property StewardshipPostAmount $_StewardshipPostAmount the value for the private _objStewardshipPostAmount (Read-Only) if set due to an expansion on the stewardship_post_amount.stewardship_post_id reverse relationship
 	 * @property StewardshipPostAmount[] $_StewardshipPostAmountArray the value for the private _objStewardshipPostAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_post_amount.stewardship_post_id reverse relationship
+	 * @property StewardshipPostLineItem $_StewardshipPostLineItem the value for the private _objStewardshipPostLineItem (Read-Only) if set due to an expansion on the stewardship_post_line_item.stewardship_post_id reverse relationship
+	 * @property StewardshipPostLineItem[] $_StewardshipPostLineItemArray the value for the private _objStewardshipPostLineItemArray (Read-Only) if set due to an ExpandAsArray on the stewardship_post_line_item.stewardship_post_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class StewardshipPostGen extends QBaseClass {
@@ -96,6 +98,22 @@
 		 * @var StewardshipPostAmount[] _objStewardshipPostAmountArray;
 		 */
 		private $_objStewardshipPostAmountArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single StewardshipPostLineItem object
+		 * (of type StewardshipPostLineItem), if this StewardshipPost object was restored with
+		 * an expansion on the stewardship_post_line_item association table.
+		 * @var StewardshipPostLineItem _objStewardshipPostLineItem;
+		 */
+		private $_objStewardshipPostLineItem;
+
+		/**
+		 * Private member variable that stores a reference to an array of StewardshipPostLineItem objects
+		 * (of type StewardshipPostLineItem[]), if this StewardshipPost object was restored with
+		 * an ExpandAsArray on the stewardship_post_line_item association table.
+		 * @var StewardshipPostLineItem[] _objStewardshipPostLineItemArray;
+		 */
+		private $_objStewardshipPostLineItemArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -507,6 +525,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'stewardshippostlineitem__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objStewardshipPostLineItemArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objStewardshipPostLineItemArray[$intPreviousChildItemCount - 1];
+						$objChildItem = StewardshipPostLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostlineitem__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objStewardshipPostLineItemArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objStewardshipPostLineItemArray[] = StewardshipPostLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -566,6 +598,16 @@
 					$objToReturn->_objStewardshipPostAmountArray[] = StewardshipPostAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objStewardshipPostAmount = StewardshipPostAmount::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostamount__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for StewardshipPostLineItem Virtual Binding
+			$strAlias = $strAliasPrefix . 'stewardshippostlineitem__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objStewardshipPostLineItemArray[] = StewardshipPostLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objStewardshipPostLineItem = StewardshipPostLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardshippostlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1039,6 +1081,18 @@
 					// @return StewardshipPostAmount[]
 					return (array) $this->_objStewardshipPostAmountArray;
 
+				case '_StewardshipPostLineItem':
+					// Gets the value for the private _objStewardshipPostLineItem (Read-Only)
+					// if set due to an expansion on the stewardship_post_line_item.stewardship_post_id reverse relationship
+					// @return StewardshipPostLineItem
+					return $this->_objStewardshipPostLineItem;
+
+				case '_StewardshipPostLineItemArray':
+					// Gets the value for the private _objStewardshipPostLineItemArray (Read-Only)
+					// if set due to an ExpandAsArray on the stewardship_post_line_item.stewardship_post_id reverse relationship
+					// @return StewardshipPostLineItem[]
+					return (array) $this->_objStewardshipPostLineItemArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1396,6 +1450,188 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for StewardshipPostLineItem
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated StewardshipPostLineItems as an array of StewardshipPostLineItem objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipPostLineItem[]
+		*/ 
+		public function GetStewardshipPostLineItemArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return StewardshipPostLineItem::LoadArrayByStewardshipPostId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated StewardshipPostLineItems
+		 * @return int
+		*/ 
+		public function CountStewardshipPostLineItems() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return StewardshipPostLineItem::CountByStewardshipPostId($this->intId);
+		}
+
+		/**
+		 * Associates a StewardshipPostLineItem
+		 * @param StewardshipPostLineItem $objStewardshipPostLineItem
+		 * @return void
+		*/ 
+		public function AssociateStewardshipPostLineItem(StewardshipPostLineItem $objStewardshipPostLineItem) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPostLineItem on this unsaved StewardshipPost.');
+			if ((is_null($objStewardshipPostLineItem->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateStewardshipPostLineItem on this StewardshipPost with an unsaved StewardshipPostLineItem.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post_line_item`
+				SET
+					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostLineItem->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPostLineItem->StewardshipPostId = $this->intId;
+				$objStewardshipPostLineItem->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a StewardshipPostLineItem
+		 * @param StewardshipPostLineItem $objStewardshipPostLineItem
+		 * @return void
+		*/ 
+		public function UnassociateStewardshipPostLineItem(StewardshipPostLineItem $objStewardshipPostLineItem) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostLineItem on this unsaved StewardshipPost.');
+			if ((is_null($objStewardshipPostLineItem->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostLineItem on this StewardshipPost with an unsaved StewardshipPostLineItem.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post_line_item`
+				SET
+					`stewardship_post_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostLineItem->Id) . ' AND
+					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPostLineItem->StewardshipPostId = null;
+				$objStewardshipPostLineItem->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all StewardshipPostLineItems
+		 * @return void
+		*/ 
+		public function UnassociateAllStewardshipPostLineItems() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostLineItem on this unsaved StewardshipPost.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPostLineItem::LoadArrayByStewardshipPostId($this->intId) as $objStewardshipPostLineItem) {
+					$objStewardshipPostLineItem->StewardshipPostId = null;
+					$objStewardshipPostLineItem->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`stewardship_post_line_item`
+				SET
+					`stewardship_post_id` = null
+				WHERE
+					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated StewardshipPostLineItem
+		 * @param StewardshipPostLineItem $objStewardshipPostLineItem
+		 * @return void
+		*/ 
+		public function DeleteAssociatedStewardshipPostLineItem(StewardshipPostLineItem $objStewardshipPostLineItem) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostLineItem on this unsaved StewardshipPost.');
+			if ((is_null($objStewardshipPostLineItem->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostLineItem on this StewardshipPost with an unsaved StewardshipPostLineItem.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_post_line_item`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objStewardshipPostLineItem->Id) . ' AND
+					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objStewardshipPostLineItem->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated StewardshipPostLineItems
+		 * @return void
+		*/ 
+		public function DeleteAllStewardshipPostLineItems() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateStewardshipPostLineItem on this unsaved StewardshipPost.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipPost::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (StewardshipPostLineItem::LoadArrayByStewardshipPostId($this->intId) as $objStewardshipPostLineItem) {
+					$objStewardshipPostLineItem->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`stewardship_post_line_item`
+				WHERE
+					`stewardship_post_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1502,6 +1738,7 @@
 	 * @property-read QQNode $CreatedByLoginId
 	 * @property-read QQNodeLogin $CreatedByLogin
 	 * @property-read QQReverseReferenceNodeStewardshipPostAmount $StewardshipPostAmount
+	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
 	 */
 	class QQNodeStewardshipPost extends QQNode {
 		protected $strTableName = 'stewardship_post';
@@ -1527,6 +1764,8 @@
 					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'StewardshipPostAmount':
 					return new QQReverseReferenceNodeStewardshipPostAmount($this, 'stewardshippostamount', 'reverse_reference', 'stewardship_post_id');
+				case 'StewardshipPostLineItem':
+					return new QQReverseReferenceNodeStewardshipPostLineItem($this, 'stewardshippostlineitem', 'reverse_reference', 'stewardship_post_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1551,6 +1790,7 @@
 	 * @property-read QQNode $CreatedByLoginId
 	 * @property-read QQNodeLogin $CreatedByLogin
 	 * @property-read QQReverseReferenceNodeStewardshipPostAmount $StewardshipPostAmount
+	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeStewardshipPost extends QQReverseReferenceNode {
@@ -1577,6 +1817,8 @@
 					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'StewardshipPostAmount':
 					return new QQReverseReferenceNodeStewardshipPostAmount($this, 'stewardshippostamount', 'reverse_reference', 'stewardship_post_id');
+				case 'StewardshipPostLineItem':
+					return new QQReverseReferenceNodeStewardshipPostLineItem($this, 'stewardshippostlineitem', 'reverse_reference', 'stewardship_post_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

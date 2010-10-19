@@ -71,6 +71,7 @@
 			$this->dtgStewardshipContributions->MetaAddColumn('NonDeductibleFlag');
 			$this->dtgStewardshipContributions->MetaAddColumn('Note');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->CreatedByLogin);
+			$this->dtgStewardshipContributions->MetaAddColumn('UnpostedFlag');
 		}
 	}
 

@@ -36,6 +36,7 @@
 		public $chkNonDeductibleFlag;
 		public $txtNote;
 		public $lstCreatedByLogin;
+		public $chkUnpostedFlag;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -81,6 +82,7 @@
 			$this->chkNonDeductibleFlag = $this->mctStewardshipContribution->chkNonDeductibleFlag_Create();
 			$this->txtNote = $this->mctStewardshipContribution->txtNote_Create();
 			$this->lstCreatedByLogin = $this->mctStewardshipContribution->lstCreatedByLogin_Create();
+			$this->chkUnpostedFlag = $this->mctStewardshipContribution->chkUnpostedFlag_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

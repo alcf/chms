@@ -81,6 +81,7 @@
 			$this->dtgStewardshipContributions->MetaAddColumn('NonDeductibleFlag');
 			$this->dtgStewardshipContributions->MetaAddColumn('Note');
 			$this->dtgStewardshipContributions->MetaAddColumn(QQN::StewardshipContribution()->CreatedByLogin);
+			$this->dtgStewardshipContributions->MetaAddColumn('UnpostedFlag');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

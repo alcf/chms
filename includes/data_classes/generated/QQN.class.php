@@ -283,6 +283,12 @@
 			return new QQNodeStewardshipPostAmount('stewardship_post_amount', null, null);
 		}
 		/**
+		 * @return QQNodeStewardshipPostLineItem
+		 */
+		static public function StewardshipPostLineItem() {
+			return new QQNodeStewardshipPostLineItem('stewardship_post_line_item', null, null);
+		}
+		/**
 		 * @return QQNodeStewardshipStack
 		 */
 		static public function StewardshipStack() {
