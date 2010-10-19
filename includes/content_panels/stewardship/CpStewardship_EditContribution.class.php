@@ -331,6 +331,8 @@
 				$this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup->Save();
 				$this->mctContribution->StewardshipContribution->CheckingAccountLookup = $this->mctContribution->StewardshipContribution->UnsavedCheckingAccountLookup;
 			}
+
+			$this->mctContribution->StewardshipContribution->UnpostedFlag = true;
 			$this->mctContribution->SaveStewardshipContribution();
 
 			foreach ($this->mctAmountArray as $mctAmount) {

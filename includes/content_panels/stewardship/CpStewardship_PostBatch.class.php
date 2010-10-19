@@ -1,82 +1,57 @@
 <?php 
 	class CpStewardship_PostBatch extends CpStewardship_Base {
-		public $pnlUnposted;
-		public $dtgUnposted;
-
-		public $dtgPostingArray = array();
-		public $pnlPostingArray = array();
+		public $dtgPosts;
 
 		protected function SetupPanel() {
-			// Setup for UnPosted Stuff (if applicable)
-			$this->pnlUnposted = new QPanel($this);
-			$this->pnlUnposted->Text = 'Unposted Funds';
-			$this->pnlUnposted->TagName = 'h3';
+			if ($this->objBatch->StewardshipBatchStatusTypeId == StewardshipBatchStatusType::NewBatch)
+				return $this->ReturnTo('#/view_post');
 
-			$this->dtgUnposted = new QDataGrid($this);
-			$this->dtgUnposted->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM[0]; ?>', 'Width=500px'));
-			$this->dtgUnposted->AddColumn(new QDataGridColumn('Amount', '<?= $_ITEM[1]; ?>', 'HtmlEntities=false', 'Width=245px'));
+			$this->dtgPosts = new QDataGrid($this);
+			$this->dtgPosts->AddColumn(new QDataGridColumn('Posting', '<?= $_CONTROL->ParentControl->RenderPosting($_ITEM); ?>', 'HtmlEntities=false', 'Width=200px'));
+			$this->dtgPosts->AddColumn(new QDataGridColumn('Post Date', '<?= $_CONTROL->ParentControl->RenderPostDate($_ITEM); ?>', 'Width=140px'));
+			$this->dtgPosts->AddColumn(new QDataGridColumn('Posted By', '<?= $_CONTROL->ParentControl->RenderPostedBy($_ITEM); ?>', 'Width=140px'));
+			$this->dtgPosts->AddColumn(new QDataGridColumn('Transaction Count', '<?= $_CONTROL->ParentControl->RenderCount($_ITEM); ?>', 'Width=130px'));
+			$this->dtgPosts->AddColumn(new QDataGridColumn('Amount', '<?= $_CONTROL->ParentControl->RenderAmount($_ITEM); ?>', 'HtmlEntities=false', 'Width=100px'));
+			$this->dtgPosts->SetDataBinder('dtgPosts_Bind', $this);
+		}
 
-			$this->btnSave->Text = 'Post Unposted Funds';
-			$this->btnSave->RemoveAllActions(QClickEvent::EventName);
-			$this->btnSave->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to POST these funds?  This cannot be undone.'));
-			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
-			
-			$this->Unposted_Refresh();
-			$this->Posted_Refresh();
+		public function dtgPosts_Bind() {
+			if ($this->objBatch->StewardshipBatchStatusTypeId != StewardshipBatchStatusType::PostedInFull) {
+				$objPostArray = array(new StewardshipPost());
+			} else {
+				$objPostArray = array();
+			}
+
+			$objPostArray = array_merge($objPostArray, $this->objBatch->GetStewardshipPostArray(QQ::OrderBy(QQN::StewardshipPost()->PostNumber)));
+			$this->dtgPosts->DataSource = $objPostArray;
+		}
+
+		public function RenderPosting(StewardshipPost $objPost) {
+			if ($objPost->Id) {
+				return sprintf('<a href="#/view_post/%s">Post #%s</a>', $objPost->PostNumber, $objPost->PostNumber);
+			} else {
+				return '<a href="#/view_post">Unposted Transactions</a>';
+			}
+		}
+
+		public function RenderPostDate(StewardshipPost $objPost) {
+			if ($objPost->Id) return $objPost->DatePosted->ToString('MMMM D, YYYY');
+		}
+
+		public function RenderPostedBy(StewardshipPost $objPost) {
+			if ($objPost->Id) return $objPost->CreatedByLogin->Name;
+		}
+
+		public function RenderCount(StewardshipPost $objPost) {
+			if ($objPost->Id) {
+				return $objPost->CountStewardshipPostLineItems();
+			} else {
+				return StewardshipContribution::CountByStewardshipBatchIdUnpostedFlag($this->objBatch->Id, true);
+			}
 		}
 		
-		public function Posted_Refresh() {
-			// Setup Posted Stuff
-			foreach ($this->objBatch->GetStewardshipPostArray(QQ::OrderBy(QQN::StewardshipPost()->PostNumber)) as $objPost) {
-				$strControlId = 'pnlPosting' . $objPost->Id;
-				if (!$this->objForm->GetControl($strControlId)) {
-					$pnlPosting = new QPanel($this, $strControlId);
-					$pnlPosting->Text = sprintf('Post #%s :: %s<br/><span style="font-size: 10px; font-weight: normal; font-style: italic; color: #666;">Posted on %s by %s</span>',
-						$objPost->PostNumber, QApplication::DisplayCurrency($objPost->TotalAmount), $objPost->DatePosted->ToString('MMMM D, YYYY'), $objPost->CreatedByLogin->Name);
-					$pnlPosting->TagName = 'h3';
-
-					$dtgPosting = new QDataGrid($this);
-					$dtgPosting->ActionParameter = $objPost->Id;
-					$dtgPosting->SetDataBinder('dtgPosted_Bind', $this);
-					$dtgPosting->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=500px'));
-					$dtgPosting->AddColumn(new QDataGridColumn('Amount', '<?= QApplication::DisplayCurrencyHtml($_ITEM->Amount); ?>', 'HtmlEntities=false', 'Width=245px'));
-
-					$this->pnlPostingArray[] = $pnlPosting;
-					$this->dtgPostingArray[] = $dtgPosting;
-				}
-			}
-		}
-
-		public function btnSave_Click() {
-			$this->objBatch->PostBalance(QApplication::$Login);
-			$this->Unposted_Refresh();
-			$this->Posted_Refresh();
-			$this->objForm->pnlBatchTitle->Refresh();
-			$this->Refresh();
-		}
-
-		public function Unposted_Refresh() {
-			$fltArray = $this->objBatch->GetUnpostedBalanceByStewardshipFundId();
-			if (count($fltArray)) {
-				$strArrayArray = array();
-				foreach ($fltArray as $intStewardshipFundId => $fltAmount) {
-					$strArray = array(StewardshipFund::Load($intStewardshipFundId)->Name, QApplication::DisplayCurrencyHtml($fltAmount));
-					$strArrayArray[] = $strArray;
-				}
-				$this->dtgUnposted->DataSource = $strArrayArray;
-				$this->dtgUnposted->Visible = true;
-				$this->pnlUnposted->Visible = true;
-				$this->btnSave->Visible = true;
-			} else {
-				$this->dtgUnposted->Visible = false;
-				$this->pnlUnposted->Visible = false;
-				$this->btnSave->Visible = false;
-			}
-		}
-
-		public function dtgPosted_Bind(QDataGrid $dtgPosting) {
-			$objPost = StewardshipPost::Load($dtgPosting->ActionParameter);
-			$dtgPosting->DataSource = $objPost->GetStewardshipPostAmountArray(array(QQ::OrderBy(QQN::StewardshipPostAmount()->Amount), QQ::Expand(QQN::StewardshipPostAmount()->StewardshipFund->Name)));
+		public function RenderAmount(StewardshipPost $objPost) {
+			if ($objPost->Id) return QApplication::DisplayCurrencyHtml($objPost->TotalAmount);
 		}
 	}
 ?>

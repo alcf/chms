@@ -11,7 +11,7 @@
 <div class="section">
 	<button class="primary" style="margin-bottom: 6px;" onclick="document.location='#/edit_batch'; return false;">Edit Batch Info</button>
 	&nbsp;
-	<button class="primary" style="margin-bottom: 6px;" onclick="document.location='#/post_batch'; return false;">Post Batch</button>
+	<button class="primary" style="margin-bottom: 6px;" onclick="document.location='#/post_batch'; return false;">Posting Information</button>
 </div>
 
 <?php $_CONTROL->dlgScanCheck->Render(); ?>

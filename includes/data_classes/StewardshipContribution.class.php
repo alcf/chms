@@ -192,6 +192,7 @@
 				$objContribution->DateEntered = $dttEntered;
 			else
 				$objContribution->DateEntered = QDateTime::Now();
+			$objContribution->DateCredited = $objContribution->DateEntered;
 			$objContribution->DateCleared = $dttCleared;
 			$objContribution->Note = $strNote;
 

@@ -188,7 +188,7 @@
 		/**
 		 * Performs a Post of any balance on the batch.
 		 * @param Login $objLogin
-		 * @return Post $objPost the actual post object if posted, or null if nothing was needed to be posted
+		 * @return StewardshipPost $objPost the actual post object if posted, or null if nothing was needed to be posted
 		 */
 		public function PostBalance(Login $objLogin) {
 			$objPost = null;
