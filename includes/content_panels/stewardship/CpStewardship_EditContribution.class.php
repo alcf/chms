@@ -363,7 +363,7 @@
 			$this->SaveSelectedFundsToSession();
 
 			if ($this->btnSaveAndScanAgain && ($strControlId == $this->btnSaveAndScanAgain->ControlId)) {
-				if ($strParameter == 'new')
+				if ($this->btnSaveAndScanAgain->ActionParameter == 'new')
 					return $this->ReturnTo('#' . $this->objStack->StackNumber . '/edit_contribution/new/again');
 				else
 					return $this->ReturnTo('#' . $this->objStack->StackNumber . '/view/scan');
@@ -390,7 +390,7 @@
 
 			if ($this->txtCheckNumber && $this->txtCheckNumber->Visible) $this->txtCheckNumber->Select();
 			if ($this->txtAuthorization && $this->txtAuthorization->Visible) $this->txtAuthorization->Select();
-			if ($this->txtAlternateSource && $this->txtAlternateSource->Visible) $this->txtAlternateSource->Select();
+			if ($this->txtAlternateSource && $this->txtAlternateSource->Visible) $this->mctAmountArray[0]->StewardshipFundIdControl->Focus();
 		}
 
 		public function lstStewardshipContributionType_Change() {
