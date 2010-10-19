@@ -127,6 +127,14 @@
 		}
 
 		public function RenderDate(StewardshipContributionAmount $objAmount) {
+			if ($objAmount->StewardshipContribution->NonDeductibleFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->BackColor = '#ddd';
+				$this->dtgStewardshipContributionAmount->OverrideRowStyle($this->dtgStewardshipContributionAmount->CurrentRowIndex, $objStyle);
+			} else {
+				$this->dtgStewardshipContributionAmount->OverrideRowStyle($this->dtgStewardshipContributionAmount->CurrentRowIndex, null);
+			}
+
 			return sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
 				$objAmount->StewardshipContribution->StewardshipBatchId,
 				$objAmount->StewardshipContribution->StewardshipStack->StackNumber,
@@ -143,7 +151,11 @@
 		}
 		
 		public function RenderAmount(StewardshipContributionAmount $objAmount) {
-			return QApplication::DisplayCurrencyHtml($objAmount->Amount, true);
+			$strToReturn = QApplication::DisplayCurrencyHtml($objAmount->Amount, true);
+			if ($objAmount->StewardshipContribution->NonDeductibleFlag) {
+				$strToReturn .= '<br/><span style="color: #666; font-size: 10px;">Non-Deductible</span>';
+			}
+			return $strToReturn;
 		}
 		
 		public function dtgStewardshipContributionAmount_Bind() {

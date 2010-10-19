@@ -21,11 +21,27 @@ CREATE TABLE `stewardship_contribution_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `us_state`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(100),
+`abbreviation` VARCHAR(2) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `checking_account_lookup`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `transit_hash` VARCHAR(32),
 `account_hash` VARCHAR(32),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `registry`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(80) NOT NULL UNIQUE,
+`value` TEXT,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -36,10 +52,49 @@ CREATE TABLE `phone_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `membership_status_type`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `query_data_type`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `email_message_status_type`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `email_message`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`email_message_status_type_id` INTEGER UNSIGNED NOT NULL,
+`date_received` DATETIME NOT NULL,
+`raw_message` MEDIUMTEXT NOT NULL,
+`message_identifier` VARCHAR(255) UNIQUE,
+`subject` VARCHAR(255),
+`from_address` VARCHAR(255),
+`response_header` TEXT,
+`response_body` MEDIUMTEXT,
+`error_message` TEXT,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `email_outgoing_queue`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`email_message_id` INTEGER UNSIGNED NOT NULL,
+`to_address` VARCHAR(255) NOT NULL,
+`error_flag` BOOLEAN,
+`token` VARCHAR(40),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -67,10 +122,28 @@ CREATE TABLE `role_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `marital_status_type`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `address_type`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `query_node`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(100),
+`qcodo_query_node` TEXT,
+`query_data_type_id` INTEGER UNSIGNED NOT NULL,
+`type_detail` VARCHAR(255),
+`qcodo_query_condition` TEXT,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -133,6 +206,20 @@ CREATE TABLE `image_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `email_broadcast_type`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `name_item`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(200) UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `login`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -148,139 +235,6 @@ CREATE TABLE `login`
 `first_name` VARCHAR(100),
 `middle_initial` VARCHAR(1),
 `last_name` VARCHAR(100),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `growth_group_structure`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(100),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `search_query`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`description` TEXT,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `growth_group_location`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`location` VARCHAR(100),
-`longitude` DECIMAL(13,10),
-`latitude` DECIMAL(13,10),
-`zoom` INTEGER,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `other_contact_method`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(100),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `attribute`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`attribute_data_type_id` INTEGER UNSIGNED NOT NULL,
-`name` VARCHAR(100),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `attribute_option`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`attribute_id` INTEGER UNSIGNED NOT NULL,
-`name` VARCHAR(100),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `group_role_type`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(40) NOT NULL UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `ministry`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`token` VARCHAR(20) NOT NULL UNIQUE,
-`name` VARCHAR(100),
-`parent_ministry_id` INTEGER UNSIGNED,
-`active_flag` BOOLEAN NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `stewardship_fund`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`ministry_id` INTEGER UNSIGNED,
-`name` VARCHAR(200),
-`account_number` VARCHAR(100),
-`active_flag` BOOLEAN,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `comment_category`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`order_number` INTEGER UNSIGNED,
-`name` VARCHAR(40) NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `email_broadcast_type`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(40) NOT NULL UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `group`
-(
-`id` INTEGER UNSIGNED AUTO_INCREMENT,
-`group_type_id` INTEGER UNSIGNED NOT NULL,
-`ministry_id` INTEGER UNSIGNED NOT NULL,
-`name` VARCHAR(200),
-`description` TEXT,
-`parent_group_id` INTEGER UNSIGNED,
-`hierarchy_level` INTEGER,
-`hierarchy_order_number` INTEGER,
-`confidential_flag` BOOLEAN,
-`email_broadcast_type_id` INTEGER UNSIGNED,
-`token` VARCHAR(100) UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `communication_list`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`email_broadcast_type_id` INTEGER UNSIGNED NOT NULL,
-`ministry_id` INTEGER UNSIGNED NOT NULL,
-`name` VARCHAR(200),
-`token` VARCHAR(100) NOT NULL UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `communicationlist_communicationlistentry_assn`
-(
-`communication_list_id` INTEGER UNSIGNED NOT NULL,
-`communication_list_entry_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`communication_list_id`,`communication_list_entry_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `query_node`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(100),
-`qcodo_query_node` TEXT,
-`query_data_type_id` INTEGER UNSIGNED NOT NULL,
-`type_detail` VARCHAR(255),
-`qcodo_query_condition` TEXT,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -300,36 +254,6 @@ CREATE TABLE `stewardship_batch`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `email_message_status_type`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(40) NOT NULL UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `registry`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(80) NOT NULL UNIQUE,
-`value` TEXT,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `email_message`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`email_message_status_type_id` INTEGER UNSIGNED NOT NULL,
-`date_received` DATETIME NOT NULL,
-`raw_message` MEDIUMTEXT NOT NULL,
-`message_identifier` VARCHAR(255) UNIQUE,
-`subject` VARCHAR(255),
-`from_address` VARCHAR(255),
-`response_header` TEXT,
-`response_body` MEDIUMTEXT,
-`error_message` TEXT,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `stewardship_post`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -341,43 +265,26 @@ CREATE TABLE `stewardship_post`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `us_state`
+CREATE TABLE `comment_category`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`order_number` INTEGER UNSIGNED,
+`name` VARCHAR(40) NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `growth_group_structure`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `name` VARCHAR(100),
-`abbreviation` VARCHAR(2) NOT NULL UNIQUE,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `membership_status_type`
+CREATE TABLE `marriage_status_type`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `name` VARCHAR(40) NOT NULL UNIQUE,
 PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `email_outgoing_queue`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`email_message_id` INTEGER UNSIGNED NOT NULL,
-`to_address` VARCHAR(255) NOT NULL,
-`error_flag` BOOLEAN,
-`token` VARCHAR(40),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `marital_status_type`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(40) NOT NULL UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `attributevalue_multipleattributeoption_assn`
-(
-`attribute_value_id` INTEGER UNSIGNED NOT NULL,
-`attribute_option_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `person`
@@ -496,12 +403,132 @@ CREATE TABLE `membership`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `email`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`person_id` INTEGER UNSIGNED NOT NULL,
+`address` VARCHAR(200),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `search_query`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`description` TEXT,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `growth_group_location`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`location` VARCHAR(100),
+`longitude` DECIMAL(13,10),
+`latitude` DECIMAL(13,10),
+`zoom` INTEGER,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `ministry`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`token` VARCHAR(20) NOT NULL UNIQUE,
+`name` VARCHAR(100),
+`parent_ministry_id` INTEGER UNSIGNED,
+`active_flag` BOOLEAN NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `communication_list`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`email_broadcast_type_id` INTEGER UNSIGNED NOT NULL,
+`ministry_id` INTEGER UNSIGNED NOT NULL,
+`name` VARCHAR(200),
+`token` VARCHAR(100) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `communicationlist_communicationlistentry_assn`
+(
+`communication_list_id` INTEGER UNSIGNED NOT NULL,
+`communication_list_entry_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`communication_list_id`,`communication_list_entry_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `group`
+(
+`id` INTEGER UNSIGNED AUTO_INCREMENT,
+`group_type_id` INTEGER UNSIGNED NOT NULL,
+`ministry_id` INTEGER UNSIGNED NOT NULL,
+`name` VARCHAR(200),
+`description` TEXT,
+`parent_group_id` INTEGER UNSIGNED,
+`hierarchy_level` INTEGER,
+`hierarchy_order_number` INTEGER,
+`confidential_flag` BOOLEAN,
+`email_broadcast_type_id` INTEGER UNSIGNED,
+`token` VARCHAR(100) UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `stewardship_fund`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`ministry_id` INTEGER UNSIGNED,
+`name` VARCHAR(200),
+`account_number` VARCHAR(100),
+`active_flag` BOOLEAN,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `other_contact_method`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(100),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `other_contact_info`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `person_id` INTEGER UNSIGNED NOT NULL,
 `other_contact_method_id` INTEGER UNSIGNED NOT NULL,
 `value` VARCHAR(200),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `marriage`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`linked_marriage_id` INTEGER UNSIGNED UNIQUE,
+`person_id` INTEGER UNSIGNED NOT NULL,
+`married_to_person_id` INTEGER UNSIGNED,
+`marriage_status_type_id` INTEGER UNSIGNED NOT NULL,
+`date_start` DATE,
+`date_end` DATE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `attribute`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`attribute_data_type_id` INTEGER UNSIGNED NOT NULL,
+`name` VARCHAR(100),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `group_role_type`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `attribute_option`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`attribute_id` INTEGER UNSIGNED NOT NULL,
+`name` VARCHAR(100),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -518,38 +545,18 @@ CREATE TABLE `attribute_value`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `email`
+CREATE TABLE `attributevalue_multipleattributeoption_assn`
 (
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`person_id` INTEGER UNSIGNED NOT NULL,
-`address` VARCHAR(200),
-PRIMARY KEY (`id`)
+`attribute_value_id` INTEGER UNSIGNED NOT NULL,
+`attribute_option_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `marriage_status_type`
+CREATE TABLE `ministry_login_assn`
 (
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(40) NOT NULL UNIQUE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `marriage`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`linked_marriage_id` INTEGER UNSIGNED UNIQUE,
-`person_id` INTEGER UNSIGNED NOT NULL,
-`married_to_person_id` INTEGER UNSIGNED,
-`marriage_status_type_id` INTEGER UNSIGNED NOT NULL,
-`date_start` DATE,
-`date_end` DATE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `name_item`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(200) UNIQUE,
-PRIMARY KEY (`id`)
+`ministry_id` INTEGER UNSIGNED NOT NULL,
+`login_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`ministry_id`,`login_id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `person_nameitem_assn`
@@ -559,35 +566,12 @@ CREATE TABLE `person_nameitem_assn`
 PRIMARY KEY (`person_id`,`name_item_id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `smart_group`
-(
-`group_id` INTEGER UNSIGNED NOT NULL,
-`search_query_id` INTEGER UNSIGNED UNIQUE,
-`query` TEXT,
-`date_refreshed` DATETIME,
-`process_time_ms` INTEGER,
-PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `query_condition`
+CREATE TABLE `group_role`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`search_query_id` INTEGER UNSIGNED NOT NULL,
-`query_operation_id` INTEGER UNSIGNED NOT NULL,
-`query_node_id` INTEGER UNSIGNED NOT NULL,
-`value` VARCHAR(255),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `comment`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`person_id` INTEGER UNSIGNED NOT NULL,
-`posted_by_login_id` INTEGER UNSIGNED NOT NULL,
-`comment_privacy_type_id` INTEGER UNSIGNED NOT NULL,
-`comment_category_id` INTEGER UNSIGNED NOT NULL,
-`comment` TEXT,
-`date_posted` DATETIME NOT NULL,
+`ministry_id` INTEGER UNSIGNED NOT NULL,
+`name` VARCHAR(100),
+`group_role_type_id` INTEGER UNSIGNED NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -610,20 +594,61 @@ CREATE TABLE `growth_group`
 PRIMARY KEY (`group_id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `group_role`
+CREATE TABLE `stewardship_post_amount`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`ministry_id` INTEGER UNSIGNED NOT NULL,
-`name` VARCHAR(100),
-`group_role_type_id` INTEGER UNSIGNED NOT NULL,
+`stewardship_post_id` INTEGER UNSIGNED NOT NULL,
+`stewardship_fund_id` INTEGER UNSIGNED NOT NULL,
+`amount` DECIMAL(10,2),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `ministry_login_assn`
+CREATE TABLE `growthgroupstructure_growthgroup_assn`
 (
-`ministry_id` INTEGER UNSIGNED NOT NULL,
-`login_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`ministry_id`,`login_id`)
+`growth_group_structure_id` INTEGER UNSIGNED NOT NULL,
+`growth_group_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`growth_group_structure_id`,`growth_group_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `smart_group`
+(
+`group_id` INTEGER UNSIGNED NOT NULL,
+`search_query_id` INTEGER UNSIGNED UNIQUE,
+`query` TEXT,
+`date_refreshed` DATETIME,
+`process_time_ms` INTEGER,
+PRIMARY KEY (`group_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `household_split`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`household_id` INTEGER UNSIGNED NOT NULL,
+`split_household_id` INTEGER UNSIGNED NOT NULL,
+`date_split` DATETIME,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `query_condition`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`search_query_id` INTEGER UNSIGNED NOT NULL,
+`query_operation_id` INTEGER UNSIGNED NOT NULL,
+`query_node_id` INTEGER UNSIGNED NOT NULL,
+`value` VARCHAR(255),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `comment`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`person_id` INTEGER UNSIGNED NOT NULL,
+`posted_by_login_id` INTEGER UNSIGNED NOT NULL,
+`comment_privacy_type_id` INTEGER UNSIGNED NOT NULL,
+`comment_category_id` INTEGER UNSIGNED NOT NULL,
+`comment` TEXT,
+`date_posted` DATETIME NOT NULL,
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `stewardship_stack`
@@ -655,22 +680,7 @@ CREATE TABLE `stewardship_contribution`
 `non_deductible_flag` BOOLEAN,
 `note` TEXT,
 `created_by_login_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `growthgroupstructure_growthgroup_assn`
-(
-`growth_group_structure_id` INTEGER UNSIGNED NOT NULL,
-`growth_group_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`growth_group_structure_id`,`growth_group_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `stewardship_post_amount`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`stewardship_post_id` INTEGER UNSIGNED NOT NULL,
-`stewardship_fund_id` INTEGER UNSIGNED NOT NULL,
-`amount` DECIMAL(10,2),
+`unposted_flag` BOOLEAN,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -683,20 +693,26 @@ CREATE TABLE `stewardship_contribution_amount`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `household_split`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`household_id` INTEGER UNSIGNED NOT NULL,
-`split_household_id` INTEGER UNSIGNED NOT NULL,
-`date_split` DATETIME,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `communicationlist_person_assn`
 (
 `communication_list_id` INTEGER UNSIGNED NOT NULL,
 `person_id` INTEGER UNSIGNED NOT NULL,
 PRIMARY KEY (`communication_list_id`,`person_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `stewardship_pledge`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`person_id` INTEGER UNSIGNED NOT NULL,
+`stewardship_fund_id` INTEGER UNSIGNED NOT NULL,
+`date_started` DATE,
+`date_ended` DATE,
+`pledge_amount` DECIMAL(10,2),
+`contributed_amount` DECIMAL(10,2),
+`remaining_amount` DECIMAL(10,2),
+`fulfilled_flag` BOOLEAN NOT NULL,
+`active_flag` BOOLEAN NOT NULL,
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `group_participation`
@@ -722,66 +738,35 @@ CREATE TABLE `email_message_route`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `stewardship_pledge`
+CREATE TABLE `stewardship_post_line_item`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`stewardship_post_id` INTEGER UNSIGNED NOT NULL,
+`stewardship_contribution_id` INTEGER UNSIGNED NOT NULL,
 `person_id` INTEGER UNSIGNED NOT NULL,
 `stewardship_fund_id` INTEGER UNSIGNED NOT NULL,
-`date_started` DATE,
-`date_ended` DATE,
-`pledge_amount` DECIMAL(10,2),
-`contributed_amount` DECIMAL(10,2),
-`remaining_amount` DECIMAL(10,2),
-`fulfilled_flag` BOOLEAN NOT NULL,
-`active_flag` BOOLEAN NOT NULL,
+`description` VARCHAR(255),
+`amount` DECIMAL(10,2),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE UNIQUE INDEX `checking_account_lookup_idx` ON `checking_account_lookup` (`transit_hash`,`account_hash`);
 
-CREATE INDEX `role_type_id_idx` ON `login`(`role_type_id`);
-ALTER TABLE `login` ADD FOREIGN KEY role_type_id_idxfk (`role_type_id`) REFERENCES `role_type` (`id`);
+CREATE INDEX `email_message_status_type_id_idx` ON `email_message`(`email_message_status_type_id`);
+ALTER TABLE `email_message` ADD FOREIGN KEY email_message_status_type_id_idxfk (`email_message_status_type_id`) REFERENCES `email_message_status_type` (`id`);
 
-CREATE INDEX `attribute_data_type_id_idx` ON `attribute`(`attribute_data_type_id`);
-ALTER TABLE `attribute` ADD FOREIGN KEY attribute_data_type_id_idxfk (`attribute_data_type_id`) REFERENCES `attribute_data_type` (`id`);
+CREATE INDEX `email_outgoing_queue_idx` ON `email_outgoing_queue` (`email_message_id`,`token`);
 
-CREATE UNIQUE INDEX `attribute_option_idx` ON `attribute_option` (`attribute_id`,`name`);
+CREATE INDEX `email_outgoing_queue_idx_1` ON `email_outgoing_queue` (`email_message_id`,`error_flag`);
 
-CREATE INDEX `attribute_id_idx` ON `attribute_option`(`attribute_id`);
-ALTER TABLE `attribute_option` ADD FOREIGN KEY attribute_id_idxfk (`attribute_id`) REFERENCES `attribute` (`id`);
-
-CREATE INDEX `parent_ministry_id_idx` ON `ministry`(`parent_ministry_id`);
-ALTER TABLE `ministry` ADD FOREIGN KEY parent_ministry_id_idxfk (`parent_ministry_id`) REFERENCES `ministry` (`id`);
-
-CREATE INDEX `active_flag_idx` ON `ministry`(`active_flag`);
-CREATE INDEX `ministry_id_idx` ON `stewardship_fund`(`ministry_id`);
-ALTER TABLE `stewardship_fund` ADD FOREIGN KEY ministry_id_idxfk (`ministry_id`) REFERENCES `ministry` (`id`);
-
-CREATE INDEX `id_idx` ON `group`(`id`);
-CREATE INDEX `group_type_id_idx` ON `group`(`group_type_id`);
-ALTER TABLE `group` ADD FOREIGN KEY group_type_id_idxfk (`group_type_id`) REFERENCES `group_type` (`id`);
-
-CREATE INDEX `ministry_id_idx` ON `group`(`ministry_id`);
-ALTER TABLE `group` ADD FOREIGN KEY ministry_id_idxfk_1 (`ministry_id`) REFERENCES `ministry` (`id`);
-
-CREATE INDEX `parent_group_id_idx` ON `group`(`parent_group_id`);
-ALTER TABLE `group` ADD FOREIGN KEY parent_group_id_idxfk (`parent_group_id`) REFERENCES `group` (`id`);
-
-CREATE INDEX `email_broadcast_type_id_idx` ON `group`(`email_broadcast_type_id`);
-ALTER TABLE `group` ADD FOREIGN KEY email_broadcast_type_id_idxfk (`email_broadcast_type_id`) REFERENCES `email_broadcast_type` (`id`);
-
-CREATE INDEX `email_broadcast_type_id_idx` ON `communication_list`(`email_broadcast_type_id`);
-ALTER TABLE `communication_list` ADD FOREIGN KEY email_broadcast_type_id_idxfk_1 (`email_broadcast_type_id`) REFERENCES `email_broadcast_type` (`id`);
-
-CREATE INDEX `ministry_id_idx` ON `communication_list`(`ministry_id`);
-ALTER TABLE `communication_list` ADD FOREIGN KEY ministry_id_idxfk_2 (`ministry_id`) REFERENCES `ministry` (`id`);
-
-ALTER TABLE `communicationlist_communicationlistentry_assn` ADD FOREIGN KEY communication_list_id_idxfk (`communication_list_id`) REFERENCES `communication_list` (`id`);
-
-ALTER TABLE `communicationlist_communicationlistentry_assn` ADD FOREIGN KEY communication_list_entry_id_idxfk (`communication_list_entry_id`) REFERENCES `communication_list_entry` (`id`);
+CREATE INDEX `email_message_id_idx` ON `email_outgoing_queue`(`email_message_id`);
+ALTER TABLE `email_outgoing_queue` ADD FOREIGN KEY email_message_id_idxfk (`email_message_id`) REFERENCES `email_message` (`id`);
 
 CREATE INDEX `query_data_type_id_idx` ON `query_node`(`query_data_type_id`);
 ALTER TABLE `query_node` ADD FOREIGN KEY query_data_type_id_idxfk (`query_data_type_id`) REFERENCES `query_data_type` (`id`);
+
+CREATE INDEX `role_type_id_idx` ON `login`(`role_type_id`);
+ALTER TABLE `login` ADD FOREIGN KEY role_type_id_idxfk (`role_type_id`) REFERENCES `role_type` (`id`);
 
 CREATE UNIQUE INDEX `stewardship_batch_idx` ON `stewardship_batch` (`date_entered`,`batch_label`);
 
@@ -791,9 +776,6 @@ ALTER TABLE `stewardship_batch` ADD FOREIGN KEY stewardship_batch_status_type_id
 CREATE INDEX `created_by_login_id_idx` ON `stewardship_batch`(`created_by_login_id`);
 ALTER TABLE `stewardship_batch` ADD FOREIGN KEY created_by_login_id_idxfk (`created_by_login_id`) REFERENCES `login` (`id`);
 
-CREATE INDEX `email_message_status_type_id_idx` ON `email_message`(`email_message_status_type_id`);
-ALTER TABLE `email_message` ADD FOREIGN KEY email_message_status_type_id_idxfk (`email_message_status_type_id`) REFERENCES `email_message_status_type` (`id`);
-
 CREATE UNIQUE INDEX `stewardship_post_idx` ON `stewardship_post` (`stewardship_batch_id`,`post_number`);
 
 CREATE INDEX `stewardship_batch_id_idx` ON `stewardship_post`(`stewardship_batch_id`);
@@ -801,17 +783,6 @@ ALTER TABLE `stewardship_post` ADD FOREIGN KEY stewardship_batch_id_idxfk (`stew
 
 CREATE INDEX `created_by_login_id_idx` ON `stewardship_post`(`created_by_login_id`);
 ALTER TABLE `stewardship_post` ADD FOREIGN KEY created_by_login_id_idxfk_1 (`created_by_login_id`) REFERENCES `login` (`id`);
-
-CREATE INDEX `email_outgoing_queue_idx` ON `email_outgoing_queue` (`email_message_id`,`token`);
-
-CREATE INDEX `email_outgoing_queue_idx_1` ON `email_outgoing_queue` (`email_message_id`,`error_flag`);
-
-CREATE INDEX `email_message_id_idx` ON `email_outgoing_queue`(`email_message_id`);
-ALTER TABLE `email_outgoing_queue` ADD FOREIGN KEY email_message_id_idxfk (`email_message_id`) REFERENCES `email_message` (`id`);
-
-ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
-
-ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
 
 CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
 ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
@@ -893,31 +864,50 @@ CREATE INDEX `person_id_idx` ON `membership`(`person_id`);
 ALTER TABLE `membership` ADD FOREIGN KEY person_id_idxfk_6 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `date_start_idx` ON `membership`(`date_start`);
+CREATE INDEX `person_id_idx` ON `email`(`person_id`);
+ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_7 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `address_idx` ON `email`(`address`);
+CREATE INDEX `parent_ministry_id_idx` ON `ministry`(`parent_ministry_id`);
+ALTER TABLE `ministry` ADD FOREIGN KEY parent_ministry_id_idxfk (`parent_ministry_id`) REFERENCES `ministry` (`id`);
+
+CREATE INDEX `active_flag_idx` ON `ministry`(`active_flag`);
+CREATE INDEX `email_broadcast_type_id_idx` ON `communication_list`(`email_broadcast_type_id`);
+ALTER TABLE `communication_list` ADD FOREIGN KEY email_broadcast_type_id_idxfk (`email_broadcast_type_id`) REFERENCES `email_broadcast_type` (`id`);
+
+CREATE INDEX `ministry_id_idx` ON `communication_list`(`ministry_id`);
+ALTER TABLE `communication_list` ADD FOREIGN KEY ministry_id_idxfk (`ministry_id`) REFERENCES `ministry` (`id`);
+
+ALTER TABLE `communicationlist_communicationlistentry_assn` ADD FOREIGN KEY communication_list_id_idxfk (`communication_list_id`) REFERENCES `communication_list` (`id`);
+
+ALTER TABLE `communicationlist_communicationlistentry_assn` ADD FOREIGN KEY communication_list_entry_id_idxfk (`communication_list_entry_id`) REFERENCES `communication_list_entry` (`id`);
+
+CREATE INDEX `id_idx` ON `group`(`id`);
+CREATE INDEX `group_type_id_idx` ON `group`(`group_type_id`);
+ALTER TABLE `group` ADD FOREIGN KEY group_type_id_idxfk (`group_type_id`) REFERENCES `group_type` (`id`);
+
+CREATE INDEX `ministry_id_idx` ON `group`(`ministry_id`);
+ALTER TABLE `group` ADD FOREIGN KEY ministry_id_idxfk_1 (`ministry_id`) REFERENCES `ministry` (`id`);
+
+CREATE INDEX `parent_group_id_idx` ON `group`(`parent_group_id`);
+ALTER TABLE `group` ADD FOREIGN KEY parent_group_id_idxfk (`parent_group_id`) REFERENCES `group` (`id`);
+
+CREATE INDEX `email_broadcast_type_id_idx` ON `group`(`email_broadcast_type_id`);
+ALTER TABLE `group` ADD FOREIGN KEY email_broadcast_type_id_idxfk_1 (`email_broadcast_type_id`) REFERENCES `email_broadcast_type` (`id`);
+
+CREATE INDEX `ministry_id_idx` ON `stewardship_fund`(`ministry_id`);
+ALTER TABLE `stewardship_fund` ADD FOREIGN KEY ministry_id_idxfk_2 (`ministry_id`) REFERENCES `ministry` (`id`);
+
 CREATE INDEX `person_id_idx` ON `other_contact_info`(`person_id`);
-ALTER TABLE `other_contact_info` ADD FOREIGN KEY person_id_idxfk_7 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `other_contact_info` ADD FOREIGN KEY person_id_idxfk_8 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `other_contact_method_id_idx` ON `other_contact_info`(`other_contact_method_id`);
 ALTER TABLE `other_contact_info` ADD FOREIGN KEY other_contact_method_id_idxfk (`other_contact_method_id`) REFERENCES `other_contact_method` (`id`);
 
-CREATE UNIQUE INDEX `attribute_value_idx` ON `attribute_value` (`attribute_id`,`person_id`);
-
-CREATE INDEX `attribute_id_idx` ON `attribute_value`(`attribute_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_id_idxfk_1 (`attribute_id`) REFERENCES `attribute` (`id`);
-
-CREATE INDEX `person_id_idx` ON `attribute_value`(`person_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk_8 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `single_attribute_option_id_idx` ON `attribute_value`(`single_attribute_option_id`);
-ALTER TABLE `attribute_value` ADD FOREIGN KEY single_attribute_option_id_idxfk (`single_attribute_option_id`) REFERENCES `attribute_option` (`id`);
-
-CREATE INDEX `person_id_idx` ON `email`(`person_id`);
-ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `address_idx` ON `email`(`address`);
 ALTER TABLE `marriage` ADD FOREIGN KEY linked_marriage_id_idxfk (`linked_marriage_id`) REFERENCES `marriage` (`id`);
 
 CREATE INDEX `person_id_idx` ON `marriage`(`person_id`);
-ALTER TABLE `marriage` ADD FOREIGN KEY person_id_idxfk_10 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `marriage` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `married_to_person_id_idx` ON `marriage`(`married_to_person_id`);
 ALTER TABLE `marriage` ADD FOREIGN KEY married_to_person_id_idxfk (`married_to_person_id`) REFERENCES `person` (`id`);
@@ -925,13 +915,70 @@ ALTER TABLE `marriage` ADD FOREIGN KEY married_to_person_id_idxfk (`married_to_p
 CREATE INDEX `marriage_status_type_id_idx` ON `marriage`(`marriage_status_type_id`);
 ALTER TABLE `marriage` ADD FOREIGN KEY marriage_status_type_id_idxfk (`marriage_status_type_id`) REFERENCES `marriage_status_type` (`id`);
 
+CREATE INDEX `attribute_data_type_id_idx` ON `attribute`(`attribute_data_type_id`);
+ALTER TABLE `attribute` ADD FOREIGN KEY attribute_data_type_id_idxfk (`attribute_data_type_id`) REFERENCES `attribute_data_type` (`id`);
+
+CREATE UNIQUE INDEX `attribute_option_idx` ON `attribute_option` (`attribute_id`,`name`);
+
+CREATE INDEX `attribute_id_idx` ON `attribute_option`(`attribute_id`);
+ALTER TABLE `attribute_option` ADD FOREIGN KEY attribute_id_idxfk (`attribute_id`) REFERENCES `attribute` (`id`);
+
+CREATE UNIQUE INDEX `attribute_value_idx` ON `attribute_value` (`attribute_id`,`person_id`);
+
+CREATE INDEX `attribute_id_idx` ON `attribute_value`(`attribute_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY attribute_id_idxfk_1 (`attribute_id`) REFERENCES `attribute` (`id`);
+
+CREATE INDEX `person_id_idx` ON `attribute_value`(`person_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk_10 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `single_attribute_option_id_idx` ON `attribute_value`(`single_attribute_option_id`);
+ALTER TABLE `attribute_value` ADD FOREIGN KEY single_attribute_option_id_idxfk (`single_attribute_option_id`) REFERENCES `attribute_option` (`id`);
+
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
+
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+
+ALTER TABLE `ministry_login_assn` ADD FOREIGN KEY ministry_id_idxfk_3 (`ministry_id`) REFERENCES `ministry` (`id`);
+
+ALTER TABLE `ministry_login_assn` ADD FOREIGN KEY login_id_idxfk (`login_id`) REFERENCES `login` (`id`);
+
 ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY person_id_idxfk_11 (`person_id`) REFERENCES `person` (`id`);
 
 ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY name_item_id_idxfk (`name_item_id`) REFERENCES `name_item` (`id`);
 
-ALTER TABLE `smart_group` ADD FOREIGN KEY group_id_idxfk (`group_id`) REFERENCES `group` (`id`);
+CREATE INDEX `ministry_id_idx` ON `group_role`(`ministry_id`);
+ALTER TABLE `group_role` ADD FOREIGN KEY ministry_id_idxfk_4 (`ministry_id`) REFERENCES `ministry` (`id`);
+
+CREATE INDEX `group_role_type_id_idx` ON `group_role`(`group_role_type_id`);
+ALTER TABLE `group_role` ADD FOREIGN KEY group_role_type_id_idxfk (`group_role_type_id`) REFERENCES `group_role_type` (`id`);
+
+ALTER TABLE `growth_group` ADD FOREIGN KEY group_id_idxfk (`group_id`) REFERENCES `group` (`id`);
+
+CREATE INDEX `growth_group_location_id_idx` ON `growth_group`(`growth_group_location_id`);
+ALTER TABLE `growth_group` ADD FOREIGN KEY growth_group_location_id_idxfk (`growth_group_location_id`) REFERENCES `growth_group_location` (`id`);
+
+CREATE INDEX `growth_group_day_type_id_idx` ON `growth_group`(`growth_group_day_type_id`);
+ALTER TABLE `growth_group` ADD FOREIGN KEY growth_group_day_type_id_idxfk (`growth_group_day_type_id`) REFERENCES `growth_group_day_type` (`id`);
+
+CREATE INDEX `stewardship_post_id_idx` ON `stewardship_post_amount`(`stewardship_post_id`);
+ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_post_id_idxfk (`stewardship_post_id`) REFERENCES `stewardship_post` (`id`);
+
+CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_post_amount`(`stewardship_fund_id`);
+ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+
+ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group_structure_id_idxfk (`growth_group_structure_id`) REFERENCES `growth_group_structure` (`id`);
+
+ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group_id_idxfk (`growth_group_id`) REFERENCES `growth_group` (`group_id`);
+
+ALTER TABLE `smart_group` ADD FOREIGN KEY group_id_idxfk_1 (`group_id`) REFERENCES `group` (`id`);
 
 ALTER TABLE `smart_group` ADD FOREIGN KEY search_query_id_idxfk (`search_query_id`) REFERENCES `search_query` (`id`);
+
+CREATE INDEX `household_id_idx` ON `household_split`(`household_id`);
+ALTER TABLE `household_split` ADD FOREIGN KEY household_id_idxfk_2 (`household_id`) REFERENCES `household` (`id`);
+
+CREATE INDEX `split_household_id_idx` ON `household_split`(`split_household_id`);
+ALTER TABLE `household_split` ADD FOREIGN KEY split_household_id_idxfk (`split_household_id`) REFERENCES `household` (`id`);
 
 CREATE INDEX `search_query_id_idx` ON `query_condition`(`search_query_id`);
 ALTER TABLE `query_condition` ADD FOREIGN KEY search_query_id_idxfk_1 (`search_query_id`) REFERENCES `search_query` (`id`);
@@ -954,30 +1001,14 @@ ALTER TABLE `comment` ADD FOREIGN KEY comment_privacy_type_id_idxfk (`comment_pr
 CREATE INDEX `comment_category_id_idx` ON `comment`(`comment_category_id`);
 ALTER TABLE `comment` ADD FOREIGN KEY comment_category_id_idxfk (`comment_category_id`) REFERENCES `comment_category` (`id`);
 
-ALTER TABLE `growth_group` ADD FOREIGN KEY group_id_idxfk_1 (`group_id`) REFERENCES `group` (`id`);
-
-CREATE INDEX `growth_group_location_id_idx` ON `growth_group`(`growth_group_location_id`);
-ALTER TABLE `growth_group` ADD FOREIGN KEY growth_group_location_id_idxfk (`growth_group_location_id`) REFERENCES `growth_group_location` (`id`);
-
-CREATE INDEX `growth_group_day_type_id_idx` ON `growth_group`(`growth_group_day_type_id`);
-ALTER TABLE `growth_group` ADD FOREIGN KEY growth_group_day_type_id_idxfk (`growth_group_day_type_id`) REFERENCES `growth_group_day_type` (`id`);
-
-CREATE INDEX `ministry_id_idx` ON `group_role`(`ministry_id`);
-ALTER TABLE `group_role` ADD FOREIGN KEY ministry_id_idxfk_3 (`ministry_id`) REFERENCES `ministry` (`id`);
-
-CREATE INDEX `group_role_type_id_idx` ON `group_role`(`group_role_type_id`);
-ALTER TABLE `group_role` ADD FOREIGN KEY group_role_type_id_idxfk (`group_role_type_id`) REFERENCES `group_role_type` (`id`);
-
-ALTER TABLE `ministry_login_assn` ADD FOREIGN KEY ministry_id_idxfk_4 (`ministry_id`) REFERENCES `ministry` (`id`);
-
-ALTER TABLE `ministry_login_assn` ADD FOREIGN KEY login_id_idxfk (`login_id`) REFERENCES `login` (`id`);
-
 CREATE UNIQUE INDEX `stewardship_stack_idx` ON `stewardship_stack` (`stewardship_batch_id`,`stack_number`);
 
 CREATE INDEX `stewardship_batch_id_idx` ON `stewardship_stack`(`stewardship_batch_id`);
 ALTER TABLE `stewardship_stack` ADD FOREIGN KEY stewardship_batch_id_idxfk_1 (`stewardship_batch_id`) REFERENCES `stewardship_batch` (`id`);
 
 CREATE INDEX `stewardship_contribution_idx` ON `stewardship_contribution` (`person_id`,`stewardship_contribution_type_id`);
+
+CREATE INDEX `stewardship_contribution_idx_1` ON `stewardship_contribution` (`stewardship_batch_id`,`unposted_flag`);
 
 CREATE INDEX `person_id_idx` ON `stewardship_contribution`(`person_id`);
 ALTER TABLE `stewardship_contribution` ADD FOREIGN KEY person_id_idxfk_13 (`person_id`) REFERENCES `person` (`id`);
@@ -997,36 +1028,30 @@ ALTER TABLE `stewardship_contribution` ADD FOREIGN KEY checking_account_lookup_i
 CREATE INDEX `created_by_login_id_idx` ON `stewardship_contribution`(`created_by_login_id`);
 ALTER TABLE `stewardship_contribution` ADD FOREIGN KEY created_by_login_id_idxfk_2 (`created_by_login_id`) REFERENCES `login` (`id`);
 
-ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group_structure_id_idxfk (`growth_group_structure_id`) REFERENCES `growth_group_structure` (`id`);
-
-ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group_id_idxfk (`growth_group_id`) REFERENCES `growth_group` (`group_id`);
-
-CREATE INDEX `stewardship_post_id_idx` ON `stewardship_post_amount`(`stewardship_post_id`);
-ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_post_id_idxfk (`stewardship_post_id`) REFERENCES `stewardship_post` (`id`);
-
-CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_post_amount`(`stewardship_fund_id`);
-ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
-
 CREATE INDEX `stewardship_contribution_id_idx` ON `stewardship_contribution_amount`(`stewardship_contribution_id`);
 ALTER TABLE `stewardship_contribution_amount` ADD FOREIGN KEY stewardship_contribution_id_idxfk (`stewardship_contribution_id`) REFERENCES `stewardship_contribution` (`id`);
 
 CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_contribution_amount`(`stewardship_fund_id`);
 ALTER TABLE `stewardship_contribution_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk_1 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
-CREATE INDEX `household_id_idx` ON `household_split`(`household_id`);
-ALTER TABLE `household_split` ADD FOREIGN KEY household_id_idxfk_2 (`household_id`) REFERENCES `household` (`id`);
-
-CREATE INDEX `split_household_id_idx` ON `household_split`(`split_household_id`);
-ALTER TABLE `household_split` ADD FOREIGN KEY split_household_id_idxfk (`split_household_id`) REFERENCES `household` (`id`);
-
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY communication_list_id_idxfk_1 (`communication_list_id`) REFERENCES `communication_list` (`id`);
 
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY person_id_idxfk_14 (`person_id`) REFERENCES `person` (`id`);
 
+CREATE UNIQUE INDEX `stewardship_pledge_idx` ON `stewardship_pledge` (`person_id`,`stewardship_fund_id`);
+
+CREATE INDEX `stewardship_pledge_idx_1` ON `stewardship_pledge` (`fulfilled_flag`,`active_flag`);
+
+CREATE INDEX `person_id_idx` ON `stewardship_pledge`(`person_id`);
+ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY person_id_idxfk_15 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_pledge`(`stewardship_fund_id`);
+ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY stewardship_fund_id_idxfk_2 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+
 CREATE INDEX `group_participation_idx` ON `group_participation` (`person_id`,`group_id`);
 
 CREATE INDEX `person_id_idx` ON `group_participation`(`person_id`);
-ALTER TABLE `group_participation` ADD FOREIGN KEY person_id_idxfk_15 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `group_participation` ADD FOREIGN KEY person_id_idxfk_16 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `group_id_idx` ON `group_participation`(`group_id`);
 ALTER TABLE `group_participation` ADD FOREIGN KEY group_id_idxfk_2 (`group_id`) REFERENCES `group` (`id`);
@@ -1052,14 +1077,16 @@ CREATE INDEX `communication_list_entry_id_idx` ON `email_message_route`(`communi
 ALTER TABLE `email_message_route` ADD FOREIGN KEY communication_list_entry_id_idxfk_1 (`communication_list_entry_id`) REFERENCES `communication_list_entry` (`id`);
 
 CREATE INDEX `person_id_idx` ON `email_message_route`(`person_id`);
-ALTER TABLE `email_message_route` ADD FOREIGN KEY person_id_idxfk_16 (`person_id`) REFERENCES `person` (`id`);
+ALTER TABLE `email_message_route` ADD FOREIGN KEY person_id_idxfk_17 (`person_id`) REFERENCES `person` (`id`);
 
-CREATE UNIQUE INDEX `stewardship_pledge_idx` ON `stewardship_pledge` (`person_id`,`stewardship_fund_id`);
+CREATE INDEX `stewardship_post_id_idx` ON `stewardship_post_line_item`(`stewardship_post_id`);
+ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY stewardship_post_id_idxfk_1 (`stewardship_post_id`) REFERENCES `stewardship_post` (`id`);
 
-CREATE INDEX `stewardship_pledge_idx_1` ON `stewardship_pledge` (`fulfilled_flag`,`active_flag`);
+CREATE INDEX `stewardship_contribution_id_idx` ON `stewardship_post_line_item`(`stewardship_contribution_id`);
+ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY stewardship_contribution_id_idxfk_1 (`stewardship_contribution_id`) REFERENCES `stewardship_contribution` (`id`);
 
-CREATE INDEX `person_id_idx` ON `stewardship_pledge`(`person_id`);
-ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY person_id_idxfk_17 (`person_id`) REFERENCES `person` (`id`);
+CREATE INDEX `person_id_idx` ON `stewardship_post_line_item`(`person_id`);
+ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY person_id_idxfk_18 (`person_id`) REFERENCES `person` (`id`);
 
-CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_pledge`(`stewardship_fund_id`);
-ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY stewardship_fund_id_idxfk_2 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_post_line_item`(`stewardship_fund_id`);
+ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_3 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
