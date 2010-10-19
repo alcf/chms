@@ -156,7 +156,11 @@
 			$this->txtFirstName->Focus();
 		}
 
+		protected $blnExplicitSelectionFlag;
+
 		public function pxySelectPerson_Click($strFormId, $strControlId, $strParameter) {
+			if ($strFormId) $this->blnExplicitSelectionFlag = true;
+
 			$this->objSelectedPerson = Person::Load($strParameter);
 			$this->pnlPerson_Refresh();
 			$this->dtgPeople->Refresh();
@@ -220,7 +224,7 @@
 
 			$this->dtgPeople->OverrideRowStyle($this->dtgPeople->CurrentRowIndex, $objRowStyle);
 
-			return sprintf('<a href="#" %s>%s</a>', $this->pxySelectPerson->RenderAsEvents($objPerson->Id, false), $objPerson->Name);
+			return sprintf('<a href="#" %s>%s</a>', $this->pxySelectPerson->RenderAsEvents($objPerson->Id, false), $objPerson->FullName);
 		}
 
 		public function dtgPeople_Refresh($strFormId, $strControlId, $strParameter) {
@@ -279,6 +283,12 @@
 			}
 
 			$this->dtgPeople->MetaDataBinder($objConditions);
+
+			// Automagically "Select" the First Person if applicable
+			if (!$this->blnExplicitSelectionFlag && $this->dtgPeople->DataSource && (count($this->dtgPeople->DataSource) > 0)) {
+				$this->pxySelectPerson_Click(null, null, $this->dtgPeople->DataSource[0]->Id);
+			}
+			$this->blnExplicitSelectionFlag = false;
 		}
 	}
 ?>

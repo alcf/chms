@@ -60,6 +60,22 @@
 				case 'Name':
 					return $this->strFirstName . ' ' . $this->strLastName;
 
+				case 'FullName':
+					$strToReturn = null;
+					$strToReturn .= $this->strFirstName . ' ';
+
+					if ($this->strMiddleName) {
+						if (strlen($this->strMiddleName) == 1)
+							$strToReturn .= $this->strMiddleName . '. ';
+						else
+							$strToReturn .= $this->strMiddleName . ' ';
+					}
+
+					$strToReturn .= $this->strLastName;
+					
+					if ($this->strSuffix) $strToReturn .= ', ' . $this->strSuffix;
+					return $strToReturn;
+
 				case 'NameWithNickname':
 					if ($this->strNickname)
 						return sprintf('%s "%s" %s', $this->strFirstName, $this->strNickname, $this->strLastName);
