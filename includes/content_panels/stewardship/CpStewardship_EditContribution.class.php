@@ -64,6 +64,7 @@
 				$objContribution->StewardshipStack = $this->objStack;
 				$objContribution->DateEntered = QDateTime::Now();
 				$objContribution->CreatedByLogin = QApplication::$Login;
+				$objContribution->UnpostedFlag = true;
 				$objContribution->DateCredited = new QDateTime($this->objBatch->DateCredited);
 				$objContribution->StewardshipContributionTypeId = StewardshipContributionType::Cash;
 

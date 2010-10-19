@@ -155,7 +155,9 @@
 			$this->RefreshPostedTotalAmount(false);
 
 			if ($this->CountStewardshipPosts()) {
-				$this->StewardshipBatchStatusTypeId = (count($this->GetUnpostedBalanceByStewardshipFundId())) ?
+				$this->StewardshipBatchStatusTypeId =
+					(count($this->GetUnpostedBalanceByStewardshipFundId()) ||
+						StewardshipContribution::CountByStewardshipBatchIdUnpostedFlag($this->intId, true)) ?
 					StewardshipBatchStatusType::UnpostedChangesExist : StewardshipBatchStatusType::PostedInFull;
 			} else {
 				$this->StewardshipBatchStatusTypeId = StewardshipBatchStatusType::NewBatch;
@@ -186,10 +188,13 @@
 		/**
 		 * Performs a Post of any balance on the batch.
 		 * @param Login $objLogin
+		 * @return Post $objPost the actual post object if posted, or null if nothing was needed to be posted
 		 */
 		public function PostBalance(Login $objLogin) {
+			$objPost = null;
+
 			$fltBalanceArray = $this->GetUnpostedBalanceByStewardshipFundId();
-			if (count($fltBalanceArray)) {
+			if (count($fltBalanceArray) || StewardshipContribution::CountByStewardshipBatchIdUnpostedFlag($this->intId, true)) {
 				$objLastPost = StewardshipPost::QuerySingle(QQ::Equal(QQN::StewardshipPost()->StewardshipBatchId, $this->intId), QQ::OrderBy(QQN::StewardshipPost()->PostNumber, false));
 				if ($objLastPost)
 					$intPostNumber = $objLastPost->PostNumber + 1;
@@ -203,8 +208,13 @@
 				$objPost->CreatedByLoginId = $objLogin->Id;
 				$objPost->Save();
 
+				// It is possible (Due to status caching) that this can be called when there is actually nothing to post
+				// If this happens, we'll want to delete the Post"
+				$blnPosted = false;
+
 				$fltTotalAmount = 0;
 				foreach ($fltBalanceArray as $intFundId => $fltAmount) {
+					$blnPosted = true;
 					$objPostAmount = new StewardshipPostAmount();
 					$objPostAmount->StewardshipPostId = $objPost->Id;
 					$objPostAmount->StewardshipFundId = $intFundId;
@@ -216,8 +226,21 @@
 
 				$objPost->TotalAmount = $fltTotalAmount;
 				$objPost->Save();
+
+				// Add the Line Items
+				foreach (StewardshipContribution::LoadArrayByStewardshipBatchIdUnpostedFlag($this->intId, true) as $objContribution) {
+					if ($objContribution->PostLineItems($objPost)) $blnPosted = true;
+				}
+
+				// if NOTHING was physically posted, then delete the Post object.
+				if (!$blnPosted) {
+					$objPost->Delete();
+					$objPost = null;
+				}
 			}
+
 			$this->RefreshStatus();
+			return $objPost;
 		}
 
 		/**

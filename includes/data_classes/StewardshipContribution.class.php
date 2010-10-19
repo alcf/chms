@@ -99,6 +99,7 @@
 		public static function CreateFromCheckImage(Login $objLogin, StewardshipStack $objStack, $strCheckImageFileHash) {
 			$objContribution = new StewardshipContribution();
 			$objContribution->CreatedByLogin = $objLogin;
+			$objContribution->UnpostedFlag = true;
 			$objContribution->StewardshipContributionTypeId = StewardshipContributionType::Check;
 			$objContribution->StewardshipBatchId = $objStack->StewardshipBatchId;
 			$objContribution->StewardshipStack = $objStack;
@@ -181,6 +182,7 @@
 			$blnRefreshOtherTotalAmounts = true) {
 			$objContribution = new StewardshipContribution();
 			$objContribution->CreatedByLogin = $objLogin;
+			$objContribution->UnpostedFlag = true;
 			$objContribution->Person = $objPerson;
 			$objContribution->StewardshipContributionTypeId = $intStewardshipContributionTypeId;
 			$objContribution->StewardshipBatchId = $objStack->StewardshipBatchId;
@@ -325,6 +327,94 @@
 				QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-12-31 23:59:59')));
 			return StewardshipContributionAmount::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, QQN::StewardshipContributionAmount()->Id));
 		}
+
+
+		/**
+		 * Given this "unposted" Contribution entry, this will create PostLineItem(s) for this contribution entry
+		 * for a given StewardshipPost object.
+		 * 
+		 * This will also update the UnpostedFlag to false and save.
+		 * 
+		 * This will return a boolean specifying whether or not anything was actually posted.
+		 * 
+		 * @param StewardshipPost $objPost the post to submit post-line-items for
+		 * @return boolean
+		 */
+		public function PostLineItems(StewardshipPost $objPost) {
+			// Note that all fltArrays are multidimensional arrays that track amounts based on PersonId and FundId
+			// e.g. $fltArray[$intPersonId][$intFundId] = $fltAmount
+
+			// Calculate Posted-thus-far
+			$fltPostedArray = array();
+			foreach (StewardshipPostLineItem::LoadArrayByStewardshipContributionId($this->intId) as $objPostLineItem) {
+				if (!array_key_exists($objPostLineItem->PersonId, $fltPostedArray))
+					$fltPostedArray[$objPostLineItem->PersonId] = array();
+
+				if (!array_key_exists($objPostLineItem->StewardshipFundId, $fltPostedArray[$objPostLineItem->PersonId]))
+					$fltPostedArray[$objPostLineItem->PersonId][$objPostLineItem->StewardshipFundId] = $objPostLineItem->Amount;
+				else
+					$fltPostedArray[$objPostLineItem->PersonId][$objPostLineItem->StewardshipFundId] += $objPostLineItem->Amount;
+			}
+
+			// Calculate the Actuals
+			$fltActualArray = array();
+			$fltActualArray[$this->PersonId] = array();
+			foreach ($this->GetStewardshipContributionAmountArray() as $objAmount) {
+				if (!array_key_exists($objAmount->StewardshipFundId, $fltActualArray[$this->PersonId]))
+					$fltActualArray[$this->PersonId][$objAmount->StewardshipFundId] = $objAmount->Amount;
+				else
+					$fltActualArray[$this->PersonId][$objAmount->StewardshipFundId] += $objAmount->Amount;
+			}
+
+			// Calculate Difference/Discrepancies to Post
+			foreach ($fltPostedArray as $intPersonId => $fltAmountByFundArray) {
+				if (!array_key_exists($intPersonId, $fltActualArray)) $fltActualArray[$intPersonId] = array();
+				foreach ($fltAmountByFundArray as $intFundId => $fltAmount) {
+					if (!array_key_exists($intFundId, $fltActualArray[$intPersonId]))
+						$fltActualArray[$intPersonId][$intFundId] = 0;
+				}
+			}
+
+			foreach ($fltActualArray as $intPersonId => $fltAmountByFundArray) {
+				if (!array_key_exists($intPersonId, $fltPostedArray)) $fltPostedArray[$intPersonId] = array();
+				foreach ($fltAmountByFundArray as $intFundId => $fltAmount) {
+					if (!array_key_exists($intFundId, $fltPostedArray[$intPersonId]))
+						$fltPostedArray[$intPersonId][$intFundId] = 0;
+				}
+			}
+
+			$fltDifferenceArray = array();
+			foreach ($fltActualArray as $intPersonId => $fltAmountByFundArray) {
+				foreach ($fltAmountByFundArray as $intFundId => $fltAmount) {
+					if ($fltAmount != $fltPostedArray[$intPersonId][$intFundId]) {
+						$fltDifferenceArray[$intPersonId][$intFundId] = ($fltAmount - $fltPostedArray[$intPersonId][$intFundId]);
+					}
+				}
+			}
+
+			// Post any differences that were calculated (if applicable)
+			$blnPosted = false;
+			foreach ($fltDifferenceArray as $intPersonId => $fltAmountByFundArray) {
+				foreach ($fltAmountByFundArray as $intFundId => $fltAmount) {
+					$objPostLineItem = new StewardshipPostLineItem();
+					$objPostLineItem->StewardshipPost = $objPost;
+					$objPostLineItem->StewardshipContribution = $this;
+					$objPostLineItem->PersonId = $intPersonId;
+					$objPostLineItem->StewardshipFundId = $intFundId;
+					$objPostLineItem->Description = trim(sprintf('%s %s', StewardshipContributionType::$NameArray[$this->intStewardshipContributionTypeId], $this->Source));
+					$objPostLineItem->Amount = $fltAmount;
+					$objPostLineItem->Save();
+					$blnPosted = true;
+				}
+			}
+
+			$this->blnUnpostedFlag = false;
+			$this->Save();
+
+			return $blnPosted;
+		}
+
+
 
 		/**
 		 * Given an existing Zend_Pdf record, this will generate the PDF Receipt page(s) for this Person or Household for the given year.
