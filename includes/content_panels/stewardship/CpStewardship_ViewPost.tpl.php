@@ -14,6 +14,6 @@
 <div class="section"><?php $_CONTROL->dtgFunds->Render(); ?></div>
 
 <h3><?php _p($_CONTROL->objPost ? 'Details of Changes' : 'Details of Unposted Contributions')?></h3>
-<div class="section"><?php $_CONTROL->dtgLineItems->Render(); ?></div>
+<div class="section" style="max-height: 260px; overflow: auto; "><?php $_CONTROL->dtgLineItems->Render(); ?></div>
 
 <?php $_CONTROL->btnSave->RenderInSection('ActionParameter=buttonBar'); ?>
