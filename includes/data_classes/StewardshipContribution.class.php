@@ -477,6 +477,19 @@
 				// Draw Footer
 				$intPageNumber++;
 			}
+
+			$blnNonDeductibleFound = false;
+			foreach ($objContributionAmountArray as $objAmount) {
+				if ($objAmount->StewardshipContribution->NonDeductibleFlag)
+					$blnNonDeductibleFound = true;
+			}
+
+			if ($blnNonDeductibleFound) {
+				$objPage = $objPdf->pages[0];
+				$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
+				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
+				$objPage->drawText('(*) denotes a contribution that does not qualify for tax deduction.', 14, 149);
+			}
 		}
 
 		protected static function DrawPledges(Zend_Pdf_Page $objPage, $objPledgeArray) {
@@ -540,9 +553,11 @@
 			$fltAnnualTotal = 0;
 
 			foreach ($objContributionAmountArray as $objAmount) {
-				$fltAnnualTotal += $objAmount->Amount;
-				$fltMonthlyTotals[$objAmount->StewardshipContribution->DateCredited->Month - 1] += $objAmount->Amount;
-				$fltQuarterlyTotals[floor(($objAmount->StewardshipContribution->DateCredited->Month - 1) / 3)] += $objAmount->Amount;
+				if (!$objAmount->StewardshipContribution->NonDeductibleFlag) {
+					$fltAnnualTotal += $objAmount->Amount;
+					$fltMonthlyTotals[$objAmount->StewardshipContribution->DateCredited->Month - 1] += $objAmount->Amount;
+					$fltQuarterlyTotals[floor(($objAmount->StewardshipContribution->DateCredited->Month - 1) / 3)] += $objAmount->Amount;
+				}
 			}
 
 			
@@ -625,7 +640,10 @@
 				$objPage->drawText($objAmount->StewardshipContribution->Person->Name, 							$intXArray[1], $intY);
 				$objPage->drawText($objAmount->StewardshipFund->Name, 											$intXArray[2], $intY);
 				$objPage->drawText($objAmount->StewardshipContribution->Transaction, 							$intXArray[3], $intY);
-				self::DrawTextRight($objPage, 																	$intXArray[4], $intY, QApplication::DisplayCurrency($objAmount->Amount));
+
+				$strAmount = QApplication::DisplayCurrency($objAmount->Amount);
+				if ($objAmount->StewardshipContribution->NonDeductibleFlag) $strAmount = '(*) ' . $strAmount;
+				self::DrawTextRight($objPage, 																	$intXArray[4], $intY, $strAmount);
 			}
 		}
 
