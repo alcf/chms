@@ -7,13 +7,13 @@
 	<div id="formControls">
 		<?php $_CONTROL->lstGroup->RenderWithName(); ?>
 
-		<?php $_CONTROL->lstSearchQuery->RenderWithName(); ?>
-
 		<?php $_CONTROL->txtQuery->RenderWithName(); ?>
 
 		<?php $_CONTROL->calDateRefreshed->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtProcessTimeMs->RenderWithName(); ?>
+
+		<?php $_CONTROL->lstSearchQuery->RenderWithName(); ?>
 
 	</div>
 

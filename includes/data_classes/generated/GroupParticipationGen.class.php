@@ -18,12 +18,12 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $GroupId the value for intGroupId (Not Null)
-	 * @property integer $GroupRoleId the value for intGroupRoleId (Not Null)
+	 * @property integer $GroupRoleId the value for intGroupRoleId 
 	 * @property QDateTime $DateStart the value for dttDateStart (Not Null)
 	 * @property QDateTime $DateEnd the value for dttDateEnd 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Group $Group the value for the Group object referenced by intGroupId (Not Null)
-	 * @property GroupRole $GroupRole the value for the GroupRole object referenced by intGroupRoleId (Not Null)
+	 * @property GroupRole $GroupRole the value for the GroupRole object referenced by intGroupRoleId 
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class GroupParticipationGen extends QBaseClass {
@@ -1056,7 +1056,7 @@
 					return $this->intGroupId;
 
 				case 'GroupRoleId':
-					// Gets the value for intGroupRoleId (Not Null)
+					// Gets the value for intGroupRoleId 
 					// @return integer
 					return $this->intGroupRoleId;
 
@@ -1099,7 +1099,7 @@
 					}
 
 				case 'GroupRole':
-					// Gets the value for the GroupRole object referenced by intGroupRoleId (Not Null)
+					// Gets the value for the GroupRole object referenced by intGroupRoleId 
 					// @return GroupRole
 					try {
 						if ((!$this->objGroupRole) && (!is_null($this->intGroupRoleId)))
@@ -1168,7 +1168,7 @@
 					}
 
 				case 'GroupRoleId':
-					// Sets the value for intGroupRoleId (Not Null)
+					// Sets the value for intGroupRoleId 
 					// @param integer $mixValue
 					// @return integer
 					try {
@@ -1266,7 +1266,7 @@
 					break;
 
 				case 'GroupRole':
-					// Sets the value for the GroupRole object referenced by intGroupRoleId (Not Null)
+					// Sets the value for the GroupRole object referenced by intGroupRoleId 
 					// @param GroupRole $mixValue
 					// @return GroupRole
 					if (is_null($mixValue)) {

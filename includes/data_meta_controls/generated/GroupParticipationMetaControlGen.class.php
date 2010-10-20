@@ -336,9 +336,7 @@
 		public function lstGroupRole_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstGroupRole = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroupRole->Name = QApplication::Translate('Group Role');
-			$this->lstGroupRole->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstGroupRole->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstGroupRole->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -365,7 +363,6 @@
 			$this->lblGroupRoleId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblGroupRoleId->Name = QApplication::Translate('Group Role');
 			$this->lblGroupRoleId->Text = ($this->objGroupParticipation->GroupRole) ? $this->objGroupParticipation->GroupRole->__toString() : null;
-			$this->lblGroupRoleId->Required = true;
 			return $this->lblGroupRoleId;
 		}
 
@@ -472,8 +469,7 @@
 
 			if ($this->lstGroupRole) {
 					$this->lstGroupRole->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstGroupRole->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstGroupRole->AddItem(QApplication::Translate('- Select One -'), null);
 				$objGroupRoleArray = GroupRole::LoadAll();
 				if ($objGroupRoleArray) foreach ($objGroupRoleArray as $objGroupRole) {
 					$objListItem = new QListItem($objGroupRole->__toString(), $objGroupRole->Id);

@@ -11,6 +11,8 @@
 
 		<?php $_CONTROL->lstSmartGroup->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstPerson->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

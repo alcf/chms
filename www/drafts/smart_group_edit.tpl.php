@@ -17,13 +17,13 @@
 	<div id="formControls">
 		<?php $this->lstGroup->RenderWithName(); ?>
 
-		<?php $this->lstSearchQuery->RenderWithName(); ?>
-
 		<?php $this->txtQuery->RenderWithName(); ?>
 
 		<?php $this->calDateRefreshed->RenderWithName(); ?>
 
 		<?php $this->txtProcessTimeMs->RenderWithName(); ?>
+
+		<?php $this->lstSearchQuery->RenderWithName(); ?>
 
 	</div>
 

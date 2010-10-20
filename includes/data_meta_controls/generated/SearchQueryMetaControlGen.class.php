@@ -20,8 +20,10 @@
 	 * property-read QLabel $IdLabel
 	 * property QTextBox $DescriptionControl
 	 * property-read QLabel $DescriptionLabel
-	 * property QListBox $SmartGroupControl
-	 * property-read QLabel $SmartGroupLabel
+	 * property QListBox $SmartGroupIdControl
+	 * property-read QLabel $SmartGroupIdLabel
+	 * property QListBox $PersonIdControl
+	 * property-read QLabel $PersonIdLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -65,6 +67,18 @@
          */
 		protected $txtDescription;
 
+        /**
+         * @var QListBox lstSmartGroup;
+         * @access protected
+         */
+		protected $lstSmartGroup;
+
+        /**
+         * @var QListBox lstPerson;
+         * @access protected
+         */
+		protected $lstPerson;
+
 
 		// Controls that allow the viewing of SearchQuery's individual data fields
         /**
@@ -73,22 +87,22 @@
          */
 		protected $lblDescription;
 
+        /**
+         * @var QLabel lblSmartGroupId
+         * @access protected
+         */
+		protected $lblSmartGroupId;
+
+        /**
+         * @var QLabel lblPersonId
+         * @access protected
+         */
+		protected $lblPersonId;
+
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
-        /**
-         * @var QListBox lstSmartGroup
-         * @access protected
-         */
-		protected $lstSmartGroup;
-
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
-        /**
-         * @var QLabel lblSmartGroup
-         * @access protected
-         */
-		protected $lblSmartGroup;
-
 
 
 		/**
@@ -242,7 +256,7 @@
 			// Iterate through the Cursor
 			while ($objSmartGroup = SmartGroup::InstantiateCursor($objSmartGroupCursor)) {
 				$objListItem = new QListItem($objSmartGroup->__toString(), $objSmartGroup->GroupId);
-				if ($objSmartGroup->SearchQueryId == $this->objSearchQuery->Id)
+				if (($this->objSearchQuery->SmartGroup) && ($this->objSearchQuery->SmartGroup->GroupId == $objSmartGroup->GroupId))
 					$objListItem->Selected = true;
 				$this->lstSmartGroup->AddItem($objListItem);
 			}
@@ -252,15 +266,55 @@
 		}
 
 		/**
-		 * Create and setup QLabel lblSmartGroup
+		 * Create and setup QLabel lblSmartGroupId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblSmartGroup_Create($strControlId = null) {
-			$this->lblSmartGroup = new QLabel($this->objParentObject, $strControlId);
-			$this->lblSmartGroup->Name = QApplication::Translate('Smart Group');
-			$this->lblSmartGroup->Text = ($this->objSearchQuery->SmartGroup) ? $this->objSearchQuery->SmartGroup->__toString() : null;
-			return $this->lblSmartGroup;
+		public function lblSmartGroupId_Create($strControlId = null) {
+			$this->lblSmartGroupId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSmartGroupId->Name = QApplication::Translate('Smart Group');
+			$this->lblSmartGroupId->Text = ($this->objSearchQuery->SmartGroup) ? $this->objSearchQuery->SmartGroup->__toString() : null;
+			return $this->lblSmartGroupId;
+		}
+
+		/**
+		 * Create and setup QListBox lstPerson
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPerson->Name = QApplication::Translate('Person');
+			$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
+				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+				if (($this->objSearchQuery->Person) && ($this->objSearchQuery->Person->Id == $objPerson->Id))
+					$objListItem->Selected = true;
+				$this->lstPerson->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstPerson;
+		}
+
+		/**
+		 * Create and setup QLabel lblPersonId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPersonId_Create($strControlId = null) {
+			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPersonId->Name = QApplication::Translate('Person');
+			$this->lblPersonId->Text = ($this->objSearchQuery->Person) ? $this->objSearchQuery->Person->__toString() : null;
+			return $this->lblPersonId;
 		}
 
 
@@ -280,17 +334,30 @@
 			if ($this->lblDescription) $this->lblDescription->Text = $this->objSearchQuery->Description;
 
 			if ($this->lstSmartGroup) {
-				$this->lstSmartGroup->RemoveAllItems();
+					$this->lstSmartGroup->RemoveAllItems();
 				$this->lstSmartGroup->AddItem(QApplication::Translate('- Select One -'), null);
 				$objSmartGroupArray = SmartGroup::LoadAll();
 				if ($objSmartGroupArray) foreach ($objSmartGroupArray as $objSmartGroup) {
 					$objListItem = new QListItem($objSmartGroup->__toString(), $objSmartGroup->GroupId);
-					if ($objSmartGroup->SearchQueryId == $this->objSearchQuery->Id)
+					if (($this->objSearchQuery->SmartGroup) && ($this->objSearchQuery->SmartGroup->GroupId == $objSmartGroup->GroupId))
 						$objListItem->Selected = true;
 					$this->lstSmartGroup->AddItem($objListItem);
 				}
 			}
-			if ($this->lblSmartGroup) $this->lblSmartGroup->Text = ($this->objSearchQuery->SmartGroup) ? $this->objSearchQuery->SmartGroup->__toString() : null;
+			if ($this->lblSmartGroupId) $this->lblSmartGroupId->Text = ($this->objSearchQuery->SmartGroup) ? $this->objSearchQuery->SmartGroup->__toString() : null;
+
+			if ($this->lstPerson) {
+					$this->lstPerson->RemoveAllItems();
+				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPersonArray = Person::LoadAll();
+				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+					if (($this->objSearchQuery->Person) && ($this->objSearchQuery->Person->Id == $objPerson->Id))
+						$objListItem->Selected = true;
+					$this->lstPerson->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objSearchQuery->Person) ? $this->objSearchQuery->Person->__toString() : null;
 
 		}
 
@@ -316,9 +383,10 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->txtDescription) $this->objSearchQuery->Description = $this->txtDescription->Text;
+				if ($this->lstSmartGroup) $this->objSearchQuery->SmartGroupId = $this->lstSmartGroup->SelectedValue;
+				if ($this->lstPerson) $this->objSearchQuery->PersonId = $this->lstPerson->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
-				if ($this->lstSmartGroup) $this->objSearchQuery->SmartGroup = SmartGroup::Load($this->lstSmartGroup->SelectedValue);
 
 				// Save the SearchQuery object
 				$this->objSearchQuery->Save();
@@ -371,12 +439,18 @@
 				case 'DescriptionLabel':
 					if (!$this->lblDescription) return $this->lblDescription_Create();
 					return $this->lblDescription;
-				case 'SmartGroupControl':
+				case 'SmartGroupIdControl':
 					if (!$this->lstSmartGroup) return $this->lstSmartGroup_Create();
 					return $this->lstSmartGroup;
-				case 'SmartGroupLabel':
-					if (!$this->lblSmartGroup) return $this->lblSmartGroup_Create();
-					return $this->lblSmartGroup;
+				case 'SmartGroupIdLabel':
+					if (!$this->lblSmartGroupId) return $this->lblSmartGroupId_Create();
+					return $this->lblSmartGroupId;
+				case 'PersonIdControl':
+					if (!$this->lstPerson) return $this->lstPerson_Create();
+					return $this->lstPerson;
+				case 'PersonIdLabel':
+					if (!$this->lblPersonId) return $this->lblPersonId_Create();
+					return $this->lblPersonId;
 				default:
 					try {
 						return parent::__get($strName);
@@ -403,8 +477,10 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'DescriptionControl':
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
-					case 'SmartGroupControl':
+					case 'SmartGroupIdControl':
 						return ($this->lstSmartGroup = QType::Cast($mixValue, 'QControl'));
+					case 'PersonIdControl':
+						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

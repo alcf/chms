@@ -84,6 +84,8 @@
 	 * @property Relationship[] $_RelationshipArray the value for the private _objRelationshipArray (Read-Only) if set due to an ExpandAsArray on the relationship.person_id reverse relationship
 	 * @property Relationship $_RelationshipAsRelatedTo the value for the private _objRelationshipAsRelatedTo (Read-Only) if set due to an expansion on the relationship.related_to_person_id reverse relationship
 	 * @property Relationship[] $_RelationshipAsRelatedToArray the value for the private _objRelationshipAsRelatedToArray (Read-Only) if set due to an ExpandAsArray on the relationship.related_to_person_id reverse relationship
+	 * @property SearchQuery $_SearchQuery the value for the private _objSearchQuery (Read-Only) if set due to an expansion on the search_query.person_id reverse relationship
+	 * @property SearchQuery[] $_SearchQueryArray the value for the private _objSearchQueryArray (Read-Only) if set due to an ExpandAsArray on the search_query.person_id reverse relationship
 	 * @property StewardshipContribution $_StewardshipContribution the value for the private _objStewardshipContribution (Read-Only) if set due to an expansion on the stewardship_contribution.person_id reverse relationship
 	 * @property StewardshipContribution[] $_StewardshipContributionArray the value for the private _objStewardshipContributionArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution.person_id reverse relationship
 	 * @property StewardshipPledge $_StewardshipPledge the value for the private _objStewardshipPledge (Read-Only) if set due to an expansion on the stewardship_pledge.person_id reverse relationship
@@ -613,6 +615,22 @@
 		 * @var Relationship[] _objRelationshipAsRelatedToArray;
 		 */
 		private $_objRelationshipAsRelatedToArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SearchQuery object
+		 * (of type SearchQuery), if this Person object was restored with
+		 * an expansion on the search_query association table.
+		 * @var SearchQuery _objSearchQuery;
+		 */
+		private $_objSearchQuery;
+
+		/**
+		 * Private member variable that stores a reference to an array of SearchQuery objects
+		 * (of type SearchQuery[]), if this Person object was restored with
+		 * an ExpandAsArray on the search_query association table.
+		 * @var SearchQuery[] _objSearchQueryArray;
+		 */
+		private $_objSearchQueryArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipContribution object
@@ -1379,6 +1397,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'searchquery__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSearchQueryArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSearchQueryArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSearchQueryArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSearchQueryArray[] = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'stewardshipcontribution__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1722,6 +1754,16 @@
 					$objToReturn->_objRelationshipAsRelatedToArray[] = Relationship::InstantiateDbRow($objDbRow, $strAliasPrefix . 'relationshipasrelatedto__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objRelationshipAsRelatedTo = Relationship::InstantiateDbRow($objDbRow, $strAliasPrefix . 'relationshipasrelatedto__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SearchQuery Virtual Binding
+			$strAlias = $strAliasPrefix . 'searchquery__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSearchQueryArray[] = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSearchQuery = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipContribution Virtual Binding
@@ -2939,6 +2981,18 @@
 					// if set due to an ExpandAsArray on the relationship.related_to_person_id reverse relationship
 					// @return Relationship[]
 					return (array) $this->_objRelationshipAsRelatedToArray;
+
+				case '_SearchQuery':
+					// Gets the value for the private _objSearchQuery (Read-Only)
+					// if set due to an expansion on the search_query.person_id reverse relationship
+					// @return SearchQuery
+					return $this->_objSearchQuery;
+
+				case '_SearchQueryArray':
+					// Gets the value for the private _objSearchQueryArray (Read-Only)
+					// if set due to an ExpandAsArray on the search_query.person_id reverse relationship
+					// @return SearchQuery[]
+					return (array) $this->_objSearchQueryArray;
 
 				case '_StewardshipContribution':
 					// Gets the value for the private _objStewardshipContribution (Read-Only)
@@ -6244,6 +6298,188 @@
 
 			
 		
+		// Related Objects' Methods for SearchQuery
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SearchQueries as an array of SearchQuery objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SearchQuery[]
+		*/ 
+		public function GetSearchQueryArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SearchQuery::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SearchQueries
+		 * @return int
+		*/ 
+		public function CountSearchQueries() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SearchQuery::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a SearchQuery
+		 * @param SearchQuery $objSearchQuery
+		 * @return void
+		*/ 
+		public function AssociateSearchQuery(SearchQuery $objSearchQuery) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSearchQuery on this unsaved Person.');
+			if ((is_null($objSearchQuery->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSearchQuery on this Person with an unsaved SearchQuery.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`search_query`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSearchQuery->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSearchQuery->PersonId = $this->intId;
+				$objSearchQuery->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SearchQuery
+		 * @param SearchQuery $objSearchQuery
+		 * @return void
+		*/ 
+		public function UnassociateSearchQuery(SearchQuery $objSearchQuery) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSearchQuery on this unsaved Person.');
+			if ((is_null($objSearchQuery->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSearchQuery on this Person with an unsaved SearchQuery.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`search_query`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSearchQuery->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSearchQuery->PersonId = null;
+				$objSearchQuery->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SearchQueries
+		 * @return void
+		*/ 
+		public function UnassociateAllSearchQueries() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSearchQuery on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SearchQuery::LoadArrayByPersonId($this->intId) as $objSearchQuery) {
+					$objSearchQuery->PersonId = null;
+					$objSearchQuery->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`search_query`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SearchQuery
+		 * @param SearchQuery $objSearchQuery
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSearchQuery(SearchQuery $objSearchQuery) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSearchQuery on this unsaved Person.');
+			if ((is_null($objSearchQuery->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSearchQuery on this Person with an unsaved SearchQuery.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`search_query`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSearchQuery->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSearchQuery->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SearchQueries
+		 * @return void
+		*/ 
+		public function DeleteAllSearchQueries() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSearchQuery on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SearchQuery::LoadArrayByPersonId($this->intId) as $objSearchQuery) {
+					$objSearchQuery->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`search_query`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for StewardshipContribution
 		//-------------------------------------------------------------------
 
@@ -7664,6 +7900,7 @@
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
+	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
@@ -7776,6 +8013,8 @@
 					return new QQReverseReferenceNodeRelationship($this, 'relationship', 'reverse_reference', 'person_id');
 				case 'RelationshipAsRelatedTo':
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
+				case 'SearchQuery':
+					return new QQReverseReferenceNodeSearchQuery($this, 'searchquery', 'reverse_reference', 'person_id');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'person_id');
 				case 'StewardshipPledge':
@@ -7848,6 +8087,7 @@
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
+	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
@@ -7961,6 +8201,8 @@
 					return new QQReverseReferenceNodeRelationship($this, 'relationship', 'reverse_reference', 'person_id');
 				case 'RelationshipAsRelatedTo':
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
+				case 'SearchQuery':
+					return new QQReverseReferenceNodeSearchQuery($this, 'searchquery', 'reverse_reference', 'person_id');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'person_id');
 				case 'StewardshipPledge':

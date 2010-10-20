@@ -295,8 +295,10 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::SearchQuery()->Id;
 				case 'Description': return QQN::SearchQuery()->Description;
+				case 'SmartGroupId': return QQN::SearchQuery()->SmartGroupId;
 				case 'SmartGroup': return QQN::SearchQuery()->SmartGroup;
-
+				case 'PersonId': return QQN::SearchQuery()->PersonId;
+				case 'Person': return QQN::SearchQuery()->Person;
 				default: throw new QCallerException('Simple Property not found in SearchQueryDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

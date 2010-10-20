@@ -16,12 +16,11 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $GroupId the value for intGroupId (PK)
-	 * @property integer $SearchQueryId the value for intSearchQueryId (Unique)
 	 * @property string $Query the value for strQuery 
 	 * @property QDateTime $DateRefreshed the value for dttDateRefreshed 
 	 * @property integer $ProcessTimeMs the value for intProcessTimeMs 
 	 * @property Group $Group the value for the Group object referenced by intGroupId (PK)
-	 * @property SearchQuery $SearchQuery the value for the SearchQuery object referenced by intSearchQueryId (Unique)
+	 * @property SearchQuery $SearchQuery the value for the SearchQuery object that uniquely references this SmartGroup
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class SmartGroupGen extends QBaseClass {
@@ -44,14 +43,6 @@
 		 * @var integer __intGroupId;
 		 */
 		protected $__intGroupId;
-
-		/**
-		 * Protected member variable that maps to the database column smart_group.search_query_id
-		 * @var integer intSearchQueryId
-		 */
-		protected $intSearchQueryId;
-		const SearchQueryIdDefault = null;
-
 
 		/**
 		 * Protected member variable that maps to the database column smart_group.query
@@ -110,14 +101,22 @@
 		protected $objGroup;
 
 		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column smart_group.search_query_id.
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column search_query.smart_group_id.
 		 *
 		 * NOTE: Always use the SearchQuery property getter to correctly retrieve this SearchQuery object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
 		 * @var SearchQuery objSearchQuery
 		 */
 		protected $objSearchQuery;
+		
+		/**
+		 * Used internally to manage whether the adjoined SearchQuery object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtySearchQuery;
 
 
 
@@ -430,7 +429,6 @@
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'group_id', $strAliasPrefix . 'group_id');
-			$objBuilder->AddSelectItem($strTableName, 'search_query_id', $strAliasPrefix . 'search_query_id');
 			$objBuilder->AddSelectItem($strTableName, 'query', $strAliasPrefix . 'query');
 			$objBuilder->AddSelectItem($strTableName, 'date_refreshed', $strAliasPrefix . 'date_refreshed');
 			$objBuilder->AddSelectItem($strTableName, 'process_time_ms', $strAliasPrefix . 'process_time_ms');
@@ -468,8 +466,6 @@
 			$strAliasName = array_key_exists($strAliasPrefix . 'group_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_id'] : $strAliasPrefix . 'group_id';
 			$objToReturn->intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$objToReturn->__intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'search_query_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'search_query_id'] : $strAliasPrefix . 'search_query_id';
-			$objToReturn->intSearchQueryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'query', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query'] : $strAliasPrefix . 'query';
 			$objToReturn->strQuery = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_refreshed', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_refreshed'] : $strAliasPrefix . 'date_refreshed';
@@ -495,12 +491,18 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for SearchQuery Early Binding
-			$strAlias = $strAliasPrefix . 'search_query_id__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objSearchQuery = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'search_query_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
+			// Check for SearchQuery Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'searchquery__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objSearchQuery = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objSearchQuery = false;
+			}
 
 
 
@@ -586,18 +588,6 @@
 				QQ::Equal(QQN::SmartGroup()->GroupId, $intGroupId)
 			);
 		}
-			
-		/**
-		 * Load a single SmartGroup object,
-		 * by SearchQueryId Index(es)
-		 * @param integer $intSearchQueryId
-		 * @return SmartGroup
-		*/
-		public static function LoadBySearchQueryId($intSearchQueryId) {
-			return SmartGroup::QuerySingle(
-				QQ::Equal(QQN::SmartGroup()->SearchQueryId, $intSearchQueryId)
-			);
-		}
 
 
 
@@ -630,13 +620,11 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `smart_group` (
 							`group_id`,
-							`search_query_id`,
 							`query`,
 							`date_refreshed`,
 							`process_time_ms`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
 							' . $objDatabase->SqlVariable($this->strQuery) . ',
 							' . $objDatabase->SqlVariable($this->dttDateRefreshed) . ',
 							' . $objDatabase->SqlVariable($this->intProcessTimeMs) . '
@@ -659,7 +647,6 @@
 							`smart_group`
 						SET
 							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							`search_query_id` = ' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
 							`query` = ' . $objDatabase->SqlVariable($this->strQuery) . ',
 							`date_refreshed` = ' . $objDatabase->SqlVariable($this->dttDateRefreshed) . ',
 							`process_time_ms` = ' . $objDatabase->SqlVariable($this->intProcessTimeMs) . '
@@ -671,6 +658,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined SearchQuery object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtySearchQuery) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = SearchQuery::LoadBySmartGroupId($this->intGroupId)) {
+						$objAssociated->SmartGroupId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objSearchQuery) {
+						$this->objSearchQuery->SmartGroupId = $this->intGroupId;
+						$this->objSearchQuery->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtySearchQuery = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -696,6 +703,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = SmartGroup::GetDatabase();
 
+			
+			
+			// Update the adjoined SearchQuery object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = SearchQuery::LoadBySmartGroupId($this->intGroupId)) {
+				$objAssociated->SmartGroupId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -750,7 +767,6 @@
 			// Update $this's local variables to match
 			$this->GroupId = $objReloaded->GroupId;
 			$this->__intGroupId = $this->intGroupId;
-			$this->SearchQueryId = $objReloaded->SearchQueryId;
 			$this->strQuery = $objReloaded->strQuery;
 			$this->dttDateRefreshed = $objReloaded->dttDateRefreshed;
 			$this->intProcessTimeMs = $objReloaded->intProcessTimeMs;
@@ -767,7 +783,6 @@
 			$objDatabase->NonQuery('
 				INSERT INTO `smart_group` (
 					`group_id`,
-					`search_query_id`,
 					`query`,
 					`date_refreshed`,
 					`process_time_ms`,
@@ -776,7 +791,6 @@
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intGroupId) . ',
-					' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
 					' . $objDatabase->SqlVariable($this->strQuery) . ',
 					' . $objDatabase->SqlVariable($this->dttDateRefreshed) . ',
 					' . $objDatabase->SqlVariable($this->intProcessTimeMs) . ',
@@ -835,11 +849,6 @@
 					// @return integer
 					return $this->intGroupId;
 
-				case 'SearchQueryId':
-					// Gets the value for intSearchQueryId (Unique)
-					// @return integer
-					return $this->intSearchQueryId;
-
 				case 'Query':
 					// Gets the value for strQuery 
 					// @return string
@@ -871,12 +880,18 @@
 						throw $objExc;
 					}
 
+		
+		
 				case 'SearchQuery':
-					// Gets the value for the SearchQuery object referenced by intSearchQueryId (Unique)
+					// Gets the value for the SearchQuery object that uniquely references this SmartGroup
+					// by objSearchQuery (Unique)
 					// @return SearchQuery
 					try {
-						if ((!$this->objSearchQuery) && (!is_null($this->intSearchQueryId)))
-							$this->objSearchQuery = SearchQuery::Load($this->intSearchQueryId);
+						if ($this->objSearchQuery === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objSearchQuery)
+							$this->objSearchQuery = SearchQuery::LoadBySmartGroupId($this->intGroupId);
 						return $this->objSearchQuery;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -923,18 +938,6 @@
 					try {
 						$this->objGroup = null;
 						return ($this->intGroupId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'SearchQueryId':
-					// Sets the value for intSearchQueryId (Unique)
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objSearchQuery = null;
-						return ($this->intSearchQueryId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1008,12 +1011,15 @@
 					break;
 
 				case 'SearchQuery':
-					// Sets the value for the SearchQuery object referenced by intSearchQueryId (Unique)
+					// Sets the value for the SearchQuery object referenced by objSearchQuery (Unique)
 					// @param SearchQuery $mixValue
 					// @return SearchQuery
 					if (is_null($mixValue)) {
-						$this->intSearchQueryId = null;
 						$this->objSearchQuery = null;
+
+						// Make sure we update the adjoined SearchQuery object the next time we call Save()
+						$this->blnDirtySearchQuery = true;
+
 						return null;
 					} else {
 						// Make sure $mixValue actually is a SearchQuery object
@@ -1022,15 +1028,19 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
-						// Make sure $mixValue is a SAVED SearchQuery object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved SearchQuery for this SmartGroup');
+						// Are we setting objSearchQuery to a DIFFERENT $mixValue?
+						if ((!$this->SearchQuery) || ($this->SearchQuery->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined SearchQuery object the next time we call Save()
+							$this->blnDirtySearchQuery = true;
 
-						// Update Local Member Variables
-						$this->objSearchQuery = $mixValue;
-						$this->intSearchQueryId = $mixValue->Id;
+							// Update Local Member Variable
+							$this->objSearchQuery = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -1075,7 +1085,6 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="SmartGroup"><sequence>';
 			$strToReturn .= '<element name="Group" type="xsd1:Group"/>';
-			$strToReturn .= '<element name="SearchQuery" type="xsd1:SearchQuery"/>';
 			$strToReturn .= '<element name="Query" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateRefreshed" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="ProcessTimeMs" type="xsd:int"/>';
@@ -1088,7 +1097,6 @@
 			if (!array_key_exists('SmartGroup', $strComplexTypeArray)) {
 				$strComplexTypeArray['SmartGroup'] = SmartGroup::GetSoapComplexTypeXml();
 				Group::AlterSoapComplexTypeArray($strComplexTypeArray);
-				SearchQuery::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1106,9 +1114,6 @@
 			if ((property_exists($objSoapObject, 'Group')) &&
 				($objSoapObject->Group))
 				$objToReturn->Group = Group::GetObjectFromSoapObject($objSoapObject->Group);
-			if ((property_exists($objSoapObject, 'SearchQuery')) &&
-				($objSoapObject->SearchQuery))
-				$objToReturn->SearchQuery = SearchQuery::GetObjectFromSoapObject($objSoapObject->SearchQuery);
 			if (property_exists($objSoapObject, 'Query'))
 				$objToReturn->strQuery = $objSoapObject->Query;
 			if (property_exists($objSoapObject, 'DateRefreshed'))
@@ -1137,10 +1142,6 @@
 				$objObject->objGroup = Group::GetSoapObjectFromObject($objObject->objGroup, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intGroupId = null;
-			if ($objObject->objSearchQuery)
-				$objObject->objSearchQuery = SearchQuery::GetSoapObjectFromObject($objObject->objSearchQuery, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intSearchQueryId = null;
 			if ($objObject->dttDateRefreshed)
 				$objObject->dttDateRefreshed = $objObject->dttDateRefreshed->__toString(QDateTime::FormatSoap);
 			return $objObject;
@@ -1160,11 +1161,10 @@
 	/**
 	 * @property-read QQNode $GroupId
 	 * @property-read QQNodeGroup $Group
-	 * @property-read QQNode $SearchQueryId
-	 * @property-read QQNodeSearchQuery $SearchQuery
 	 * @property-read QQNode $Query
 	 * @property-read QQNode $DateRefreshed
 	 * @property-read QQNode $ProcessTimeMs
+	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
 	 */
 	class QQNodeSmartGroup extends QQNode {
 		protected $strTableName = 'smart_group';
@@ -1176,16 +1176,14 @@
 					return new QQNode('group_id', 'GroupId', 'integer', $this);
 				case 'Group':
 					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'SearchQueryId':
-					return new QQNode('search_query_id', 'SearchQueryId', 'integer', $this);
-				case 'SearchQuery':
-					return new QQNodeSearchQuery('search_query_id', 'SearchQuery', 'integer', $this);
 				case 'Query':
 					return new QQNode('query', 'Query', 'string', $this);
 				case 'DateRefreshed':
 					return new QQNode('date_refreshed', 'DateRefreshed', 'QDateTime', $this);
 				case 'ProcessTimeMs':
 					return new QQNode('process_time_ms', 'ProcessTimeMs', 'integer', $this);
+				case 'SearchQuery':
+					return new QQReverseReferenceNodeSearchQuery($this, 'searchquery', 'reverse_reference', 'smart_group_id', 'SearchQuery');
 
 				case '_PrimaryKeyNode':
 					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);
@@ -1203,11 +1201,10 @@
 	/**
 	 * @property-read QQNode $GroupId
 	 * @property-read QQNodeGroup $Group
-	 * @property-read QQNode $SearchQueryId
-	 * @property-read QQNodeSearchQuery $SearchQuery
 	 * @property-read QQNode $Query
 	 * @property-read QQNode $DateRefreshed
 	 * @property-read QQNode $ProcessTimeMs
+	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
 	 * @property-read QQNodeGroup $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeSmartGroup extends QQReverseReferenceNode {
@@ -1220,16 +1217,14 @@
 					return new QQNode('group_id', 'GroupId', 'integer', $this);
 				case 'Group':
 					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'SearchQueryId':
-					return new QQNode('search_query_id', 'SearchQueryId', 'integer', $this);
-				case 'SearchQuery':
-					return new QQNodeSearchQuery('search_query_id', 'SearchQuery', 'integer', $this);
 				case 'Query':
 					return new QQNode('query', 'Query', 'string', $this);
 				case 'DateRefreshed':
 					return new QQNode('date_refreshed', 'DateRefreshed', 'QDateTime', $this);
 				case 'ProcessTimeMs':
 					return new QQNode('process_time_ms', 'ProcessTimeMs', 'integer', $this);
+				case 'SearchQuery':
+					return new QQReverseReferenceNodeSearchQuery($this, 'searchquery', 'reverse_reference', 'smart_group_id', 'SearchQuery');
 
 				case '_PrimaryKeyNode':
 					return new QQNodeGroup('group_id', 'GroupId', 'integer', $this);

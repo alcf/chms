@@ -25,9 +25,10 @@
 		// Controls for SearchQuery's Data Fields
 		protected $lblId;
 		protected $txtDescription;
+		protected $lstSmartGroup;
+		protected $lstPerson;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-		protected $lstSmartGroup;
 
 		// Other Controls
 		protected $btnSave;
@@ -55,6 +56,7 @@
 			$this->lblId = $this->mctSearchQuery->lblId_Create();
 			$this->txtDescription = $this->mctSearchQuery->txtDescription_Create();
 			$this->lstSmartGroup = $this->mctSearchQuery->lstSmartGroup_Create();
+			$this->lstPerson = $this->mctSearchQuery->lstPerson_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

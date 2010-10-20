@@ -68,6 +68,7 @@
 			$this->dtgSearchQueries->MetaAddColumn('Id');
 			$this->dtgSearchQueries->MetaAddColumn('Description');
 			$this->dtgSearchQueries->MetaAddColumn(QQN::SearchQuery()->SmartGroup);
+			$this->dtgSearchQueries->MetaAddColumn(QQN::SearchQuery()->Person);
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);
