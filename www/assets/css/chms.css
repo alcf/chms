@@ -274,7 +274,8 @@ div.shopInfo div.shopLeft { float: left; }
 
 	div.dashboardIcon { float: left; width: 191px; height:30px; text-align: center; padding-top: 161px; font-size: 16px; font-family: arial, helvetica, sans-serif; font-weight: bold; cursor: pointer; }
 
-	table.datagrid tr div.stewardshipAmount { position: relative; float: left; width: 0; font-family: lucida console, courier, courier new, monospaced; }
+	table.datagrid tr div.stewardshipAmount { position: relative; float: left; width: 0; font-family: lucida console, courier, courier new, monospaced; height: 16px; }
+		table.datagrid tr div.stewardshipAmount span.deductibility { color: #666; font-size: 10px; position: relative; top: -2px; }
 	table.datagrid tr div.stewardshipAction { position: relative; display: none; }
 	table.datagrid tr div.stewardshipActionBackground { position: relative; display: none; } 
 	table.datagrid tr div.stewardshipAmount span.positive { color: #272; }

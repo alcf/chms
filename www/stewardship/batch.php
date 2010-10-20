@@ -73,7 +73,12 @@
 		}
 				
 		public function RenderAmount(StewardshipContribution $objContribution) {
-			$strToReturn = '<div class="stewardshipAmount">' . QApplication::DisplayCurrencyHtml($objContribution->TotalAmount, true) . '</div>';
+			$strToReturn = '<div class="stewardshipAmount">' . QApplication::DisplayCurrencyHtml($objContribution->TotalAmount, true);
+			if ($objContribution->NonDeductibleFlag) {
+				$strToReturn .= '<br/><span class="deductibility">ND</span>';
+			}
+			$strToReturn .= '</div>';
+
 			$strToReturn .= '<div class="stewardshipActionBackground">&nbsp;</div>';
 			$strToReturn .= '<div class="stewardshipAction">';
 			$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/cross.png" title="Delete Contribution"/></a>', $this->pxyDeleteContribution->RenderAsEvents($objContribution->Id, false));
