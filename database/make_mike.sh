@@ -23,4 +23,4 @@ mysql -uroot mysql -e "CREATE DATABASE $dblogname DEFAULT CHARACTER SET UTF8"
 sed -e s/InnoDB/MyISAM/ -e s/AUTO_INCREMENT// -e s/PRIMARY\ KEY/INDEX/ -e s/UNIQUE// $dbpath/create.sql | mysql -uroot $dblogname
 echo "Done."
 
-$dbpath/create_log.php
+$dbpath/create_log.php $dblogname

@@ -1,7 +1,12 @@
 #!/usr/local/bin/php
 <?php
+	if ($_SERVER['argc'] != 2) {
+		print "usage: create_log.php [DBLOGNAME]\r\n";
+		exit(1);
+	}
+
 	define('MYSQL_SERVER', 'localhost');
-	define('MYSQL_DATABASE', 'alcf_chms_log');
+	define('MYSQL_DATABASE', $_SERVER['argv'][1]);
 	define('MYSQL_USERNAME', 'root');
 	define('MYSQL_PASSWORD', '');
 
