@@ -50,6 +50,12 @@
 		}
 
 		protected function SetupPanel() {
+			// /stewardship/batch.php/950#1/edit_contribution/UrlHash/UrlHash2/UrlHash3
+			// 950 = BatchId
+			// #1 = StackNumber
+			// UrlHash can be "New" for new manual entry, an Id # for a ContributionId, or 0 for "Check" entyr
+			// UrlHash2 must be the check hash (if applicable)
+			// Urlhash3 is a PersonId to automagically select
 			$this->blnScanFlag = false;
 
 			// Creating New?
@@ -86,7 +92,12 @@
 			} else {
 				$this->ReturnTo('#' . $this->objStack->StackNumber);
 			}
-			
+
+			// Auto-set a new person (if specified)
+			if ($objPerson = Person::Load($this->strUrlHashArgument3)) {
+				$objContribution->Person = $objPerson;
+			}
+
 			// Setup Fields
 			$this->mctContribution = new StewardshipContributionMetaControl($this, $objContribution);
 
@@ -214,9 +225,13 @@
 				$this->btnSaveAndScanAgain->CssClass = 'primary';
 				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			} else if (!$this->mctContribution->EditMode) {
-				$this->btnChangePerson_Click(null, null, null);
-				$this->dlgChangePerson->dtgPeople->NoDataHtml = '<div class="section sectionBatchInfo"><strong>Search For Individual</strong><br/><br/>' .
-					'Use above fields to find the individual for this new entry.</div>';
+				if (!$this->mctContribution->StewardshipContribution->Person) {
+					$this->btnChangePerson_Click(null, null, null);
+					$this->dlgChangePerson->dtgPeople->NoDataHtml = '<div class="section sectionBatchInfo"><strong>Search For Individual</strong><br/><br/>' .
+						'Use above fields to find the individual for this new entry.</div>';
+				} else {
+					$this->mctAmountArray[0]->StewardshipFundIdControl->Focus();
+				}
 				$this->btnSaveAndScanAgain = new QButton($this);
 				$this->btnSaveAndScanAgain->Text = 'Save and Enter Next Entry';
 				$this->btnSaveAndScanAgain->ActionParameter = 'new';

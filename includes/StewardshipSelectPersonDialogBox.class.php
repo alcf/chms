@@ -49,16 +49,6 @@
 				$this->btnCancel->Text = 'Cancel';
 				$this->btnCancel->CssClass = 'cancel';
 
-				// If no one has been selected AND we are scanning a check, cancel should redirect back to scan
-				if ($this->objParentControl->blnScanFlag && (!$this->objParentControl->mctContribution->StewardshipContribution->Person)) {
-					$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
-					$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction("document.location='#" . $this->objParentControl->objStack->StackNumber . "/view/scan';"));
-					$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
-				} else {
-					$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
-					$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
-				}
-
 				$this->dtgPeople = new PersonDataGrid($this);
 				$this->dtgPeople->Paginator = new QPaginator($this->dtgPeople);
 				$this->dtgPeople->MetaAddColumn('LastName', 'Name=Name', 'Html=<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=220px', 'FontSize=11px');
@@ -142,6 +132,26 @@
 				$this->pxyViewCheckImage->AddAction(new QClickEvent(), new QTerminateAction());
 			}
 
+			$this->btnCancel->RemoveAllActions(QClickEvent::EventName);
+
+			// If no one has been selected AND we are scanning a check, cancel should redirect back to scan
+			if ($this->objParentControl->blnScanFlag && (!$this->objParentControl->mctContribution->StewardshipContribution->Person)) {
+				$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
+				$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction("document.location='#" . $this->objParentControl->objStack->StackNumber . "/view/scan';"));
+				$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+
+			// If no one has been selected AND we are NEW, cancel should redirect to the main 
+			} else if ((!$this->objParentControl->mctContribution->EditMode) && (!$this->objParentControl->mctContribution->StewardshipContribution->Person)) {
+				$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
+				$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction("document.location='#" . $this->objParentControl->objStack->StackNumber . "';"));
+				$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+
+			// Otherwise, Cancel should just close the dbox
+			} else {
+				$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this));
+				$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+			}
+
 			$this->objSelectedPerson = $this->objContribution->Person;
 			$this->pnlPerson_Refresh();
 
@@ -195,6 +205,20 @@
 //			}
 
 			return $this->objParentControl->ReturnTo($this->objSelectedPerson->LinkUrl);
+		}
+		
+		public function GetAddNewIndividualLink() {
+			// New.php should take the StackId as the first PathInfo
+			// PathInfo(1) should be either "new", "check", or the Id of the Contribution
+			// PathInfo(2) should be the check hash (if applicable)
+			if ($this->objParentControl->strUrlHashArgument2) {
+				// Creating a New Check
+				return sprintf('/individuals/new.php/%s/check/%s', $this->objForm->objStack->Id, $this->objParentControl->strUrlHashArgument2);
+			} else if ($this->objParentControl->mctContribution->EditMode) {
+				return sprintf('/individuals/new.php/%s/%s', $this->objForm->objStack->Id, $this->objParentControl->mctContribution->StewardshipContribution->Id);
+			} else {
+				return sprintf('/individuals/new.php/%s/new', $this->objForm->objStack->Id);
+			}
 		}
 
 		public function pnlPerson_Refresh() {

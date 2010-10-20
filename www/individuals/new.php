@@ -80,6 +80,8 @@
 			$this->btnCancel->CssClass = 'cancel';
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxAction('btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+			
+			$this->txtFirstName->Focus();
 		}
 
 		protected function btnSave_Click() {
@@ -144,13 +146,41 @@
 			}
 
 			$this->mctPerson->Person->RefreshPrimaryContactInfo(true);
-			QApplication::Redirect($this->mctPerson->Person->LinkUrl);
+			$this->RedirectBack(true);
 		}
 
 		protected function btnCancel_Click() {
-			QApplication::Redirect('/individuals/');
+			$this->RedirectBack(false);
 		}
-		
+
+		protected function RedirectBack($blnSave = false) {
+			// From StewradshipSelectPersonDialogBox.class.php:
+			//
+			// New.php should take the StackId as the first PathInfo
+			// PathInfo(1) should be either "new", "check", or the Id of the Contribution
+			// PathInfo(2) should be the check hash (if applicable)
+			
+			if ($objStack = StewardshipStack::Load(QApplication::PathInfo(0))) {
+				switch (strtolower(trim(QApplication::PathInfo(1)))) {
+					case 'new':
+						QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/new/0/%s',
+							$objStack->StewardshipBatchId, $objStack->StackNumber, ($blnSave ? $this->mctPerson->Person->Id : null)));
+						break;
+					case 'check':
+						QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/0/%s/%s',
+							$objStack->StewardshipBatchId, $objStack->StackNumber, QApplication::PathInfo(2), ($blnSave ? $this->mctPerson->Person->Id : null)));
+						break;
+					default:
+						QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/%s/0/%s',
+							$objStack->StewardshipBatchId, $objStack->StackNumber, QApplication::PathInfo(1), ($blnSave ? $this->mctPerson->Person->Id : null)));
+						break;
+				}
+			} else if ($blnSave) {
+				QApplication::Redirect($this->mctPerson->Person->LinkUrl);
+			} else {
+				QApplication::Redirect('/individuals/');
+			}
+		}
 	}
 
 	CreateIndividualForm::Run('CreateIndividualForm');

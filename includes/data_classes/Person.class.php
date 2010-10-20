@@ -168,7 +168,7 @@
 					return sprintf('/individuals/view.php/%s#general', $this->intId);
 
 				case 'LinkHtml':
-					return sprintf('<a href="%s" title="View %s\'s Information">%s</a>', $this->LinkUrl, QApplication::HtmlEntities($this->Name), QApplication::HtmlEntities($this->Name));
+					return sprintf('<a href="%s" title="View %s\'s Information">%s</a>', $this->LinkUrl, QApplication::HtmlEntities($this->FormalName), QApplication::HtmlEntities($this->FormalName));
 
 				default:
 					try {

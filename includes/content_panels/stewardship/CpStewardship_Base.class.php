@@ -21,6 +21,11 @@
 		public $strUrlHashArgument2;
 
 		/**
+		 * @var string
+		 */
+		public $strUrlHashArgument3;
+
+		/**
 		 * @var QButton
 		 */
 		public $btnSave;
@@ -30,7 +35,7 @@
 		 */
 		public $btnCancel;
 
-		public function __construct($objParentObject, $strControlId = null, StewardshipBatch $objBatch, StewardshipStack $objStack = null, $strUrlHashArgument1 = null, $strUrlHashArgument2 = null) {
+		public function __construct($objParentObject, $strControlId = null, StewardshipBatch $objBatch, StewardshipStack $objStack = null, $strUrlHashArgument1 = null, $strUrlHashArgument2 = null, $strUrlHashArgument3 = null) {
 			try {
 				parent::__construct($objParentObject, $strControlId);
 			} catch (QCallerException $objExc) {
@@ -43,7 +48,8 @@
 			$this->objStack = $objStack;
 			$this->strUrlHashArgument = $strUrlHashArgument1;
 			$this->strUrlHashArgument2 = $strUrlHashArgument2;
-
+			$this->strUrlHashArgument3 = $strUrlHashArgument3;
+			
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
 			$this->btnSave->CssClass = 'primary';
