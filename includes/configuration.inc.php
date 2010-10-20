@@ -97,7 +97,17 @@
 				'database' => 'alcf_chms_test',
 				'username' => 'root',
 				'password' => '',
-				'profiling' => false)));
+				'profiling' => false,
+				'journaling' => array(
+					'adapter' => 'MySqli5',
+					'server' => 'localhost',
+					'port' => null,
+					'database' => 'alcf_chms_test_log',
+					'username' => 'root',
+					'password' => '',
+					'profiling' => false,
+					'staticproperty' => 'LoginId')
+			)));
 			break;
 
 		case 'stage':
@@ -113,7 +123,17 @@
 				'database' => 'alcf_chms_stage',
 				'username' => 'root',
 				'password' => '',
-				'profiling' => false)));
+				'profiling' => false,
+				'journaling' => array(
+					'adapter' => 'MySqli5',
+					'server' => 'localhost',
+					'port' => null,
+					'database' => 'alcf_chms_stage_log',
+					'username' => 'root',
+					'password' => '',
+					'profiling' => false,
+					'staticproperty' => 'LoginId')
+			)));
 			break;
 
 		case 'prod':
