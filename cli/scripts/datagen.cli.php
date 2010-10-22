@@ -422,6 +422,7 @@
 				$objAddress->ZipCode = rand(10000, 99999);
 				$objAddress->Country = 'US';
 				$objAddress->InvalidFlag = false;
+				$objAddress->VerificationCheckedFlag = true;
 				$objAddress->CurrentFlag = (($i+1) == $intAddressCount);
 				$objAddress->Save();
 
@@ -452,6 +453,7 @@
 				$objAddress->ZipCode = rand(10000, 99999);
 				$objAddress->Country = 'US';
 				$objAddress->InvalidFlag = false;
+				$objAddress->VerificationCheckedFlag = true;
 				switch ($objAddress->AddressTypeId) {
 					case AddressType::Temporary:
 						$objAddress->CurrentFlag = true;

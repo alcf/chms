@@ -69,6 +69,7 @@
 			$this->dtgAddresses->MetaAddColumn('Country');
 			$this->dtgAddresses->MetaAddColumn('CurrentFlag');
 			$this->dtgAddresses->MetaAddColumn('InvalidFlag');
+			$this->dtgAddresses->MetaAddColumn('VerificationCheckedFlag');
 			$this->dtgAddresses->MetaAddColumn('DateUntilWhen');
 		}
 	}

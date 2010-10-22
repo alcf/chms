@@ -43,6 +43,8 @@
 
 		<?php $this->chkInvalidFlag->RenderWithName(); ?>
 
+		<?php $this->chkVerificationCheckedFlag->RenderWithName(); ?>
+
 		<?php $this->calDateUntilWhen->RenderWithName(); ?>
 
 	</div>

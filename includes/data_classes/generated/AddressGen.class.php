@@ -29,6 +29,7 @@
 	 * @property string $Country the value for strCountry 
 	 * @property boolean $CurrentFlag the value for blnCurrentFlag 
 	 * @property boolean $InvalidFlag the value for blnInvalidFlag 
+	 * @property boolean $VerificationCheckedFlag the value for blnVerificationCheckedFlag 
 	 * @property QDateTime $DateUntilWhen the value for dttDateUntilWhen 
 	 * @property Person $Person the value for the Person object referenced by intPersonId 
 	 * @property Household $Household the value for the Household object referenced by intHouseholdId 
@@ -164,6 +165,14 @@
 		 */
 		protected $blnInvalidFlag;
 		const InvalidFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column address.verification_checked_flag
+		 * @var boolean blnVerificationCheckedFlag
+		 */
+		protected $blnVerificationCheckedFlag;
+		const VerificationCheckedFlagDefault = null;
 
 
 		/**
@@ -598,6 +607,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'country', $strAliasPrefix . 'country');
 			$objBuilder->AddSelectItem($strTableName, 'current_flag', $strAliasPrefix . 'current_flag');
 			$objBuilder->AddSelectItem($strTableName, 'invalid_flag', $strAliasPrefix . 'invalid_flag');
+			$objBuilder->AddSelectItem($strTableName, 'verification_checked_flag', $strAliasPrefix . 'verification_checked_flag');
 			$objBuilder->AddSelectItem($strTableName, 'date_until_when', $strAliasPrefix . 'date_until_when');
 		}
 
@@ -718,6 +728,8 @@
 			$objToReturn->blnCurrentFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'invalid_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'invalid_flag'] : $strAliasPrefix . 'invalid_flag';
 			$objToReturn->blnInvalidFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'verification_checked_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'verification_checked_flag'] : $strAliasPrefix . 'verification_checked_flag';
+			$objToReturn->blnVerificationCheckedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_until_when', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_until_when'] : $strAliasPrefix . 'date_until_when';
 			$objToReturn->dttDateUntilWhen = $objDbRow->GetColumn($strAliasName, 'Date');
 
@@ -1034,6 +1046,38 @@
 				QQ::Equal(QQN::Address()->PrimaryPhoneId, $intPrimaryPhoneId)
 			);
 		}
+			
+		/**
+		 * Load an array of Address objects,
+		 * by VerificationCheckedFlag Index(es)
+		 * @param boolean $blnVerificationCheckedFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Address[]
+		*/
+		public static function LoadArrayByVerificationCheckedFlag($blnVerificationCheckedFlag, $objOptionalClauses = null) {
+			// Call Address::QueryArray to perform the LoadArrayByVerificationCheckedFlag query
+			try {
+				return Address::QueryArray(
+					QQ::Equal(QQN::Address()->VerificationCheckedFlag, $blnVerificationCheckedFlag),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Addresses
+		 * by VerificationCheckedFlag Index(es)
+		 * @param boolean $blnVerificationCheckedFlag
+		 * @return int
+		*/
+		public static function CountByVerificationCheckedFlag($blnVerificationCheckedFlag) {
+			// Call Address::QueryCount to perform the CountByVerificationCheckedFlag query
+			return Address::QueryCount(
+				QQ::Equal(QQN::Address()->VerificationCheckedFlag, $blnVerificationCheckedFlag)
+			);
+		}
 
 
 
@@ -1078,6 +1122,7 @@
 							`country`,
 							`current_flag`,
 							`invalid_flag`,
+							`verification_checked_flag`,
 							`date_until_when`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intAddressTypeId) . ',
@@ -1093,6 +1138,7 @@
 							' . $objDatabase->SqlVariable($this->strCountry) . ',
 							' . $objDatabase->SqlVariable($this->blnCurrentFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnInvalidFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnVerificationCheckedFlag) . ',
 							' . $objDatabase->SqlVariable($this->dttDateUntilWhen) . '
 						)
 					');
@@ -1126,6 +1172,7 @@
 							`country` = ' . $objDatabase->SqlVariable($this->strCountry) . ',
 							`current_flag` = ' . $objDatabase->SqlVariable($this->blnCurrentFlag) . ',
 							`invalid_flag` = ' . $objDatabase->SqlVariable($this->blnInvalidFlag) . ',
+							`verification_checked_flag` = ' . $objDatabase->SqlVariable($this->blnVerificationCheckedFlag) . ',
 							`date_until_when` = ' . $objDatabase->SqlVariable($this->dttDateUntilWhen) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -1224,6 +1271,7 @@
 			$this->strCountry = $objReloaded->strCountry;
 			$this->blnCurrentFlag = $objReloaded->blnCurrentFlag;
 			$this->blnInvalidFlag = $objReloaded->blnInvalidFlag;
+			$this->blnVerificationCheckedFlag = $objReloaded->blnVerificationCheckedFlag;
 			$this->dttDateUntilWhen = $objReloaded->dttDateUntilWhen;
 		}
 
@@ -1251,6 +1299,7 @@
 					`country`,
 					`current_flag`,
 					`invalid_flag`,
+					`verification_checked_flag`,
 					`date_until_when`,
 					__sys_login_id,
 					__sys_action,
@@ -1270,6 +1319,7 @@
 					' . $objDatabase->SqlVariable($this->strCountry) . ',
 					' . $objDatabase->SqlVariable($this->blnCurrentFlag) . ',
 					' . $objDatabase->SqlVariable($this->blnInvalidFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnVerificationCheckedFlag) . ',
 					' . $objDatabase->SqlVariable($this->dttDateUntilWhen) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1390,6 +1440,11 @@
 					// Gets the value for blnInvalidFlag 
 					// @return boolean
 					return $this->blnInvalidFlag;
+
+				case 'VerificationCheckedFlag':
+					// Gets the value for blnVerificationCheckedFlag 
+					// @return boolean
+					return $this->blnVerificationCheckedFlag;
 
 				case 'DateUntilWhen':
 					// Gets the value for dttDateUntilWhen 
@@ -1646,6 +1701,17 @@
 					// @return boolean
 					try {
 						return ($this->blnInvalidFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'VerificationCheckedFlag':
+					// Sets the value for blnVerificationCheckedFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnVerificationCheckedFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2353,6 +2419,7 @@
 			$strToReturn .= '<element name="Country" type="xsd:string"/>';
 			$strToReturn .= '<element name="CurrentFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="InvalidFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="VerificationCheckedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateUntilWhen" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2410,6 +2477,8 @@
 				$objToReturn->blnCurrentFlag = $objSoapObject->CurrentFlag;
 			if (property_exists($objSoapObject, 'InvalidFlag'))
 				$objToReturn->blnInvalidFlag = $objSoapObject->InvalidFlag;
+			if (property_exists($objSoapObject, 'VerificationCheckedFlag'))
+				$objToReturn->blnVerificationCheckedFlag = $objSoapObject->VerificationCheckedFlag;
 			if (property_exists($objSoapObject, 'DateUntilWhen'))
 				$objToReturn->dttDateUntilWhen = new QDateTime($objSoapObject->DateUntilWhen);
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2476,6 +2545,7 @@
 	 * @property-read QQNode $Country
 	 * @property-read QQNode $CurrentFlag
 	 * @property-read QQNode $InvalidFlag
+	 * @property-read QQNode $VerificationCheckedFlag
 	 * @property-read QQNode $DateUntilWhen
 	 * @property-read QQReverseReferenceNodePerson $PersonAsMailing
 	 * @property-read QQReverseReferenceNodePerson $PersonAsStewardship
@@ -2521,6 +2591,8 @@
 					return new QQNode('current_flag', 'CurrentFlag', 'boolean', $this);
 				case 'InvalidFlag':
 					return new QQNode('invalid_flag', 'InvalidFlag', 'boolean', $this);
+				case 'VerificationCheckedFlag':
+					return new QQNode('verification_checked_flag', 'VerificationCheckedFlag', 'boolean', $this);
 				case 'DateUntilWhen':
 					return new QQNode('date_until_when', 'DateUntilWhen', 'QDateTime', $this);
 				case 'PersonAsMailing':
@@ -2561,6 +2633,7 @@
 	 * @property-read QQNode $Country
 	 * @property-read QQNode $CurrentFlag
 	 * @property-read QQNode $InvalidFlag
+	 * @property-read QQNode $VerificationCheckedFlag
 	 * @property-read QQNode $DateUntilWhen
 	 * @property-read QQReverseReferenceNodePerson $PersonAsMailing
 	 * @property-read QQReverseReferenceNodePerson $PersonAsStewardship
@@ -2607,6 +2680,8 @@
 					return new QQNode('current_flag', 'CurrentFlag', 'boolean', $this);
 				case 'InvalidFlag':
 					return new QQNode('invalid_flag', 'InvalidFlag', 'boolean', $this);
+				case 'VerificationCheckedFlag':
+					return new QQNode('verification_checked_flag', 'VerificationCheckedFlag', 'boolean', $this);
 				case 'DateUntilWhen':
 					return new QQNode('date_until_when', 'DateUntilWhen', 'QDateTime', $this);
 				case 'PersonAsMailing':

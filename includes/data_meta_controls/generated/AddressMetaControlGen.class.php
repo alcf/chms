@@ -44,6 +44,8 @@
 	 * property-read QLabel $CurrentFlagLabel
 	 * property QCheckBox $InvalidFlagControl
 	 * property-read QLabel $InvalidFlagLabel
+	 * property QCheckBox $VerificationCheckedFlagControl
+	 * property-read QLabel $VerificationCheckedFlagLabel
 	 * property QDateTimePicker $DateUntilWhenControl
 	 * property-read QLabel $DateUntilWhenLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -162,6 +164,12 @@
 		protected $chkInvalidFlag;
 
         /**
+         * @var QCheckBox chkVerificationCheckedFlag;
+         * @access protected
+         */
+		protected $chkVerificationCheckedFlag;
+
+        /**
          * @var QDateTimePicker calDateUntilWhen;
          * @access protected
          */
@@ -246,6 +254,12 @@
          * @access protected
          */
 		protected $lblInvalidFlag;
+
+        /**
+         * @var QLabel lblVerificationCheckedFlag
+         * @access protected
+         */
+		protected $lblVerificationCheckedFlag;
 
         /**
          * @var QLabel lblDateUntilWhen
@@ -737,6 +751,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkVerificationCheckedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkVerificationCheckedFlag_Create($strControlId = null) {
+			$this->chkVerificationCheckedFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkVerificationCheckedFlag->Name = QApplication::Translate('Verification Checked Flag');
+			$this->chkVerificationCheckedFlag->Checked = $this->objAddress->VerificationCheckedFlag;
+			return $this->chkVerificationCheckedFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblVerificationCheckedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblVerificationCheckedFlag_Create($strControlId = null) {
+			$this->lblVerificationCheckedFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblVerificationCheckedFlag->Name = QApplication::Translate('Verification Checked Flag');
+			$this->lblVerificationCheckedFlag->Text = ($this->objAddress->VerificationCheckedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblVerificationCheckedFlag;
+		}
+
+		/**
 		 * Create and setup QDateTimePicker calDateUntilWhen
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -847,6 +885,9 @@
 			if ($this->chkInvalidFlag) $this->chkInvalidFlag->Checked = $this->objAddress->InvalidFlag;
 			if ($this->lblInvalidFlag) $this->lblInvalidFlag->Text = ($this->objAddress->InvalidFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->chkVerificationCheckedFlag) $this->chkVerificationCheckedFlag->Checked = $this->objAddress->VerificationCheckedFlag;
+			if ($this->lblVerificationCheckedFlag) $this->lblVerificationCheckedFlag->Text = ($this->objAddress->VerificationCheckedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->calDateUntilWhen) $this->calDateUntilWhen->DateTime = $this->objAddress->DateUntilWhen;
 			if ($this->lblDateUntilWhen) $this->lblDateUntilWhen->Text = sprintf($this->objAddress->DateUntilWhen) ? $this->objAddress->__toString($this->strDateUntilWhenDateTimeFormat) : null;
 
@@ -886,6 +927,7 @@
 				if ($this->txtCountry) $this->objAddress->Country = $this->txtCountry->Text;
 				if ($this->chkCurrentFlag) $this->objAddress->CurrentFlag = $this->chkCurrentFlag->Checked;
 				if ($this->chkInvalidFlag) $this->objAddress->InvalidFlag = $this->chkInvalidFlag->Checked;
+				if ($this->chkVerificationCheckedFlag) $this->objAddress->VerificationCheckedFlag = $this->chkVerificationCheckedFlag->Checked;
 				if ($this->calDateUntilWhen) $this->objAddress->DateUntilWhen = $this->calDateUntilWhen->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -1013,6 +1055,12 @@
 				case 'InvalidFlagLabel':
 					if (!$this->lblInvalidFlag) return $this->lblInvalidFlag_Create();
 					return $this->lblInvalidFlag;
+				case 'VerificationCheckedFlagControl':
+					if (!$this->chkVerificationCheckedFlag) return $this->chkVerificationCheckedFlag_Create();
+					return $this->chkVerificationCheckedFlag;
+				case 'VerificationCheckedFlagLabel':
+					if (!$this->lblVerificationCheckedFlag) return $this->lblVerificationCheckedFlag_Create();
+					return $this->lblVerificationCheckedFlag;
 				case 'DateUntilWhenControl':
 					if (!$this->calDateUntilWhen) return $this->calDateUntilWhen_Create();
 					return $this->calDateUntilWhen;
@@ -1069,6 +1117,8 @@
 						return ($this->chkCurrentFlag = QType::Cast($mixValue, 'QControl'));
 					case 'InvalidFlagControl':
 						return ($this->chkInvalidFlag = QType::Cast($mixValue, 'QControl'));
+					case 'VerificationCheckedFlagControl':
+						return ($this->chkVerificationCheckedFlag = QType::Cast($mixValue, 'QControl'));
 					case 'DateUntilWhenControl':
 						return ($this->calDateUntilWhen = QType::Cast($mixValue, 'QControl'));
 					default:

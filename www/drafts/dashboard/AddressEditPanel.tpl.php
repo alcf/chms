@@ -33,6 +33,8 @@
 
 		<?php $_CONTROL->chkInvalidFlag->RenderWithName(); ?>
 
+		<?php $_CONTROL->chkVerificationCheckedFlag->RenderWithName(); ?>
+
 		<?php $_CONTROL->calDateUntilWhen->RenderWithName(); ?>
 
 	</div>

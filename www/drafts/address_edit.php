@@ -37,6 +37,7 @@
 		protected $txtCountry;
 		protected $chkCurrentFlag;
 		protected $chkInvalidFlag;
+		protected $chkVerificationCheckedFlag;
 		protected $calDateUntilWhen;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -78,6 +79,7 @@
 			$this->txtCountry = $this->mctAddress->txtCountry_Create();
 			$this->chkCurrentFlag = $this->mctAddress->chkCurrentFlag_Create();
 			$this->chkInvalidFlag = $this->mctAddress->chkInvalidFlag_Create();
+			$this->chkVerificationCheckedFlag = $this->mctAddress->chkVerificationCheckedFlag_Create();
 			$this->calDateUntilWhen = $this->mctAddress->calDateUntilWhen_Create();
 
 			// Create Buttons and Actions on this Form
