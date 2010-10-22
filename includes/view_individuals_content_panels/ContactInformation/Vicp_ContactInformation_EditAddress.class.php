@@ -7,16 +7,26 @@
 		public $calDateUntilWhen;
 		public $chkCurrentFlag;
 
+		public $chkInvalidFlag;
 		public $txtAddress1;
 		public $txtAddress2;
 		public $txtAddress3;
 		public $txtCity;
 		public $lstState;
 		public $txtZipCode;
+		
+		public $dlgMessage;
 
 		protected function SetupPanel() {
 			// Get and Validate the Address Object
 			$this->mctAddress = AddressMetaControl::Create($this, $this->strUrlHashArgument, QMetaControlCreateType::CreateOnRecordNotFound);
+
+			// Dialog Message
+			$this->dlgMessage = new MessageDialog($this);
+			$this->dlgMessage_Reset();
+			$this->btnSave->RemoveAllActions(QClickEvent::EventName);
+			$this->btnSave->AddAction(new QClickEvent(), new QShowDialogBox($this->dlgMessage));
+			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 
 			if (!$this->mctAddress->EditMode) {
 				// Trying to create a NEW address
@@ -48,6 +58,7 @@
 			$this->lstAddressType->GetItem(0)->Name = 'Previous Home';
 			if (!$this->mctAddress->EditMode) $this->lstAddressType->AddSelectOneOption();
 
+			$this->chkInvalidFlag = $this->mctAddress->chkInvalidFlag_Create();
 			$this->txtAddress1 = $this->mctAddress->txtAddress1_Create();
 			$this->txtAddress2 = $this->mctAddress->txtAddress2_Create();
 			$this->txtAddress3 = $this->mctAddress->txtAddress3_Create();
@@ -60,6 +71,14 @@
 
 			// Setup Controls
 			$this->lstAddressType_Change();
+		}
+
+		public function dlgMessage_Reset() {
+			$this->dlgMessage->RemoveAllButtons(false);
+			$this->dlgMessage->HorizontalAlign = QHorizontalAlign::Center;
+			$this->dlgMessage->MatteClickable = false;
+			$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">Validating Address with USPS<br/><span style="font-weight: normal; font-size: 13px; color: #999;">Please wait...</span></p><p><img src="/assets/images/spinner_20.gif"/></p>';
+			$this->dlgMessage->HideDialogBox();
 		}
 
 		public function lstAddressType_Change() {
@@ -112,7 +131,20 @@
 					throw new Exception('Unknown Address Type: ' . $this->lstAddressType->SelectedValue);
 			}
 
-			$this->mctAddress->SaveAddress();
+			$this->mctAddress->UpdateFields();
+
+			if (!$this->chkInvalidFlag->Checked) {
+				if (!$this->mctAddress->Address->ValidateUsps()) {
+					$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">This address is considered invalid with the USPS.</p><p style="font-size: 13px; color: #999;">Please make corrections or select <strong>"this is an INVALID address"</strong>.</p>';
+					$this->dlgMessage->AddButton('Okay', MessageDialog::ButtonPrimary, 'dlgMessage_Reset', $this);
+					return;
+				}
+			} else {
+				// Save the object, itself
+				$this->mctAddress->Address->Save();
+			}
+
+			$this->dlgMessage->HideDialogBox();
 			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 

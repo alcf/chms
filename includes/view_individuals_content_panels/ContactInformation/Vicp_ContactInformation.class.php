@@ -13,18 +13,19 @@
 		protected function SetupPanel() {
 			$this->dtgPersonalAddresses = new QDataGrid($this);
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderPersonalAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
-			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderPersonalAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=300px'));
+			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderPersonalAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=280px'));
 			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=150px'));
-			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Zip', '<?= $_ITEM->ZipCode; ?>', 'Width=125px'));
+			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('Zip', '<?= $_ITEM->ZipCode; ?>', 'Width=80px'));
+			$this->dtgPersonalAddresses->AddColumn(new QDataGridColumn('', '<?= $_ITEM->InvalidFlag ? "<img src=\\"/assets/images/marker_invalid.png\\" title=\\"Invalid Address\\"/>" : null; ?>', 'Width=55px', 'HtmlEntities=false'));
 			$this->dtgPersonalAddresses->SetDataBinder('dtgPersonalAddresses_Bind', $this);
 
 			$this->dtgHomeAddresses = new QDataGrid($this);
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderHomeAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderHomeAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=220px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=150px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Zip', '<?= $_ITEM->ZipCode; ?>', 'Width=80px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Phone', '<?= $_CONTROL->ParentControl->RenderHomePhone($_ITEM); ?>', 'Width=100px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Invalid', '<?= $_ITEM->InvalidFlag ? "INVALID" : null; ?>', 'Width=75px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('', '<?= $_CONTROL->ParentControl->RenderHomeAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_CONTROL->ParentControl->RenderHomeAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=235px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=160px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Zip', '<?= $_ITEM->ZipCode; ?>', 'Width=90px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Phone', '<?= $_CONTROL->ParentControl->RenderHomePhone($_ITEM); ?>', 'Width=105px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('', '<?= $_ITEM->InvalidFlag ? "<img src=\\"/assets/images/marker_invalid.png\\" title=\\"Invalid Address\\"/>" : null; ?>', 'Width=54px', 'HtmlEntities=false'));
 			$this->dtgHomeAddresses->SetDataBinder('dtgHomeAddresses_Bind', $this);
 
 			$this->pxySetCurrentHomeAddress = new QControlProxy($this);
@@ -51,8 +52,8 @@
 			$this->pxySetPrimaryEmail->AddAction(new QClickEvent(), new QTerminateAction());
 
 			$this->dtgOthers = new QDataGrid($this);
-			$this->dtgOthers->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderOtherType($_ITEM); ?>', 'HtmlEntities=false', 'Width=140px'));
-			$this->dtgOthers->AddColumn(new QDataGridColumn('Value', '<?= $_CONTROL->ParentControl->RenderOtherValue($_ITEM); ?>', 'HtmlEntities=false', 'Width=610px'));
+			$this->dtgOthers->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderOtherType($_ITEM); ?>', 'HtmlEntities=false', 'Width=200px'));
+			$this->dtgOthers->AddColumn(new QDataGridColumn('Value', '<?= $_CONTROL->ParentControl->RenderOtherValue($_ITEM); ?>', 'HtmlEntities=false', 'Width=550px'));
 			$this->dtgOthers->SetDataBinder('dtgOthers_Bind', $this);
 		}
 
@@ -70,9 +71,9 @@
 		
 		public function RenderEmailPrimary(Email $objEmail) {
 			if ($objEmail->Id == $this->objPerson->PrimaryEmailId) {
-				return 'Primary';
+				return '<img src="/assets/images/marker_primary.png" title="Primary Email"/>';
 			} else {
-				return sprintf('[<a href="" %s>set</a>]', $this->pxySetPrimaryEmail->RenderAsEvents($objEmail->Id, false));
+				return sprintf('<a href="" class="set" %s>set</a>', $this->pxySetPrimaryEmail->RenderAsEvents($objEmail->Id, false));
 			}
 		}
 
@@ -90,9 +91,9 @@
 
 		public function RenderPhonePrimary(Phone $objPhone) {
 			if ($objPhone->Id == $this->objPerson->PrimaryPhoneId) {
-				return 'Primary';
+				return '<img src="/assets/images/marker_primary.png" title="Primary Phone"/>';
 			} else {
-				return sprintf('[<a href="#" %s>set</a>]', $this->pxySetPrimaryPhone->RenderAsEvents($objPhone->Id, false));
+				return sprintf('<a href="#" class="set" %s>set</a>', $this->pxySetPrimaryPhone->RenderAsEvents($objPhone->Id, false));
 			}
 		}
 
@@ -150,14 +151,42 @@
 		}
 
 		public function RenderHomeAddressType(Address $objAddress) {
-			if ($objAddress->CurrentFlag) {
-				return 'Current';
+			if (!$objAddress->CurrentFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->CssClass = 'previous';
+				$this->dtgHomeAddresses->OverrideRowStyle($this->dtgHomeAddresses->CurrentRowIndex, $objStyle);
+			} else if ($objAddress->InvalidFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->CssClass = 'invalid';
+				$this->dtgHomeAddresses->OverrideRowStyle($this->dtgHomeAddresses->CurrentRowIndex, $objStyle);
 			} else {
-				return sprintf('[<a href="#" %s>set</a>]', $this->pxySetCurrentHomeAddress->RenderAsEvents($objAddress->Id, false));
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->FontBold = true;
+				$this->dtgHomeAddresses->OverrideRowStyle($this->dtgHomeAddresses->CurrentRowIndex, $objStyle);
+			}
+
+			if ($objAddress->CurrentFlag) {
+				return '<img src="/assets/images/marker_current.png" title="Current Home Address"/>';
+			} else if (!$objAddress->InvalidFlag) {
+				return sprintf('<a href="#" class="set" %s>set</a>', $this->pxySetCurrentHomeAddress->RenderAsEvents($objAddress->Id, false));
 			}
 		}
 
 		public function RenderPersonalAddressType(Address $objAddress) {
+			if (!$objAddress->CurrentFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->CssClass = 'previous';
+				$this->dtgPersonalAddresses->OverrideRowStyle($this->dtgPersonalAddresses->CurrentRowIndex, $objStyle);
+			} else if ($objAddress->InvalidFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->CssClass = 'invalid';
+				$this->dtgPersonalAddresses->OverrideRowStyle($this->dtgPersonalAddresses->CurrentRowIndex, $objStyle);
+			} else {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->FontBold = true;
+				$this->dtgPersonalAddresses->OverrideRowStyle($this->dtgPersonalAddresses->CurrentRowIndex, $objStyle);
+			}
+
 			switch ($objAddress->AddressTypeId) {
 				case AddressType::Temporary:
 					$strToReturn = AddressType::$NameArray[$objAddress->AddressTypeId];
