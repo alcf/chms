@@ -239,10 +239,10 @@
 				$this->strPrimaryAddressText = 'Multiple Households';
 				$this->strPrimaryCityText = 'Multiple Households';
 			} else if ($objAddress) {
-				$this->strPrimaryAddressText = trim($objAddress->Address1);
+				$this->strPrimaryAddressText = ucwords(strtolower(trim($objAddress->Address1)));
 				if ($objAddress->Address2) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address2);
 				if ($objAddress->Address3) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address3);
-				$this->strPrimaryCityText = trim($objAddress->City);
+				$this->strPrimaryCityText = ucwords(strtolower(trim($objAddress->City)));
 			} else {
 				$this->strPrimaryAddressText = null;
 				$this->strPrimaryCityText = null;
