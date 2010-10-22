@@ -19,5 +19,33 @@
 	 * @subpackage MetaControls
 	 */
 	class PersonMetaControl extends PersonMetaControlGen {
+		protected $dtxDateOfBirth;
+
+		/**
+		 * Create and setup QDateTimePicker calDateOfBirth
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function dtxDateOfBirth_Create($strControlId = null) {
+			$this->dtxDateOfBirth = new QDateTimeTextBox($this->objParentObject, $strControlId);
+			$this->dtxDateOfBirth->Name = "Date of Birth";
+			$this->dtxDateOfBirth->Text = ($this->objPerson->DateOfBirth) ? $this->objPerson->DateOfBirth->ToString() : null;
+			return $this->dtxDateOfBirth;
+		}
+
+		/**
+		 * Create and setup QDateTimePicker calDateOfBirth
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateOfBirth_Create($strControlId = null) {
+			if ($this->dtxDateOfBirth) {
+				$this->calDateOfBirth = new QCalendar($this->objParentObject, $this->dtxDateOfBirth, $strControlId);
+				$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
+				return $this->calDateOfBirth;
+			} else {
+				return parent::calDateOfBirth_Create($strControlId);
+			}
+		}
 	}
 ?>

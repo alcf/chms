@@ -12,15 +12,16 @@
 		protected $txtNickname;
 		protected $dtxDateOfBirth;
 		protected $calDateOfBirth;
-		protected $lstMarriageStatusType;
-		protected $dtxDateOfMarriage;
-		protected $calDateOfMarriage;
 		protected $lstGender;
 		protected $txtHomePhone;
 		protected $txtCellPhone;
 		protected $txtWorkPhone;
 		protected $txtEmail;
 
+		protected $lstMarriageStatusType;
+		protected $dtxDateOfMarriage;
+		protected $calDateOfMarriage;
+		
 		protected $chkInvalidFlag;
 		protected $txtAddress1;
 		protected $txtAddress2;
@@ -55,8 +56,11 @@
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
 			$this->lstGender->AddItem('- Select One -', null);
-			$this->lstGender->AddItem('Male', 'M');
 			$this->lstGender->AddItem('Female', 'F');
+			$this->lstGender->AddItem('Male', 'M');
+
+			$this->dtxDateOfBirth = $this->mctPerson->dtxDateOfBirth_Create();
+			$this->calDateOfBirth = $this->mctPerson->calDateOfBirth_Create();
 
 			$this->txtHomePhone = new PhoneTextBox($this);
 			$this->txtHomePhone->Name = 'Home Phone';

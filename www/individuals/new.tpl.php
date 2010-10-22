@@ -12,12 +12,18 @@
 		<?php $this->txtFirstName->RenderWithName(); ?>
 		<?php $this->txtMiddleName->RenderWithName(); ?>
 		<?php $this->txtLastName->RenderWithName(); ?>
+		<br/>
 		<?php $this->lstGender->RenderWithName(); ?>
 	</div>
 	<div class="sectionTwoCol sectionTwoColRight">
 		<?php $this->txtHomePhone->RenderWithName(); ?>
 		<?php $this->txtCellPhone->RenderWithName(); ?>
 		<?php $this->txtWorkPhone->RenderWithName(); ?>
+		<br/>
+<?php
+		$this->dtxDateOfBirth->HtmlAfter = '&nbsp;' . $this->calDateOfBirth->Render(false);
+		$this->dtxDateOfBirth->RenderWithName('Width=150px');
+?>
 	</div>
 	<div class="cleaner">&nbsp;</div>
 </div>
