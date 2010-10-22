@@ -22,11 +22,12 @@
 
 			$this->pnlContent = new EditHouseholdHomeAddressPanel($this);
 			$this->pnlContent->objDelegate = new EditHomeAddressDelegate($this->pnlContent, '/households/view.php/' . $this->objHousehold->Id, QApplication::PathInfo(1));
+			$this->pnlContent->btnSave->AddAction(new QClickEvent(), new QShowDialogBox($this->pnlContent->objDelegate->dlgMessage));
+			$this->pnlContent->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this->pnlContent, 'btnSave_Click'));
 
 			$this->strPageTitle = ($this->pnlContent->objDelegate->mctAddress->EditMode ? 'Edit' : 'Create New') . ' ' . $this->strPageTitle;
 		}
 
-		
 	}
 
 	EditHouseholdHomeAddressForm::Run('EditHouseholdHomeAddressForm');

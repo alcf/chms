@@ -7,6 +7,9 @@
 
 		protected function SetupPanel() {
 			$this->objDelegate = new EditHomeAddressDelegate($this, '#contact', $this->strUrlHashArgument);
+			$this->btnSave->RemoveAllActions(QClickEvent::EventName);
+			$this->btnSave->AddAction(new QClickEvent(), new QShowDialogBox($this->objDelegate->dlgMessage));
+			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 		}
 
 		/**

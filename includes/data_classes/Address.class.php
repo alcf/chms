@@ -173,6 +173,63 @@
 			return $objAddress;
 		}
 
+
+		/**
+		 * Validate this address against the USPS.
+		 * @ return boolean whether or not the address validated
+		 */
+		public function ValidateUsps() {
+			$objClient = new SoapClient('http://pav3.cdyne.com/PavService.svc?wsdl');
+
+			$strRequest = array(
+				'FirmOrRecipient'		=> '',
+				'PrimaryAddressLine'	=> $this->strAddress1,
+				'SecondaryAddressLine'	=> $this->strAddress2,
+				'Urbanization'			=> '',
+				'CityName'				=> $this->strCity,
+				'State'					=> $this->strState,
+				'ZipCode'				=> $this->strZipCode,
+				'LicenseKey' 			=> '050A1DAF-F459-4BD9-A612-AAA88551FCF7' 
+			);
+
+			$objResult = $objClient->VerifyAddress($strRequest);
+			$objResult = $objResult->VerifyAddressResult;
+
+			if (($objResult->ReturnCode == 100) || ($objResult->ReturnCode == 102)) {
+				$strAddress1 = $objResult->PrimaryAddressLine;
+
+				$strAddress2 = $objResult->SecondaryAddressLine;
+				
+				if (!$strAddress2) foreach (array(
+					'APT',
+					'BLDG',
+					'DEPT',
+					'FL',
+					'RM',
+					'STE',
+					'UNIT') as $strUnitDesignator) {
+					$intPosition = strpos($strAddress1, ' ' . $strUnitDesignator . ' ');
+					if ($intPosition !== false) {
+						$strAddress2 = trim(substr($strAddress1, $intPosition));
+						$strAddress1 = trim(substr($strAddress1, 0, $intPosition));
+					}
+				}
+
+				$this->strAddress1 = $strAddress1;
+				$this->strAddress2 = $strAddress2;
+				$this->strCity = $objResult->CityName;
+				$this->strState = $objResult->StateAbbreviation;
+				$this->strZipCode = $objResult->ZipCode;
+
+				$this->blnVerificationCheckedFlag = true;
+				$this->blnInvalidFlag = false;
+				$this->Save();
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

@@ -19,12 +19,25 @@
 		public $txtZipCode;
 		
 		public $blnDisplayButtons;
+		
+		public $dlgMessage;
+
+		public function dlgMessage_Reset() {
+			$this->dlgMessage->RemoveAllButtons(false);
+			$this->dlgMessage->HorizontalAlign = QHorizontalAlign::Center;
+			$this->dlgMessage->MatteClickable = false;
+			$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">Validating Address with USPS<br/><span style="font-weight: normal; font-size: 13px; color: #999;">Please wait...</span></p><p><img src="/assets/images/spinner_20.gif"/></p>';
+			$this->dlgMessage->HideDialogBox();
+		}
 
 		public function __construct(QPanel $pnlContent, $strReturnUrl, $intAddressId, $blnDisplayButtons = true) {
 			$this->pnlContent = $pnlContent;
 			$this->pnlContent->Template = dirname(__FILE__) . '/EditHomeAddressDelegate.tpl.php';
 			$this->strReturnUrl = $strReturnUrl;
 			$this->blnDisplayButtons = $blnDisplayButtons;
+
+			$this->dlgMessage = new MessageDialog($pnlContent);
+			$this->dlgMessage_Reset();
 
 			// We need to have a household!
 			if (!$this->pnlContent->Form->objHousehold) return $this->pnlContent->ReturnTo($strReturnUrl);
@@ -107,8 +120,20 @@
 		}
 
 		public function btnSave_Click() {
-			// Save the object, itself
-			$this->mctAddress->SaveAddress();
+			$this->mctAddress->UpdateFields();
+
+			if (!$this->chkInvalidFlag->Checked) {
+				if (!$this->mctAddress->Address->ValidateUsps()) {
+					$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">This address is considered invalid with the USPS.</p><p style="font-size: 13px; color: #999;">Please make corrections or select <strong>"this is an INVALID address"</strong>.</p>';
+					$this->dlgMessage->AddButton('Okay', MessageDialog::ButtonPrimary, 'dlgMessage_Reset', $this->pnlContent);
+					return;
+				}
+			} else {
+				// Save the object, itself
+				$this->mctAddress->Address->Save();
+			}
+
+			$this->dlgMessage->HideDialogBox();
 
 			// Phone Numbers
 			for ($intIndex = 0; $intIndex < count($this->arrPhones); $intIndex++) {

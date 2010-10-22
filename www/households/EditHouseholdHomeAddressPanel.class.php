@@ -19,7 +19,6 @@
 			$this->btnSave = new QButton($this);
 			$this->btnSave->CssClass = 'primary';
 			$this->btnSave->Text = 'Save';
-			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 
 			$this->btnCancel = new QLinkButton($this);
 			$this->btnCancel->CssClass = 'cancel';

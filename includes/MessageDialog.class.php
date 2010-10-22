@@ -16,7 +16,7 @@
 			$this->HideDialogBox();
 		}
 
-		public function RemoveAllButtons() {
+		public function RemoveAllButtons($blnAddDefault = true) {
 			// Remove all buttons
 			foreach ($this->btnButtonArray as $btnButton) {
 				$this->RemoveChildControl($btnButton->ControlId, true);
@@ -24,8 +24,10 @@
 			$this->btnButtonArray = array();
 
 			// Setup with just a single button
-			$this->AddButton('Okay', self::ButtonPrimary, 'HideDialogBox', $this);
-			$this->blnMatteClickable = true;
+			if ($blnAddDefault) {
+				$this->AddButton('Okay', self::ButtonPrimary, 'HideDialogBox', $this);
+				$this->blnMatteClickable = true;
+			}
 		}
 
 		public function AddButton($strButtonText, $intButtonTypeId, $strOnClickMethodName, QControl $objOnClickMethodObject = null) {

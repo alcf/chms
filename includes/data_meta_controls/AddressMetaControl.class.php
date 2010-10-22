@@ -36,6 +36,26 @@
 			return $this->lstState;
 		}
 
+		public function UpdateFields() {
+			if ($this->lstState) $this->objAddress->State = $this->lstState->SelectedValue;
+			if ($this->lstAddressType) $this->objAddress->AddressTypeId = $this->lstAddressType->SelectedValue;
+			if ($this->lstPerson) $this->objAddress->PersonId = $this->lstPerson->SelectedValue;
+			if ($this->lstHousehold) $this->objAddress->HouseholdId = $this->lstHousehold->SelectedValue;
+			if ($this->lstPrimaryPhone) $this->objAddress->PrimaryPhoneId = $this->lstPrimaryPhone->SelectedValue;
+			if ($this->txtAddress1) $this->objAddress->Address1 = $this->txtAddress1->Text;
+			if ($this->txtAddress2) $this->objAddress->Address2 = $this->txtAddress2->Text;
+			if ($this->txtAddress3) $this->objAddress->Address3 = $this->txtAddress3->Text;
+			if ($this->txtCity) $this->objAddress->City = $this->txtCity->Text;
+			if ($this->txtState) $this->objAddress->State = $this->txtState->Text;
+			if ($this->txtZipCode) $this->objAddress->ZipCode = $this->txtZipCode->Text;
+			if ($this->txtCountry) $this->objAddress->Country = $this->txtCountry->Text;
+			if ($this->chkCurrentFlag) $this->objAddress->CurrentFlag = $this->chkCurrentFlag->Checked;
+			if ($this->chkInvalidFlag) $this->objAddress->InvalidFlag = $this->chkInvalidFlag->Checked;
+			if ($this->chkVerificationCheckedFlag) $this->objAddress->VerificationCheckedFlag = $this->chkVerificationCheckedFlag->Checked;
+			if ($this->calDateUntilWhen) $this->objAddress->DateUntilWhen = $this->calDateUntilWhen->DateTime;
+			$this->objAddress->VerificationCheckedFlag = false;
+		}
+
 		public function SaveAddress() {
 			try {
 				if ($this->lstState) $this->objAddress->State = $this->lstState->SelectedValue;
