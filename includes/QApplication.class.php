@@ -173,7 +173,7 @@
 		 */
 		public static function IsLoginHasPermission($intPermissionTypeId) {
 			if (!QApplication::$Login) return false;
-			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) return true;
+//			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) return true;
 			return QApplication::$Login->PermissionBitmap & $intPermissionTypeId;
 		}
 

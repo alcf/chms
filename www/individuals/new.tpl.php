@@ -25,9 +25,9 @@
 <h3>Home Address Information</h3>
 <div class="section">
 	<div class="sectionTwoCol">
-		<?php $this->txtAddress1->RenderWithName(); ?>
-		<?php $this->txtAddress2->RenderWithName(); ?>
-		<?php $this->txtAddress3->RenderWithName(); ?>
+		<?php $this->txtAddress1->RenderWithName('Name=Street Address'); ?>
+		<?php $this->txtAddress2->RenderWithName('Name=Apt, Unit, etc.'); ?>
+		<?php $this->txtAddress3->RenderWithName('Name=School, Nursing Home, etc.'); ?>
 	</div>
 	<div class="sectionTwoCol sectionTwoColRight">
 		<?php $this->txtCity->RenderWithName(); ?>

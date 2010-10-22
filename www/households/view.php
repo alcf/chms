@@ -40,14 +40,14 @@
 
 
 			$this->dtgHomeAddresses = new QDataGrid($this);
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Type', '<?= $_FORM->RenderHomeAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_FORM->RenderHomeAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=320px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=180px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Zip', '<?= $_ITEM->ZipCode; ?>', 'Width=100px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Phone', '<?= $_FORM->RenderHomePhone($_ITEM); ?>', 'Width=120px'));
-			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Invalid', '<?= $_ITEM->InvalidFlag ? "INVALID" : null; ?>', 'Width=100px'));
-			$this->dtgHomeAddresses->SetDataBinder('dtgHomeAddresses_Bind');
-
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('', '<?= $_FORM->RenderHomeAddressType($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Address', '<?= $_FORM->RenderHomeAddress($_ITEM); ?>', 'HtmlEntities=false', 'Width=235px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('City, State', '<?= $_ITEM->City . ", " . $_ITEM->State; ?>', 'Width=160px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Zip', '<?= $_ITEM->ZipCode; ?>', 'Width=90px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('Phone', '<?= $_FORM->RenderHomePhone($_ITEM); ?>', 'Width=105px'));
+			$this->dtgHomeAddresses->AddColumn(new QDataGridColumn('', '<?= $_ITEM->InvalidFlag ? "<img src=\\"/assets/images/marker_invalid.png\\" title=\\"Invalid Address\\"/>" : null; ?>', 'Width=54px', 'HtmlEntities=false'));
+			$this->dtgHomeAddresses->SetDataBinder('dtgHomeAddresses_Bind', $this);
+			
 			$this->pxySetCurrentHomeAddress = new QControlProxy($this);
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QAjaxAction('pxySetCurrentHomeAddress_Click'));
 			$this->pxySetCurrentHomeAddress->AddAction(new QClickEvent(), new QTerminateAction());
@@ -97,10 +97,24 @@
 		}
 
 		public function RenderHomeAddressType(Address $objAddress) {
-			if ($objAddress->CurrentFlag) {
-				return 'Current';
+			if (!$objAddress->CurrentFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->CssClass = 'previous';
+				$this->dtgHomeAddresses->OverrideRowStyle($this->dtgHomeAddresses->CurrentRowIndex, $objStyle);
+			} else if ($objAddress->InvalidFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->CssClass = 'invalid';
+				$this->dtgHomeAddresses->OverrideRowStyle($this->dtgHomeAddresses->CurrentRowIndex, $objStyle);
 			} else {
-				return sprintf('[<a href="#" %s>set</a>]', $this->pxySetCurrentHomeAddress->RenderAsEvents($objAddress->Id, false));
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->FontBold = true;
+				$this->dtgHomeAddresses->OverrideRowStyle($this->dtgHomeAddresses->CurrentRowIndex, $objStyle);
+			}
+
+			if ($objAddress->CurrentFlag) {
+				return '<img src="/assets/images/marker_current.png" title="Current Home Address"/>';
+			} else if (!$objAddress->InvalidFlag) {
+				return sprintf('<a href="#" class="set" %s>set</a>', $this->pxySetCurrentHomeAddress->RenderAsEvents($objAddress->Id, false));
 			}
 		}
 
