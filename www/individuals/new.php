@@ -21,6 +21,7 @@
 		protected $txtWorkPhone;
 		protected $txtEmail;
 
+		protected $chkInvalidFlag;
 		protected $txtAddress1;
 		protected $txtAddress2;
 		protected $txtAddress3;
@@ -38,7 +39,9 @@
 
 		protected $btnSave;
 		protected $btnCancel;
-		
+
+		protected $dlgMessage;
+
 		protected function Form_Create() {
 			$this->mctPerson = new PersonMetaControl($this, new Person());
 			$this->mctSpouse = new PersonMetaControl($this, new Person());
@@ -62,16 +65,21 @@
 			$this->txtWorkPhone = new PhoneTextBox($this);
 			$this->txtWorkPhone->Name = 'Work Phone';
 
+			$this->chkInvalidFlag = $this->mctAddress->chkInvalidFlag_Create();
 			$this->txtAddress1 = $this->mctAddress->txtAddress1_Create();
 			$this->txtAddress2 = $this->mctAddress->txtAddress2_Create();
 			$this->txtAddress3 = $this->mctAddress->txtAddress3_Create();
 			$this->txtCity = $this->mctAddress->txtCity_Create();
 			$this->lstState = $this->mctAddress->lstState_Create();
 			$this->txtZipCode = $this->mctAddress->txtZipCode_Create();
-			
+
+			$this->dlgMessage = new MessageDialog($this);
+			$this->dlgMessage_Reset();
+
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Create';
 			$this->btnSave->CssClass = 'primary';
+			$this->btnSave->AddAction(new QClickEvent(), new QShowDialogBox($this->dlgMessage));
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
 			$this->btnSave->CausesValidation = true;
 
@@ -84,7 +92,40 @@
 			$this->txtFirstName->Focus();
 		}
 
+		public function dlgMessage_Reset() {
+			$this->dlgMessage->RemoveAllButtons(false);
+			$this->dlgMessage->HorizontalAlign = QHorizontalAlign::Center;
+			$this->dlgMessage->MatteClickable = false;
+			$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">Validating Address with USPS<br/><span style="font-weight: normal; font-size: 13px; color: #999;">Please wait...</span></p><p><img src="/assets/images/spinner_20.gif"/></p>';
+			$this->dlgMessage->HideDialogBox();
+		}
+
+		public function Form_Validate() {
+			$this->dlgMessage->HideDialogBox();
+			return true;
+		}
+
 		protected function btnSave_Click() {
+			// Perform USPS Validation (if applicable)
+			if (trim($this->txtCity->Text) && !($this->chkInvalidFlag->Checked)) {
+				$objAddressValidator = new AddressValidator($this->txtAddress1->Text, $this->txtAddress2->Text, $this->txtCity->Text, $this->lstState->SelectedValue, $this->txtZipCode->Text);
+				$objAddressValidator->ValidateAddress();
+
+				if ($objAddressValidator->AddressValidFlag) {
+					$this->txtAddress1->Text = $objAddressValidator->PrimaryAddressLine;
+					$this->txtAddress2->Text = $objAddressValidator->SecondaryAddressLine;
+					$this->txtCity->Text = $objAddressValidator->City;
+					$this->lstState->SelectedValue = $objAddressValidator->State;
+					$this->txtZipCode->Text = $objAddressValidator->ZipCode;
+					$this->dlgMessage->HideDialogBox();
+				} else {
+					$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">This address is considered invalid with the USPS.</p><p style="font-size: 13px; color: #999;">Please make corrections or select <strong>"this is an INVALID address"</strong>.</p>';
+					$this->dlgMessage->AddButton('Okay', MessageDialog::ButtonPrimary, 'dlgMessage_Reset');
+					$this->dlgMessage->ShowDialogBox();
+					return;
+				}
+			}
+
 			// Fixup Middle
 			$this->txtMiddleName->Text = trim($this->txtMiddleName->Text);
 			if (strlen($this->txtMiddleName->Text) == 1)

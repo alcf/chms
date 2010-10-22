@@ -28,6 +28,7 @@
 		<?php $this->txtAddress1->RenderWithName('Name=Street Address'); ?>
 		<?php $this->txtAddress2->RenderWithName('Name=Apt, Unit, etc.'); ?>
 		<?php $this->txtAddress3->RenderWithName('Name=School, Nursing Home, etc.'); ?>
+		<?php $this->chkInvalidFlag->RenderWithName('Name=Invalid?','Text=Check if this is an INVALID address'); ?>
 	</div>
 	<div class="sectionTwoCol sectionTwoColRight">
 		<?php $this->txtCity->RenderWithName(); ?>
@@ -40,5 +41,6 @@
 <div class="buttonBar">
 	<?php $this->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $this->btnCancel->Render(); ?>
 </div>
+<?php $this->dlgMessage->Render(); ?>
 
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
