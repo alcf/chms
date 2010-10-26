@@ -635,6 +635,7 @@
 			if ($objPerson->DeceasedFlag && rand(0, 1))
 				$objPerson->DateDeceased = QDataGen::GenerateDateTime(self::$LifeStartDate, QDateTime::Now());
 			$objPerson->Save();
+			$objPerson->RefreshNameItemAssociations();
 
 			// Head Shots
 			$objHeadShotArray = array();

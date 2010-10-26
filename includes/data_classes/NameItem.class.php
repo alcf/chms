@@ -14,6 +14,13 @@
 	 * 
 	 */
 	class NameItem extends NameItemGen {
+		public static $Internationalized = array(
+			'a' => 'àáâãäāå',
+			'e' => 'èéêëē',
+			'i' => 'ìíîĩïī',
+			'o' => 'òóôõöōø',
+			'u' => 'ùúûŭüū'
+		);
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -27,6 +34,72 @@
 			return sprintf('NameItem Object %s',  $this->intId);
 		}
 
+		/**
+		 * Given a string of name items, this returns an array with those items normalized
+		 * @param string $strNameString
+		 * @return string[]
+		 */
+		public static function GetNormalizedArrayFromNameString($strNameString) {
+			$strNameString = str_replace('-', ' ', $strNameString);
+			$strFinalArray = array();
+
+			foreach (explode(' ', $strNameString) as $strNameItem) {
+				$strNameItem = self::NormalizeNameItem($strNameItem);
+				if (mb_strlen($strNameItem) >= 2) $strFinalArray[] = $strNameItem;
+			}
+
+			return $strFinalArray;
+		}
+
+		/**
+		 * Normalizes a single name item
+		 * @param string $strNameItem
+		 * @return string
+		 */
+		public static function NormalizeNameItem($strNameItem) {
+			$strNameItem = trim($strNameItem);
+			if (!mb_strlen($strNameItem)) return null;
+
+			$strNameItem = mb_strtolower($strNameItem);
+			$strFinal = '';
+
+			$intLength = mb_strlen($strNameItem);
+			for ($i = 0; $i < $intLength; $i++) {
+				$strCurrent = mb_substr($strNameItem, $i, 1);
+				foreach (self::$Internationalized as $strNormalized => $strInternationalized) {
+					if (mb_strpos($strInternationalized, $strCurrent) !== false) {
+						$strCurrent = $strNormalized;
+					}
+				}
+
+				if (mb_strwidth($strCurrent) == 1) {
+					$intOrd = ord($strCurrent);
+					if (($intOrd >= ord('a')) && ($intOrd <= ord('z'))) $strFinal .= $strCurrent;
+				}
+			}
+			
+			return $strFinal;
+		}
+
+		/**
+		 * Given an array of normalized name items, this will associate them all to a valid NameItem object.
+		 * If any particular NameItem object does not exist, it will be created.
+		 * @param string[] $strNameArray
+		 * @param Person $objPerson
+		 * @return void
+		 */
+		public static function AssociateNameItemArrayForPerson($strNameArray, Person $objPerson) {
+			foreach ($strNameArray as $strName) {
+				$objNameItem = NameItem::LoadByName($strName);
+				if (!$objNameItem) {
+					$objNameItem = new NameItem();
+					$objNameItem->Name = $strName;
+					$objNameItem->Save();
+				}
+				
+				$objPerson->AssociateNameItem($objNameItem);
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

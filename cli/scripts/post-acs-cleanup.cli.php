@@ -6,6 +6,7 @@
 		$objPerson->RefreshMaritalStatusTypeId(false);
 		$objPerson->RefreshMembershipStatusTypeId(false);
 		$objPerson->RefreshPrimaryContactInfo(true);
+		$objPerson->RefreshNameItemAssociations();
 	}
 	QDataGen::DisplayForEachTaskEnd('Refreshing Person data');
 

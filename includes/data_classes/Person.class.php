@@ -27,6 +27,13 @@
 			return sprintf('Person Object %s',  $this->intId);
 		}
 
+		public function RefreshNameItemAssociations() {
+			$this->UnassociateAllNameItems();
+			$strNames = sprintf('%s %s %s %s %s %s', trim($this->strFirstName), trim($this->strMiddleName), trim($this->strLastName), trim($this->strNickname), trim($this->strPriorLastNames), trim($this->strSuffix));
+			$strNameArray = NameItem::GetNormalizedArrayFromNameString($strNames);
+			NameItem::AssociateNameItemArrayForPerson($strNameArray, $this);
+		}
+
 		public function Delete() {
 			self::GetDatabase()->TransactionBegin();
 			try {
@@ -558,23 +565,40 @@
 		 * @param string $strGender
 		 * @return Person[]
 		 */
-		public static function LoadArrayBySearch($strFirstName, $strLastName, $strGender) {
-			$strClauseArray = array();
+		public static function LoadArrayBySearch($strName) {
+			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strName);
 
-			// Needs to capture both the requested gender AND any unspecified
-			if ($strGender == 'M') {
-				$strClauseArray[] = "gender != 'F'";
-			} else if ($strGender == 'F') {
-				$strClauseArray[] = "gender != 'M'";
+			// First, get the applicable NameItem
+			$intNameItemIdArrayArray = array();
+
+			foreach ($strNameItemArray as $strNameItem) {
+				$intNameItemIdArray = array();
+
+				$strQuery = sprintf("SELECT * FROM name_item WHERE (soundex(name) = soundex('%s') OR name LIKE '%s%%')", mysql_escape_string($strNameItem), mysql_escape_string($strNameItem));
+
+				$objNameItemArray = NameItem::InstantiateDbResult(NameItem::GetDatabase()->Query($strQuery));
+				if (!count($objNameItemArray)) return array();
+				foreach ($objNameItemArray as $objNameItem) $intNameItemIdArray[] = $objNameItem->Id;
+
+				$intNameItemIdArrayArray[] = $intNameItemIdArray;
 			}
 
-			// First or Last Name Requested
-			if (strlen($strFirstName))
-				$strClauseArray[] = sprintf("(soundex(first_name) = soundex('%s') OR first_name LIKE '%s%%')", mysql_escape_string($strFirstName), mysql_escape_string($strFirstName));
-			if (strlen($strLastName))
-				$strClauseArray[] = sprintf("(soundex(last_name) = soundex('%s') OR last_name LIKE '%s%%')", mysql_escape_string($strLastName), mysql_escape_string($strLastName));
+			// Build the search array from Person
+			$strFromClause = 'person';
+			$strClauseArray = array();
 
-			$strQuery = 'SELECT * FROM person WHERE ' . implode(' AND ', $strClauseArray) . ' ORDER BY last_name, first_name';
+			$intIndex = 0;
+			foreach ($intNameItemIdArrayArray as $intNameItemIdArray) {
+				$intIndex++;
+				$strFromClause .= ', person_nameitem_assn AS assn_' . $intIndex;
+				if (count($intNameItemIdArray) == 1) {
+					$strClauseArray[] = sprintf("assn_%s.person_id = person.id AND assn_%s.name_item_id = %s", $intIndex, $intIndex, $intNameItemIdArray[0]);
+				} else {
+					$strClauseArray[] = sprintf("assn_%s.person_id = person.id AND assn_%s.name_item_id IN (%s)", $intIndex, $intIndex, implode(', ', $intNameItemIdArray));
+				}
+			}
+
+			$strQuery = sprintf("SELECT person.* FROM %s WHERE %s ORDER BY last_name, first_name;", $strFromClause, implode(' AND ', $strClauseArray));
 			return Person::InstantiateDbResult(Person::GetDatabase()->Query($strQuery));
 		}
 
@@ -615,6 +639,7 @@
 			$objPerson->DeceasedFlag = false;
 
 			$objPerson->Save();
+			$objPerson->RefreshNameItemAssociations();
 
 			// Create Primary Contact Info (if applicable)
 			$blnSaveAgain = false;

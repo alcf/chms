@@ -335,6 +335,7 @@
 			$this->mctPerson->Person->MaritalStatusTypeId = MaritalStatusType::NotSpecified;
 			$this->mctPerson->Person->DeceasedFlag = false;
 			$this->mctPerson->SavePerson();
+			$this->mctPerson->Person->RefreshNameItemAssociations();
 
 			// Is there a home address?
 			if (trim($this->txtCity->Text)) {
@@ -414,6 +415,7 @@
 			$this->mctSpouse->Person->MaritalStatusTypeId = MaritalStatusType::NotSpecified;
 			$this->mctSpouse->Person->DeceasedFlag = false;
 			$this->mctSpouse->SavePerson();
+			$this->mctSpouse->Person->RefreshNameItemAssociations();
 
 			// Is there a home address?
 			if ($objHousehold = Household::LoadByHeadPersonId($this->mctPerson->Person->Id))
