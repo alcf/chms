@@ -18,7 +18,7 @@
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>'));
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
 
-			$this->lstMinistries->AddAction(new QClickEvent(), new QAjaxControlAction($this->dtgGroups, 'Refresh'));
+			$this->lstMinistries->AddAction(new QChangeEvent(), new QAjaxControlAction($this->dtgGroups, 'Refresh'));
 		}
 
 		public function dtgGroups_Bind() {

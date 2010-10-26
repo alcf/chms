@@ -10,7 +10,10 @@
 		}
 
 		public function dtgMembers_Bind() {
-			$objCondition = QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id);
+			$objCondition = QQ::AndCondition(
+				QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id),
+				QQ::IsNull(QQN::Person()->GroupParticipation->DateEnd)
+			);
 			$this->dtgMembers->TotalItemCount = Person::QueryCount($objCondition);
 
 			$objClauses = array(QQ::Distinct());
