@@ -19,5 +19,33 @@
 	 * @subpackage MetaControls
 	 */
 	class MembershipMetaControl extends MembershipMetaControlGen {
+		protected $dtxDateStart;
+
+		/**
+		 * Create and setup QDateTimePicker calDateStart
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function dtxDateStart_Create($strControlId = null) {
+			$this->dtxDateStart = new QDateTimeTextBox($this->objParentObject, $strControlId);
+			$this->dtxDateStart->Name = "Start Date";
+			$this->dtxDateStart->Text = ($this->objMembership->DateStart) ? $this->objMembership->DateStart->ToString() : null;
+			return $this->dtxDateStart;
+		}
+
+		/**
+		 * Create and setup QDateTimePicker calDateStart
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateStart_Create($strControlId = null) {
+			if ($this->dtxDateStart) {
+				$this->calDateStart = new QCalendar($this->dtxDateStart, $this->dtxDateStart, $strControlId);
+				$this->dtxDateStart->RemoveAllActions(QClickEvent::EventName);
+				return $this->calDateStart;
+			} else {
+				return parent::calDateStart_Create($strControlId);
+			}
+		}
 	}
 ?>

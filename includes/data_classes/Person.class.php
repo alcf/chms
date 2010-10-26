@@ -240,7 +240,7 @@
 				$this->strPrimaryCityText = 'Multiple Households';
 			} else if ($objAddress) {
 				$this->strPrimaryAddressText = ucwords(strtolower(trim($objAddress->Address1)));
-				if ($objAddress->Address2) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address2);
+				if ($objAddress->Address2) $this->strPrimaryAddressText .= ', ' . ucwords(strtolower(trim($objAddress->Address2)));
 				if ($objAddress->Address3) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address3);
 				$this->strPrimaryCityText = ucwords(strtolower(trim($objAddress->City)));
 			} else {

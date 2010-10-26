@@ -20,6 +20,7 @@
 	 */
 	class PersonMetaControl extends PersonMetaControlGen {
 		protected $dtxDateOfBirth;
+		protected $lstGender;
 
 		/**
 		 * Create and setup QDateTimePicker calDateOfBirth
@@ -40,11 +41,47 @@
 		 */
 		public function calDateOfBirth_Create($strControlId = null) {
 			if ($this->dtxDateOfBirth) {
-				$this->calDateOfBirth = new QCalendar($this->objParentObject, $this->dtxDateOfBirth, $strControlId);
+				$this->calDateOfBirth = new QCalendar($this->dtxDateOfBirth, $this->dtxDateOfBirth, $strControlId);
 				$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
 				return $this->calDateOfBirth;
 			} else {
 				return parent::calDateOfBirth_Create($strControlId);
+			}
+		}
+
+		/**
+		 * @return QListBox
+		 */
+		public function lstGender_Create($strControlId = null) {
+			$this->lstGender = new QListBox($this->objParentObject);
+			$this->lstGender->Name = 'Gender';
+			if (!$this->objPerson->Gender) $this->lstGender->AddItem('- Select One -', null);
+			$this->lstGender->AddItem('Female', 'F', strtoupper($this->objPerson->Gender) == 'F');
+			$this->lstGender->AddItem('Male', 'M', strtoupper($this->objPerson->Gender) == 'M');
+			return $this->lstGender;
+		}
+
+		public function SavePerson() {
+			try {
+				if ($this->lstGender) $this->objPerson->Gender = $this->lstGender->SelectedValue;
+				parent::SavePerson();
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'GenderListControl': return $this->lstGender;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
 			}
 		}
 	}

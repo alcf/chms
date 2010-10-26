@@ -9,21 +9,25 @@
 <h3>Person to Add</h3>
 <div class="section">
 	<div class="sectionTwoCol">
-		<?php $this->txtFirstName->RenderWithName(); ?>
-		<?php $this->txtMiddleName->RenderWithName(); ?>
-		<?php $this->txtLastName->RenderWithName(); ?>
+		<?php $this->txtPersonFirstName->RenderWithName(); ?>
+		<?php $this->txtPersonMiddleName->RenderWithName(); ?>
+		<?php $this->txtPersonLastName->RenderWithName(); ?>
+		<?php $this->txtPersonSuffix->RenderWithName(); ?>
 		<br/>
-		<?php $this->lstGender->RenderWithName(); ?>
+		<?php $this->txtPersonNickname->RenderWithName(); ?>
+		<?php $this->txtPersonPriorLastNames->RenderWithName(); ?>
 	</div>
 	<div class="sectionTwoCol sectionTwoColRight">
-		<?php $this->txtHomePhone->RenderWithName(); ?>
-		<?php $this->txtCellPhone->RenderWithName(); ?>
-		<?php $this->txtWorkPhone->RenderWithName(); ?>
-		<br/>
+		<?php $this->lstPersonGender->RenderWithName(); ?>
 <?php
-		$this->dtxDateOfBirth->HtmlAfter = '&nbsp;' . $this->calDateOfBirth->Render(false);
-		$this->dtxDateOfBirth->RenderWithName('Width=150px');
+		$this->dtxPersonDateOfBirth->HtmlAfter = '&nbsp;' . $this->calPersonDateOfBirth->Render(false);
+		$this->dtxPersonDateOfBirth->RenderWithName('Width=150px');
 ?>
+		<br/>
+		<?php $this->txtPersonEmail->RenderWithName(); ?>
+		<?php $this->txtPersonHomePhone->RenderWithName(); ?>
+		<?php $this->txtPersonCellPhone->RenderWithName(); ?>
+		<?php $this->txtPersonWorkPhone->RenderWithName(); ?>
 	</div>
 	<div class="cleaner">&nbsp;</div>
 </div>
@@ -42,6 +46,58 @@
 		<?php $this->txtZipCode->RenderWithName(); ?>
 	</div>
 	<div class="cleaner">&nbsp;</div>
+</div>
+
+<h3>Membership Information</h3>
+<div class="section">
+	<?php $this->chkMembershipFlag->RenderWithName(); ?>
+<?php
+	$this->dtxDateOfMembership->HtmlAfter = '&nbsp;' . $this->calDateOfMembership->Render(false);
+	$this->dtxDateOfMembership->RenderWithName('Width=150px');
+?>
+</div>
+
+<h3>Marital Information</h3>
+<div class="section">
+	<div class="sectionTwoCol">
+		<?php $this->lstMarriageStatusType->RenderWithName(); ?>
+<?php
+		$this->dtxDateOfMarriage->HtmlAfter = '&nbsp;' . $this->calDateOfMarriage->Render(false);
+		$this->dtxDateOfMarriage->RenderWithName('Width=150px');
+?>
+	</div>
+	<div class="sectionTwoCol sectionTwoColRight">
+		<?php $this->rblSpouseMembership->RenderWithName(); ?>
+	</div>
+	<div class="cleaner">&nbsp;</div>
+</div>
+
+<div id="spouse">
+<h3>Spouse Information</h3>
+<div class="section">
+	<div class="sectionTwoCol">
+		<?php $this->txtSpouseFirstName->RenderWithName(); ?>
+		<?php $this->txtSpouseMiddleName->RenderWithName(); ?>
+		<?php $this->txtSpouseLastName->RenderWithName(); ?>
+		<?php $this->txtSpouseSuffix->RenderWithName(); ?>
+		<br/>
+		<?php $this->txtSpouseNickname->RenderWithName(); ?>
+		<?php $this->txtSpousePriorLastNames->RenderWithName(); ?>
+	</div>
+	<div class="sectionTwoCol sectionTwoColRight">
+		<?php $this->lstSpouseGender->RenderWithName(); ?>
+<?php
+		$this->dtxSpouseDateOfBirth->HtmlAfter = '&nbsp;' . $this->calSpouseDateOfBirth->Render(false);
+		$this->dtxSpouseDateOfBirth->RenderWithName('Width=150px');
+?>
+		<br/>
+		<?php $this->txtSpouseEmail->RenderWithName(); ?>
+		<?php $this->txtSpouseHomePhone->RenderWithName(); ?>
+		<?php $this->txtSpouseCellPhone->RenderWithName(); ?>
+		<?php $this->txtSpouseWorkPhone->RenderWithName(); ?>
+	</div>
+	<div class="cleaner">&nbsp;</div>
+</div>
 </div>
 
 <div class="buttonBar">
