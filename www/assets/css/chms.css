@@ -203,7 +203,7 @@
 	div.renderWithName div.required:after {content: " *"; } 
 	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
-	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
+	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600; }
 	div.renderWithName div.right label { font-size: 12px; position: relative; top: 2px; left: 2px; color: #333;}
 	div.renderWithName div.right span { font-size: 14px; color: #444; }
 

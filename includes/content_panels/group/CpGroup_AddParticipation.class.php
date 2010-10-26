@@ -38,6 +38,8 @@
 
 			$this->dtxDateStart->RemoveAllActions(QClickEvent::EventName);
 			$this->dtxDateEnd->RemoveAllActions(QClickEvent::EventName);
+
+			$this->pnlPerson->txtName->Focus();
 		}
 
 		public function Validate() {

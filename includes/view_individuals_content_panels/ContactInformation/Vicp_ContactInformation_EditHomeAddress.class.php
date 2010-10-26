@@ -12,6 +12,10 @@
 			$this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 		}
 
+		public function Validate() {
+			return $this->objDelegate->Validate(parent::Validate());
+		}
+
 		/**
 		 * We're using the Delegate to consolidate code between this panel and the Vicp_Groups_EditParticipation panel
 		 * 

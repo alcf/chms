@@ -49,9 +49,9 @@
 
 			// Render the Right side
 			if ($this->strValidationError)
-				$strMessage = sprintf('<span class="error">%s</span>', $this->strValidationError);
+				$strMessage = sprintf('<span class="error"><br/>%s</span>', $this->strValidationError);
 			else if ($this->strWarning)
-				$strMessage = sprintf('<span class="error">%s</span>', $this->strWarning);
+				$strMessage = sprintf('<span class="error"><br/>%s</span>', $this->strWarning);
 			else
 				$strMessage = '';
 
