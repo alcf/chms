@@ -63,7 +63,7 @@
 			
 			$this->dlgMessage = new MessageDialog($this);
 
-			$this->pnlPerson->txtFirstName->Focus();
+			$this->pnlPerson->txtName->Focus();
 		}
 
 		/**

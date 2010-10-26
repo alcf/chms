@@ -1,14 +1,13 @@
 <?php
-	if (is_null($_CONTROL->ForceAsMaleFlag))
-		$_CONTROL->txtFirstName->HtmlAfter = ' ' . $_CONTROL->txtLastName->Render(false) . ' ' . $_CONTROL->lstGender->Render(false);
-	else
-		$_CONTROL->txtFirstName->HtmlAfter = ' ' . $_CONTROL->txtLastName->Render(false);
-	$_CONTROL->txtFirstName->Name = $_CONTROL->Name;
-	$_CONTROL->txtFirstName->Required = $_CONTROL->Required;
+	$_CONTROL->txtName->Name = $_CONTROL->Name;
+	$_CONTROL->txtName->Required = $_CONTROL->Required;
 ?>
-<?php $_CONTROL->txtFirstName->RenderWithName(); ?>
-<?php $_CONTROL->dtgResults->RenderWithName(); ?>
+<?php $_CONTROL->txtName->RenderWithName(); ?>
 
-<?php $_CONTROL->txtEmail->RenderWithName(); ?>
-<?php $_CONTROL->txtPhone->RenderWithName(); ?>
-<?php $_CONTROL->lstPhone->RenderWithName(); ?>
+<?php
+	if ($_CONTROL->AllowCreate)
+		$_CONTROL->dtgResults->HtmlAfter = '<p style="font-size: 10px; color: #777; font-style: italic;">If none of the above...<br/>' . $_CONTROL->btnCreatePerson->Render(false) . '</p>'; 
+	$_CONTROL->dtgResults->RenderWithName(); 
+?>
+
+<?php $_CONTROL->pnlCreatePerson->RenderWithName(); ?>

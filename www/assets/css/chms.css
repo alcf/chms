@@ -302,6 +302,9 @@ div.shopInfo div.shopLeft { float: left; }
 	
 	div.recordInfo { font: 10px Arial, Helvetica, Sans-Serif; font-style: italic; color: #335;}
 	
+	div#selectPersonPanel_ctl div.right { height: 200px; overflow: auto; }
+	div.createPersonPanel { border: 1px solid #ccc; background-color: #eee; padding: 5px; width: 650px; }
+	
 	/* QDataGrid */
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }
 		table.datagrid caption, table.datagrid tfoot { padding-bottom: 4px; overflow: auto; }

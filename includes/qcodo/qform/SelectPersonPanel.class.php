@@ -1,16 +1,18 @@
 <?php
 	class SelectPersonPanel extends QPanel {
-		public $txtFirstName;
-		public $txtLastName;
+		public $txtName;
 		public $lstGender;
 
 		public $dtgResults;
-		public $pxySelect;
+		public $btnCreatePerson;
 
 		protected $intSelectedPersonId;
 		protected $blnAllowCreate = false;
 		protected $blnForceAsMaleFlag = null;
 
+		public $pnlCreatePerson;
+		public $txtFirstName;
+		public $txtLastName;
 		public $txtEmail;
 		public $txtPhone;
 		public $lstPhone;
@@ -23,27 +25,19 @@
 		public function Validate() {
 			if ($this->blnRequired) {
 				if (!$this->intSelectedPersonId) {
-					$this->txtFirstName->Warning = 'Required';
+					$this->txtName->Warning = 'Required';
 					return false;
 				}
 			}
 
 			if ($this->dtgResults && $this->dtgResults->Visible) {
 				if (!$this->intSelectedPersonId) {
-					$this->txtFirstName->Warning = 'You must select an option below';
+					$this->txtName->Warning = 'You must select an option below';
 					return false;
 				}
 			}
 
-			if ($this->intSelectedPersonId == -1) {
-				if (!strlen(trim($this->txtFirstName->Text)) || !strlen(trim($this->txtLastName->Text))) {
-					$this->txtFirstName->Warning = 'First and Last Names are required';
-					$this->txtLastName->Warning = 'First and Last Names are required';
-					return false;
-				}
-			}
-
-			return true;
+ 			return true;
 		}
 
 		/**
@@ -58,80 +52,81 @@
 
 			$this->strTemplate = dirname(__FILE__) . '/SelectPersonPanel.tpl.php';
 
-			$this->txtFirstName = new QTextBox($this);
-			$this->txtFirstName->Name = 'Name';
+			$this->txtName = new QTextBox($this);
+			$this->txtName->Name = 'Name';
 
-			$this->txtLastName = new QTextBox($this);
+			$this->txtName->AddAction(new QFocusEvent(), new QAjaxControlAction($this, 'txtName_Focus'));
+			$this->txtName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
+			$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
+			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
-			$this->lstGender = new QListBox($this);
-			$this->lstGender->AddItem('Male', 'M');
-			$this->lstGender->AddItem('Female', 'F');
-			
-			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
-			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
-			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
-			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtName_Change'));
-			$this->lstGender->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtName_Change'));
-
-			$this->txtFirstName->Width = '200px';
-			$this->txtLastName->Width = '200px';
-			
-			$this->dtgResults = new QDataGrid($this);
+			$this->dtgResults = new QDataGrid($this, 'selectPersonPanel');
 			$this->dtgResults->Name = '&nbsp;';
-			$this->dtgResults->AddColumn(new QDataGridColumn('Select', '<?= $_CONTROL->ParentControl->RenderSelect($_ITEM); ?>', 'HtmlEntities=false'));
-			$this->dtgResults->AddColumn(new QDataGridColumn('Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgResults->AddColumn(new QDataGridColumn('', '<?= $_CONTROL->ParentControl->RenderSelect($_ITEM); ?>', 'HtmlEntities=false', 'Width=24px'));
+			$this->dtgResults->AddColumn(new QDataGridColumn('Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
+			$this->dtgResults->AddColumn(new QDataGridColumn('Address', '<?= $_ITEM->PrimaryAddressText; ?>, <?= $_ITEM->PrimaryCityText; ?>', 'Width=350px'));
+			$this->dtgResults->AddColumn(new QDataGridColumn('Phone', '<?= $_ITEM->PrimaryPhoneText; ?>', 'Width=100px'));
 			$this->dtgResults->Visible = false;
 			$this->dtgResults->SetDataBinder('dtgResults_Bind', $this);
 
-			$this->pxySelect = new QControlProxy($this);
-			$this->pxySelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySelect_Click'));
-			$this->pxySelect->AddAction(new QClickEvent(), new QTerminateAction());
+			$this->btnCreatePerson = new QButton($this);
+			$this->btnCreatePerson->Text = 'Create as a New Person';
+			$this->btnCreatePerson->CssClass = 'primary';
+			$this->btnCreatePerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCreatePerson_Click'));
 
-			$this->txtEmail = new QEmailTextBox($this);
-			$this->txtEmail->Name = 'Email';
-			$this->txtEmail->Visible = false;
+			$this->pnlCreatePerson = new QPanel($this);
+			$this->pnlCreatePerson->Name = '&nbsp;';
+			$this->pnlCreatePerson->Visible = false;
+			$this->pnlCreatePerson->CssClass = 'createPersonPanel';
+			$this->pnlCreatePerson->Template = dirname(__FILE__) . '/SelectPersonPanel_CreatePersonPanel.tpl.php';
 
-			$this->txtPhone = new PhoneTextBox($this);
-			$this->txtPhone->Name = 'Phone';
-			$this->txtPhone->Visible = false;
+			$this->txtFirstName = new QTextBox($this->pnlCreatePerson);
+			$this->txtFirstName->Name = 'First Name';
+			$this->txtFirstName->Required = true;
 			
-			$this->lstPhone = new QListBox($this);
+			$this->txtLastName = new QTextBox($this->pnlCreatePerson);
+			$this->txtLastName->Name = 'Last Name';
+			$this->txtLastName->Required = true;
+
+			$this->lstGender = new QListBox($this->pnlCreatePerson);
+			$this->lstGender->Name = 'Gender';
+			$this->lstGender->AddItem('- Select One -', null);
+			$this->lstGender->AddItem('Female', 'F');
+			$this->lstGender->AddItem('Male', 'M');
+
+			$this->txtEmail = new QEmailTextBox($this->pnlCreatePerson);
+			$this->txtEmail->Name = 'Email';
+
+			$this->txtPhone = new PhoneTextBox($this->pnlCreatePerson);
+			$this->txtPhone->Name = 'Phone';
+
+			$this->lstPhone = new QListBox($this->pnlCreatePerson);
 			$this->lstPhone->Name = '&nbsp;';
-			$this->lstPhone->Visible = false;
 			foreach (PhoneType::$NameArray as $intPhoneTypeId => $strLabel) {
 				$this->lstPhone->AddItem($strLabel, $intPhoneTypeId);
 			}
 		}
 
 		public function dtgResults_Bind() {
+			$this->dtgResults->RemoveChildControls(true);
+
 			if ($this->dtgResults->Visible) {
-				if (is_null($this->blnForceAsMaleFlag))
-					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), $this->lstGender->SelectedValue);
-				else
-					$objPersonArray = Person::LoadArrayBySearch(trim($this->txtFirstName->Text), trim($this->txtLastName->Text), ($this->blnForceAsMaleFlag) ? 'M' : 'F');
-
-				if ($this->blnAllowCreate) $objPersonArray[] = new Person();
-				$this->dtgResults->DataSource = $objPersonArray;
-
-				if ($this->intSelectedPersonId > 0) {
-					$blnFound = false;
-					foreach ($objPersonArray as $objPerson) {
-						if ($objPerson->Id == $this->intSelectedPersonId)
-							$blnFound = true;
-					}
-
-					if (!$blnFound) {
-						$this->intSelectedPersonId = null;
-					}
-				}
+				$this->intSelectedPersonId = null;
+				$this->dtgResults->DataSource = Person::LoadArrayBySearch(trim($this->txtName->Text));
 			} else {
 				$this->dtgResults->DataSource = array();
-				$this->intSelectedPersonId = null;
 			}
 		}
 
+		public function txtName_Focus() {
+			$this->dtgResults->Visible = false;
+			$this->intSelectedPersonId = null;
+
+			$this->pnlCreatePerson->Visible = false;
+		}
+
 		public function txtName_Change() {
-			if (strlen(trim($this->txtFirstName->Text)) || strlen(trim($this->txtLastName->Text))) {
+			if (strlen(trim($this->txtName->Text))) {
 				$this->dtgResults->Visible = true;
 			} else {
 				$this->dtgResults->Visible = false;
@@ -139,39 +134,40 @@
 			
 		}
 
-		public function pxySelect_Click($strFormId, $strControlId, $strParameter) {
-			if ($strParameter) {
-				$this->intSelectedPersonId = $strParameter;
-				$this->txtEmail->Visible = false;
-				$this->txtPhone->Visible = false;
-				$this->lstPhone->Visible = false;
+		public function radSelectPerson_Click($strFormId, $strControlId, $strParameter) {
+			$this->intSelectedPersonId = $strParameter;
+		}
+
+		public function btnCreatePerson_Click() {
+			$this->dtgResults->Visible = false;
+			$this->pnlCreatePerson->Visible = true;
+
+			if ( ($intPosition = strpos($this->txtName->Text, ',')) !== false) {
+				$this->txtLastName->Text = trim(substr($this->txtName->Text, 0, $intPosition));
+				$this->txtFirstName->Text = trim(substr($this->txtName->Text, $intPosition + 1));
+			} else if ( ($intPosition = strrpos($this->txtName->Text, ' ')) !== false) {
+				$this->txtFirstName->Text = trim(substr($this->txtName->Text, 0, $intPosition));
+				$this->txtLastName->Text = trim(substr($this->txtName->Text, $intPosition + 1));
 			} else {
-				$this->intSelectedPersonId = -1;
-				$this->txtEmail->Visible = true;
-				$this->txtPhone->Visible = true;
-				$this->lstPhone->Visible = true;
+				$this->txtFirstName->Text = trim($this->txtName->Text);
+				$this->txtLastName->Text = null;
 			}
-			$this->dtgResults->Refresh();
+
+			$this->intSelectedPersonId = -1;
+			$this->txtFirstName->Focus();
 		}
 
 		public function RenderName(Person $objPerson) {
-			if ($objPerson->Id)
-				return QApplication::HtmlEntities($objPerson->Name);
-			else
-				return '<em style="font-size: 11px; color: #666;">None of the above... create as new person</em>';
+			if ($objPerson->Id) return QApplication::HtmlEntities($objPerson->FullName);
 		}
 
 		public function RenderSelect(Person $objPerson) {
-			if ($objPerson->Id &&
-				($objPerson->Id == $this->intSelectedPersonId)) {
-				return '<img src="/assets/images/icons/flag_green.png"/>';
-			} else if (!$objPerson->Id &&
-				  ($this->intSelectedPersonId == -1)) {
-				return '<img src="/assets/images/icons/flag_green.png"/>';
-			} else {
-				return sprintf('<img src="/assets/images/icons/flag_white.png" style="cursor: pointer;" %s/>',
-					$this->pxySelect->RenderAsEvents($objPerson->Id, false));
-			}
+			$radSelectPerson = new QRadioButton($this->dtgResults);
+			$radSelectPerson->GroupName = 'selectPerson';
+			$radSelectPerson->ActionParameter = $objPerson->Id;
+			$radSelectPerson->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'radSelectPerson_Click'));
+
+			return $radSelectPerson->Render(false);
 		}
 
 		/////////////////////////
