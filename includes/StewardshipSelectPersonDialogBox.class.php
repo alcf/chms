@@ -6,8 +6,7 @@
 		protected $objMethodCallback;
 		protected $strMethodCallback;
 
-		public $txtFirstName;
-		public $txtLastName;
+		public $txtName;
 		public $txtAddress;
 		public $txtCity;
 		public $txtPhone;
@@ -60,17 +59,11 @@
 				$this->dtgPeople->SortColumnIndex = 0;
 				$this->dtgPeople->ItemsPerPage = 20;
 
-				$this->txtFirstName = new QTextBox($this);
-				$this->txtFirstName->Name = 'First Name';
-				$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
-				$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
-				$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-
-				$this->txtLastName = new QTextBox($this);
-				$this->txtLastName->Name = 'Last Name';
-				$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
-				$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
-				$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+				$this->txtName = new QTextBox($this);
+				$this->txtName->Name = 'Name';
+				$this->txtName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
+				$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
+				$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 				$this->txtPhone = new QTextBox($this);
 				$this->txtPhone->Name = 'Phone';
@@ -155,15 +148,14 @@
 			$this->objSelectedPerson = $this->objContribution->Person;
 			$this->pnlPerson_Refresh();
 
-			$this->txtFirstName->Text = null;
-			$this->txtLastName->Text = null;
+			$this->txtName->Text = null;
 			$this->txtPhone->Text = null;
 			$this->txtAddress->Text = null;
 			$this->txtCity->Text = null;
 			$this->dtgPeople_Refresh(null, null, null);
 
 			parent::ShowDialogBox();
-			$this->txtFirstName->Focus();
+			$this->txtName->Focus();
 		}
 
 		protected $blnExplicitSelectionFlag;
@@ -258,20 +250,12 @@
 
 		public function dtgPeople_Bind() {
 			$objConditions = QQ::All();
+			$objClauses = array();
 			$blnSearch = false;
 
-			if ($strName = trim($this->txtFirstName->Text)) {
+			if ($strName = trim($this->txtName->Text)) {
 				$blnSearch = true;
-				$objConditions = QQ::AndCondition($objConditions,
-					QQ::Like( QQN::Person()->FirstName, $strName . '%')
-				);
-			}
-
-			if ($strName = trim($this->txtLastName->Text)) {
-				$blnSearch = true;
-				$objConditions = QQ::AndCondition($objConditions,
-					QQ::Like( QQN::Person()->LastName, $strName . '%')
-				);
+				Person::PrepareQqForSearch($strName, $objConditions, $objClauses);
 			}
 
 			if ($strName = trim($this->txtCity->Text)) {
@@ -306,7 +290,7 @@
 				$this->dtgPeople->NoDataHtml = 'No results found.  Please re-specify a search criteria above.';
 			}
 
-			$this->dtgPeople->MetaDataBinder($objConditions);
+			$this->dtgPeople->MetaDataBinder($objConditions, $objClauses);
 
 			// Automagically "Select" the First Person if applicable
 			if (!$this->blnExplicitSelectionFlag && $this->dtgPeople->DataSource && (count($this->dtgPeople->DataSource) > 0)) {
