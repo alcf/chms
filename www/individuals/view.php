@@ -103,7 +103,7 @@
 		}
 
 		protected function lblHeading_Refresh() {
-			$this->lblHeading->Text = $this->objPerson->Name;
+			$this->lblHeading->Text = $this->objPerson->NameWithNickname;
 			if ($this->objHousehold)
 				$this->lblSubheading->Text = sprintf(' &nbsp;/&nbsp; <a href="/households/view.php/%s">%s</a>',
 					$this->objHousehold->Id, QApplication::HtmlEntities($this->objHousehold->Name));
