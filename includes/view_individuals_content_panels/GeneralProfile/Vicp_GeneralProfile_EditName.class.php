@@ -74,12 +74,12 @@
 			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblMailingLabel_Refresh'));
 			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblMailingLabel_Refresh'));
 			$this->txtNickname->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lblMailingLabel_Refresh'));
-			
+
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
-			$this->lstGender->AddItem('- Select One -', null);
-			$this->lstGender->AddItem('Male', 'M', $this->objPerson->Gender == 'M');
+			if (!$this->objPerson->Gender) $this->lstGender->AddItem('- Select One -', null);
 			$this->lstGender->AddItem('Female', 'F', $this->objPerson->Gender == 'F');
+			$this->lstGender->AddItem('Male', 'M', $this->objPerson->Gender == 'M');
 
 			$this->dtxDateOfBirth = new QDateTimeTextBox($this);
 			$this->dtxDateOfBirth->Name = "Date of Birth";
@@ -146,6 +146,7 @@
 			}
 
 			$this->objPerson->Save();
+			$this->objPerson->RefreshNameItemAssociations();
 			QApplication::ExecuteJavaScript('document.location = "#general";');
 		}
 

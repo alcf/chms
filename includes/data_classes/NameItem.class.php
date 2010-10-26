@@ -37,15 +37,17 @@
 		/**
 		 * Given a string of name items, this returns an array with those items normalized
 		 * @param string $strNameString
+		 * @param boolean $blnForSearchingFlag if set to true, this will allow single-character NameItems
 		 * @return string[]
 		 */
-		public static function GetNormalizedArrayFromNameString($strNameString) {
+		public static function GetNormalizedArrayFromNameString($strNameString, $blnForSearchingFlag = false) {
 			$strNameString = str_replace('-', ' ', $strNameString);
 			$strFinalArray = array();
 
+			$intMinLength = ($blnForSearchingFlag ? 1 : 2);
 			foreach (explode(' ', $strNameString) as $strNameItem) {
 				$strNameItem = self::NormalizeNameItem($strNameItem);
-				if (mb_strlen($strNameItem) >= 2) $strFinalArray[] = $strNameItem;
+				if (mb_strlen($strNameItem) >= $intMinLength) $strFinalArray[] = $strNameItem;
 			}
 
 			return $strFinalArray;
@@ -89,6 +91,7 @@
 		 * @return void
 		 */
 		public static function AssociateNameItemArrayForPerson($strNameArray, Person $objPerson) {
+			$intDoneArray = array();
 			foreach ($strNameArray as $strName) {
 				$objNameItem = NameItem::LoadByName($strName);
 				if (!$objNameItem) {
@@ -97,7 +100,10 @@
 					$objNameItem->Save();
 				}
 				
-				$objPerson->AssociateNameItem($objNameItem);
+				if (!array_key_exists($objNameItem->Id, $intDoneArray)) {
+					$objPerson->AssociateNameItem($objNameItem);
+					$intDoneArray[$objNameItem->Id] = $objNameItem->Id;
+				}
 			}
 		}
 

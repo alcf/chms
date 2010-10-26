@@ -566,7 +566,7 @@
 		 * @return Person[]
 		 */
 		public static function LoadArrayBySearch($strName) {
-			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strName);
+			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strName, true);
 
 			// First, get the applicable NameItem
 			$intNameItemIdArrayArray = array();
