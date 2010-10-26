@@ -73,6 +73,11 @@
 			$this->lstAddressType_Change();
 		}
 
+		public function Validate() {
+			$this->dlgMessage->HideDialogBox();
+			return parent::Validate();
+		}
+
 		public function dlgMessage_Reset() {
 			$this->dlgMessage->RemoveAllButtons(false);
 			$this->dlgMessage->HorizontalAlign = QHorizontalAlign::Center;
@@ -137,6 +142,7 @@
 				if (!$this->mctAddress->Address->ValidateUsps()) {
 					$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">This address is considered invalid with the USPS.</p><p style="font-size: 13px; color: #999;">Please make corrections or select <strong>"this is an INVALID address"</strong>.</p>';
 					$this->dlgMessage->AddButton('Okay', MessageDialog::ButtonPrimary, 'dlgMessage_Reset', $this);
+					$this->dlgMessage->ShowDialogBox();
 					return;
 				}
 			} else {
@@ -144,7 +150,6 @@
 				$this->mctAddress->Address->Save();
 			}
 
-			$this->dlgMessage->HideDialogBox();
 			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
 

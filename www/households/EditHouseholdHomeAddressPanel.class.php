@@ -19,12 +19,17 @@
 			$this->btnSave = new QButton($this);
 			$this->btnSave->CssClass = 'primary';
 			$this->btnSave->Text = 'Save';
+			$this->btnSave->CausesValidation = true;
 
 			$this->btnCancel = new QLinkButton($this);
 			$this->btnCancel->CssClass = 'cancel';
 			$this->btnCancel->Text = 'Cancel';
 			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+
+		public function Validate() {
+			return $this->objDelegate->Validate(parent::Validate());
 		}
 
 		/**
