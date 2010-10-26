@@ -6,8 +6,7 @@
 		protected $strPageTitle = 'Search Individuals';
 		protected $intNavSectionId = ChmsForm::NavSectionPeople;
 
-		protected $txtFirstName;
-		protected $txtLastName;
+		protected $txtName;
 		protected $lstGender;
 		protected $lstMemberStatus;
 		protected $txtEmail;
@@ -30,18 +29,12 @@
 			
 			$this->dtgPeople->SortColumnIndex = 1;
 			$this->dtgPeople->ItemsPerPage = 20;
-			
-			$this->txtFirstName = new QTextBox($this);
-			$this->txtFirstName->Name = 'First Name';
-			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
-			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
-			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
-			$this->txtLastName = new QTextBox($this);
-			$this->txtLastName->Name = 'Last Name';
-			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
-			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
-			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtName = new QTextBox($this);
+			$this->txtName->Name = 'Person\'s Name';
+			$this->txtName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
@@ -94,19 +87,12 @@
 
 		public function dtgPeople_Bind() {
 			$objConditions = QQ::All();
+			$objClauses = array();
 
-			if ($strName = trim($this->txtFirstName->Text)) {
-				$objConditions = QQ::AndCondition($objConditions,
-					QQ::Like( QQN::Person()->FirstName, $strName . '%')
-				);
+			if ($strName = trim($this->txtName->Text)) {
+				Person::PrepareQqForSearch($strName, $objConditions, $objClauses);
 			}
-						
-			if ($strName = trim($this->txtLastName->Text)) {
-				$objConditions = QQ::AndCondition($objConditions,
-					QQ::Like( QQN::Person()->LastName, $strName . '%')
-				);
-			}
-						
+
 			if ($strName = trim($this->txtCity->Text)) {
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Like( QQN::Person()->PrimaryCityText, $strName . '%')
@@ -137,7 +123,7 @@
 				);
 			}
 
-			$this->dtgPeople->MetaDataBinder($objConditions);
+			$this->dtgPeople->MetaDataBinder($objConditions, $objClauses);
 		}
 	}
 

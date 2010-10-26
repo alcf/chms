@@ -553,19 +553,23 @@
 		
 		
 		
-		
+		public static function LoadArrayBySearch($strName) {
+			$objCondition = QQ::All();
+			$objClauses = array();
+			self::PrepareQqForSearch($strName, $objCondition, $objClauses);
+			return Person::QueryArray($objCondition, $objClauses);
+		}
+
 		/**
 		 * Given a search term, this will try and match all similarly matched individuals.
 		 * This will utilize soundex and other indexing methodologies.
 		 * 
-		 * THIS IS TODO and the algorithm needs to be tuned.
-		 * 
-		 * @param string $strFirstName
-		 * @param string $strLastName
-		 * @param string $strGender
-		 * @return Person[]
+		 * @param string $strName
+		 * @param QQCondition $objCondition
+		 * @param QQClause[] $objClauses
+		 * @return void
 		 */
-		public static function LoadArrayBySearch($strName) {
+		public static function PrepareQqForSearch($strName, QQCondition &$objCondition, &$objClauses) {
 			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strName, true);
 
 			// First, get the applicable NameItem
@@ -584,22 +588,29 @@
 			}
 
 			// Build the search array from Person
-			$strFromClause = 'person';
-			$strClauseArray = array();
-
 			$intIndex = 0;
+
 			foreach ($intNameItemIdArrayArray as $intNameItemIdArray) {
 				$intIndex++;
-				$strFromClause .= ', person_nameitem_assn AS assn_' . $intIndex;
+				$strAlias = 'assn_' . $intIndex;
+
+				if ($intIndex == 2) $objClauses[] = QQ::Distinct();
+
+				$objClauses[] = QQ::CustomFrom('person_nameitem_assn', $strAlias);
 				if (count($intNameItemIdArray) == 1) {
-					$strClauseArray[] = sprintf("assn_%s.person_id = person.id AND assn_%s.name_item_id = %s", $intIndex, $intIndex, $intNameItemIdArray[0]);
+					$objCondition = QQ::AndCondition(
+						$objCondition,
+						QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), QQN::Person()->Id),
+						QQ::Equal(QQ::CustomNode($strAlias . '.name_item_id'), $intNameItemIdArray[0])
+					);
 				} else {
-					$strClauseArray[] = sprintf("assn_%s.person_id = person.id AND assn_%s.name_item_id IN (%s)", $intIndex, $intIndex, implode(', ', $intNameItemIdArray));
+					$objCondition = QQ::AndCondition(
+						$objCondition,
+						QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), QQN::Person()->Id),
+						QQ::In(QQ::CustomNode($strAlias . '.name_item_id'), $intNameItemIdArray)
+					);
 				}
 			}
-
-			$strQuery = sprintf("SELECT person.* FROM %s WHERE %s ORDER BY last_name, first_name;", $strFromClause, implode(' AND ', $strClauseArray));
-			return Person::InstantiateDbResult(Person::GetDatabase()->Query($strQuery));
 		}
 
 		/**
