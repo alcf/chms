@@ -18,6 +18,7 @@
 
 <div class="section">
 <?php $_CONTROL->lstGender->RenderWithName(); ?>
+
 <?php $_CONTROL->lstDateOfBirth->RenderWithName(); ?>
 <?php
 	$_CONTROL->dtxDateOfBirth->HtmlAfter = '&nbsp;' . $_CONTROL->calDateOfBirth->Render(false);
@@ -27,8 +28,6 @@
 	$_CONTROL->lstMonth->RenderWithName();
 ?>
 <?php $_CONTROL->txtAge->RenderWithName(); ?>
-
-
 
 <?php $_CONTROL->chkDeceased->RenderWithName(); ?>
 <?php

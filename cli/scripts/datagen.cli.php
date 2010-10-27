@@ -630,6 +630,11 @@
 				$objPerson->DateOfBirth = QDataGen::GenerateDateTime(self::$OldestChildBirthDate, QDateTime::Now());
 			}
 
+			if ($objPerson->DateOfBirth) {	
+				$objPerson->DobGuessedFlag = !rand(0, 12);
+				$objPerson->DobYearApproximateFlag = !rand(0, 12);
+			}
+
 			// Refresh Membership and Marital Statuses
 			$objPerson->RefreshMembershipStatusTypeId(false);
 			$objPerson->RefreshMaritalStatusTypeId(false);
