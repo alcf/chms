@@ -155,9 +155,10 @@ INSERT INTO phone_type VALUES(5, 'Other');
 
 INSERT INTO query_data_type VALUES(1, 'String Value');
 INSERT INTO query_data_type VALUES(2, 'Integer Value');
-INSERT INTO query_data_type VALUES(3, 'Date Value');
-INSERT INTO query_data_type VALUES(4, 'Type Value');
-INSERT INTO query_data_type VALUES(5, 'Custom Value');
+INSERT INTO query_data_type VALUES(4, 'Date Value');
+INSERT INTO query_data_type VALUES(8, 'Type Value');
+INSERT INTO query_data_type VALUES(16, 'Custom Value');
+INSERT INTO query_data_type VALUES(32, 'Custom Value');
 
 INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
