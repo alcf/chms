@@ -9,6 +9,8 @@
 		<div class="cleaner"></div>
 	</div>
 	<div class="batchInfoRight">
+		<div class="batchLabel">Item Count</div><div class="batchValue"><?php _p($this->objBatch->ItemCount); ?></div>
+		<div class="cleaner"></div>
 		<div class="batchLabel">Actual</div><div class="batchValue"><?php _p(QApplication::DisplayCurrency($this->objBatch->ActualTotalAmount)); ?></div>
 		<div class="cleaner"></div>
 <?php if ($this->objBatch->ReportedTotalAmount) { ?>
