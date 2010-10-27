@@ -107,8 +107,8 @@ INSERT INTO email_message_status_type VALUES(6, 'Error');
 
 INSERT INTO group_type VALUES (1, 'Regular Group');
 INSERT INTO group_type VALUES (2, 'Group Category');
-INSERT INTO group_type VALUES (3, 'Smart Group');
-INSERT INTO group_type VALUES (4, 'Growth Group');
+INSERT INTO group_type VALUES (4, 'Smart Group');
+INSERT INTO group_type VALUES (8, 'Growth Group');
 
 INSERT INTO group_role_type VALUES (1, 'Volunteer');
 INSERT INTO group_role_type VALUES (2, 'Participant');
@@ -157,8 +157,11 @@ INSERT INTO query_data_type VALUES(1, 'String Value');
 INSERT INTO query_data_type VALUES(2, 'Integer Value');
 INSERT INTO query_data_type VALUES(4, 'Date Value');
 INSERT INTO query_data_type VALUES(8, 'Type Value');
-INSERT INTO query_data_type VALUES(16, 'Custom Value');
+INSERT INTO query_data_type VALUES(16, 'Boolean Value');
 INSERT INTO query_data_type VALUES(32, 'Custom Value');
+
+INSERT INTO query_node_type VALUES(1, 'Standard Node');
+INSERT INTO query_node_type VALUES(2, 'Custom Node');
 
 INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
@@ -211,28 +214,30 @@ INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
-INSERT INTO query_operation VALUES (null, 'Is Equal To', 'Equal', true, null, null);
-INSERT INTO query_operation VALUES (null, 'Is Not Equal To', 'NotEqual', true, null, null);
-INSERT INTO query_operation VALUES (null, 'Exists', 'IsNotNull', false, null, null);
-INSERT INTO query_operation VALUES (null, 'Does Not Exist', 'IsNull', false, null, null);
-INSERT INTO query_operation VALUES (null, 'Contains', 'Like', true, '%', '%');
-INSERT INTO query_operation VALUES (null, 'Does Not Contain', 'NotLike', true, '%', '%');
-INSERT INTO query_operation VALUES (null, 'Starts With', 'Like', true, null, '%');
-INSERT INTO query_operation VALUES (null, 'Does Not Start With', 'NotLike', true, null, '%');
-INSERT INTO query_operation VALUES (null, 'Ends With', 'Like', true, '%', null);
-INSERT INTO query_operation VALUES (null, 'Does Not End With', 'NotLike', true, '%', null);
-INSERT INTO query_operation VALUES (null, 'Is Greater Than', 'GreaterThan', true, null, null);
-INSERT INTO query_operation VALUES (null, 'Is Greater or Equal To', 'GreaterOrEqual', true, null, null);
-INSERT INTO query_operation VALUES (null, 'Is Less Than', 'LessThan', true, null, null);
-INSERT INTO query_operation VALUES (null, 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Equal To', 'Equal', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Not Equal To', 'NotEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Exists', 'IsNotNull', false, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Exist', 'IsNull', false, null, null);
+INSERT INTO query_operation VALUES (null,         16   , 'Is True',  'Equal', false, '1', null);
+INSERT INTO query_operation VALUES (null,         16   , 'Is False', 'Equal', false, '0', null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Contains', 'Like', true, '%', '%');
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Contain', 'NotLike', true, '%', '%');
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Starts With', 'Like', true, null, '%');
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Start With', 'NotLike', true, null, '%');
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Ends With', 'Like', true, '%', null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not End With', 'NotLike', true, '%', null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Greater Than', 'GreaterThan', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Greater or Equal To', 'GreaterOrEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Less Than', 'LessThan', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
 
-INSERT INTO query_node VALUES (null, 'Gender', 'Gender', 5, 'M,F', null);
-INSERT INTO query_node VALUES (null, 'Home City', 'HouseholdParticipation->Household->Address->City', 1, null, null);
-INSERT INTO query_node VALUES (null, 'Membership Status', 'MembershipStatusTypeId', 4, 'MembershipStatusType', null);
-INSERT INTO query_node VALUES (null, 'Can Email Flag', 'CanEmailFlag', 5, '1,0', null);
-INSERT INTO query_node VALUES (null, 'Date of Birth', 'DateOfBirth', 3, null, null);
-INSERT INTO query_node VALUES (null, 'Date Baptized', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId Equal 11');
-INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 'AttributeValue->DateValue', 3, null, 'AttributeValue->AttributeId Equal 12');
+INSERT INTO query_node VALUES (null, 'Gender',               1, 'Gender',                                           32, 'M,F');
+INSERT INTO query_node VALUES (null, 'Home City',            1, 'HouseholdParticipation->Household->Address->City', 1,  null);
+INSERT INTO query_node VALUES (null, 'Membership Status',    1, 'MembershipStatusTypeId',                           8, 'MembershipStatusType');
+INSERT INTO query_node VALUES (null, 'Can Email Flag',       1, 'CanEmailFlag',                                     16,  null);
+INSERT INTO query_node VALUES (null, 'Date of Birth',        1, 'DateOfBirth',                                      4,  null);
+INSERT INTO query_node VALUES (null, 'Date Baptized',        2, null,                                               4, '11');
+INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 2, null,                                               4, '12');
 
 INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, true);
 INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, true);
