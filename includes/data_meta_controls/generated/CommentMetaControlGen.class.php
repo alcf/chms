@@ -30,6 +30,8 @@
 	 * property-read QLabel $CommentLabel
 	 * property QDateTimePicker $DatePostedControl
 	 * property-read QLabel $DatePostedLabel
+	 * property QDateTimePicker $DateActionControl
+	 * property-read QLabel $DateActionLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -103,6 +105,12 @@
          */
 		protected $calDatePosted;
 
+        /**
+         * @var QDateTimePicker calDateAction;
+         * @access protected
+         */
+		protected $calDateAction;
+
 
 		// Controls that allow the viewing of Comment's individual data fields
         /**
@@ -140,6 +148,12 @@
          * @access protected
          */
 		protected $lblDatePosted;
+
+        /**
+         * @var QLabel lblDateAction
+         * @access protected
+         */
+		protected $lblDateAction;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -466,6 +480,35 @@
 
 		protected $strDatePostedDateTimeFormat;
 
+		/**
+		 * Create and setup QDateTimePicker calDateAction
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateAction_Create($strControlId = null) {
+			$this->calDateAction = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateAction->Name = QApplication::Translate('Date Action');
+			$this->calDateAction->DateTime = $this->objComment->DateAction;
+			$this->calDateAction->DateTimePickerType = QDateTimePickerType::Date;
+			return $this->calDateAction;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateAction
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateAction_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateAction = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateAction->Name = QApplication::Translate('Date Action');
+			$this->strDateActionDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateAction->Text = sprintf($this->objComment->DateAction) ? $this->objComment->DateAction->__toString($this->strDateActionDateTimeFormat) : null;
+			return $this->lblDateAction;
+		}
+
+		protected $strDateActionDateTimeFormat;
+
 
 
 		/**
@@ -530,6 +573,9 @@
 			if ($this->calDatePosted) $this->calDatePosted->DateTime = $this->objComment->DatePosted;
 			if ($this->lblDatePosted) $this->lblDatePosted->Text = sprintf($this->objComment->DatePosted) ? $this->objComment->__toString($this->strDatePostedDateTimeFormat) : null;
 
+			if ($this->calDateAction) $this->calDateAction->DateTime = $this->objComment->DateAction;
+			if ($this->lblDateAction) $this->lblDateAction->Text = sprintf($this->objComment->DateAction) ? $this->objComment->__toString($this->strDateActionDateTimeFormat) : null;
+
 		}
 
 
@@ -559,6 +605,7 @@
 				if ($this->lstCommentCategory) $this->objComment->CommentCategoryId = $this->lstCommentCategory->SelectedValue;
 				if ($this->txtComment) $this->objComment->Comment = $this->txtComment->Text;
 				if ($this->calDatePosted) $this->objComment->DatePosted = $this->calDatePosted->DateTime;
+				if ($this->calDateAction) $this->objComment->DateAction = $this->calDateAction->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -643,6 +690,12 @@
 				case 'DatePostedLabel':
 					if (!$this->lblDatePosted) return $this->lblDatePosted_Create();
 					return $this->lblDatePosted;
+				case 'DateActionControl':
+					if (!$this->calDateAction) return $this->calDateAction_Create();
+					return $this->calDateAction;
+				case 'DateActionLabel':
+					if (!$this->lblDateAction) return $this->lblDateAction_Create();
+					return $this->lblDateAction;
 				default:
 					try {
 						return parent::__get($strName);
@@ -679,6 +732,8 @@
 						return ($this->txtComment = QType::Cast($mixValue, 'QControl'));
 					case 'DatePostedControl':
 						return ($this->calDatePosted = QType::Cast($mixValue, 'QControl'));
+					case 'DateActionControl':
+						return ($this->calDateAction = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

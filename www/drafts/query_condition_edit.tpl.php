@@ -19,11 +19,15 @@
 
 		<?php $this->lstSearchQuery->RenderWithName(); ?>
 
+		<?php $this->lstOrQueryCondition->RenderWithName(); ?>
+
 		<?php $this->lstQueryOperation->RenderWithName(); ?>
 
 		<?php $this->lstQueryNode->RenderWithName(); ?>
 
 		<?php $this->txtValue->RenderWithName(); ?>
+
+		<?php $this->lstQueryConditionAsOr->RenderWithName(); ?>
 
 	</div>
 

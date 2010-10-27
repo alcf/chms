@@ -19,6 +19,7 @@
 	 * @property string $Token the value for strToken (Unique)
 	 * @property string $Name the value for strName 
 	 * @property integer $ParentMinistryId the value for intParentMinistryId 
+	 * @property integer $GroupTypeBitmap the value for intGroupTypeBitmap 
 	 * @property boolean $ActiveFlag the value for blnActiveFlag (Not Null)
 	 * @property Ministry $ParentMinistry the value for the Ministry object referenced by intParentMinistryId 
 	 * @property Login $_Login the value for the private _objLogin (Read-Only) if set due to an expansion on the ministry_login_assn association table
@@ -73,6 +74,14 @@
 		 */
 		protected $intParentMinistryId;
 		const ParentMinistryIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column ministry.group_type_bitmap
+		 * @var integer intGroupTypeBitmap
+		 */
+		protected $intGroupTypeBitmap;
+		const GroupTypeBitmapDefault = null;
 
 
 		/**
@@ -525,6 +534,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'parent_ministry_id', $strAliasPrefix . 'parent_ministry_id');
+			$objBuilder->AddSelectItem($strTableName, 'group_type_bitmap', $strAliasPrefix . 'group_type_bitmap');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
 		}
 
@@ -667,6 +677,8 @@
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'parent_ministry_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_ministry_id'] : $strAliasPrefix . 'parent_ministry_id';
 			$objToReturn->intParentMinistryId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'group_type_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_type_bitmap'] : $strAliasPrefix . 'group_type_bitmap';
+			$objToReturn->intGroupTypeBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
@@ -974,11 +986,13 @@
 							`token`,
 							`name`,
 							`parent_ministry_id`,
+							`group_type_bitmap`,
 							`active_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strToken) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
+							' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						)
 					');
@@ -1002,6 +1016,7 @@
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`parent_ministry_id` = ' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
+							`group_type_bitmap` = ' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -1090,6 +1105,7 @@
 			$this->strToken = $objReloaded->strToken;
 			$this->strName = $objReloaded->strName;
 			$this->ParentMinistryId = $objReloaded->ParentMinistryId;
+			$this->intGroupTypeBitmap = $objReloaded->intGroupTypeBitmap;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
 
@@ -1107,6 +1123,7 @@
 					`token`,
 					`name`,
 					`parent_ministry_id`,
+					`group_type_bitmap`,
 					`active_flag`,
 					__sys_login_id,
 					__sys_action,
@@ -1116,6 +1133,7 @@
 					' . $objDatabase->SqlVariable($this->strToken) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
+					' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1186,6 +1204,11 @@
 					// Gets the value for intParentMinistryId 
 					// @return integer
 					return $this->intParentMinistryId;
+
+				case 'GroupTypeBitmap':
+					// Gets the value for intGroupTypeBitmap 
+					// @return integer
+					return $this->intGroupTypeBitmap;
 
 				case 'ActiveFlag':
 					// Gets the value for blnActiveFlag (Not Null)
@@ -1342,6 +1365,17 @@
 					try {
 						$this->objParentMinistry = null;
 						return ($this->intParentMinistryId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'GroupTypeBitmap':
+					// Sets the value for intGroupTypeBitmap 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intGroupTypeBitmap = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2526,6 +2560,7 @@
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="ParentMinistry" type="xsd1:Ministry"/>';
+			$strToReturn .= '<element name="GroupTypeBitmap" type="xsd:int"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2559,6 +2594,8 @@
 			if ((property_exists($objSoapObject, 'ParentMinistry')) &&
 				($objSoapObject->ParentMinistry))
 				$objToReturn->ParentMinistry = Ministry::GetObjectFromSoapObject($objSoapObject->ParentMinistry);
+			if (property_exists($objSoapObject, 'GroupTypeBitmap'))
+				$objToReturn->intGroupTypeBitmap = $objSoapObject->GroupTypeBitmap;
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2635,6 +2672,7 @@
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $ParentMinistryId
 	 * @property-read QQNodeMinistry $ParentMinistry
+	 * @property-read QQNode $GroupTypeBitmap
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNodeMinistryLogin $Login
 	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
@@ -2659,6 +2697,8 @@
 					return new QQNode('parent_ministry_id', 'ParentMinistryId', 'integer', $this);
 				case 'ParentMinistry':
 					return new QQNodeMinistry('parent_ministry_id', 'ParentMinistry', 'integer', $this);
+				case 'GroupTypeBitmap':
+					return new QQNode('group_type_bitmap', 'GroupTypeBitmap', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'Login':
@@ -2693,6 +2733,7 @@
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $ParentMinistryId
 	 * @property-read QQNodeMinistry $ParentMinistry
+	 * @property-read QQNode $GroupTypeBitmap
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNodeMinistryLogin $Login
 	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
@@ -2718,6 +2759,8 @@
 					return new QQNode('parent_ministry_id', 'ParentMinistryId', 'integer', $this);
 				case 'ParentMinistry':
 					return new QQNodeMinistry('parent_ministry_id', 'ParentMinistry', 'integer', $this);
+				case 'GroupTypeBitmap':
+					return new QQNode('group_type_bitmap', 'GroupTypeBitmap', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'Login':

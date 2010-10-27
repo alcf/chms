@@ -27,6 +27,7 @@
 		public $lstCommentCategory;
 		public $txtComment;
 		public $calDatePosted;
+		public $calDateAction;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -63,6 +64,7 @@
 			$this->lstCommentCategory = $this->mctComment->lstCommentCategory_Create();
 			$this->txtComment = $this->mctComment->txtComment_Create();
 			$this->calDatePosted = $this->mctComment->calDatePosted_Create();
+			$this->calDateAction = $this->mctComment->calDateAction_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

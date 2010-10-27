@@ -21,6 +21,7 @@
 
 		// Controls for QueryOperation's Data Fields
 		public $lblId;
+		public $txtQueryDataTypeBitmap;
 		public $txtName;
 		public $txtQqFactoryName;
 		public $chkArgumentFlag;
@@ -56,6 +57,7 @@
 
 			// Call MetaControl's methods to create qcontrols based on QueryOperation's data fields
 			$this->lblId = $this->mctQueryOperation->lblId_Create();
+			$this->txtQueryDataTypeBitmap = $this->mctQueryOperation->txtQueryDataTypeBitmap_Create();
 			$this->txtName = $this->mctQueryOperation->txtName_Create();
 			$this->txtQqFactoryName = $this->mctQueryOperation->txtQqFactoryName_Create();
 			$this->chkArgumentFlag = $this->mctQueryOperation->chkArgumentFlag_Create();

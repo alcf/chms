@@ -306,7 +306,9 @@
 				case 'Suffix': return QQN::Person()->Suffix;
 				case 'Gender': return QQN::Person()->Gender;
 				case 'DateOfBirth': return QQN::Person()->DateOfBirth;
-				case 'DobApproximateFlag': return QQN::Person()->DobApproximateFlag;
+				case 'DobYearApproximateFlag': return QQN::Person()->DobYearApproximateFlag;
+				case 'DobGuessedFlag': return QQN::Person()->DobGuessedFlag;
+				case 'Age': return QQN::Person()->Age;
 				case 'DeceasedFlag': return QQN::Person()->DeceasedFlag;
 				case 'DateDeceased': return QQN::Person()->DateDeceased;
 				case 'CurrentHeadShotId': return QQN::Person()->CurrentHeadShotId;

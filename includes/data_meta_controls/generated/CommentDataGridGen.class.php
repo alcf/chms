@@ -303,6 +303,7 @@
 				case 'CommentCategory': return QQN::Comment()->CommentCategory;
 				case 'Comment': return QQN::Comment()->Comment;
 				case 'DatePosted': return QQN::Comment()->DatePosted;
+				case 'DateAction': return QQN::Comment()->DateAction;
 				default: throw new QCallerException('Simple Property not found in CommentDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

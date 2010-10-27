@@ -17,6 +17,8 @@
 	<div id="formControls">
 		<?php $this->lblId->RenderWithName(); ?>
 
+		<?php $this->txtQueryDataTypeBitmap->RenderWithName(); ?>
+
 		<?php $this->txtName->RenderWithName(); ?>
 
 		<?php $this->txtQqFactoryName->RenderWithName(); ?>

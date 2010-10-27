@@ -296,11 +296,15 @@
 				case 'Id': return QQN::QueryCondition()->Id;
 				case 'SearchQueryId': return QQN::QueryCondition()->SearchQueryId;
 				case 'SearchQuery': return QQN::QueryCondition()->SearchQuery;
+				case 'OrQueryConditionId': return QQN::QueryCondition()->OrQueryConditionId;
+				case 'OrQueryCondition': return QQN::QueryCondition()->OrQueryCondition;
 				case 'QueryOperationId': return QQN::QueryCondition()->QueryOperationId;
 				case 'QueryOperation': return QQN::QueryCondition()->QueryOperation;
 				case 'QueryNodeId': return QQN::QueryCondition()->QueryNodeId;
 				case 'QueryNode': return QQN::QueryCondition()->QueryNode;
 				case 'Value': return QQN::QueryCondition()->Value;
+				case 'QueryConditionAsOr': return QQN::QueryCondition()->QueryConditionAsOr;
+
 				default: throw new QCallerException('Simple Property not found in QueryConditionDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

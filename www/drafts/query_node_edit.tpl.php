@@ -19,13 +19,13 @@
 
 		<?php $this->txtName->RenderWithName(); ?>
 
+		<?php $this->lstQueryNodeType->RenderWithName(); ?>
+
 		<?php $this->txtQcodoQueryNode->RenderWithName(); ?>
 
 		<?php $this->lstQueryDataType->RenderWithName(); ?>
 
-		<?php $this->txtTypeDetail->RenderWithName(); ?>
-
-		<?php $this->txtQcodoQueryCondition->RenderWithName(); ?>
+		<?php $this->txtNodeDetail->RenderWithName(); ?>
 
 	</div>
 

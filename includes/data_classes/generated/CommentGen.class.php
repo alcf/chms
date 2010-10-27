@@ -22,6 +22,7 @@
 	 * @property integer $CommentCategoryId the value for intCommentCategoryId (Not Null)
 	 * @property string $Comment the value for strComment 
 	 * @property QDateTime $DatePosted the value for dttDatePosted (Not Null)
+	 * @property QDateTime $DateAction the value for dttDateAction 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Login $PostedByLogin the value for the Login object referenced by intPostedByLoginId (Not Null)
 	 * @property CommentCategory $CommentCategory the value for the CommentCategory object referenced by intCommentCategoryId (Not Null)
@@ -87,6 +88,14 @@
 		 */
 		protected $dttDatePosted;
 		const DatePostedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column comment.date_action
+		 * @var QDateTime dttDateAction
+		 */
+		protected $dttDateAction;
+		const DateActionDefault = null;
 
 
 		/**
@@ -458,6 +467,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'comment_category_id', $strAliasPrefix . 'comment_category_id');
 			$objBuilder->AddSelectItem($strTableName, 'comment', $strAliasPrefix . 'comment');
 			$objBuilder->AddSelectItem($strTableName, 'date_posted', $strAliasPrefix . 'date_posted');
+			$objBuilder->AddSelectItem($strTableName, 'date_action', $strAliasPrefix . 'date_action');
 		}
 
 
@@ -503,6 +513,8 @@
 			$objToReturn->strComment = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_posted', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_posted'] : $strAliasPrefix . 'date_posted';
 			$objToReturn->dttDatePosted = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_action', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_action'] : $strAliasPrefix . 'date_action';
+			$objToReturn->dttDateAction = $objDbRow->GetColumn($strAliasName, 'Date');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -783,14 +795,16 @@
 							`comment_privacy_type_id`,
 							`comment_category_id`,
 							`comment`,
-							`date_posted`
+							`date_posted`,
+							`date_action`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intPostedByLoginId) . ',
 							' . $objDatabase->SqlVariable($this->intCommentPrivacyTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intCommentCategoryId) . ',
 							' . $objDatabase->SqlVariable($this->strComment) . ',
-							' . $objDatabase->SqlVariable($this->dttDatePosted) . '
+							' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+							' . $objDatabase->SqlVariable($this->dttDateAction) . '
 						)
 					');
 
@@ -815,7 +829,8 @@
 							`comment_privacy_type_id` = ' . $objDatabase->SqlVariable($this->intCommentPrivacyTypeId) . ',
 							`comment_category_id` = ' . $objDatabase->SqlVariable($this->intCommentCategoryId) . ',
 							`comment` = ' . $objDatabase->SqlVariable($this->strComment) . ',
-							`date_posted` = ' . $objDatabase->SqlVariable($this->dttDatePosted) . '
+							`date_posted` = ' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+							`date_action` = ' . $objDatabase->SqlVariable($this->dttDateAction) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -906,6 +921,7 @@
 			$this->CommentCategoryId = $objReloaded->CommentCategoryId;
 			$this->strComment = $objReloaded->strComment;
 			$this->dttDatePosted = $objReloaded->dttDatePosted;
+			$this->dttDateAction = $objReloaded->dttDateAction;
 		}
 
 		/**
@@ -925,6 +941,7 @@
 					`comment_category_id`,
 					`comment`,
 					`date_posted`,
+					`date_action`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -936,6 +953,7 @@
 					' . $objDatabase->SqlVariable($this->intCommentCategoryId) . ',
 					' . $objDatabase->SqlVariable($this->strComment) . ',
 					' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+					' . $objDatabase->SqlVariable($this->dttDateAction) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1020,6 +1038,11 @@
 					// Gets the value for dttDatePosted (Not Null)
 					// @return QDateTime
 					return $this->dttDatePosted;
+
+				case 'DateAction':
+					// Gets the value for dttDateAction 
+					// @return QDateTime
+					return $this->dttDateAction;
 
 
 				///////////////////
@@ -1163,6 +1186,17 @@
 						throw $objExc;
 					}
 
+				case 'DateAction':
+					// Sets the value for dttDateAction 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateAction = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1301,6 +1335,7 @@
 			$strToReturn .= '<element name="CommentCategory" type="xsd1:CommentCategory"/>';
 			$strToReturn .= '<element name="Comment" type="xsd:string"/>';
 			$strToReturn .= '<element name="DatePosted" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateAction" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1343,6 +1378,8 @@
 				$objToReturn->strComment = $objSoapObject->Comment;
 			if (property_exists($objSoapObject, 'DatePosted'))
 				$objToReturn->dttDatePosted = new QDateTime($objSoapObject->DatePosted);
+			if (property_exists($objSoapObject, 'DateAction'))
+				$objToReturn->dttDateAction = new QDateTime($objSoapObject->DateAction);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1375,6 +1412,8 @@
 				$objObject->intCommentCategoryId = null;
 			if ($objObject->dttDatePosted)
 				$objObject->dttDatePosted = $objObject->dttDatePosted->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateAction)
+				$objObject->dttDateAction = $objObject->dttDateAction->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1400,6 +1439,7 @@
 	 * @property-read QQNodeCommentCategory $CommentCategory
 	 * @property-read QQNode $Comment
 	 * @property-read QQNode $DatePosted
+	 * @property-read QQNode $DateAction
 	 */
 	class QQNodeComment extends QQNode {
 		protected $strTableName = 'comment';
@@ -1427,6 +1467,8 @@
 					return new QQNode('comment', 'Comment', 'string', $this);
 				case 'DatePosted':
 					return new QQNode('date_posted', 'DatePosted', 'QDateTime', $this);
+				case 'DateAction':
+					return new QQNode('date_action', 'DateAction', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1452,6 +1494,7 @@
 	 * @property-read QQNodeCommentCategory $CommentCategory
 	 * @property-read QQNode $Comment
 	 * @property-read QQNode $DatePosted
+	 * @property-read QQNode $DateAction
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeComment extends QQReverseReferenceNode {
@@ -1480,6 +1523,8 @@
 					return new QQNode('comment', 'Comment', 'string', $this);
 				case 'DatePosted':
 					return new QQNode('date_posted', 'DatePosted', 'QDateTime', $this);
+				case 'DateAction':
+					return new QQNode('date_action', 'DateAction', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

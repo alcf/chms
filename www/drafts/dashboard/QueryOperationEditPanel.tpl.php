@@ -7,6 +7,8 @@
 	<div id="formControls">
 		<?php $_CONTROL->lblId->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtQueryDataTypeBitmap->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtName->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtQqFactoryName->RenderWithName(); ?>

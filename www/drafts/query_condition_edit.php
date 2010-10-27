@@ -25,11 +25,13 @@
 		// Controls for QueryCondition's Data Fields
 		protected $lblId;
 		protected $lstSearchQuery;
+		protected $lstOrQueryCondition;
 		protected $lstQueryOperation;
 		protected $lstQueryNode;
 		protected $txtValue;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+		protected $lstQueryConditionAsOr;
 
 		// Other Controls
 		protected $btnSave;
@@ -56,9 +58,11 @@
 			// Call MetaControl's methods to create qcontrols based on QueryCondition's data fields
 			$this->lblId = $this->mctQueryCondition->lblId_Create();
 			$this->lstSearchQuery = $this->mctQueryCondition->lstSearchQuery_Create();
+			$this->lstOrQueryCondition = $this->mctQueryCondition->lstOrQueryCondition_Create();
 			$this->lstQueryOperation = $this->mctQueryCondition->lstQueryOperation_Create();
 			$this->lstQueryNode = $this->mctQueryCondition->lstQueryNode_Create();
 			$this->txtValue = $this->mctQueryCondition->txtValue_Create();
+			$this->lstQueryConditionAsOr = $this->mctQueryCondition->lstQueryConditionAsOr_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

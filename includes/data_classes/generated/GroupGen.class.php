@@ -28,6 +28,7 @@
 	 * @property string $Token the value for strToken (Unique)
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property Group $ParentGroup the value for the Group object referenced by intParentGroupId 
+	 * @property GroupCategory $GroupCategory the value for the GroupCategory object that uniquely references this Group
 	 * @property GrowthGroup $GrowthGroup the value for the GrowthGroup object that uniquely references this Group
 	 * @property SmartGroup $SmartGroup the value for the SmartGroup object that uniquely references this Group
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.group_id reverse relationship
@@ -223,6 +224,24 @@
 		 * @var Group objParentGroup
 		 */
 		protected $objParentGroup;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column group_category.group_id.
+		 *
+		 * NOTE: Always use the GroupCategory property getter to correctly retrieve this GroupCategory object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var GroupCategory objGroupCategory
+		 */
+		protected $objGroupCategory;
+		
+		/**
+		 * Used internally to manage whether the adjoined GroupCategory object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyGroupCategory;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -720,6 +739,18 @@
 				$objToReturn->objParentGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parent_group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
+			// Check for GroupCategory Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'groupcategory__group_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objGroupCategory = GroupCategory::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupcategory__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objGroupCategory = false;
+			}
+
 			// Check for GrowthGroup Unique ReverseReference Binding
 			$strAlias = $strAliasPrefix . 'growthgroup__group_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1089,6 +1120,26 @@
 
 		
 		
+				// Update the adjoined GroupCategory object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyGroupCategory) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = GroupCategory::LoadByGroupId($this->intId)) {
+						$objAssociated->GroupId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objGroupCategory) {
+						$this->objGroupCategory->GroupId = $this->intId;
+						$this->objGroupCategory->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyGroupCategory = false;
+				}
+		
+		
 				// Update the adjoined GrowthGroup object (if applicable)
 				// TODO: Make this into hard-coded SQL queries
 				if ($this->blnDirtyGrowthGroup) {
@@ -1151,6 +1202,15 @@
 			// Get the Database Object for this Class
 			$objDatabase = Group::GetDatabase();
 
+			
+			
+			// Update the adjoined GroupCategory object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = GroupCategory::LoadByGroupId($this->intId)) {
+				$objAssociated->Delete();
+			}
 			
 			
 			// Update the adjoined GrowthGroup object (if applicable) and perform a delete
@@ -1397,6 +1457,24 @@
 						if ((!$this->objParentGroup) && (!is_null($this->intParentGroupId)))
 							$this->objParentGroup = Group::Load($this->intParentGroupId);
 						return $this->objParentGroup;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'GroupCategory':
+					// Gets the value for the GroupCategory object that uniquely references this Group
+					// by objGroupCategory (Unique)
+					// @return GroupCategory
+					try {
+						if ($this->objGroupCategory === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objGroupCategory)
+							$this->objGroupCategory = GroupCategory::LoadByGroupId($this->intId);
+						return $this->objGroupCategory;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1677,6 +1755,43 @@
 						// Update Local Member Variables
 						$this->objParentGroup = $mixValue;
 						$this->intParentGroupId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'GroupCategory':
+					// Sets the value for the GroupCategory object referenced by objGroupCategory (Unique)
+					// @param GroupCategory $mixValue
+					// @return GroupCategory
+					if (is_null($mixValue)) {
+						$this->objGroupCategory = null;
+
+						// Make sure we update the adjoined GroupCategory object the next time we call Save()
+						$this->blnDirtyGroupCategory = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a GroupCategory object
+						try {
+							$mixValue = QType::Cast($mixValue, 'GroupCategory');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objGroupCategory to a DIFFERENT $mixValue?
+						if ((!$this->GroupCategory) || ($this->GroupCategory->GroupId != $mixValue->GroupId)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined GroupCategory object the next time we call Save()
+							$this->blnDirtyGroupCategory = true;
+
+							// Update Local Member Variable
+							$this->objGroupCategory = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -2455,6 +2570,7 @@
 	 * @property-read QQNode $Token
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
+	 * @property-read QQReverseReferenceNodeGroupCategory $GroupCategory
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
 	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
 	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
@@ -2495,6 +2611,8 @@
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'group_id');
 				case 'ChildGroup':
 					return new QQReverseReferenceNodeGroup($this, 'childgroup', 'reverse_reference', 'parent_group_id');
+				case 'GroupCategory':
+					return new QQReverseReferenceNodeGroupCategory($this, 'groupcategory', 'reverse_reference', 'group_id', 'GroupCategory');
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'group_id');
 				case 'GrowthGroup':
@@ -2531,6 +2649,7 @@
 	 * @property-read QQNode $Token
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
+	 * @property-read QQReverseReferenceNodeGroupCategory $GroupCategory
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
 	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
 	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
@@ -2572,6 +2691,8 @@
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'group_id');
 				case 'ChildGroup':
 					return new QQReverseReferenceNodeGroup($this, 'childgroup', 'reverse_reference', 'parent_group_id');
+				case 'GroupCategory':
+					return new QQReverseReferenceNodeGroupCategory($this, 'groupcategory', 'reverse_reference', 'group_id', 'GroupCategory');
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'group_id');
 				case 'GrowthGroup':

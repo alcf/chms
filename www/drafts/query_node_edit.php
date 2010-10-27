@@ -25,10 +25,10 @@
 		// Controls for QueryNode's Data Fields
 		protected $lblId;
 		protected $txtName;
+		protected $lstQueryNodeType;
 		protected $txtQcodoQueryNode;
 		protected $lstQueryDataType;
-		protected $txtTypeDetail;
-		protected $txtQcodoQueryCondition;
+		protected $txtNodeDetail;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -57,10 +57,10 @@
 			// Call MetaControl's methods to create qcontrols based on QueryNode's data fields
 			$this->lblId = $this->mctQueryNode->lblId_Create();
 			$this->txtName = $this->mctQueryNode->txtName_Create();
+			$this->lstQueryNodeType = $this->mctQueryNode->lstQueryNodeType_Create();
 			$this->txtQcodoQueryNode = $this->mctQueryNode->txtQcodoQueryNode_Create();
 			$this->lstQueryDataType = $this->mctQueryNode->lstQueryDataType_Create();
-			$this->txtTypeDetail = $this->mctQueryNode->txtTypeDetail_Create();
-			$this->txtQcodoQueryCondition = $this->mctQueryNode->txtQcodoQueryCondition_Create();
+			$this->txtNodeDetail = $this->mctQueryNode->txtNodeDetail_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

@@ -56,6 +56,7 @@
 			// Create the Other Columns (note that you can use strings for query_operation's properties, or you
 			// can traverse down QQN::query_operation() to display fields that are down the hierarchy)
 			$this->dtgQueryOperations->MetaAddColumn('Id');
+			$this->dtgQueryOperations->MetaAddColumn('QueryDataTypeBitmap');
 			$this->dtgQueryOperations->MetaAddColumn('Name');
 			$this->dtgQueryOperations->MetaAddColumn('QqFactoryName');
 			$this->dtgQueryOperations->MetaAddColumn('ArgumentFlag');

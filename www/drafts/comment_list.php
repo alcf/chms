@@ -62,6 +62,7 @@
 			$this->dtgComments->MetaAddColumn(QQN::Comment()->CommentCategory);
 			$this->dtgComments->MetaAddColumn('Comment');
 			$this->dtgComments->MetaAddColumn('DatePosted');
+			$this->dtgComments->MetaAddColumn('DateAction');
 		}
 	}
 

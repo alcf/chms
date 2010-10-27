@@ -91,6 +91,12 @@
 			return new QQNodeGroup('group', null, null);
 		}
 		/**
+		 * @return QQNodeGroupCategory
+		 */
+		static public function GroupCategory() {
+			return new QQNodeGroupCategory('group_category', null, null);
+		}
+		/**
 		 * @return QQNodeGroupParticipation
 		 */
 		static public function GroupParticipation() {

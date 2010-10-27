@@ -9,13 +9,13 @@
 
 		<?php $_CONTROL->txtName->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstQueryNodeType->RenderWithName(); ?>
+
 		<?php $_CONTROL->txtQcodoQueryNode->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstQueryDataType->RenderWithName(); ?>
 
-		<?php $_CONTROL->txtTypeDetail->RenderWithName(); ?>
-
-		<?php $_CONTROL->txtQcodoQueryCondition->RenderWithName(); ?>
+		<?php $_CONTROL->txtNodeDetail->RenderWithName(); ?>
 
 	</div>
 

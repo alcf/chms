@@ -19,6 +19,8 @@
 
 		<?php $_CONTROL->calDatePosted->RenderWithName(); ?>
 
+		<?php $_CONTROL->calDateAction->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

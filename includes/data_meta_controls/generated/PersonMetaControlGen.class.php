@@ -42,8 +42,12 @@
 	 * property-read QLabel $GenderLabel
 	 * property QDateTimePicker $DateOfBirthControl
 	 * property-read QLabel $DateOfBirthLabel
-	 * property QCheckBox $DobApproximateFlagControl
-	 * property-read QLabel $DobApproximateFlagLabel
+	 * property QCheckBox $DobYearApproximateFlagControl
+	 * property-read QLabel $DobYearApproximateFlagLabel
+	 * property QCheckBox $DobGuessedFlagControl
+	 * property-read QLabel $DobGuessedFlagLabel
+	 * property QIntegerTextBox $AgeControl
+	 * property-read QLabel $AgeLabel
 	 * property QCheckBox $DeceasedFlagControl
 	 * property-read QLabel $DeceasedFlagLabel
 	 * property QDateTimePicker $DateDeceasedControl
@@ -188,10 +192,22 @@
 		protected $calDateOfBirth;
 
         /**
-         * @var QCheckBox chkDobApproximateFlag;
+         * @var QCheckBox chkDobYearApproximateFlag;
          * @access protected
          */
-		protected $chkDobApproximateFlag;
+		protected $chkDobYearApproximateFlag;
+
+        /**
+         * @var QCheckBox chkDobGuessedFlag;
+         * @access protected
+         */
+		protected $chkDobGuessedFlag;
+
+        /**
+         * @var QIntegerTextBox txtAge;
+         * @access protected
+         */
+		protected $txtAge;
 
         /**
          * @var QCheckBox chkDeceasedFlag;
@@ -346,10 +362,22 @@
 		protected $lblDateOfBirth;
 
         /**
-         * @var QLabel lblDobApproximateFlag
+         * @var QLabel lblDobYearApproximateFlag
          * @access protected
          */
-		protected $lblDobApproximateFlag;
+		protected $lblDobYearApproximateFlag;
+
+        /**
+         * @var QLabel lblDobGuessedFlag
+         * @access protected
+         */
+		protected $lblDobGuessedFlag;
+
+        /**
+         * @var QLabel lblAge
+         * @access protected
+         */
+		protected $lblAge;
 
         /**
          * @var QLabel lblDeceasedFlag
@@ -875,27 +903,77 @@
 		protected $strDateOfBirthDateTimeFormat;
 
 		/**
-		 * Create and setup QCheckBox chkDobApproximateFlag
+		 * Create and setup QCheckBox chkDobYearApproximateFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
 		 */
-		public function chkDobApproximateFlag_Create($strControlId = null) {
-			$this->chkDobApproximateFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkDobApproximateFlag->Name = QApplication::Translate('Dob Approximate Flag');
-			$this->chkDobApproximateFlag->Checked = $this->objPerson->DobApproximateFlag;
-			return $this->chkDobApproximateFlag;
+		public function chkDobYearApproximateFlag_Create($strControlId = null) {
+			$this->chkDobYearApproximateFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkDobYearApproximateFlag->Name = QApplication::Translate('Dob Year Approximate Flag');
+			$this->chkDobYearApproximateFlag->Checked = $this->objPerson->DobYearApproximateFlag;
+			return $this->chkDobYearApproximateFlag;
 		}
 
 		/**
-		 * Create and setup QLabel lblDobApproximateFlag
+		 * Create and setup QLabel lblDobYearApproximateFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblDobApproximateFlag_Create($strControlId = null) {
-			$this->lblDobApproximateFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblDobApproximateFlag->Name = QApplication::Translate('Dob Approximate Flag');
-			$this->lblDobApproximateFlag->Text = ($this->objPerson->DobApproximateFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblDobApproximateFlag;
+		public function lblDobYearApproximateFlag_Create($strControlId = null) {
+			$this->lblDobYearApproximateFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDobYearApproximateFlag->Name = QApplication::Translate('Dob Year Approximate Flag');
+			$this->lblDobYearApproximateFlag->Text = ($this->objPerson->DobYearApproximateFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblDobYearApproximateFlag;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkDobGuessedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkDobGuessedFlag_Create($strControlId = null) {
+			$this->chkDobGuessedFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkDobGuessedFlag->Name = QApplication::Translate('Dob Guessed Flag');
+			$this->chkDobGuessedFlag->Checked = $this->objPerson->DobGuessedFlag;
+			return $this->chkDobGuessedFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblDobGuessedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDobGuessedFlag_Create($strControlId = null) {
+			$this->lblDobGuessedFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDobGuessedFlag->Name = QApplication::Translate('Dob Guessed Flag');
+			$this->lblDobGuessedFlag->Text = ($this->objPerson->DobGuessedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblDobGuessedFlag;
+		}
+
+		/**
+		 * Create and setup QIntegerTextBox txtAge
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtAge_Create($strControlId = null) {
+			$this->txtAge = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtAge->Name = QApplication::Translate('Age');
+			$this->txtAge->Text = $this->objPerson->Age;
+			return $this->txtAge;
+		}
+
+		/**
+		 * Create and setup QLabel lblAge
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblAge_Create($strControlId = null, $strFormat = null) {
+			$this->lblAge = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAge->Name = QApplication::Translate('Age');
+			$this->lblAge->Text = $this->objPerson->Age;
+			$this->lblAge->Format = $strFormat;
+			return $this->lblAge;
 		}
 
 		/**
@@ -1544,8 +1622,14 @@
 			if ($this->calDateOfBirth) $this->calDateOfBirth->DateTime = $this->objPerson->DateOfBirth;
 			if ($this->lblDateOfBirth) $this->lblDateOfBirth->Text = sprintf($this->objPerson->DateOfBirth) ? $this->objPerson->__toString($this->strDateOfBirthDateTimeFormat) : null;
 
-			if ($this->chkDobApproximateFlag) $this->chkDobApproximateFlag->Checked = $this->objPerson->DobApproximateFlag;
-			if ($this->lblDobApproximateFlag) $this->lblDobApproximateFlag->Text = ($this->objPerson->DobApproximateFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			if ($this->chkDobYearApproximateFlag) $this->chkDobYearApproximateFlag->Checked = $this->objPerson->DobYearApproximateFlag;
+			if ($this->lblDobYearApproximateFlag) $this->lblDobYearApproximateFlag->Text = ($this->objPerson->DobYearApproximateFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
+			if ($this->chkDobGuessedFlag) $this->chkDobGuessedFlag->Checked = $this->objPerson->DobGuessedFlag;
+			if ($this->lblDobGuessedFlag) $this->lblDobGuessedFlag->Text = ($this->objPerson->DobGuessedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
+			if ($this->txtAge) $this->txtAge->Text = $this->objPerson->Age;
+			if ($this->lblAge) $this->lblAge->Text = $this->objPerson->Age;
 
 			if ($this->chkDeceasedFlag) $this->chkDeceasedFlag->Checked = $this->objPerson->DeceasedFlag;
 			if ($this->lblDeceasedFlag) $this->lblDeceasedFlag->Text = ($this->objPerson->DeceasedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
@@ -1782,7 +1866,9 @@
 				if ($this->txtSuffix) $this->objPerson->Suffix = $this->txtSuffix->Text;
 				if ($this->txtGender) $this->objPerson->Gender = $this->txtGender->Text;
 				if ($this->calDateOfBirth) $this->objPerson->DateOfBirth = $this->calDateOfBirth->DateTime;
-				if ($this->chkDobApproximateFlag) $this->objPerson->DobApproximateFlag = $this->chkDobApproximateFlag->Checked;
+				if ($this->chkDobYearApproximateFlag) $this->objPerson->DobYearApproximateFlag = $this->chkDobYearApproximateFlag->Checked;
+				if ($this->chkDobGuessedFlag) $this->objPerson->DobGuessedFlag = $this->chkDobGuessedFlag->Checked;
+				if ($this->txtAge) $this->objPerson->Age = $this->txtAge->Text;
 				if ($this->chkDeceasedFlag) $this->objPerson->DeceasedFlag = $this->chkDeceasedFlag->Checked;
 				if ($this->calDateDeceased) $this->objPerson->DateDeceased = $this->calDateDeceased->DateTime;
 				if ($this->lstCurrentHeadShot) $this->objPerson->CurrentHeadShotId = $this->lstCurrentHeadShot->SelectedValue;
@@ -1923,12 +2009,24 @@
 				case 'DateOfBirthLabel':
 					if (!$this->lblDateOfBirth) return $this->lblDateOfBirth_Create();
 					return $this->lblDateOfBirth;
-				case 'DobApproximateFlagControl':
-					if (!$this->chkDobApproximateFlag) return $this->chkDobApproximateFlag_Create();
-					return $this->chkDobApproximateFlag;
-				case 'DobApproximateFlagLabel':
-					if (!$this->lblDobApproximateFlag) return $this->lblDobApproximateFlag_Create();
-					return $this->lblDobApproximateFlag;
+				case 'DobYearApproximateFlagControl':
+					if (!$this->chkDobYearApproximateFlag) return $this->chkDobYearApproximateFlag_Create();
+					return $this->chkDobYearApproximateFlag;
+				case 'DobYearApproximateFlagLabel':
+					if (!$this->lblDobYearApproximateFlag) return $this->lblDobYearApproximateFlag_Create();
+					return $this->lblDobYearApproximateFlag;
+				case 'DobGuessedFlagControl':
+					if (!$this->chkDobGuessedFlag) return $this->chkDobGuessedFlag_Create();
+					return $this->chkDobGuessedFlag;
+				case 'DobGuessedFlagLabel':
+					if (!$this->lblDobGuessedFlag) return $this->lblDobGuessedFlag_Create();
+					return $this->lblDobGuessedFlag;
+				case 'AgeControl':
+					if (!$this->txtAge) return $this->txtAge_Create();
+					return $this->txtAge;
+				case 'AgeLabel':
+					if (!$this->lblAge) return $this->lblAge_Create();
+					return $this->lblAge;
 				case 'DeceasedFlagControl':
 					if (!$this->chkDeceasedFlag) return $this->chkDeceasedFlag_Create();
 					return $this->chkDeceasedFlag;
@@ -2079,8 +2177,12 @@
 						return ($this->txtGender = QType::Cast($mixValue, 'QControl'));
 					case 'DateOfBirthControl':
 						return ($this->calDateOfBirth = QType::Cast($mixValue, 'QControl'));
-					case 'DobApproximateFlagControl':
-						return ($this->chkDobApproximateFlag = QType::Cast($mixValue, 'QControl'));
+					case 'DobYearApproximateFlagControl':
+						return ($this->chkDobYearApproximateFlag = QType::Cast($mixValue, 'QControl'));
+					case 'DobGuessedFlagControl':
+						return ($this->chkDobGuessedFlag = QType::Cast($mixValue, 'QControl'));
+					case 'AgeControl':
+						return ($this->txtAge = QType::Cast($mixValue, 'QControl'));
 					case 'DeceasedFlagControl':
 						return ($this->chkDeceasedFlag = QType::Cast($mixValue, 'QControl'));
 					case 'DateDeceasedControl':

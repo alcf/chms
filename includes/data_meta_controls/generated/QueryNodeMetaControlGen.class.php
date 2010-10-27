@@ -20,14 +20,14 @@
 	 * property-read QLabel $IdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
+	 * property QListBox $QueryNodeTypeIdControl
+	 * property-read QLabel $QueryNodeTypeIdLabel
 	 * property QTextBox $QcodoQueryNodeControl
 	 * property-read QLabel $QcodoQueryNodeLabel
 	 * property QListBox $QueryDataTypeIdControl
 	 * property-read QLabel $QueryDataTypeIdLabel
-	 * property QTextBox $TypeDetailControl
-	 * property-read QLabel $TypeDetailLabel
-	 * property QTextBox $QcodoQueryConditionControl
-	 * property-read QLabel $QcodoQueryConditionLabel
+	 * property QTextBox $NodeDetailControl
+	 * property-read QLabel $NodeDetailLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -72,6 +72,12 @@
 		protected $txtName;
 
         /**
+         * @var QListBox lstQueryNodeType;
+         * @access protected
+         */
+		protected $lstQueryNodeType;
+
+        /**
          * @var QTextBox txtQcodoQueryNode;
          * @access protected
          */
@@ -84,16 +90,10 @@
 		protected $lstQueryDataType;
 
         /**
-         * @var QTextBox txtTypeDetail;
+         * @var QTextBox txtNodeDetail;
          * @access protected
          */
-		protected $txtTypeDetail;
-
-        /**
-         * @var QTextBox txtQcodoQueryCondition;
-         * @access protected
-         */
-		protected $txtQcodoQueryCondition;
+		protected $txtNodeDetail;
 
 
 		// Controls that allow the viewing of QueryNode's individual data fields
@@ -102,6 +102,12 @@
          * @access protected
          */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblQueryNodeTypeId
+         * @access protected
+         */
+		protected $lblQueryNodeTypeId;
 
         /**
          * @var QLabel lblQcodoQueryNode
@@ -116,16 +122,10 @@
 		protected $lblQueryDataTypeId;
 
         /**
-         * @var QLabel lblTypeDetail
+         * @var QLabel lblNodeDetail
          * @access protected
          */
-		protected $lblTypeDetail;
-
-        /**
-         * @var QLabel lblQcodoQueryCondition
-         * @access protected
-         */
-		protected $lblQcodoQueryCondition;
+		protected $lblNodeDetail;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -266,6 +266,33 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstQueryNodeType
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstQueryNodeType_Create($strControlId = null) {
+			$this->lstQueryNodeType = new QListBox($this->objParentObject, $strControlId);
+			$this->lstQueryNodeType->Name = QApplication::Translate('Query Node Type');
+			$this->lstQueryNodeType->Required = true;
+			foreach (QueryNodeType::$NameArray as $intId => $strValue)
+				$this->lstQueryNodeType->AddItem(new QListItem($strValue, $intId, $this->objQueryNode->QueryNodeTypeId == $intId));
+			return $this->lstQueryNodeType;
+		}
+
+		/**
+		 * Create and setup QLabel lblQueryNodeTypeId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblQueryNodeTypeId_Create($strControlId = null) {
+			$this->lblQueryNodeTypeId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblQueryNodeTypeId->Name = QApplication::Translate('Query Node Type');
+			$this->lblQueryNodeTypeId->Text = ($this->objQueryNode->QueryNodeTypeId) ? QueryNodeType::$NameArray[$this->objQueryNode->QueryNodeTypeId] : null;
+			$this->lblQueryNodeTypeId->Required = true;
+			return $this->lblQueryNodeTypeId;
+		}
+
+		/**
 		 * Create and setup QTextBox txtQcodoQueryNode
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -318,53 +345,28 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtTypeDetail
+		 * Create and setup QTextBox txtNodeDetail
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtTypeDetail_Create($strControlId = null) {
-			$this->txtTypeDetail = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtTypeDetail->Name = QApplication::Translate('Type Detail');
-			$this->txtTypeDetail->Text = $this->objQueryNode->TypeDetail;
-			$this->txtTypeDetail->MaxLength = QueryNode::TypeDetailMaxLength;
-			return $this->txtTypeDetail;
+		public function txtNodeDetail_Create($strControlId = null) {
+			$this->txtNodeDetail = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtNodeDetail->Name = QApplication::Translate('Node Detail');
+			$this->txtNodeDetail->Text = $this->objQueryNode->NodeDetail;
+			$this->txtNodeDetail->MaxLength = QueryNode::NodeDetailMaxLength;
+			return $this->txtNodeDetail;
 		}
 
 		/**
-		 * Create and setup QLabel lblTypeDetail
+		 * Create and setup QLabel lblNodeDetail
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblTypeDetail_Create($strControlId = null) {
-			$this->lblTypeDetail = new QLabel($this->objParentObject, $strControlId);
-			$this->lblTypeDetail->Name = QApplication::Translate('Type Detail');
-			$this->lblTypeDetail->Text = $this->objQueryNode->TypeDetail;
-			return $this->lblTypeDetail;
-		}
-
-		/**
-		 * Create and setup QTextBox txtQcodoQueryCondition
-		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
-		 */
-		public function txtQcodoQueryCondition_Create($strControlId = null) {
-			$this->txtQcodoQueryCondition = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtQcodoQueryCondition->Name = QApplication::Translate('Qcodo Query Condition');
-			$this->txtQcodoQueryCondition->Text = $this->objQueryNode->QcodoQueryCondition;
-			$this->txtQcodoQueryCondition->TextMode = QTextMode::MultiLine;
-			return $this->txtQcodoQueryCondition;
-		}
-
-		/**
-		 * Create and setup QLabel lblQcodoQueryCondition
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblQcodoQueryCondition_Create($strControlId = null) {
-			$this->lblQcodoQueryCondition = new QLabel($this->objParentObject, $strControlId);
-			$this->lblQcodoQueryCondition->Name = QApplication::Translate('Qcodo Query Condition');
-			$this->lblQcodoQueryCondition->Text = $this->objQueryNode->QcodoQueryCondition;
-			return $this->lblQcodoQueryCondition;
+		public function lblNodeDetail_Create($strControlId = null) {
+			$this->lblNodeDetail = new QLabel($this->objParentObject, $strControlId);
+			$this->lblNodeDetail->Name = QApplication::Translate('Node Detail');
+			$this->lblNodeDetail->Text = $this->objQueryNode->NodeDetail;
+			return $this->lblNodeDetail;
 		}
 
 
@@ -383,17 +385,17 @@
 			if ($this->txtName) $this->txtName->Text = $this->objQueryNode->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objQueryNode->Name;
 
+			if ($this->lstQueryNodeType) $this->lstQueryNodeType->SelectedValue = $this->objQueryNode->QueryNodeTypeId;
+			if ($this->lblQueryNodeTypeId) $this->lblQueryNodeTypeId->Text = ($this->objQueryNode->QueryNodeTypeId) ? QueryNodeType::$NameArray[$this->objQueryNode->QueryNodeTypeId] : null;
+
 			if ($this->txtQcodoQueryNode) $this->txtQcodoQueryNode->Text = $this->objQueryNode->QcodoQueryNode;
 			if ($this->lblQcodoQueryNode) $this->lblQcodoQueryNode->Text = $this->objQueryNode->QcodoQueryNode;
 
 			if ($this->lstQueryDataType) $this->lstQueryDataType->SelectedValue = $this->objQueryNode->QueryDataTypeId;
 			if ($this->lblQueryDataTypeId) $this->lblQueryDataTypeId->Text = ($this->objQueryNode->QueryDataTypeId) ? QueryDataType::$NameArray[$this->objQueryNode->QueryDataTypeId] : null;
 
-			if ($this->txtTypeDetail) $this->txtTypeDetail->Text = $this->objQueryNode->TypeDetail;
-			if ($this->lblTypeDetail) $this->lblTypeDetail->Text = $this->objQueryNode->TypeDetail;
-
-			if ($this->txtQcodoQueryCondition) $this->txtQcodoQueryCondition->Text = $this->objQueryNode->QcodoQueryCondition;
-			if ($this->lblQcodoQueryCondition) $this->lblQcodoQueryCondition->Text = $this->objQueryNode->QcodoQueryCondition;
+			if ($this->txtNodeDetail) $this->txtNodeDetail->Text = $this->objQueryNode->NodeDetail;
+			if ($this->lblNodeDetail) $this->lblNodeDetail->Text = $this->objQueryNode->NodeDetail;
 
 		}
 
@@ -419,10 +421,10 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->txtName) $this->objQueryNode->Name = $this->txtName->Text;
+				if ($this->lstQueryNodeType) $this->objQueryNode->QueryNodeTypeId = $this->lstQueryNodeType->SelectedValue;
 				if ($this->txtQcodoQueryNode) $this->objQueryNode->QcodoQueryNode = $this->txtQcodoQueryNode->Text;
 				if ($this->lstQueryDataType) $this->objQueryNode->QueryDataTypeId = $this->lstQueryDataType->SelectedValue;
-				if ($this->txtTypeDetail) $this->objQueryNode->TypeDetail = $this->txtTypeDetail->Text;
-				if ($this->txtQcodoQueryCondition) $this->objQueryNode->QcodoQueryCondition = $this->txtQcodoQueryCondition->Text;
+				if ($this->txtNodeDetail) $this->objQueryNode->NodeDetail = $this->txtNodeDetail->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -477,6 +479,12 @@
 				case 'NameLabel':
 					if (!$this->lblName) return $this->lblName_Create();
 					return $this->lblName;
+				case 'QueryNodeTypeIdControl':
+					if (!$this->lstQueryNodeType) return $this->lstQueryNodeType_Create();
+					return $this->lstQueryNodeType;
+				case 'QueryNodeTypeIdLabel':
+					if (!$this->lblQueryNodeTypeId) return $this->lblQueryNodeTypeId_Create();
+					return $this->lblQueryNodeTypeId;
 				case 'QcodoQueryNodeControl':
 					if (!$this->txtQcodoQueryNode) return $this->txtQcodoQueryNode_Create();
 					return $this->txtQcodoQueryNode;
@@ -489,18 +497,12 @@
 				case 'QueryDataTypeIdLabel':
 					if (!$this->lblQueryDataTypeId) return $this->lblQueryDataTypeId_Create();
 					return $this->lblQueryDataTypeId;
-				case 'TypeDetailControl':
-					if (!$this->txtTypeDetail) return $this->txtTypeDetail_Create();
-					return $this->txtTypeDetail;
-				case 'TypeDetailLabel':
-					if (!$this->lblTypeDetail) return $this->lblTypeDetail_Create();
-					return $this->lblTypeDetail;
-				case 'QcodoQueryConditionControl':
-					if (!$this->txtQcodoQueryCondition) return $this->txtQcodoQueryCondition_Create();
-					return $this->txtQcodoQueryCondition;
-				case 'QcodoQueryConditionLabel':
-					if (!$this->lblQcodoQueryCondition) return $this->lblQcodoQueryCondition_Create();
-					return $this->lblQcodoQueryCondition;
+				case 'NodeDetailControl':
+					if (!$this->txtNodeDetail) return $this->txtNodeDetail_Create();
+					return $this->txtNodeDetail;
+				case 'NodeDetailLabel':
+					if (!$this->lblNodeDetail) return $this->lblNodeDetail_Create();
+					return $this->lblNodeDetail;
 				default:
 					try {
 						return parent::__get($strName);
@@ -527,14 +529,14 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
+					case 'QueryNodeTypeIdControl':
+						return ($this->lstQueryNodeType = QType::Cast($mixValue, 'QControl'));
 					case 'QcodoQueryNodeControl':
 						return ($this->txtQcodoQueryNode = QType::Cast($mixValue, 'QControl'));
 					case 'QueryDataTypeIdControl':
 						return ($this->lstQueryDataType = QType::Cast($mixValue, 'QControl'));
-					case 'TypeDetailControl':
-						return ($this->txtTypeDetail = QType::Cast($mixValue, 'QControl'));
-					case 'QcodoQueryConditionControl':
-						return ($this->txtQcodoQueryCondition = QType::Cast($mixValue, 'QControl'));
+					case 'NodeDetailControl':
+						return ($this->txtNodeDetail = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

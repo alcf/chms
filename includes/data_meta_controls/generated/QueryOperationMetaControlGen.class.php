@@ -18,6 +18,8 @@
 	 * property-read QueryOperation $QueryOperation the actual QueryOperation data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
+	 * property QIntegerTextBox $QueryDataTypeBitmapControl
+	 * property-read QLabel $QueryDataTypeBitmapLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $QqFactoryNameControl
@@ -66,6 +68,12 @@
 		protected $lblId;
 
         /**
+         * @var QIntegerTextBox txtQueryDataTypeBitmap;
+         * @access protected
+         */
+		protected $txtQueryDataTypeBitmap;
+
+        /**
          * @var QTextBox txtName;
          * @access protected
          */
@@ -97,6 +105,12 @@
 
 
 		// Controls that allow the viewing of QueryOperation's individual data fields
+        /**
+         * @var QLabel lblQueryDataTypeBitmap
+         * @access protected
+         */
+		protected $lblQueryDataTypeBitmap;
+
         /**
          * @var QLabel lblName
          * @access protected
@@ -241,6 +255,34 @@
 		}
 
 		/**
+		 * Create and setup QIntegerTextBox txtQueryDataTypeBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtQueryDataTypeBitmap_Create($strControlId = null) {
+			$this->txtQueryDataTypeBitmap = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtQueryDataTypeBitmap->Name = QApplication::Translate('Query Data Type Bitmap');
+			$this->txtQueryDataTypeBitmap->Text = $this->objQueryOperation->QueryDataTypeBitmap;
+			$this->txtQueryDataTypeBitmap->Required = true;
+			return $this->txtQueryDataTypeBitmap;
+		}
+
+		/**
+		 * Create and setup QLabel lblQueryDataTypeBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblQueryDataTypeBitmap_Create($strControlId = null, $strFormat = null) {
+			$this->lblQueryDataTypeBitmap = new QLabel($this->objParentObject, $strControlId);
+			$this->lblQueryDataTypeBitmap->Name = QApplication::Translate('Query Data Type Bitmap');
+			$this->lblQueryDataTypeBitmap->Text = $this->objQueryOperation->QueryDataTypeBitmap;
+			$this->lblQueryDataTypeBitmap->Required = true;
+			$this->lblQueryDataTypeBitmap->Format = $strFormat;
+			return $this->lblQueryDataTypeBitmap;
+		}
+
+		/**
 		 * Create and setup QTextBox txtName
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -381,6 +423,9 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objQueryOperation->Id;
 
+			if ($this->txtQueryDataTypeBitmap) $this->txtQueryDataTypeBitmap->Text = $this->objQueryOperation->QueryDataTypeBitmap;
+			if ($this->lblQueryDataTypeBitmap) $this->lblQueryDataTypeBitmap->Text = $this->objQueryOperation->QueryDataTypeBitmap;
+
 			if ($this->txtName) $this->txtName->Text = $this->objQueryOperation->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objQueryOperation->Name;
 
@@ -419,6 +464,7 @@
 		public function SaveQueryOperation() {
 			try {
 				// Update any fields for controls that have been created
+				if ($this->txtQueryDataTypeBitmap) $this->objQueryOperation->QueryDataTypeBitmap = $this->txtQueryDataTypeBitmap->Text;
 				if ($this->txtName) $this->objQueryOperation->Name = $this->txtName->Text;
 				if ($this->txtQqFactoryName) $this->objQueryOperation->QqFactoryName = $this->txtQqFactoryName->Text;
 				if ($this->chkArgumentFlag) $this->objQueryOperation->ArgumentFlag = $this->chkArgumentFlag->Checked;
@@ -472,6 +518,12 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
+				case 'QueryDataTypeBitmapControl':
+					if (!$this->txtQueryDataTypeBitmap) return $this->txtQueryDataTypeBitmap_Create();
+					return $this->txtQueryDataTypeBitmap;
+				case 'QueryDataTypeBitmapLabel':
+					if (!$this->lblQueryDataTypeBitmap) return $this->lblQueryDataTypeBitmap_Create();
+					return $this->lblQueryDataTypeBitmap;
 				case 'NameControl':
 					if (!$this->txtName) return $this->txtName_Create();
 					return $this->txtName;
@@ -526,6 +578,8 @@
 					// Controls that point to QueryOperation fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
+					case 'QueryDataTypeBitmapControl':
+						return ($this->txtQueryDataTypeBitmap = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'QqFactoryNameControl':

@@ -29,6 +29,8 @@
 		QApplicationBase::$ClassFile['phonetype'] = __DATA_CLASSES__ . '/PhoneType.class.php';
 	// ClassPaths for the QueryDataType type class
 		QApplicationBase::$ClassFile['querydatatype'] = __DATA_CLASSES__ . '/QueryDataType.class.php';
+	// ClassPaths for the QueryNodeType type class
+		QApplicationBase::$ClassFile['querynodetype'] = __DATA_CLASSES__ . '/QueryNodeType.class.php';
 	// ClassPaths for the RelationshipType type class
 		QApplicationBase::$ClassFile['relationshiptype'] = __DATA_CLASSES__ . '/RelationshipType.class.php';
 	// ClassPaths for the RoleType type class

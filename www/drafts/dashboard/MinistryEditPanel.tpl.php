@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->lstParentMinistry->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtGroupTypeBitmap->RenderWithName(); ?>
+
 		<?php $_CONTROL->chkActiveFlag->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstLogins->RenderWithName(true, "Rows=7"); ?>

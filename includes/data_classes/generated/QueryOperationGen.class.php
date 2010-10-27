@@ -16,6 +16,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
+	 * @property integer $QueryDataTypeBitmap the value for intQueryDataTypeBitmap (Not Null)
 	 * @property string $Name the value for strName (Not Null)
 	 * @property string $QqFactoryName the value for strQqFactoryName (Not Null)
 	 * @property boolean $ArgumentFlag the value for blnArgumentFlag 
@@ -37,6 +38,14 @@
 		 */
 		protected $intId;
 		const IdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column query_operation.query_data_type_bitmap
+		 * @var integer intQueryDataTypeBitmap
+		 */
+		protected $intQueryDataTypeBitmap;
+		const QueryDataTypeBitmapDefault = null;
 
 
 		/**
@@ -432,6 +441,7 @@
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
+			$objBuilder->AddSelectItem($strTableName, 'query_data_type_bitmap', $strAliasPrefix . 'query_data_type_bitmap');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'qq_factory_name', $strAliasPrefix . 'qq_factory_name');
 			$objBuilder->AddSelectItem($strTableName, 'argument_flag', $strAliasPrefix . 'argument_flag');
@@ -502,6 +512,8 @@
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'query_data_type_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_data_type_bitmap'] : $strAliasPrefix . 'query_data_type_bitmap';
+			$objToReturn->intQueryDataTypeBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'name'] : $strAliasPrefix . 'name';
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'qq_factory_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'qq_factory_name'] : $strAliasPrefix . 'qq_factory_name';
@@ -651,12 +663,14 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `query_operation` (
+							`query_data_type_bitmap`,
 							`name`,
 							`qq_factory_name`,
 							`argument_flag`,
 							`argument_prepend`,
 							`argument_postpend`
 						) VALUES (
+							' . $objDatabase->SqlVariable($this->intQueryDataTypeBitmap) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strQqFactoryName) . ',
 							' . $objDatabase->SqlVariable($this->blnArgumentFlag) . ',
@@ -681,6 +695,7 @@
 						UPDATE
 							`query_operation`
 						SET
+							`query_data_type_bitmap` = ' . $objDatabase->SqlVariable($this->intQueryDataTypeBitmap) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`qq_factory_name` = ' . $objDatabase->SqlVariable($this->strQqFactoryName) . ',
 							`argument_flag` = ' . $objDatabase->SqlVariable($this->blnArgumentFlag) . ',
@@ -770,6 +785,7 @@
 			$objReloaded = QueryOperation::Load($this->intId);
 
 			// Update $this's local variables to match
+			$this->intQueryDataTypeBitmap = $objReloaded->intQueryDataTypeBitmap;
 			$this->strName = $objReloaded->strName;
 			$this->strQqFactoryName = $objReloaded->strQqFactoryName;
 			$this->blnArgumentFlag = $objReloaded->blnArgumentFlag;
@@ -788,6 +804,7 @@
 			$objDatabase->NonQuery('
 				INSERT INTO `query_operation` (
 					`id`,
+					`query_data_type_bitmap`,
 					`name`,
 					`qq_factory_name`,
 					`argument_flag`,
@@ -798,6 +815,7 @@
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($this->intQueryDataTypeBitmap) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->strQqFactoryName) . ',
 					' . $objDatabase->SqlVariable($this->blnArgumentFlag) . ',
@@ -857,6 +875,11 @@
 					// Gets the value for intId (Read-Only PK)
 					// @return integer
 					return $this->intId;
+
+				case 'QueryDataTypeBitmap':
+					// Gets the value for intQueryDataTypeBitmap (Not Null)
+					// @return integer
+					return $this->intQueryDataTypeBitmap;
 
 				case 'Name':
 					// Gets the value for strName (Not Null)
@@ -932,6 +955,17 @@
 				///////////////////
 				// Member Variables
 				///////////////////
+				case 'QueryDataTypeBitmap':
+					// Sets the value for intQueryDataTypeBitmap (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intQueryDataTypeBitmap = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'Name':
 					// Sets the value for strName (Not Null)
 					// @param string $mixValue
@@ -1211,6 +1245,7 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="QueryOperation"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
+			$strToReturn .= '<element name="QueryDataTypeBitmap" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="QqFactoryName" type="xsd:string"/>';
 			$strToReturn .= '<element name="ArgumentFlag" type="xsd:boolean"/>';
@@ -1240,6 +1275,8 @@
 			$objToReturn = new QueryOperation();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
+			if (property_exists($objSoapObject, 'QueryDataTypeBitmap'))
+				$objToReturn->intQueryDataTypeBitmap = $objSoapObject->QueryDataTypeBitmap;
 			if (property_exists($objSoapObject, 'Name'))
 				$objToReturn->strName = $objSoapObject->Name;
 			if (property_exists($objSoapObject, 'QqFactoryName'))
@@ -1284,6 +1321,7 @@
 
 	/**
 	 * @property-read QQNode $Id
+	 * @property-read QQNode $QueryDataTypeBitmap
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $QqFactoryName
 	 * @property-read QQNode $ArgumentFlag
@@ -1299,6 +1337,8 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'QueryDataTypeBitmap':
+					return new QQNode('query_data_type_bitmap', 'QueryDataTypeBitmap', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'QqFactoryName':
@@ -1327,6 +1367,7 @@
 	
 	/**
 	 * @property-read QQNode $Id
+	 * @property-read QQNode $QueryDataTypeBitmap
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $QqFactoryName
 	 * @property-read QQNode $ArgumentFlag
@@ -1343,6 +1384,8 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
+				case 'QueryDataTypeBitmap':
+					return new QQNode('query_data_type_bitmap', 'QueryDataTypeBitmap', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'QqFactoryName':

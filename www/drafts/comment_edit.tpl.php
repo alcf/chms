@@ -29,6 +29,8 @@
 
 		<?php $this->calDatePosted->RenderWithName(); ?>
 
+		<?php $this->calDateAction->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

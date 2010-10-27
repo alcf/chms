@@ -295,10 +295,10 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::QueryNode()->Id;
 				case 'Name': return QQN::QueryNode()->Name;
+				case 'QueryNodeTypeId': return QQN::QueryNode()->QueryNodeTypeId;
 				case 'QcodoQueryNode': return QQN::QueryNode()->QcodoQueryNode;
 				case 'QueryDataTypeId': return QQN::QueryNode()->QueryDataTypeId;
-				case 'TypeDetail': return QQN::QueryNode()->TypeDetail;
-				case 'QcodoQueryCondition': return QQN::QueryNode()->QcodoQueryCondition;
+				case 'NodeDetail': return QQN::QueryNode()->NodeDetail;
 				default: throw new QCallerException('Simple Property not found in QueryNodeDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

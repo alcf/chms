@@ -78,7 +78,9 @@
 			$this->dtgPeople->MetaAddColumn('Suffix');
 			$this->dtgPeople->MetaAddColumn('Gender');
 			$this->dtgPeople->MetaAddColumn('DateOfBirth');
-			$this->dtgPeople->MetaAddColumn('DobApproximateFlag');
+			$this->dtgPeople->MetaAddColumn('DobYearApproximateFlag');
+			$this->dtgPeople->MetaAddColumn('DobGuessedFlag');
+			$this->dtgPeople->MetaAddColumn('Age');
 			$this->dtgPeople->MetaAddColumn('DeceasedFlag');
 			$this->dtgPeople->MetaAddColumn('DateDeceased');
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->CurrentHeadShot);

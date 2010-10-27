@@ -27,6 +27,8 @@
 
 		<?php $_CONTROL->txtToken->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstGroupCategory->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstGrowthGroup->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstSmartGroup->RenderWithName(); ?>

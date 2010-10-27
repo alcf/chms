@@ -37,6 +37,8 @@
 
 		<?php $this->txtToken->RenderWithName(); ?>
 
+		<?php $this->lstGroupCategory->RenderWithName(); ?>
+
 		<?php $this->lstGrowthGroup->RenderWithName(); ?>
 
 		<?php $this->lstSmartGroup->RenderWithName(); ?>

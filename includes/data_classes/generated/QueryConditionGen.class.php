@@ -16,13 +16,16 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
-	 * @property integer $SearchQueryId the value for intSearchQueryId (Not Null)
+	 * @property integer $SearchQueryId the value for intSearchQueryId 
+	 * @property integer $OrQueryConditionId the value for intOrQueryConditionId (Unique)
 	 * @property integer $QueryOperationId the value for intQueryOperationId (Not Null)
 	 * @property integer $QueryNodeId the value for intQueryNodeId (Not Null)
 	 * @property string $Value the value for strValue 
-	 * @property SearchQuery $SearchQuery the value for the SearchQuery object referenced by intSearchQueryId (Not Null)
+	 * @property SearchQuery $SearchQuery the value for the SearchQuery object referenced by intSearchQueryId 
+	 * @property QueryCondition $OrQueryCondition the value for the QueryCondition object referenced by intOrQueryConditionId (Unique)
 	 * @property QueryOperation $QueryOperation the value for the QueryOperation object referenced by intQueryOperationId (Not Null)
 	 * @property QueryNode $QueryNode the value for the QueryNode object referenced by intQueryNodeId (Not Null)
+	 * @property QueryCondition $QueryConditionAsOr the value for the QueryCondition object that uniquely references this QueryCondition
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class QueryConditionGen extends QBaseClass {
@@ -45,6 +48,14 @@
 		 */
 		protected $intSearchQueryId;
 		const SearchQueryIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column query_condition.or_query_condition_id
+		 * @var integer intOrQueryConditionId
+		 */
+		protected $intOrQueryConditionId;
+		const OrQueryConditionIdDefault = null;
 
 
 		/**
@@ -106,6 +117,16 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column query_condition.or_query_condition_id.
+		 *
+		 * NOTE: Always use the OrQueryCondition property getter to correctly retrieve this QueryCondition object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var QueryCondition objOrQueryCondition
+		 */
+		protected $objOrQueryCondition;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column query_condition.query_operation_id.
 		 *
 		 * NOTE: Always use the QueryOperation property getter to correctly retrieve this QueryOperation object.
@@ -123,6 +144,24 @@
 		 * @var QueryNode objQueryNode
 		 */
 		protected $objQueryNode;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column query_condition.or_query_condition_id.
+		 *
+		 * NOTE: Always use the QueryConditionAsOr property getter to correctly retrieve this QueryCondition object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var QueryCondition objQueryConditionAsOr
+		 */
+		protected $objQueryConditionAsOr;
+		
+		/**
+		 * Used internally to manage whether the adjoined QueryConditionAsOr object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyQueryConditionAsOr;
 
 
 
@@ -436,6 +475,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'search_query_id', $strAliasPrefix . 'search_query_id');
+			$objBuilder->AddSelectItem($strTableName, 'or_query_condition_id', $strAliasPrefix . 'or_query_condition_id');
 			$objBuilder->AddSelectItem($strTableName, 'query_operation_id', $strAliasPrefix . 'query_operation_id');
 			$objBuilder->AddSelectItem($strTableName, 'query_node_id', $strAliasPrefix . 'query_node_id');
 			$objBuilder->AddSelectItem($strTableName, 'value', $strAliasPrefix . 'value');
@@ -474,6 +514,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'search_query_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'search_query_id'] : $strAliasPrefix . 'search_query_id';
 			$objToReturn->intSearchQueryId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'or_query_condition_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'or_query_condition_id'] : $strAliasPrefix . 'or_query_condition_id';
+			$objToReturn->intOrQueryConditionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'query_operation_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_operation_id'] : $strAliasPrefix . 'query_operation_id';
 			$objToReturn->intQueryOperationId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'query_node_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_node_id'] : $strAliasPrefix . 'query_node_id';
@@ -499,6 +541,12 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objSearchQuery = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'search_query_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
+			// Check for OrQueryCondition Early Binding
+			$strAlias = $strAliasPrefix . 'or_query_condition_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objOrQueryCondition = QueryCondition::InstantiateDbRow($objDbRow, $strAliasPrefix . 'or_query_condition_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
 			// Check for QueryOperation Early Binding
 			$strAlias = $strAliasPrefix . 'query_operation_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -511,6 +559,18 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objQueryNode = QueryNode::InstantiateDbRow($objDbRow, $strAliasPrefix . 'query_node_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
+
+			// Check for QueryConditionAsOr Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'queryconditionasor__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objQueryConditionAsOr = QueryCondition::InstantiateDbRow($objDbRow, $strAliasPrefix . 'queryconditionasor__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objQueryConditionAsOr = false;
+			}
 
 
 
@@ -594,6 +654,18 @@
 		public static function LoadById($intId) {
 			return QueryCondition::QuerySingle(
 				QQ::Equal(QQN::QueryCondition()->Id, $intId)
+			);
+		}
+			
+		/**
+		 * Load a single QueryCondition object,
+		 * by OrQueryConditionId Index(es)
+		 * @param integer $intOrQueryConditionId
+		 * @return QueryCondition
+		*/
+		public static function LoadByOrQueryConditionId($intOrQueryConditionId) {
+			return QueryCondition::QuerySingle(
+				QQ::Equal(QQN::QueryCondition()->OrQueryConditionId, $intOrQueryConditionId)
 			);
 		}
 			
@@ -724,11 +796,13 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `query_condition` (
 							`search_query_id`,
+							`or_query_condition_id`,
 							`query_operation_id`,
 							`query_node_id`,
 							`value`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
+							' . $objDatabase->SqlVariable($this->intOrQueryConditionId) . ',
 							' . $objDatabase->SqlVariable($this->intQueryOperationId) . ',
 							' . $objDatabase->SqlVariable($this->intQueryNodeId) . ',
 							' . $objDatabase->SqlVariable($this->strValue) . '
@@ -752,6 +826,7 @@
 							`query_condition`
 						SET
 							`search_query_id` = ' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
+							`or_query_condition_id` = ' . $objDatabase->SqlVariable($this->intOrQueryConditionId) . ',
 							`query_operation_id` = ' . $objDatabase->SqlVariable($this->intQueryOperationId) . ',
 							`query_node_id` = ' . $objDatabase->SqlVariable($this->intQueryNodeId) . ',
 							`value` = ' . $objDatabase->SqlVariable($this->strValue) . '
@@ -763,6 +838,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined QueryConditionAsOr object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyQueryConditionAsOr) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = QueryCondition::LoadByOrQueryConditionId($this->intId)) {
+						$objAssociated->OrQueryConditionId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objQueryConditionAsOr) {
+						$this->objQueryConditionAsOr->OrQueryConditionId = $this->intId;
+						$this->objQueryConditionAsOr->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyQueryConditionAsOr = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -787,6 +882,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = QueryCondition::GetDatabase();
 
+			
+			
+			// Update the adjoined QueryConditionAsOr object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = QueryCondition::LoadByOrQueryConditionId($this->intId)) {
+				$objAssociated->OrQueryConditionId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -840,6 +945,7 @@
 
 			// Update $this's local variables to match
 			$this->SearchQueryId = $objReloaded->SearchQueryId;
+			$this->OrQueryConditionId = $objReloaded->OrQueryConditionId;
 			$this->QueryOperationId = $objReloaded->QueryOperationId;
 			$this->QueryNodeId = $objReloaded->QueryNodeId;
 			$this->strValue = $objReloaded->strValue;
@@ -857,6 +963,7 @@
 				INSERT INTO `query_condition` (
 					`id`,
 					`search_query_id`,
+					`or_query_condition_id`,
 					`query_operation_id`,
 					`query_node_id`,
 					`value`,
@@ -866,6 +973,7 @@
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intSearchQueryId) . ',
+					' . $objDatabase->SqlVariable($this->intOrQueryConditionId) . ',
 					' . $objDatabase->SqlVariable($this->intQueryOperationId) . ',
 					' . $objDatabase->SqlVariable($this->intQueryNodeId) . ',
 					' . $objDatabase->SqlVariable($this->strValue) . ',
@@ -925,9 +1033,14 @@
 					return $this->intId;
 
 				case 'SearchQueryId':
-					// Gets the value for intSearchQueryId (Not Null)
+					// Gets the value for intSearchQueryId 
 					// @return integer
 					return $this->intSearchQueryId;
+
+				case 'OrQueryConditionId':
+					// Gets the value for intOrQueryConditionId (Unique)
+					// @return integer
+					return $this->intOrQueryConditionId;
 
 				case 'QueryOperationId':
 					// Gets the value for intQueryOperationId (Not Null)
@@ -949,12 +1062,24 @@
 				// Member Objects
 				///////////////////
 				case 'SearchQuery':
-					// Gets the value for the SearchQuery object referenced by intSearchQueryId (Not Null)
+					// Gets the value for the SearchQuery object referenced by intSearchQueryId 
 					// @return SearchQuery
 					try {
 						if ((!$this->objSearchQuery) && (!is_null($this->intSearchQueryId)))
 							$this->objSearchQuery = SearchQuery::Load($this->intSearchQueryId);
 						return $this->objSearchQuery;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'OrQueryCondition':
+					// Gets the value for the QueryCondition object referenced by intOrQueryConditionId (Unique)
+					// @return QueryCondition
+					try {
+						if ((!$this->objOrQueryCondition) && (!is_null($this->intOrQueryConditionId)))
+							$this->objOrQueryCondition = QueryCondition::Load($this->intOrQueryConditionId);
+						return $this->objOrQueryCondition;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -979,6 +1104,24 @@
 						if ((!$this->objQueryNode) && (!is_null($this->intQueryNodeId)))
 							$this->objQueryNode = QueryNode::Load($this->intQueryNodeId);
 						return $this->objQueryNode;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'QueryConditionAsOr':
+					// Gets the value for the QueryCondition object that uniquely references this QueryCondition
+					// by objQueryConditionAsOr (Unique)
+					// @return QueryCondition
+					try {
+						if ($this->objQueryConditionAsOr === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objQueryConditionAsOr)
+							$this->objQueryConditionAsOr = QueryCondition::LoadByOrQueryConditionId($this->intId);
+						return $this->objQueryConditionAsOr;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1018,12 +1161,24 @@
 				// Member Variables
 				///////////////////
 				case 'SearchQueryId':
-					// Sets the value for intSearchQueryId (Not Null)
+					// Sets the value for intSearchQueryId 
 					// @param integer $mixValue
 					// @return integer
 					try {
 						$this->objSearchQuery = null;
 						return ($this->intSearchQueryId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'OrQueryConditionId':
+					// Sets the value for intOrQueryConditionId (Unique)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objOrQueryCondition = null;
+						return ($this->intOrQueryConditionId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1069,7 +1224,7 @@
 				// Member Objects
 				///////////////////
 				case 'SearchQuery':
-					// Sets the value for the SearchQuery object referenced by intSearchQueryId (Not Null)
+					// Sets the value for the SearchQuery object referenced by intSearchQueryId 
 					// @param SearchQuery $mixValue
 					// @return SearchQuery
 					if (is_null($mixValue)) {
@@ -1092,6 +1247,36 @@
 						// Update Local Member Variables
 						$this->objSearchQuery = $mixValue;
 						$this->intSearchQueryId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'OrQueryCondition':
+					// Sets the value for the QueryCondition object referenced by intOrQueryConditionId (Unique)
+					// @param QueryCondition $mixValue
+					// @return QueryCondition
+					if (is_null($mixValue)) {
+						$this->intOrQueryConditionId = null;
+						$this->objOrQueryCondition = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a QueryCondition object
+						try {
+							$mixValue = QType::Cast($mixValue, 'QueryCondition');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED QueryCondition object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved OrQueryCondition for this QueryCondition');
+
+						// Update Local Member Variables
+						$this->objOrQueryCondition = $mixValue;
+						$this->intOrQueryConditionId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1158,6 +1343,43 @@
 					}
 					break;
 
+				case 'QueryConditionAsOr':
+					// Sets the value for the QueryCondition object referenced by objQueryConditionAsOr (Unique)
+					// @param QueryCondition $mixValue
+					// @return QueryCondition
+					if (is_null($mixValue)) {
+						$this->objQueryConditionAsOr = null;
+
+						// Make sure we update the adjoined QueryCondition object the next time we call Save()
+						$this->blnDirtyQueryConditionAsOr = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a QueryCondition object
+						try {
+							$mixValue = QType::Cast($mixValue, 'QueryCondition');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objQueryConditionAsOr to a DIFFERENT $mixValue?
+						if ((!$this->QueryConditionAsOr) || ($this->QueryConditionAsOr->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined QueryCondition object the next time we call Save()
+							$this->blnDirtyQueryConditionAsOr = true;
+
+							// Update Local Member Variable
+							$this->objQueryConditionAsOr = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -1197,6 +1419,7 @@
 			$strToReturn = '<complexType name="QueryCondition"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="SearchQuery" type="xsd1:SearchQuery"/>';
+			$strToReturn .= '<element name="OrQueryCondition" type="xsd1:QueryCondition"/>';
 			$strToReturn .= '<element name="QueryOperation" type="xsd1:QueryOperation"/>';
 			$strToReturn .= '<element name="QueryNode" type="xsd1:QueryNode"/>';
 			$strToReturn .= '<element name="Value" type="xsd:string"/>';
@@ -1209,6 +1432,7 @@
 			if (!array_key_exists('QueryCondition', $strComplexTypeArray)) {
 				$strComplexTypeArray['QueryCondition'] = QueryCondition::GetSoapComplexTypeXml();
 				SearchQuery::AlterSoapComplexTypeArray($strComplexTypeArray);
+				QueryCondition::AlterSoapComplexTypeArray($strComplexTypeArray);
 				QueryOperation::AlterSoapComplexTypeArray($strComplexTypeArray);
 				QueryNode::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
@@ -1230,6 +1454,9 @@
 			if ((property_exists($objSoapObject, 'SearchQuery')) &&
 				($objSoapObject->SearchQuery))
 				$objToReturn->SearchQuery = SearchQuery::GetObjectFromSoapObject($objSoapObject->SearchQuery);
+			if ((property_exists($objSoapObject, 'OrQueryCondition')) &&
+				($objSoapObject->OrQueryCondition))
+				$objToReturn->OrQueryCondition = QueryCondition::GetObjectFromSoapObject($objSoapObject->OrQueryCondition);
 			if ((property_exists($objSoapObject, 'QueryOperation')) &&
 				($objSoapObject->QueryOperation))
 				$objToReturn->QueryOperation = QueryOperation::GetObjectFromSoapObject($objSoapObject->QueryOperation);
@@ -1260,6 +1487,10 @@
 				$objObject->objSearchQuery = SearchQuery::GetSoapObjectFromObject($objObject->objSearchQuery, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intSearchQueryId = null;
+			if ($objObject->objOrQueryCondition)
+				$objObject->objOrQueryCondition = QueryCondition::GetSoapObjectFromObject($objObject->objOrQueryCondition, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intOrQueryConditionId = null;
 			if ($objObject->objQueryOperation)
 				$objObject->objQueryOperation = QueryOperation::GetSoapObjectFromObject($objObject->objQueryOperation, false);
 			else if (!$blnBindRelatedObjects)
@@ -1286,11 +1517,14 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $SearchQueryId
 	 * @property-read QQNodeSearchQuery $SearchQuery
+	 * @property-read QQNode $OrQueryConditionId
+	 * @property-read QQNodeQueryCondition $OrQueryCondition
 	 * @property-read QQNode $QueryOperationId
 	 * @property-read QQNodeQueryOperation $QueryOperation
 	 * @property-read QQNode $QueryNodeId
 	 * @property-read QQNodeQueryNode $QueryNode
 	 * @property-read QQNode $Value
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryConditionAsOr
 	 */
 	class QQNodeQueryCondition extends QQNode {
 		protected $strTableName = 'query_condition';
@@ -1304,6 +1538,10 @@
 					return new QQNode('search_query_id', 'SearchQueryId', 'integer', $this);
 				case 'SearchQuery':
 					return new QQNodeSearchQuery('search_query_id', 'SearchQuery', 'integer', $this);
+				case 'OrQueryConditionId':
+					return new QQNode('or_query_condition_id', 'OrQueryConditionId', 'integer', $this);
+				case 'OrQueryCondition':
+					return new QQNodeQueryCondition('or_query_condition_id', 'OrQueryCondition', 'integer', $this);
 				case 'QueryOperationId':
 					return new QQNode('query_operation_id', 'QueryOperationId', 'integer', $this);
 				case 'QueryOperation':
@@ -1314,6 +1552,8 @@
 					return new QQNodeQueryNode('query_node_id', 'QueryNode', 'integer', $this);
 				case 'Value':
 					return new QQNode('value', 'Value', 'string', $this);
+				case 'QueryConditionAsOr':
+					return new QQReverseReferenceNodeQueryCondition($this, 'queryconditionasor', 'reverse_reference', 'or_query_condition_id', 'QueryConditionAsOr');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1332,11 +1572,14 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $SearchQueryId
 	 * @property-read QQNodeSearchQuery $SearchQuery
+	 * @property-read QQNode $OrQueryConditionId
+	 * @property-read QQNodeQueryCondition $OrQueryCondition
 	 * @property-read QQNode $QueryOperationId
 	 * @property-read QQNodeQueryOperation $QueryOperation
 	 * @property-read QQNode $QueryNodeId
 	 * @property-read QQNodeQueryNode $QueryNode
 	 * @property-read QQNode $Value
+	 * @property-read QQReverseReferenceNodeQueryCondition $QueryConditionAsOr
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeQueryCondition extends QQReverseReferenceNode {
@@ -1351,6 +1594,10 @@
 					return new QQNode('search_query_id', 'SearchQueryId', 'integer', $this);
 				case 'SearchQuery':
 					return new QQNodeSearchQuery('search_query_id', 'SearchQuery', 'integer', $this);
+				case 'OrQueryConditionId':
+					return new QQNode('or_query_condition_id', 'OrQueryConditionId', 'integer', $this);
+				case 'OrQueryCondition':
+					return new QQNodeQueryCondition('or_query_condition_id', 'OrQueryCondition', 'integer', $this);
 				case 'QueryOperationId':
 					return new QQNode('query_operation_id', 'QueryOperationId', 'integer', $this);
 				case 'QueryOperation':
@@ -1361,6 +1608,8 @@
 					return new QQNodeQueryNode('query_node_id', 'QueryNode', 'integer', $this);
 				case 'Value':
 					return new QQNode('value', 'Value', 'string', $this);
+				case 'QueryConditionAsOr':
+					return new QQReverseReferenceNodeQueryCondition($this, 'queryconditionasor', 'reverse_reference', 'or_query_condition_id', 'QueryConditionAsOr');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

@@ -104,6 +104,13 @@
 		QApplicationBase::$ClassFile['groupmetacontrol'] = __DATA_META_CONTROLS__ . '/GroupMetaControl.class.php';
 		QApplicationBase::$ClassFile['groupdatagrid'] = __DATA_META_CONTROLS__ . '/GroupDataGrid.class.php';
 
+	// ClassPaths for the GroupCategory class
+		QApplicationBase::$ClassFile['groupcategory'] = __DATA_CLASSES__ . '/GroupCategory.class.php';
+		QApplicationBase::$ClassFile['qqnodegroupcategory'] = __DATA_CLASSES__ . '/GroupCategory.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegroupcategory'] = __DATA_CLASSES__ . '/GroupCategory.class.php';
+		QApplicationBase::$ClassFile['groupcategorymetacontrol'] = __DATA_META_CONTROLS__ . '/GroupCategoryMetaControl.class.php';
+		QApplicationBase::$ClassFile['groupcategorydatagrid'] = __DATA_META_CONTROLS__ . '/GroupCategoryDataGrid.class.php';
+
 	// ClassPaths for the GroupParticipation class
 		QApplicationBase::$ClassFile['groupparticipation'] = __DATA_CLASSES__ . '/GroupParticipation.class.php';
 		QApplicationBase::$ClassFile['qqnodegroupparticipation'] = __DATA_CLASSES__ . '/GroupParticipation.class.php';

@@ -33,6 +33,7 @@
 		public $txtToken;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+		public $lstGroupCategory;
 		public $lstGrowthGroup;
 		public $lstSmartGroup;
 
@@ -73,6 +74,7 @@
 			$this->chkConfidentialFlag = $this->mctGroup->chkConfidentialFlag_Create();
 			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
 			$this->txtToken = $this->mctGroup->txtToken_Create();
+			$this->lstGroupCategory = $this->mctGroup->lstGroupCategory_Create();
 			$this->lstGrowthGroup = $this->mctGroup->lstGrowthGroup_Create();
 			$this->lstSmartGroup = $this->mctGroup->lstSmartGroup_Create();
 

@@ -298,6 +298,7 @@
 				case 'Name': return QQN::Ministry()->Name;
 				case 'ParentMinistryId': return QQN::Ministry()->ParentMinistryId;
 				case 'ParentMinistry': return QQN::Ministry()->ParentMinistry;
+				case 'GroupTypeBitmap': return QQN::Ministry()->GroupTypeBitmap;
 				case 'ActiveFlag': return QQN::Ministry()->ActiveFlag;
 				default: throw new QCallerException('Simple Property not found in MinistryDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

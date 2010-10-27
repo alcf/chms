@@ -67,10 +67,10 @@
 			// can traverse down QQN::query_node() to display fields that are down the hierarchy)
 			$this->dtgQueryNodes->MetaAddColumn('Id');
 			$this->dtgQueryNodes->MetaAddColumn('Name');
+			$this->dtgQueryNodes->MetaAddTypeColumn('QueryNodeTypeId', 'QueryNodeType');
 			$this->dtgQueryNodes->MetaAddColumn('QcodoQueryNode');
 			$this->dtgQueryNodes->MetaAddTypeColumn('QueryDataTypeId', 'QueryDataType');
-			$this->dtgQueryNodes->MetaAddColumn('TypeDetail');
-			$this->dtgQueryNodes->MetaAddColumn('QcodoQueryCondition');
+			$this->dtgQueryNodes->MetaAddColumn('NodeDetail');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

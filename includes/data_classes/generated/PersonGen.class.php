@@ -28,7 +28,9 @@
 	 * @property string $Suffix the value for strSuffix 
 	 * @property string $Gender the value for strGender 
 	 * @property QDateTime $DateOfBirth the value for dttDateOfBirth 
-	 * @property boolean $DobApproximateFlag the value for blnDobApproximateFlag 
+	 * @property boolean $DobYearApproximateFlag the value for blnDobYearApproximateFlag 
+	 * @property boolean $DobGuessedFlag the value for blnDobGuessedFlag 
+	 * @property integer $Age the value for intAge 
 	 * @property boolean $DeceasedFlag the value for blnDeceasedFlag (Not Null)
 	 * @property QDateTime $DateDeceased the value for dttDateDeceased 
 	 * @property integer $CurrentHeadShotId the value for intCurrentHeadShotId (Unique)
@@ -214,11 +216,27 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column person.dob_approximate_flag
-		 * @var boolean blnDobApproximateFlag
+		 * Protected member variable that maps to the database column person.dob_year_approximate_flag
+		 * @var boolean blnDobYearApproximateFlag
 		 */
-		protected $blnDobApproximateFlag;
-		const DobApproximateFlagDefault = null;
+		protected $blnDobYearApproximateFlag;
+		const DobYearApproximateFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.dob_guessed_flag
+		 * @var boolean blnDobGuessedFlag
+		 */
+		protected $blnDobGuessedFlag;
+		const DobGuessedFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.age
+		 * @var integer intAge
+		 */
+		protected $intAge;
+		const AgeDefault = null;
 
 
 		/**
@@ -1093,7 +1111,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'suffix', $strAliasPrefix . 'suffix');
 			$objBuilder->AddSelectItem($strTableName, 'gender', $strAliasPrefix . 'gender');
 			$objBuilder->AddSelectItem($strTableName, 'date_of_birth', $strAliasPrefix . 'date_of_birth');
-			$objBuilder->AddSelectItem($strTableName, 'dob_approximate_flag', $strAliasPrefix . 'dob_approximate_flag');
+			$objBuilder->AddSelectItem($strTableName, 'dob_year_approximate_flag', $strAliasPrefix . 'dob_year_approximate_flag');
+			$objBuilder->AddSelectItem($strTableName, 'dob_guessed_flag', $strAliasPrefix . 'dob_guessed_flag');
+			$objBuilder->AddSelectItem($strTableName, 'age', $strAliasPrefix . 'age');
 			$objBuilder->AddSelectItem($strTableName, 'deceased_flag', $strAliasPrefix . 'deceased_flag');
 			$objBuilder->AddSelectItem($strTableName, 'date_deceased', $strAliasPrefix . 'date_deceased');
 			$objBuilder->AddSelectItem($strTableName, 'current_head_shot_id', $strAliasPrefix . 'current_head_shot_id');
@@ -1490,8 +1510,12 @@
 			$objToReturn->strGender = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_of_birth', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_of_birth'] : $strAliasPrefix . 'date_of_birth';
 			$objToReturn->dttDateOfBirth = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'dob_approximate_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'dob_approximate_flag'] : $strAliasPrefix . 'dob_approximate_flag';
-			$objToReturn->blnDobApproximateFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'dob_year_approximate_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'dob_year_approximate_flag'] : $strAliasPrefix . 'dob_year_approximate_flag';
+			$objToReturn->blnDobYearApproximateFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'dob_guessed_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'dob_guessed_flag'] : $strAliasPrefix . 'dob_guessed_flag';
+			$objToReturn->blnDobGuessedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'age', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'age'] : $strAliasPrefix . 'age';
+			$objToReturn->intAge = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'deceased_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'deceased_flag'] : $strAliasPrefix . 'deceased_flag';
 			$objToReturn->blnDeceasedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_deceased', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_deceased'] : $strAliasPrefix . 'date_deceased';
@@ -2198,7 +2222,9 @@
 							`suffix`,
 							`gender`,
 							`date_of_birth`,
-							`dob_approximate_flag`,
+							`dob_year_approximate_flag`,
+							`dob_guessed_flag`,
+							`age`,
 							`deceased_flag`,
 							`date_deceased`,
 							`current_head_shot_id`,
@@ -2225,7 +2251,9 @@
 							' . $objDatabase->SqlVariable($this->strSuffix) . ',
 							' . $objDatabase->SqlVariable($this->strGender) . ',
 							' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
-							' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnDobYearApproximateFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnDobGuessedFlag) . ',
+							' . $objDatabase->SqlVariable($this->intAge) . ',
 							' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 							' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
 							' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
@@ -2270,7 +2298,9 @@
 							`suffix` = ' . $objDatabase->SqlVariable($this->strSuffix) . ',
 							`gender` = ' . $objDatabase->SqlVariable($this->strGender) . ',
 							`date_of_birth` = ' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
-							`dob_approximate_flag` = ' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
+							`dob_year_approximate_flag` = ' . $objDatabase->SqlVariable($this->blnDobYearApproximateFlag) . ',
+							`dob_guessed_flag` = ' . $objDatabase->SqlVariable($this->blnDobGuessedFlag) . ',
+							`age` = ' . $objDatabase->SqlVariable($this->intAge) . ',
 							`deceased_flag` = ' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 							`date_deceased` = ' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
 							`current_head_shot_id` = ' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
@@ -2409,7 +2439,9 @@
 			$this->strSuffix = $objReloaded->strSuffix;
 			$this->strGender = $objReloaded->strGender;
 			$this->dttDateOfBirth = $objReloaded->dttDateOfBirth;
-			$this->blnDobApproximateFlag = $objReloaded->blnDobApproximateFlag;
+			$this->blnDobYearApproximateFlag = $objReloaded->blnDobYearApproximateFlag;
+			$this->blnDobGuessedFlag = $objReloaded->blnDobGuessedFlag;
+			$this->intAge = $objReloaded->intAge;
 			$this->blnDeceasedFlag = $objReloaded->blnDeceasedFlag;
 			$this->dttDateDeceased = $objReloaded->dttDateDeceased;
 			$this->CurrentHeadShotId = $objReloaded->CurrentHeadShotId;
@@ -2448,7 +2480,9 @@
 					`suffix`,
 					`gender`,
 					`date_of_birth`,
-					`dob_approximate_flag`,
+					`dob_year_approximate_flag`,
+					`dob_guessed_flag`,
+					`age`,
 					`deceased_flag`,
 					`date_deceased`,
 					`current_head_shot_id`,
@@ -2479,7 +2513,9 @@
 					' . $objDatabase->SqlVariable($this->strSuffix) . ',
 					' . $objDatabase->SqlVariable($this->strGender) . ',
 					' . $objDatabase->SqlVariable($this->dttDateOfBirth) . ',
-					' . $objDatabase->SqlVariable($this->blnDobApproximateFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnDobYearApproximateFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnDobGuessedFlag) . ',
+					' . $objDatabase->SqlVariable($this->intAge) . ',
 					' . $objDatabase->SqlVariable($this->blnDeceasedFlag) . ',
 					' . $objDatabase->SqlVariable($this->dttDateDeceased) . ',
 					' . $objDatabase->SqlVariable($this->intCurrentHeadShotId) . ',
@@ -2608,10 +2644,20 @@
 					// @return QDateTime
 					return $this->dttDateOfBirth;
 
-				case 'DobApproximateFlag':
-					// Gets the value for blnDobApproximateFlag 
+				case 'DobYearApproximateFlag':
+					// Gets the value for blnDobYearApproximateFlag 
 					// @return boolean
-					return $this->blnDobApproximateFlag;
+					return $this->blnDobYearApproximateFlag;
+
+				case 'DobGuessedFlag':
+					// Gets the value for blnDobGuessedFlag 
+					// @return boolean
+					return $this->blnDobGuessedFlag;
+
+				case 'Age':
+					// Gets the value for intAge 
+					// @return integer
+					return $this->intAge;
 
 				case 'DeceasedFlag':
 					// Gets the value for blnDeceasedFlag (Not Null)
@@ -3189,12 +3235,34 @@
 						throw $objExc;
 					}
 
-				case 'DobApproximateFlag':
-					// Sets the value for blnDobApproximateFlag 
+				case 'DobYearApproximateFlag':
+					// Sets the value for blnDobYearApproximateFlag 
 					// @param boolean $mixValue
 					// @return boolean
 					try {
-						return ($this->blnDobApproximateFlag = QType::Cast($mixValue, QType::Boolean));
+						return ($this->blnDobYearApproximateFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DobGuessedFlag':
+					// Sets the value for blnDobGuessedFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnDobGuessedFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Age':
+					// Sets the value for intAge 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intAge = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -7596,7 +7664,9 @@
 			$strToReturn .= '<element name="Suffix" type="xsd:string"/>';
 			$strToReturn .= '<element name="Gender" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateOfBirth" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="DobApproximateFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="DobYearApproximateFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="DobGuessedFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="Age" type="xsd:int"/>';
 			$strToReturn .= '<element name="DeceasedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateDeceased" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="CurrentHeadShot" type="xsd1:HeadShot"/>';
@@ -7663,8 +7733,12 @@
 				$objToReturn->strGender = $objSoapObject->Gender;
 			if (property_exists($objSoapObject, 'DateOfBirth'))
 				$objToReturn->dttDateOfBirth = new QDateTime($objSoapObject->DateOfBirth);
-			if (property_exists($objSoapObject, 'DobApproximateFlag'))
-				$objToReturn->blnDobApproximateFlag = $objSoapObject->DobApproximateFlag;
+			if (property_exists($objSoapObject, 'DobYearApproximateFlag'))
+				$objToReturn->blnDobYearApproximateFlag = $objSoapObject->DobYearApproximateFlag;
+			if (property_exists($objSoapObject, 'DobGuessedFlag'))
+				$objToReturn->blnDobGuessedFlag = $objSoapObject->DobGuessedFlag;
+			if (property_exists($objSoapObject, 'Age'))
+				$objToReturn->intAge = $objSoapObject->Age;
 			if (property_exists($objSoapObject, 'DeceasedFlag'))
 				$objToReturn->blnDeceasedFlag = $objSoapObject->DeceasedFlag;
 			if (property_exists($objSoapObject, 'DateDeceased'))
@@ -7862,7 +7936,9 @@
 	 * @property-read QQNode $Suffix
 	 * @property-read QQNode $Gender
 	 * @property-read QQNode $DateOfBirth
-	 * @property-read QQNode $DobApproximateFlag
+	 * @property-read QQNode $DobYearApproximateFlag
+	 * @property-read QQNode $DobGuessedFlag
+	 * @property-read QQNode $Age
 	 * @property-read QQNode $DeceasedFlag
 	 * @property-read QQNode $DateDeceased
 	 * @property-read QQNode $CurrentHeadShotId
@@ -7937,8 +8013,12 @@
 					return new QQNode('gender', 'Gender', 'string', $this);
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
-				case 'DobApproximateFlag':
-					return new QQNode('dob_approximate_flag', 'DobApproximateFlag', 'boolean', $this);
+				case 'DobYearApproximateFlag':
+					return new QQNode('dob_year_approximate_flag', 'DobYearApproximateFlag', 'boolean', $this);
+				case 'DobGuessedFlag':
+					return new QQNode('dob_guessed_flag', 'DobGuessedFlag', 'boolean', $this);
+				case 'Age':
+					return new QQNode('age', 'Age', 'integer', $this);
 				case 'DeceasedFlag':
 					return new QQNode('deceased_flag', 'DeceasedFlag', 'boolean', $this);
 				case 'DateDeceased':
@@ -8049,7 +8129,9 @@
 	 * @property-read QQNode $Suffix
 	 * @property-read QQNode $Gender
 	 * @property-read QQNode $DateOfBirth
-	 * @property-read QQNode $DobApproximateFlag
+	 * @property-read QQNode $DobYearApproximateFlag
+	 * @property-read QQNode $DobGuessedFlag
+	 * @property-read QQNode $Age
 	 * @property-read QQNode $DeceasedFlag
 	 * @property-read QQNode $DateDeceased
 	 * @property-read QQNode $CurrentHeadShotId
@@ -8125,8 +8207,12 @@
 					return new QQNode('gender', 'Gender', 'string', $this);
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
-				case 'DobApproximateFlag':
-					return new QQNode('dob_approximate_flag', 'DobApproximateFlag', 'boolean', $this);
+				case 'DobYearApproximateFlag':
+					return new QQNode('dob_year_approximate_flag', 'DobYearApproximateFlag', 'boolean', $this);
+				case 'DobGuessedFlag':
+					return new QQNode('dob_guessed_flag', 'DobGuessedFlag', 'boolean', $this);
+				case 'Age':
+					return new QQNode('age', 'Age', 'integer', $this);
 				case 'DeceasedFlag':
 					return new QQNode('deceased_flag', 'DeceasedFlag', 'boolean', $this);
 				case 'DateDeceased':

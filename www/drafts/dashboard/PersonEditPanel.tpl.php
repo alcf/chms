@@ -31,7 +31,11 @@
 
 		<?php $_CONTROL->calDateOfBirth->RenderWithName(); ?>
 
-		<?php $_CONTROL->chkDobApproximateFlag->RenderWithName(); ?>
+		<?php $_CONTROL->chkDobYearApproximateFlag->RenderWithName(); ?>
+
+		<?php $_CONTROL->chkDobGuessedFlag->RenderWithName(); ?>
+
+		<?php $_CONTROL->txtAge->RenderWithName(); ?>
 
 		<?php $_CONTROL->chkDeceasedFlag->RenderWithName(); ?>
 

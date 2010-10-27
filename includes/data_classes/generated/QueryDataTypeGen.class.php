@@ -20,33 +20,37 @@
 	abstract class QueryDataTypeGen extends QBaseClass {
 		const StringValue = 1;
 		const IntegerValue = 2;
-		const DateValue = 3;
-		const TypeValue = 4;
-		const CustomValue = 5;
+		const DateValue = 4;
+		const TypeValue = 8;
+		const BooleanValue = 16;
+		const CustomValue = 32;
 
-		const MaxId = 5;
+		const MaxId = 32;
 
 		public static $NameArray = array(
 			1 => 'String Value',
 			2 => 'Integer Value',
-			3 => 'Date Value',
-			4 => 'Type Value',
-			5 => 'Custom Value');
+			4 => 'Date Value',
+			8 => 'Type Value',
+			16 => 'Boolean Value',
+			32 => 'Custom Value');
 
 		public static $TokenArray = array(
 			1 => 'StringValue',
 			2 => 'IntegerValue',
-			3 => 'DateValue',
-			4 => 'TypeValue',
-			5 => 'CustomValue');
+			4 => 'DateValue',
+			8 => 'TypeValue',
+			16 => 'BooleanValue',
+			32 => 'CustomValue');
 
 		public static function ToString($intQueryDataTypeId) {
 			switch ($intQueryDataTypeId) {
 				case 1: return 'String Value';
 				case 2: return 'Integer Value';
-				case 3: return 'Date Value';
-				case 4: return 'Type Value';
-				case 5: return 'Custom Value';
+				case 4: return 'Date Value';
+				case 8: return 'Type Value';
+				case 16: return 'Boolean Value';
+				case 32: return 'Custom Value';
 				default:
 					throw new QCallerException(sprintf('Invalid intQueryDataTypeId: %s', $intQueryDataTypeId));
 			}
@@ -56,9 +60,10 @@
 			switch ($intQueryDataTypeId) {
 				case 1: return 'StringValue';
 				case 2: return 'IntegerValue';
-				case 3: return 'DateValue';
-				case 4: return 'TypeValue';
-				case 5: return 'CustomValue';
+				case 4: return 'DateValue';
+				case 8: return 'TypeValue';
+				case 16: return 'BooleanValue';
+				case 32: return 'CustomValue';
 				default:
 					throw new QCallerException(sprintf('Invalid intQueryDataTypeId: %s', $intQueryDataTypeId));
 			}

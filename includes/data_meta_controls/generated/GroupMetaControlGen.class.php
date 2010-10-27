@@ -38,6 +38,8 @@
 	 * property-read QLabel $EmailBroadcastTypeIdLabel
 	 * property QTextBox $TokenControl
 	 * property-read QLabel $TokenLabel
+	 * property QListBox $GroupCategoryControl
+	 * property-read QLabel $GroupCategoryLabel
 	 * property QListBox $GrowthGroupControl
 	 * property-read QLabel $GrowthGroupLabel
 	 * property QListBox $SmartGroupControl
@@ -204,6 +206,12 @@
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
         /**
+         * @var QListBox lstGroupCategory
+         * @access protected
+         */
+		protected $lstGroupCategory;
+
+        /**
          * @var QListBox lstGrowthGroup
          * @access protected
          */
@@ -217,6 +225,12 @@
 
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblGroupCategory
+         * @access protected
+         */
+		protected $lblGroupCategory;
+
         /**
          * @var QLabel lblGrowthGroup
          * @access protected
@@ -626,6 +640,50 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstGroupCategory
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstGroupCategory_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstGroupCategory = new QListBox($this->objParentObject, $strControlId);
+			$this->lstGroupCategory->Name = QApplication::Translate('Group Category');
+			$this->lstGroupCategory->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupCategoryCursor = GroupCategory::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroupCategory = GroupCategory::InstantiateCursor($objGroupCategoryCursor)) {
+				$objListItem = new QListItem($objGroupCategory->__toString(), $objGroupCategory->GroupId);
+				if ($objGroupCategory->GroupId == $this->objGroup->Id)
+					$objListItem->Selected = true;
+				$this->lstGroupCategory->AddItem($objListItem);
+			}
+
+			// Because GroupCategory's GroupCategory is not null, if a value is already selected, it cannot be changed.
+			if ($this->lstGroupCategory->SelectedValue)
+				$this->lstGroupCategory->Enabled = false;
+
+			// Return the QListBox
+			return $this->lstGroupCategory;
+		}
+
+		/**
+		 * Create and setup QLabel lblGroupCategory
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblGroupCategory_Create($strControlId = null) {
+			$this->lblGroupCategory = new QLabel($this->objParentObject, $strControlId);
+			$this->lblGroupCategory->Name = QApplication::Translate('Group Category');
+			$this->lblGroupCategory->Text = ($this->objGroup->GroupCategory) ? $this->objGroup->GroupCategory->__toString() : null;
+			return $this->lblGroupCategory;
+		}
+
+		/**
 		 * Create and setup QListBox lstGrowthGroup
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -777,6 +835,24 @@
 			if ($this->txtToken) $this->txtToken->Text = $this->objGroup->Token;
 			if ($this->lblToken) $this->lblToken->Text = $this->objGroup->Token;
 
+			if ($this->lstGroupCategory) {
+				$this->lstGroupCategory->RemoveAllItems();
+				$this->lstGroupCategory->AddItem(QApplication::Translate('- Select One -'), null);
+				$objGroupCategoryArray = GroupCategory::LoadAll();
+				if ($objGroupCategoryArray) foreach ($objGroupCategoryArray as $objGroupCategory) {
+					$objListItem = new QListItem($objGroupCategory->__toString(), $objGroupCategory->GroupId);
+					if ($objGroupCategory->GroupId == $this->objGroup->Id)
+						$objListItem->Selected = true;
+					$this->lstGroupCategory->AddItem($objListItem);
+				}
+				// Because GroupCategory's GroupCategory is not null, if a value is already selected, it cannot be changed.
+				if ($this->lstGroupCategory->SelectedValue)
+					$this->lstGroupCategory->Enabled = false;
+				else
+					$this->lstGroupCategory->Enabled = true;
+			}
+			if ($this->lblGroupCategory) $this->lblGroupCategory->Text = ($this->objGroup->GroupCategory) ? $this->objGroup->GroupCategory->__toString() : null;
+
 			if ($this->lstGrowthGroup) {
 				$this->lstGrowthGroup->RemoveAllItems();
 				$this->lstGrowthGroup->AddItem(QApplication::Translate('- Select One -'), null);
@@ -848,6 +924,7 @@
 				if ($this->txtToken) $this->objGroup->Token = $this->txtToken->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstGroupCategory) $this->objGroup->GroupCategory = GroupCategory::Load($this->lstGroupCategory->SelectedValue);
 				if ($this->lstGrowthGroup) $this->objGroup->GrowthGroup = GrowthGroup::Load($this->lstGrowthGroup->SelectedValue);
 				if ($this->lstSmartGroup) $this->objGroup->SmartGroup = SmartGroup::Load($this->lstSmartGroup->SelectedValue);
 
@@ -956,6 +1033,12 @@
 				case 'TokenLabel':
 					if (!$this->lblToken) return $this->lblToken_Create();
 					return $this->lblToken;
+				case 'GroupCategoryControl':
+					if (!$this->lstGroupCategory) return $this->lstGroupCategory_Create();
+					return $this->lstGroupCategory;
+				case 'GroupCategoryLabel':
+					if (!$this->lblGroupCategory) return $this->lblGroupCategory_Create();
+					return $this->lblGroupCategory;
 				case 'GrowthGroupControl':
 					if (!$this->lstGrowthGroup) return $this->lstGrowthGroup_Create();
 					return $this->lstGrowthGroup;
@@ -1012,6 +1095,8 @@
 						return ($this->lstEmailBroadcastType = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
+					case 'GroupCategoryControl':
+						return ($this->lstGroupCategory = QType::Cast($mixValue, 'QControl'));
 					case 'GrowthGroupControl':
 						return ($this->lstGrowthGroup = QType::Cast($mixValue, 'QControl'));
 					case 'SmartGroupControl':

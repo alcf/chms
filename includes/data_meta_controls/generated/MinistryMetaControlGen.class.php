@@ -24,6 +24,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QListBox $ParentMinistryIdControl
 	 * property-read QLabel $ParentMinistryIdLabel
+	 * property QIntegerTextBox $GroupTypeBitmapControl
+	 * property-read QLabel $GroupTypeBitmapLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
 	 * property QListBox $LoginControl
@@ -84,6 +86,12 @@
 		protected $lstParentMinistry;
 
         /**
+         * @var QIntegerTextBox txtGroupTypeBitmap;
+         * @access protected
+         */
+		protected $txtGroupTypeBitmap;
+
+        /**
          * @var QCheckBox chkActiveFlag;
          * @access protected
          */
@@ -108,6 +116,12 @@
          * @access protected
          */
 		protected $lblParentMinistryId;
+
+        /**
+         * @var QLabel lblGroupTypeBitmap
+         * @access protected
+         */
+		protected $lblGroupTypeBitmap;
 
         /**
          * @var QLabel lblActiveFlag
@@ -325,6 +339,32 @@
 		}
 
 		/**
+		 * Create and setup QIntegerTextBox txtGroupTypeBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtGroupTypeBitmap_Create($strControlId = null) {
+			$this->txtGroupTypeBitmap = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtGroupTypeBitmap->Name = QApplication::Translate('Group Type Bitmap');
+			$this->txtGroupTypeBitmap->Text = $this->objMinistry->GroupTypeBitmap;
+			return $this->txtGroupTypeBitmap;
+		}
+
+		/**
+		 * Create and setup QLabel lblGroupTypeBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblGroupTypeBitmap_Create($strControlId = null, $strFormat = null) {
+			$this->lblGroupTypeBitmap = new QLabel($this->objParentObject, $strControlId);
+			$this->lblGroupTypeBitmap->Name = QApplication::Translate('Group Type Bitmap');
+			$this->lblGroupTypeBitmap->Text = $this->objMinistry->GroupTypeBitmap;
+			$this->lblGroupTypeBitmap->Format = $strFormat;
+			return $this->lblGroupTypeBitmap;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkActiveFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -431,6 +471,9 @@
 			}
 			if ($this->lblParentMinistryId) $this->lblParentMinistryId->Text = ($this->objMinistry->ParentMinistry) ? $this->objMinistry->ParentMinistry->__toString() : null;
 
+			if ($this->txtGroupTypeBitmap) $this->txtGroupTypeBitmap->Text = $this->objMinistry->GroupTypeBitmap;
+			if ($this->lblGroupTypeBitmap) $this->lblGroupTypeBitmap->Text = $this->objMinistry->GroupTypeBitmap;
+
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objMinistry->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objMinistry->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -491,6 +534,7 @@
 				if ($this->txtToken) $this->objMinistry->Token = $this->txtToken->Text;
 				if ($this->txtName) $this->objMinistry->Name = $this->txtName->Text;
 				if ($this->lstParentMinistry) $this->objMinistry->ParentMinistryId = $this->lstParentMinistry->SelectedValue;
+				if ($this->txtGroupTypeBitmap) $this->objMinistry->GroupTypeBitmap = $this->txtGroupTypeBitmap->Text;
 				if ($this->chkActiveFlag) $this->objMinistry->ActiveFlag = $this->chkActiveFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -560,6 +604,12 @@
 				case 'ParentMinistryIdLabel':
 					if (!$this->lblParentMinistryId) return $this->lblParentMinistryId_Create();
 					return $this->lblParentMinistryId;
+				case 'GroupTypeBitmapControl':
+					if (!$this->txtGroupTypeBitmap) return $this->txtGroupTypeBitmap_Create();
+					return $this->txtGroupTypeBitmap;
+				case 'GroupTypeBitmapLabel':
+					if (!$this->lblGroupTypeBitmap) return $this->lblGroupTypeBitmap_Create();
+					return $this->lblGroupTypeBitmap;
 				case 'ActiveFlagControl':
 					if (!$this->chkActiveFlag) return $this->chkActiveFlag_Create();
 					return $this->chkActiveFlag;
@@ -602,6 +652,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'ParentMinistryIdControl':
 						return ($this->lstParentMinistry = QType::Cast($mixValue, 'QControl'));
+					case 'GroupTypeBitmapControl':
+						return ($this->txtGroupTypeBitmap = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
 					case 'LoginControl':

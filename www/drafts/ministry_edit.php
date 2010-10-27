@@ -27,6 +27,7 @@
 		protected $txtToken;
 		protected $txtName;
 		protected $lstParentMinistry;
+		protected $txtGroupTypeBitmap;
 		protected $chkActiveFlag;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -59,6 +60,7 @@
 			$this->txtToken = $this->mctMinistry->txtToken_Create();
 			$this->txtName = $this->mctMinistry->txtName_Create();
 			$this->lstParentMinistry = $this->mctMinistry->lstParentMinistry_Create();
+			$this->txtGroupTypeBitmap = $this->mctMinistry->txtGroupTypeBitmap_Create();
 			$this->chkActiveFlag = $this->mctMinistry->chkActiveFlag_Create();
 			$this->lstLogins = $this->mctMinistry->lstLogins_Create();
 

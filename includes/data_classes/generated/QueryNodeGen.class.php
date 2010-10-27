@@ -17,10 +17,10 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Name the value for strName 
+	 * @property integer $QueryNodeTypeId the value for intQueryNodeTypeId (Not Null)
 	 * @property string $QcodoQueryNode the value for strQcodoQueryNode 
 	 * @property integer $QueryDataTypeId the value for intQueryDataTypeId (Not Null)
-	 * @property string $TypeDetail the value for strTypeDetail 
-	 * @property string $QcodoQueryCondition the value for strQcodoQueryCondition 
+	 * @property string $NodeDetail the value for strNodeDetail 
 	 * @property QueryCondition $_QueryCondition the value for the private _objQueryCondition (Read-Only) if set due to an expansion on the query_condition.query_node_id reverse relationship
 	 * @property QueryCondition[] $_QueryConditionArray the value for the private _objQueryConditionArray (Read-Only) if set due to an ExpandAsArray on the query_condition.query_node_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -49,6 +49,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column query_node.query_node_type_id
+		 * @var integer intQueryNodeTypeId
+		 */
+		protected $intQueryNodeTypeId;
+		const QueryNodeTypeIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column query_node.qcodo_query_node
 		 * @var string strQcodoQueryNode
 		 */
@@ -65,20 +73,12 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column query_node.type_detail
-		 * @var string strTypeDetail
+		 * Protected member variable that maps to the database column query_node.node_detail
+		 * @var string strNodeDetail
 		 */
-		protected $strTypeDetail;
-		const TypeDetailMaxLength = 255;
-		const TypeDetailDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column query_node.qcodo_query_condition
-		 * @var string strQcodoQueryCondition
-		 */
-		protected $strQcodoQueryCondition;
-		const QcodoQueryConditionDefault = null;
+		protected $strNodeDetail;
+		const NodeDetailMaxLength = 255;
+		const NodeDetailDefault = null;
 
 
 		/**
@@ -431,10 +431,10 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
+			$objBuilder->AddSelectItem($strTableName, 'query_node_type_id', $strAliasPrefix . 'query_node_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'qcodo_query_node', $strAliasPrefix . 'qcodo_query_node');
 			$objBuilder->AddSelectItem($strTableName, 'query_data_type_id', $strAliasPrefix . 'query_data_type_id');
-			$objBuilder->AddSelectItem($strTableName, 'type_detail', $strAliasPrefix . 'type_detail');
-			$objBuilder->AddSelectItem($strTableName, 'qcodo_query_condition', $strAliasPrefix . 'qcodo_query_condition');
+			$objBuilder->AddSelectItem($strTableName, 'node_detail', $strAliasPrefix . 'node_detail');
 		}
 
 
@@ -502,14 +502,14 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'name'] : $strAliasPrefix . 'name';
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'query_node_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_node_type_id'] : $strAliasPrefix . 'query_node_type_id';
+			$objToReturn->intQueryNodeTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'qcodo_query_node', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'qcodo_query_node'] : $strAliasPrefix . 'qcodo_query_node';
 			$objToReturn->strQcodoQueryNode = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'query_data_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'query_data_type_id'] : $strAliasPrefix . 'query_data_type_id';
 			$objToReturn->intQueryDataTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'type_detail', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'type_detail'] : $strAliasPrefix . 'type_detail';
-			$objToReturn->strTypeDetail = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'qcodo_query_condition', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'qcodo_query_condition'] : $strAliasPrefix . 'qcodo_query_condition';
-			$objToReturn->strQcodoQueryCondition = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'node_detail', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'node_detail'] : $strAliasPrefix . 'node_detail';
+			$objToReturn->strNodeDetail = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -621,6 +621,38 @@
 			
 		/**
 		 * Load an array of QueryNode objects,
+		 * by QueryNodeTypeId Index(es)
+		 * @param integer $intQueryNodeTypeId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return QueryNode[]
+		*/
+		public static function LoadArrayByQueryNodeTypeId($intQueryNodeTypeId, $objOptionalClauses = null) {
+			// Call QueryNode::QueryArray to perform the LoadArrayByQueryNodeTypeId query
+			try {
+				return QueryNode::QueryArray(
+					QQ::Equal(QQN::QueryNode()->QueryNodeTypeId, $intQueryNodeTypeId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count QueryNodes
+		 * by QueryNodeTypeId Index(es)
+		 * @param integer $intQueryNodeTypeId
+		 * @return int
+		*/
+		public static function CountByQueryNodeTypeId($intQueryNodeTypeId) {
+			// Call QueryNode::QueryCount to perform the CountByQueryNodeTypeId query
+			return QueryNode::QueryCount(
+				QQ::Equal(QQN::QueryNode()->QueryNodeTypeId, $intQueryNodeTypeId)
+			);
+		}
+			
+		/**
+		 * Load an array of QueryNode objects,
 		 * by QueryDataTypeId Index(es)
 		 * @param integer $intQueryDataTypeId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -682,16 +714,16 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `query_node` (
 							`name`,
+							`query_node_type_id`,
 							`qcodo_query_node`,
 							`query_data_type_id`,
-							`type_detail`,
-							`qcodo_query_condition`
+							`node_detail`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strName) . ',
+							' . $objDatabase->SqlVariable($this->intQueryNodeTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strQcodoQueryNode) . ',
 							' . $objDatabase->SqlVariable($this->intQueryDataTypeId) . ',
-							' . $objDatabase->SqlVariable($this->strTypeDetail) . ',
-							' . $objDatabase->SqlVariable($this->strQcodoQueryCondition) . '
+							' . $objDatabase->SqlVariable($this->strNodeDetail) . '
 						)
 					');
 
@@ -712,10 +744,10 @@
 							`query_node`
 						SET
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
+							`query_node_type_id` = ' . $objDatabase->SqlVariable($this->intQueryNodeTypeId) . ',
 							`qcodo_query_node` = ' . $objDatabase->SqlVariable($this->strQcodoQueryNode) . ',
 							`query_data_type_id` = ' . $objDatabase->SqlVariable($this->intQueryDataTypeId) . ',
-							`type_detail` = ' . $objDatabase->SqlVariable($this->strTypeDetail) . ',
-							`qcodo_query_condition` = ' . $objDatabase->SqlVariable($this->strQcodoQueryCondition) . '
+							`node_detail` = ' . $objDatabase->SqlVariable($this->strNodeDetail) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -801,10 +833,10 @@
 
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
+			$this->QueryNodeTypeId = $objReloaded->QueryNodeTypeId;
 			$this->strQcodoQueryNode = $objReloaded->strQcodoQueryNode;
 			$this->QueryDataTypeId = $objReloaded->QueryDataTypeId;
-			$this->strTypeDetail = $objReloaded->strTypeDetail;
-			$this->strQcodoQueryCondition = $objReloaded->strQcodoQueryCondition;
+			$this->strNodeDetail = $objReloaded->strNodeDetail;
 		}
 
 		/**
@@ -819,20 +851,20 @@
 				INSERT INTO `query_node` (
 					`id`,
 					`name`,
+					`query_node_type_id`,
 					`qcodo_query_node`,
 					`query_data_type_id`,
-					`type_detail`,
-					`qcodo_query_condition`,
+					`node_detail`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->intQueryNodeTypeId) . ',
 					' . $objDatabase->SqlVariable($this->strQcodoQueryNode) . ',
 					' . $objDatabase->SqlVariable($this->intQueryDataTypeId) . ',
-					' . $objDatabase->SqlVariable($this->strTypeDetail) . ',
-					' . $objDatabase->SqlVariable($this->strQcodoQueryCondition) . ',
+					' . $objDatabase->SqlVariable($this->strNodeDetail) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -893,6 +925,11 @@
 					// @return string
 					return $this->strName;
 
+				case 'QueryNodeTypeId':
+					// Gets the value for intQueryNodeTypeId (Not Null)
+					// @return integer
+					return $this->intQueryNodeTypeId;
+
 				case 'QcodoQueryNode':
 					// Gets the value for strQcodoQueryNode 
 					// @return string
@@ -903,15 +940,10 @@
 					// @return integer
 					return $this->intQueryDataTypeId;
 
-				case 'TypeDetail':
-					// Gets the value for strTypeDetail 
+				case 'NodeDetail':
+					// Gets the value for strNodeDetail 
 					// @return string
-					return $this->strTypeDetail;
-
-				case 'QcodoQueryCondition':
-					// Gets the value for strQcodoQueryCondition 
-					// @return string
-					return $this->strQcodoQueryCondition;
+					return $this->strNodeDetail;
 
 
 				///////////////////
@@ -973,6 +1005,17 @@
 						throw $objExc;
 					}
 
+				case 'QueryNodeTypeId':
+					// Sets the value for intQueryNodeTypeId (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intQueryNodeTypeId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'QcodoQueryNode':
 					// Sets the value for strQcodoQueryNode 
 					// @param string $mixValue
@@ -995,23 +1038,12 @@
 						throw $objExc;
 					}
 
-				case 'TypeDetail':
-					// Sets the value for strTypeDetail 
+				case 'NodeDetail':
+					// Sets the value for strNodeDetail 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strTypeDetail = QType::Cast($mixValue, QType::String));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'QcodoQueryCondition':
-					// Sets the value for strQcodoQueryCondition 
-					// @param string $mixValue
-					// @return string
-					try {
-						return ($this->strQcodoQueryCondition = QType::Cast($mixValue, QType::String));
+						return ($this->strNodeDetail = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1242,10 +1274,10 @@
 			$strToReturn = '<complexType name="QueryNode"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
+			$strToReturn .= '<element name="QueryNodeTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="QcodoQueryNode" type="xsd:string"/>';
 			$strToReturn .= '<element name="QueryDataTypeId" type="xsd:int"/>';
-			$strToReturn .= '<element name="TypeDetail" type="xsd:string"/>';
-			$strToReturn .= '<element name="QcodoQueryCondition" type="xsd:string"/>';
+			$strToReturn .= '<element name="NodeDetail" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1272,14 +1304,14 @@
 				$objToReturn->intId = $objSoapObject->Id;
 			if (property_exists($objSoapObject, 'Name'))
 				$objToReturn->strName = $objSoapObject->Name;
+			if (property_exists($objSoapObject, 'QueryNodeTypeId'))
+				$objToReturn->intQueryNodeTypeId = $objSoapObject->QueryNodeTypeId;
 			if (property_exists($objSoapObject, 'QcodoQueryNode'))
 				$objToReturn->strQcodoQueryNode = $objSoapObject->QcodoQueryNode;
 			if (property_exists($objSoapObject, 'QueryDataTypeId'))
 				$objToReturn->intQueryDataTypeId = $objSoapObject->QueryDataTypeId;
-			if (property_exists($objSoapObject, 'TypeDetail'))
-				$objToReturn->strTypeDetail = $objSoapObject->TypeDetail;
-			if (property_exists($objSoapObject, 'QcodoQueryCondition'))
-				$objToReturn->strQcodoQueryCondition = $objSoapObject->QcodoQueryCondition;
+			if (property_exists($objSoapObject, 'NodeDetail'))
+				$objToReturn->strNodeDetail = $objSoapObject->NodeDetail;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1315,10 +1347,10 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Name
+	 * @property-read QQNode $QueryNodeTypeId
 	 * @property-read QQNode $QcodoQueryNode
 	 * @property-read QQNode $QueryDataTypeId
-	 * @property-read QQNode $TypeDetail
-	 * @property-read QQNode $QcodoQueryCondition
+	 * @property-read QQNode $NodeDetail
 	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
 	 */
 	class QQNodeQueryNode extends QQNode {
@@ -1331,14 +1363,14 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'QueryNodeTypeId':
+					return new QQNode('query_node_type_id', 'QueryNodeTypeId', 'integer', $this);
 				case 'QcodoQueryNode':
 					return new QQNode('qcodo_query_node', 'QcodoQueryNode', 'string', $this);
 				case 'QueryDataTypeId':
 					return new QQNode('query_data_type_id', 'QueryDataTypeId', 'integer', $this);
-				case 'TypeDetail':
-					return new QQNode('type_detail', 'TypeDetail', 'string', $this);
-				case 'QcodoQueryCondition':
-					return new QQNode('qcodo_query_condition', 'QcodoQueryCondition', 'string', $this);
+				case 'NodeDetail':
+					return new QQNode('node_detail', 'NodeDetail', 'string', $this);
 				case 'QueryCondition':
 					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node_id');
 
@@ -1358,10 +1390,10 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Name
+	 * @property-read QQNode $QueryNodeTypeId
 	 * @property-read QQNode $QcodoQueryNode
 	 * @property-read QQNode $QueryDataTypeId
-	 * @property-read QQNode $TypeDetail
-	 * @property-read QQNode $QcodoQueryCondition
+	 * @property-read QQNode $NodeDetail
 	 * @property-read QQReverseReferenceNodeQueryCondition $QueryCondition
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1375,14 +1407,14 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'QueryNodeTypeId':
+					return new QQNode('query_node_type_id', 'QueryNodeTypeId', 'integer', $this);
 				case 'QcodoQueryNode':
 					return new QQNode('qcodo_query_node', 'QcodoQueryNode', 'string', $this);
 				case 'QueryDataTypeId':
 					return new QQNode('query_data_type_id', 'QueryDataTypeId', 'integer', $this);
-				case 'TypeDetail':
-					return new QQNode('type_detail', 'TypeDetail', 'string', $this);
-				case 'QcodoQueryCondition':
-					return new QQNode('qcodo_query_condition', 'QcodoQueryCondition', 'string', $this);
+				case 'NodeDetail':
+					return new QQNode('node_detail', 'NodeDetail', 'string', $this);
 				case 'QueryCondition':
 					return new QQReverseReferenceNodeQueryCondition($this, 'querycondition', 'reverse_reference', 'query_node_id');
 

@@ -59,6 +59,7 @@
 			$this->dtgMinistries->MetaAddColumn('Token');
 			$this->dtgMinistries->MetaAddColumn('Name');
 			$this->dtgMinistries->MetaAddColumn(QQN::Ministry()->ParentMinistry);
+			$this->dtgMinistries->MetaAddColumn('GroupTypeBitmap');
 			$this->dtgMinistries->MetaAddColumn('ActiveFlag');
 		}
 	}

@@ -57,9 +57,11 @@
 			// can traverse down QQN::query_condition() to display fields that are down the hierarchy)
 			$this->dtgQueryConditions->MetaAddColumn('Id');
 			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->SearchQuery);
+			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->OrQueryCondition);
 			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryOperation);
 			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryNode);
 			$this->dtgQueryConditions->MetaAddColumn('Value');
+			$this->dtgQueryConditions->MetaAddColumn(QQN::QueryCondition()->QueryConditionAsOr);
 		}
 	}
 

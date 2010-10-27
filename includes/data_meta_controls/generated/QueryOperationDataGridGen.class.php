@@ -294,6 +294,7 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "query_operation".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::QueryOperation()->Id;
+				case 'QueryDataTypeBitmap': return QQN::QueryOperation()->QueryDataTypeBitmap;
 				case 'Name': return QQN::QueryOperation()->Name;
 				case 'QqFactoryName': return QQN::QueryOperation()->QqFactoryName;
 				case 'ArgumentFlag': return QQN::QueryOperation()->ArgumentFlag;

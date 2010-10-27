@@ -33,7 +33,9 @@
 		public $txtSuffix;
 		public $txtGender;
 		public $calDateOfBirth;
-		public $chkDobApproximateFlag;
+		public $chkDobYearApproximateFlag;
+		public $chkDobGuessedFlag;
+		public $txtAge;
 		public $chkDeceasedFlag;
 		public $calDateDeceased;
 		public $lstCurrentHeadShot;
@@ -93,7 +95,9 @@
 			$this->txtSuffix = $this->mctPerson->txtSuffix_Create();
 			$this->txtGender = $this->mctPerson->txtGender_Create();
 			$this->calDateOfBirth = $this->mctPerson->calDateOfBirth_Create();
-			$this->chkDobApproximateFlag = $this->mctPerson->chkDobApproximateFlag_Create();
+			$this->chkDobYearApproximateFlag = $this->mctPerson->chkDobYearApproximateFlag_Create();
+			$this->chkDobGuessedFlag = $this->mctPerson->chkDobGuessedFlag_Create();
+			$this->txtAge = $this->mctPerson->txtAge_Create();
 			$this->chkDeceasedFlag = $this->mctPerson->chkDeceasedFlag_Create();
 			$this->calDateDeceased = $this->mctPerson->calDateDeceased_Create();
 			$this->lstCurrentHeadShot = $this->mctPerson->lstCurrentHeadShot_Create();

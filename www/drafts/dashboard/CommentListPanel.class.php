@@ -72,6 +72,7 @@
 			$this->dtgComments->MetaAddColumn(QQN::Comment()->CommentCategory);
 			$this->dtgComments->MetaAddColumn('Comment');
 			$this->dtgComments->MetaAddColumn('DatePosted');
+			$this->dtgComments->MetaAddColumn('DateAction');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

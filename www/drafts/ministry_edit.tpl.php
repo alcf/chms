@@ -23,6 +23,8 @@
 
 		<?php $this->lstParentMinistry->RenderWithName(); ?>
 
+		<?php $this->txtGroupTypeBitmap->RenderWithName(); ?>
+
 		<?php $this->chkActiveFlag->RenderWithName(); ?>
 
 		<?php $this->lstLogins->RenderWithName(true, "Rows=7"); ?>

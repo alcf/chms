@@ -41,7 +41,11 @@
 
 		<?php $this->calDateOfBirth->RenderWithName(); ?>
 
-		<?php $this->chkDobApproximateFlag->RenderWithName(); ?>
+		<?php $this->chkDobYearApproximateFlag->RenderWithName(); ?>
+
+		<?php $this->chkDobGuessedFlag->RenderWithName(); ?>
+
+		<?php $this->txtAge->RenderWithName(); ?>
 
 		<?php $this->chkDeceasedFlag->RenderWithName(); ?>
 

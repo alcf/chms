@@ -76,6 +76,7 @@
 			$this->dtgGroups->MetaAddColumn('ConfidentialFlag');
 			$this->dtgGroups->MetaAddTypeColumn('EmailBroadcastTypeId', 'EmailBroadcastType');
 			$this->dtgGroups->MetaAddColumn('Token');
+			$this->dtgGroups->MetaAddColumn(QQN::Group()->GroupCategory);
 			$this->dtgGroups->MetaAddColumn(QQN::Group()->GrowthGroup);
 			$this->dtgGroups->MetaAddColumn(QQN::Group()->SmartGroup);
 

@@ -9,11 +9,15 @@
 
 		<?php $_CONTROL->lstSearchQuery->RenderWithName(); ?>
 
+		<?php $_CONTROL->lstOrQueryCondition->RenderWithName(); ?>
+
 		<?php $_CONTROL->lstQueryOperation->RenderWithName(); ?>
 
 		<?php $_CONTROL->lstQueryNode->RenderWithName(); ?>
 
 		<?php $_CONTROL->txtValue->RenderWithName(); ?>
+
+		<?php $_CONTROL->lstQueryConditionAsOr->RenderWithName(); ?>
 
 	</div>
 
