@@ -160,16 +160,34 @@
 
 				case 'Birthdate':
 					if (!$this->dttDateOfBirth) return null;
-					$strToReturn = $this->dttDateOfBirth->__toString('MMMM D, YYYY');
-					$intAge = $this->Age;
-					$strToReturn .= sprintf(' - %s year%s old', $intAge, ($intAge != 1) ? 's' : '');
-					if ($this->blnDobApproximateFlag)
-						$strToReturn .= ' (approx.)';
-					return $strToReturn;
+					switch (true) {
+						case !$this->blnDobGuessedFlag && !$this->blnDobYearApproximateFlag:
+							$strToReturn = $this->dttDateOfBirth->__toString('MMMM D, YYYY');
+							$intAge = $this->Age;
+							$strToReturn .= sprintf('<br/>%s year%s old', $intAge, ($intAge != 1) ? 's' : '');
+							return $strToReturn;
 
-				case 'Age':
-					if (!$this->dttDateOfBirth) return null;
-					return QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;					
+						case $this->blnDobGuessedFlag && !$this->blnDobYearApproximateFlag:
+							$strToReturn = 'Birthday Not Available';
+							$intAge = $this->Age;
+							$strToReturn .= sprintf('<br/>%s year%s old', $intAge, ($intAge != 1) ? 's' : '');
+							return $strToReturn;
+
+						case !$this->blnDobGuessedFlag && $this->blnDobYearApproximateFlag:
+							$strToReturn = $this->dttDateOfBirth->__toString('MMMM D');
+							$intAge = $this->Age;
+							$strToReturn .= sprintf('<br/>Approximately %s year%s old', $intAge, ($intAge != 1) ? 's' : '');
+							return $strToReturn;
+
+						case $this->blnDobGuessedFlag && $this->blnDobYearApproximateFlag:
+							$strToReturn = 'Birthday Not Available';
+							$intAge = $this->Age;
+							$strToReturn .= sprintf('<br/>Approximately %s year%s old', $intAge, ($intAge != 1) ? 's' : '');
+							return $strToReturn;
+
+						default:
+							throw new Exception('Invalid BirthDate Switch');
+					}
 
 				case 'LinkUrl':
 					return sprintf('/individuals/view.php/%s#general', $this->intId);
@@ -214,6 +232,21 @@
 			}
 
 			return null;
+		}
+
+		/**
+		 * Calculate and refresh the Person's Age (if applicable)
+		 * @param boolean $blnSave whether or not to save the Person object
+		 * @return integer the age
+		 */
+		public function RefreshAge($blnSave = true) {
+			if (!$this->dttDateOfBirth)
+				$this->intAge = null;
+			else
+				$this->intAge = QDateTime::Now()->Difference($this->dttDateOfBirth)->Years;
+
+			if ($blnSave) $this->Save();
+			return $this->intAge;
 		}
 
 		/**
@@ -535,9 +568,10 @@
 		 * @param integer $intCommentPrivacyTypeId
 		 * @param integer $intCommentCategoryId
 		 * @param QDateTime $dttPostDate
+		 * @param QDateTime $dttActionDate
 		 * @return Comment
 		 */
-		public function SaveComment(Login $objLogin, $strComment, $intCommentPrivacyTypeId, $intCommentCategoryId, QDateTime $dttPostDate = null) {
+		public function SaveComment(Login $objLogin, $strComment, $intCommentPrivacyTypeId, $intCommentCategoryId, QDateTime $dttPostDate = null, QDateTime $dttActionDate = null) {
 			$objComment = new Comment();
 			$objComment->Person = $this;
 			$objComment->PostedByLogin = $objLogin;
@@ -545,8 +579,9 @@
 			$objComment->CommentCategoryId = $intCommentCategoryId;
 			$objComment->Comment = $strComment;
 			$objComment->DatePosted = ($dttPostDate ? $dttPostDate : QDateTime::Now());
+			if ($dttActionDate) $objComment->DateAction = $dttActionDate;
 			$objComment->Save();
-			
+
 			return $objComment;
 		}
 

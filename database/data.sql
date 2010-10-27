@@ -214,12 +214,11 @@ INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
+INSERT INTO query_operation VALUES (null,         16   , 'Is',  'Equal', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Equal To', 'Equal', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Not Equal To', 'NotEqual', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Exists', 'IsNotNull', false, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Exist', 'IsNull', false, null, null);
-INSERT INTO query_operation VALUES (null,         16   , 'Is True',  'Equal', false, '1', null);
-INSERT INTO query_operation VALUES (null,         16   , 'Is False', 'Equal', false, '0', null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Contains', 'Like', true, '%', '%');
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Contain', 'NotLike', true, '%', '%');
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Starts With', 'Like', true, null, '%');

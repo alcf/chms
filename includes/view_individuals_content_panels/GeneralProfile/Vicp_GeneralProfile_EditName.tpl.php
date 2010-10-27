@@ -18,11 +18,18 @@
 
 <div class="section">
 <?php $_CONTROL->lstGender->RenderWithName(); ?>
+<?php $_CONTROL->lstDateOfBirth->RenderWithName(); ?>
 <?php
 	$_CONTROL->dtxDateOfBirth->HtmlAfter = '&nbsp;' . $_CONTROL->calDateOfBirth->Render(false);
 	$_CONTROL->dtxDateOfBirth->RenderWithName();
+
+	$_CONTROL->lstMonth->HtmlAfter = '&nbsp;' . $_CONTROL->lstDay->Render(false);
+	$_CONTROL->lstMonth->RenderWithName();
 ?>
-<?php $_CONTROL->chkDobApproximate->RenderWithName(); ?>
+<?php $_CONTROL->txtAge->RenderWithName(); ?>
+
+
+
 <?php $_CONTROL->chkDeceased->RenderWithName(); ?>
 <?php
 	$_CONTROL->dtxDateDeceased->HtmlAfter = '&nbsp;' . $_CONTROL->calDateDeceased->Render(false);

@@ -25,9 +25,12 @@
 		$objGrowthGroupLocation->Latitude = $objRow['latitude'];
 		$objGrowthGroupLocation->Zoom = $objRow['zoom'];
 		$objGrowthGroupLocation->Save();
-		
+
 		$strTokens = explode('(', $objGrowthGroupLocation->Location);
 		$objParentGroup = Group::CreateGroupForMinistry($objMinistry, GroupType::GroupCategory, trim($strTokens[0]), 'Growth Groups in ' . $objGrowthGroupLocation->Location);
+		$objGroupCategory = new GroupCategory();
+		$objGroupCategory->Group = $objParentGroup;
+		$objGroupCategory->Save();
 
 		$objGgResult = $objMySqli->Query('SELECT * FROM growth_group WHERE growth_group_location_id=' . $objRow['id'] . ' ORDER BY id');
 		while ($objGgRow = $objGgResult->fetch_array()) {

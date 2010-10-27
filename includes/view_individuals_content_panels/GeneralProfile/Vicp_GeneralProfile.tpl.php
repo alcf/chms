@@ -49,7 +49,7 @@
 <?php if ($_FORM->objPerson->Birthdate) { ?>
 		<div class="lvp">
 			<div class="left">Birthdate</div>
-			<div class="right"><?php _p($_FORM->objPerson->Birthdate); ?></div>
+			<div class="right"><?php _p($_FORM->objPerson->Birthdate, false); ?></div>
 			<div class="cleaner">&nbsp;</div>
 		</div>
 <?php } ?>

@@ -248,6 +248,10 @@
 					break;
 
 				case GroupType::GroupCategory:
+					$objGroupCategory = new GroupCategory();
+					$objGroupCategory->Group = $objGroup;
+					$objGroupCategory->Save();
+
 					// Create Subgroups
 					$intSubFolderCount = rand(0, 5);
 					for ($intCount = 0; $intCount < $intSubFolderCount; $intCount++)
@@ -625,10 +629,11 @@
 			} else {
 				$objPerson->DateOfBirth = QDataGen::GenerateDateTime(self::$OldestChildBirthDate, QDateTime::Now());
 			}
-				
+
 			// Refresh Membership and Marital Statuses
 			$objPerson->RefreshMembershipStatusTypeId(false);
 			$objPerson->RefreshMaritalStatusTypeId(false);
+			$objPerson->RefreshAge(false);
 
 			// Setup Deceased Information
 			$objPerson->DeceasedFlag = !rand(0, 200);
@@ -700,12 +705,13 @@
 				$intCommentPrivacyTypeId = self::GenerateFromArray(array_keys(CommentPrivacyType::$NameArray));
 				$strComment = self::GenerateContent(rand (1, 2), 5, 20);
 
-				$objPerson->SaveComment($objLogin, $strComment, $intCommentPrivacyTypeId, $objCommentCategory->Id, $dttPostDate);
+				$dttActionDate = (rand(0, 10)) ? null : self::GenerateDateTime(self::$SystemStartDate, QDateTime::Now());
+				$objPerson->SaveComment($objLogin, $strComment, $intCommentPrivacyTypeId, $objCommentCategory->Id, $dttPostDate, $dttActionDate);
 			}
 
 			// Addresses and Phone
 			self::GenerateAddressesAndPhonesForPerson($objPerson);
-			
+
 			// Attributes
 			self::GenerateAttributesForPerson($objPerson);
 
