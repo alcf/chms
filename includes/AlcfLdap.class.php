@@ -153,6 +153,8 @@
 					$objMinistry = new Ministry();
 					$objMinistry->Token = $strToken;
 					$objMinistry->ActiveFlag = !array_key_exists($strToken, self::$InactiveMinistryArray);
+					$objMinistry->GroupTypeBitmap = (1|2|4);
+					if ($objMinistry->Token == 'growth') $objMinistry->GroupTypeBitmap = $objMinistry->GroupTypeBitmap | 8;
 				}
 
 				$objMinistry->Name = $strGroupName;
