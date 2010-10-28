@@ -47,7 +47,8 @@
 			if ($this->objRelationship->RelatedToPerson) {
 				$this->lblRelatedTo = new QLabel($this);
 				$this->lblRelatedTo->Name = 'Related To';
-				$this->lblRelatedTo->Text = $this->objRelationship->RelatedToPerson->Name;
+				$this->lblRelatedTo->Text = $this->objRelationship->RelatedToPerson->LinkHtml;
+				$this->lblRelatedTo->HtmlEntities = false;
 			} else {
 				$this->pnlRelatedTo = new SelectPersonPanel($this);
 				$this->pnlRelatedTo->Name = 'Related To';

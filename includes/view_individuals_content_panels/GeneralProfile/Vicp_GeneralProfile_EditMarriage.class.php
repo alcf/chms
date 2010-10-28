@@ -74,7 +74,8 @@
 			if ($this->objMarriage->MarriedToPerson) {
 				$this->lblMarriedTo = new QLabel($this);
 				$this->lblMarriedTo->Name = 'Married To';
-				$this->lblMarriedTo->Text = $this->objMarriage->MarriedToPerson->Name;
+				$this->lblMarriedTo->HtmlEntities = false;
+				$this->lblMarriedTo->Text = $this->objMarriage->MarriedToPerson->LinkHtml;
 			} else {
 				$this->pnlMarriedTo = new SelectPersonPanel($this);
 				$this->pnlMarriedTo->Name = 'Married To';

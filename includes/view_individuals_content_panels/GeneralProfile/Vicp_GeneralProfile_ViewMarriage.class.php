@@ -65,7 +65,7 @@
 
 		public function RenderMarriedTo(Marriage $objMarriage) {
 			if ($objMarriage->MarriedToPersonId) {
-				return QApplication::HtmlEntities($objMarriage->MarriedToPerson->Name);
+				return $objMarriage->MarriedToPerson->LinkHtml;
 			} else {
 				return '<span style="color: #666;">Not Specified</span>';
 			}

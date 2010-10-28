@@ -142,7 +142,7 @@
 				case MaritalStatusType::Married:
 					$objMarriage = $_FORM->objPerson->GetMostRecentMarriage();
 					$strText = null;
-					if ($objMarriage->MarriedToPerson) $strText .= ' to ' . QApplication::HtmlEntities($objMarriage->MarriedToPerson->Name);
+					if ($objMarriage->MarriedToPerson) $strText .= ' to ' . ($objMarriage->MarriedToPerson->LinkHtml);
 					if ($objMarriage->DateStart) {
 						$strText .= ' on ' . $objMarriage->DateStart->__toString('MMMM D, YYYY');
 						$dtsDifference = QDateTime::Now()->Difference($objMarriage->DateStart);
@@ -155,7 +155,7 @@
 				case MaritalStatusType::Separated:
 					$objMarriage = $_FORM->objPerson->GetMostRecentMarriage();
 					$strText = null;
-					if ($objMarriage->MarriedToPerson) $strText .= ' from ' . QApplication::HtmlEntities($objMarriage->MarriedToPerson->Name);
+					if ($objMarriage->MarriedToPerson) $strText .= ' from ' . ($objMarriage->MarriedToPerson->LinkHtml);
 					if ($strText) _p(', ' . trim($strText), false);
 					break;
 			}
@@ -169,7 +169,7 @@
 		<div class="right">
 <?php
 			foreach ($_FORM->objPerson->GetRelationshipArray(QQ::OrderBy(QQN::Relationship()->RelatedToPerson->LastName, QQN::Relationship()->RelatedToPerson->FirstName)) as $objRelationship) {
-				printf('%s: %s<br/>', $objRelationship->Relation, QApplication::HtmlEntities($objRelationship->RelatedToPerson->Name));
+				printf('%s: %s<br/>', $objRelationship->Relation, $objRelationship->RelatedToPerson->LinkHtml);
 			}
 ?>
 		</div>
