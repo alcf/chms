@@ -185,6 +185,9 @@
 			$this->mctGroup = new GroupMetaControl($this, $this->objGroup);
 
 			$this->txtName = $this->mctGroup->txtName_Create();
+			$this->txtName->Select();
+			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
 			$this->txtToken = $this->mctGroup->txtToken_Create();

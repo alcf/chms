@@ -9,6 +9,7 @@
 		public $objGroup;
 		protected $lblMinistry;
 		protected $pnlGroups;
+		protected $pnlAdminOptions;
 		protected $pnlContent;
 
 		protected $lstGroupType;
@@ -27,17 +28,17 @@
 			$this->pnlContent = new QPanel($this);
 			$this->pnlContent->AutoRenderChildren = true;
 
-			$this->lstGroupType = new QListBox($this);
-			$this->lstGroupType->AddItem('- Create New... -');
-			foreach (GroupType::$NameArray as $intId => $strName)
-				$this->lstGroupType->AddItem($strName, $intId);
+			$this->pnlAdminOptions = new QPanel($this);
+			$this->pnlAdminOptions->Template = dirname(__FILE__) . '/pnlAdminOptions.tpl.php';
+
+			$this->lstGroupType = new QListBox($this->pnlAdminOptions);
 			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
 
-			$this->btnViewRoles = new QButton($this);
+			$this->btnViewRoles = new QButton($this->pnlAdminOptions);
 			$this->btnViewRoles->Text = 'View Roles';
 			$this->btnViewRoles->AddAction(new QClickEvent(), new QAjaxAction('btnViewRoles_Click'));
 			$this->btnViewRoles->AddAction(new QClickEvent(), new QTerminateAction());
-			
+
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
 
@@ -45,8 +46,17 @@
 			QApplication::Redirect('/groups/roles.php/' . $this->objGroup->MinistryId);
 		}
 
-		protected function btnViewRoles_Refresh() {
-			$this->btnViewRoles->Visible = $this->objGroup->Ministry->IsLoginCanAdminMinistry(QApplication::$Login);
+		protected function pnlAdminOptions_Refresh() {
+			if ($this->objGroup->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) {
+				$this->pnlAdminOptions->Visible = true;
+
+				$this->lstGroupType->RemoveAllItems();
+				$this->lstGroupType->AddItem('- Create New... -');
+				foreach (GroupType::$NameArray as $intId => $strName)
+					if ($this->objGroup->Ministry->GroupTypeBitmap & $intId) $this->lstGroupType->AddItem($strName, $intId);
+			} else {
+				$this->pnlAdminOptions->Visible = false;
+			}
 		}
 
 		public function lstGroupType_Change($strFormId, $strControlId, $strParameter) {
@@ -125,7 +135,7 @@
 			if ($intOldGroupId) $this->pnlGroup_Refresh($intOldGroupId);
 			if ($blnRefreshGroupsPanel) {
 				$this->pnlGroups_Refresh();
-				$this->btnViewRoles_Refresh();
+				$this->pnlAdminOptions_Refresh();
 			}
 
 			$this->lblMinistry_Refresh();

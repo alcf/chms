@@ -41,9 +41,6 @@
 			$pnlMinistry->CssClass = 'last';
 
 			$this->lstGroupType = new QListBox($this);
-			$this->lstGroupType->AddItem('- Create New... -');
-			foreach (GroupType::$NameArray as $intId => $strName)
-				$this->lstGroupType->AddItem($strName, $intId);
 			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
 			$this->lstGroupType->Visible = false;
 			
@@ -134,7 +131,17 @@
 				$this->pnlMinistry_Refresh($this->intMinistryId);
 				$this->lblMinistry_Refresh();
 				$this->dtgGroups->Refresh();
-				$this->lstGroupType->Visible = true;
+				
+				$objMinistry = Ministry::Load($this->intMinistryId);
+				if ($objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) {
+					$this->lstGroupType->Visible = true;
+					$this->lstGroupType->RemoveAllItems();
+					$this->lstGroupType->AddItem('- Create New... -');
+					foreach (GroupType::$NameArray as $intId => $strName)
+						if ($objMinistry->GroupTypeBitmap & $intId) $this->lstGroupType->AddItem($strName, $intId);
+				} else {
+					$this->lstGroupType->Visible = false;
+				}
 			}
 		}
 	}
