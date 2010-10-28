@@ -14,11 +14,11 @@
 </div>
 <br/>
 
-<h3>Subgroups within the <?php _p($this->objGroup->Name); ?> Category</h3>
+<h3>Groups in &ldquo;<?php _p($this->objGroup->Name); ?>&rdquo;</h3>
 <div class="section"><?php $_CONTROL->dtgGroups->Render(); ?></div>
 <br/>
 
-<h3>Members within All Subgroups</h3>
+<h3>Participants within all groups in &ldquo;<?php _p($this->objGroup->Name); ?>&rdquo;</h3>
 <div class="section"><?php $_CONTROL->dtgMembers->Render(); ?></div>
 
 <?php if ($_CONTROL->dtgEmailMessageRoute) { ?>

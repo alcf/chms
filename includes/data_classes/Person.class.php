@@ -588,9 +588,9 @@
 		
 		
 		
-		public static function LoadArrayBySearch($strName) {
+		public static function LoadArrayBySearch($strName, $objClauses = null) {
 			$objCondition = QQ::All();
-			$objClauses = array();
+			if (!$objClauses) $objClauses = array();
 			self::PrepareQqForSearch($strName, $objCondition, $objClauses);
 			return Person::QueryArray($objCondition, $objClauses);
 		}

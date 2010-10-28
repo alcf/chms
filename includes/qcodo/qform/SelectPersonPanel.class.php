@@ -112,7 +112,7 @@
 
 			if ($this->dtgResults->Visible) {
 				$this->intSelectedPersonId = null;
-				$this->dtgResults->DataSource = Person::LoadArrayBySearch(trim($this->txtName->Text));
+				$this->dtgResults->DataSource = Person::LoadArrayBySearch(trim($this->txtName->Text), array(QQ::OrderBy(QQN::Person()->FirstName, QQN::Person()->LastName)));
 			} else {
 				$this->dtgResults->DataSource = array();
 			}

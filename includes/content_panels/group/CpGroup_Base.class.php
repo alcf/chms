@@ -189,6 +189,8 @@
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
+			$this->lstParentGroup->Name = 'In Group Category';
+
 			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
 			$this->txtToken = $this->mctGroup->txtToken_Create();
 			$this->txtToken->Name = 'Email Address';
@@ -280,12 +282,13 @@
 			$this->lblConfidential_Refresh();
 
 			$this->lblCategory = new QLabel($this);
-			$this->lblCategory->Name = 'Parent Category';
+			$this->lblCategory->Name = 'In Group Category';
 			$this->lblCategory->HtmlEntities = false;
 			$this->lblCategory_Refresh();
 
 			$this->dtgMembers = new PersonDataGrid($this);
 			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
+			$this->dtgMembers->NoDataHtml = 'No current participants';
 			$this->dtgMembers->ItemsPerPage = 80;
 			if ($blnDisplayEditParticipantColumn && $this->objGroup->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
@@ -403,8 +406,10 @@
 
 			if (count($strAncestryArray)) {
 				$this->lblCategory->Text = QApplication::HtmlEntities(implode(' > ', $strAncestryArray));
+				$this->lblCategory->Visible = true;
 			} else {
 				$this->lblCategory->Text = '<span style="font-size: 10px; color: #666;">Top Level Group</span>';
+				$this->lblCategory->Visible = false;
 			}
 		}
 
