@@ -10,10 +10,20 @@
 		<button class="primary" onclick="document.location='#/post_batch'; return false;">Back</button></h1>
 <?php }?>
 
-<h3>Overview</h3>
+<h3>Overview
+<?php if ($_CONTROL->objPost) { ?>
+	&nbsp;&nbsp;&nbsp;
+	<span class="subhead"><a target="_blank" href="/stewardship/print_report.php/funds/<?php _p($_CONTROL->objBatch->Id); ?>/<?php _p($_CONTROL->objPost->PostNumber); ?>"/>Print</a></span>
+<?php } ?>
+</h3>
 <div class="section"><?php $_CONTROL->dtgFunds->Render(); ?></div>
 
-<h3><?php _p($_CONTROL->objPost ? 'Details of Changes' : 'Details of Unposted Contributions')?></h3>
+<h3><?php _p($_CONTROL->objPost ? 'Details of Changes' : 'Details of Unposted Contributions')?>
+<?php if ($_CONTROL->objPost) { ?>
+	&nbsp;&nbsp;&nbsp;
+	<span class="subhead"><a target="_blank" href="/stewardship/print_report.php/line_items/<?php _p($_CONTROL->objBatch->Id); ?>/<?php _p($_CONTROL->objPost->PostNumber); ?>"/>Print</a></span>
+<?php } ?>
+</h3>
 <div class="section" style="max-height: 260px; overflow: auto; "><?php $_CONTROL->dtgLineItems->Render(); ?></div>
 
 <?php $_CONTROL->btnSave->RenderInSection('ActionParameter=buttonBar'); ?>
