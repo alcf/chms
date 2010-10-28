@@ -106,8 +106,12 @@
 			}
 
 			if ($strName = trim($this->txtPhone->Text)) {
+				$objClauses[] = QQ::Distinct();
 				$objConditions = QQ::AndCondition($objConditions,
-					QQ::Like( QQN::Person()->PrimaryPhoneText->Phone, $strName . '%')
+					QQ::OrCondition(
+						QQ::Like( QQN::Person()->Phone->Number, $strName . '%'),
+						QQ::Like( QQN::Person()->HouseholdParticipation->Household->Address->Phone->Number, $strName . '%')
+					)
 				);
 			}
 			
