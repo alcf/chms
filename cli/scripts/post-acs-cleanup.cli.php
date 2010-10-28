@@ -3,6 +3,7 @@
 	QDataGen::DisplayForEachTaskStart('Refreshing Person data', Person::CountAll());
 	while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 		QDataGen::DisplayForEachTaskNext('Refreshing Person data');
+		$objPerson->RefreshAge(false);
 		$objPerson->RefreshMaritalStatusTypeId(false);
 		$objPerson->RefreshMembershipStatusTypeId(false);
 		$objPerson->RefreshPrimaryContactInfo(true);
