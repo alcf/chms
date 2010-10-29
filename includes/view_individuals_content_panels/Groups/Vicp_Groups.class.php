@@ -18,6 +18,9 @@
 			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->Token; ?>@groups.alcf.net', 'Width=370px'));
 			$this->dtgCommunicationLists->SetDataBinder('dtgCommunicationLists_Bind', $this);
 
+			$this->dtgGroups->NoDataHtml = 'Not in any groups';
+			$this->dtgCommunicationLists->NoDataHtml = 'Not in any communication lists';
+			
 			$this->pxyUnsubscribe = new QControlProxy($this);
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to unsubscribe ' . $this->objPerson->Name . ' from this list?'));
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyUnsubscribe_Click'));
@@ -25,7 +28,11 @@
 		}
 
 		public function dtgGroups_Bind() {
-			$objClause = QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id);
+			$objClause = QQ::AndCondition(
+				QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id),
+				QQ::IsNull(QQN::Group()->GroupParticipation->DateEnd),
+				QQ::In(QQN::Group()->GroupTypeId, array(GroupType::RegularGroup, GroupType::GrowthGroup))
+			);
 
 			// Admins can view anything
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
