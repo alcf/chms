@@ -78,7 +78,7 @@
 
 		public function lstGroupType_Change($strFormId, $strControlId, $strParameter) {
 			QApplication::ExecuteJavaScript(sprintf('document.location = "/groups/group.php#new/%s/%s";',
-				strtolower(str_replace(' ', '_', GroupType::$NameArray[$this->lstGroupType->SelectedIndex])),
+				strtolower(str_replace(' ', '_', GroupType::$NameArray[$this->lstGroupType->SelectedValue])),
 				$this->intMinistryId));
 			$this->lstGroupType->SelectedIndex = 0;
 		}

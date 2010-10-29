@@ -30,6 +30,16 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return GroupType::$NameArray[$this->intGroupTypeId];
+				case 'GroupDetail':
+					switch ($this->GroupTypeId) {
+						case GroupType::GroupCategory:
+							return $this->GroupCategory;
+						case GroupType::SmartGroup:
+							return $this->SmartGroup;
+						default:
+							throw new QCallerException('Invalid GroupTypeId');
+					}
+					break;
 
 				case 'EmailTypeHtml':
 					switch ($this->EmailBroadcastTypeId) {

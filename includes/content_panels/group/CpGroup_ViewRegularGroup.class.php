@@ -3,7 +3,7 @@
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
 
-			$this->SetupViewControls(true, false);
+			$this->SetupViewControls(true, true);
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
 			
 			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();

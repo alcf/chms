@@ -27,6 +27,36 @@
 			return sprintf('GroupCategory Object %s',  $this->intGroupId);
 		}
 
+		/**
+		 * Called to refresh the list of participations for this GroupCategory
+		 */
+		public function RefreshParticipationList() {
+			$fltTime = microtime(true);
+			GroupParticipation::GetDatabase()->NonQuery('DELETE FROM group_participation WHERE group_id=' . $this->intGroupId);
+
+			$objPersonArray = array();
+			foreach ($this->Group->GetThisAndChildren() as $objGroup) {
+				if ($objGroup->GroupTypeId != GroupType::GroupCategory) {
+					foreach ($objGroup->GetGroupParticipationArray() as $objParticipation) {
+						$objPersonArray[$objParticipation->PersonId] = $objParticipation->Person;
+					}
+				}
+			}
+
+			foreach ($objPersonArray as $objPerson) {
+				$this->Group->AddPerson($objPerson, null);
+			}
+
+			$intTime = round((microtime(true) - $fltTime) * 1000);
+			$this->DateRefreshed = QDateTime::Now();
+			$this->ProcessTimeMs = $intTime;
+			$this->Save();
+		}
+
+		public static function ForceRefreshParticipations() {
+			// Force ALL to refresh participation lists by deleting the date_updated
+			self::GetDatabase()->NonQuery('UPDATE group_category SET date_refreshed=NULL;');
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

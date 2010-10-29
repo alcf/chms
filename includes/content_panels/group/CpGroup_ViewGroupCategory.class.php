@@ -13,7 +13,7 @@
 			$this->intGroupIdArray = array();
 			foreach ($this->objGroupArray as $objGroup) $this->intGroupIdArray[] = $objGroup->Id;
 
-			$this->SetupViewControls(false, true);
+			$this->SetupViewControls(false, false);
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
 
 			$this->dtgGroups = new QDataGrid($this);

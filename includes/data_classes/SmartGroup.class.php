@@ -54,6 +54,11 @@
 			$this->Save();
 		}
 
+		public static function ForceRefreshParticipations() {
+			// Force ALL to refresh participation lists by deleting the date_updated
+			self::GetDatabase()->NonQuery('UPDATE group_category SET date_refreshed=NULL;');
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

@@ -11,6 +11,7 @@
 	<?php $_CONTROL->lblCategory->RenderWithName(); ?>
 	<?php $_CONTROL->lblConfidential->RenderWithName(); ?>
 	<?php $_CONTROL->lblEmail->RenderWithName(); ?>
+	<?php $_CONTROL->lblRefresh->RenderWithName(); ?>
 </div>
 <br/>
 

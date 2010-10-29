@@ -58,6 +58,9 @@
 		public $lblCategory;
 		public $lblEmail;
 
+		public $lblRefresh;
+		public $pxyRefresh;
+
 		// Edit-Related Controls
 
 		public $mctGroup;
@@ -261,7 +264,7 @@
 		 * @param boolean $blnDisplayGroupsColumn
 		 * @return void
 		 */
-		protected function SetupViewControls($blnDisplayEditParticipantColumn, $blnDisplayGroupsColumn) {
+		protected function SetupViewControls($blnDisplayEditParticipantColumn, $blnDisplayRoleColumn) {
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->Name = 'Ministry';
 			$this->lblMinistry_Refresh();
@@ -286,22 +289,51 @@
 			$this->lblCategory->HtmlEntities = false;
 			$this->lblCategory_Refresh();
 
+			switch ($this->objGroup->GroupTypeId) {
+				case GroupType::GroupCategory:
+				case GroupType::SmartGroup:
+					$this->lblRefresh = new QLabel($this);
+					$this->lblRefresh->Name = 'Participant List Last Refreshed';
+					$this->lblRefresh->HtmlEntities = false;
+					$this->pxyRefresh = new QControlProxy($this);
+					$this->pxyRefresh->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyRefresh_Click'));
+					$this->pxyRefresh->AddAction(new QClickEvent(), new QTerminateAction());
+					$this->lblRefresh_Refresh();
+					break;
+			}
+
 			$this->dtgMembers = new PersonDataGrid($this);
 			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
 			$this->dtgMembers->NoDataHtml = 'No current participants';
 			$this->dtgMembers->ItemsPerPage = 80;
 			if ($blnDisplayEditParticipantColumn && $this->objGroup->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
-			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px');
-			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px');
-			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email', 'Width=180px');
-			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>', 'Width=60px');
-			if ($blnDisplayGroupsColumn) {
-				$this->dtgMembers->AddColumn(new QDataGridColumn('Group(s)', '<?= $_CONTROL->ParentControl->RenderCurrentGroups($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
-				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRolesForAllGroups($_ITEM); ?>', 'HtmlEntities=false', 'Width=80px'));
-			} else {
+			$this->dtgMembers->MetaAddColumn('FirstName', 'Html=<?= $_CONTROL->ParentControl->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false',
+				'Width=' . ($blnDisplayRoleColumn ? '120px' : '200px'));
+			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false',
+				'Width=' . ($blnDisplayRoleColumn ? '120px' : '200px'));
+			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email',
+				'Width=' . ($blnDisplayRoleColumn ? '190px' : '220px'));
+			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>',
+				'Width=' . ($blnDisplayRoleColumn ? '60px' : '105px'));
+			if ($blnDisplayRoleColumn) {
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false', 'Width=180px'));
 			}
+		}
+
+		public function lblRefresh_Refresh() {
+			if ($this->objGroup->GroupDetail->DateRefreshed) {
+				$this->lblRefresh->Text = $this->objGroup->GroupDetail->DateRefreshed->ToString('MMM D at h:mmz') .
+					'<br/><a style="color: #999; font-size: 10px;" href="#" ' . $this->pxyRefresh->RenderAsEvents(null, false) . '>Refresh Now</a>';
+			} else {
+				$this->lblRefresh->Text = 'Refreshing... <img src="/assets/images/spinner_14.gif"/>';
+			}
+		}
+
+		public function pxyRefresh_Click() {
+			$this->objGroup->GroupDetail->DateRefreshed = null;
+			$this->objGroup->GroupDetail->Save();
+			$this->lblRefresh_Refresh();
 		}
 
 		public function RenderEdit(Person $objPerson) {
