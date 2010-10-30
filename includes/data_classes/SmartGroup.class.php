@@ -56,7 +56,7 @@
 
 		public static function ForceRefreshParticipations() {
 			// Force ALL to refresh participation lists by deleting the date_updated
-			self::GetDatabase()->NonQuery('UPDATE group_category SET date_refreshed=NULL;');
+			self::GetDatabase()->NonQuery('UPDATE smart_group SET date_refreshed=NULL;');
 		}
 
 		// Override or Create New Load/Count methods
