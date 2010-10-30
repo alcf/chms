@@ -32,20 +32,24 @@
 		public function RefreshDescription($blnSave = true) {
 			$strDescriptionArray = array();
 			foreach ($this->GetQueryConditionArray(QQ::OrderBy(QQN::QueryCondition()->Id)) as $objQueryCondition) {
-				if (strlen($objQueryCondition->Value)) {
-					switch ($objQueryCondition->QueryNode->QueryDataTypeId) {
-						case QueryDataType::BooleanValue:
-							$strValue = ($objQueryCondition->Value) ? 'true' : 'false';
-							break;
-						default:
-							$strValue = $objQueryCondition->Value;
-							break;
-					}
-					$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $strValue);
-				} else {
-					$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
+				switch ($objQueryCondition->QueryNode->QueryDataTypeId) {
+					case QueryDataType::BooleanValue:
+						$strDescriptionArray[] = sprintf('%s %s "%s"',
+							$objQueryCondition->QueryNode->Name,
+							strtolower($objQueryCondition->QueryOperation->Name),
+							($objQueryCondition->Value) ? 'true' : 'false');
+						break;
+
+					default:
+						if (strlen($objQueryCondition->Value)) {
+							$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $objQueryCondition->Value);
+						} else {
+							$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
+						}
+						break;
 				}
 			}
+
 			$this->strDescription = implode("\r\n", $strDescriptionArray);
 			if ($blnSave) $this->Save();
 		}

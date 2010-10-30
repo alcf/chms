@@ -237,9 +237,9 @@ INSERT INTO query_node VALUES (null, 'Can Email Flag',       1, 'CanEmailFlag', 
 INSERT INTO query_node VALUES (null, 'Date of Birth',        1, 'DateOfBirth',                                      4,  null);
 INSERT INTO query_node VALUES (null, 'Date Baptized',        2, null,                                               4, '13');
 INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 2, null,                                               4, '14');
-
-INSERT INTO query_node VALUES (null, 'ACS Family Number',    2, null,                                               1, '4');
+INSERT INTO query_node VALUES (null, 'Date Faith Recommitted', 2, null,                                             4, '15');
 INSERT INTO query_node VALUES (null, 'Occupation',           2, null,                                               1, '16');
+INSERT INTO query_node VALUES (null, 'Previous Church',      2, null,                                               1, '17');
 
 INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, true);
 INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, true);
