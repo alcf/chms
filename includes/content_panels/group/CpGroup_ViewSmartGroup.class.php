@@ -9,7 +9,7 @@
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
 
 			$this->lblQuery = new QLabel($this);
-			$this->lblQuery->Name = 'Query Info';
+			$this->lblQuery->Name = 'Search Parameters';
 			$this->lblQuery->Text = nl2br(QApplication::HtmlEntities($this->objGroup->SmartGroup->SearchQuery->Description));
 			$this->lblQuery->HtmlEntities = false;
 			

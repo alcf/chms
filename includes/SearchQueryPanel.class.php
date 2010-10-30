@@ -229,10 +229,8 @@
 						break;
 
 					case QueryDataType::CustomValue:
-						$ctlValue = new QListBox($pnlValue, $strControlId);
-						foreach (explode(',', $objQueryNode->NodeDetail) as $strValue) {
-							$ctlValue->AddItem($strValue, $strValue, (($objQueryCondition->QueryNodeId == $objQueryNode->Id) && ($strValue == $objQueryCondition->Value)));
-						}
+						$strCurrentValue = ($objQueryCondition->QueryNodeId == $objQueryNode->Id) ? $objQueryCondition->Value : null;
+						$ctlValue = $objQueryNode->GetCustomControl($pnlValue, $strControlId, $strCurrentValue);
 						break;
 
 					default:

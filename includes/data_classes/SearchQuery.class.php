@@ -40,6 +40,17 @@
 							($objQueryCondition->Value) ? 'true' : 'false');
 						break;
 
+					case QueryDataType::CustomValue:
+						if (strlen($objQueryCondition->Value)) {
+							$strDescriptionArray[] = sprintf('%s %s "%s"',
+								$objQueryCondition->QueryNode->Name,
+								strtolower($objQueryCondition->QueryOperation->Name),
+								$objQueryCondition->QueryNode->GetValueDescriptionForCustomValue($objQueryCondition->Value));
+						} else {
+							$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
+						}
+						break;
+
 					default:
 						if (strlen($objQueryCondition->Value)) {
 							$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $objQueryCondition->Value);
@@ -50,7 +61,10 @@
 				}
 			}
 
-			$this->strDescription = implode("\r\n", $strDescriptionArray);
+			if (count($strDescriptionArray))
+				$this->strDescription = implode("\r\n", $strDescriptionArray);
+			else
+				$this->strDescription = 'None';
 			if ($blnSave) $this->Save();
 		}
 

@@ -14,6 +14,8 @@
 	 * 
 	 */
 	class QueryNode extends QueryNodeGen {
+		protected static $intJoinCount = 0;
+
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -48,6 +50,60 @@
 					throw new Exception('Not Implemented for QueryNodeTypeId');
 			}
 		}
+
+		/**
+		 * Creates a custom ListBox for "Custom" QueryDataTypes given this QueryNodeType
+		 * @param QPanel $pnlValue
+		 * @param string $strControlId
+		 * @return QControl
+		 */
+		public function GetCustomControl(QPanel $pnlValue, $strControlId, $strCurrentValue) {
+			// Control is dependent on the type of QueryNode being used
+			switch ($this->QueryNodeTypeId) {
+				case QueryNodeType::StandardNode:
+					return $this->GetCustomControlForStandardNode($pnlValue, $strControlId, $strCurrentValue);
+
+				case QueryNodeType::AttributeNode:
+					return $this->GetCustomControlForAttributeNode($pnlValue, $strControlId, $strCurrentValue);
+
+				default:
+					throw new Exception('Not Implemented for QueryNodeTypeId');
+			}
+		}
+
+		/**
+		 * Used by the SearchQuery Description generator
+		 * Enter description here ...
+		 * @param string $strValue
+		 */
+		public function GetValueDescriptionForCustomValue($strValue) {
+			switch ($this->QueryNodeTypeId) {
+				case QueryNodeType::AttributeNode:
+					return AttributeOption::Load($strValue)->Name;
+
+				default:
+					return $strValue;
+			}
+		}
+
+		protected function GetCustomControlForStandardNode(QPanel $pnlValue, $strControlId, $strCurrentValue) {
+			$ctlValue = new QListBox($pnlValue, $strControlId);
+			foreach (explode(',', $this->NodeDetail) as $strValue) {
+				$ctlValue->AddItem($strValue, $strValue, $strCurrentValue == $strValue);
+			}
+			return $ctlValue;
+		}
+		
+		protected function GetCustomControlForAttributeNode(QPanel $pnlValue, $strControlId, $strCurrentValue) {
+			// Get the Attribute object we are trying to query against
+			$objAttribute = Attribute::Load($this->NodeDetail);
+
+			$ctlValue = new QListBox($pnlValue, $strControlId);
+			foreach ($objAttribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption) {
+				$ctlValue->AddItem($objOption->Name, $objOption->Id, $objOption->Id == $strCurrentValue);
+			}
+			return $ctlValue;
+		}
 		
 		protected function GetQqNodeForStandardNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
 			// Get the QcodoQuery Node we are operating on for this condition
@@ -58,7 +114,7 @@
 		}
 
 		protected function GetQqNodeForAttributeNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
-			$strAttributeValueTableAlias = 'av' . $this->NodeDetail;
+			$strAttributeValueTableAlias = 'av' . self::$intJoinCount++;
 			$objQqClauses[] = QQ::CustomFrom('attribute_value', $strAttributeValueTableAlias);
 
 			// Get the Attribute object we are trying to query against
@@ -84,14 +140,17 @@
 				
 				case AttributeDataType::ImmutableSingleDropdown:
 				case AttributeDataType::MutableSingleDropdown:
-					$strAttributeOptionTableAlias = 'avao' . $this->NodeDetail;
-					$objQqClauses[] = QQ::CustomFrom('attribute_option', $strAttributeOptionTableAlias);
-					$objQqCondition = QQ::Equal(QQ::CustomNode(sprintf('%s.id', $strAttributeOptionTableAlias)), QQ::CustomNode('%s.single_attribute_option_id', $strAttributeValueTableAlias));
-					$objQqNode = QQ::CustomNode(sprintf('%s.name', $strAttributeOptionTableAlias));
+					$objQqNode = QQ::CustomNode(sprintf('%s.single_attribute_option_id', $strAttributeValueTableAlias));
 					break;
 
 				case AttributeDataType::ImmutableMultipleDropdown:
 				case AttributeDataType::MutableMultipleDropdown:
+					$strAttributeOptionTableAlias = 'avmaoa' . self::$intJoinCount++;
+					$objQqClauses[] = QQ::CustomFrom('attributevalue_multipleattributeoption_assn', $strAttributeOptionTableAlias);
+					$objQqCondition = QQ::Equal(QQ::CustomNode(sprintf('%s.attribute_value_id', $strAttributeOptionTableAlias)), QQ::CustomNode(sprintf('%s.id', $strAttributeValueTableAlias)));
+					$objQqNode = QQ::CustomNode(sprintf('%s.attribute_option_id', $strAttributeOptionTableAlias));
+					break;
+
 				default:
 					throw new Exception('No Support for Attribute Data Type Id: ' . $objAttribute->AttributeDataTypeId);
 			}
