@@ -65,8 +65,8 @@
 
 	/*** PAGE STRUCTURE ***/
 
-	div.headerBackground { width: 100%; position: absolute; font-size: 1px; left: 0; background-color: #deeaee; height: 80px; }
-		div.headerBackground div.left { width: 50%; height: 80px; background-color: #eeeef2; }
+	div.headerBackground { width: 100%; position: absolute; font-size: 1px; left: 0; background-color: #ddebee; height: 80px; }
+		div.headerBackground div.left { width: 50%; height: 80px; background-color: #eff0f3; }
 
 	div.footer {
 		width: 980px; padding: 12px 0;

@@ -7,6 +7,7 @@
 		protected $txtPassword;
 		protected $chkRemember;
 		protected $btnLogin;
+		protected $strPageTitle = 'Log In';
 
 		protected function Form_Run() {
 			if (QApplication::$Login) QApplication::Redirect('/main/');
