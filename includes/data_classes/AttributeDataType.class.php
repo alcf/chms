@@ -16,5 +16,15 @@
 	 * @subpackage DataObjects
 	 */
 	abstract class AttributeDataType extends AttributeDataTypeGen {
+		public static $QueryDataTypeArray = array(
+			AttributeDataType::Checkbox 				=> QueryDataType::BooleanValue,
+			AttributeDataType::Date						=> QueryDataType::DateValue,
+			AttributeDataType::DateTime					=> QueryDataType::DateValue,
+			AttributeDataType::Text						=> QueryDataType::StringValue,
+			AttributeDataType::ImmutableSingleDropdown	=> QueryDataType::CustomValue,
+			AttributeDataType::ImmutableMultipleDropdown => QueryDataType::CustomValue,
+			AttributeDataType::MutableSingleDropdown	=> QueryDataType::CustomValue,
+			AttributeDataType::MutableMultipleDropdown	=> QueryDataType::CustomValue
+		);
 	}
 ?>
