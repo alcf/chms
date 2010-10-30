@@ -27,6 +27,88 @@
 			return sprintf('QueryNode Object %s',  $this->intId);
 		}
 
+		/**
+		 * Calculate the QcodoQueryNode object that this QueryNode represents.
+		 * Be sure to capture any additional QQCondition and/or QQClauses that might be required while rendering
+		 * out this QQNode.
+		 * @param QQCondition $objQqCondition
+		 * @param QQClause[] $objQqClauses
+		 * @return QQNode
+		 */
+		public function GetQqNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
+			// Operation is dependent on the type of QueryNode being used
+			switch ($this->QueryNodeTypeId) {
+				case QueryNodeType::StandardNode:
+					return $this->GetQqNodeForStandardNode($objQqCondition, $objQqClauses);
+
+				case QueryNodeType::AttributeNode:
+					return $this->GetQqNodeForAttributeNode($objQqCondition, $objQqClauses);
+
+				default:
+					throw new Exception('Not Implemented for QueryNodeTypeId');
+			}
+		}
+		
+		protected function GetQqNodeForStandardNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
+			// Get the QcodoQuery Node we are operating on for this condition
+			$objQqNode = QQN::Person();
+			foreach (explode('->', $this->QcodoQueryNode) as $strPropertyName)
+				$objQqNode = $objQqNode->__get($strPropertyName);
+			return $objQqNode;
+		}
+
+		protected function GetQqNodeForAttributeNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
+			$strAttributeValueTableAlias = 'av' . $this->NodeDetail;
+			$objQqClauses[] = QQ::CustomFrom('attribute_value', $strAttributeValueTableAlias);
+
+			// Get the Attribute object we are trying to query against
+			$objAttribute = Attribute::Load($this->NodeDetail);
+
+			// What is the ATTRIBUTE's type?  Figure out the Custom QQ Node based on that
+			switch ($objAttribute->AttributeDataTypeId) {
+				case AttributeDataType::Checkbox:
+					$objQqNode = QQ::CustomNode(sprintf('%s.boolean_value', $strAttributeValueTableAlias));
+					break;
+
+				case AttributeDataType::Date:
+					$objQqNode = QQ::CustomNode(sprintf('%s.date_value', $strAttributeValueTableAlias));
+					break;
+
+				case AttributeDataType::DateTime:
+					$objQqNode = QQ::CustomNode(sprintf('%s.datetime_value', $strAttributeValueTableAlias));
+					break;
+
+				case AttributeDataType::Text:
+					$objQqNode = QQ::CustomNode(sprintf('%s.text_value', $strAttributeValueTableAlias));
+					break;
+				
+				case AttributeDataType::ImmutableSingleDropdown:
+				case AttributeDataType::MutableSingleDropdown:
+					$strAttributeOptionTableAlias = 'avao' . $this->NodeDetail;
+					$objQqClauses[] = QQ::CustomFrom('attribute_option', $strAttributeOptionTableAlias);
+					$objQqCondition = QQ::Equal(QQ::CustomNode(sprintf('%s.id', $strAttributeOptionTableAlias)), QQ::CustomNode('%s.single_attribute_option_id', $strAttributeValueTableAlias));
+					$objQqNode = QQ::CustomNode(sprintf('%s.name', $strAttributeOptionTableAlias));
+					break;
+
+				case AttributeDataType::ImmutableMultipleDropdown:
+				case AttributeDataType::MutableMultipleDropdown:
+				default:
+					throw new Exception('No Support for Attribute Data Type Id: ' . $objAttribute->AttributeDataTypeId);
+			}
+
+			if ($objQqCondition) {
+				$objQqCondition = QQ::AndCondition(
+					QQ::Equal(QQ::CustomNode(sprintf('%s.attribute_id', $strAttributeValueTableAlias)), $objAttribute->Id),
+					QQ::Equal(QQ::CustomNode(sprintf('%s.person_id', $strAttributeValueTableAlias)), QQN::Person()->Id),
+					$objQqCondition);
+			} else {
+				$objQqCondition = QQ::AndCondition(
+					QQ::Equal(QQ::CustomNode(sprintf('%s.attribute_id', $strAttributeValueTableAlias)), $objAttribute->Id),
+					QQ::Equal(QQ::CustomNode(sprintf('%s.person_id', $strAttributeValueTableAlias)), QQN::Person()->Id));
+			}
+
+			return $objQqNode;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

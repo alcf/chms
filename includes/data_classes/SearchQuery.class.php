@@ -14,6 +14,8 @@
 	 * 
 	 */
 	class SearchQuery extends SearchQueryGen {
+		protected $intCustomTableJoinCount = 0;
+
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -31,7 +33,15 @@
 			$strDescriptionArray = array();
 			foreach ($this->GetQueryConditionArray(QQ::OrderBy(QQN::QueryCondition()->Id)) as $objQueryCondition) {
 				if (strlen($objQueryCondition->Value)) {
-					$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $objQueryCondition->Value);
+					switch ($objQueryCondition->QueryNode->QueryDataTypeId) {
+						case QueryDataType::BooleanValue:
+							$strValue = ($objQueryCondition->Value) ? 'true' : 'false';
+							break;
+						default:
+							$strValue = $objQueryCondition->Value;
+							break;
+					}
+					$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $strValue);
 				} else {
 					$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
 				}
@@ -47,6 +57,8 @@
 		 * @return Person[]
 		 */
 		public function Execute($objOptionalClauses = null) {
+			if (!$this->CountQueryConditions()) return array();
+
 			// Setup the Clauses array
 			if (!$objOptionalClauses)
 				$objOptionalClauses = array(QQ::Distinct());
@@ -57,63 +69,58 @@
 			$objQqConditionToUse = QQ::All();
 
 			foreach ($this->GetQueryConditionArray() as $objQueryCondition) {
-				// Get the QcodoQuery Node we are operating on for this condition
-				$objQqNode = QQN::Person();
-				foreach (explode('->', $objQueryCondition->QueryNode->QcodoQueryNode) as $strPropertyName)
-					$objQqNode = $objQqNode->__get($strPropertyName);
+				$objQqConditionToAdd = null;
 
-				// Get the comparison Query Operation we are using 
-				$objOperation = $objQueryCondition->QueryOperation;
+				// First, calculate the QqNode to use.  Be sure to capture any conditions/clauses required during the QqNode calculation process
+				$objQqNode = $objQueryCondition->QueryNode->GetQqNode($objQqConditionToAdd, $objOptionalClauses);
 
-				// Get the QQ Factory Name we are using -- this becomes the Qq Method Name we run to construct
-				// the QcodoQueryCondition
-				$strMethodName = $objOperation->QqFactoryName;
-
-				// Generate the QcodoQueryCondition
-				if ($objOperation->ArgumentFlag) {
-					$strArgument = $objOperation->ArgumentPrepend . $objQueryCondition->Value . $objOperation->ArgumentPostpend;
-					$objQqConditionToAdd = QQ::$strMethodName($objQqNode, $strArgument);
-				} else {
-					$objQqConditionToAdd = QQ::$strMethodName($objQqNode);
-				}
-
-				// Add any Node Conditions (if applicable)
-				$objQqConditionToAddForNode = null;
-				if ($objQueryCondition->QueryNode->QcodoQueryCondition) {
-					foreach (explode(',', $objQueryCondition->QueryNode->QcodoQueryCondition) as $strNodeCondition) {
-						// Index 0 - The QqNode that the NodeCondition operates on
-						// Index 1 - The QQ:: Factory Name for the condition
-						// Index 2 (if applicable) - the value to compare with
-						$strTokens = explode(' ', $strNodeCondition);
-
-						// Figure out the NodeCondition QqNode
-						$objQqNode = QQN::Person();
-						foreach (explode('->', $strTokens[0]) as $strPropertyName)
-							$objQqNode = $objQqNode->__get($strPropertyName);
-
-						// Get the Method Name
-						$strMethodName = $strTokens[1];
-
-						// Add the Condition with argument
-						if (array_key_exists(2, $strTokens)) {
-							$objQqConditionToAddForNode = QQ::$strMethodName($objQqNode, $strTokens[2]);
-
-						// Add the Condition WITHOUT argument
-						} else {
-							$objQqConditionToAddForNode = QQ::$strMethodName($objQqNode);
-						}
-					}
-				}
-
-				if ($objQqConditionToAddForNode)
-					$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd, $objQqConditionToAddForNode);
-				else
-					$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd);
+				// Go Ahead and Calculate the QqCondition to Add into our overall QqCondition to use
+				$objQqConditionToAdd = $this->CalculateQqCondition($objQueryCondition, $objQqNode, $objQqConditionToAdd);
+				$objQqConditionToUse = QQ::AndCondition($objQqConditionToUse, $objQqConditionToAdd);
 			}
 
 			// Return an array of Person objects
 			return Person::QueryArray($objQqConditionToUse, $objOptionalClauses);
 		}
+
+		protected function CalculateQqCondition(QueryCondition $objQueryCondition, QQNode $objQqNode, QQCondition $objQqConditionToAdd = null) {
+			// Get the comparison Query Operation we are using 
+			$objOperation = $objQueryCondition->QueryOperation;				
+
+			// Get the QQ Factory Name we are using -- this becomes the Qq Method Name we run to construct
+			// the QcodoQueryCondition
+			$strMethodName = $objOperation->QqFactoryName;
+
+			// Generate the QcodoQueryCondition
+			switch ($objQueryCondition->QueryNode->QueryDataTypeId) {
+				case QueryDataType::BooleanValue:
+					if ($objQueryCondition->Value) {
+						$objQqCondition = QQ::Equal($objQqNode, true);
+					} else {
+						$objQqCondition = QQ::OrCondition(
+							QQ::Equal($objQqNode, false),
+							QQ::IsNull($objQqNode)
+						);
+					}
+					break;
+
+				default:
+					if ($objOperation->ArgumentFlag) {
+						$strArgument = $objOperation->ArgumentPrepend . $objQueryCondition->Value . $objOperation->ArgumentPostpend;
+						$objQqCondition = QQ::$strMethodName($objQqNode, $strArgument);
+					} else {
+						$objQqCondition = QQ::$strMethodName($objQqNode);
+					}
+					break;
+			}
+
+			if ($objQqConditionToAdd)
+				$objQqCondition = QQ::AndCondition($objQqConditionToAdd, $objQqCondition);
+
+			return $objQqCondition;
+		}
+
+
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

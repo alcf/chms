@@ -161,7 +161,7 @@ INSERT INTO query_data_type VALUES(16, 'Boolean Value');
 INSERT INTO query_data_type VALUES(32, 'Custom Value');
 
 INSERT INTO query_node_type VALUES(1, 'Standard Node');
-INSERT INTO query_node_type VALUES(2, 'Custom Node');
+INSERT INTO query_node_type VALUES(2, 'Attribute Node');
 
 INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
@@ -219,24 +219,27 @@ INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Equal To', 'Equal',
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Not Equal To', 'NotEqual', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Exists', 'IsNotNull', false, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Exist', 'IsNull', false, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Contains', 'Like', true, '%', '%');
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Contain', 'NotLike', true, '%', '%');
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Starts With', 'Like', true, null, '%');
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Start With', 'NotLike', true, null, '%');
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Ends With', 'Like', true, '%', null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not End With', 'NotLike', true, '%', null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Greater Than', 'GreaterThan', true, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Greater or Equal To', 'GreaterOrEqual', true, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Less Than', 'LessThan', true, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Contains', 'Like', true, '%', '%');
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Does Not Contain', 'NotLike', true, '%', '%');
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Starts With', 'Like', true, null, '%');
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Does Not Start With', 'NotLike', true, null, '%');
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Ends With', 'Like', true, '%', null);
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Does Not End With', 'NotLike', true, '%', null);
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Greater Than', 'GreaterThan', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Greater or Equal To', 'GreaterOrEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Less Than', 'LessThan', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
 
 INSERT INTO query_node VALUES (null, 'Gender',               1, 'Gender',                                           32, 'M,F');
 INSERT INTO query_node VALUES (null, 'Home City',            1, 'HouseholdParticipation->Household->Address->City', 1,  null);
 INSERT INTO query_node VALUES (null, 'Membership Status',    1, 'MembershipStatusTypeId',                           8, 'MembershipStatusType');
 INSERT INTO query_node VALUES (null, 'Can Email Flag',       1, 'CanEmailFlag',                                     16,  null);
 INSERT INTO query_node VALUES (null, 'Date of Birth',        1, 'DateOfBirth',                                      4,  null);
-INSERT INTO query_node VALUES (null, 'Date Baptized',        2, null,                                               4, '11');
-INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 2, null,                                               4, '12');
+INSERT INTO query_node VALUES (null, 'Date Baptized',        2, null,                                               4, '13');
+INSERT INTO query_node VALUES (null, 'Date Accepted Christ', 2, null,                                               4, '14');
+
+INSERT INTO query_node VALUES (null, 'ACS Family Number',    2, null,                                               1, '4');
+INSERT INTO query_node VALUES (null, 'Occupation',           2, null,                                               1, '16');
 
 INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, true);
 INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, true);

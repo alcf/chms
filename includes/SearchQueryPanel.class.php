@@ -80,34 +80,40 @@
 				$lstOperation = new QListBox($this->dtgConditions, $strControlId);
 				$lstOperation->ActionParameter = $intIndex;
 				$lstOperation->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstOperation_Change'));
-				$lstOperation->AddItem('- None -');
-				foreach ($this->objOperationArray as $objQueryOperation) {
-					$lstOperation->AddItem($objQueryOperation->Name, $objQueryOperation->Id, $objCondition->QueryOperationId == $objQueryOperation->Id);
-				}
+				$this->lstOperation_Refresh($intIndex, true);
 			}
 
-			$this->lstOperation_Refresh($intIndex);
 			return $lstOperation->Render(false);
 		}
 
 		public function lstNode_Change($strFormId, $strControlId, $strParameter) {
 			$intIndex = $strParameter;
-			$this->lstOperation_Refresh($intIndex);
+			$this->lstOperation_Refresh($intIndex, false);
 			$this->pnlValue_Refresh($intIndex);
 			$this->objForm->GetControl('lstOperation' . $intIndex)->Focus();
 		}
 
-		public function lstOperation_Refresh($intIndex) {
+		public function lstOperation_Refresh($intIndex, $blnCreating) {
 			$lstNode = $this->objForm->GetControl('lstNode' . $intIndex);
 			$lstOperation = $this->objForm->GetControl('lstOperation' . $intIndex);
 
+			$lstOperation->RemoveAllItems();
+
 			if (!$lstNode->SelectedValue) {
+				$lstOperation->AddItem('--');
 				$lstOperation->SelectedIndex = 0;
 				$lstOperation->Enabled = false;
 				$lstOperation->Required = false;
 			} else {
+				$objNode = QueryNode::Load($lstNode->SelectedValue);
 				$lstOperation->Enabled = true;
 				$lstOperation->Required = true;
+				$lstOperation->AddItem('- None -');
+				foreach ($this->objOperationArray as $objQueryOperation) {
+					if ($objQueryOperation->QueryDataTypeBitmap & $objNode->QueryDataTypeId)
+						$lstOperation->AddItem($objQueryOperation->Name, $objQueryOperation->Id,
+							$blnCreating && (array_key_exists($intIndex, $this->objQueryConditionArray)) && ($this->objQueryConditionArray[$intIndex]->QueryOperationId == $objQueryOperation->Id));
+				}
 			}
 		}
 
@@ -153,6 +159,9 @@
 							break;
 						case QueryDataType::IntegerValue:
 							$objQueryCondition->Value = trim($ctlValue->Text);
+							break;
+						case QueryDataType::BooleanValue:
+							$objQueryCondition->Value = trim($ctlValue->SelectedValue);
 							break;
 						case QueryDataType::TypeValue:
 							$objQueryCondition->Value = trim($ctlValue->SelectedValue);
@@ -203,10 +212,16 @@
 						$ctlValue = new QIntegerTextBox($pnlValue, $strControlId);
 						if ($objQueryCondition->QueryNodeId == $objQueryNode->Id) $ctlValue->Text = $objQueryCondition->Value;
 						break;
-
+						
+					case QueryDataType::BooleanValue:
+						$ctlValue = new QListBox($pnlValue, $strControlId);
+						$ctlValue->AddItem('True', true, ($objQueryCondition->QueryNodeId == $objQueryNode->Id) && $objQueryCondition->Value);
+						$ctlValue->AddItem('False', false, ($objQueryCondition->QueryNodeId == $objQueryNode->Id) && !$objQueryCondition->Value);
+						break;
+						
 					case QueryDataType::TypeValue:
 						$ctlValue = new QListBox($pnlValue, $strControlId);
-						$strTypeName = $objQueryNode->TypeDetail;
+						$strTypeName = $objQueryNode->NodeDetail;
 						$ctlValue->AddItem('- Select One -');
 						foreach ($strTypeName::$NameArray as $intKey => $strValue) {
 							$ctlValue->AddItem($strValue, $intKey, (($objQueryCondition->QueryNodeId == $objQueryNode->Id) && ($intKey == $objQueryCondition->Value)));
@@ -215,7 +230,7 @@
 
 					case QueryDataType::CustomValue:
 						$ctlValue = new QListBox($pnlValue, $strControlId);
-						foreach (explode(',', $objQueryNode->TypeDetail) as $strValue) {
+						foreach (explode(',', $objQueryNode->NodeDetail) as $strValue) {
 							$ctlValue->AddItem($strValue, $strValue, (($objQueryCondition->QueryNodeId == $objQueryNode->Id) && ($strValue == $objQueryCondition->Value)));
 						}
 						break;

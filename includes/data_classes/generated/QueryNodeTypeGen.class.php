@@ -19,22 +19,22 @@
 	 */
 	abstract class QueryNodeTypeGen extends QBaseClass {
 		const StandardNode = 1;
-		const CustomNode = 2;
+		const AttributeNode = 2;
 
 		const MaxId = 2;
 
 		public static $NameArray = array(
 			1 => 'Standard Node',
-			2 => 'Custom Node');
+			2 => 'Attribute Node');
 
 		public static $TokenArray = array(
 			1 => 'StandardNode',
-			2 => 'CustomNode');
+			2 => 'AttributeNode');
 
 		public static function ToString($intQueryNodeTypeId) {
 			switch ($intQueryNodeTypeId) {
 				case 1: return 'Standard Node';
-				case 2: return 'Custom Node';
+				case 2: return 'Attribute Node';
 				default:
 					throw new QCallerException(sprintf('Invalid intQueryNodeTypeId: %s', $intQueryNodeTypeId));
 			}
@@ -43,7 +43,7 @@
 		public static function ToToken($intQueryNodeTypeId) {
 			switch ($intQueryNodeTypeId) {
 				case 1: return 'StandardNode';
-				case 2: return 'CustomNode';
+				case 2: return 'AttributeNode';
 				default:
 					throw new QCallerException(sprintf('Invalid intQueryNodeTypeId: %s', $intQueryNodeTypeId));
 			}

@@ -46,7 +46,8 @@
 			$this->pnlSearchQuery->Save();
 			$this->objSearchQuery->RefreshDescription();
 			
-			$this->mctSmartGroup->SmartGroup->RefreshParticipationList();
+			$this->mctSmartGroup->SmartGroup->DateRefreshed = null;
+			$this->mctSmartGroup->SaveSmartGroup();
 
 			// Refresh
 			if ($blnRefreshGroups) {
