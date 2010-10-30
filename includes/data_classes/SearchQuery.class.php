@@ -34,30 +34,30 @@
 			foreach ($this->GetQueryConditionArray(QQ::OrderBy(QQN::QueryCondition()->Id)) as $objQueryCondition) {
 				switch ($objQueryCondition->QueryNode->QueryDataTypeId) {
 					case QueryDataType::BooleanValue:
-						$strDescriptionArray[] = sprintf('%s %s "%s"',
-							$objQueryCondition->QueryNode->Name,
-							strtolower($objQueryCondition->QueryOperation->Name),
-							($objQueryCondition->Value) ? 'true' : 'false');
+						$strValue = ($objQueryCondition->Value) ? 'true' : 'false';
+						break;
+					
+					case QueryDataType::TypeValue:
+						$strTypeName = $objQueryCondition->QueryNode->NodeDetail;
+						if (array_key_exists($objQueryCondition->Value, $strTypeName::$NameArray))
+							$strValue = $strTypeName::$NameArray[$objQueryCondition->Value];
+						else
+							$strValue = null;
 						break;
 
 					case QueryDataType::CustomValue:
-						if (strlen($objQueryCondition->Value)) {
-							$strDescriptionArray[] = sprintf('%s %s "%s"',
-								$objQueryCondition->QueryNode->Name,
-								strtolower($objQueryCondition->QueryOperation->Name),
-								$objQueryCondition->QueryNode->GetValueDescriptionForCustomValue($objQueryCondition->Value));
-						} else {
-							$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
-						}
+						$strValue = $objQueryCondition->QueryNode->GetValueDescriptionForCustomValue($objQueryCondition->Value);
 						break;
 
 					default:
-						if (strlen($objQueryCondition->Value)) {
-							$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $objQueryCondition->Value);
-						} else {
-							$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
-						}
+						$strValue = $objQueryCondition->Value;
 						break;
+				}
+
+				if (strlen($strValue)) {
+					$strDescriptionArray[] = sprintf('%s %s "%s"', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name), $strValue);
+				} else {
+					$strDescriptionArray[] = sprintf('%s %s', $objQueryCondition->QueryNode->Name, strtolower($objQueryCondition->QueryOperation->Name));
 				}
 			}
 
