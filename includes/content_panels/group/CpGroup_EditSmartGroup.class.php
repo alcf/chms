@@ -30,24 +30,23 @@
 		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
 			$blnRefreshGroups = !$this->mctGroup->EditMode || ($this->mctGroup->Group->ParentGroupId != $this->lstParentGroup->SelectedValue);
 
+			// Delegate "Save" processing to the SmartGroupMetaControl
 			$this->mctGroup->SaveGroup();
 
-			// Delegate "Save" processing to the SmartGroupMetaControl
+			// Now we can save the Smart Group
 			if (!$this->mctSmartGroup->EditMode) {
-				$this->objSearchQuery->Save();
-				$this->mctSmartGroup->SmartGroup->SearchQuery = $this->objSearchQuery;
 				$this->mctSmartGroup->SmartGroup->Group = $this->mctGroup->Group;
 			}
-
-			// Now we can save the Smart Group
+			$this->mctSmartGroup->SmartGroup->DateRefreshed = null;
 			$this->mctSmartGroup->SaveSmartGroup();
 
 			// Save the Search Query stuff
+			if (!$this->mctSmartGroup->EditMode) {
+				$this->objSearchQuery->SmartGroup = $this->mctSmartGroup->SmartGroup;
+				$this->objSearchQuery->Save();
+			}
 			$this->pnlSearchQuery->Save();
 			$this->objSearchQuery->RefreshDescription();
-			
-			$this->mctSmartGroup->SmartGroup->DateRefreshed = null;
-			$this->mctSmartGroup->SaveSmartGroup();
 
 			// Refresh
 			if ($blnRefreshGroups) {

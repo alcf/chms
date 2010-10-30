@@ -139,6 +139,7 @@
 
 		public function Save() {
 			$this->objSearchQuery->DeleteAllQueryConditions();
+
 			foreach ($this->objQueryConditionArray as $intIndex => $objQueryCondition) {
 				$lstNode = $this->objForm->GetControl('lstNode' . $intIndex);
 				$lstOperation = $this->objForm->GetControl('lstOperation' . $intIndex);
@@ -151,24 +152,25 @@
 					$objQueryCondition->QueryOperationId = $lstOperation->SelectedValue;
 					$objQueryCondition->QueryNodeId = $lstNode->SelectedValue;
 					if ($ctlValue->Visible) switch ($this->objNodeArray[$lstNode->SelectedValue]->QueryDataTypeId) {
-						case QueryDataType::StringValue:
-							$objQueryCondition->Value = trim($ctlValue->Text);
-							break;
 						case QueryDataType::DateValue:
 							$objQueryCondition->Value = $ctlValue->DateTime->ToString('YYYY-MM-DD');
 							break;
+
 						case QueryDataType::IntegerValue:
+						case QueryDataType::StringValue:
 							$objQueryCondition->Value = trim($ctlValue->Text);
 							break;
+
 						case QueryDataType::BooleanValue:
 							$objQueryCondition->Value = trim($ctlValue->SelectedValue);
 							break;
+
 						case QueryDataType::TypeValue:
-							$objQueryCondition->Value = trim($ctlValue->SelectedValue);
-							break;
+						case QueryDataType::ObjectValue:
 						case QueryDataType::CustomValue:
 							$objQueryCondition->Value = trim($ctlValue->SelectedValue);
 							break;
+
 						default:
 							throw new Exception('Unhandled QueryDataTypeId');
 					}
@@ -225,6 +227,32 @@
 						$ctlValue->AddItem('- Select One -');
 						foreach ($strTypeName::$NameArray as $intKey => $strValue) {
 							$ctlValue->AddItem($strValue, $intKey, (($objQueryCondition->QueryNodeId == $objQueryNode->Id) && ($intKey == $objQueryCondition->Value)));
+						}
+						break;
+
+					case QueryDataType::ObjectValue:
+						$ctlValue = new QListBox($pnlValue, $strControlId);
+						$strTokens = explode(' ', $objQueryNode->NodeDetail);
+						$strClassName = $strTokens[0];
+						$strMethodName = $strTokens[1];
+						$strParameter = $strTokens[2];
+						$strProperty = $strTokens[3];
+
+						if (array_key_exists(4, $strTokens))
+							$strIdProperty = $strTokens[4];
+						else
+							$strIdProperty = 'Id';
+
+						if (strlen($strParameter)) {
+							$objArray = $strClassName::$strMethodName($strParameter, QQ::OrderBy(QQN::$strClassName()->__get($strProperty)));
+						} else {
+							$objArray = $strClassName::$strMethodName(QQ::OrderBy(QQN::$strClassName()->__get($strProperty)));
+						}
+
+						$ctlValue->AddItem('- Select One -');
+						foreach ($objArray as $objItem) {
+							$ctlValue->AddItem($objItem->$strProperty, $objItem->$strIdProperty, 
+								(($objQueryCondition->QueryNodeId == $objQueryNode->Id) && ($objItem->$strIdProperty == $objQueryCondition->Value)));
 						}
 						break;
 

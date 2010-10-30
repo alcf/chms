@@ -190,6 +190,7 @@
 			$this->txtName = $this->mctGroup->txtName_Create();
 			$this->txtName->Select();
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtName->Required = true;
 
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 			$this->lstParentGroup->Name = 'In Group Category';
@@ -454,6 +455,7 @@
 		public function Validate() {
 			$blnToReturn = parent::Validate();
 			if (!$this->ValidateToken()) $blnToReturn = false;
+			foreach ($this->objForm->GetErrorControls() as $objControl) $objControl->Blink();
 			return $blnToReturn;
 		}
 	}

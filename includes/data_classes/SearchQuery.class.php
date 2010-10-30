@@ -45,6 +45,20 @@
 							$strValue = null;
 						break;
 
+					case QueryDataType::ObjectValue:
+						$strTokens = explode(' ', $objQueryCondition->QueryNode->NodeDetail);
+						$strClassName = $strTokens[0];
+						$strMethodName = $strTokens[1];
+						$strParameter = $strTokens[2];
+						$strProperty = $strTokens[3];
+						
+						if ($objQueryCondition->Value) {
+							$strValue = $strClassName::Load($objQueryCondition->Value)->__get($strProperty);
+						} else {
+							$strValue = null;
+						}
+						break;
+
 					case QueryDataType::CustomValue:
 						$strValue = $objQueryCondition->QueryNode->GetValueDescriptionForCustomValue($objQueryCondition->Value);
 						break;

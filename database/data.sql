@@ -257,7 +257,7 @@ INSERT INTO query_node VALUES (null, 'Group Participation - Start Date',      1,
 INSERT INTO query_node VALUES (null, 'Group Participation - End Date',      1, 'GroupParticipation->DateEnd',  4,  null);
 INSERT INTO query_node VALUES (null, 'Group Participation - Role',      1, 'GroupParticipation->GroupRole->Name',  1,  null);
 INSERT INTO query_node VALUES (null, 'Group Participation - Role Type',      1, 'GroupParticipation->GroupRole->GroupRoleTypeId',  8,  'GroupRoleType');
-INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',      1, 'GroupParticipation->Group->MinistryId',  32,  'Ministry->Name');
+INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',      1, 'GroupParticipation->Group->MinistryId',  32,  'Ministry LoadArrayByActiveFlag 1 Name');
 
 
 INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, true);
