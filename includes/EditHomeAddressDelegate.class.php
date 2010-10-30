@@ -157,7 +157,10 @@
 			if ($this->mctAddress->Address->CurrentFlag && $this->mctAddress->Address->Household)
 				$this->mctAddress->Address->Household->SetAsCurrentAddress($this->mctAddress->Address);
 
-			return $this->pnlContent->ReturnTo($this->strReturnUrl);
+			if ($this->strReturnUrl)
+				return $this->pnlContent->ReturnTo($this->strReturnUrl);
+			else
+				return true;
 		}
 
 		public function btnCancel_Click() {

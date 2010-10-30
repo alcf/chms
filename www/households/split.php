@@ -131,7 +131,7 @@
 				$this->lstHead->Visible = true;
 				$this->pnlAddress->Visible = true;
 				
-				$this->pnlAddress->objDelegate = new EditHomeAddressDelegate($this->pnlAddress, '/households/view.php/' . $this->objHousehold->Id, null, false);
+				$this->pnlAddress->objDelegate = new EditHomeAddressDelegate($this->pnlAddress, null, null, false);
 
 				// Since this HomeAddress panel/delegate is really for a NEW household's address, we want to set it to null
 				$this->pnlAddress->objDelegate->mctAddress->Address->Household = null;
@@ -148,8 +148,6 @@
 		}
 
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$this->dlgMessage->RemoveAllButtons();
-
 			// Make sure the new HeadOfHousehold is ONLY a member of this one household
 			$objNewHeadPerson = Person::Load($this->lstHead->SelectedValue);
 			switch ($objNewHeadPerson->GetHouseholdStatus()) {
@@ -174,20 +172,11 @@
 					return;
 			}
 
-			$this->pnlAddress->objDelegate->btnSave_Click();
+			if (!$this->pnlAddress->objDelegate->btnSave_Click()) return;
+
 			$objNewAddress = $this->pnlAddress->objDelegate->mctAddress->Address;
 			$objNewHousehold = $this->objHousehold->SplitHousehold($this->objSelectedPersonArray, $objNewHeadPerson, $objNewAddress);
-		}
-
-		protected function RemoveFromHousehold() {
-			$this->objHousehold->UnassociatePerson($this->objPersonToRemove);
-			$this->RedirectToViewPage();
-		}
-
-		protected function DeletePerson() {
-			$this->objHousehold->UnassociatePerson($this->objPersonToRemove);
-			$this->objPersonToRemove->Delete();
-			$this->RedirectToViewPage();
+			QApplication::Redirect('/households/view.php/' . $objNewHousehold->Id);
 		}
 
 		protected function btnCancel_Click($strFormId, $strControlId, $strParameter) {
