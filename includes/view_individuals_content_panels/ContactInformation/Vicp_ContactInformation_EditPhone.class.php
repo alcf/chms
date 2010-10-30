@@ -42,6 +42,9 @@
 
 			$this->txtNumber = $this->mctPhone->txtNumber_Create();
 			$this->txtNumber->Required = true;
+			$this->txtNumber->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+			$this->txtNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtNumber->CausesValidation = $this->btnSave->CausesValidation;
 		}
 
 		public function btnSave_Click() {

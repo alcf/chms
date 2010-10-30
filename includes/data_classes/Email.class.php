@@ -29,12 +29,13 @@
 
 		public function Delete() {
 			try {
-				$objPerson = $this->Person;
+				$objPerson = $this->PersonAsPrimary;
 				$this->PersonAsPrimary = null;
 				$this->Save();
 
+				$objPerson = $this->Person;
 				parent::Delete();
-				if ($objPerson) $objPerson->RefreshPrimaryContactInfo();
+				$objPerson->RefreshPrimaryContactInfo();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
