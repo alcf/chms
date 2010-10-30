@@ -30,6 +30,10 @@
 		 */
 		protected $objPersonToRemove;
 		
+		protected function dtgMembers_Bind() {
+			$this->dtgMembers->DataSource = $this->objHousehold->GetOrderedParticipantArray();
+		}
+
 		protected function Form_Create() {
 			// Setup Household Object
 			$this->objHousehold = Household::Load(QApplication::PathInfo(0));
@@ -52,7 +56,7 @@
 			$this->dtgMembers->GetColumn(2)->OrderByClause = null;
 			$this->dtgMembers->GetColumn(3)->OrderByClause = null;
 			$this->dtgMembers->GetColumn(4)->OrderByClause = null;
-			$this->dtgMembers->DataSource = $this->objHousehold->GetOrderedParticipantArray();
+			$this->dtgMembers->SetDataBinder('dtgMembers_Bind');
 
 			$this->lstHead = new QListBox($this);
 			$this->lstHead->Name = 'Head of New Household';
