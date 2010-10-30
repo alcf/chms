@@ -158,7 +158,8 @@ INSERT INTO query_data_type VALUES(2, 'Integer Value');
 INSERT INTO query_data_type VALUES(4, 'Date Value');
 INSERT INTO query_data_type VALUES(8, 'Type Value');
 INSERT INTO query_data_type VALUES(16, 'Boolean Value');
-INSERT INTO query_data_type VALUES(32, 'Custom Value');
+INSERT INTO query_data_type VALUES(32, 'Object Value');
+INSERT INTO query_data_type VALUES(1024, 'Custom Value');
 
 INSERT INTO query_node_type VALUES(1, 'Standard Node');
 INSERT INTO query_node_type VALUES(2, 'Attribute Node');
@@ -215,10 +216,10 @@ INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
 INSERT INTO query_operation VALUES (null,         16   , 'Is',  'Equal', true, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Equal To', 'Equal', true, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Is Not Equal To', 'NotEqual', true, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Exists', 'IsNotNull', false, null, null);
-INSERT INTO query_operation VALUES (null, 1|2|4|8|   32, 'Does Not Exist', 'IsNull', false, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32|1024, 'Is Equal To', 'Equal', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|   32|1024, 'Is Not Equal To', 'NotEqual', true, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|      1024, 'Exists', 'IsNotNull', false, null, null);
+INSERT INTO query_operation VALUES (null, 1|2|4|8|      1024, 'Does Not Exist', 'IsNull', false, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4        , 'Contains', 'Like', true, '%', '%');
 INSERT INTO query_operation VALUES (null, 1|2|4        , 'Does Not Contain', 'NotLike', true, '%', '%');
 INSERT INTO query_operation VALUES (null, 1|2|4        , 'Starts With', 'Like', true, null, '%');
@@ -230,12 +231,12 @@ INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Greater or Equal To
 INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Less Than', 'LessThan', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Less Than or Equal To', 'LessOrEqual', true, null, null);
 
-INSERT INTO query_node VALUES (null, 'Gender',                 1, 'Gender',                            32, 'M,F');
+INSERT INTO query_node VALUES (null, 'Gender',                 1, 'Gender',                            1024, 'M,F');
 INSERT INTO query_node VALUES (null, 'Age',                    1, 'Age',                                2,  null);
 INSERT INTO query_node VALUES (null, 'Home City',              1, 'PrimaryCityText',                    1,  null);
 INSERT INTO query_node VALUES (null, 'Membership Status',      1, 'MembershipStatusTypeId',             8, 'MembershipStatusType');
 INSERT INTO query_node VALUES (null, 'Marital Status',         1, 'MaritalStatusTypeId',                8, 'MaritalStatusType');
-INSERT INTO query_node VALUES (null, 'Okay to Bulk Email?',    1, 'CanEmailFlag',                      16,  null);
+INSERT INTO query_node VALUES (null, 'Okay to Bulk Email',    1, 'CanEmailFlag',                      16,  null);
 INSERT INTO query_node VALUES (null, 'Okay to Bulk Mail',      1, 'CanMailFlag',                       16,  null);
 INSERT INTO query_node VALUES (null, 'Okay to Telephone',      1, 'CanPhoneFlag',                      16,  null);
 INSERT INTO query_node VALUES (null, 'Date of Birth',          1, 'DateOfBirth',                        4,  null);
@@ -244,18 +245,19 @@ INSERT INTO query_node VALUES (null, 'Date Accepted Christ',   2, null,         
 INSERT INTO query_node VALUES (null, 'Date Faith Recommitted', 2, null,                                 4, '15');
 INSERT INTO query_node VALUES (null, 'Occupation',             2, null,                                 1, '16');
 INSERT INTO query_node VALUES (null, 'Previous Church',        2, null,                                 1, '17');
-INSERT INTO query_node VALUES (null, 'Spritual Gifts',         2, null,                                32, '7');
-INSERT INTO query_node VALUES (null, 'Method of Joining ALCF', 2, null,                                32, '6');
-INSERT INTO query_node VALUES (null, 'Ministry Involvement - Assigned Interviewer', 2, null,           32, '8');
+INSERT INTO query_node VALUES (null, 'Spritual Gifts',         2, null,                                1024, '7');
+INSERT INTO query_node VALUES (null, 'Method of Joining ALCF', 2, null,                                1024, '6');
+INSERT INTO query_node VALUES (null, 'Ministry Involvement - Assigned Interviewer', 2, null,           1024, '8');
 INSERT INTO query_node VALUES (null, 'Ministry Involvement - Date Placed',          2, null,                                 4, '9');
 INSERT INTO query_node VALUES (null, 'Ministry Involvement - Scheduled Interview',          2, null,                                 4, '10');
-INSERT INTO query_node VALUES (null, 'Ministry Involvement - Status', 2, null,                         32, '11');
-INSERT INTO query_node VALUES (null, 'Ministry Involvement - Status of Letter', 2, null,               32, '12');
+INSERT INTO query_node VALUES (null, 'Ministry Involvement - Status', 2, null,                         1024, '11');
+INSERT INTO query_node VALUES (null, 'Ministry Involvement - Status of Letter', 2, null,               1024, '12');
 
 INSERT INTO query_node VALUES (null, 'Group Participation - Start Date',      1, 'GroupParticipation->DateStart',  4,  null);
 INSERT INTO query_node VALUES (null, 'Group Participation - End Date',      1, 'GroupParticipation->DateEnd',  4,  null);
 INSERT INTO query_node VALUES (null, 'Group Participation - Role',      1, 'GroupParticipation->GroupRole->Name',  1,  null);
 INSERT INTO query_node VALUES (null, 'Group Participation - Role Type',      1, 'GroupParticipation->GroupRole->GroupRoleTypeId',  8,  'GroupRoleType');
+INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',      1, 'GroupParticipation->Group->MinistryId',  32,  'Ministry->Name');
 
 
 INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, true);
