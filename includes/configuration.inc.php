@@ -137,6 +137,29 @@
 			break;
 
 		case 'prod':
+			define ('__DOCROOT__', 'PROD_DOCROOT');
+			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
+			define ('__MICRIMAGE_DROP_FOLDER__', '/home/magtek');
+			define ('MICRIMAGE_IP', '10.128.2.88');
+
+			define('DB_CONNECTION_1', serialize(array(
+				'adapter' => 'MySqli5',
+				'server' => 'PROD_DBHOST',
+				'port' => null,
+				'database' => 'alcf_chms_prod',
+				'username' => 'PROD_DBROOT',
+				'password' => 'PROD_DBPASS',
+				'profiling' => false,
+				'journaling' => array(
+					'adapter' => 'MySqli5',
+					'server' => 'PROD_DBHOST',
+					'port' => null,
+					'database' => 'alcf_chms_prod_log',
+					'username' => 'PROD_DBROOT',
+					'password' => 'PROD_DBPASS',
+					'profiling' => false,
+					'staticproperty' => 'LoginId')
+			)));
 			break;
 	}
 
