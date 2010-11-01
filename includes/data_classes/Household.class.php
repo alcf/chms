@@ -448,8 +448,8 @@
 		 * @return Address
 		 */
 		public function GetStewardshipAddress() {
-			if ($this->HeadPerson->StewardshipAddress) return $this->HeadPerson->StewardshipAddress;
-			if ($this->HeadPerson->MailingAddress) return $this->HeadPerson->MailingAddress;
+			if ($this->HeadPerson->StewardshipAddress && !$this->HeadPerson->StewardshipAddress->InvalidFlag) return $this->HeadPerson->StewardshipAddress;
+			if ($this->HeadPerson->MailingAddress && !$this->HeadPerson->MailingAddress->InvalidFlag) return $this->HeadPerson->MailingAddress;
 
 			// Try to find any valid, current HomeAddress
 			$objAddressArray = Address::LoadArrayByHouseholdIdCurrentFlag($this->Id, true);

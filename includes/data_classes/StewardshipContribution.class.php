@@ -662,21 +662,23 @@
 			$intY -= 12.1;
 			$objPage->drawText($strNameToPrint, 36, $intY);
 
-			$intY -= 12.1;
-			$objPage->drawText($objAddress->Address1, 36, $intY);
-
-			if ($objAddress->Address2) {
+			if ($objAddress) {
 				$intY -= 12.1;
-				$objPage->drawText($objAddress->Address2, 36, $intY);
-			}
+				$objPage->drawText($objAddress->Address1, 36, $intY);
 
-			if ($objAddress->Address3) {
+				if ($objAddress->Address2) {
+					$intY -= 12.1;
+					$objPage->drawText($objAddress->Address2, 36, $intY);
+				}
+
+				if ($objAddress->Address3) {
+					$intY -= 12.1;
+					$objPage->drawText($objAddress->Address2, 36, $intY);
+				}
+
 				$intY -= 12.1;
-				$objPage->drawText($objAddress->Address2, 36, $intY);
+				$objPage->drawText(sprintf('%s, %s  %s', $objAddress->City, $objAddress->State, $objAddress->ZipCode), 36, $intY);
 			}
-
-			$intY -= 12.1;
-			$objPage->drawText(sprintf('%s, %s  %s', $objAddress->City, $objAddress->State, $objAddress->ZipCode), 36, $intY);
 		}
 
 		protected static function DrawFooter(Zend_Pdf_Page $objPage) {

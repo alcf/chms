@@ -211,8 +211,8 @@
 		 * @return Address
 		 */
 		public function GetStewardshipAddress() {
-			if ($this->StewardshipAddress) return $this->StewardshipAddress;
-			if ($this->MailingAddress) return $this->MailingAddress;
+			if ($this->StewardshipAddress && !$this->StewardshipAddress->InvalidFlag) return $this->StewardshipAddress;
+			if ($this->MailingAddress && !$this->MailingAddress->InvalidFlag) return $this->MailingAddress;
 
 			// Try to find any valid, current HomeAddress if member of a household
 			$objHouseholdParticipationArray = $this->GetHouseholdParticipationArray();

@@ -28,7 +28,7 @@
 	$intSingplePageCount = 1;
 	$objSinglePagePdf = new Zend_Pdf();
 	$objMultiplePagePdf = new Zend_Pdf();
-
+	
 	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->Id));
 	QDataGen::DisplayForEachTaskStart('Generating Receipt for Household', Household::CountAll());
 	while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
@@ -36,21 +36,25 @@
 
 		// Generate for the whole household
 		if ($objHousehold->CombinedStewardshipFlag) {
-			$intPersonIdArray = StewardshipContribution::GetPersonIdArrayForPersonOrHousehold($objHousehold);
-			$intEntryCount = count(StewardshipContribution::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear));
-			if ($intEntryCount > 38)
-				StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear);
-			else if ($intEntryCount)
-				StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear);
+			if ($objHousehold->GetStewardshipAddress()) {
+				$intPersonIdArray = StewardshipContribution::GetPersonIdArrayForPersonOrHousehold($objHousehold);
+				$intEntryCount = count(StewardshipContribution::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear));
+				if ($intEntryCount > 38)
+					StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear);
+				else if ($intEntryCount)
+					StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear);
+			}
 
 		// Generate for each individual in the household
 		} else foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
-			$intPersonIdArray = array($objParticipation->Person->Id);
-			$intEntryCount = count(StewardshipContribution::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear));
-			if ($intEntryCount > 38)
-				StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear);
-			else if ($intEntryCount)
-				StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear);
+			if ($objParticipation->Person->GetStewardshipAddress()) {
+				$intPersonIdArray = array($objParticipation->Person->Id);
+				$intEntryCount = count(StewardshipContribution::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear));
+				if ($intEntryCount > 38)
+					StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear);
+				else if ($intEntryCount)
+					StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear);
+			}
 		}
 
 		// Separate into New File?
