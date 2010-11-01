@@ -32,9 +32,10 @@
 
 			$this->lstActiveFlag = new QListBox($this);
 			$this->lstActiveFlag->Name = 'Active';
-			$this->lstActiveFlag->AddItem('Active', true);
+			$this->lstActiveFlag->AddItem('Active', true, true);
 			$this->lstActiveFlag->AddItem('Inactive', false);
-
+			$this->lstActiveFlag->AddAction(new QChangeEvent(), new QAjaxAction('dtgStaff_Refresh'));
+			
 			$this->lstMinistry = new QListBox($this);
 			$this->lstMinistry->Name = 'Ministry';
 			$this->lstMinistry->AddItem('- View All -', null);
@@ -78,7 +79,7 @@
 				);
 			}
 			
-			if ($this->lstLoginActive->SelectedValue) {
+			if ($this->lstActiveFlag->SelectedValue) {
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Equal( QQN::Login()->DomainActiveFlag, true ),
 					QQ::Equal( QQN::Login()->LoginActiveFlag, true )

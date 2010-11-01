@@ -3,7 +3,7 @@
 	<h3>Filter Results By...</h3>
 	<div class="section">
 		<?php $this->lstMinistry->RenderWithName(); ?>
-		<?php $this->lstLoginActive->RenderWithName(); ?>
+		<?php $this->lstActiveFlag->RenderWithName(); ?>
 	</div>
 	<div class="section">
 		<?php $this->dtgStaff->Render(); ?>
