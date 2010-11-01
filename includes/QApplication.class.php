@@ -105,7 +105,6 @@
 					unset($_SESSION['intLoginId']);
 					QApplication::$Login = null;
 				} else {
-					QApplication::$Login->RefreshDateLastLogin();
 					QApplication::$LoginId = QApplication::$Login->Id;
 				}
 
@@ -128,6 +127,7 @@
 		public static function Login(Login $objLogin) {
 			QApplication::$Login = $objLogin;
 			QApplication::$LoginId = $objLogin->Id;
+			QApplication::$Login->RefreshDateLastLogin();
 			$_SESSION['intLoginId'] = $objLogin->Id;
 		}
 
