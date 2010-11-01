@@ -488,7 +488,7 @@
 				$objPage = $objPdf->pages[0];
 				$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
-				$objPage->drawText('(*) denotes a contribution that does not qualify for tax deduction.', 14, 149);
+				$objPage->drawText('(*) denotes a contribution that does not qualify for tax deduction.', 14, 149, 'UTF-8');
 			}
 		}
 
@@ -505,12 +505,12 @@
 			$intY -= 7.5;
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(1));
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 7); 
-			$objPage->drawText('PLEDGED BY',		$intXArray[0], $intY);
-			$objPage->drawText('FUND', 				$intXArray[1], $intY);
-			$objPage->drawText('START DATE', 		$intXArray[2], $intY);
-			$objPage->drawText('END DATE', 			$intXArray[3], $intY);
-			$objPage->drawText('AMOUNT PLEDGED',	$intXArray[4], $intY);
-			$objPage->drawText('CONTRIBUTED',		$intXArray[5], $intY);
+			$objPage->drawText('PLEDGED BY',		$intXArray[0], $intY, 'UTF-8');
+			$objPage->drawText('FUND', 				$intXArray[1], $intY, 'UTF-8');
+			$objPage->drawText('START DATE', 		$intXArray[2], $intY, 'UTF-8');
+			$objPage->drawText('END DATE', 			$intXArray[3], $intY, 'UTF-8');
+			$objPage->drawText('AMOUNT PLEDGED',	$intXArray[4], $intY, 'UTF-8');
+			$objPage->drawText('CONTRIBUTED',		$intXArray[5], $intY, 'UTF-8');
 			self::DrawTextRight($objPage, 			$intXArray[6], $intY, 'REMAINING');
 			
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
@@ -519,12 +519,12 @@
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 9);
 			foreach ($objPledgeArray as $objPledge) {
 				$intY -= 10;
-				$objPage->drawText($objPledge->Person->Name, 										$intXArray[0], $intY);
-				$objPage->drawText($objPledge->StewardshipFund->Name, 								$intXArray[1], $intY);
-				$objPage->drawText($objPledge->DateStarted->ToString('MMM D YYYY'),					$intXArray[2], $intY);
-				$objPage->drawText($objPledge->DateEnded->ToString('MMM D YYYY'),					$intXArray[3], $intY);
-				$objPage->drawText(QApplication::DisplayCurrency($objPledge->PledgeAmount), 		$intXArray[4], $intY);
-				$objPage->drawText(QApplication::DisplayCurrency($objPledge->ContributedAmount), 	$intXArray[5], $intY);
+				$objPage->drawText($objPledge->Person->Name, 										$intXArray[0], $intY, 'UTF-8');
+				$objPage->drawText($objPledge->StewardshipFund->Name, 								$intXArray[1], $intY, 'UTF-8');
+				$objPage->drawText($objPledge->DateStarted->ToString('MMM D YYYY'),					$intXArray[2], $intY, 'UTF-8');
+				$objPage->drawText($objPledge->DateEnded->ToString('MMM D YYYY'),					$intXArray[3], $intY, 'UTF-8');
+				$objPage->drawText(QApplication::DisplayCurrency($objPledge->PledgeAmount), 		$intXArray[4], $intY, 'UTF-8');
+				$objPage->drawText(QApplication::DisplayCurrency($objPledge->ContributedAmount), 	$intXArray[5], $intY, 'UTF-8');
 				self::DrawTextRight($objPage, 														$intXArray[6], $intY, QApplication::DisplayCurrency($objPledge->RemainingAmount));
 			}
 		}
@@ -573,30 +573,30 @@
 
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 14);
-			$objPage->drawText($intYear . ' Giving', $intX, $intY);
+			$objPage->drawText($intYear . ' Giving', $intX, $intY, 'UTF-8');
 			$intY -= 16;
-			$objPage->drawText('Summary', $intX, $intY);
+			$objPage->drawText('Summary', $intX, $intY, 'UTF-8');
 			$intY -= 24;
 
 			for ($intI = 1; $intI <= 12; $intI++) {
 				$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 9);
 				$strMonth = date('F', mktime(0, 0, 0, $intI, 1, 2000));
-				$objPage->drawText($strMonth, $intX, $intY);
+				$objPage->drawText($strMonth, $intX, $intY, 'UTF-8');
 				self::DrawTextRight($objPage, $intXRight, $intY, QApplication::DisplayCurrency($fltMonthlyTotals[$intI - 1]));
 				$intY -= 13;
 
 				if (($intI % 3) == 0) {
 					$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 9);
 					$intQuarterNumber = floor($intI / 3);
-					$objPage->drawText('Q' . $intQuarterNumber . ' Total', $intX, $intY);
+					$objPage->drawText('Q' . $intQuarterNumber . ' Total', $intX, $intY, 'UTF-8');
 					self::DrawTextRight($objPage, $intXRight, $intY, QApplication::DisplayCurrency($fltQuarterlyTotals[$intQuarterNumber - 1]));
 					$intY -= 26;
 				}
 			}
 
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 9);
-			$objPage->drawText($intYear . ' Total', $intX, $intYBottom + 13 + 9);
+			$objPage->drawText($intYear . ' Total', $intX, $intYBottom + 13 + 9, 'UTF-8');
 			self::DrawTextRight($objPage, $intXRight, $intYBottom + 9, QApplication::DisplayCurrency($fltAnnualTotal));
 		}
 
@@ -611,7 +611,7 @@
 			$intWidthArray = $objFont->widthsForGlyphs($objGlyphArray);
 			$fltWidth = (array_sum($intWidthArray) / $objFont->getUnitsPerEm()) * $intFontSize;
 
-			$objPage->drawText($strText, $intX - $fltWidth, $intY);
+			$objPage->drawText($strText, $intX - $fltWidth, $intY, 'UTF-8');
 		}
 
 		protected static function DrawItems(Zend_Pdf_Page $objPage, $objContributionAmountArray, $intY) {
@@ -624,10 +624,10 @@
 			$intY -= 7.5;
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(1));
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 7); 
-			$objPage->drawText('POSTED DATE', 		$intXArray[0], $intY);
-			$objPage->drawText('CONTRIBUTED BY',	$intXArray[1], $intY);
-			$objPage->drawText('FUND', 				$intXArray[2], $intY);
-			$objPage->drawText('TRANSACTION',		$intXArray[3], $intY);
+			$objPage->drawText('POSTED DATE', 		$intXArray[0], $intY, 'UTF-8');
+			$objPage->drawText('CONTRIBUTED BY',	$intXArray[1], $intY, 'UTF-8');
+			$objPage->drawText('FUND', 				$intXArray[2], $intY, 'UTF-8');
+			$objPage->drawText('TRANSACTION',		$intXArray[3], $intY, 'UTF-8');
 			self::DrawTextRight($objPage, 			$intXArray[4], $intY, 'AMOUNT');
 
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
@@ -636,10 +636,10 @@
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 9);
 			foreach ($objContributionAmountArray as $objAmount) {
 				$intY -= 10;
-				$objPage->drawText($objAmount->StewardshipContribution->DateCredited->ToString('MMM D YYYY'),	$intXArray[0], $intY);
-				$objPage->drawText($objAmount->StewardshipContribution->Person->Name, 							$intXArray[1], $intY);
-				$objPage->drawText($objAmount->StewardshipFund->Name, 											$intXArray[2], $intY);
-				$objPage->drawText($objAmount->StewardshipContribution->Transaction, 							$intXArray[3], $intY);
+				$objPage->drawText($objAmount->StewardshipContribution->DateCredited->ToString('MMM D YYYY'),	$intXArray[0], $intY, 'UTF-8');
+				$objPage->drawText($objAmount->StewardshipContribution->Person->Name, 							$intXArray[1], $intY, 'UTF-8');
+				$objPage->drawText($objAmount->StewardshipFund->Name, 											$intXArray[2], $intY, 'UTF-8');
+				$objPage->drawText($objAmount->StewardshipContribution->Transaction, 							$intXArray[3], $intY, 'UTF-8');
 
 				$strAmount = QApplication::DisplayCurrency($objAmount->Amount);
 				if ($objAmount->StewardshipContribution->NonDeductibleFlag) $strAmount = '(*) ' . $strAmount;
@@ -660,24 +660,24 @@
 				$strNameToPrint = $objPersonOrHousehold->StewardshipHouseholdName;
 
 			$intY -= 12.1;
-			$objPage->drawText($strNameToPrint, 36, $intY);
+			$objPage->drawText($strNameToPrint, 36, $intY, 'UTF-8');
 
 			if ($objAddress) {
 				$intY -= 12.1;
-				$objPage->drawText($objAddress->Address1, 36, $intY);
+				$objPage->drawText($objAddress->Address1, 36, $intY, 'UTF-8');
 
 				if ($objAddress->Address2) {
 					$intY -= 12.1;
-					$objPage->drawText($objAddress->Address2, 36, $intY);
+					$objPage->drawText($objAddress->Address2, 36, $intY, 'UTF-8');
 				}
 
 				if ($objAddress->Address3) {
 					$intY -= 12.1;
-					$objPage->drawText($objAddress->Address2, 36, $intY);
+					$objPage->drawText($objAddress->Address2, 36, $intY, 'UTF-8');
 				}
 
 				$intY -= 12.1;
-				$objPage->drawText(sprintf('%s, %s  %s', $objAddress->City, $objAddress->State, $objAddress->ZipCode), 36, $intY);
+				$objPage->drawText(sprintf('%s, %s  %s', $objAddress->City, $objAddress->State, $objAddress->ZipCode), 36, $intY, 'UTF-8');
 			}
 		}
 
@@ -685,12 +685,12 @@
 			$intX = 20;
 
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
-			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_1, $intX, (72 * 1/4) + 8.8);
-			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_2, $intX, (72 * 1/4));
+			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_1, $intX, (72 * 1/4) + 8.8, 'UTF-8');
+			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_2, $intX, (72 * 1/4), 'UTF-8');
 
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 10); 
-			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_1, $intX, (72 * 5/8) + 11.5);
-			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_2, $intX, (72 * 5/8));
+			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_1, $intX, (72 * 5/8) + 11.5, 'UTF-8');
+			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_2, $intX, (72 * 5/8), 'UTF-8');
 		}
 
 		protected static function DrawHeader(Zend_Pdf_Page $objPage) {	
@@ -698,18 +698,18 @@
 
 			$intY -= 13.2;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12); 
-			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_1, 36, $intY);
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_1, 36, $intY, 'UTF-8');
 
 			$intY -= 9.2;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
-			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_2, 36, $intY);
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_2, 36, $intY, 'UTF-8');
 
 			$intY -= 12.1;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 11); 
-			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_3, 36, $intY);
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_3, 36, $intY, 'UTF-8');
 
 			$intY -= 12.1;
-			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_4, 36, $intY);
+			$objPage->drawText(STEWARDSHIP_STATEMENT_LINE_4, 36, $intY, 'UTF-8');
 
 			if (!self::$ZendImage) self::$ZendImage = Zend_Pdf_Image::imageWithPath(__DOCROOT__ . __IMAGE_ASSETS__ . '/alcf_logo_stewardship.png');
 			$objPage->drawImage(self::$ZendImage, 424, STEWARDSHIP_TOP - 108, 576, STEWARDSHIP_TOP - 36);
