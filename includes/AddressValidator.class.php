@@ -21,7 +21,10 @@
 		}
 
 		public function ValidateAddress() {
-			return $this->ValidateAddressUsps();
+			$this->ValidateAddressUsps();
+			if (!$this->blnAddressValidFlag) {
+				$this->ValidateAddressCdyne();
+			}
 		}
 
 		public function ValidateAddressUsps() {
@@ -163,7 +166,7 @@
 				'CityName'				=> $this->strCity,
 				'State'					=> $this->strState,
 				'ZipCode'				=> $this->strZipCode,
-				'LicenseKey' 			=> '050A1DAF-F459-4BD9-A612-AAA88551FCF7' 
+				'LicenseKey' 			=> 'd0ca63f0-ef2f-433b-acb9-595302dd235d' 
 			);
 
 			$objResult = $objClient->VerifyAddress($strRequest);
@@ -197,6 +200,9 @@
 
 				$this->blnAddressValidFlag = true;
 				$this->blnSecondaryValidFlag = ($objResult->ReturnCode == 100);
+			} else {
+				$this->blnAddressValidFlag = false;
+				$this->blnSecondaryValidFlag = false;
 			}
 		}
 

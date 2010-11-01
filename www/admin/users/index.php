@@ -7,6 +7,7 @@
 		protected $intNavSectionId = ChmsForm::NavSectionAdministration;
 
 		protected $lstMinistry;
+		protected $lstActiveFlag;
 		protected $dtgStaff;
 
 		protected function Form_Create() {
@@ -28,7 +29,12 @@
 			
 			$this->dtgStaff->Paginator = new QPaginator($this->dtgStaff);
 			$this->dtgStaff->ItemsPerPage = 100;
-			
+
+			$this->lstActiveFlag = new QListBox($this);
+			$this->lstActiveFlag->Name = 'Active';
+			$this->lstActiveFlag->AddItem('Active', true);
+			$this->lstActiveFlag->AddItem('Inactive', false);
+
 			$this->lstMinistry = new QListBox($this);
 			$this->lstMinistry->Name = 'Ministry';
 			$this->lstMinistry->AddItem('- View All -', null);
@@ -69,6 +75,20 @@
 			if ($this->lstMinistry->SelectedValue) {
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Equal( QQN::Login()->Ministry->MinistryId, $this->lstMinistry->SelectedValue )
+				);
+			}
+			
+			if ($this->lstLoginActive->SelectedValue) {
+				$objConditions = QQ::AndCondition($objConditions,
+					QQ::Equal( QQN::Login()->DomainActiveFlag, true ),
+					QQ::Equal( QQN::Login()->LoginActiveFlag, true )
+				);
+			} else {
+				$objConditions = QQ::AndCondition($objConditions,
+					QQ::OrCondition(
+						QQ::Equal( QQN::Login()->DomainActiveFlag, false ),
+						QQ::Equal( QQN::Login()->LoginActiveFlag, false )
+					)
 				);
 			}
 
