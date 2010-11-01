@@ -1,0 +1,39 @@
+			body { margin: 0; padding: 0; }
+			a { color: #321; }
+			a:hover { text-decoration: none; }
+			
+			div.navbar ul { list-style: none; margin: 0; padding: 0; }
+			div.navbar li { float: left; padding-top: 2px; padding-bottom: 2px;}
+			div.navbar li a { margin-right: 8px; padding: 2px 10px 2px 10px; font-weight: bold; color: #dcb; text-decoration: none; background-color: #544; }
+			div.navbar li a.selected { background-color: #dcb; color: #321; }
+			div.navbar li a:hover { background-color: #fed; color: #321; }
+			
+			div.navbar a { color: #dcb; }
+			
+			.notApplicable { color: #666; font-style: italic; }
+			
+			div#ministryMenu { position: absolute; background-color: #766; width: 220px; height: 350px; margin-top: 21px; overflow: auto; opacity: 0.95; display: none; }
+			div#ministryMenu a { display: block; width: 185px; background-color: blue; margin-bottom: 1px; font-weight: bold; padding: 2px 10px 2px 10px; color: #dcb; text-decoration: none; background-color: #544;}
+			div#ministryMenu a.selected { background-color: #dcb; color: #321; }
+			div#ministryMenu a:hover { background-color: #fed; color: #321; }
+
+			div.fileRepositoryButton { margin-top: 8px; float: left; margin-right: 10px; }
+				div.fileRepositoryButton span { position: relative; top: -3px; font-size: 10px; font-weight: bold; color: #333; }
+				div.fileRepositoryButton a { border: 1px solid #999; background-color: #eee; padding: 5px; display: block; text-decoration: none; }
+
+				
+		div.filterBy { float: left; margin-right: 20px; font-size: 10px; font-weight: bold; }
+		div.filterBy input { font-size: 10px; width: 110px; }
+		div.filterBy select { font-size: 10px; }
+
+		ul.mapnav { margin: 0; padding: 0; width: 980px; margin: auto; }
+		ul.mapnav li { float: left; list-style: none; width: 153px; padding: 3px 5px; margin: 0; height: 32px; font-size: 11px; background-color: #321; color: #fff; font-weight: bold; }
+		ul.mapnav li.selected { background-color: #e3d8ba; color: #321; border-top: 1px solid #321; border-bottom: 1px solid #321; height: 30px; }
+		ul.mapnav li a {color: #fff; font-weight: normal; background-color: #321; }
+		
+		div#dtrgg { width: 351px; height: 538px; border: 1px solid black; overflow: auto; padding: 5px; }
+		div#pnlnone { font-size: 11px; margin-top: 12px; }
+		
+		div.gglocation { width: 168px; float: left; height: 100px; }
+		div.gglocation div.marker { float: left; width: 25px;}
+		div.gglocation div.content { float: left; font-size: 10px; width: 143px;}
