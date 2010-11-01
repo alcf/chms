@@ -1,4 +1,4 @@
-#!/usr/bin/env php
+#!/usr/local/bin/php
 <?php
 	// Qcodo CLI Runner Wrapper for POSIX-based Systems (Linux, Unix, Mac OS X, Cygwin, etc.)
 	// Copyright (c) 2005-2009, Quasidea Development, LLC
