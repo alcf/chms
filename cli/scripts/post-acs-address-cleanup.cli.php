@@ -31,8 +31,8 @@
 			}
 			$objAddress->Save();
 		} else {
-			print "NONE FOUND FOR - " . $objAddress->Id . "\r\n";
 			if (!$objAddress->ValidateUsps()) {
+				print "NONE FOUND FOR - " . $objAddress->Id . "\r\n";
 				$objAddress->InvalidFlag = true;
 				$objAddress->Save();
 			}
