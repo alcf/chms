@@ -172,7 +172,7 @@
 			$objResult = $objClient->VerifyAddress($strRequest);
 			$objResult = $objResult->VerifyAddressResult;
 
-			if (($objResult->ReturnCode == 100) || ($objResult->ReturnCode == 102)) {
+			if (($objResult->ReturnCode == 100) || ($objResult->ReturnCode == 101) || ($objResult->ReturnCode == 102)) {
 				$strAddress1 = $objResult->PrimaryAddressLine;
 
 				$strAddress2 = $objResult->SecondaryAddressLine;
