@@ -1,7 +1,7 @@
 <?php
 	require('../../includes/prepend.inc.php');
 
-	class MapForm extends AlcfForm {
+	class MapForm extends QForm {
 		protected $objLocation;
 		protected $dtrGrowthGroups;
 		protected $pnlNone;
@@ -22,9 +22,9 @@
 
 			$this->intMarkerArray = array();
 			$intMarkerNumber = 0;
-			foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Name)) as $objGroup) {
+			foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) {
 				$intMarkerNumber++;
-				$this->intMarkerArray[$objGroup->Id] = $intMarkerNumber;
+				$this->intMarkerArray[$objGroup->GroupId] = $intMarkerNumber;
 			}
 
 			$this->lstDays = new QListBox($this);
@@ -52,7 +52,7 @@
 				$objCondition = QQ::AndCondition($objCondition,
 					QQ::Equal(QQN::GrowthGroup()->GrowthGroupStructureAsStructure->GrowthGroupStructureId, $this->lstTypes->SelectedValue)
 				);
-			$this->dtrGrowthGroups->DataSource = GrowthGroup::QueryArray($objCondition, QQ::OrderBy(QQN::GrowthGroup()->Name));
+			$this->dtrGrowthGroups->DataSource = GrowthGroup::QueryArray($objCondition, QQ::OrderBy(QQN::GrowthGroup()->Group->Name));
 			
 			// Results?
 			$this->pnlNone->Visible = !(count($this->dtrGrowthGroups->DataSource));
@@ -60,7 +60,7 @@
 			// Markers
 			QApplication::ExecuteJavaScript('hideAllMarkers();');
 			foreach ($this->dtrGrowthGroups->DataSource as $objGroup) {
-				QApplication::ExecuteJavaScript('showMarker(' . ($this->intMarkerArray[$objGroup->Id]-1) . ');');
+				QApplication::ExecuteJavaScript('showMarker(' . ($this->intMarkerArray[$objGroup->GroupId]-1) . ');');
 			}
 		}
 	}

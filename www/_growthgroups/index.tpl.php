@@ -11,12 +11,12 @@
 		<?php _p($this->objLocation->Zoom); ?>);
 
 		initializeMarkerArray(<?php _p($this->objLocation->CountGrowthGroups()); ?>);
-<?php foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Name)) as $objGroup) { ?>
-		addMarker(<?php _p($objGroup->Latitude); ?>, <?php _p($objGroup->Longitude); ?>, "<?php _p($objGroup->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->Structures, false); ?>");		
+<?php foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) { ?>
+		addMarker(<?php _p($objGroup->Latitude); ?>, <?php _p($objGroup->Longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
 <?php }; ?>
 	};
 </script>
-<script type="text/javascript" src="/assets/js/growthgroups.js"></script>
+<script type="text/javascript" src="/scripts/growthgroups.js"></script>
 
 <div id="map_canvas" style="width: 600px; height: 600px; border: 1px solid black; float: left;"></div>
 <div style="float: left; margin-left: 15px; ">

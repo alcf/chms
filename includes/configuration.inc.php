@@ -82,6 +82,8 @@
 					'profiling' => false,
 					'staticproperty' => 'LoginId')
 			)));
+
+			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xQP_ZWxLT5ZChSi7vNzFF8-f25brRRAhJaO78n_nmvIL1CP64_e6YEcnQ');
 			break;
 
 		case 'test':
@@ -160,6 +162,8 @@
 					'profiling' => false,
 					'staticproperty' => 'LoginId')
 			)));
+
+			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
 			break;
 	}
 
