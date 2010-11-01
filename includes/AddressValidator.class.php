@@ -86,16 +86,21 @@
 			// Parse Individual Tokens
 			$strTokens = explode('<br />', $strResponse);
 
-			if (count($strTokens) != 3) {
+			if (count($strTokens) == 3) {
+				$strAddress1 = trim($strTokens[0]);
+				$strAddress2 = null;
+				$strCityStateZip = trim($strTokens[1]);
+			} else if (count($strTokens) == 4) {
+				$strAddress1 = trim($strTokens[0]);
+				$strAddress2 = trim($strTokens[1]);
+				$strCityStateZip = trim($strTokens[2]);
+			} else {
 				$this->blnSecondaryValidFlag = false;
 				return;
 			}
 
-			$strAddress1 = trim($strTokens[0]);
-
 			// Parse out Addr2
-			$strAddress2 = null;
-			foreach (array(
+			if (!$strAddress2) foreach (array(
 				'APT',
 				'BLDG',
 				'DEPT',
@@ -126,7 +131,6 @@
 				}
 			}
 
-			$strCityStateZip = trim($strTokens[1]);
 			$strTokens = explode('&nbsp;', $strCityStateZip);
 			if (count($strTokens) != 4) {
 				$this->blnSecondaryValidFlag = false;

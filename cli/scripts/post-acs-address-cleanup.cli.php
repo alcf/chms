@@ -1,4 +1,6 @@
 <?php
+	ini_set('memory_limit','1024M');
+
 	$objMySqli = new mysqli('localhost', 'root', '', 'alcf_address');
 	QDataGen::DisplayForEachTaskStart('Cleaning Addresses', Address::CountAll());
 	foreach (Address::LoadAll() as $objAddress) {
