@@ -264,8 +264,8 @@ INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',   1, 'Gro
 ####
 
 
-INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, true);
-INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, true);
-INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, null, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, null, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null, null, true);
 
 INSERT INTO login VALUES(null, 3, 65535, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');

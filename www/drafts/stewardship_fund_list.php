@@ -59,6 +59,7 @@
 			$this->dtgStewardshipFunds->MetaAddColumn(QQN::StewardshipFund()->Ministry);
 			$this->dtgStewardshipFunds->MetaAddColumn('Name');
 			$this->dtgStewardshipFunds->MetaAddColumn('AccountNumber');
+			$this->dtgStewardshipFunds->MetaAddColumn('FundNumber');
 			$this->dtgStewardshipFunds->MetaAddColumn('ActiveFlag');
 		}
 	}

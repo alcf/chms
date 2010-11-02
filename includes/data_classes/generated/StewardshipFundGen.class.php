@@ -19,6 +19,7 @@
 	 * @property integer $MinistryId the value for intMinistryId 
 	 * @property string $Name the value for strName 
 	 * @property string $AccountNumber the value for strAccountNumber 
+	 * @property string $FundNumber the value for strFundNumber 
 	 * @property boolean $ActiveFlag the value for blnActiveFlag 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId 
 	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
@@ -69,6 +70,15 @@
 		protected $strAccountNumber;
 		const AccountNumberMaxLength = 100;
 		const AccountNumberDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_fund.fund_number
+		 * @var string strFundNumber
+		 */
+		protected $strFundNumber;
+		const FundNumberMaxLength = 100;
+		const FundNumberDefault = null;
 
 
 		/**
@@ -489,6 +499,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'ministry_id', $strAliasPrefix . 'ministry_id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'account_number', $strAliasPrefix . 'account_number');
+			$objBuilder->AddSelectItem($strTableName, 'fund_number', $strAliasPrefix . 'fund_number');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
 		}
 
@@ -603,6 +614,8 @@
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'account_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'account_number'] : $strAliasPrefix . 'account_number';
 			$objToReturn->strAccountNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'fund_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'fund_number'] : $strAliasPrefix . 'fund_number';
+			$objToReturn->strFundNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
@@ -815,11 +828,13 @@
 							`ministry_id`,
 							`name`,
 							`account_number`,
+							`fund_number`,
 							`active_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strAccountNumber) . ',
+							' . $objDatabase->SqlVariable($this->strFundNumber) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						)
 					');
@@ -843,6 +858,7 @@
 							`ministry_id` = ' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`account_number` = ' . $objDatabase->SqlVariable($this->strAccountNumber) . ',
+							`fund_number` = ' . $objDatabase->SqlVariable($this->strFundNumber) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -931,6 +947,7 @@
 			$this->MinistryId = $objReloaded->MinistryId;
 			$this->strName = $objReloaded->strName;
 			$this->strAccountNumber = $objReloaded->strAccountNumber;
+			$this->strFundNumber = $objReloaded->strFundNumber;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
 
@@ -948,6 +965,7 @@
 					`ministry_id`,
 					`name`,
 					`account_number`,
+					`fund_number`,
 					`active_flag`,
 					__sys_login_id,
 					__sys_action,
@@ -957,6 +975,7 @@
 					' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->strAccountNumber) . ',
+					' . $objDatabase->SqlVariable($this->strFundNumber) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1027,6 +1046,11 @@
 					// Gets the value for strAccountNumber 
 					// @return string
 					return $this->strAccountNumber;
+
+				case 'FundNumber':
+					// Gets the value for strFundNumber 
+					// @return string
+					return $this->strFundNumber;
 
 				case 'ActiveFlag':
 					// Gets the value for blnActiveFlag 
@@ -1159,6 +1183,17 @@
 					// @return string
 					try {
 						return ($this->strAccountNumber = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'FundNumber':
+					// Sets the value for strFundNumber 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strFundNumber = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1978,6 +2013,7 @@
 			$strToReturn .= '<element name="Ministry" type="xsd1:Ministry"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="AccountNumber" type="xsd:string"/>';
+			$strToReturn .= '<element name="FundNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2011,6 +2047,8 @@
 				$objToReturn->strName = $objSoapObject->Name;
 			if (property_exists($objSoapObject, 'AccountNumber'))
 				$objToReturn->strAccountNumber = $objSoapObject->AccountNumber;
+			if (property_exists($objSoapObject, 'FundNumber'))
+				$objToReturn->strFundNumber = $objSoapObject->FundNumber;
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2055,6 +2093,7 @@
 	 * @property-read QQNodeMinistry $Ministry
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $AccountNumber
+	 * @property-read QQNode $FundNumber
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
@@ -2077,6 +2116,8 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'AccountNumber':
 					return new QQNode('account_number', 'AccountNumber', 'string', $this);
+				case 'FundNumber':
+					return new QQNode('fund_number', 'FundNumber', 'string', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'StewardshipContributionAmount':
@@ -2107,6 +2148,7 @@
 	 * @property-read QQNodeMinistry $Ministry
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $AccountNumber
+	 * @property-read QQNode $FundNumber
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
@@ -2130,6 +2172,8 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'AccountNumber':
 					return new QQNode('account_number', 'AccountNumber', 'string', $this);
+				case 'FundNumber':
+					return new QQNode('fund_number', 'FundNumber', 'string', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'StewardshipContributionAmount':

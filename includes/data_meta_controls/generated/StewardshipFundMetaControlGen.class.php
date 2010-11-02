@@ -24,6 +24,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $AccountNumberControl
 	 * property-read QLabel $AccountNumberLabel
+	 * property QTextBox $FundNumberControl
+	 * property-read QLabel $FundNumberLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -82,6 +84,12 @@
 		protected $txtAccountNumber;
 
         /**
+         * @var QTextBox txtFundNumber;
+         * @access protected
+         */
+		protected $txtFundNumber;
+
+        /**
          * @var QCheckBox chkActiveFlag;
          * @access protected
          */
@@ -106,6 +114,12 @@
          * @access protected
          */
 		protected $lblAccountNumber;
+
+        /**
+         * @var QLabel lblFundNumber
+         * @access protected
+         */
+		protected $lblFundNumber;
 
         /**
          * @var QLabel lblActiveFlag
@@ -317,6 +331,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtFundNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtFundNumber_Create($strControlId = null) {
+			$this->txtFundNumber = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtFundNumber->Name = QApplication::Translate('Fund Number');
+			$this->txtFundNumber->Text = $this->objStewardshipFund->FundNumber;
+			$this->txtFundNumber->MaxLength = StewardshipFund::FundNumberMaxLength;
+			return $this->txtFundNumber;
+		}
+
+		/**
+		 * Create and setup QLabel lblFundNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblFundNumber_Create($strControlId = null) {
+			$this->lblFundNumber = new QLabel($this->objParentObject, $strControlId);
+			$this->lblFundNumber->Name = QApplication::Translate('Fund Number');
+			$this->lblFundNumber->Text = $this->objStewardshipFund->FundNumber;
+			return $this->lblFundNumber;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkActiveFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -372,6 +411,9 @@
 			if ($this->txtAccountNumber) $this->txtAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 			if ($this->lblAccountNumber) $this->lblAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 
+			if ($this->txtFundNumber) $this->txtFundNumber->Text = $this->objStewardshipFund->FundNumber;
+			if ($this->lblFundNumber) $this->lblFundNumber->Text = $this->objStewardshipFund->FundNumber;
+
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objStewardshipFund->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objStewardshipFund->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -401,6 +443,7 @@
 				if ($this->lstMinistry) $this->objStewardshipFund->MinistryId = $this->lstMinistry->SelectedValue;
 				if ($this->txtName) $this->objStewardshipFund->Name = $this->txtName->Text;
 				if ($this->txtAccountNumber) $this->objStewardshipFund->AccountNumber = $this->txtAccountNumber->Text;
+				if ($this->txtFundNumber) $this->objStewardshipFund->FundNumber = $this->txtFundNumber->Text;
 				if ($this->chkActiveFlag) $this->objStewardshipFund->ActiveFlag = $this->chkActiveFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -468,6 +511,12 @@
 				case 'AccountNumberLabel':
 					if (!$this->lblAccountNumber) return $this->lblAccountNumber_Create();
 					return $this->lblAccountNumber;
+				case 'FundNumberControl':
+					if (!$this->txtFundNumber) return $this->txtFundNumber_Create();
+					return $this->txtFundNumber;
+				case 'FundNumberLabel':
+					if (!$this->lblFundNumber) return $this->lblFundNumber_Create();
+					return $this->lblFundNumber;
 				case 'ActiveFlagControl':
 					if (!$this->chkActiveFlag) return $this->chkActiveFlag_Create();
 					return $this->chkActiveFlag;
@@ -504,6 +553,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'AccountNumberControl':
 						return ($this->txtAccountNumber = QType::Cast($mixValue, 'QControl'));
+					case 'FundNumberControl':
+						return ($this->txtFundNumber = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
 					default:

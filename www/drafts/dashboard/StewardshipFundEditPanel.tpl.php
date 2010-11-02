@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->txtAccountNumber->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtFundNumber->RenderWithName(); ?>
+
 		<?php $_CONTROL->chkActiveFlag->RenderWithName(); ?>
 
 	</div>

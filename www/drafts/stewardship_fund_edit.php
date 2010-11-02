@@ -27,6 +27,7 @@
 		protected $lstMinistry;
 		protected $txtName;
 		protected $txtAccountNumber;
+		protected $txtFundNumber;
 		protected $chkActiveFlag;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -58,6 +59,7 @@
 			$this->lstMinistry = $this->mctStewardshipFund->lstMinistry_Create();
 			$this->txtName = $this->mctStewardshipFund->txtName_Create();
 			$this->txtAccountNumber = $this->mctStewardshipFund->txtAccountNumber_Create();
+			$this->txtFundNumber = $this->mctStewardshipFund->txtFundNumber_Create();
 			$this->chkActiveFlag = $this->mctStewardshipFund->chkActiveFlag_Create();
 
 			// Create Buttons and Actions on this Form
