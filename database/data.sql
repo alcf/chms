@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('1.0');
+INSERT INTO _version VALUES('1.1');
 
 
 
@@ -167,6 +167,8 @@ INSERT INTO query_node_type VALUES(2, 'Attribute Node');
 INSERT INTO relationship_type VALUES(1, 'Parental');
 INSERT INTO relationship_type VALUES(2, 'Child');
 INSERT INTO relationship_type VALUES(3, 'Sibling');
+INSERT INTO relationship_type VALUES(4, 'Grandparent');
+INSERT INTO relationship_type VALUES(5, 'Grandchild');
 
 INSERT INTO role_type VALUES(1, 'Volunteer');
 INSERT INTO role_type VALUES(2, 'Staff Member');

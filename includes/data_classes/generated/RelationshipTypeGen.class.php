@@ -21,24 +21,32 @@
 		const Parental = 1;
 		const Child = 2;
 		const Sibling = 3;
+		const Grandparent = 4;
+		const Grandchild = 5;
 
-		const MaxId = 3;
+		const MaxId = 5;
 
 		public static $NameArray = array(
 			1 => 'Parental',
 			2 => 'Child',
-			3 => 'Sibling');
+			3 => 'Sibling',
+			4 => 'Grandparent',
+			5 => 'Grandchild');
 
 		public static $TokenArray = array(
 			1 => 'Parental',
 			2 => 'Child',
-			3 => 'Sibling');
+			3 => 'Sibling',
+			4 => 'Grandparent',
+			5 => 'Grandchild');
 
 		public static function ToString($intRelationshipTypeId) {
 			switch ($intRelationshipTypeId) {
 				case 1: return 'Parental';
 				case 2: return 'Child';
 				case 3: return 'Sibling';
+				case 4: return 'Grandparent';
+				case 5: return 'Grandchild';
 				default:
 					throw new QCallerException(sprintf('Invalid intRelationshipTypeId: %s', $intRelationshipTypeId));
 			}
@@ -49,6 +57,8 @@
 				case 1: return 'Parental';
 				case 2: return 'Child';
 				case 3: return 'Sibling';
+				case 4: return 'Grandparent';
+				case 5: return 'Grandchild';
 				default:
 					throw new QCallerException(sprintf('Invalid intRelationshipTypeId: %s', $intRelationshipTypeId));
 			}
