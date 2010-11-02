@@ -26,7 +26,7 @@
 
 			// Setup DataGrids
 			$this->dtgMembers = new HouseholdParticipationDataGrid($this);
-			$this->dtgMembers->MetaAddColumn('Role', 'Width=80px');
+			$this->dtgMembers->MetaAddColumn('Role', 'Width=80px', 'Html=<?= $_ITEM->RoleToDisplay; ?>');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'HtmlEntities=false', 'Width=300px');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryEmail->Address, 'Name=Email', 'Width=250px');
 			$this->dtgMembers->MetaAddColumn(QQN::HouseholdParticipation()->Person->PrimaryPhone->Number, 'Name=Phone', 'Width=290px');

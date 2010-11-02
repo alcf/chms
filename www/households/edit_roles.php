@@ -63,7 +63,7 @@
 			$strControlId = 'txtRole' . $objParticipation->Id;
 			if (!($txtRole = $this->GetControl($strControlId))) {
 				$txtRole = new QTextBox($this->dtgMembers, $strControlId);
-				$txtRole->Text = $objParticipation->Role;
+				$txtRole->Text = $objParticipation->RoleOverride;
 			}
 
 			$strControlId = 'lblRole' . $objParticipation->Id;
@@ -125,12 +125,11 @@
 				$radHead = $this->GetControl('radHead' . $objParticipant->Id);
 				$txtRole = $this->GetControl('txtRole' . $objParticipant->Id);
 				
-				if (strlen(trim($txtRole->Text))) {
-					$objParticipant->Role = trim($txtRole->Text);
-					$objParticipant->Save();
-				} else {
-					$objParticipant->RefreshRole();
-				}
+				if (!$radHead->Checked)
+					$objParticipant->RoleOverride = trim($txtRole->Text);
+				else
+					$objParticipant->RoleOverride = null;
+				$objParticipant->RefreshRole();
 			}
 
 			QApplication::Redirect('/households/view.php/' . $this->objHousehold->Id);

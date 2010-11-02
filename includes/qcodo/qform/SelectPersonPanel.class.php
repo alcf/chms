@@ -197,7 +197,7 @@
 							$objPerson->DateOfBirth = $this->dtxDateOfBirth->DateTime;
 							$objPerson->DobGuessedFlag = false;
 							$objPerson->DobYearApproximateFlag = false;
-							$objPerson->Save();
+							$objPerson->RefreshAge();
 						}
 						return $objPerson;
 					} else if ($this->intSelectedPersonId > 0)
