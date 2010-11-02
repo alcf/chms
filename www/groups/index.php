@@ -58,7 +58,7 @@
 //			$this->dtgGroups->Visible = false;
 
 			$this->lblStartText = new QLabel($this);
-			$this->lblStartText->Text = '<h3>Groups and Ministries</h3><p>Please select an ministry from the list on the right.</p>';
+			$this->lblStartText->Text = '<h3>Groups and Ministries</h3><p>Please select a ministry from the list on the right.</p>';
 			$this->lblStartText->HtmlEntities = false;
 		}
 
