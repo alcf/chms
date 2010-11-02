@@ -41,7 +41,7 @@
 		}
 
 		public function dtgReport_LineItems_Bind() {
-			$this->dtgReport->DataSource = $this->objPost->GetStewardshipPostLineItemArray(QQ::OrderBy(QQN::StewardshipPostLineItem()->Person->LastName, QQN::StewardshipPostLineItem()->Person->FirstName, QQN::StewardshipPostLineItem()->Description));
+			$this->dtgReport->DataSource = $this->objPost->GetStewardshipPostLineItemArray(QQ::OrderBy(QQN::StewardshipPostLineItem()->Amount, QQN::StewardshipPostLineItem()->Person->FirstName, QQN::StewardshipPostLineItem()->Description));
 		}
 
 		public function dtgReport_Funds_Bind() {
