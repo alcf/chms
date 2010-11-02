@@ -84,6 +84,11 @@
 		cursor: pointer;
 	}
 
+	div.header div.serverInstance {
+		width: 980px; text-align: right; position: absolute;
+		font-family: arial black; font-size: 18px; color: #666;
+	}
+
 	div.header div.status {
 		padding-right: 40px; padding-top: 42px;
 		font: 11px arial; color: #4a3f5d;

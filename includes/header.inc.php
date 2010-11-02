@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>NOAH<?php _p($this->strPageTitle ? ' - ' . $this->strPageTitle : null); ?></title>
 <style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/chms.css");</style>
+<?php if (SERVER_INSTANCE != 'prod') { ?>
+<style type="text/css">
+	div.contentBackground { background: url(/assets/images/main_content_background_<?php _p(SERVER_INSTANCE); ?>.png); }
+</style>
+<?php } ?>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/chms.js"></script>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/_core/_qc_packed.js"></script>
 </head><body>
@@ -14,6 +19,9 @@
 </div>
 
 <div class="header" title="ALCF ChMS" onclick="document.location='/';">
+<?php if (SERVER_INSTANCE != 'prod') { ?>
+	<div class="serverInstance">Not on Production &mdash; <?php _p(ucwords(SERVER_INSTANCE)); ?> Server</div>
+<?php } ?>
 <?php if (QApplication::$Login) { ?>
 	<div class="status">
 		Welcome, <strong><?php _p(QApplication::$Login->Name); ?></strong>
