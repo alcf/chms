@@ -281,11 +281,14 @@
 			} else if ($objAddress) {
 				$this->strPrimaryAddressText = ucwords(strtolower(trim($objAddress->Address1)));
 				if ($objAddress->Address2) $this->strPrimaryAddressText .= ', ' . ucwords(strtolower(trim($objAddress->Address2)));
-				if ($objAddress->Address3) $this->strPrimaryAddressText .= ', ' . trim($objAddress->Address3);
 				$this->strPrimaryCityText = ucwords(strtolower(trim($objAddress->City)));
+				$this->strPrimaryStateText = $objAddress->State;
+				$this->strPrimaryZipCodeText = $objAddress->ZipCode;
 			} else {
 				$this->strPrimaryAddressText = null;
 				$this->strPrimaryCityText = null;
+				$this->strPrimaryStateText = null;
+				$this->strPrimaryZipCodeText = null;
 			}
 
 			// Update PrimaryPhone
@@ -297,7 +300,11 @@
 				} else if ($objAddress && $objAddress->PrimaryPhone) {
 					$this->strPrimaryPhoneText = $objAddress->PrimaryPhone->Number;
 				} else {
-					$this->strPrimaryPhoneText = null;
+					$objPhoneArray = $this->GetPhoneArray();
+					if (count($objPhoneArray) == 1)
+						$this->strPrimaryPhoneText = $objPhoneArray[0]->Number;
+					else
+						$this->strPrimaryPhoneText = null;
 				}
 			}
 

@@ -16,20 +16,21 @@
 			PermissionType::AccessStewardship => 'money.png',
 			PermissionType::MergeIndividuals => 'group_go.png',
 			PermissionType::AddNewIndividual => 'user_add.png',
-			PermissionType::EditMembershipStatus => 'vcard_edit.png'
+			PermissionType::EditMembershipStatus => 'vcard_edit.png',
+			PermissionType::DeleteIndividual => 'user_delete.png'
 		);
 
 		protected function Form_Create() {
 			$this->dtgStaff = new LoginDataGrid($this);
 			$this->dtgStaff->FontSize = 11;
-			$this->dtgStaff->AddColumn(new QDataGridColumn('View', '<?= $_FORM->RenderView($_ITEM); ?>', 'HtmlEntities=false', 'Width=40px'));
-			$this->dtgStaff->MetaAddColumn(QQN::Login()->Username, 'Width=80px');
-			$this->dtgStaff->MetaAddColumn(QQN::Login()->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Name; ?>', 'Width=150px');
+			$this->dtgStaff->AddColumn(new QDataGridColumn('View', '<?= $_FORM->RenderView($_ITEM); ?>', 'HtmlEntities=false', 'Width=30px'));
+			$this->dtgStaff->MetaAddColumn(QQN::Login()->Username, 'Width=75px');
+			$this->dtgStaff->MetaAddColumn(QQN::Login()->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Name; ?>', 'Width=110px');
 			$this->dtgStaff->AddColumn(new QDataGridColumn('Acct Disabled', '<?= (!$_ITEM->DomainActiveFlag || !$_ITEM->LoginActiveFlag) ? "Disabled":""; ?>', 'Width=60px'));
-			$this->dtgStaff->MetaAddTypeColumn('RoleTypeId', 'RoleType', 'Name=Role', 'Width=140px');
+			$this->dtgStaff->MetaAddTypeColumn('RoleTypeId', 'RoleType', 'Name=Role', 'Width=120px');
 
 			foreach (PermissionType::$NameArray as $intId => $strName) {
-				$this->dtgStaff->AddColumn(new QDataGridColumn($strName, '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=63px'));
+				$this->dtgStaff->AddColumn(new QDataGridColumn($strName, '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=63px', 'HtmlEntities=false'));
 			}
 
 			$this->dtgStaff->SetDataBinder('dtgStaff_Bind');
@@ -76,7 +77,8 @@
 		}
 		
 		public function RenderPermission($intPermissionId, Login $objLogin) {
-			if ($objLogin->IsPermissionAllowed($intPermissionId)) return 'Yes';
+			if ($objLogin->IsPermissionAllowed($intPermissionId)) return '<img src="/assets/images/icons/' . $this->strIconArray[$intPermissionId] .
+				'" title="This user can ' . strtolower(PermissionType::$NameArray[$intPermissionId]) . '."/>';
 		}
 		
 		public function dtgStaff_Bind() {
