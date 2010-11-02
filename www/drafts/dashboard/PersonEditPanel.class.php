@@ -48,6 +48,8 @@
 		public $chkCanEmailFlag;
 		public $txtPrimaryAddressText;
 		public $txtPrimaryCityText;
+		public $txtPrimaryStateText;
+		public $txtPrimaryZipCodeText;
 		public $txtPrimaryPhoneText;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -110,6 +112,8 @@
 			$this->chkCanEmailFlag = $this->mctPerson->chkCanEmailFlag_Create();
 			$this->txtPrimaryAddressText = $this->mctPerson->txtPrimaryAddressText_Create();
 			$this->txtPrimaryCityText = $this->mctPerson->txtPrimaryCityText_Create();
+			$this->txtPrimaryStateText = $this->mctPerson->txtPrimaryStateText_Create();
+			$this->txtPrimaryZipCodeText = $this->mctPerson->txtPrimaryZipCodeText_Create();
 			$this->txtPrimaryPhoneText = $this->mctPerson->txtPrimaryPhoneText_Create();
 			$this->lstHouseholdAsHead = $this->mctPerson->lstHouseholdAsHead_Create();
 			$this->lstCheckingAccountLookups = $this->mctPerson->lstCheckingAccountLookups_Create();

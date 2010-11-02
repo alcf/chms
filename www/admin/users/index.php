@@ -10,6 +10,15 @@
 		protected $lstActiveFlag;
 		protected $dtgStaff;
 
+		protected $strIconArray = array(
+			PermissionType::EditData => 'pencil.png',
+			PermissionType::AccessConfidentialNotes => 'lock_open.png',
+			PermissionType::AccessStewardship => 'money.png',
+			PermissionType::MergeIndividuals => 'group_go.png',
+			PermissionType::AddNewIndividual => 'user_add.png',
+			PermissionType::EditMembershipStatus => 'vcard_edit.png'
+		);
+
 		protected function Form_Create() {
 			$this->dtgStaff = new LoginDataGrid($this);
 			$this->dtgStaff->FontSize = 11;

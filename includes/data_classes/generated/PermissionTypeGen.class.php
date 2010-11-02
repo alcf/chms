@@ -24,8 +24,9 @@
 		const MergeIndividuals = 8;
 		const EditMembershipStatus = 16;
 		const AddNewIndividual = 32;
+		const DeleteIndividual = 64;
 
-		const MaxId = 32;
+		const MaxId = 64;
 
 		public static $NameArray = array(
 			1 => 'Edit Data',
@@ -33,7 +34,8 @@
 			4 => 'Access Confidential Notes',
 			8 => 'Merge Individuals',
 			16 => 'Edit Membership Status',
-			32 => 'Add New Individual');
+			32 => 'Add New Individual',
+			64 => 'Delete Individual');
 
 		public static $TokenArray = array(
 			1 => 'EditData',
@@ -41,7 +43,8 @@
 			4 => 'AccessConfidentialNotes',
 			8 => 'MergeIndividuals',
 			16 => 'EditMembershipStatus',
-			32 => 'AddNewIndividual');
+			32 => 'AddNewIndividual',
+			64 => 'DeleteIndividual');
 
 		public static function ToString($intPermissionTypeId) {
 			switch ($intPermissionTypeId) {
@@ -51,6 +54,7 @@
 				case 8: return 'Merge Individuals';
 				case 16: return 'Edit Membership Status';
 				case 32: return 'Add New Individual';
+				case 64: return 'Delete Individual';
 				default:
 					throw new QCallerException(sprintf('Invalid intPermissionTypeId: %s', $intPermissionTypeId));
 			}
@@ -64,6 +68,7 @@
 				case 8: return 'MergeIndividuals';
 				case 16: return 'EditMembershipStatus';
 				case 32: return 'AddNewIndividual';
+				case 64: return 'DeleteIndividual';
 				default:
 					throw new QCallerException(sprintf('Invalid intPermissionTypeId: %s', $intPermissionTypeId));
 			}

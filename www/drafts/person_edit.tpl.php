@@ -71,6 +71,10 @@
 
 		<?php $this->txtPrimaryCityText->RenderWithName(); ?>
 
+		<?php $this->txtPrimaryStateText->RenderWithName(); ?>
+
+		<?php $this->txtPrimaryZipCodeText->RenderWithName(); ?>
+
 		<?php $this->txtPrimaryPhoneText->RenderWithName(); ?>
 
 		<?php $this->lstHouseholdAsHead->RenderWithName(); ?>

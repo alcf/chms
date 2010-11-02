@@ -326,6 +326,8 @@
 				case 'CanEmailFlag': return QQN::Person()->CanEmailFlag;
 				case 'PrimaryAddressText': return QQN::Person()->PrimaryAddressText;
 				case 'PrimaryCityText': return QQN::Person()->PrimaryCityText;
+				case 'PrimaryStateText': return QQN::Person()->PrimaryStateText;
+				case 'PrimaryZipCodeText': return QQN::Person()->PrimaryZipCodeText;
 				case 'PrimaryPhoneText': return QQN::Person()->PrimaryPhoneText;
 				case 'HouseholdAsHead': return QQN::Person()->HouseholdAsHead;
 

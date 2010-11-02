@@ -83,6 +83,8 @@
 			$this->dtgPeople->MetaAddColumn('CanEmailFlag');
 			$this->dtgPeople->MetaAddColumn('PrimaryAddressText');
 			$this->dtgPeople->MetaAddColumn('PrimaryCityText');
+			$this->dtgPeople->MetaAddColumn('PrimaryStateText');
+			$this->dtgPeople->MetaAddColumn('PrimaryZipCodeText');
 			$this->dtgPeople->MetaAddColumn('PrimaryPhoneText');
 			$this->dtgPeople->MetaAddColumn(QQN::Person()->HouseholdAsHead);
 		}

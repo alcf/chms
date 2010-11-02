@@ -16,6 +16,7 @@
 				// Trying to create a NEW comment
 				$this->mctComments->Comment->Person = $this->objPerson;
 				$this->mctComments->Comment->PostedByLogin = QApplication::$Login;
+				$this->mctComments->Comment->CommentPrivacyTypeId = CommentPrivacyType::Staff;
 				$this->btnSave->Text = 'Create';
 			} else {
 				// Ensure the this loginId can modify this comment

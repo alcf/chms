@@ -72,6 +72,10 @@
 	 * property-read QLabel $PrimaryAddressTextLabel
 	 * property QTextBox $PrimaryCityTextControl
 	 * property-read QLabel $PrimaryCityTextLabel
+	 * property QTextBox $PrimaryStateTextControl
+	 * property-read QLabel $PrimaryStateTextLabel
+	 * property QTextBox $PrimaryZipCodeTextControl
+	 * property-read QLabel $PrimaryZipCodeTextLabel
 	 * property QTextBox $PrimaryPhoneTextControl
 	 * property-read QLabel $PrimaryPhoneTextLabel
 	 * property QListBox $HouseholdAsHeadControl
@@ -282,6 +286,18 @@
 		protected $txtPrimaryCityText;
 
         /**
+         * @var QTextBox txtPrimaryStateText;
+         * @access protected
+         */
+		protected $txtPrimaryStateText;
+
+        /**
+         * @var QTextBox txtPrimaryZipCodeText;
+         * @access protected
+         */
+		protected $txtPrimaryZipCodeText;
+
+        /**
          * @var QTextBox txtPrimaryPhoneText;
          * @access protected
          */
@@ -450,6 +466,18 @@
          * @access protected
          */
 		protected $lblPrimaryCityText;
+
+        /**
+         * @var QLabel lblPrimaryStateText
+         * @access protected
+         */
+		protected $lblPrimaryStateText;
+
+        /**
+         * @var QLabel lblPrimaryZipCodeText
+         * @access protected
+         */
+		protected $lblPrimaryZipCodeText;
 
         /**
          * @var QLabel lblPrimaryPhoneText
@@ -1352,6 +1380,56 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtPrimaryStateText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtPrimaryStateText_Create($strControlId = null) {
+			$this->txtPrimaryStateText = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtPrimaryStateText->Name = QApplication::Translate('Primary State Text');
+			$this->txtPrimaryStateText->Text = $this->objPerson->PrimaryStateText;
+			$this->txtPrimaryStateText->MaxLength = Person::PrimaryStateTextMaxLength;
+			return $this->txtPrimaryStateText;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryStateText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryStateText_Create($strControlId = null) {
+			$this->lblPrimaryStateText = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryStateText->Name = QApplication::Translate('Primary State Text');
+			$this->lblPrimaryStateText->Text = $this->objPerson->PrimaryStateText;
+			return $this->lblPrimaryStateText;
+		}
+
+		/**
+		 * Create and setup QTextBox txtPrimaryZipCodeText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtPrimaryZipCodeText_Create($strControlId = null) {
+			$this->txtPrimaryZipCodeText = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtPrimaryZipCodeText->Name = QApplication::Translate('Primary Zip Code Text');
+			$this->txtPrimaryZipCodeText->Text = $this->objPerson->PrimaryZipCodeText;
+			$this->txtPrimaryZipCodeText->MaxLength = Person::PrimaryZipCodeTextMaxLength;
+			return $this->txtPrimaryZipCodeText;
+		}
+
+		/**
+		 * Create and setup QLabel lblPrimaryZipCodeText
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPrimaryZipCodeText_Create($strControlId = null) {
+			$this->lblPrimaryZipCodeText = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPrimaryZipCodeText->Name = QApplication::Translate('Primary Zip Code Text');
+			$this->lblPrimaryZipCodeText->Text = $this->objPerson->PrimaryZipCodeText;
+			return $this->lblPrimaryZipCodeText;
+		}
+
+		/**
 		 * Create and setup QTextBox txtPrimaryPhoneText
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -1717,6 +1795,12 @@
 			if ($this->txtPrimaryCityText) $this->txtPrimaryCityText->Text = $this->objPerson->PrimaryCityText;
 			if ($this->lblPrimaryCityText) $this->lblPrimaryCityText->Text = $this->objPerson->PrimaryCityText;
 
+			if ($this->txtPrimaryStateText) $this->txtPrimaryStateText->Text = $this->objPerson->PrimaryStateText;
+			if ($this->lblPrimaryStateText) $this->lblPrimaryStateText->Text = $this->objPerson->PrimaryStateText;
+
+			if ($this->txtPrimaryZipCodeText) $this->txtPrimaryZipCodeText->Text = $this->objPerson->PrimaryZipCodeText;
+			if ($this->lblPrimaryZipCodeText) $this->lblPrimaryZipCodeText->Text = $this->objPerson->PrimaryZipCodeText;
+
 			if ($this->txtPrimaryPhoneText) $this->txtPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
 			if ($this->lblPrimaryPhoneText) $this->lblPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
 
@@ -1881,6 +1965,8 @@
 				if ($this->chkCanEmailFlag) $this->objPerson->CanEmailFlag = $this->chkCanEmailFlag->Checked;
 				if ($this->txtPrimaryAddressText) $this->objPerson->PrimaryAddressText = $this->txtPrimaryAddressText->Text;
 				if ($this->txtPrimaryCityText) $this->objPerson->PrimaryCityText = $this->txtPrimaryCityText->Text;
+				if ($this->txtPrimaryStateText) $this->objPerson->PrimaryStateText = $this->txtPrimaryStateText->Text;
+				if ($this->txtPrimaryZipCodeText) $this->objPerson->PrimaryZipCodeText = $this->txtPrimaryZipCodeText->Text;
 				if ($this->txtPrimaryPhoneText) $this->objPerson->PrimaryPhoneText = $this->txtPrimaryPhoneText->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -2099,6 +2185,18 @@
 				case 'PrimaryCityTextLabel':
 					if (!$this->lblPrimaryCityText) return $this->lblPrimaryCityText_Create();
 					return $this->lblPrimaryCityText;
+				case 'PrimaryStateTextControl':
+					if (!$this->txtPrimaryStateText) return $this->txtPrimaryStateText_Create();
+					return $this->txtPrimaryStateText;
+				case 'PrimaryStateTextLabel':
+					if (!$this->lblPrimaryStateText) return $this->lblPrimaryStateText_Create();
+					return $this->lblPrimaryStateText;
+				case 'PrimaryZipCodeTextControl':
+					if (!$this->txtPrimaryZipCodeText) return $this->txtPrimaryZipCodeText_Create();
+					return $this->txtPrimaryZipCodeText;
+				case 'PrimaryZipCodeTextLabel':
+					if (!$this->lblPrimaryZipCodeText) return $this->lblPrimaryZipCodeText_Create();
+					return $this->lblPrimaryZipCodeText;
 				case 'PrimaryPhoneTextControl':
 					if (!$this->txtPrimaryPhoneText) return $this->txtPrimaryPhoneText_Create();
 					return $this->txtPrimaryPhoneText;
@@ -2207,6 +2305,10 @@
 						return ($this->txtPrimaryAddressText = QType::Cast($mixValue, 'QControl'));
 					case 'PrimaryCityTextControl':
 						return ($this->txtPrimaryCityText = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryStateTextControl':
+						return ($this->txtPrimaryStateText = QType::Cast($mixValue, 'QControl'));
+					case 'PrimaryZipCodeTextControl':
+						return ($this->txtPrimaryZipCodeText = QType::Cast($mixValue, 'QControl'));
 					case 'PrimaryPhoneTextControl':
 						return ($this->txtPrimaryPhoneText = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':

@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('1.1');
+INSERT INTO _version VALUES('1.2');
 
 
 
@@ -146,6 +146,7 @@ INSERT INTO permission_type VALUES(4, 'Access Confidential Notes');
 INSERT INTO permission_type VALUES(8, 'Merge Individuals');
 INSERT INTO permission_type VALUES(16, 'Edit Membership Status');
 INSERT INTO permission_type VALUES(32, 'Add New Individual');
+INSERT INTO permission_type VALUES(64, 'Delete Individual');
 
 INSERT INTO phone_type VALUES(1, 'Home');
 INSERT INTO phone_type VALUES(2, 'Work');
