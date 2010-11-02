@@ -181,7 +181,8 @@
 				$this->lblMinistry->Text = QApplication::HtmlEntities($this->objGroup->Ministry->Name);
 				$strLoginNameArray = array();
 				foreach ($this->objGroup->Ministry->GetLoginArray(QQ::OrderBy(QQN::Login()->FirstName)) as $objLogin) {
-					$strLoginNameArray[] = $objLogin->FirstName . ' ' . $objLogin->LastName;
+					if ($objLogin->DomainActiveFlag && $objLogin->LoginActiveFlag)
+						$strLoginNameArray[] = $objLogin->FirstName . ' ' . $objLogin->LastName;
 				}
 				$this->lblMinistry->Text .= '<br/><span class="subhead">Facilitated by ' . QApplication::HtmlEntities(implode(', ', $strLoginNameArray)) . '</span>';
 			}
