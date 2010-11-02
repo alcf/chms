@@ -5,9 +5,10 @@
 		protected function SetupPanel() {
 			$this->dtgComments = new CommentDataGrid($this);
 			$this->dtgComments->AddColumn(new QDataGridColumn('Edit', '<?= $_CONTROL->ParentControl->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'FontSize=11px', 'Width=30px'));
-			$this->dtgComments->MetaAddColumn(QQN::Comment()->PostedByLogin->FirstName, 'Name=Posted By', 'Html=<?= $_CONTROL->ParentControl->RenderPostedBy($_ITEM); ?>', 'FontSize=11px', 'Width=90px');
+			$this->dtgComments->MetaAddColumn(QQN::Comment()->PostedByLogin->FirstName, 'Name=Posted By', 'Html=<?= $_CONTROL->ParentControl->RenderPostedBy($_ITEM); ?>', 'FontSize=11px', 'Width=80px');
 			$this->dtgComments->MetaAddColumn('DatePosted', 'Html=<?= $_ITEM->DatePosted->ToString("MMM D YYYY"); ?>', 'FontSize=11px', 'Width=90px');
-			$this->dtgComments->MetaAddColumn('Comment', 'Width=410px');
+			$this->dtgComments->MetaAddColumn('DateAction', 'Html=<?= ($_ITEM->DateAction) ? $_ITEM->DateAction->ToString("MMM D YYYY") : null; ?>', 'FontSize=11px', 'Width=90px');
+			$this->dtgComments->MetaAddColumn('Comment', 'Width=330px');
 			$this->dtgComments->AddColumn(new QDataGridColumn('Category<br/><span style="font-size: 10px;">Privacy Level</span>', '<?= $_CONTROL->ParentControl->RenderCategoryPrivacy($_ITEM); ?>', 'HtmlEntities=false', 'FontSize=11px', 'Width=90px'));
 			$this->dtgComments->SetDataBinder('dtgComments_Bind', $this);
 

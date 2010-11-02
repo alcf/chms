@@ -19,5 +19,33 @@
 	 * @subpackage MetaControls
 	 */
 	class CommentMetaControl extends CommentMetaControlGen {
+		protected $dtxDateAction;
+
+		/**
+		 * Create and setup QDateTimePicker calDateAction
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function dtxDateAction_Create($strControlId = null) {
+			$this->dtxDateAction = new QDateTimeTextBox($this->objParentObject, $strControlId);
+			$this->dtxDateAction->Name = "Date of Action";
+			$this->dtxDateAction->Text = ($this->objComment->DateAction) ? $this->objComment->DateAction->ToString() : null;
+			return $this->dtxDateAction;
+		}
+
+		/**
+		 * Create and setup QDateTimePicker calDateAction
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateAction_Create($strControlId = null) {
+			if ($this->dtxDateAction) {
+				$this->calDateAction = new QCalendar($this->objParentObject, $this->dtxDateAction, $strControlId);
+				$this->dtxDateAction->RemoveAllActions(QClickEvent::EventName);
+				return $this->calDateAction;
+			} else {
+				return parent::calDateAction_Create($strControlId);
+			}
+		}
 	}
 ?>

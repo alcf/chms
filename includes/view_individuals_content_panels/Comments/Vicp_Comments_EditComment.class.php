@@ -4,6 +4,8 @@
 		
 		public $lstPrivacyLevel;
 		public $lstCategory;
+		public $dtxDateAction;
+		public $calDateAction;
 		public $txtComment;
 		
 		protected function SetupPanel() {
@@ -32,6 +34,8 @@
 			$this->txtComment = $this->mctComments->txtComment_Create();
 			$this->txtComment->Width = '500px';
 			$this->txtComment->Height = '200px';
+			$this->dtxDateAction = $this->mctComments->dtxDateAction_Create();
+			$this->calDateAction = $this->mctComments->calDateAction_Create();
 		}
 
 		public function btnSave_Click() {
