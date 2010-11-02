@@ -600,6 +600,10 @@
 			}
 			$objPerson->LastName = ($strLastName) ? $strLastName : QDataGen::GenerateLastName();
 			
+			$objPerson->CanEmailFlag = rand(0, 1);
+			$objPerson->CanMailFlag = rand(0, 1);
+			$objPerson->CanPhoneFlag = rand(0, 1);
+			
 			if (!rand(0, 10)) {
 				$objPerson->Nickname = ($blnMaleFlag) ? QDataGen::GenerateMaleFirstName() : QDataGen::GenerateFemaleFirstName();
 			}

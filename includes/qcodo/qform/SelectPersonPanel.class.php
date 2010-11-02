@@ -16,6 +16,8 @@
 		public $txtEmail;
 		public $txtPhone;
 		public $lstPhone;
+		public $dtxDateOfBirth;
+		public $calDateOfBirth;
 
 		/**
 		 * If this control has validation rules, the logic to do so
@@ -105,6 +107,11 @@
 			foreach (PhoneType::$NameArray as $intPhoneTypeId => $strLabel) {
 				$this->lstPhone->AddItem($strLabel, $intPhoneTypeId);
 			}
+
+			$this->dtxDateOfBirth = new QDateTimeTextBox($this->pnlCreatePerson);
+			$this->dtxDateOfBirth->Name = 'Date of Birth';
+			$this->calDateOfBirth = new QCalendar($this->pnlCreatePerson, $this->dtxDateOfBirth);
+			$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
 		}
 
 		public function dtgResults_Bind() {
@@ -185,7 +192,14 @@
 						$strPhone = trim(strtolower($this->txtPhone->Text));
 						$intPhoneTypeId = ($strPhone) ? $this->lstPhone->SelectedValue : null;
 
-						return Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $blnGender, $strEmail, $strPhone, $intPhoneTypeId);
+						$objPerson = Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $blnGender, $strEmail, $strPhone, $intPhoneTypeId);
+						if ($this->dtxDateOfBirth->DateTime) {
+							$objPerson->DateOfBirth = $this->dtxDateOfBirth->DateTime;
+							$objPerson->DobGuessedFlag = false;
+							$objPerson->DobYearApproximateFlag = false;
+							$objPerson->Save();
+						}
+						return $objPerson;
 					} else if ($this->intSelectedPersonId > 0)
 						return Person::Load($this->intSelectedPersonId);
 					else

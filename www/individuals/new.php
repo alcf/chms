@@ -212,6 +212,13 @@
 			$this->mctMarriage = new MarriageMetaControl($this, new Marriage());
 			$this->mctMembership = new MembershipMetaControl($this, new Membership());
 
+			$this->mctPerson->Person->CanEmailFlag = true;
+			$this->mctPerson->Person->CanPhoneFlag = true;
+			$this->mctPerson->Person->CanMailFlag = true;
+			$this->mctSpouse->Person->CanEmailFlag = true;
+			$this->mctSpouse->Person->CanPhoneFlag = true;
+			$this->mctSpouse->Person->CanMailFlag = true;
+
 			$this->CreateControlsForPerson();
 			$this->CreateControlsForAddress();
 			$this->CreateControlsForSpouse();

@@ -690,6 +690,10 @@
 			$objPerson->Gender = ($blnMaleFlag) ? 'M' : 'F';
 			$objPerson->DeceasedFlag = false;
 
+			$objPerson->CanEmailFlag = true;
+			$objPerson->CanPhoneFlag = true;
+			$objPerson->CanMailFlag = true;
+
 			$objPerson->Save();
 			$objPerson->RefreshNameItemAssociations();
 
