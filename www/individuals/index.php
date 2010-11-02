@@ -35,6 +35,7 @@
 			$this->txtName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtName->Focus();
 
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
