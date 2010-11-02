@@ -45,4 +45,10 @@
 			}
 		}
 	}
+
+	$objParticipationCursor = HouseholdParticipation::QueryCursor(QQ::All());
+	$intCount = HouseholdParticipation::CountAll();
+	while (QDataGen::DisplayWhileTask('Recalculating HouseholdParticipation Roles', $intCount) && ($objHouseholdParticipation = HouseholdParticipation::InstantiateCursor($objParticipationCursor))) {
+		$objHouseholdParticipation->RefreshRole();
+	}
 ?>

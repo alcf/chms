@@ -326,6 +326,14 @@
 
 			$this->objPerson->Save();
 			$this->objPerson->RefreshNameItemAssociations();
+
+			// Refresh Name of teh Household (if applicable)
+			if ($this->objPerson->HouseholdAsHead)
+				$this->objPerson->HouseholdAsHead->RefreshName();
+
+			foreach ($this->objPerson->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+				$objHouseholdParticipation->Household->RefreshMembers();
+			}
 			QApplication::ExecuteJavaScript('document.location = "#general";');
 		}
 
