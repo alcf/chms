@@ -50,7 +50,7 @@
 				);
 			if ($this->lstTypes->SelectedValue)
 				$objCondition = QQ::AndCondition($objCondition,
-					QQ::Equal(QQN::GrowthGroup()->GrowthGroupStructureAsStructure->GrowthGroupStructureId, $this->lstTypes->SelectedValue)
+					QQ::Equal(QQN::GrowthGroup()->GrowthGroupStructure->GrowthGroupStructureId, $this->lstTypes->SelectedValue)
 				);
 			$this->dtrGrowthGroups->DataSource = GrowthGroup::QueryArray($objCondition, QQ::OrderBy(QQN::GrowthGroup()->Group->Name));
 			
