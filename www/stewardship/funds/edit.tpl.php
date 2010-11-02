@@ -4,6 +4,7 @@
 	<div class="section">
 		<?php $this->txtName->RenderWithName(); ?>
 		<?php $this->txtAccountNumber->RenderWithName(); ?>
+		<?php $this->txtFundNumber->RenderWithName(); ?>
 		<?php $this->chkActiveFlag->RenderWithName(); ?>
 	</div>
 

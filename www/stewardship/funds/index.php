@@ -11,9 +11,10 @@
 		protected function Form_Create() {
 			$this->dtgFunds = new StewardshipFundDataGrid($this);
 			$this->dtgFunds->FontSize = 11;
-			$this->dtgFunds->MetaAddColumn('Name', 'Html=<?=$_FORM->RenderName($_ITEM); ?>', 'Width=500px', 'HtmlEntities=false');
-			$this->dtgFunds->MetaAddColumn('AccountNumber', 'Width=220px');
-			$this->dtgFunds->MetaAddColumn('ActiveFlag', 'Html=<?= ($_ITEM->ActiveFlag) ? "" : "Inactive"; ?>', 'Name=Inactive?', 'Width=200px');
+			$this->dtgFunds->MetaAddColumn('Name', 'Html=<?=$_FORM->RenderName($_ITEM); ?>', 'Width=420px', 'HtmlEntities=false');
+			$this->dtgFunds->MetaAddColumn('AccountNumber', 'Width=200px');
+			$this->dtgFunds->MetaAddColumn('FundNumber', 'Width=150px');
+			$this->dtgFunds->MetaAddColumn('ActiveFlag', 'Html=<?= ($_ITEM->ActiveFlag) ? "" : "Inactive"; ?>', 'Name=Inactive?', 'Width=150px');
 
 			$this->dtgFunds->SortColumnIndex = 0;
 			$this->dtgFunds->SortDirection = 0;

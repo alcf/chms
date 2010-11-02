@@ -16,8 +16,9 @@
 
 			if ($this->objPost) {
 				$this->dtgFunds = new QDataGrid($this);
-				$this->dtgFunds->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=500px'));
-				$this->dtgFunds->AddColumn(new QDataGridColumn('Amount', '<?= QApplication::DisplayCurrencyHtml($_ITEM->Amount); ?>', 'HtmlEntities=false', 'Width=245px'));
+				$this->dtgFunds->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=340px'));
+				$this->dtgFunds->AddColumn(new QDataGridColumn('Account Number', '<?= $_ITEM->StewardshipFund->AccountNumber; ?>', 'Width=200px'));
+				$this->dtgFunds->AddColumn(new QDataGridColumn('Amount', '<?= QApplication::DisplayCurrencyHtml($_ITEM->Amount); ?>', 'HtmlEntities=false', 'Width=200px'));
 				$this->dtgFunds->NoDataHtml = 'Changes only to members credited.  (No changes to funding accounts or amounts)';
 				$this->dtgFunds->SetDataBinder('dtgFunds_Posted_Bind', $this);
 

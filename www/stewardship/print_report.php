@@ -12,7 +12,8 @@
 			switch (QApplication::PathInfo(0)) {
 				case 'funds':
 					$this->dtgReport = new QDataGrid($this);
-					$this->dtgReport->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=500px'));
+					$this->dtgReport->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=300px'));
+					$this->dtgReport->AddColumn(new QDataGridColumn('Account Number', '<?= $_ITEM->StewardshipFund->AccountNumber; ?>', 'Width=200px'));
 					$this->dtgReport->AddColumn(new QDataGridColumn('Amount', '<?= QApplication::DisplayCurrencyHtml($_ITEM->Amount); ?>', 'HtmlEntities=false', 'Width=245px'));
 					$this->dtgReport->NoDataHtml = 'Changes only to members credited.  (No changes to funding accounts or amounts)';
 					$this->dtgReport->SetDataBinder('dtgReport_Funds_Bind');

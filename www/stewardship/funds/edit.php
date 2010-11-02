@@ -9,6 +9,7 @@
 		protected $mctFund;
 		protected $txtName;
 		protected $txtAccountNumber;
+		protected $txtFundNumber;
 		protected $chkActiveFlag;
 
 		protected $btnSave;
@@ -20,6 +21,7 @@
 			$this->txtName = $this->mctFund->txtName_Create();
 			$this->txtName->Required = true;
 			$this->txtAccountNumber = $this->mctFund->txtAccountNumber_Create();
+			$this->txtFundNumber = $this->mctFund->txtFundNumber_Create();
 			$this->chkActiveFlag = $this->mctFund->chkActiveFlag_Create();
 
 			$this->btnSave = new QButton($this);
