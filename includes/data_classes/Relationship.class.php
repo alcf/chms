@@ -72,6 +72,12 @@
 				case RelationshipType::Sibling:
 					$objLinkedRelationship->RelationshipTypeId = RelationshipType::Sibling;
 					break;
+				case RelationshipType::Grandchild:
+					$objLinkedRelationship->RelationshipTypeId = RelationshipType::Grandparent;
+					break;
+				case RelationshipType::Grandparent:
+					$objLinkedRelationship->RelationshipTypeId = RelationshipType::Grandchild;
+					break;
 				default:
 					throw new Exception('Invalid Relationship Type Id: ' . $intRelationshipTypeId);
 			}
@@ -95,6 +101,20 @@
 								case 'M':	return 'Father';
 								case 'F':	return 'Mother';
 								default:	return 'Parent';
+							}
+							
+						case RelationshipType::Grandchild:
+							switch ($this->RelatedToPerson->Gender) {
+								case 'M':	return 'Grandson';
+								case 'F':	return 'Granddaughter';
+								default:	return 'Grandchild';
+							}
+
+						case RelationshipType::Grandparent:
+							switch ($this->RelatedToPerson->Gender) {
+								case 'M':	return 'Grandfather';
+								case 'F':	return 'Grandmother';
+								default:	return 'Grandparent';
 							}
 
 						case RelationshipType::Sibling:

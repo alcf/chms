@@ -390,6 +390,12 @@
 				case RelationshipType::Sibling:
 					$intOppositeRelationship = RelationshipType::Sibling;
 					break;
+				case RelationshipType::Grandchild:
+					$intOppositeRelationship = RelationshipType::Grandparent;
+					break;
+				case RelationshipType::Grandparent:
+					$intOppositeRelationship = RelationshipType::Grandchild;
+					break;
 				default:
 					throw new Exception('Invalid Relationship Type Id: ' . $intRelationshipTypeId);
 			}
