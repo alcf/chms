@@ -379,10 +379,10 @@ div.shopInfo div.shopLeft { float: left; }
 	/* QCalendar */
 	div.calendar { width: 200px; border: 1px solid #337; background-color: #ccf; }
 		div.calendar div.navigator { background-color: #337; overflow: auto; _height: 100%; color: #fff; padding: 2px 6px 2px 6px; }
-		div.calendar div.navigator div.left { float: left; }
+		div.calendar div.navigator div.left { float: left; width: auto; font-family: arial; font-style: normal; top: auto; font-size: 11px; font-weight: bold; }
 		div.calendar div.navigator div.month { float: left; width: 80px; text-align: center; font-weight: bold; font-size: 11px; }
 		div.calendar div.navigator div.year { float: right; }
-		div.calendar div.navigator div.year span { font-size: 11px; font-weight: bold; margin-left: 6px; margin-right: 6px; }
+		div.calendar div.navigator div.year span { font-size: 11px; font-weight: bold; margin-left: 6px; margin-right: 6px; color: #fff; }
 			div.calendar div.navigator a { color: #fff; text-decoration: none; }
 			div.calendar div.navigator a:hover { text-decoration: underline; }
 		div.calendar table { border: 0; margin-left: auto; margin-right: auto;}
