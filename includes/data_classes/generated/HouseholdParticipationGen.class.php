@@ -19,6 +19,7 @@
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $HouseholdId the value for intHouseholdId (Not Null)
 	 * @property string $Role the value for strRole 
+	 * @property string $RoleOverride the value for strRoleOverride 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Household $Household the value for the Household object referenced by intHouseholdId (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -60,6 +61,15 @@
 		protected $strRole;
 		const RoleMaxLength = 100;
 		const RoleDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column household_participation.role_override
+		 * @var string strRoleOverride
+		 */
+		protected $strRoleOverride;
+		const RoleOverrideMaxLength = 100;
+		const RoleOverrideDefault = null;
 
 
 		/**
@@ -418,6 +428,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'household_id', $strAliasPrefix . 'household_id');
 			$objBuilder->AddSelectItem($strTableName, 'role', $strAliasPrefix . 'role');
+			$objBuilder->AddSelectItem($strTableName, 'role_override', $strAliasPrefix . 'role_override');
 		}
 
 
@@ -457,6 +468,8 @@
 			$objToReturn->intHouseholdId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'role', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'role'] : $strAliasPrefix . 'role';
 			$objToReturn->strRole = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'role_override', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'role_override'] : $strAliasPrefix . 'role_override';
+			$objToReturn->strRoleOverride = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -680,11 +693,13 @@
 						INSERT INTO `household_participation` (
 							`person_id`,
 							`household_id`,
-							`role`
+							`role`,
+							`role_override`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intHouseholdId) . ',
-							' . $objDatabase->SqlVariable($this->strRole) . '
+							' . $objDatabase->SqlVariable($this->strRole) . ',
+							' . $objDatabase->SqlVariable($this->strRoleOverride) . '
 						)
 					');
 
@@ -706,7 +721,8 @@
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`household_id` = ' . $objDatabase->SqlVariable($this->intHouseholdId) . ',
-							`role` = ' . $objDatabase->SqlVariable($this->strRole) . '
+							`role` = ' . $objDatabase->SqlVariable($this->strRole) . ',
+							`role_override` = ' . $objDatabase->SqlVariable($this->strRoleOverride) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -794,6 +810,7 @@
 			$this->PersonId = $objReloaded->PersonId;
 			$this->HouseholdId = $objReloaded->HouseholdId;
 			$this->strRole = $objReloaded->strRole;
+			$this->strRoleOverride = $objReloaded->strRoleOverride;
 		}
 
 		/**
@@ -810,6 +827,7 @@
 					`person_id`,
 					`household_id`,
 					`role`,
+					`role_override`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -818,6 +836,7 @@
 					' . $objDatabase->SqlVariable($this->intPersonId) . ',
 					' . $objDatabase->SqlVariable($this->intHouseholdId) . ',
 					' . $objDatabase->SqlVariable($this->strRole) . ',
+					' . $objDatabase->SqlVariable($this->strRoleOverride) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -887,6 +906,11 @@
 					// Gets the value for strRole 
 					// @return string
 					return $this->strRole;
+
+				case 'RoleOverride':
+					// Gets the value for strRoleOverride 
+					// @return string
+					return $this->strRoleOverride;
 
 
 				///////////////////
@@ -979,6 +1003,17 @@
 					// @return string
 					try {
 						return ($this->strRole = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'RoleOverride':
+					// Sets the value for strRoleOverride 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strRoleOverride = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1089,6 +1124,7 @@
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="Household" type="xsd1:Household"/>';
 			$strToReturn .= '<element name="Role" type="xsd:string"/>';
+			$strToReturn .= '<element name="RoleOverride" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1123,6 +1159,8 @@
 				$objToReturn->Household = Household::GetObjectFromSoapObject($objSoapObject->Household);
 			if (property_exists($objSoapObject, 'Role'))
 				$objToReturn->strRole = $objSoapObject->Role;
+			if (property_exists($objSoapObject, 'RoleOverride'))
+				$objToReturn->strRoleOverride = $objSoapObject->RoleOverride;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1170,6 +1208,7 @@
 	 * @property-read QQNode $HouseholdId
 	 * @property-read QQNodeHousehold $Household
 	 * @property-read QQNode $Role
+	 * @property-read QQNode $RoleOverride
 	 */
 	class QQNodeHouseholdParticipation extends QQNode {
 		protected $strTableName = 'household_participation';
@@ -1189,6 +1228,8 @@
 					return new QQNodeHousehold('household_id', 'Household', 'integer', $this);
 				case 'Role':
 					return new QQNode('role', 'Role', 'string', $this);
+				case 'RoleOverride':
+					return new QQNode('role_override', 'RoleOverride', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1210,6 +1251,7 @@
 	 * @property-read QQNode $HouseholdId
 	 * @property-read QQNodeHousehold $Household
 	 * @property-read QQNode $Role
+	 * @property-read QQNode $RoleOverride
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeHouseholdParticipation extends QQReverseReferenceNode {
@@ -1230,6 +1272,8 @@
 					return new QQNodeHousehold('household_id', 'Household', 'integer', $this);
 				case 'Role':
 					return new QQNode('role', 'Role', 'string', $this);
+				case 'RoleOverride':
+					return new QQNode('role_override', 'RoleOverride', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

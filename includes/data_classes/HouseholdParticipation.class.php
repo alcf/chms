@@ -27,6 +27,22 @@
 			return sprintf('HouseholdParticipation Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'RoleToDisplay':
+					if ($this->strRoleOverride) return $this->strRoleOverride;
+					return $this->strRole;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		/**
 		 * Calculates the role value based on the person and his/her relationship to the head of household.
 		 * Will call save unless explicitly specified not to

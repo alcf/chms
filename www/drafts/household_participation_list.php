@@ -59,6 +59,7 @@
 			$this->dtgHouseholdParticipations->MetaAddColumn(QQN::HouseholdParticipation()->Person);
 			$this->dtgHouseholdParticipations->MetaAddColumn(QQN::HouseholdParticipation()->Household);
 			$this->dtgHouseholdParticipations->MetaAddColumn('Role');
+			$this->dtgHouseholdParticipations->MetaAddColumn('RoleOverride');
 		}
 	}
 

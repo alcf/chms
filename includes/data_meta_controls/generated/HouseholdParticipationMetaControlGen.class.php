@@ -24,6 +24,8 @@
 	 * property-read QLabel $HouseholdIdLabel
 	 * property QTextBox $RoleControl
 	 * property-read QLabel $RoleLabel
+	 * property QTextBox $RoleOverrideControl
+	 * property-read QLabel $RoleOverrideLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -79,6 +81,12 @@
          */
 		protected $txtRole;
 
+        /**
+         * @var QTextBox txtRoleOverride;
+         * @access protected
+         */
+		protected $txtRoleOverride;
+
 
 		// Controls that allow the viewing of HouseholdParticipation's individual data fields
         /**
@@ -98,6 +106,12 @@
          * @access protected
          */
 		protected $lblRole;
+
+        /**
+         * @var QLabel lblRoleOverride
+         * @access protected
+         */
+		protected $lblRoleOverride;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -323,6 +337,31 @@
 			return $this->lblRole;
 		}
 
+		/**
+		 * Create and setup QTextBox txtRoleOverride
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtRoleOverride_Create($strControlId = null) {
+			$this->txtRoleOverride = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtRoleOverride->Name = QApplication::Translate('Role Override');
+			$this->txtRoleOverride->Text = $this->objHouseholdParticipation->RoleOverride;
+			$this->txtRoleOverride->MaxLength = HouseholdParticipation::RoleOverrideMaxLength;
+			return $this->txtRoleOverride;
+		}
+
+		/**
+		 * Create and setup QLabel lblRoleOverride
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblRoleOverride_Create($strControlId = null) {
+			$this->lblRoleOverride = new QLabel($this->objParentObject, $strControlId);
+			$this->lblRoleOverride->Name = QApplication::Translate('Role Override');
+			$this->lblRoleOverride->Text = $this->objHouseholdParticipation->RoleOverride;
+			return $this->lblRoleOverride;
+		}
+
 
 
 		/**
@@ -367,6 +406,9 @@
 			if ($this->txtRole) $this->txtRole->Text = $this->objHouseholdParticipation->Role;
 			if ($this->lblRole) $this->lblRole->Text = $this->objHouseholdParticipation->Role;
 
+			if ($this->txtRoleOverride) $this->txtRoleOverride->Text = $this->objHouseholdParticipation->RoleOverride;
+			if ($this->lblRoleOverride) $this->lblRoleOverride->Text = $this->objHouseholdParticipation->RoleOverride;
+
 		}
 
 
@@ -393,6 +435,7 @@
 				if ($this->lstPerson) $this->objHouseholdParticipation->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->lstHousehold) $this->objHouseholdParticipation->HouseholdId = $this->lstHousehold->SelectedValue;
 				if ($this->txtRole) $this->objHouseholdParticipation->Role = $this->txtRole->Text;
+				if ($this->txtRoleOverride) $this->objHouseholdParticipation->RoleOverride = $this->txtRoleOverride->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -459,6 +502,12 @@
 				case 'RoleLabel':
 					if (!$this->lblRole) return $this->lblRole_Create();
 					return $this->lblRole;
+				case 'RoleOverrideControl':
+					if (!$this->txtRoleOverride) return $this->txtRoleOverride_Create();
+					return $this->txtRoleOverride;
+				case 'RoleOverrideLabel':
+					if (!$this->lblRoleOverride) return $this->lblRoleOverride_Create();
+					return $this->lblRoleOverride;
 				default:
 					try {
 						return parent::__get($strName);
@@ -489,6 +538,8 @@
 						return ($this->lstHousehold = QType::Cast($mixValue, 'QControl'));
 					case 'RoleControl':
 						return ($this->txtRole = QType::Cast($mixValue, 'QControl'));
+					case 'RoleOverrideControl':
+						return ($this->txtRoleOverride = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

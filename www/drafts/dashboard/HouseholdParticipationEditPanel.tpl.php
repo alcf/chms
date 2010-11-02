@@ -13,6 +13,8 @@
 
 		<?php $_CONTROL->txtRole->RenderWithName(); ?>
 
+		<?php $_CONTROL->txtRoleOverride->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

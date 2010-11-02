@@ -299,6 +299,7 @@
 				case 'HouseholdId': return QQN::HouseholdParticipation()->HouseholdId;
 				case 'Household': return QQN::HouseholdParticipation()->Household;
 				case 'Role': return QQN::HouseholdParticipation()->Role;
+				case 'RoleOverride': return QQN::HouseholdParticipation()->RoleOverride;
 				default: throw new QCallerException('Simple Property not found in HouseholdParticipationDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

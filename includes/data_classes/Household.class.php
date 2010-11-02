@@ -133,7 +133,7 @@
 			}
 
 			if ($strRole) {
-				$objHouseholdParticipation->Role = $strRole;
+				$objHouseholdParticipation->RoleOverride = $strRole;
 			} else {
 				$objHouseholdParticipation->RefreshRole(false);
 			}

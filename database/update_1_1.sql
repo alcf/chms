@@ -8,3 +8,6 @@ UPDATE stewardship_fund SET fund_number=account_number;
 UPDATE stewardship_fund SET account_number=null;
 
 UPDATE person SET can_mail_flag=1, can_email_flag=1, can_phone_flag=1;
+
+ALTER TABLE household_participation ADD COLUMN role_override VARCHAR(100) AFTER `role`;
+UPDATE household_participation SET `role` = null;

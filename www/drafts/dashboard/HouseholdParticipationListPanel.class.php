@@ -69,6 +69,7 @@
 			$this->dtgHouseholdParticipations->MetaAddColumn(QQN::HouseholdParticipation()->Person);
 			$this->dtgHouseholdParticipations->MetaAddColumn(QQN::HouseholdParticipation()->Household);
 			$this->dtgHouseholdParticipations->MetaAddColumn('Role');
+			$this->dtgHouseholdParticipations->MetaAddColumn('RoleOverride');
 
 			// Setup the Create New button
 			$this->btnCreateNew = new QButton($this);

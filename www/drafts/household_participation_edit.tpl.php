@@ -23,6 +23,8 @@
 
 		<?php $this->txtRole->RenderWithName(); ?>
 
+		<?php $this->txtRoleOverride->RenderWithName(); ?>
+
 	</div>
 
 	<div id="formActions">

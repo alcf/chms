@@ -27,6 +27,7 @@
 		protected $lstPerson;
 		protected $lstHousehold;
 		protected $txtRole;
+		protected $txtRoleOverride;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -57,6 +58,7 @@
 			$this->lstPerson = $this->mctHouseholdParticipation->lstPerson_Create();
 			$this->lstHousehold = $this->mctHouseholdParticipation->lstHousehold_Create();
 			$this->txtRole = $this->mctHouseholdParticipation->txtRole_Create();
+			$this->txtRoleOverride = $this->mctHouseholdParticipation->txtRoleOverride_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);
