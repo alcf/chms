@@ -18,7 +18,7 @@
 						$strOriginal = substr($strOriginal, 1);
 					}
 
-					if ((strlen($strFinal) == 10) && (sprintf('%d', intval($strFinal)) == $strFinal)) {
+					if ((strlen($strFinal) == 10) && (strpos($strFinal, 'x') === false)) {
 						$this->strText = substr($strFinal, 0, 3) . '-' . substr($strFinal, 3, 3) . '-' . substr($strFinal, 6);
 						$this->strValidationError = null;
 						return true;
@@ -26,7 +26,7 @@
 
 					if ((strlen($strFinal) > 11) &&
 						  (strpos($strFinal, 'x') == 10) &&
-						  (sprintf('%d', intval(substr($strFinal, 11))) == substr($strFinal, 11)) &&
+						  (strpos($strFinal, 'x', 11) === false) &&
 						  (strlen($strFinal) <= 17)) {
 						$this->strText = substr($strFinal, 0, 3) . '-' . substr($strFinal, 3, 3) . '-' . substr($strFinal, 6, 4) . ' ' . substr($strFinal, 10);
 						$this->strValidationError = null;
