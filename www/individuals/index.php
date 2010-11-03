@@ -26,6 +26,7 @@
 			$this->dtgPeople->MetaAddColumn('PrimaryCityText', 'Name=City', 'Width=130px', 'FontSize=11px');
 			$this->dtgPeople->MetaAddColumn('PrimaryPhoneText', 'Name=Phone', 'Width=115px', 'FontSize=11px');
 			$this->dtgPeople->SetDataBinder('dtgPeople_Bind');
+			$this->dtgPeople->NoDataHtml = 'No results found.  Please use a less-restrictive filter.';
 			
 			$this->dtgPeople->SortColumnIndex = 1;
 			$this->dtgPeople->ItemsPerPage = 20;

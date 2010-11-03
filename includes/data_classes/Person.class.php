@@ -629,7 +629,7 @@
 				$strQuery = sprintf("SELECT * FROM name_item WHERE (soundex(name) = soundex('%s') OR name LIKE '%s%%')", mysql_escape_string($strNameItem), mysql_escape_string($strNameItem));
 
 				$objNameItemArray = NameItem::InstantiateDbResult(NameItem::GetDatabase()->Query($strQuery));
-				if (!count($objNameItemArray)) return array();
+
 				foreach ($objNameItemArray as $objNameItem) $intNameItemIdArray[] = $objNameItem->Id;
 
 				$intNameItemIdArrayArray[] = $intNameItemIdArray;
@@ -639,6 +639,11 @@
 			$intIndex = 0;
 
 			foreach ($intNameItemIdArrayArray as $intNameItemIdArray) {
+				if (!count($intNameItemIdArray)) {
+					$objCondition = QQ::None();
+					return;
+				}
+
 				$intIndex++;
 				$strAlias = 'assn_' . $intIndex;
 
