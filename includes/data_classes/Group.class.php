@@ -30,6 +30,18 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return GroupType::$NameArray[$this->intGroupTypeId];
+				case 'CsvFilename':
+					$strName = $this->strName;
+					$strToReturn = null;
+					for ($i = 0; $i < strlen($strName); $i++) {
+						$intOrd = ord($strName[$i]);
+						if ((($intOrd >= ord('a')) && ($intOrd <= ord('z'))) ||
+							(($intOrd >= ord('A')) && ($intOrd <= ord('Z'))) ||
+							(($intOrd >= ord('0')) && ($intOrd <= ord('9'))))
+							$strToReturn .= $strName[$i];
+					}
+					return $strToReturn . '.csv';
+
 				case 'GroupDetail':
 					switch ($this->GroupTypeId) {
 						case GroupType::GroupCategory:
