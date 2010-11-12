@@ -8,12 +8,15 @@
 
 	<h3>Filter Results</h3>
 	<div class="section">
-		<div class="filterBy filterByFirst">Person's Name<br/><?php $this->txtName->Render('Width=300px'); ?></div>
+		<div class="filterBy filterByFirst">Person's Name (including nicknames, misspellings, etc.)<br/><?php $this->txtName->Render('Width=300px'); ?></div>
 		<div class="filterBy">Gender<br/><?php $this->lstGender->Render('Width=90px'); ?></div>
 		<div class="filterBy">Member Status<br/><?php $this->lstMemberStatus->Render('Width=110px'); ?></div>
 		<div class="filterBy">Email<br/><?php $this->txtEmail->Render(); ?></div>
 		<div class="filterBy">Phone<br/><?php $this->txtPhone->Render(); ?></div>
 		<div class="filterBy">City<br/><?php $this->txtCity->Render(); ?></div>
+		<div class="cleaner">&nbsp;</div><br/>
+		<div class="filterBy filterByFirst">First Name (Exact)<br/><?php $this->txtFirstName->Render('Width=150px'); ?></div>
+		<div class="filterBy">Last Name (Exact)<br/><?php $this->txtLastName->Render('Width=150px'); ?></div>
 		<div class="cleaner">&nbsp;</div>
 	</div>
 

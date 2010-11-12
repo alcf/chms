@@ -7,6 +7,8 @@
 		protected $intNavSectionId = ChmsForm::NavSectionPeople;
 
 		protected $txtName;
+		protected $txtFirstName;
+		protected $txtLastName;
 		protected $lstGender;
 		protected $lstMemberStatus;
 		protected $txtEmail;
@@ -32,11 +34,23 @@
 			$this->dtgPeople->ItemsPerPage = 20;
 
 			$this->txtName = new QTextBox($this);
-			$this->txtName->Name = 'Person\'s Name';
+			$this->txtName->Name = 'Person\'s Name (including nicknames, mispellings, etc.)';
 			$this->txtName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtName->Focus();
+
+			$this->txtFirstName = new QTextBox($this);
+			$this->txtFirstName->Name = 'First Name (Exact)';
+			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+
+			$this->txtLastName = new QTextBox($this);
+			$this->txtLastName->Name = 'Last Name (Exact)';
+			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
@@ -93,6 +107,18 @@
 
 			if ($strName = trim($this->txtName->Text)) {
 				Person::PrepareQqForSearch($strName, $objConditions, $objClauses);
+			}
+
+			if ($strName = trim($this->txtFirstName->Text)) {
+				$objConditions = QQ::AndCondition($objConditions,
+					QQ::Like( QQN::Person()->FirstName, $strName . '%')
+				);
+			}
+
+			if ($strName = trim($this->txtLastName->Text)) {
+				$objConditions = QQ::AndCondition($objConditions,
+					QQ::Like( QQN::Person()->LastName, $strName . '%')
+				);
 			}
 
 			if ($strName = trim($this->txtCity->Text)) {
