@@ -61,7 +61,7 @@
 				$intDisplayedHeight = round($intRenderedHeight * .85);
 			} else
 				$intDisplayedHeight = $this->strHeight;
-			$strToReturn = sprintf('<div style="background: url(%s); width: %spx; height: %spx; border: 2px solid #aaa;"></div>', $strPath, $this->strWidth, $intDisplayedHeight);
+			$strToReturn = sprintf('<div %s style="background: url(%s); width: %spx; height: %spx; border: 2px solid #aaa;"></div>', $this->GetActionAttributes(), $strPath, $this->strWidth, $intDisplayedHeight);
 			return $strToReturn;
 		}
 

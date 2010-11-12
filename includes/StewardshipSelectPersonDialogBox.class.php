@@ -108,11 +108,13 @@
 					$this->imgCheckImage = new TiffImageControl($this);
 					$this->imgCheckImage->ImagePath = $this->objContribution->TempPath;
 					$this->imgCheckImage->Width = '424';
+					$this->imgCheckImage->AddAction(new QClickEvent(), new QJavaScriptAction("OpenInNewWindow('" . $this->objContribution->ViewLargeUrl . "');"));
 
 				} else if ($this->objContribution->Id && is_file($this->objContribution->Path)) {
 					$this->imgCheckImage = new TiffImageControl($this);
 					$this->imgCheckImage->ImagePath = $this->objContribution->Path;
 					$this->imgCheckImage->Width = '424';
+					$this->imgCheckImage->AddAction(new QClickEvent(), new QJavaScriptAction("OpenInNewWindow('" . $this->objContribution->ViewLargeUrl . "');"));
 				}
 
 				$this->imgHistoricCheckImage = new TiffImageControl($this);
@@ -173,9 +175,11 @@
 				(is_file($objContribution->Path))) {
 				$this->imgHistoricCheckImage->ImagePath = $objContribution->Path;
 				$this->imgHistoricCheckImage->Height = null;
+				$this->imgHistoricCheckImage->AddAction(new QClickEvent(), new QJavaScriptAction("OpenInNewWindow('" . $objContribution->ViewLargeUrl . "');"));
 			} else {
 				$this->imgHistoricCheckImage->ImagePath = __DOCROOT__ . __IMAGE_ASSETS__ . '/no_check_image.tiff';
 				$this->imgHistoricCheckImage->Height = '100';
+				$this->imgHistoricCheckImage->RemoveAllActions(QClickEvent::EventName);
 			}
 		}
 

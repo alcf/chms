@@ -37,3 +37,7 @@ function ScrollDivToBottom(strControlId) {
 	var objDiv = document.getElementById(strControlId);
 	objDiv.scrollTop = objDiv.scrollHeight;
 };
+
+function OpenInNewWindow(strUrl) {
+	window.open(strUrl, 'CheckImage', 'height=500px,width=1100px,menubar=no,scrollbars=no,status=no,toolbar=no,directories=no,resizable=no');
+};

@@ -43,6 +43,9 @@
 					if (!$this->Id) return null;
 					return $this->Folder . '/' . $this->Id . '.tif';
 
+				case 'ViewLargeUrl':
+					return '/stewardship/view_check.php/' . $this->Id;
+
 				// For recently scanned (and not yet saved) check images
 				case 'TempPath':
 					if (!$this->strCheckImageFileHash) return null;

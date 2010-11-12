@@ -15,6 +15,7 @@
 				$this->imgCheckImage = new TiffImageControl($this);
 				$this->imgCheckImage->ImagePath = $this->objContribution->Path;
 				$this->imgCheckImage->Width = '390';
+				$this->imgCheckImage->AddAction(new QClickEvent(), new QJavaScriptAction("OpenInNewWindow('" . $this->objContribution->ViewLargeUrl . "');"));
 			}
 		}
 	}
