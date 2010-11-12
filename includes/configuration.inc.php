@@ -189,6 +189,7 @@
 	define ('__PANEL_DRAFTS__', __SUBDIRECTORY__ . '/drafts/dashboard');
 
 	define ('__ERROR_LOG__', __DOCROOT__ . '/../error_log');
+	define ('__ERROR_LOG_ARCHIVE__', __DOCROOT__ . '/../error_log/archive');
 	define ('__QCODO_LOG__', __DOCROOT__ . '/../qcodo_log');
 	define ('__TEST_CASES__', __DOCROOT__ . '/../tests');
 
