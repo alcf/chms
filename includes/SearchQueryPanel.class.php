@@ -168,6 +168,7 @@
 						case QueryDataType::TypeValue:
 						case QueryDataType::ObjectValue:
 						case QueryDataType::CustomValue:
+						case QueryDataType::CustomValueOnly:
 							$objQueryCondition->Value = trim($ctlValue->SelectedValue);
 							break;
 
@@ -257,6 +258,11 @@
 						break;
 
 					case QueryDataType::CustomValue:
+						$strCurrentValue = ($objQueryCondition->QueryNodeId == $objQueryNode->Id) ? $objQueryCondition->Value : null;
+						$ctlValue = $objQueryNode->GetCustomControl($pnlValue, $strControlId, $strCurrentValue);
+						break;
+
+					case QueryDataType::CustomValueOnly:
 						$strCurrentValue = ($objQueryCondition->QueryNodeId == $objQueryNode->Id) ? $objQueryCondition->Value : null;
 						$ctlValue = $objQueryNode->GetCustomControl($pnlValue, $strControlId, $strCurrentValue);
 						break;

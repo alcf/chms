@@ -22,9 +22,9 @@
 			AttributeDataType::DateTime					=> QueryDataType::DateValue,
 			AttributeDataType::Text						=> QueryDataType::StringValue,
 			AttributeDataType::ImmutableSingleDropdown	=> QueryDataType::CustomValue,
-			AttributeDataType::ImmutableMultipleDropdown => QueryDataType::CustomValue,
+			AttributeDataType::ImmutableMultipleDropdown => QueryDataType::CustomValueOnly,
 			AttributeDataType::MutableSingleDropdown	=> QueryDataType::CustomValue,
-			AttributeDataType::MutableMultipleDropdown	=> QueryDataType::CustomValue
+			AttributeDataType::MutableMultipleDropdown	=> QueryDataType::CustomValueOnly
 		);
 	}
 ?>

@@ -37,14 +37,14 @@
 		 * @param QQClause[] $objQqClauses
 		 * @return QQNode
 		 */
-		public function GetQqNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
+		public function GetQqNode(QQCondition &$objQqCondition = null, &$objQqClauses = null, $strValue) {
 			// Operation is dependent on the type of QueryNode being used
 			switch ($this->QueryNodeTypeId) {
 				case QueryNodeType::StandardNode:
 					return $this->GetQqNodeForStandardNode($objQqCondition, $objQqClauses);
 
 				case QueryNodeType::AttributeNode:
-					return $this->GetQqNodeForAttributeNode($objQqCondition, $objQqClauses);
+					return $this->GetQqNodeForAttributeNode($objQqCondition, $objQqClauses, $strValue);
 
 				default:
 					throw new Exception('Not Implemented for QueryNodeTypeId');
@@ -113,12 +113,22 @@
 			return $objQqNode;
 		}
 
-		protected function GetQqNodeForAttributeNode(QQCondition &$objQqCondition = null, &$objQqClauses = null) {
-			$strAttributeValueTableAlias = 'av' . self::$intJoinCount++;
-			$objQqClauses[] = QQ::CustomFrom('attribute_value', $strAttributeValueTableAlias);
-
+		protected function GetQqNodeForAttributeNode(QQCondition &$objQqCondition = null, &$objQqClauses = null, $strValue) {
 			// Get the Attribute object we are trying to query against
 			$objAttribute = Attribute::Load($this->NodeDetail);
+
+			$strAttributeValueTableAlias = 'av' . self::$intJoinCount++;
+			$objQqClauses[] = QQ::CustomJoin('attribute_value', $strAttributeValueTableAlias,
+				sprintf('%s%s%s.%sperson_id%s = %st0%s.%sid%s AND %s%s%s.%sattribute_id%s = %s',
+					self::GetDatabase()->EscapeIdentifierBegin, $strAttributeValueTableAlias, self::GetDatabase()->EscapeIdentifierEnd,
+					self::GetDatabase()->EscapeIdentifierBegin, self::GetDatabase()->EscapeIdentifierEnd,
+					self::GetDatabase()->EscapeIdentifierBegin, self::GetDatabase()->EscapeIdentifierEnd,
+					self::GetDatabase()->EscapeIdentifierBegin, self::GetDatabase()->EscapeIdentifierEnd,
+					self::GetDatabase()->EscapeIdentifierBegin, $strAttributeValueTableAlias, self::GetDatabase()->EscapeIdentifierEnd,
+					self::GetDatabase()->EscapeIdentifierBegin, self::GetDatabase()->EscapeIdentifierEnd,
+					$objAttribute->Id
+				)
+			);
 
 			// What is the ATTRIBUTE's type?  Figure out the Custom QQ Node based on that
 			switch ($objAttribute->AttributeDataTypeId) {
@@ -146,24 +156,18 @@
 				case AttributeDataType::ImmutableMultipleDropdown:
 				case AttributeDataType::MutableMultipleDropdown:
 					$strAttributeOptionTableAlias = 'avmaoa' . self::$intJoinCount++;
-					$objQqClauses[] = QQ::CustomFrom('attributevalue_multipleattributeoption_assn', $strAttributeOptionTableAlias);
-					$objQqCondition = QQ::Equal(QQ::CustomNode(sprintf('%s.attribute_value_id', $strAttributeOptionTableAlias)), QQ::CustomNode(sprintf('%s.id', $strAttributeValueTableAlias)));
+					$objQqClauses[] = QQ::CustomJoin('attributevalue_multipleattributeoption_assn', $strAttributeOptionTableAlias,
+						sprintf(
+							"%s.attribute_value_id = %s.id AND %s.attribute_option_id = '%s'",
+							$strAttributeOptionTableAlias, $strAttributeValueTableAlias,
+							$strAttributeOptionTableAlias, $strValue
+						)
+					);
 					$objQqNode = QQ::CustomNode(sprintf('%s.attribute_option_id', $strAttributeOptionTableAlias));
 					break;
 
 				default:
 					throw new Exception('No Support for Attribute Data Type Id: ' . $objAttribute->AttributeDataTypeId);
-			}
-
-			if ($objQqCondition) {
-				$objQqCondition = QQ::AndCondition(
-					QQ::Equal(QQ::CustomNode(sprintf('%s.attribute_id', $strAttributeValueTableAlias)), $objAttribute->Id),
-					QQ::Equal(QQ::CustomNode(sprintf('%s.person_id', $strAttributeValueTableAlias)), QQN::Person()->Id),
-					$objQqCondition);
-			} else {
-				$objQqCondition = QQ::AndCondition(
-					QQ::Equal(QQ::CustomNode(sprintf('%s.attribute_id', $strAttributeValueTableAlias)), $objAttribute->Id),
-					QQ::Equal(QQ::CustomNode(sprintf('%s.person_id', $strAttributeValueTableAlias)), QQN::Person()->Id));
 			}
 
 			return $objQqNode;

@@ -25,6 +25,7 @@
 		const BooleanValue = 16;
 		const ObjectValue = 32;
 		const CustomValue = 1024;
+		const CustomValueOnly = 2048;
 
 		const MaxId = 1024;
 
@@ -35,7 +36,8 @@
 			8 => 'Type Value',
 			16 => 'Boolean Value',
 			32 => 'Object Value',
-			1024 => 'Custom Value');
+			1024 => 'Custom Value',
+			2048 => 'Custom Value Only');
 
 		public static $TokenArray = array(
 			1 => 'StringValue',
@@ -44,7 +46,8 @@
 			8 => 'TypeValue',
 			16 => 'BooleanValue',
 			32 => 'ObjectValue',
-			1024 => 'CustomValue');
+			1024 => 'CustomValue',
+			2048 => 'CustomValueOnly');
 
 		public static function ToString($intQueryDataTypeId) {
 			switch ($intQueryDataTypeId) {
@@ -55,6 +58,7 @@
 				case 16: return 'Boolean Value';
 				case 32: return 'Object Value';
 				case 1024: return 'Custom Value';
+				case 2048: return 'Custom Value Only';
 				default:
 					throw new QCallerException(sprintf('Invalid intQueryDataTypeId: %s', $intQueryDataTypeId));
 			}
@@ -69,6 +73,7 @@
 				case 16: return 'BooleanValue';
 				case 32: return 'ObjectValue';
 				case 1024: return 'CustomValue';
+				case 2048: return 'CustomValueOnly';
 				default:
 					throw new QCallerException(sprintf('Invalid intQueryDataTypeId: %s', $intQueryDataTypeId));
 			}

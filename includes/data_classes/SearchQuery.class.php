@@ -84,9 +84,9 @@
 
 		/**
 		 * This will execute the search query object and should in theory
-		 * return an array of Person objects
+		 * return a Database Cursor that can be used by Person
 		 * @param QQClause $objOptionalClauses
-		 * @return Person[]
+		 * @return QDatabaseResultBase Person cursor
 		 */
 		public function Execute($objOptionalClauses = null) {
 			if (!$this->CountQueryConditions()) return array();
@@ -104,7 +104,7 @@
 				$objQqConditionToAdd = null;
 
 				// First, calculate the QqNode to use.  Be sure to capture any conditions/clauses required during the QqNode calculation process
-				$objQqNode = $objQueryCondition->QueryNode->GetQqNode($objQqConditionToAdd, $objOptionalClauses);
+				$objQqNode = $objQueryCondition->QueryNode->GetQqNode($objQqConditionToAdd, $objOptionalClauses, $objQueryCondition->Value);
 
 				// Go Ahead and Calculate the QqCondition to Add into our overall QqCondition to use
 				$objQqConditionToAdd = $this->CalculateQqCondition($objQueryCondition, $objQqNode, $objQqConditionToAdd);
@@ -112,7 +112,7 @@
 			}
 
 			// Return an array of Person objects
-			return Person::QueryArray($objQqConditionToUse, $objOptionalClauses);
+			return Person::QueryCursor($objQqConditionToUse, $objOptionalClauses);
 		}
 
 		protected function CalculateQqCondition(QueryCondition $objQueryCondition, QQNode $objQqNode, QQCondition $objQqConditionToAdd = null) {

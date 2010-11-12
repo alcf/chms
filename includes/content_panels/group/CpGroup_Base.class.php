@@ -323,12 +323,21 @@
 		}
 
 		public function lblRefresh_Refresh() {
-			if ($this->objGroup->GroupDetail->DateRefreshed) {
-				$this->lblRefresh->Text = $this->objGroup->GroupDetail->DateRefreshed->ToString('MMM D at h:mmz') .
-					'<br/><a style="color: #999; font-size: 10px;" href="#" ' . $this->pxyRefresh->RenderAsEvents(null, false) . '>Refresh Now</a>';
+			$objSmartGroup = SmartGroup::Load($this->objGroup->Id);
+			if ($objSmartGroup->DateRefreshed) {
+				$this->lblRefresh->Text = '<span title="Query Time: ' . $objSmartGroup->ProcessTimeMs / 1000 . 's">' .
+					$objSmartGroup->DateRefreshed->ToString('MMM D at h:mmz') .
+					'</span><br/><a style="color: #999; font-size: 10px;" href="#" ' . $this->pxyRefresh->RenderAsEvents(null, false) . '>Refresh Now</a>';
+				if ($this->objForm->IsPollingActive()) $this->objForm->ClearPollingProcessor();
 			} else {
 				$this->lblRefresh->Text = 'Refreshing... <img src="/assets/images/spinner_14.gif"/>';
+				if (!$this->objForm->IsPollingActive()) $this->objForm->SetPollingProcessor('UpdateTimer', $this, 4000);
 			}
+		}
+
+		public function UpdateTimer() {
+			$this->lblRefresh_Refresh();
+			$this->dtgMembers->Refresh();
 		}
 
 		public function pxyRefresh_Click() {

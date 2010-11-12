@@ -1,4 +1,7 @@
 <?php
+	// Up the Memory Limit
+	ini_set('memory_limit', '1024M');
+
 	// Ensure we are NOT running
 	QApplication::CliProcessEnsureUnique();
 

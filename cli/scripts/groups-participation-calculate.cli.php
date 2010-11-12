@@ -3,6 +3,9 @@
 	 * Ongoing service to ensure that any groups that are "flagged" for refresh get recalculated
 	 */
 
+	// Up the Memory Limit
+	ini_set('memory_limit', '1024M');
+
 	// Ensure we are NOT running
 	QApplication::CliProcessEnsureUnique();
 

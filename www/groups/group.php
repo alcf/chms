@@ -99,6 +99,8 @@
 		}
 
 		protected function Form_ProcessHash() {
+			if ($this->IsPollingActive()) $this->ClearPollingProcessor();
+
 			// Cleanup and Tokenize UrlHash Contents
 			$strUrlHash = trim(strtolower($this->strUrlHash));
 			$strUrlHashTokens = explode('/', $strUrlHash);

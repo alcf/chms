@@ -161,6 +161,7 @@ INSERT INTO query_data_type VALUES(8, 'Type Value');
 INSERT INTO query_data_type VALUES(16, 'Boolean Value');
 INSERT INTO query_data_type VALUES(32, 'Object Value');
 INSERT INTO query_data_type VALUES(1024, 'Custom Value');
+INSERT INTO query_data_type VALUES(2048, 'Custom Value Only');
 
 INSERT INTO query_node_type VALUES(1, 'Standard Node');
 INSERT INTO query_node_type VALUES(2, 'Attribute Node');
@@ -218,7 +219,7 @@ INSERT INTO attribute VALUES (null, 2, 'Date Faith Recommitted');
 INSERT INTO attribute VALUES (null, 4, 'Occupation');
 INSERT INTO attribute VALUES (null, 4, 'Previous Church');
 
-INSERT INTO query_operation VALUES (null,         16   , 'Is',  'Equal', true, null, null);
+INSERT INTO query_operation VALUES (null,         16        |2048, 'Is',  'Equal', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32|1024, 'Is Equal To', 'Equal', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|   32|1024, 'Is Not Equal To', 'NotEqual', true, null, null);
 INSERT INTO query_operation VALUES (null, 1|2|4|8|      1024, 'Exists', 'IsNotNull', false, null, null);
@@ -237,6 +238,9 @@ INSERT INTO query_operation VALUES (null, 1|2|4        , 'Is Less Than or Equal 
 INSERT INTO query_node VALUES (null, 'Gender',                           1, 'Gender',                                       1024, 'M,F');
 INSERT INTO query_node VALUES (null, 'Age',                              1, 'Age',                                             2,  null);
 INSERT INTO query_node VALUES (null, 'Home City',                        1, 'PrimaryCityText',                                 1,  null);
+INSERT INTO query_node VALUES (null, 'Home State',                       1, 'PrimaryStateText',                                1,  null);
+INSERT INTO query_node VALUES (null, 'Home Zip Code',                    1, 'PrimaryZipCodeText',                              1,  null);
+INSERT INTO query_node VALUES (null, 'Primary Email Address',            1, 'PrimaryEmail->Address',                           1,  null);
 INSERT INTO query_node VALUES (null, 'Membership Status',                1, 'MembershipStatusTypeId',                          8, 'MembershipStatusType');
 INSERT INTO query_node VALUES (null, 'Marital Status',                   1, 'MaritalStatusTypeId',                             8, 'MaritalStatusType');
 INSERT INTO query_node VALUES (null, 'Okay to Bulk Email',               1, 'CanEmailFlag',                                   16,  null);
@@ -255,7 +259,7 @@ INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',   1, 'Gro
 #INSERT INTO query_node VALUES (null, 'Date Faith Recommitted', 2, null,                                 4, '15');
 #INSERT INTO query_node VALUES (null, 'Occupation',             2, null,                                 1, '16');
 #INSERT INTO query_node VALUES (null, 'Previous Church',        2, null,                                 1, '17');
-#INSERT INTO query_node VALUES (null, 'Spritual Gifts',         2, null,                                1024, '7');
+#INSERT INTO query_node VALUES (null, 'Spritual Gifts',         2, null,                                2048, '7');
 #INSERT INTO query_node VALUES (null, 'Method of Joining ALCF', 2, null,                                1024, '6');
 #INSERT INTO query_node VALUES (null, 'Ministry Involvement - Assigned Interviewer', 2, null,           1024, '8');
 #INSERT INTO query_node VALUES (null, 'Ministry Involvement - Date Placed',          2, null,                                 4, '9');

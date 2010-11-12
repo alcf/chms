@@ -43,7 +43,8 @@
 			}
 
 			$this->Group->DeleteAllGroupParticipations();
-			foreach ($this->SearchQuery->Execute() as $objPerson) {
+			$objPersonCursor = $this->SearchQuery->Execute();
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 				$this->Group->AddPerson($objPerson, $objGroupRole->Id);
 			}
 
