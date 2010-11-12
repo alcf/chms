@@ -9,6 +9,15 @@
 <h4>Associated Addresses</h4>
 
 <ul>
+<?php
+	foreach ($_CONTROL->ParentControl->objSelectedPerson->GetHouseholdParticipationArray() as $objParticipation) {
+		foreach ($objParticipation->Household->GetAddressArray(QQ::OrderBy(QQN::Address()->CurrentFlag, false)) as $objAddress) {
+?>
+		<li><?php _p($objAddress->AddressShortLine); ?></li>
+<?php
+		}
+	}
+?>
 <?php foreach ($_CONTROL->ParentControl->objSelectedPerson->GetAddressArray() as $objAddress) { ?>
 	<li><?php _p($objAddress->AddressShortLine); ?></li>
 <?php } ?>

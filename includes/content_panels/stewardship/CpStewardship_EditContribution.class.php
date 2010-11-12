@@ -188,9 +188,9 @@
 				$this->mctAmountArray[] = $mctAmount;
 
 				if ($mctAmount->EditMode) {
-					$lstFund = $mctAmount->lstStewardshipFund_Create();
+					$lstFund = $mctAmount->lstStewardshipFund_Create(null, QQ::All(), QQ::OrderBy(QQN::StewardshipFund()->Name));
 				} else {
-					$lstFund = $mctAmount->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true));
+					$lstFund = $mctAmount->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
 				}
 
 				$lstFund->Required = false;
