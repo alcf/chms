@@ -33,6 +33,10 @@
 					if ($this->Group) return $this->Group->Token;
 					return $this->CommunicationList->Token;
 
+				case 'Name':
+					if ($this->Group) return $this->Group->Name;
+					return $this->CommunicationList->Name;
+
 				default:
 					try {
 						return parent::__get($strName);

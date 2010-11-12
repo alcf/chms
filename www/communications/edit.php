@@ -77,6 +77,7 @@
 				return;
 			}
 
+			$this->txtToken->Text = $strToken;
 			$this->mctList->SaveCommunicationList();
 			$this->RedirectToView();
 		}

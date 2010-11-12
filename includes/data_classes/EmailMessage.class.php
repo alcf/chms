@@ -77,8 +77,8 @@
 				if (count($objToSend)) {
 					$strHeaderArray = $this->strHeaderArray;
 					$strSubject = $this->Subject;
-					if (strpos(strtolower($strSubject), '[' . strtolower($objRoute->Token) . ']') === false)
-						$strSubject = '[' . $objRoute->Token . '] ' . $strSubject;
+					if (strpos(strtolower($strSubject), '[' . trim(strtolower($objRoute->Name)) . ']') === false)
+						$strSubject = '[' . trim($objRoute->Name) . '] ' . $strSubject;
 					$strHeaderArray['Subject'] = $strSubject;
 
 					$strRcptToArray = array();
