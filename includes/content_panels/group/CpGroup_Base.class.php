@@ -323,8 +323,7 @@
 		}
 
 		public function lblRefresh_Refresh() {
-			$objSmartGroup = SmartGroup::Load($this->objGroup->Id);
-			if ($objSmartGroup->DateRefreshed) {
+			if ($this->objGroup->GroupDetail->DateRefreshed) {
 				$this->lblRefresh->Text = '<span title="Query Time: ' . $objSmartGroup->ProcessTimeMs / 1000 . 's">' .
 					$objSmartGroup->DateRefreshed->ToString('MMM D at h:mmz') .
 					'</span><br/><a style="color: #999; font-size: 10px;" href="#" ' . $this->pxyRefresh->RenderAsEvents(null, false) . '>Refresh Now</a>';
