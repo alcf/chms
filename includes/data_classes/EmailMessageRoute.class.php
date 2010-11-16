@@ -92,7 +92,7 @@
 
 		public function QueueMessages() {
 			if ($this->Group) {
-				foreach ($this->Group->GetGroupParticipationArray() as $objParticipation) {
+				foreach ($this->Group->GetActiveGroupParticipationArray() as $objParticipation) {
 					$objPerson = $objParticipation->Person;
 					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objPerson);
 				}

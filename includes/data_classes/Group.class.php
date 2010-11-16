@@ -104,6 +104,30 @@
 		}
 
 		/**
+		 * Gets all associated ACTIVE GroupParticipations as an array of GroupParticipation objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupParticipation[]
+		*/ 
+		public function GetActiveGroupParticipationArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return GroupParticipation::QueryArray(
+					QQ::AndCondition(
+						QQ::Equal(QQN::GroupParticipation()->GroupId, $this->intId),
+						QQ::OrCondition(
+							QQ::IsNull(QQN::GroupParticipation()->DateEnd),
+							QQ::GreaterThan(QQN::GroupParticipation()->DateEnd, QDateTime::Now())
+						)
+					), $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
 		 * Creates a new group for a ministry
 		 * @param Ministry $objMinistry
 		 * @param integer $intGroupTypeId
