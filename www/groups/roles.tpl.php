@@ -2,8 +2,10 @@
 
 	<h1>Roles for <?php _p($this->objMinistry->Name); ?>
 		<a href="#" onclick="javascript:history.back(); return false;" class="right">Back to <?php _p($this->objMinistry->Name); ?></a></h1>
+	<div class="cleaner">&nbsp;</div>
+	
 	<div class="section">
-		<div class="sectionButtons"><button class="primary" <?php $this->pxyEditRole->RenderAsEvents(); ?>>Create New Role</a></div>
+		<div class="sectionButtons"><button class="primary" <?php $this->pxyEditRole->RenderAsEvents(); ?>>Create New Role</button></div>
 		<?php $this->dtgRoles->Render(); ?>
 	</div>
 
