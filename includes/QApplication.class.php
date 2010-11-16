@@ -293,7 +293,7 @@
 		public static function DisplayCurrencyHtml($fltAmount, $blnAddSpaces = false) {
 			$strText = number_format(abs($fltAmount), 2);
 			$strBlank = null;
-			if ($blnAddSpaces && strlen($strText <= 9)) {
+			if ($blnAddSpaces && (strlen($strText) <= 9)) {
 				$strText = str_repeat('&nbsp;', 9-strlen($strText)) . $strText;
 				$strBlank = '&nbsp;';
 			}
