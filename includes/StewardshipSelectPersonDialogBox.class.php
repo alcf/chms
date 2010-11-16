@@ -7,6 +7,10 @@
 		protected $strMethodCallback;
 
 		public $txtName;
+		
+		public $txtFirstName;
+		public $txtLastName;
+		
 		public $txtAddress;
 		public $txtCity;
 		public $txtPhone;
@@ -64,7 +68,19 @@
 				$this->txtName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
 				$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
 				$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-
+				
+				$this->txtFirstName = new QTextBox($this);
+				$this->txtFirstName->Name = 'First Name';
+				$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
+				$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
+				$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+				
+				$this->txtLastName = new QTextBox($this);
+				$this->txtLastName->Name = 'Last Name';
+				$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
+				$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
+				$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+				
 				$this->txtPhone = new QTextBox($this);
 				$this->txtPhone->Name = 'Phone';
 				$this->txtPhone->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
@@ -262,6 +278,20 @@
 				Person::PrepareQqForSearch($strName, $objConditions, $objClauses);
 			}
 
+			if ($strName = trim($this->txtFirstName->Text)) {
+				$blnSearch = true;
+				$objConditions = QQ::AndCondition($objConditions,
+					QQ::Like( QQN::Person()->FirstName, $strName . '%')
+				);
+			}
+			
+			if ($strName = trim($this->txtLastName->Text)) {
+				$blnSearch = true;
+				$objConditions = QQ::AndCondition($objConditions,
+					QQ::Like( QQN::Person()->LastName, $strName . '%')
+				);
+			}
+			
 			if ($strName = trim($this->txtCity->Text)) {
 				$blnSearch = true;
 				$objConditions = QQ::AndCondition($objConditions,

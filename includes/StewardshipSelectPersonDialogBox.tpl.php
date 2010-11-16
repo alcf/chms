@@ -1,6 +1,8 @@
 <?php if ($_CONTROL->btnCancel) { ?>
 	<div class="section">
-		<div class="filterBy filterByFirst">Search by Person's Name<br/><?php $_CONTROL->txtName->Render('Width=300px'); ?></div>
+		<div class="filterBy filterByFirst">Search by Name (including nicknames, misspellings, etc.)<br/><?php $_CONTROL->txtName->Render('Width=300px'); ?></div>
+		<div class="filterBy">First Name (exact)<br/><?php $_CONTROL->txtFirstName->Render(); ?></div>
+		<div class="filterBy">Last Name (exact)<br/><?php $_CONTROL->txtLastName->Render(); ?></div>
 		<div class="filterBy">Address<br/><?php $_CONTROL->txtAddress->Render(); ?></div>
 		<div class="filterBy">City<br/><?php $_CONTROL->txtCity->Render(); ?></div>
 		<div class="filterBy">Phone<br/><?php $_CONTROL->txtPhone->Render(); ?></div>
