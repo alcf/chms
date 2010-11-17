@@ -83,7 +83,8 @@
 
 					$strRcptToArray = array();
 					foreach ($objToSend as $objEmailOutgoingQueue) {
-						$strRcptToArray[] = $objEmailOutgoingQueue->ToAddress;
+						if (QEmailServer::IsEmailValid($objEmailOutgoingQueue->ToAddress))
+							$strRcptToArray[] = $objEmailOutgoingQueue->ToAddress;
 					}
 
 					QEmailServer::SendRawMessage($this->FromAddress, $strRcptToArray, $strHeaderArray, $this->ResponseBody);
