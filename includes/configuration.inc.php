@@ -185,8 +185,8 @@
 	define ('__DATA_META_CONTROLS__', __INCLUDES__ . '/data_meta_controls');
 	define ('__DATAGEN_META_CONTROLS__', __INCLUDES__ . '/data_meta_controls/generated');
 
-	define ('__FORM_DRAFTS__', __SUBDIRECTORY__ . '/drafts');
-	define ('__PANEL_DRAFTS__', __SUBDIRECTORY__ . '/drafts/dashboard');
+	define ('__FORM_DRAFTS__', null);
+	define ('__PANEL_DRAFTS__', null);
 
 	define ('__ERROR_LOG__', __DOCROOT__ . '/../error_log');
 	define ('__ERROR_LOG_ARCHIVE__', __DOCROOT__ . '/../error_log/archive');
