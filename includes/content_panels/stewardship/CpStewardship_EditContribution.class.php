@@ -111,55 +111,31 @@
 			$this->calDateCredited->MinimumYear = '1995';
 			$this->calDateCredited->MaximumYear = date('Y') + 1;
 
-			if (!$this->mctContribution->EditMode && !$this->blnScanFlag) {
+			if (!$this->blnScanFlag) {
 				$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();
 				$this->lstStewardshipContributionType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstStewardshipContributionType_Change'));
 
 				$this->txtAuthorization = $this->mctContribution->txtAuthorizationNumber_Create();
 				$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
+				$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 				$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
 
 				$this->lstStewardshipContributionType_Change();
 			} else {
 				// If we're scanning, then make sure we allow selecti onof Check or ReturnedCheck
-				if ($this->blnScanFlag) {
-					$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();
-					$intIndex = 0;
-					while ($intIndex < count($this->lstStewardshipContributionType->GetAllItems())) {
-						$objListItem = $this->lstStewardshipContributionType->GetItem($intIndex);
-						if (($objListItem->Value == StewardshipContributionType::Check) || ($objListItem->Value == StewardshipContributionType::ReturnedCheck))
-							$intIndex++;
-						else
-							$this->lstStewardshipContributionType->RemoveItem($intIndex);
-					}
+				$this->lstStewardshipContributionType = $this->mctContribution->lstStewardshipContributionType_Create();
+				$intIndex = 0;
+				while ($intIndex < count($this->lstStewardshipContributionType->GetAllItems())) {
+					$objListItem = $this->lstStewardshipContributionType->GetItem($intIndex);
+					if (($objListItem->Value == StewardshipContributionType::Check) || ($objListItem->Value == StewardshipContributionType::ReturnedCheck))
+						$intIndex++;
+					else
+						$this->lstStewardshipContributionType->RemoveItem($intIndex);
 				}
 
-				switch ($this->mctContribution->StewardshipContribution->StewardshipContributionTypeId) {
-					case StewardshipContributionType::Check:
-					case StewardshipContributionType::ReturnedCheck:
-						$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
-						$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-						$this->txtCheckNumber->Select();
-						break;
-	
-					case StewardshipContributionType::CreditCard:
-					case StewardshipContributionType::CreditCardRecurring:
-						$this->txtAuthorization = $this->mctContribution->txtAuthorizationNumber_Create();
-						$this->txtAuthorization->Select();
-						break;
-	
-					case StewardshipContributionType::Cash:
-					case StewardshipContributionType::Stock:
-					case StewardshipContributionType::Summary:
-					case StewardshipContributionType::Automobile:
-					case StewardshipContributionType::Other:
-						$this->txtAlternateSource = $this->mctContribution->txtAlternateSource_Create();
-						$this->txtAlternateSource->Select();
-						break;
-	
-					default:
-						throw new Exception('Unhandled Stewardship Contribution Type');
-				}
+				$this->txtCheckNumber = $this->mctContribution->txtCheckNumber_Create();
+				$this->txtCheckNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+				$this->txtCheckNumber->Select();
 			}
 
 			// Setup Total Amount
