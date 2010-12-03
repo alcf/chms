@@ -4,7 +4,9 @@
 		public $dlgScanCheck;
 		public $btnScanCheckCancel;
 		public $btnScanCheckTest;
-		
+
+		public $dtgTransactionType;
+
 		protected function SetupPanel() {
 			if (!$this->objStack) {
 				return $this->ReturnTo('#1');
@@ -32,12 +34,29 @@
 			$this->btnScanCheckTest->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnScanCheckTest_Click'));
 			$this->btnScanCheckTest->AddAction(new QClickEvent(), new QTerminateAction());
 			
+			$this->dtgTransactionType = new QDataGrid($this);
+			$this->dtgTransactionType->AddColumn(new QDataGridColumn('Transaction Type', '<?= $_CONTROL->ParentControl->RenderTransactionType($_ITEM); ?>', 'Width=280px'));
+			$this->dtgTransactionType->AddColumn(new QDataGridColumn('Count', '<?= $_CONTROL->ParentControl->RenderTransactionCount($_ITEM); ?>', 'Width=90px'));
+			$this->dtgTransactionType->SetDataBinder('dtgTransactionType_Bind', $this);
+			
 			if ($this->strUrlHashArgument == 'scan') {
 				QApplication::ExecuteJavaScript('ScrollDivToBottom("dtgContributionsDiv");');
 				$this->btnScanCheck_Click();
 			}
 		}
 
+		public function dtgTransactionType_Bind() {
+			$this->dtgTransactionType->DataSource = $this->objBatch->GetContributionTypeCountArray();
+		}
+
+		public function RenderTransactionType($intContributionTypeCountArray) {
+			return StewardshipContributionType::$NameArray[$intContributionTypeCountArray[0]];
+		}
+		
+		public function RenderTransactionCount($intContributionTypeCountArray) {
+			return $intContributionTypeCountArray[1];
+		}
+		
 		public function btnScanCheck_Click() {
 			if (!is_dir(__MICRIMAGE_DROP_FOLDER__))
 				QApplication::DisplayAlert('MICRimage Drop Folder does not exist!');

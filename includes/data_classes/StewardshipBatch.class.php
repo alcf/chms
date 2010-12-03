@@ -97,6 +97,20 @@
 			return $objStack;
 		}
 
+		
+		/**
+		 * This returns a 2d array, where the first index is the TransactionTypeId and second is the count of transactions
+		 * in the current batch that goes to that transaction type
+		 * @return integer[][]
+		 */
+		public function GetContributionTypeCountArray() {
+			$intArrayToReturn = array();
+			$objResult = StewardshipContribution::GetDatabase()->Query('SELECT stewardship_contribution_type_id, count(id) AS row_count ' . 
+				'FROM stewardship_contribution WHERE stewardship_batch_id=' . $this->intId . ' GROUP BY stewardship_contribution_type_id;');
+			while ($objRow = $objResult->GetNextRow())
+				$intArrayToReturn[] = array($objRow->GetColumn('stewardship_contribution_type_id'), $objRow->GetColumn('row_count'));
+			return $intArrayToReturn;
+		}
 
 		/**
 		 * Recalculates ActualTotalAmount based on all linked StewradshipContribution records in the database.

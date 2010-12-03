@@ -81,8 +81,14 @@
 
 			$strToReturn .= '<div class="stewardshipActionBackground">&nbsp;</div>';
 			$strToReturn .= '<div class="stewardshipAction">';
-			$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/cross.png" title="Delete Contribution"/></a>', $this->pxyDeleteContribution->RenderAsEvents($objContribution->Id, false));
+
+			if ($objContribution->CountStewardshipPostLineItems() > 0)
+				$strToReturn .= '<a href="#" onclick="alert(&quot;Cannot delete this transaction because it has already been posted.&quot); return false;"><img src="/assets/images/icons/cross_disabled.png" title="Cannot Delete, Already Posted"/></a>';
+			else
+				$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/cross.png" title="Delete Contribution"/></a>', $this->pxyDeleteContribution->RenderAsEvents($objContribution->Id, false));
+
 			$strToReturn .= sprintf('<a href="#%s/edit_contribution/%s"><img src="/assets/images/icons/pencil.png" title="Edit Contribution"/></a>', $this->objStack->StackNumber, $objContribution->Id);
+			
 			$strToReturn .= sprintf('<a href="#%s/view_contribution/%s"><img src="/assets/images/icons/magnifier.png" title="View Details"/></a>', $this->objStack->StackNumber, $objContribution->Id);
 			$strToReturn .= '</div>';
 			return $strToReturn;
