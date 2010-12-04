@@ -18,7 +18,8 @@
 		Report: Invalid Addresses for <a href="/stewardship/reports/invalid_addresses.php/<?php _p(QDateTime::Now()->Year-1); ?>" class="cancel"><?php _p(QDateTime::Now()->Year - 1); ?></a>
 		or <a href="/stewardship/reports/invalid_addresses.php/<?php _p(QDateTime::Now()->Year); ?>" class="cancel"><?php _p(QDateTime::Now()->Year); ?></a>
 		&nbsp;|&nbsp;
-		<a href="/stewardship/reports/duplicate_names.php" class="cancel">Report: Duplicate Names</a>
+		Report: Duplicate Names for <a href="/stewardship/reports/duplicate_names.php/<?php _p(QDateTime::Now()->Year-1); ?>" class="cancel"><?php _p(QDateTime::Now()->Year - 1); ?></a>
+		or <a href="/stewardship/reports/duplicate_names.php/<?php _p(QDateTime::Now()->Year); ?>" class="cancel"><?php _p(QDateTime::Now()->Year); ?></a>
 		&nbsp;|&nbsp;
 		<a href="/stewardship/receipts/" class="cancel">View/Generate Bulk Receipts</a>
 		&nbsp;|&nbsp;
