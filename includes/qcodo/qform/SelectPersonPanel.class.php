@@ -66,7 +66,7 @@
 			$this->dtgResults->Name = '&nbsp;';
 			$this->dtgResults->AddColumn(new QDataGridColumn('', '<?= $_CONTROL->ParentControl->RenderSelect($_ITEM); ?>', 'HtmlEntities=false', 'Width=24px'));
 			$this->dtgResults->AddColumn(new QDataGridColumn('Name', '<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
-			$this->dtgResults->AddColumn(new QDataGridColumn('Address', '<?= $_ITEM->PrimaryAddressText; ?><?= ($_ITEM->PrimaryCityText ? ", " . $_ITEM->PrimaryCityText : null; ?>', 'Width=350px'));
+			$this->dtgResults->AddColumn(new QDataGridColumn('Address', '<?= $_ITEM->PrimaryAddressText; ?><?= ($_ITEM->PrimaryCityText) ? ", " . $_ITEM->PrimaryCityText : null; ?>', 'Width=350px'));
 			$this->dtgResults->AddColumn(new QDataGridColumn('Phone', '<?= $_ITEM->PrimaryPhoneText; ?>', 'Width=100px'));
 			$this->dtgResults->Visible = false;
 			$this->dtgResults->SetDataBinder('dtgResults_Bind', $this);
