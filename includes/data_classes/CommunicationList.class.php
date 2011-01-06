@@ -75,6 +75,7 @@
 		 *  3 - Email
 		 *  4 - PersonId (if the record is actually linked to a Person ID)
 		 *  5 - EntryId (if the record is simply a CommunicationListEntry)
+		 *  6 - MembershipFlag (if the record is actually linked to a person ID, 'Y' for yes and '' for no.  If not linked to a person ID, it will be '?')
 		 * @param string $strOrderByColumn as column_index,descending_flag
 		 * @param string $strLimitInfo as offset,items_per_page
 		 * @return string[][]
@@ -82,11 +83,12 @@
 		public function GetMemberAsArray($strOrderByColumn = null, $strLimitInfo = null) {
 			$strArrayToReturn = array();
 			foreach ($this->GetCommunicationListEntryArray() as $objEntry) {
-				$strArrayToReturn[] = array($objEntry->FirstName, $objEntry->MiddleName, $objEntry->LastName, $objEntry->Email, null, $objEntry->Id);
+				$strArrayToReturn[] = array($objEntry->FirstName, $objEntry->MiddleName, $objEntry->LastName, $objEntry->Email, null, $objEntry->Id, '?');
 			}
 			foreach ($this->GetPersonArray() as $objPerson) {
 				$strEmail = $objPerson->GetEmailToUseForCommLists();
-				$strArrayToReturn[] = array($objPerson->FirstName, $objPerson->MiddleName, $objPerson->LastName, $strEmail, $objPerson->Id, null);
+				$strArrayToReturn[] = array($objPerson->FirstName, $objPerson->MiddleName, $objPerson->LastName, $strEmail, $objPerson->Id, null,
+					($objPerson->MembershipStatusTypeId == MembershipStatusType::Member) ? 'Y' : '');
 			}
 
 			if ($strOrderByColumn) {

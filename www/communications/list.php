@@ -28,11 +28,12 @@
 			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
 			if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Edit', '<?= $_FORM->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=140px', 'FontSize=10px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('First Name', '<?= $_ITEM[0]; ?>', 'Width=170px','SortByCommand=0,0','ReverseSortByCommand=0,1'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Middle Name', '<?= $_ITEM[1]; ?>', 'Width=100px','SortByCommand=1,0','ReverseSortByCommand=1,1'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Last Name', '<?= $_ITEM[2]; ?>', 'Width=170px','SortByCommand=2,0','ReverseSortByCommand=2,1'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Email', '<a href="mailto:<?= QApplication::HtmlEntities($_ITEM[3]); ?>"><?= QApplication::HtmlEntities($_ITEM[3]); ?></a>', 'HtmlEntities=false', 'Width=310px','SortByCommand=3,0','ReverseSortByCommand=3,1'));
-
+			$this->dtgMembers->AddColumn(new QDataGridColumn('First Name', '<?= $_ITEM[0]; ?>', 'Width=150px','SortByCommand=0,0','ReverseSortByCommand=0,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Middle', '<?= $_ITEM[1]; ?>', 'Width=80px','SortByCommand=1,0','ReverseSortByCommand=1,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Last Name', '<?= $_ITEM[2]; ?>', 'Width=150px','SortByCommand=2,0','ReverseSortByCommand=2,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Email', '<a href="mailto:<?= QApplication::HtmlEntities($_ITEM[3]); ?>"><?= QApplication::HtmlEntities($_ITEM[3]); ?></a>', 'HtmlEntities=false', 'Width=290px','SortByCommand=3,0','ReverseSortByCommand=3,1'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Member?', '<?= $_ITEM[6]; ?>', 'Width=75px','SortByCommand=6,0','ReverseSortByCommand=6,1'));
+			
 			if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
 				$this->dtgMembers->SortColumnIndex = 3;
 			else

@@ -6,10 +6,11 @@
 
 	<div class="section">
 		
+		<?php $this->txtEmail->RenderWithName(); ?>
+		<br/>
 		<?php $this->txtFirstName->RenderWithName(); ?>
 		<?php $this->txtMiddleName->RenderWithName(); ?>
 		<?php $this->txtLastName->RenderWithName(); ?>
-		<?php $this->txtEmail->RenderWithName(); ?>
 		<div class="sectionButtons"><?php $this->btnAdd->Render(); ?></div>
 		&nbsp;<br/>
 	</div>
