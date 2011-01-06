@@ -615,9 +615,11 @@
 		 * @param string $strName
 		 * @param QQCondition $objCondition
 		 * @param QQClause[] $objClauses
+		 * @param QQNodePerson $objPersonNode
 		 * @return void
 		 */
-		public static function PrepareQqForSearch($strName, QQCondition &$objCondition, &$objClauses) {
+		public static function PrepareQqForSearch($strName, QQCondition &$objCondition, &$objClauses, QQNodePerson $objPersonNode = null) {
+			if (!$objPersonNode) $objPersonNode = QQN::Person();
 			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strName, true);
 
 			// First, get the applicable NameItem
@@ -653,13 +655,13 @@
 				if (count($intNameItemIdArray) == 1) {
 					$objCondition = QQ::AndCondition(
 						$objCondition,
-						QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), QQN::Person()->Id),
+						QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), $objPersonNode->Id),
 						QQ::Equal(QQ::CustomNode($strAlias . '.name_item_id'), $intNameItemIdArray[0])
 					);
 				} else {
 					$objCondition = QQ::AndCondition(
 						$objCondition,
-						QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), QQN::Person()->Id),
+						QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), $objPersonNode->Id),
 						QQ::In(QQ::CustomNode($strAlias . '.name_item_id'), $intNameItemIdArray)
 					);
 				}

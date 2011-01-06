@@ -15,6 +15,8 @@
 	</div>
 
 	<div class="buttonBar" style="color: #666;">
+		<a href="/stewardship/search/" class="cancel">Search for a Transaction</a>
+		&nbsp;|&nbsp;
 		Report: Invalid Addresses for <a href="/stewardship/reports/invalid_addresses.php/<?php _p(QDateTime::Now()->Year-1); ?>" class="cancel"><?php _p(QDateTime::Now()->Year - 1); ?></a>
 		or <a href="/stewardship/reports/invalid_addresses.php/<?php _p(QDateTime::Now()->Year); ?>" class="cancel"><?php _p(QDateTime::Now()->Year); ?></a>
 		&nbsp;|&nbsp;
