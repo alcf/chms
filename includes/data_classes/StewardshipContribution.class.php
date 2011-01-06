@@ -666,15 +666,15 @@
 			$objPage->drawText($strNameToPrint, 36, $intY, 'UTF-8');
 
 			if ($objAddress) {
+				if ($objAddress->Address3) {
+					$intY -= 12.1;
+					$objPage->drawText($objAddress->Address3, 36, $intY, 'UTF-8');
+				}
+
 				$intY -= 12.1;
 				$objPage->drawText($objAddress->Address1, 36, $intY, 'UTF-8');
 
 				if ($objAddress->Address2) {
-					$intY -= 12.1;
-					$objPage->drawText($objAddress->Address2, 36, $intY, 'UTF-8');
-				}
-
-				if ($objAddress->Address3) {
 					$intY -= 12.1;
 					$objPage->drawText($objAddress->Address2, 36, $intY, 'UTF-8');
 				}
