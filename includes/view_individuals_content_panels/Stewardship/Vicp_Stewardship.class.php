@@ -171,8 +171,8 @@
 			if ($this->lstYear->SelectedValue) {
 				$objCondition = QQ::AndCondition(
 					$objCondition,
-					QQ::GreaterOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateEntered, new QDateTime($this->lstYear->SelectedValue . '-01-01 00:00:00')),
-					QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateEntered, new QDateTime($this->lstYear->SelectedValue . '-12-31 23:59:59')));
+					QQ::GreaterOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($this->lstYear->SelectedValue . '-01-01 00:00:00')),
+					QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($this->lstYear->SelectedValue . '-12-31 23:59:59')));
 			}
 
 			if ($this->lstFund->SelectedValue) {
