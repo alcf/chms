@@ -38,6 +38,14 @@
 					}
 					return $strToReturn;
 
+				case 'SpousePerson':
+					$objCurrentMarriage = $this->HeadPerson->GetMostRecentMarriage();
+					if ($objCurrentMarriage && $objCurrentMarriage->MarriedToPerson &&
+						HouseholdParticipation::LoadByPersonIdHouseholdId($objCurrentMarriage->MarriedToPerson->Id, $this->Id)) {
+						return $objCurrentMarriage->MarriedToPerson;
+					}
+					return null;
+
 				default:
 					try {
 						return parent::__get($strName);
