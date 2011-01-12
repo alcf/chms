@@ -320,11 +320,25 @@
 		}
 
 		/**
+		 * Witha given array of contributionamount objects, this will return the total
+		 * @param StewardshipContributionAmount[] $objContributionAmountArray
+		 * @return float
+		 */
+		public static function GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray) {
+			$fltToReturn = 0;
+			foreach ($objContributionAmountArray as $objContributionAmount) {
+				$fltToReturn += $objContributionAmount->Amount;
+			}
+			
+			return $fltToReturn;
+		}
+		
+		/**
 		 * @param integer[] $intPersonIdArray
 		 * @param integer $intYear
 		 * @return StewardshipContributionAmount[]
 		 */
-		public static function GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear) {
+		public static function GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear) {
 			$objCondition = QQ::AndCondition(
 				QQ::In(QQN::StewardshipContributionAmount()->StewardshipContribution->PersonId, $intPersonIdArray),
 				QQ::GreaterOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-01-01 00:00:00')),
@@ -425,12 +439,13 @@
 		 * @param Zend_Pdf $objPdf
 		 * @param mixed $objPersonOrHousehold
 		 * @param integer $intYear
+		 * @param boolean $blnDrawLegal whether or not to include the "legal" tax information (e.g. yes for annual, no for quarterly)
 		 */
-		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear) {
+		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear, $blnDrawLegal) {
 			$intPersonIdArray = self::GetPersonIdArrayForPersonOrHousehold($objPersonOrHousehold);
 
 			// Get the Contributions
-			$objContributionAmountArray = self::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear);
+			$objContributionAmountArray = self::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
 
 			// Get the Pledges
 			$objCondition = QQ::AndCondition(
@@ -464,7 +479,7 @@
 				if ($intPageNumber == 1) {
 					self::DrawHeader($objPage);
 					self::DrawAddress($objPage, $objPersonOrHousehold);
-					self::DrawFooter($objPage, $objPersonOrHousehold);
+					self::DrawFooter($objPage, $blnDrawLegal);
 					self::DrawSummary($objPage, $objContributionAmountArray, $intYear);
 					self::DrawPledges($objPage, $objPledgeArray);
 				}
@@ -684,12 +699,14 @@
 			}
 		}
 
-		protected static function DrawFooter(Zend_Pdf_Page $objPage) {
+		protected static function DrawFooter(Zend_Pdf_Page $objPage, $blnDrawLegal) {
 			$intX = 20;
 
-			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
-			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_1, $intX, (72 * 1/4) + 8.8, 'UTF-8');
-			$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_2, $intX, (72 * 1/4), 'UTF-8');
+			if ($blnDrawLegal) {
+				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
+				$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_1, $intX, (72 * 1/4) + 8.8, 'UTF-8');
+				$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_2, $intX, (72 * 1/4), 'UTF-8');
+			}
 
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 10); 
 			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_1, $intX, (72 * 5/8) + 11.5, 'UTF-8');

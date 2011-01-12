@@ -4,7 +4,13 @@
 	</h1>
 	
 	<div class="section">
-		<div class="sectionButtons"><?php $this->btnGenerate->Render('CssClass=primary'); ?></div>
+		<div class="sectionButtons" style="font-family: arial; font-size: 12px;">
+			Genearte Bulk PDFs For:
+			&nbsp;
+			<?php $this->btnGenerate->Render('CssClass=primary'); ?> 
+			&nbsp;
+			<?php $this->btnGenerateQuarterly->Render('CssClass=primary'); ?>
+		</div>
 		<?php $this->lstYear->RenderWithName(); ?>
 	</div>
 

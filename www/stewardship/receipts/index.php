@@ -11,6 +11,7 @@
 
 		protected $lstYear;
 		protected $btnGenerate;
+		protected $btnGenerateQuarterly;
 
 		protected $pxyDelete;
 
@@ -35,8 +36,15 @@
 
 			$this->btnGenerate = new QButton($this);
 			$this->btnGenerate->CausesValidation = true;
-			$this->btnGenerate->Text = 'Generate Bulk PDFs';
+			$this->btnGenerate->Text = 'Annual Statement';
 			$this->btnGenerate->AddAction(new QClickEvent(), new QAjaxAction('btnGenerate_Click'));
+			$this->btnGenerate->ActionParameter = 'annual';
+
+			$this->btnGenerateQuarterly = new QButton($this);
+			$this->btnGenerateQuarterly->CausesValidation = true;
+			$this->btnGenerateQuarterly->Text = 'Quarterly Statement';
+			$this->btnGenerateQuarterly->AddAction(new QClickEvent(), new QAjaxAction('btnGenerate_Click'));
+			$this->btnGenerateQuarterly->ActionParameter = 'quarterly';
 
 			$this->pxyDelete = new QControlProxy($this);
 			$this->pxyDelete->AddAction(new QClickEvent(), new QAjaxAction('pxyDelete_Click'));
@@ -50,9 +58,9 @@
 			QApplication::Redirect('/stewardship/receipts/');
 		}
 
-		public function btnGenerate_Click() {
+		public function btnGenerate_Click($strFormId, $strControlId, $strParameter) {
 			QApplication::DisplayAlert(sprintf('Receipts for %s are now being generated.  Please come back shortly to check on its status.', $this->lstYear->SelectedValue));
-			file_put_contents(RECEIPT_PDF_PATH . '/run.txt', $this->lstYear->SelectedValue);
+			file_put_contents(RECEIPT_PDF_PATH . '/run.txt', $this->lstYear->SelectedValue . " " . $strParameter);
 			chmod(RECEIPT_PDF_PATH . '/run.txt', 0777);
 		}
 	}

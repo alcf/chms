@@ -6,13 +6,17 @@
 
 	// Anything to Load?
 	if (is_file(RECEIPT_PDF_PATH . '/run.txt')) {
-		$intYear = intval(trim(file_get_contents(RECEIPT_PDF_PATH . '/run.txt')));
+		$strTokens = explode(' ', trim(file_get_contents(RECEIPT_PDF_PATH . '/run.txt')));
+		$intYear = intval($strTokens[0]);
+		$blnAnnual = (strtolower($strTokens[1]) == 'annual');
 		unlink(RECEIPT_PDF_PATH . '/run.txt');
 	} else {
 		exit(0);
 	}
 
 	if (($intYear < 1950) || ($intYear > 2500)) exit(0);
+	$strFileToken = ($blnAnnual) ? '_Annual' : '_Quarterly';
+	$fltMinimumAmount = ($blnAnnual) ? 0 : 249.99;
 
 	// Setup Zend Framework load
 	set_include_path(get_include_path() . ':' . __INCLUDES__);
@@ -39,45 +43,55 @@
 		if ($objHousehold->CombinedStewardshipFlag) {
 			if ($objHousehold->GetStewardshipAddress()) {
 				$intPersonIdArray = StewardshipContribution::GetPersonIdArrayForPersonOrHousehold($objHousehold);
-				$intEntryCount = count(StewardshipContribution::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear));
-				if ($intEntryCount > 38)
-					StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear);
-				else if ($intEntryCount)
-					StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear);
+				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
+				$intEntryCount = count($objContributionAmountArray);
+				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
+
+				if ($fltAmount > $fltMinimumAmount) {
+					if ($intEntryCount > 38)
+						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear, $blnAnnual);
+					else if ($intEntryCount)
+						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear, $blnAnnual);
+				}
 			} else {
-				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objHousehold, $intYear);
+				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objHousehold, $intYear, $blnAnnual);
 			}
 
 		// Generate for each individual in the household
 		} else foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
 			if ($objParticipation->Person->GetStewardshipAddress()) {
 				$intPersonIdArray = array($objParticipation->Person->Id);
-				$intEntryCount = count(StewardshipContribution::GetContributionAmountArrayForPresonArray($intPersonIdArray, $intYear));
-				if ($intEntryCount > 38)
-					StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear);
-				else if ($intEntryCount)
-					StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear);
+				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
+				$intEntryCount = count($objContributionAmountArray);
+				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
+
+				if ($fltAmount > $fltMinimumAmount) {
+					if ($intEntryCount > 38)
+						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear, $blnAnnual);
+					else if ($intEntryCount)
+						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear, $blnAnnual);
+				}
 			} else {
-				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objParticipation->Person, $intYear);
+				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objParticipation->Person, $intYear, $blnAnnual);
 			}
 		}
 
 		// Separate into New File?
 		if (count($objSinglePagePdf->pages) > 500) {
-			$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
-			chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf', 0777);
+			$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Single_' . $intSingplePageCount . '.pdf');
+			chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Single_' . $intSingplePageCount . '.pdf', 0777);
 			$objSinglePagePdf = new Zend_Pdf();
 			$intSingplePageCount++;
 		}
 	}
 	QDataGen::DisplayForEachTaskEnd('Generating Receipt for Household');
 
-	$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf');
-	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Single_' . $intSingplePageCount . '.pdf', 0777);
+	$objSinglePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Single_' . $intSingplePageCount . '.pdf');
+	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Single_' . $intSingplePageCount . '.pdf', 0777);
 
-	$objMultiplePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Multiple.pdf');
-	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_Multiple.pdf', 0777);
+	$objMultiplePagePdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Multiple.pdf');
+	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Multiple.pdf', 0777);
 
-	$objInvalidAddressPdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_InvalidAddress.pdf');
-	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . '_InvalidAddress.pdf', 0777);
-	?>
+	$objInvalidAddressPdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_InvalidAddress.pdf');
+	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_InvalidAddress.pdf', 0777);
+?>
