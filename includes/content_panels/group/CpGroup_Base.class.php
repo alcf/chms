@@ -320,6 +320,11 @@
 			if ($blnDisplayRoleColumn) {
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false', 'Width=180px'));
 			}
+
+			if ($blnDisplayEditParticipantColumn && $this->objGroup->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
+				$this->dtgMembers->SortColumnIndex = 2;
+			else
+				$this->dtgMembers->SortColumnIndex = 1;
 		}
 
 		public function lblRefresh_Refresh() {
