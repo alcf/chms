@@ -24,7 +24,7 @@
 
 	// Create the PDF Object
 	$objPdf = new Zend_Pdf();
-	StewardshipContribution::GenerateReceiptInPdf($objPdf, $objObject, QApplication::PathInfo(2));
+	StewardshipContribution::GenerateReceiptInPdf($objPdf, $objObject, QApplication::PathInfo(2), true);
 
 	// Get PDF document as a string 
 	$strData = $objPdf->render(); 
