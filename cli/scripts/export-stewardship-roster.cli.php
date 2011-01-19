@@ -30,7 +30,7 @@
 				if ($fltAmount > $fltMinimumAmount) {
 					$objSpouse = $objHousehold->SpousePerson;
 					fwrite($objFile,
-						EscapeCsv($objSpouse ? $objHousehold->HeadPerson->FirstName . ' & ' . $objSpouse->FirstName
+						EscapeCsv($objSpouse ? $objHousehold->HeadPerson->FirstName . ' and ' . $objSpouse->FirstName
 											 : $objHousehold->HeadPerson->FirstName) . ',' .
 						EscapeCsv($objHousehold->StewardshipHouseholdName) . ',' .
 						EscapeCsv($objAddress->Address3) . ',' .
