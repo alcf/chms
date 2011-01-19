@@ -320,14 +320,20 @@
 		}
 
 		/**
-		 * Witha given array of contributionamount objects, this will return the total
+		 * With a given array of contributionamount objects, this will return the total
 		 * @param StewardshipContributionAmount[] $objContributionAmountArray
+		 * @param boolean $blnDeductibleOnlyFlag this will only calculate Deductible (e.g. "non-deductible" will get filtered out) if set to true
 		 * @return float
 		 */
-		public static function GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray) {
+		public static function GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray, $blnDeductibleOnlyFlag = true) {
 			$fltToReturn = 0;
 			foreach ($objContributionAmountArray as $objContributionAmount) {
-				$fltToReturn += $objContributionAmount->Amount;
+				if ($objContributionAmount->StewardshipContribution->NonDeductibleFlag && $blnDeductibleOnlyFlag) {
+					// Do nothing -- we do not add Non Deductible entries into the "Contribution Total" for reports
+					// if $blnDeductibleOnlyFlag is set to true
+				} else {
+					$fltToReturn += $objContributionAmount->Amount;
+				}
 			}
 			
 			return $fltToReturn;

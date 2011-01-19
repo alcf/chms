@@ -25,7 +25,7 @@
 			if ($objAddress = $objHousehold->GetStewardshipAddress()) {
 				$intPersonIdArray = StewardshipContribution::GetPersonIdArrayForPersonOrHousehold($objHousehold);
 				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
-				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
+				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray, false);
 
 				if ($fltAmount > $fltMinimumAmount) {
 					$objSpouse = $objHousehold->SpousePerson;
@@ -47,7 +47,7 @@
 			if ($objAddress = $objParticipation->Person->GetStewardshipAddress()) {
 				$intPersonIdArray = array($objParticipation->Person->Id);
 				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
-				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
+				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray, false);
 
 				if ($fltAmount > $fltMinimumAmount) {
 					$objPerson = $objParticipation->Person;
