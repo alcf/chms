@@ -16,6 +16,7 @@
 		protected $txtAmount;
 		protected $txtCheckNumber;
 		protected $txtAuthorizationNumber;
+		protected $lstFund;
 
 		protected function Form_Create() {
 			$this->dtgContributions = new StewardshipContributionDataGrid($this);
@@ -41,7 +42,20 @@
 			$this->txtAmount = new QFloatTextBox($this);
 			$this->txtCheckNumber= new QTextBox($this);
 			$this->txtAuthorizationNumber = new QTextBox($this);
+			$this->lstFund = new QListBox($this);
 
+			$this->txtDateCreditedStart->Text = 'Jan 1 ' . date('Y');
+			$this->txtDateCreditedEnd->Text = 'Dec 31 ' . date('Y');
+			
+			$this->lstFund->AddItem('- View All -');
+			foreach (StewardshipFund::QueryArray(QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name)) as $objFund) {
+				if ($objFund->FundNumber)
+					$this->lstFund->AddItem($objFund->Name . ' (' . $objFund->FundNumber . ')', $objFund->Id);
+				else
+					$this->lstFund->AddItem($objFund->Name, $objFund->Id);
+			}
+			$this->lstFund->AddAction(new QChangeEvent(), new QAjaxAction('ResetFilter'));
+			
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QAjaxAction('ResetFilter'));
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtName->AddAction(new QChangeEvent(), new QAjaxAction('ResetFilter'));
@@ -103,6 +117,11 @@
 			if ($strName = trim($this->txtName->Text)) {
 				Person::PrepareQqForSearch($strName, $objCondition, $objClauses, QQN::StewardshipContribution()->Person);
 				$blnQueried = true;				
+			}
+
+			if ($intFundId = $this->lstFund->SelectedValue) {
+				$blnQueried = true;
+				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionAmount->StewardshipFundId, $intFundId));
 			}
 
 			if (strlen($strText = trim($this->txtAmount->Text))) {

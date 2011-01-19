@@ -4,10 +4,11 @@
 	</h1>	
 	
 	<div class="section">
-		<div class="filterBy">Filter by Person's Name (including nicknames, misspellings, etc.)<br/><?php $this->txtName->Render('Width=380px'); ?></div>
+		<div class="filterBy">Filter by Person's Name (including nicknames, misspellings, etc.)<br/><?php $this->txtName->Render('Width=320px'); ?></div>
 		<div class="filterBy">Amount<br/>$ <?php $this->txtAmount->Render(); ?></div>
 		<div class="filterBy">Check Number<br/><?php $this->txtCheckNumber->Render(); ?></div>
 		<div class="filterBy">Authorization Number<br/><?php $this->txtAuthorizationNumber->Render(); ?></div>
+		<div class="filterBy">Fund<br/><?php $this->lstFund->Render('Width=160px'); ?></div>
 		<div class="cleaner">&nbsp;</div>
 		<br/>
 		<div class="filterBy">Batch Date<br/><?php $this->txtDateEnteredStart->Render(); ?></div>
