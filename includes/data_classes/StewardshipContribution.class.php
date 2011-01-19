@@ -470,9 +470,11 @@
 
 			// New Page every 38
 			$intPageNumber = 1;
+			$objPageOneOfThis = null;
 			$intTotalPages = floor((count($objContributionAmountArray) - 1 ) / 38) + 1;
 			for ($intIndex = 0 ; $intIndex < count($objContributionAmountArray); $intIndex += 38) {
 				$objPage = $objPdf->newPage(Zend_Pdf_Page::SIZE_LETTER);
+				if (!$objPageOneOfThis) $objPageOneOfThis = $objPage;
 				$objPdf->pages[] = $objPage;
 
 				// Draw Header
@@ -503,7 +505,7 @@
 			}
 
 			if ($blnNonDeductibleFound) {
-				$objPage = $objPdf->pages[0];
+				$objPage = $objPageOneOfThis;
 				$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8); 
 				$objPage->drawText('(*) denotes a contribution that does not qualify for tax deduction.', 14, 149, 'UTF-8');
