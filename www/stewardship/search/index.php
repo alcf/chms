@@ -18,6 +18,9 @@
 		protected $txtAuthorizationNumber;
 		protected $lstFund;
 
+		protected $btnCalculateTotal;
+		protected $btnCalculateLabel;
+
 		protected function Form_Create() {
 			$this->dtgContributions = new StewardshipContributionDataGrid($this);
 			$this->dtgContributions->Paginator = new QPaginator($this->dtgContributions);
@@ -33,7 +36,20 @@
 
 			$this->dtgContributions->SortColumnIndex = 0;
 			$this->dtgContributions->SortDirection = 0;
+			
+			$this->btnCalculateTotal = new QButton($this);
+			$this->btnCalculateTotal->CssClass = 'primary';
+			$this->btnCalculateTotal->Text = 'Calculate Total Amount';
 
+			$this->btnCalculateLabel = new QLabel($this);
+			$this->btnCalculateLabel->Text = 'Calculating... <img src="/assets/images/spinner_14.gif"/>';
+			$this->btnCalculateLabel->Display = false;
+			$this->btnCalculateLabel->HtmlEntities = false;
+
+			$this->btnCalculateTotal->AddAction(new QClickEvent(), new QToggleDisplayAction($this->btnCalculateTotal));
+			$this->btnCalculateTotal->AddAction(new QClickEvent(), new QToggleDisplayAction($this->btnCalculateLabel));
+			$this->btnCalculateTotal->AddAction(new QClickEvent(), new QAjaxAction('btnCalculateTotal_Click'));
+			
 			$this->txtName = new QTextBox($this);
 			$this->txtDateEnteredStart = new QDateTimeTextBox($this);
 			$this->txtDateEnteredEnd = new QDateTimeTextBox($this);
@@ -94,6 +110,25 @@
 			$this->dtgContributions->Refresh();
 		}
 
+		public function btnCalculateTotal_Click() {
+			$this->CalculateQuery($objCondition, $objClauses, $blnQueried);
+
+			if ($blnQueried) {
+				$objContributionCursor = StewardshipContribution::QueryCursor($objCondition, $objClauses);
+				$fltTotal = 0.00;
+				while ($objContribution = StewardshipContribution::InstantiateCursor($objContributionCursor)) {
+					$fltTotal += $objContribution->TotalAmount;
+				}
+				
+				QApplication::DisplayAlert('Total: ' . QApplication::DisplayCurrency($fltTotal));
+			} else {
+				QApplication::DisplayAlert('No query was specified.');
+			}
+
+			$this->btnCalculateTotal->Display = true;
+			$this->btnCalculateLabel->Display = false;
+		}
+
 		public function RenderAmount(StewardshipContribution $objStewardshipContribution) {
 			return sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
 				$objStewardshipContribution->StewardshipBatchId,
@@ -109,7 +144,8 @@
 				return QApplication::DisplayCurrency($fltAmount);
 			return '<span style="color: #999;">$0.00</span>';
 		}
-		protected function dtgContributions_Bind() {
+		
+		protected function CalculateQuery(&$objCondition, &$objClauses, &$blnQueried) {
 			$objCondition = QQ::All();
 			$objClauses = array();
 			$blnQueried = false;
@@ -174,7 +210,11 @@
 					$objCondition = QQ::AndCondition($objCondition, QQ::LessOrEqual(QQN::StewardshipContribution()->StewardshipBatch->DateEntered, $dttEnd));
 				}
 			}
-			
+		}
+
+		protected function dtgContributions_Bind() {
+			$this->CalculateQuery($objCondition, $objClauses, $blnQueried);
+
 			if ($blnQueried)
 				$this->dtgContributions->MetaDataBinder($objCondition, $objClauses);
 			else

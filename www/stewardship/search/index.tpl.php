@@ -23,6 +23,8 @@
 		<?php $this->dtgContributions->Render(); ?>
 	</div>
 
+	<div class="buttonBar"><?php $this->btnCalculateTotal->Render(); ?><?php $this->btnCalculateLabel->Render(); ?></div>
+
 	<br/><br/>
 
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
