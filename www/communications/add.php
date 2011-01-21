@@ -58,19 +58,19 @@
 			$this->pxyUndo->AddAction(new QClickEvent(), new QAjaxAction('pxyUndo_Click'));
 			$this->pxyUndo->AddAction(new QClickEvent(), new QTerminateAction());
 
-			$this->txtFirstName->Focus();
+			$this->txtEmail->Focus();
 
+			$this->txtEmail->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtFirstName));
+			$this->txtEmail->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtMiddleName));
 			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtMiddleName->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtLastName));
 			$this->txtMiddleName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtEmail));
+			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxAction('btnAdd_Click', null, true));
 			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-			$this->txtEmail->AddAction(new QEnterKeyEvent(), new QAjaxAction('btnAdd_Click'));
-			$this->txtEmail->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
-			$this->btnAdd->AddAction(new QClickEvent(), new QAjaxAction('btnAdd_Click'));
-			
+			$this->btnAdd->AddAction(new QClickEvent(), new QAjaxAction('btnAdd_Click', null, true));
+
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
 			$this->btnSave->CssClass = 'primary';
@@ -142,7 +142,7 @@
 			$this->txtMiddleName->Text = null;
 			$this->txtLastName->Text = null;
 			$this->txtEmail->Text = null;
-			$this->txtFirstName->Focus();
+			$this->txtEmail->Focus();
 		}
 
 		public function pxyUndo_Click($strFormId, $strControlId, $strParameter) {
