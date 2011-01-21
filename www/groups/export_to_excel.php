@@ -5,6 +5,12 @@
 
 	if (!$objGroup->IsLoginCanView(QApplication::$Login)) QApplication::Redirect('/');
 
+	// Disable strict no-cache for IE due to IE issues with downloading no-cache items
+	if (QApplication::IsBrowser(QBrowserType::InternetExplorer)) {
+		header("Pragma:");
+		header("Expires:");
+	}
+
 	header('Content-Type: text/csv');
 	header('Content-Disposition: attachment; filename=' . $objGroup->CsvFilename);
 
