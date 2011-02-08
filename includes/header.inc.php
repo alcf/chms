@@ -42,7 +42,7 @@
 		foreach (ChmsForm::$NavSectionArray as $intNavSectionId => $strNavSectionArray) {
 			$strClassInfo = ($intNavSectionId == $this->intNavSectionId) ? 'class="selected"' : null;
 			printf('<li style="width: %spx;"><a href="%s" %s title="%s">%s</a></li>',
-				$intWidth, $strNavSectionArray[1], $strClassInfo, $strNavSectionArray[0], strtoupper($strNavSectionArray[0])
+				$intWidth, $strNavSectionArray[1], $strClassInfo, $strNavSectionArray[0], $strNavSectionArray[0]
 			);
 		}
 ?>
