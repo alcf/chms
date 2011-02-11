@@ -17,6 +17,7 @@
 		protected $lstPersonGender;
 		protected $txtPersonHomePhone;
 		protected $txtPersonCellPhone;
+		protected $lstPersonMobileProvider;
 		protected $txtPersonWorkPhone;
 		protected $txtPersonEmail;
 
@@ -31,6 +32,7 @@
 		protected $lstSpouseGender;
 		protected $txtSpouseHomePhone;
 		protected $txtSpouseCellPhone;
+		protected $lstSpouseMobileProvider;
 		protected $txtSpouseWorkPhone;
 		protected $txtSpouseEmail;
 
@@ -84,9 +86,15 @@
 			$this->txtPersonHomePhone = new PhoneTextBox($this);
 			$this->txtPersonHomePhone->Name = 'Home Phone';
 			$this->txtPersonCellPhone = new PhoneTextBox($this);
-			$this->txtPersonCellPhone->Name = 'Cell Phone';
+			$this->txtPersonCellPhone->Name = 'Mobile Phone';
 			$this->txtPersonWorkPhone = new PhoneTextBox($this);
 			$this->txtPersonWorkPhone->Name = 'Work Phone';
+
+			$this->lstPersonMobileProvider = new QListBox($this);
+			$this->lstPersonMobileProvider->Name = 'Mobile Provider';
+			$this->lstPersonMobileProvider->AddItem('- Select One -', null);
+			foreach (MobileProvider::LoadAll(QQ::OrderBy(QQN::MobileProvider()->Name)) as $objMobileProvider)
+				$this->lstPersonMobileProvider->AddItem($objMobileProvider->Name, $objMobileProvider->Id);
 
 			$this->txtPersonEmail = new QEmailTextBox($this);
 			$this->txtPersonEmail->Name = 'Email Address';
@@ -110,9 +118,15 @@
 			$this->txtSpouseHomePhone = new PhoneTextBox($this);
 			$this->txtSpouseHomePhone->Name = 'Home Phone';
 			$this->txtSpouseCellPhone = new PhoneTextBox($this);
-			$this->txtSpouseCellPhone->Name = 'Cell Phone';
+			$this->txtSpouseCellPhone->Name = 'Mobile Phone';
 			$this->txtSpouseWorkPhone = new PhoneTextBox($this);
 			$this->txtSpouseWorkPhone->Name = 'Work Phone';
+			
+			$this->lstSpouseMobileProvider = new QListBox($this);
+			$this->lstSpouseMobileProvider->Name = 'Mobile Provider';
+			$this->lstSpouseMobileProvider->AddItem('- Select One -', null);
+			foreach (MobileProvider::LoadAll(QQ::OrderBy(QQN::MobileProvider()->Name)) as $objMobileProvider)
+				$this->lstSpouseMobileProvider->AddItem($objMobileProvider->Name, $objMobileProvider->Id);
 
 			$this->txtSpouseEmail = new QEmailTextBox($this);
 			$this->txtSpouseEmail->Name = 'Email Address';
@@ -372,6 +386,7 @@
 				$objPhone->PhoneTypeId = PhoneType::Mobile;
 				$objPhone->Person = $this->mctPerson->Person;
 				$objPhone->Number = trim($this->txtPersonCellPhone->Text);
+				$objPhone->MobileProviderId = $this->lstPersonMobileProvider->SelectedValue;
 				$objPhone->Save();
 
 				$this->mctPerson->Person->PrimaryPhone = $objPhone;
@@ -444,6 +459,7 @@
 				$objPhone->PhoneTypeId = PhoneType::Mobile;
 				$objPhone->Person = $this->mctSpouse->Person;
 				$objPhone->Number = trim($this->txtSpouseCellPhone->Text);
+				$objPhone->MobileProviderId = $this->lstSpouseMobileProvider->SelectedValue;
 				$objPhone->Save();
 
 				$this->mctSpouse->Person->PrimaryPhone = $objPhone;

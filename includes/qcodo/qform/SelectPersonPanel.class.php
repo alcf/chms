@@ -16,6 +16,7 @@
 		public $txtEmail;
 		public $txtPhone;
 		public $lstPhone;
+		public $lstMobileProvider;
 		public $dtxDateOfBirth;
 		public $calDateOfBirth;
 
@@ -101,17 +102,39 @@
 
 			$this->txtPhone = new PhoneTextBox($this->pnlCreatePerson);
 			$this->txtPhone->Name = 'Phone';
+			$this->txtPhone->Width = '160px';
 
 			$this->lstPhone = new QListBox($this->pnlCreatePerson);
 			$this->lstPhone->Name = '&nbsp;';
+			$this->lstPhone->Width = '80px';
 			foreach (PhoneType::$NameArray as $intPhoneTypeId => $strLabel) {
 				$this->lstPhone->AddItem($strLabel, $intPhoneTypeId);
 			}
+			
+			$this->lstMobileProvider = new QListBox($this->pnlCreatePerson);
+			$this->lstMobileProvider->Name = '&nbsp;';
+			$this->lstMobileProvider->Width = '150px';
+			$this->lstMobileProvider->AddItem('- Select One -', null);
+			foreach (MobileProvider::LoadAll(QQ::OrderBy(QQN::MobileProvider()->Name)) as $objMobileProvider) {
+				$this->lstMobileProvider->AddItem($objMobileProvider->Name, $objMobileProvider->Id);
+			}
 
+			$this->lstPhone->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstPhone_Change'));
+			$this->lstPhone_Change();
+						
 			$this->dtxDateOfBirth = new QDateTimeTextBox($this->pnlCreatePerson);
 			$this->dtxDateOfBirth->Name = 'Date of Birth';
 			$this->calDateOfBirth = new QCalendar($this->pnlCreatePerson, $this->dtxDateOfBirth);
 			$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
+		}
+
+		public function lstPhone_Change() {
+			if ($this->lstPhone->SelectedValue == PhoneType::Mobile) {
+				$this->lstMobileProvider->Visible = true;
+			} else {
+				$this->lstMobileProvider->Visible = false;
+				$this->lstMobileProvider->SelectedValue = null;
+			}
 		}
 
 		public function dtgResults_Bind() {
@@ -187,12 +210,19 @@
 				
 				case 'Person':
 					if ($this->blnAllowCreate && ($this->intSelectedPersonId == -1)) {
-						$blnGender = is_null($this->blnForceAsMaleFlag) ? ($this->lstGender->SelectedValue == 'M') : $this->blnForceAsMaleFlag;
+						if (!is_null($this->blnForceAsMaleFlag)) {
+							$blnGender = $this->blnForceAsMaleFlag;
+						} else if (!is_null($this->lstGender->SelectedValue)) {
+							$blnGender = ($this->lstGender->SelectedValue == 'M');
+						} else {
+							$blnGender = null;
+						}
 						$strEmail = trim(strtolower($this->txtEmail->Text));
 						$strPhone = trim(strtolower($this->txtPhone->Text));
 						$intPhoneTypeId = ($strPhone) ? $this->lstPhone->SelectedValue : null;
-
-						$objPerson = Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $blnGender, $strEmail, $strPhone, $intPhoneTypeId);
+						$intMobileProviderId = ($strPhone) ? $this->lstMobileProvider->SelectedValue : null;
+						
+						$objPerson = Person::CreatePerson($this->txtFirstName->Text, null, $this->txtLastName->Text, $blnGender, $strEmail, $strPhone, $intPhoneTypeId, $intMobileProviderId);
 						if ($this->dtxDateOfBirth->DateTime) {
 							$objPerson->DateOfBirth = $this->dtxDateOfBirth->DateTime;
 							$objPerson->DobGuessedFlag = false;

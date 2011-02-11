@@ -2,6 +2,7 @@
 
 <div class="section">
 <?php _p($_CONTROL->lstPhoneType->RenderWithName('Name=Type')); ?>
+<?php _p($_CONTROL->lstMobileProvider->RenderWithName('Name=Mobile Provider')); ?>
 <?php _p($_CONTROL->txtNumber->RenderWithName('Name=Phone Number')); ?>
 </div>
 

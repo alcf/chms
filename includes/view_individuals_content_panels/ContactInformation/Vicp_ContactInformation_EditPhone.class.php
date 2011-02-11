@@ -4,6 +4,7 @@
 		public $btnDelete;
 
 		public $lstPhoneType;
+		public $lstMobileProvider;
 		public $txtNumber;
 
 		protected function SetupPanel() {
@@ -35,6 +36,9 @@
 
 			// Create Controls
 			$this->lstPhoneType = $this->mctPhone->lstPhoneType_Create();
+			$this->lstPhoneType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstPhoneType_Change'));
+			$this->lstMobileProvider = $this->mctPhone->lstMobileProvider_Create(null, null, QQ::OrderBy(QQN::MobileProvider()->Name));
+			$this->lstPhoneType_Change();
 
 			// Fixup "Phone Type"
 			$this->lstPhoneType->RemoveItem(0);
@@ -45,6 +49,15 @@
 			$this->txtNumber->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 			$this->txtNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtNumber->CausesValidation = $this->btnSave->CausesValidation;
+		}
+
+		public function lstPhoneType_Change() {
+			if ($this->lstPhoneType->SelectedValue == PhoneType::Mobile) {
+				$this->lstMobileProvider->Visible = true;
+			} else {
+				$this->lstMobileProvider->Visible = false;
+				$this->lstMobileProvider->SelectedValue = null;
+			}
 		}
 
 		public function btnSave_Click() {

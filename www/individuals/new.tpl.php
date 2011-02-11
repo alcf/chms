@@ -27,6 +27,7 @@
 		<?php $this->txtPersonEmail->RenderWithName(); ?>
 		<?php $this->txtPersonHomePhone->RenderWithName(); ?>
 		<?php $this->txtPersonCellPhone->RenderWithName(); ?>
+		<?php $this->lstPersonMobileProvider->RenderWithName(); ?>
 		<?php $this->txtPersonWorkPhone->RenderWithName(); ?>
 	</div>
 	<div class="cleaner">&nbsp;</div>
@@ -94,6 +95,7 @@
 		<?php $this->txtSpouseEmail->RenderWithName(); ?>
 		<?php $this->txtSpouseHomePhone->RenderWithName(); ?>
 		<?php $this->txtSpouseCellPhone->RenderWithName(); ?>
+		<?php $this->lstSpouseMobileProvider->RenderWithName(); ?>
 		<?php $this->txtSpouseWorkPhone->RenderWithName(); ?>
 	</div>
 	<div class="cleaner">&nbsp;</div>

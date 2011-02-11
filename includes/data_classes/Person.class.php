@@ -677,9 +677,10 @@
 		 * @param string $strEmail optional
 		 * @param string $strPhone optional
 		 * @param integer $intPhoneTypeId optional unless $strPhone has been specified
+		 * @param integer $intMobileProviderId optional
 		 * @return Person
 		 */
-		public static function CreatePerson($strFirstName, $strMiddle, $strLastName, $blnMaleFlag, $strEmail = null, $strPhone = null, $intPhoneTypeId = null) {
+		public static function CreatePerson($strFirstName, $strMiddle, $strLastName, $blnMaleFlag, $strEmail = null, $strPhone = null, $intPhoneTypeId = null, $intMobileProviderId = null) {
 			$strFirstName = trim($strFirstName);
 			$strMiddle = trim($strMiddle);
 			$strLastName = trim($strLastName);
@@ -701,7 +702,7 @@
 
 			$objPerson->RefreshMaritalStatusTypeId(false);
 			$objPerson->RefreshMembershipStatusTypeId(false);
-			$objPerson->Gender = ($blnMaleFlag) ? 'M' : 'F';
+			if (!is_null($blnMaleFlag)) $objPerson->Gender = ($blnMaleFlag) ? 'M' : 'F';
 			$objPerson->DeceasedFlag = false;
 
 			$objPerson->CanEmailFlag = true;
@@ -728,6 +729,7 @@
 				$objPhone = new Phone();
 				$objPhone->Person = $objPerson;
 				$objPhone->PhoneTypeId = $intPhoneTypeId;
+				if ($objPhone->PhoneTypeId == PhoneType::Mobile) $objPhone->MobileProviderId = $intMobileProviderId;
 				$objPhone->Number = $strPhone;
 				$objPhone->Save();
 
