@@ -8,7 +8,8 @@
 			<?php $this->dtgGroups->Render(); ?>
 			<?php $this->lblStartText->Render(); ?>
 		</div>
-		<div class="buttonBar"><?php $this->lstGroupType->Render(); ?></div>
+		<div class="buttonBar"><?php $this->lstGroupType->Render(); ?>
+		<?php $this->chkViewAll->Render(); ?></div>
 	</div>
 	
 	<br clear="all"/>

@@ -19,7 +19,12 @@
 		 * @var QLinkButton
 		 */
 		public $btnCancel;
-
+		
+		/**
+		 * @var QLinkButton
+		 */
+		public $btnDelete;
+		
 		// View-Related Controls
 
 		/**
@@ -65,6 +70,7 @@
 
 		public $mctGroup;
 		public $txtName;
+		public $chkActiveFlag;
 		public $lstParentGroup;
 		public $chkConfidentialFlag;
 		public $lstMinistry;
@@ -192,6 +198,10 @@
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtName->Required = true;
 
+			$this->chkActiveFlag = $this->mctGroup->chkActiveFlag_Create();
+			$this->chkActiveFlag->Name = 'Active?';
+			$this->chkActiveFlag->Text = 'Check if this is an "Active" group.';
+			
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 			$this->lstParentGroup->Name = 'In Group Category';
 
@@ -226,6 +236,26 @@
 			$this->lstEmailBroadcastType->GetItem(0)->Name = '- None -';
 			$this->lstEmailBroadcastType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'txtToken_Refresh'));
 			$this->txtToken_Refresh();
+
+			// Delete?
+			if ($this->mctGroup->EditMode) {
+				$this->btnDelete = new QLinkButton($this);
+				$this->btnDelete->Text = 'Delete';
+				$this->btnDelete->CssClass = 'delete';
+				
+				if ($this->mctGroup->Group->CountChildGroups()) {
+					$this->btnDelete->AddAction(new QClickEvent(), new QAlertAction('This Group Category has child groups.  You must first move or delete those child groups before you can delete this Group Category.'));
+					$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
+				} else if ($this->mctGroup->Group->GroupTypeId == GroupType::GroupCategory) {
+					$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to DELETE this group?  This will also delete all participation records and archived messages and cannot be undone.'));
+					$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
+					$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
+				} else {
+					$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to DELETE this group?  This will also delete all participation records and archived messages and cannot be undone.\\n\\nA better option would be to simply mark this group as "Inactive".'));
+					$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
+					$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
+				}
+			}
 		}
 
 		public function txtToken_Refresh() {
@@ -457,6 +487,11 @@
 				$this->lblCategory->Text = '<span style="font-size: 10px; color: #666;">Top Level Group</span>';
 				$this->lblCategory->Visible = false;
 			}
+		}
+
+		public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
+			$this->objGroup->Delete();
+			return $this->ReturnTo('/groups/#' . $this->objGroup->MinistryId);
 		}
 
 		public function btnCancel_Click($strFormId, $strControlId, $strParameter) {

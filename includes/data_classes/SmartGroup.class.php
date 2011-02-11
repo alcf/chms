@@ -27,6 +27,11 @@
 			return sprintf('SmartGroup Object %s',  $this->intGroupId);
 		}
 
+		public function Delete() {
+			if ($this->SearchQuery) $this->SearchQuery->Delete();
+			parent::Delete();
+		}
+
 		public function RefreshParticipationList() {
 			$fltStartTime = microtime(true);
 			$objGroupRole = GroupRole::QuerySingle(QQ::AndCondition(

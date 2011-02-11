@@ -26,6 +26,11 @@
 		public function __toString() {
 			return sprintf('GrowthGroup Object %s',  $this->intGroupId);
 		}
+		
+		public function Delete() {
+			$this->UnassociateAllGrowthGroupStructures();
+			parent::Delete();
+		}
 
 		public function __get($strName) {
 			switch ($strName) {

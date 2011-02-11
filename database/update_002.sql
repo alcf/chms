@@ -17,6 +17,7 @@ CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
 ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
 
 ALTER TABLE `group` ADD COLUMN `active_flag` BOOLEAN AFTER token;
+UPDATE `group` SET active_flag=TRUE;
 
 INSERT INTO mobile_provider(domain, name) VALUES ('sms.3rivers.net', '3 River Wireless');
 INSERT INTO mobile_provider(domain, name) VALUES ('cingularme.com', '7-11 Speakout');

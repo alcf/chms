@@ -76,7 +76,8 @@
 
 				$objGroups = Group::LoadOrderedArrayByMinistryIdAndConfidentiality(
 					$this->objGroup->MinistryId,
-					Ministry::Load($this->objGroup->MinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
+					Ministry::Load($this->objGroup->MinistryId)->IsLoginCanAdminMinistry(QApplication::$Login),
+					true);
 
 				$blnFirst = true;
 				$pnlGroup = null;

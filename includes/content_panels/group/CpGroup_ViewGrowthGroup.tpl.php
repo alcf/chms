@@ -1,5 +1,6 @@
 <h3>
 	<?php _p($_CONTROL->objGroup->Name); ?>
+	<?php if (!$_CONTROL->objGroup->ActiveFlag) { ?> &nbsp; <img src="/assets/images/marker_inactive.png" title="This is an inactive group." style="width: 50px; height: 14px;"/><?php } ?>
 	<?php if ($_CONTROL->objGroup->IsLoginCanEdit(QApplication::$Login)) {?>
 		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/edit'; return false;">Edit Details</button>
 	<?php } ?>

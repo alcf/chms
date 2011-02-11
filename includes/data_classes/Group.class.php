@@ -79,6 +79,16 @@
 					}
 			}
 		}
+		
+		public function Delete() {
+			$this->DeleteAllEmailMessageRoutes();
+			$this->DeleteAllGroupParticipations();
+			if ($this->GrowthGroup) $this->GrowthGroup->Delete();
+			if ($this->SmartGroup) $this->SmartGroup->Delete();
+			if ($this->GroupCategory) $this->GroupCategory->Delete();
+			foreach ($this->GetChildGroupArray() as $objChildGroup) $objChildGroup->Delete();
+			parent::Delete();
+		}
 
 		/**
 		 * Retruns an array of groups containing this group and all its children and decendents
@@ -148,6 +158,7 @@
 			$objGroup->Name = $strName;
 			$objGroup->Description = $strDescription;
 			$objGroup->ParentGroup = $objParentGroup;
+			$objGroup->ActiveFlag = true;
 			$objGroup->Save();
 
 			return $objGroup;
@@ -243,13 +254,17 @@
 		 * correctly ordered for a hierarchical-listing of groups for a given ministry
 		 * @param integer $intMinistryId
 		 * @param boolean $blnIncludeConfidential
+		 * @param boolean $blnActiveOnly (optional) will only return the "active" ones
 		 * @return Group[]
 		 */
-		public static function LoadOrderedArrayByMinistryIdAndConfidentiality($intMinistryId, $blnIncludeConfidential) {
+		public static function LoadOrderedArrayByMinistryIdAndConfidentiality($intMinistryId, $blnIncludeConfidential, $blnActiveOnly = false) {
 			$objCondition = QQ::Equal(QQN::Group()->MinistryId, $intMinistryId);
 
 			if (!$blnIncludeConfidential)
 				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::Group()->ConfidentialFlag, false));
+
+			if ($blnActiveOnly)
+				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::Group()->ActiveFlag, true));
 
 			return Group::QueryArray($objCondition, QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
 		}

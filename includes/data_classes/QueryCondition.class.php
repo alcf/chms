@@ -27,6 +27,11 @@
 			return sprintf('QueryCondition Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			if ($this->OrQueryCondition) $this->OrQueryCondition->Delete();
+			parent::Delete();
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

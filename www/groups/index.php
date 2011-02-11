@@ -12,6 +12,7 @@
 		protected $intMinistryId;
 
 		protected $lstGroupType;
+		protected $chkViewAll;
 
 		protected $dtgGroups;
 		protected $lblStartText;
@@ -44,6 +45,10 @@
 			$this->lstGroupType->AddAction(new QChangeEvent(), new QAjaxAction('lstGroupType_Change'));
 			$this->lstGroupType->Visible = false;
 			
+			$this->chkViewAll = new QCheckBox($this);
+			$this->chkViewAll->Text = 'View "Inactive" Groups as well';
+			$this->chkViewAll->AddAction(new QClickEvent(), new QAjaxAction('chkViewAll_Click'));
+
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->TagName = 'h3';
 			$this->lblMinistry_Refresh();
@@ -60,13 +65,20 @@
 			$this->lblStartText = new QLabel($this);
 			$this->lblStartText->Text = '<h3>Groups and Ministries</h3><p>Please select a ministry from the list on the right.</p>';
 			$this->lblStartText->HtmlEntities = false;
+			
+			$this->SetUrlHashProcessor('Form_ProcessHash');
+		}
+
+		public function chkViewAll_Click() {
+			$this->dtgGroups->Refresh();
 		}
 
 		public function dtgGroups_Bind() {
 			if ($this->intMinistryId) {
 				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryIdAndConfidentiality(
 					$this->intMinistryId,
-					Ministry::Load($this->intMinistryId)->IsLoginCanAdminMinistry(QApplication::$Login));
+					Ministry::Load($this->intMinistryId)->IsLoginCanAdminMinistry(QApplication::$Login),
+					!$this->chkViewAll->Checked);
 				$this->dtgGroups->Visible = true;
 			} else {
 				$this->dtgGroups->DataSource = null;
@@ -84,6 +96,13 @@
 		}
 
 		public function RenderName(Group $objGroup) {
+			if ($objGroup->ActiveFlag) {
+				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, null);
+			} else {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->BackColor = '#ccc';
+				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, $objStyle);
+			}
 			$strName = sprintf('<a href="/groups/group.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
 
 			// Add Pointer
@@ -124,6 +143,11 @@
 		}
 
 		protected function pxyMinistry_Click($strFormId, $strControlId, $strParameter) {
+			QApplication::Redirect('#' . $strParameter);
+		}
+
+		protected function Form_ProcessHash() {
+			$strParameter = $this->strUrlHash;
 			if ($strParameter != $this->intMinistryId) {
 				$intOldMinistryId = $this->intMinistryId;
 				$this->intMinistryId = $strParameter;

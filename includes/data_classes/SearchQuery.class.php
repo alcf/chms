@@ -28,6 +28,11 @@
 		public function __toString() {
 			return sprintf('SearchQuery Object %s',  $this->intId);
 		}
+		
+		public function Delete() {
+			foreach ($this->GetQueryConditionArray() as $objQueryCondition) $objQueryCondition->Delete();
+			parent::Delete();
+		}
 
 		public function RefreshDescription($blnSave = true) {
 			$strDescriptionArray = array();
