@@ -321,6 +321,16 @@
 
 			return ($this->Age < 18);
 		}
+		
+		/**
+		 * Returns true if this person is an individual (has no household participation records and is not the head of any household)
+		 * @return boolean
+		 */
+		public function IsIndividual() {
+			if ($this->CountHouseholdParticipations()) return false;
+			if ($this->HouseholdAsHead) return false;
+			return true;
+		}
 
 		const HouseholdStatusNone = 1;
 		const HouseholdStatusHeadOfOne = 2;

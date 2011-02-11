@@ -39,15 +39,10 @@
 			$this->dlgMessage = new MessageDialog($pnlContent);
 			$this->dlgMessage_Reset();
 
-			// We need to have a household!
-			if (!$this->pnlContent->Form->objHousehold) return $this->pnlContent->ReturnTo($strReturnUrl);
-
 			// Get and Validate the Address Object
 			$this->mctAddress = AddressMetaControl::Create($this->pnlContent, $intAddressId, QMetaControlCreateType::CreateOnRecordNotFound);
 
 			if (!$this->mctAddress->EditMode) {
-				// Trying to create a NEW address
-				$this->mctAddress->Address->Household = $this->pnlContent->Form->objHousehold;
 				$this->mctAddress->Address->AddressTypeId = AddressType::Home;
 				$this->mctAddress->Address->CurrentFlag = true;
 				$this->pnlContent->btnSave->Text = 'Create';
@@ -120,6 +115,10 @@
 		}
 
 		public function btnSave_Click() {
+			// Set the household (if not yet set)
+			$this->mctAddress->Address->Household = $this->pnlContent->Form->objHousehold;
+
+			// Update the other fields
 			$this->mctAddress->UpdateFields();
 
 			if (!$this->chkInvalidFlag->Checked) {
