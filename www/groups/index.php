@@ -48,7 +48,8 @@
 			$this->chkViewAll = new QCheckBox($this);
 			$this->chkViewAll->Text = 'View "Inactive" Groups as well';
 			$this->chkViewAll->AddAction(new QClickEvent(), new QAjaxAction('chkViewAll_Click'));
-
+			$this->chkViewAll->Visible = false;
+			
 			$this->lblMinistry = new QLabel($this);
 			$this->lblMinistry->TagName = 'h3';
 			$this->lblMinistry_Refresh();
@@ -158,12 +159,14 @@
 				
 				$objMinistry = Ministry::Load($this->intMinistryId);
 				if ($objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) {
+					$this->chkViewAll->Visible = true;
 					$this->lstGroupType->Visible = true;
 					$this->lstGroupType->RemoveAllItems();
 					$this->lstGroupType->AddItem('- Create New... -');
 					foreach (GroupType::$NameArray as $intId => $strName)
 						if ($objMinistry->GroupTypeBitmap & $intId) $this->lstGroupType->AddItem($strName, $intId);
 				} else {
+					$this->lstGroupType->Visible = true;
 					$this->lstGroupType->Visible = false;
 				}
 			}
