@@ -19,9 +19,11 @@
 	 * @property integer $PhoneTypeId the value for intPhoneTypeId (Not Null)
 	 * @property integer $AddressId the value for intAddressId 
 	 * @property integer $PersonId the value for intPersonId 
+	 * @property integer $MobileProviderId the value for intMobileProviderId 
 	 * @property string $Number the value for strNumber 
 	 * @property Address $Address the value for the Address object referenced by intAddressId 
 	 * @property Person $Person the value for the Person object referenced by intPersonId 
+	 * @property MobileProvider $MobileProvider the value for the MobileProvider object referenced by intMobileProviderId 
 	 * @property Address $_AddressAsPrimary the value for the private _objAddressAsPrimary (Read-Only) if set due to an expansion on the address.primary_phone_id reverse relationship
 	 * @property Address[] $_AddressAsPrimaryArray the value for the private _objAddressAsPrimaryArray (Read-Only) if set due to an ExpandAsArray on the address.primary_phone_id reverse relationship
 	 * @property Person $_PersonAsPrimary the value for the private _objPersonAsPrimary (Read-Only) if set due to an expansion on the person.primary_phone_id reverse relationship
@@ -64,6 +66,14 @@
 		 */
 		protected $intPersonId;
 		const PersonIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column phone.mobile_provider_id
+		 * @var integer intMobileProviderId
+		 */
+		protected $intMobileProviderId;
+		const MobileProviderIdDefault = null;
 
 
 		/**
@@ -148,6 +158,16 @@
 		 * @var Person objPerson
 		 */
 		protected $objPerson;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column phone.mobile_provider_id.
+		 *
+		 * NOTE: Always use the MobileProvider property getter to correctly retrieve this MobileProvider object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var MobileProvider objMobileProvider
+		 */
+		protected $objMobileProvider;
 
 
 
@@ -463,6 +483,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'phone_type_id', $strAliasPrefix . 'phone_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'address_id', $strAliasPrefix . 'address_id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
+			$objBuilder->AddSelectItem($strTableName, 'mobile_provider_id', $strAliasPrefix . 'mobile_provider_id');
 			$objBuilder->AddSelectItem($strTableName, 'number', $strAliasPrefix . 'number');
 		}
 
@@ -549,6 +570,8 @@
 			$objToReturn->intAddressId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'mobile_provider_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'mobile_provider_id'] : $strAliasPrefix . 'mobile_provider_id';
+			$objToReturn->intMobileProviderId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'number'] : $strAliasPrefix . 'number';
 			$objToReturn->strNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
@@ -575,6 +598,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for MobileProvider Early Binding
+			$strAlias = $strAliasPrefix . 'mobile_provider_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objMobileProvider = MobileProvider::InstantiateDbRow($objDbRow, $strAliasPrefix . 'mobile_provider_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -780,6 +809,38 @@
 			
 		/**
 		 * Load an array of Phone objects,
+		 * by MobileProviderId Index(es)
+		 * @param integer $intMobileProviderId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Phone[]
+		*/
+		public static function LoadArrayByMobileProviderId($intMobileProviderId, $objOptionalClauses = null) {
+			// Call Phone::QueryArray to perform the LoadArrayByMobileProviderId query
+			try {
+				return Phone::QueryArray(
+					QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Phones
+		 * by MobileProviderId Index(es)
+		 * @param integer $intMobileProviderId
+		 * @return int
+		*/
+		public static function CountByMobileProviderId($intMobileProviderId) {
+			// Call Phone::QueryCount to perform the CountByMobileProviderId query
+			return Phone::QueryCount(
+				QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId)
+			);
+		}
+			
+		/**
+		 * Load an array of Phone objects,
 		 * by Number Index(es)
 		 * @param string $strNumber
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -843,11 +904,13 @@
 							`phone_type_id`,
 							`address_id`,
 							`person_id`,
+							`mobile_provider_id`,
 							`number`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPhoneTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intAddressId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
+							' . $objDatabase->SqlVariable($this->intMobileProviderId) . ',
 							' . $objDatabase->SqlVariable($this->strNumber) . '
 						)
 					');
@@ -871,6 +934,7 @@
 							`phone_type_id` = ' . $objDatabase->SqlVariable($this->intPhoneTypeId) . ',
 							`address_id` = ' . $objDatabase->SqlVariable($this->intAddressId) . ',
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
+							`mobile_provider_id` = ' . $objDatabase->SqlVariable($this->intMobileProviderId) . ',
 							`number` = ' . $objDatabase->SqlVariable($this->strNumber) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -959,6 +1023,7 @@
 			$this->PhoneTypeId = $objReloaded->PhoneTypeId;
 			$this->AddressId = $objReloaded->AddressId;
 			$this->PersonId = $objReloaded->PersonId;
+			$this->MobileProviderId = $objReloaded->MobileProviderId;
 			$this->strNumber = $objReloaded->strNumber;
 		}
 
@@ -976,6 +1041,7 @@
 					`phone_type_id`,
 					`address_id`,
 					`person_id`,
+					`mobile_provider_id`,
 					`number`,
 					__sys_login_id,
 					__sys_action,
@@ -985,6 +1051,7 @@
 					' . $objDatabase->SqlVariable($this->intPhoneTypeId) . ',
 					' . $objDatabase->SqlVariable($this->intAddressId) . ',
 					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intMobileProviderId) . ',
 					' . $objDatabase->SqlVariable($this->strNumber) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1056,6 +1123,11 @@
 					// @return integer
 					return $this->intPersonId;
 
+				case 'MobileProviderId':
+					// Gets the value for intMobileProviderId 
+					// @return integer
+					return $this->intMobileProviderId;
+
 				case 'Number':
 					// Gets the value for strNumber 
 					// @return string
@@ -1084,6 +1156,18 @@
 						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
 							$this->objPerson = Person::Load($this->intPersonId);
 						return $this->objPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'MobileProvider':
+					// Gets the value for the MobileProvider object referenced by intMobileProviderId 
+					// @return MobileProvider
+					try {
+						if ((!$this->objMobileProvider) && (!is_null($this->intMobileProviderId)))
+							$this->objMobileProvider = MobileProvider::Load($this->intMobileProviderId);
+						return $this->objMobileProvider;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1181,6 +1265,18 @@
 						throw $objExc;
 					}
 
+				case 'MobileProviderId':
+					// Sets the value for intMobileProviderId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objMobileProvider = null;
+						return ($this->intMobileProviderId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'Number':
 					// Sets the value for strNumber 
 					// @param string $mixValue
@@ -1250,6 +1346,36 @@
 						// Update Local Member Variables
 						$this->objPerson = $mixValue;
 						$this->intPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'MobileProvider':
+					// Sets the value for the MobileProvider object referenced by intMobileProviderId 
+					// @param MobileProvider $mixValue
+					// @return MobileProvider
+					if (is_null($mixValue)) {
+						$this->intMobileProviderId = null;
+						$this->objMobileProvider = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a MobileProvider object
+						try {
+							$mixValue = QType::Cast($mixValue, 'MobileProvider');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED MobileProvider object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved MobileProvider for this Phone');
+
+						// Update Local Member Variables
+						$this->objMobileProvider = $mixValue;
+						$this->intMobileProviderId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1661,6 +1787,7 @@
 			$strToReturn .= '<element name="PhoneTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Address" type="xsd1:Address"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="MobileProvider" type="xsd1:MobileProvider"/>';
 			$strToReturn .= '<element name="Number" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1672,6 +1799,7 @@
 				$strComplexTypeArray['Phone'] = Phone::GetSoapComplexTypeXml();
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
+				MobileProvider::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1696,6 +1824,9 @@
 			if ((property_exists($objSoapObject, 'Person')) &&
 				($objSoapObject->Person))
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
+			if ((property_exists($objSoapObject, 'MobileProvider')) &&
+				($objSoapObject->MobileProvider))
+				$objToReturn->MobileProvider = MobileProvider::GetObjectFromSoapObject($objSoapObject->MobileProvider);
 			if (property_exists($objSoapObject, 'Number'))
 				$objToReturn->strNumber = $objSoapObject->Number;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1724,6 +1855,10 @@
 				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intPersonId = null;
+			if ($objObject->objMobileProvider)
+				$objObject->objMobileProvider = MobileProvider::GetSoapObjectFromObject($objObject->objMobileProvider, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intMobileProviderId = null;
 			return $objObject;
 		}
 
@@ -1745,6 +1880,8 @@
 	 * @property-read QQNodeAddress $Address
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $MobileProviderId
+	 * @property-read QQNodeMobileProvider $MobileProvider
 	 * @property-read QQNode $Number
 	 * @property-read QQReverseReferenceNodeAddress $AddressAsPrimary
 	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
@@ -1767,6 +1904,10 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'MobileProviderId':
+					return new QQNode('mobile_provider_id', 'MobileProviderId', 'integer', $this);
+				case 'MobileProvider':
+					return new QQNodeMobileProvider('mobile_provider_id', 'MobileProvider', 'integer', $this);
 				case 'Number':
 					return new QQNode('number', 'Number', 'string', $this);
 				case 'AddressAsPrimary':
@@ -1794,6 +1935,8 @@
 	 * @property-read QQNodeAddress $Address
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $MobileProviderId
+	 * @property-read QQNodeMobileProvider $MobileProvider
 	 * @property-read QQNode $Number
 	 * @property-read QQReverseReferenceNodeAddress $AddressAsPrimary
 	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
@@ -1817,6 +1960,10 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'MobileProviderId':
+					return new QQNode('mobile_provider_id', 'MobileProviderId', 'integer', $this);
+				case 'MobileProvider':
+					return new QQNodeMobileProvider('mobile_provider_id', 'MobileProvider', 'integer', $this);
 				case 'Number':
 					return new QQNode('number', 'Number', 'string', $this);
 				case 'AddressAsPrimary':

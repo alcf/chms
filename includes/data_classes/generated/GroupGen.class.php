@@ -26,6 +26,7 @@
 	 * @property boolean $ConfidentialFlag the value for blnConfidentialFlag 
 	 * @property integer $EmailBroadcastTypeId the value for intEmailBroadcastTypeId 
 	 * @property string $Token the value for strToken (Unique)
+	 * @property boolean $ActiveFlag the value for blnActiveFlag 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property Group $ParentGroup the value for the Group object referenced by intParentGroupId 
 	 * @property GroupCategory $GroupCategory the value for the GroupCategory object that uniquely references this Group
@@ -133,6 +134,14 @@
 		protected $strToken;
 		const TokenMaxLength = 100;
 		const TokenDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group.active_flag
+		 * @var boolean blnActiveFlag
+		 */
+		protected $blnActiveFlag;
+		const ActiveFlagDefault = null;
 
 
 		/**
@@ -600,6 +609,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'confidential_flag', $strAliasPrefix . 'confidential_flag');
 			$objBuilder->AddSelectItem($strTableName, 'email_broadcast_type_id', $strAliasPrefix . 'email_broadcast_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
+			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
 		}
 
 
@@ -713,6 +723,8 @@
 			$objToReturn->intEmailBroadcastTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'token', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'token'] : $strAliasPrefix . 'token';
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
+			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -1069,7 +1081,8 @@
 							`hierarchy_order_number`,
 							`confidential_flag`,
 							`email_broadcast_type_id`,
-							`token`
+							`token`,
+							`active_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intGroupTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
@@ -1080,7 +1093,8 @@
 							' . $objDatabase->SqlVariable($this->intHierarchyOrderNumber) . ',
 							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
-							' . $objDatabase->SqlVariable($this->strToken) . '
+							' . $objDatabase->SqlVariable($this->strToken) . ',
+							' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						)
 					');
 
@@ -1109,7 +1123,8 @@
 							`hierarchy_order_number` = ' . $objDatabase->SqlVariable($this->intHierarchyOrderNumber) . ',
 							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`email_broadcast_type_id` = ' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
-							`token` = ' . $objDatabase->SqlVariable($this->strToken) . '
+							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
+							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1291,6 +1306,7 @@
 			$this->blnConfidentialFlag = $objReloaded->blnConfidentialFlag;
 			$this->EmailBroadcastTypeId = $objReloaded->EmailBroadcastTypeId;
 			$this->strToken = $objReloaded->strToken;
+			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
 
 		/**
@@ -1314,6 +1330,7 @@
 					`confidential_flag`,
 					`email_broadcast_type_id`,
 					`token`,
+					`active_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1329,6 +1346,7 @@
 					' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 					' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 					' . $objDatabase->SqlVariable($this->strToken) . ',
+					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1433,6 +1451,11 @@
 					// Gets the value for strToken (Unique)
 					// @return string
 					return $this->strToken;
+
+				case 'ActiveFlag':
+					// Gets the value for blnActiveFlag 
+					// @return boolean
+					return $this->blnActiveFlag;
 
 
 				///////////////////
@@ -1692,6 +1715,17 @@
 					// @return string
 					try {
 						return ($this->strToken = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ActiveFlag':
+					// Sets the value for blnActiveFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnActiveFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2466,6 +2500,7 @@
 			$strToReturn .= '<element name="ConfidentialFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="EmailBroadcastTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
+			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2514,6 +2549,8 @@
 				$objToReturn->intEmailBroadcastTypeId = $objSoapObject->EmailBroadcastTypeId;
 			if (property_exists($objSoapObject, 'Token'))
 				$objToReturn->strToken = $objSoapObject->Token;
+			if (property_exists($objSoapObject, 'ActiveFlag'))
+				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2568,6 +2605,7 @@
 	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $EmailBroadcastTypeId
 	 * @property-read QQNode $Token
+	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
 	 * @property-read QQReverseReferenceNodeGroupCategory $GroupCategory
@@ -2607,6 +2645,8 @@
 					return new QQNode('email_broadcast_type_id', 'EmailBroadcastTypeId', 'integer', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'ActiveFlag':
+					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'group_id');
 				case 'ChildGroup':
@@ -2647,6 +2687,7 @@
 	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $EmailBroadcastTypeId
 	 * @property-read QQNode $Token
+	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
 	 * @property-read QQReverseReferenceNodeGroupCategory $GroupCategory
@@ -2687,6 +2728,8 @@
 					return new QQNode('email_broadcast_type_id', 'EmailBroadcastTypeId', 'integer', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'ActiveFlag':
+					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'group_id');
 				case 'ChildGroup':

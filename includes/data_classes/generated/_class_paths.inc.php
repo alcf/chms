@@ -202,6 +202,13 @@
 		QApplicationBase::$ClassFile['ministrymetacontrol'] = __DATA_META_CONTROLS__ . '/MinistryMetaControl.class.php';
 		QApplicationBase::$ClassFile['ministrydatagrid'] = __DATA_META_CONTROLS__ . '/MinistryDataGrid.class.php';
 
+	// ClassPaths for the MobileProvider class
+		QApplicationBase::$ClassFile['mobileprovider'] = __DATA_CLASSES__ . '/MobileProvider.class.php';
+		QApplicationBase::$ClassFile['qqnodemobileprovider'] = __DATA_CLASSES__ . '/MobileProvider.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodemobileprovider'] = __DATA_CLASSES__ . '/MobileProvider.class.php';
+		QApplicationBase::$ClassFile['mobileprovidermetacontrol'] = __DATA_META_CONTROLS__ . '/MobileProviderMetaControl.class.php';
+		QApplicationBase::$ClassFile['mobileproviderdatagrid'] = __DATA_META_CONTROLS__ . '/MobileProviderDataGrid.class.php';
+
 	// ClassPaths for the NameItem class
 		QApplicationBase::$ClassFile['nameitem'] = __DATA_CLASSES__ . '/NameItem.class.php';
 		QApplicationBase::$ClassFile['qqnodenameitem'] = __DATA_CLASSES__ . '/NameItem.class.php';

@@ -175,6 +175,12 @@
 			return new QQNodeMinistry('ministry', null, null);
 		}
 		/**
+		 * @return QQNodeMobileProvider
+		 */
+		static public function MobileProvider() {
+			return new QQNodeMobileProvider('mobile_provider', null, null);
+		}
+		/**
 		 * @return QQNodeNameItem
 		 */
 		static public function NameItem() {

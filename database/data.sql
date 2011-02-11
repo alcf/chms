@@ -112,7 +112,7 @@ INSERT INTO mobile_provider(domain, name) VALUES ('text.mtsmobility.com', 'MTS (
 INSERT INTO mobile_provider(domain, name) VALUES ('sms.netcom.no', 'Netcom (Norway)');
 INSERT INTO mobile_provider(domain, name) VALUES ('page.nextel.com', 'Nextel');
 INSERT INTO mobile_provider(domain, name) VALUES ('o2imail.co.uk', 'O2 (UK)');
-INSERT INTO mobile_provider(domain, name) VALUES ('txt.bell.ca', 'President's Choice (Canada)');
+INSERT INTO mobile_provider(domain, name) VALUES ('txt.bell.ca', 'President\'s Choice (Canada)');
 INSERT INTO mobile_provider(domain, name) VALUES ('qwestmp.com', 'Qwest');
 
 INSERT INTO mobile_provider(domain, name) VALUES ('pcs.rogers.com', 'Rogers');

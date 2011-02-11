@@ -306,6 +306,7 @@
 				case 'ConfidentialFlag': return QQN::Group()->ConfidentialFlag;
 				case 'EmailBroadcastTypeId': return QQN::Group()->EmailBroadcastTypeId;
 				case 'Token': return QQN::Group()->Token;
+				case 'ActiveFlag': return QQN::Group()->ActiveFlag;
 				case 'GroupCategory': return QQN::Group()->GroupCategory;
 
 				case 'GrowthGroup': return QQN::Group()->GrowthGroup;

@@ -12,8 +12,8 @@ CREATE TABLE `mobile_provider`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
 ALTER TABLE phone ADD COLUMN `mobile_provider_id` INTEGER UNSIGNED AFTER person_id;
+CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
 ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
 
 ALTER TABLE `group` ADD COLUMN `active_flag` BOOLEAN AFTER token;
@@ -56,7 +56,7 @@ INSERT INTO mobile_provider(domain, name) VALUES ('text.mtsmobility.com', 'MTS (
 INSERT INTO mobile_provider(domain, name) VALUES ('sms.netcom.no', 'Netcom (Norway)');
 INSERT INTO mobile_provider(domain, name) VALUES ('page.nextel.com', 'Nextel');
 INSERT INTO mobile_provider(domain, name) VALUES ('o2imail.co.uk', 'O2 (UK)');
-INSERT INTO mobile_provider(domain, name) VALUES ('txt.bell.ca', 'President's Choice (Canada)');
+INSERT INTO mobile_provider(domain, name) VALUES ('txt.bell.ca', 'President\'s Choice (Canada)');
 INSERT INTO mobile_provider(domain, name) VALUES ('qwestmp.com', 'Qwest');
 
 INSERT INTO mobile_provider(domain, name) VALUES ('pcs.rogers.com', 'Rogers');

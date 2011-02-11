@@ -38,6 +38,8 @@
 	 * property-read QLabel $EmailBroadcastTypeIdLabel
 	 * property QTextBox $TokenControl
 	 * property-read QLabel $TokenLabel
+	 * property QCheckBox $ActiveFlagControl
+	 * property-read QLabel $ActiveFlagLabel
 	 * property QListBox $GroupCategoryControl
 	 * property-read QLabel $GroupCategoryLabel
 	 * property QListBox $GrowthGroupControl
@@ -141,6 +143,12 @@
          */
 		protected $txtToken;
 
+        /**
+         * @var QCheckBox chkActiveFlag;
+         * @access protected
+         */
+		protected $chkActiveFlag;
+
 
 		// Controls that allow the viewing of Group's individual data fields
         /**
@@ -202,6 +210,12 @@
          * @access protected
          */
 		protected $lblToken;
+
+        /**
+         * @var QLabel lblActiveFlag
+         * @access protected
+         */
+		protected $lblActiveFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -640,6 +654,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkActiveFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkActiveFlag_Create($strControlId = null) {
+			$this->chkActiveFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkActiveFlag->Name = QApplication::Translate('Active Flag');
+			$this->chkActiveFlag->Checked = $this->objGroup->ActiveFlag;
+			return $this->chkActiveFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblActiveFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblActiveFlag_Create($strControlId = null) {
+			$this->lblActiveFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblActiveFlag->Name = QApplication::Translate('Active Flag');
+			$this->lblActiveFlag->Text = ($this->objGroup->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblActiveFlag;
+		}
+
+		/**
 		 * Create and setup QListBox lstGroupCategory
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -835,6 +873,9 @@
 			if ($this->txtToken) $this->txtToken->Text = $this->objGroup->Token;
 			if ($this->lblToken) $this->lblToken->Text = $this->objGroup->Token;
 
+			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objGroup->ActiveFlag;
+			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objGroup->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->lstGroupCategory) {
 				$this->lstGroupCategory->RemoveAllItems();
 				$this->lstGroupCategory->AddItem(QApplication::Translate('- Select One -'), null);
@@ -922,6 +963,7 @@
 				if ($this->chkConfidentialFlag) $this->objGroup->ConfidentialFlag = $this->chkConfidentialFlag->Checked;
 				if ($this->lstEmailBroadcastType) $this->objGroup->EmailBroadcastTypeId = $this->lstEmailBroadcastType->SelectedValue;
 				if ($this->txtToken) $this->objGroup->Token = $this->txtToken->Text;
+				if ($this->chkActiveFlag) $this->objGroup->ActiveFlag = $this->chkActiveFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstGroupCategory) $this->objGroup->GroupCategory = GroupCategory::Load($this->lstGroupCategory->SelectedValue);
@@ -1033,6 +1075,12 @@
 				case 'TokenLabel':
 					if (!$this->lblToken) return $this->lblToken_Create();
 					return $this->lblToken;
+				case 'ActiveFlagControl':
+					if (!$this->chkActiveFlag) return $this->chkActiveFlag_Create();
+					return $this->chkActiveFlag;
+				case 'ActiveFlagLabel':
+					if (!$this->lblActiveFlag) return $this->lblActiveFlag_Create();
+					return $this->lblActiveFlag;
 				case 'GroupCategoryControl':
 					if (!$this->lstGroupCategory) return $this->lstGroupCategory_Create();
 					return $this->lstGroupCategory;
@@ -1095,6 +1143,8 @@
 						return ($this->lstEmailBroadcastType = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
+					case 'ActiveFlagControl':
+						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
 					case 'GroupCategoryControl':
 						return ($this->lstGroupCategory = QType::Cast($mixValue, 'QControl'));
 					case 'GrowthGroupControl':

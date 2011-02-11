@@ -27,7 +27,7 @@
 		const CustomValue = 1024;
 		const CustomValueOnly = 2048;
 
-		const MaxId = 1024;
+		const MaxId = 2048;
 
 		public static $NameArray = array(
 			1 => 'String Value',

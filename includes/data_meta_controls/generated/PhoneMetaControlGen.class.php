@@ -24,6 +24,8 @@
 	 * property-read QLabel $AddressIdLabel
 	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
+	 * property QListBox $MobileProviderIdControl
+	 * property-read QLabel $MobileProviderIdLabel
 	 * property QTextBox $NumberControl
 	 * property-read QLabel $NumberLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -82,6 +84,12 @@
 		protected $lstPerson;
 
         /**
+         * @var QListBox lstMobileProvider;
+         * @access protected
+         */
+		protected $lstMobileProvider;
+
+        /**
          * @var QTextBox txtNumber;
          * @access protected
          */
@@ -106,6 +114,12 @@
          * @access protected
          */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblMobileProviderId
+         * @access protected
+         */
+		protected $lblMobileProviderId;
 
         /**
          * @var QLabel lblNumber
@@ -334,6 +348,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstMobileProvider
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstMobileProvider_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstMobileProvider = new QListBox($this->objParentObject, $strControlId);
+			$this->lstMobileProvider->Name = QApplication::Translate('Mobile Provider');
+			$this->lstMobileProvider->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objMobileProviderCursor = MobileProvider::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objMobileProvider = MobileProvider::InstantiateCursor($objMobileProviderCursor)) {
+				$objListItem = new QListItem($objMobileProvider->__toString(), $objMobileProvider->Id);
+				if (($this->objPhone->MobileProvider) && ($this->objPhone->MobileProvider->Id == $objMobileProvider->Id))
+					$objListItem->Selected = true;
+				$this->lstMobileProvider->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstMobileProvider;
+		}
+
+		/**
+		 * Create and setup QLabel lblMobileProviderId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblMobileProviderId_Create($strControlId = null) {
+			$this->lblMobileProviderId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMobileProviderId->Name = QApplication::Translate('Mobile Provider');
+			$this->lblMobileProviderId->Text = ($this->objPhone->MobileProvider) ? $this->objPhone->MobileProvider->__toString() : null;
+			return $this->lblMobileProviderId;
+		}
+
+		/**
 		 * Create and setup QTextBox txtNumber
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -400,6 +454,19 @@
 			}
 			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objPhone->Person) ? $this->objPhone->Person->__toString() : null;
 
+			if ($this->lstMobileProvider) {
+					$this->lstMobileProvider->RemoveAllItems();
+				$this->lstMobileProvider->AddItem(QApplication::Translate('- Select One -'), null);
+				$objMobileProviderArray = MobileProvider::LoadAll();
+				if ($objMobileProviderArray) foreach ($objMobileProviderArray as $objMobileProvider) {
+					$objListItem = new QListItem($objMobileProvider->__toString(), $objMobileProvider->Id);
+					if (($this->objPhone->MobileProvider) && ($this->objPhone->MobileProvider->Id == $objMobileProvider->Id))
+						$objListItem->Selected = true;
+					$this->lstMobileProvider->AddItem($objListItem);
+				}
+			}
+			if ($this->lblMobileProviderId) $this->lblMobileProviderId->Text = ($this->objPhone->MobileProvider) ? $this->objPhone->MobileProvider->__toString() : null;
+
 			if ($this->txtNumber) $this->txtNumber->Text = $this->objPhone->Number;
 			if ($this->lblNumber) $this->lblNumber->Text = $this->objPhone->Number;
 
@@ -429,6 +496,7 @@
 				if ($this->lstPhoneType) $this->objPhone->PhoneTypeId = $this->lstPhoneType->SelectedValue;
 				if ($this->lstAddress) $this->objPhone->AddressId = $this->lstAddress->SelectedValue;
 				if ($this->lstPerson) $this->objPhone->PersonId = $this->lstPerson->SelectedValue;
+				if ($this->lstMobileProvider) $this->objPhone->MobileProviderId = $this->lstMobileProvider->SelectedValue;
 				if ($this->txtNumber) $this->objPhone->Number = $this->txtNumber->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -496,6 +564,12 @@
 				case 'PersonIdLabel':
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
+				case 'MobileProviderIdControl':
+					if (!$this->lstMobileProvider) return $this->lstMobileProvider_Create();
+					return $this->lstMobileProvider;
+				case 'MobileProviderIdLabel':
+					if (!$this->lblMobileProviderId) return $this->lblMobileProviderId_Create();
+					return $this->lblMobileProviderId;
 				case 'NumberControl':
 					if (!$this->txtNumber) return $this->txtNumber_Create();
 					return $this->txtNumber;
@@ -532,6 +606,8 @@
 						return ($this->lstAddress = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
+					case 'MobileProviderIdControl':
+						return ($this->lstMobileProvider = QType::Cast($mixValue, 'QControl'));
 					case 'NumberControl':
 						return ($this->txtNumber = QType::Cast($mixValue, 'QControl'));
 					default:
