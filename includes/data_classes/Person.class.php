@@ -865,7 +865,38 @@
 		 * @param boolean $blnUseThisDetails boolean on whether to use this person's Person object details, or if false, use the PersonMergeWith's
 		 */
 		public function MergeWith(Person $objPersonMergeWith, $blnUseThisDetails) {
+			Person::GetDatabase()->TransactionBegin();
+
+			if (!$blnUseThisDetails) {
+				$this->FirstName = $objPersonMergeWith->FirstName;
+				$this->MiddleName = $objPersonMergeWith->MiddleName;
+				$this->LastName = $objPersonMergeWith->LastName;
+				$this->MailingLabel = $objPersonMergeWith->MailingLabel;
+				$this->PriorLastNames = $objPersonMergeWith->PriorLastNames;
+				$this->Nickname = $objPersonMergeWith->Nickname;
+				$this->Title = $objPersonMergeWith->Title;
+				$this->Suffix = $objPersonMergeWith->Suffix;
+				$this->Gender = $objPersonMergeWith->Gender;
+				$this->DateOfBirth = $objPersonMergeWith->DateOfBirth;
+				$this->DobYearApproximateFlag = $objPersonMergeWith->DobYearApproximateFlag;
+				$this->DobGuessedFlag = $objPersonMergeWith->DobGuessedFlag;
+				$this->Age = $objPersonMergeWith->Age;
+				$this->DeceasedFlag = $objPersonMergeWith->DeceasedFlag;
+				$this->DateDeceased = $objPersonMergeWith->DateDeceased;
+			}
+
+
 			
+
+
+			$this->RefreshAge(false);
+			$this->RefreshMaritalStatusTypeId(false);
+			$this->RefreshMembershipStatusTypeId(false);
+			$this->RefreshPrimaryContactInfo(false);
+
+			$this->Save();
+			$this->RefreshNameItemAssociations();
+			Person::GetDatabase()->TransactionCommit();
 		}
 
 		// Override or Create New Load/Count methods
