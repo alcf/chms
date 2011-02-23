@@ -231,6 +231,10 @@
 
 	div.sectionTwoCol { width: 478px; float: left; border-right: 1px dotted #ccc; }
 	div.sectionTwoColRight { border-right: 0; border-left: 1px dotted #ccc; }
+	
+	div.subnavContent div.sectionTwoCol { width: 367px; }
+	div.subnavContent div.sectionTwoCol div.lvp div.left { width: 100px; }
+	div.subnavContent div.sectionTwoColRight { margin-left: 10px; }
 
 	div.sectionBatchInfo { background-color: #5a768e; color: #fff; }
 

@@ -858,6 +858,16 @@
 			return $strEmail;
 		}
 
+
+		/**
+		 * Merges two records together.
+		 * @param Person $objPersonMergeWith
+		 * @param boolean $blnUseThisDetails boolean on whether to use this person's Person object details, or if false, use the PersonMergeWith's
+		 */
+		public function MergeWith(Person $objPersonMergeWith, $blnUseThisDetails) {
+			
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
