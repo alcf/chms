@@ -16,7 +16,8 @@
 			'groups' => array('Groups', 'Groups'),
 			'comments' => array('Comments', 'Comments'),
 			'stewardship' => array('Stewardship', 'Stewardship'),
-			'attributes' => array('Attributes', 'Attributes')
+			'attributes' => array('Attributes', 'Attributes'),
+			'merge' => array('Merge Records', 'Merge')
 		);
 		public $strUrlHashArgument;
 
@@ -61,7 +62,11 @@
 			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
 				unset($this->strSubNavItemArray['stewardship']);
 			}
-
+			
+			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::MergeIndividuals)) {
+				unset($this->strSubNavItemArray['merge']);
+			}
+			
 			$this->lblHeading = new QLabel($this);
 			$this->lblSubheading = new QLabel($this);
 			$this->lblSubheading->CssClass = 'subhead';
