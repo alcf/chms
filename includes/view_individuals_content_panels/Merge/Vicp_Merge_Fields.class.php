@@ -1,4 +1,6 @@
 <?php
+	QApplication::Authenticate(null, array(PermissionType::MergeIndividuals));
+
 	class Vicp_Merge_Fields extends Vicp_Base {
 		/**
 		 * @var Person

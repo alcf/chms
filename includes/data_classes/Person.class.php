@@ -868,6 +868,9 @@
 		 * @param boolean $blnUseThisDetails boolean on whether to use this person's Person object details, or if false, use the PersonMergeWith's
 		 */
 		public function MergeWith(Person $objPersonMergeWith, $blnUseThisDetails) {
+			QLog::Log(sprintf('Merging %s (ID %s) with %s (ID %s) - %s', $this->Name, $this->Id, $objPersonMergeWith->Name, $objPersonMergeWith->Id,
+				$blnUseThisDetails ? 'left' : 'right'));
+
 			Person::GetDatabase()->TransactionBegin();
 
 			// Household Participation Records
@@ -898,7 +901,15 @@
 				$objParticipation->PersonId = $this->Id;
 				$objParticipation->Save();
 			} else {
-				// TODO: members of multiple households! but head of none
+				// Otherwise: members of multiple households! but head of none
+				foreach ($objPersonMergeWith->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+					if (HouseholdParticipation::LoadByPersonIdHouseholdId($this->Id, $objHouseholdParticipation->HouseholdId)) {
+						$objHouseholdParticipation->Delete();
+					} else {
+						$objHouseholdParticipation->PersonId = $this->Id;
+						$objHouseholdParticipation->Save();
+					}
+				}
 			}
 
 			if (!$blnUseThisDetails) {

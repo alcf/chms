@@ -1,4 +1,6 @@
 <?php
+	QApplication::Authenticate(null, array(PermissionType::MergeIndividuals));
+
 	class Vicp_Merge extends Vicp_Base {
 		public $txtName;
 		public $txtFirstName;
