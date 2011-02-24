@@ -13,13 +13,15 @@
 		 */
 		public static function CreateClient($strServerUri, $intServerPort, $strUsername, $strPassword) {
 			$objClient = new GroupsPopClient();
-			$objClient->objSocket = fsockopen($strServerUri, $intServerPort);
+
+			$objClient->objSocket = @fsockopen($strServerUri, $intServerPort);
+			if (!$objClient->objSocket) return null;
 
 			$objClient->ReceiveResponse('Initial Handshake');
 
 			$objClient->SendCommand(sprintf('USER %s', $strUsername));
 			$objClient->ReceiveResponse('USER Specification');
-			
+
 			$objClient->SendCommand(sprintf('PASS %s', $strPassword));
 			$objClient->ReceiveResponse('PASS Specification');
 
