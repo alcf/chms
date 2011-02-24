@@ -867,6 +867,31 @@
 		public function MergeWith(Person $objPersonMergeWith, $blnUseThisDetails) {
 			Person::GetDatabase()->TransactionBegin();
 
+			// Household Participation Records
+			if ($this->HouseholdAsHead && $objPersonMergeWith->HouseholdAsHead) {
+				$this->HouseholdAsHead->MergeHousehold($objPersonMergeWith->HouseholdAsHead, $this);
+			} else if ($this->HouseholdAsHead) {
+				// Go through each MergeWith HouseholdParticipation -- Throw if it's another household, Delete if it's this Household-as-Head
+				foreach ($objPersonMergeWith->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+					if ($objHouseholdParticipation->HouseholdId != $this->HouseholdAsHead->Id)
+						throw new QCallerException('Cannot merge this head of household with a person record that exists in other households');
+					else {
+						$objHouseholdParticipation->Delete();
+						if (!$objHouseholdParticipation->Household->CountHouseholdParticipations()) $objHouseholdParticipation->Household->Delete();
+					}
+				}
+			} else if ($objPersonMergeWith->HouseholdAsHead) {
+				// Go through each of this's HouseholdParticipation -- Throw if it's another household, Delete if it's MergeWith's Household-as-Head
+				foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+					if ($objHouseholdParticipation->HouseholdId != $objPersonMergeWith->HouseholdAsHead->Id)
+						throw new QCallerException('Cannot merge MergeWith head of household with this person record which exists in other households');
+					else {
+						$objHouseholdParticipation->Delete();
+						if (!$objHouseholdParticipation->Household->CountHouseholdParticipations()) $objHouseholdParticipation->Household->Delete();
+					}
+				}
+			}
+
 			if (!$blnUseThisDetails) {
 				$this->FirstName = $objPersonMergeWith->FirstName;
 				$this->MiddleName = $objPersonMergeWith->MiddleName;
@@ -943,10 +968,6 @@
 
 			// NameItemAssn
 			$objPersonMergeWith->UnassociateAllNameItems();
-
-
-			// Household Participation Records
-			
 
 
 			// Marrriage Records
@@ -1064,6 +1085,8 @@
 
 			$this->Save();
 			$this->RefreshNameItemAssociations();
+
+			$objPersonMergeWith->Delete();
 			Person::GetDatabase()->TransactionCommit();
 		}
 

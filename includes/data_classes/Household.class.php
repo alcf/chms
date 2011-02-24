@@ -206,16 +206,17 @@
 		 * All "Roles" will be reset by calling RefreshRole() on each HouseholdParticipation record.
 		 * @param Household $objHousehold
 		 * @param Person $objNewHeadPerson
+		 * @param boolean $blnTransaction whether or not to use a local transaction
 		 * @return void
 		 */
-		public function MergeHousehold(Household $objHousehold, Person $objNewHeadPerson) {
+		public function MergeHousehold(Household $objHousehold, Person $objNewHeadPerson, $blnTransaction = true) {
 			// Ensure the specified HeadPerson is part of either household
 			if (!HouseholdParticipation::LoadByPersonIdHouseholdId($objNewHeadPerson->Id, $this->Id) &&
 				!HouseholdParticipation::LoadByPersonIdHouseholdId($objNewHeadPerson->Id, $objHousehold->Id)) {
 				throw new QCallerException('Specified HeadPerson of this newly merged Household not a member of either household');
 			}
 
-			self::GetDatabase()->TransactionBegin();
+			if ($blnTransaction) self::GetDatabase()->TransactionBegin();
 
 			try {
 				// Get all the members of the Merging Hosuehold
@@ -271,7 +272,7 @@
 				throw $objExc;
 			}
 
-			self::GetDatabase()->TransactionCommit();
+			if ($blnTransaction) self::GetDatabase()->TransactionCommit();
 		}
 
 		/**
