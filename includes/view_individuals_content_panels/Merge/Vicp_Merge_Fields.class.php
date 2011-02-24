@@ -52,13 +52,13 @@
 		public function btnLeft_Click() {
 			$this->objPerson->MergeWith($this->objPersonMergeWith, true);
 			QApplication::DisplayAlert('The records have been merged.');
-			$this->ReturnTo($this->objPerson->LinkUrl);
+			$this->ReturnTo($this->objPerson->RefreshLinkUrl);
 		}
 
 		public function btnRight_Click() {
 			$this->objPerson->MergeWith($this->objPersonMergeWith, false);
 			QApplication::DisplayAlert('The records have been merged.');
-			$this->ReturnTo($this->objPerson->LinkUrl);
+			$this->ReturnTo($this->objPerson->RefreshLinkUrl);
 		}
 	}
 ?>

@@ -192,6 +192,9 @@
 				case 'LinkUrl':
 					return sprintf('/individuals/view.php/%s#general', $this->intId);
 
+				case 'RefreshLinkUrl':
+					return sprintf('/individuals/refresh_view.php/%s', $this->intId);
+
 				case 'LinkHtml':
 					return sprintf('<a href="%s" title="View %s\'s Information">%s</a>', $this->LinkUrl, QApplication::HtmlEntities($this->FormalName), QApplication::HtmlEntities($this->FormalName));
 
@@ -877,19 +880,25 @@
 						throw new QCallerException('Cannot merge this head of household with a person record that exists in other households');
 					else {
 						$objHouseholdParticipation->Delete();
-						if (!$objHouseholdParticipation->Household->CountHouseholdParticipations()) $objHouseholdParticipation->Household->Delete();
 					}
 				}
-			} else if ($objPersonMergeWith->HouseholdAsHead) {
+			} else if ($objHousehold = $objPersonMergeWith->HouseholdAsHead) {
 				// Go through each of this's HouseholdParticipation -- Throw if it's another household, Delete if it's MergeWith's Household-as-Head
 				foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
 					if ($objHouseholdParticipation->HouseholdId != $objPersonMergeWith->HouseholdAsHead->Id)
 						throw new QCallerException('Cannot merge MergeWith head of household with this person record which exists in other households');
 					else {
 						$objHouseholdParticipation->Delete();
-						if (!$objHouseholdParticipation->Household->CountHouseholdParticipations()) $objHouseholdParticipation->Household->Delete();
 					}
 				}
+
+				$objHousehold->HeadPerson = $this;
+				$objHousehold->Save();
+				$objParticipation = HouseholdParticipation::LoadByPersonIdHouseholdId($objPersonMergeWith->Id, $objHousehold->Id);
+				$objParticipation->PersonId = $this->Id;
+				$objParticipation->Save();
+			} else {
+				// TODO: members of multiple households! but head of none
 			}
 
 			if (!$blnUseThisDetails) {
