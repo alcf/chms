@@ -891,11 +891,11 @@
 				// Check for double-defined attributes
 				if ($objDoubleDefinedAttribute = AttributeValue::LoadByAttributeIdPersonId($objAttributeValue->AttributeId, $this->Id)) {
 					if ($blnUseThisDetails) {
+						$objAttributeValue->Delete();
+					} else {
 						$objDoubleDefinedAttribute->Delete();
 						$objAttributeValue->PersonId = $this->Id;
 						$objAttributeValue->Save();
-					} else {
-						$objAttributeValue->Delete();
 					}
 
 				// Nothing double-defined -- just move it over!
@@ -945,20 +945,116 @@
 			$objPersonMergeWith->UnassociateAllNameItems();
 
 
-			// Marrriage Records
 			// Household Participation Records
-			// Family Relationships
-			// Phones
-			// Addresses
-			// Email
-			// Other Contact Info
-			// Checking Account Lookups
-			// Stewardship Contributions
-			// Stewardship Pledges
-			// Stewardship Post Line Items
-			// Email Message Route
-			// Search Query
 			
+
+
+			// Marrriage Records
+			foreach ($objPersonMergeWith->GetMarriageArray() as $objMarriage) {
+				$this->CreateMarriageWith($objMarriage->MarriedToPerson, $objMarriage->DateStart, $objMarriage->DateEnd, $objMarriage->MarriageStatusTypeId);
+				$objMarriage->DeleteThisAndLinked();
+			}
+			foreach ($objPersonMergeWith->GetMarriageAsMarriedToArray() as $objMarriage) {
+				$this->CreateMarriageWith($objMarriage->Person, $objMarriage->DateStart, $objMarriage->DateEnd, $objMarriage->MarriageStatusTypeId);
+				$objMarriage->DeleteThisAndLinked();
+			}
+
+
+			// Family Relationships
+			foreach ($objPersonMergeWith->GetRelationshipArray() as $objRelationship) {
+				if (!Relationship::LoadByPersonIdRelatedToPersonId($this->Id, $objRelationship->RelatedToPersonId))
+					$this->AddRelationship($objRelationship->RelatedToPerson, $objRelationship->RelationshipTypeId);
+				$objRelationship->DeleteThisAndLinked();
+			}
+			foreach ($objPersonMergeWith->GetRelationshipAsRelatedToArray() as $objRelationship) {
+				if (!Relationship::LoadByPersonIdRelatedToPersonId($this->Id, $objRelationship->PersonId))
+					$this->AddRelationship($objRelationship->Person, $objRelationship->RelationshipTypeId);
+				$objRelationship->DeleteThisAndLinked();
+			}
+
+
+			// Phones
+			foreach ($objPersonMergeWith->GetPhoneArray() as $objContact) {
+				$objContact->PersonId = $this->Id;
+				$objContact->Save();
+			}
+
+
+			// Addresses
+			foreach ($objPersonMergeWith->GetAddressArray() as $objContact) {
+				$objContact->PersonId = $this->Id;
+				$objContact->Save();
+			}
+
+
+			// Email
+			foreach ($objPersonMergeWith->GetEmailArray() as $objContact) {
+				$objContact->PersonId = $this->Id;
+				$objContact->Save();
+			}
+
+
+			// Other Contact Info
+			foreach ($objPersonMergeWith->GetOtherContactInfoArray() as $objContact) {
+				$objContact->PersonId = $this->Id;
+				$objContact->Save();
+			}
+
+
+			// Checking Account Lookups
+			foreach ($objPersonMergeWith->GetCheckingAccountLookupArray() as $objCheckingAccount) {
+				$objPersonMergeWith->UnassociateCheckingAccountLookup($objCheckingAccount);
+				if (!$this->IsCheckingAccountLookupAssociated($objCheckingAccount)) $this->AssociateCheckingAccountLookup($objCheckingAccount);
+			}
+
+
+			// Stewardship Contributions
+			foreach ($objPersonMergeWith->GetStewardshipContributionArray() as $objStewardship) {
+				$objStewardship->PersonId = $this->Id;
+				$objStewardship->Save();
+			}
+
+
+			// Stewardship Pledges
+			foreach ($objPersonMergeWith->GetStewardshipPledgeArray() as $objPledge) {
+				// Check for double-defined pledge
+				if ($objDoubleDefinedPledge = StewardshipPledge::LoadByPersonIdStewardshipFundId($this->Id, $objPledge->StewardshipFundId)) {
+					if ($blnUseThisDetails) {
+						$objPledge->Delete();
+					} else {
+						$objDoubleDefinedPledge->Delete();
+						$objPledge->PersonId = $this->Id;
+						$objPledge->Save();
+					}
+					
+				// Nope, just move it over like normal
+				} else {
+					$objPledge->PersonId = $this->Id;
+					$objPledge->Save();
+				}
+			}
+
+
+			// Stewardship Post Line Items
+			foreach ($objPersonMergeWith->GetStewardshipPostLineItemArray() as $objStewardship) {
+				$objStewardship->PersonId = $this->Id;
+				$objStewardship->Save();
+			}
+
+
+			// Email Message Route
+			foreach ($objPersonMergeWith->GetEmailMessageRouteArray() as $objEmailMessageRoute) {
+				$objEmailMessageRoute->PersonId = $this->Id;
+				$objEmailMessageRoute->Save();
+			}
+
+
+			// Search Query
+			foreach ($objPersonMergeWith->GetSearchQueryArray() as $objSearchQuery) {
+				$objSearchQuery->PersonId = $this->Id;
+				$objSearchQuery->Save();
+			}
+
 
 			// Final Refresh/Cleanup
 			$this->RefreshAge(false);
