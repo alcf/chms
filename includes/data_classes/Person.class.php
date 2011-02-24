@@ -886,9 +886,81 @@
 			}
 
 
+			// Attributes
+			foreach ($objPersonMergeWith->GetAttributeValueArray() as $objAttributeValue) {
+				// Check for double-defined attributes
+				if ($objDoubleDefinedAttribute = AttributeValue::LoadByAttributeIdPersonId($objAttributeValue->AttributeId, $this->Id)) {
+					if ($blnUseThisDetails) {
+						$objDoubleDefinedAttribute->Delete();
+						$objAttributeValue->PersonId = $this->Id;
+						$objAttributeValue->Save();
+					} else {
+						$objAttributeValue->Delete();
+					}
+
+				// Nothing double-defined -- just move it over!
+				} else {
+					$objAttributeValue->PersonId = $this->Id;
+					$objAttributeValue->Save();
+				}
+			}
+
+
+			// Comments
+			foreach ($objPersonMergeWith->GetCommentArray() as $objComment) {
+				$objComment->PersonId = $this->Id;
+				$objComment->Save();
+			}
+
+
+			// Memberships
+			foreach ($objPersonMergeWith->GetMembershipArray() as $objMembership) {
+				$objMembership->PersonId = $this->Id;
+				$objMembership->Save();
+			}
+
+
+			// Communication Lists
+			foreach ($objPersonMergeWith->GetCommunicationListArray() as $objCommList) {
+				$objPersonMergeWith->UnassociateCommunicationList($objCommList);
+				if (!$this->IsCommunicationListAssociated($objCommList)) $this->AssociateCommunicationList($objCommList);
+			}
+
+
+			// Head Shots
+			foreach ($objPersonMergeWith->GetHeadShotArray() as $objHeadShot) {
+				$objHeadShot->PersonId = $this->Id;
+				$objHeadShot->Save();
+			}
 			
 
+			// Group Participation
+			foreach ($objPersonMergeWith->GetGroupParticipationArray() as $objGroupParticipation) {
+				$objGroupParticipation->PersonId = $this->Id;
+				$objGroupParticipation->Save();
+			}
 
+
+			// NameItemAssn
+			$objPersonMergeWith->UnassociateAllNameItems();
+
+
+			// Marrriage Records
+			// Household Participation Records
+			// Family Relationships
+			// Phones
+			// Addresses
+			// Email
+			// Other Contact Info
+			// Checking Account Lookups
+			// Stewardship Contributions
+			// Stewardship Pledges
+			// Stewardship Post Line Items
+			// Email Message Route
+			// Search Query
+			
+
+			// Final Refresh/Cleanup
 			$this->RefreshAge(false);
 			$this->RefreshMaritalStatusTypeId(false);
 			$this->RefreshMembershipStatusTypeId(false);
