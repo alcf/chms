@@ -14,7 +14,7 @@
 		<?php $this->dtgBatches->Render(); ?>
 	</div>
 
-	<div class="buttonBar" style="color: #666;">
+	<div class="buttonBar" style="color: #666; text-align: center;">
 		<a href="/stewardship/search/" class="cancel">Search for a Transaction</a>
 		&nbsp;|&nbsp;
 		Report: Invalid Addresses for <a href="/stewardship/reports/invalid_addresses.php/<?php _p(QDateTime::Now()->Year-1); ?>" class="cancel"><?php _p(QDateTime::Now()->Year - 1); ?></a>
@@ -22,6 +22,9 @@
 		&nbsp;|&nbsp;
 		Report: Duplicate Names for <a href="/stewardship/reports/duplicate_names.php/<?php _p(QDateTime::Now()->Year-1); ?>" class="cancel"><?php _p(QDateTime::Now()->Year - 1); ?></a>
 		or <a href="/stewardship/reports/duplicate_names.php/<?php _p(QDateTime::Now()->Year); ?>" class="cancel"><?php _p(QDateTime::Now()->Year); ?></a>
+
+		<br/><br/>
+		<a href="/stewardship/pledges/" class="cancel">View Outstanding Pledges</a>
 		&nbsp;|&nbsp;
 		<a href="/stewardship/receipts/" class="cancel">View/Generate Bulk Receipts</a>
 		&nbsp;|&nbsp;
