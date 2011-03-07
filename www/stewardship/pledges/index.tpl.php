@@ -13,6 +13,9 @@
 	<div class="section">
 		<?php $this->dtgPledges->Render(); ?>
 	</div>
+	<div class="buttonBar">
+		<a href="#" <?php $this->pxyActiveFlagToggleAll->RenderAsEvents(); ?>>De-Activate All Pledges on this Page</a>
+	</div>
 
 	<br/><br/>
 

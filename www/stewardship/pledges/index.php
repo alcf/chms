@@ -11,24 +11,57 @@
 		protected $lstFund;
 		protected $lstActiveFlag;
 		protected $lstFulfilledFlag;
+		
+		protected $pxyActiveFlagToggle;
+		protected $pxyActiveFlagToggleAll;
+		
+		public function RenderActiveFlag(StewardshipPledge $objPledge) {
+			if ($objPledge->ActiveFlag) {
+				return sprintf('Y <a href="#" %s><img title="Deactivate This Pledge" src="/assets/images/icons/arrow_refresh.png"/></a>', $this->pxyActiveFlagToggle->RenderAsEvents($objPledge->Id, false));
+			}
+		}
+		
+		public function pxyActiveFlagToggle_Click($strFormId, $strControlId, $strParameter) {
+			$objPledge = StewardshipPledge::Load($strParameter);
+			$objPledge->ActiveFlag = false;
+			$objPledge->Save();
+			$this->dtgPledges->Refresh();
+		}
+
+		public function pxyActiveFlagToggleAll_Click() {
+			$this->dtgPledges_Bind();
+			foreach ($this->dtgPledges->DataSource as $objPledge) {
+				$objPledge->ActiveFlag = false;
+				$objPledge->Save();
+			}
+			$this->dtgPledges->Refresh();
+		}
 
 		protected function Form_Create() {
 			$this->dtgPledges = new StewardshipPledgeDataGrid($this);
 			$this->dtgPledges->Paginator = new QPaginator($this->dtgPledges);
-			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->Person->LastName, 'Name=Person', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'Width=200px', 'HtmlEntities=false');
+			$objCol = $this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->Person->LastName, 'Name=Person', 'Html=<?= $_ITEM->Person->LinkHtml; ?>', 'Width=200px', 'HtmlEntities=false');
+			$objCol->OrderByClause = QQ::OrderBy(QQN::StewardshipPledge()->Person->LastName, QQN::StewardshipPledge()->Person->FirstName, QQN::StewardshipPledge()->Id);
 			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->StewardshipFund->Name, 'Name=Fund',  'Width=170px', 'FontSize=10px');
 			$this->dtgPledges->MetaAddColumn('PledgeAmount', 'Html=<?= $_FORM->RenderAmount($_ITEM, $_ITEM->PledgeAmount); ?>', 'HtmlEntities=false', 'Width=90px', 'Name=Pledged');
 			$this->dtgPledges->MetaAddColumn('RemainingAmount', 'Html=<?= $_FORM->RenderAmount($_ITEM, $_ITEM->RemainingAmount); ?>', 'HtmlEntities=false', 'Width=90px', 'Name=Remaining');
 			$this->dtgPledges->MetaAddColumn('DateStarted', 'Width=85px', 'FontSize=10px');
 			$this->dtgPledges->MetaAddColumn('DateEnded', 'Width=85px', 'FontSize=10px');
 			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->FulfilledFlag, 'Html=<?= ($_ITEM->FulfilledFlag ? "Y" : ""); ?>', 'Name=Fulfilled?', 'Width=70px');
-			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->ActiveFlag, 'Html=<?= ($_ITEM->ActiveFlag ? "Y" : ""); ?>', 'Name=Active?', 'Width=70px');
+			$this->dtgPledges->MetaAddColumn(QQN::StewardshipPledge()->ActiveFlag, 'Html=<?= $_FORM->RenderActiveFlag($_ITEM); ?>', 'Name=Active?', 'Width=70px', 'HtmlEntities=false');
 			$this->dtgPledges->SetDataBinder('dtgPledges_Bind');
 			
 			$this->dtgPledges->NoDataHtml = '<strong>No results.</strong><br/>Please specify search parameters above.';
 
 			$this->dtgPledges->SortColumnIndex = 0;
 			$this->dtgPledges->SortDirection = 0;
+
+			$this->pxyActiveFlagToggle = new QControlProxy($this);
+			$this->pxyActiveFlagToggle->AddAction(new QClickEvent(), new QAjaxAction('pxyActiveFlagToggle_Click'));
+			$this->pxyActiveFlagToggle->AddAction(new QClickEvent(), new QTerminateAction());
+			$this->pxyActiveFlagToggleAll = new QControlProxy($this);
+			$this->pxyActiveFlagToggleAll->AddAction(new QClickEvent(), new QAjaxAction('pxyActiveFlagToggleAll_Click'));
+			$this->pxyActiveFlagToggleAll->AddAction(new QClickEvent(), new QTerminateAction());
 
 			$this->lstFund = new QListBox($this);
 			$this->lstFund->AddItem('- View All -');
