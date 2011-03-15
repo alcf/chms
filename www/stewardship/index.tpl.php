@@ -24,6 +24,8 @@
 		or <a href="/stewardship/reports/duplicate_names.php/<?php _p(QDateTime::Now()->Year); ?>" class="cancel"><?php _p(QDateTime::Now()->Year); ?></a>
 
 		<br/><br/>
+		<a href="/stewardship/reports/monthly_giving.php" class="cancel">Monthly Giving Report</a>
+		&nbsp;|&nbsp;
 		<a href="/stewardship/pledges/" class="cancel">View Outstanding Pledges</a>
 		&nbsp;|&nbsp;
 		<a href="/stewardship/receipts/" class="cancel">View/Generate Bulk Receipts</a>
