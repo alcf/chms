@@ -30,7 +30,7 @@
 			$this->lstMonth->AddAction(new QChangeEvent(), new QAjaxAction('lstDate_Change'));
 
 			$this->dtgReport = new QDataGrid($this);
-			$this->dtgReport->AddColumn(new QDataGridColumn('Fund', '<?= StewardshipFund::Load($_ITEM[0])->Name; ?>', 'Width=400px'));
+			$this->dtgReport->AddColumn(new QDataGridColumn('Fund', '<?= $_FORM->RenderRow($_ITEM); ?><?= StewardshipFund::Load($_ITEM[0])->Name; ?>', 'Width=400px'));
 			$this->dtgReport->AddColumn(new QDataGridColumn('Monthly Total', '<?= QApplication::DisplayCurrency($_ITEM[1]); ?>', 'Width=400px'));
 			$this->dtgReport->AddColumn(new QDataGridColumn('YTD', '<?= QApplication::DisplayCurrency($_ITEM[2]); ?>', 'Width=400px'));
 			
@@ -63,6 +63,13 @@
 			$this->dtgReport->DataSource = $objArray;
 		}
 		
+		public function RenderRow($objLineItem) {
+			if (!$objLineItem[1]) {
+				$objRowStyle = new QDataGridRowStyle();
+				$objRowStyle->ForeColor = '#aaa';
+				$this->dtgReport->OverrideRowStyle($this->dtgReport->CurrentRowIndex, $objRowStyle);
+			}
+		}
 		public function lstDate_Change() {
 			QApplication::Redirect('/stewardship/reports/monthly_giving.php/' . $this->lstYear->SelectedValue . '/' . $this->lstMonth->SelectedValue);
 		}
