@@ -53,7 +53,36 @@
 			
 			return $strToReturn;
 		}
+		
+		/**
+		 * Returns an array of 2-item arrays, where each item has the following index:
+		 * 	0: stewardship_fund_id
+		 * 	1; total amount YTD
+		 * for a given month
+		 * @param QDateTime $dttMonth
+		 * @return string[][]
+		 */
+		public static function GetReportYtdByFundForMonth(QDateTime $dttMonth) {
+			$dttMonth->Day = 1;
+			$dttMonth->SetTime(null, null, null);
+			$dttNextMonth = new QDateTime($dttMonth);
+			$dttNextMonth->Month++;
+			$dttNextMonth->SetTime(null, null, null);
 
+			$dttMonth->Month = 1;
+			
+			$objResult = StewardshipPostAmount::GetDatabase()->Query(sprintf("SELECT stewardship_fund_id, SUM(amount) AS sum_amount FROM stewardship_post_amount, stewardship_post WHERE
+				stewardship_post_id=stewardship_post.id AND date_posted >= '%s' AND date_posted < '%s' GROUP BY stewardship_fund_id ORDER BY SUM(amount) DESC;",
+				$dttMonth->ToString('YYYY-MM-DD'), $dttNextMonth->ToString('YYYY-MM-DD')));
+
+			$strToReturn = array();
+			while ($objRow = $objResult->GetNextRow()) {
+				$strToReturn[] = array($objRow->GetColumn('stewardship_fund_id'), $objRow->GetColumn('sum_amount'));
+			}
+			
+			return $strToReturn;
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
