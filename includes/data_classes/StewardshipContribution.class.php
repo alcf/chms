@@ -89,6 +89,9 @@
 						QApplication::DisplayCurrency($this->TotalAmount), 
 						StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
 
+				case 'PostLineItemDescription':
+					return trim(sprintf('%s %s', StewardshipContributionType::$NameArray[$this->intStewardshipContributionTypeId], $this->Source));
+
 				default:
 					try {
 						return parent::__get($strName);
@@ -425,7 +428,7 @@
 					$objPostLineItem->StewardshipContribution = $this;
 					$objPostLineItem->PersonId = $intPersonId;
 					$objPostLineItem->StewardshipFundId = $intFundId;
-					$objPostLineItem->Description = trim(sprintf('%s %s', StewardshipContributionType::$NameArray[$this->intStewardshipContributionTypeId], $this->Source));
+					$objPostLineItem->Description = $this->PostLineItemDescription;
 					$objPostLineItem->Amount = $fltAmount;
 					$objPostLineItem->Save();
 					$blnPosted = true;

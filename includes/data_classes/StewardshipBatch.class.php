@@ -254,6 +254,12 @@
 			}
 
 			$this->RefreshStatus();
+
+			// Let's refresh the descriptions
+			foreach ($this->GetStewardshipPostArray() as $objPostToRefresh)
+				foreach ($objPostToRefresh->GetStewardshipPostLineItemArray() as $objPostLineItem)
+					$objPostLineItem->RefreshDescription();
+
 			return $objPost;
 		}
 

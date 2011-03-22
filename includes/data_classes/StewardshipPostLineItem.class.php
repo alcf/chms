@@ -27,6 +27,15 @@
 			return sprintf('StewardshipPostLineItem Object %s',  $this->intId);
 		}
 
+		/**
+		 * Refreshes the Description field to be based off of whatever the linked Contribution's record Description should be
+		 * Primarily used by StewardshipBatch->PostBalance() when the posting process will actually "refresh" the description of everything posted to date
+		 * @param $blnSaveFlag
+		 */
+		public function RefreshDescription($blnSaveFlag = true) {
+			$this->Description = $this->StewardshipContribution->PostLineItemDescription;
+			if ($blnSaveFlag) $this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
