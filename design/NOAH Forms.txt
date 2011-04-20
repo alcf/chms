@@ -1,0 +1,12 @@
+* (future) Ability to create freeform form
+* All form, to fill out, a registration is required
+* Event registration tied to a user record
+	- can "register for self" or register for someone else
+	- support for register for two people?  (this is hard)
+* payment option
+	- pay by CC only
+	- partial payment (as a textbox), pay a set deposit amount, pay in full
+* registration limits
+	- no more than x people, vs. no more than X males / X females
+* Custom form entries
+* Custom reporting
