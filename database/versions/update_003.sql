@@ -88,6 +88,13 @@ CREATE TABLE `form_question`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `signup_form_type`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE UNIQUE INDEX `form_answer_idx` ON `form_answer` (`signup_entry_id`,`form_question_id`);
 
 CREATE INDEX `signup_entry_id_idx` ON `form_answer`(`signup_entry_id`);
