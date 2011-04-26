@@ -90,6 +90,10 @@
 	 * @property Relationship[] $_RelationshipAsRelatedToArray the value for the private _objRelationshipAsRelatedToArray (Read-Only) if set due to an ExpandAsArray on the relationship.related_to_person_id reverse relationship
 	 * @property SearchQuery $_SearchQuery the value for the private _objSearchQuery (Read-Only) if set due to an expansion on the search_query.person_id reverse relationship
 	 * @property SearchQuery[] $_SearchQueryArray the value for the private _objSearchQueryArray (Read-Only) if set due to an ExpandAsArray on the search_query.person_id reverse relationship
+	 * @property SignupEntry $_SignupEntry the value for the private _objSignupEntry (Read-Only) if set due to an expansion on the signup_entry.person_id reverse relationship
+	 * @property SignupEntry[] $_SignupEntryArray the value for the private _objSignupEntryArray (Read-Only) if set due to an ExpandAsArray on the signup_entry.person_id reverse relationship
+	 * @property SignupEntry $_SignupEntryAsSignupBy the value for the private _objSignupEntryAsSignupBy (Read-Only) if set due to an expansion on the signup_entry.signup_by_person_id reverse relationship
+	 * @property SignupEntry[] $_SignupEntryAsSignupByArray the value for the private _objSignupEntryAsSignupByArray (Read-Only) if set due to an ExpandAsArray on the signup_entry.signup_by_person_id reverse relationship
 	 * @property StewardshipContribution $_StewardshipContribution the value for the private _objStewardshipContribution (Read-Only) if set due to an expansion on the stewardship_contribution.person_id reverse relationship
 	 * @property StewardshipContribution[] $_StewardshipContributionArray the value for the private _objStewardshipContributionArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution.person_id reverse relationship
 	 * @property StewardshipPledge $_StewardshipPledge the value for the private _objStewardshipPledge (Read-Only) if set due to an expansion on the stewardship_pledge.person_id reverse relationship
@@ -669,6 +673,38 @@
 		 * @var SearchQuery[] _objSearchQueryArray;
 		 */
 		private $_objSearchQueryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupEntry object
+		 * (of type SignupEntry), if this Person object was restored with
+		 * an expansion on the signup_entry association table.
+		 * @var SignupEntry _objSignupEntry;
+		 */
+		private $_objSignupEntry;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupEntry objects
+		 * (of type SignupEntry[]), if this Person object was restored with
+		 * an ExpandAsArray on the signup_entry association table.
+		 * @var SignupEntry[] _objSignupEntryArray;
+		 */
+		private $_objSignupEntryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupEntryAsSignupBy object
+		 * (of type SignupEntry), if this Person object was restored with
+		 * an expansion on the signup_entry association table.
+		 * @var SignupEntry _objSignupEntryAsSignupBy;
+		 */
+		private $_objSignupEntryAsSignupBy;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupEntryAsSignupBy objects
+		 * (of type SignupEntry[]), if this Person object was restored with
+		 * an ExpandAsArray on the signup_entry association table.
+		 * @var SignupEntry[] _objSignupEntryAsSignupByArray;
+		 */
+		private $_objSignupEntryAsSignupByArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipContribution object
@@ -1453,6 +1489,34 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'signupentry__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupEntryArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupEntryArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentry__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupEntryArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupEntryArray[] = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'signupentryassignupby__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupEntryAsSignupByArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupEntryAsSignupByArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryassignupby__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupEntryAsSignupByArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupEntryAsSignupByArray[] = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryassignupby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'stewardshipcontribution__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1814,6 +1878,26 @@
 					$objToReturn->_objSearchQueryArray[] = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objSearchQuery = SearchQuery::InstantiateDbRow($objDbRow, $strAliasPrefix . 'searchquery__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupEntry Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupentry__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupEntryArray[] = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupEntry = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupEntryAsSignupBy Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupentryassignupby__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupEntryAsSignupByArray[] = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryassignupby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupEntryAsSignupBy = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryassignupby__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipContribution Virtual Binding
@@ -3087,6 +3171,30 @@
 					// if set due to an ExpandAsArray on the search_query.person_id reverse relationship
 					// @return SearchQuery[]
 					return (array) $this->_objSearchQueryArray;
+
+				case '_SignupEntry':
+					// Gets the value for the private _objSignupEntry (Read-Only)
+					// if set due to an expansion on the signup_entry.person_id reverse relationship
+					// @return SignupEntry
+					return $this->_objSignupEntry;
+
+				case '_SignupEntryArray':
+					// Gets the value for the private _objSignupEntryArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_entry.person_id reverse relationship
+					// @return SignupEntry[]
+					return (array) $this->_objSignupEntryArray;
+
+				case '_SignupEntryAsSignupBy':
+					// Gets the value for the private _objSignupEntryAsSignupBy (Read-Only)
+					// if set due to an expansion on the signup_entry.signup_by_person_id reverse relationship
+					// @return SignupEntry
+					return $this->_objSignupEntryAsSignupBy;
+
+				case '_SignupEntryAsSignupByArray':
+					// Gets the value for the private _objSignupEntryAsSignupByArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_entry.signup_by_person_id reverse relationship
+					// @return SignupEntry[]
+					return (array) $this->_objSignupEntryAsSignupByArray;
 
 				case '_StewardshipContribution':
 					// Gets the value for the private _objStewardshipContribution (Read-Only)
@@ -6618,6 +6726,370 @@
 
 			
 		
+		// Related Objects' Methods for SignupEntry
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupEntries as an array of SignupEntry objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupEntry[]
+		*/ 
+		public function GetSignupEntryArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupEntry::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupEntries
+		 * @return int
+		*/ 
+		public function CountSignupEntries() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupEntry::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupEntry
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function AssociateSignupEntry(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupEntry on this unsaved Person.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupEntry on this Person with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->PersonId = $this->intId;
+				$objSignupEntry->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupEntry
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function UnassociateSignupEntry(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntry on this unsaved Person.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntry on this Person with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->PersonId = null;
+				$objSignupEntry->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupEntries
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupEntries() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntry on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupEntry::LoadArrayByPersonId($this->intId) as $objSignupEntry) {
+					$objSignupEntry->PersonId = null;
+					$objSignupEntry->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupEntry
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupEntry(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntry on this unsaved Person.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntry on this Person with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_entry`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupEntries
+		 * @return void
+		*/ 
+		public function DeleteAllSignupEntries() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntry on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupEntry::LoadArrayByPersonId($this->intId) as $objSignupEntry) {
+					$objSignupEntry->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_entry`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for SignupEntryAsSignupBy
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupEntriesAsSignupBy as an array of SignupEntry objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupEntry[]
+		*/ 
+		public function GetSignupEntryAsSignupByArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupEntry::LoadArrayBySignupByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupEntriesAsSignupBy
+		 * @return int
+		*/ 
+		public function CountSignupEntriesAsSignupBy() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupEntry::CountBySignupByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupEntryAsSignupBy
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function AssociateSignupEntryAsSignupBy(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupEntryAsSignupBy on this unsaved Person.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupEntryAsSignupBy on this Person with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->SignupByPersonId = $this->intId;
+				$objSignupEntry->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupEntryAsSignupBy
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function UnassociateSignupEntryAsSignupBy(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsSignupBy on this unsaved Person.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsSignupBy on this Person with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`signup_by_person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . ' AND
+					`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->SignupByPersonId = null;
+				$objSignupEntry->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupEntriesAsSignupBy
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupEntriesAsSignupBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsSignupBy on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupEntry::LoadArrayBySignupByPersonId($this->intId) as $objSignupEntry) {
+					$objSignupEntry->SignupByPersonId = null;
+					$objSignupEntry->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`signup_by_person_id` = null
+				WHERE
+					`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupEntryAsSignupBy
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupEntryAsSignupBy(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsSignupBy on this unsaved Person.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsSignupBy on this Person with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_entry`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . ' AND
+					`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupEntriesAsSignupBy
+		 * @return void
+		*/ 
+		public function DeleteAllSignupEntriesAsSignupBy() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsSignupBy on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupEntry::LoadArrayBySignupByPersonId($this->intId) as $objSignupEntry) {
+					$objSignupEntry->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_entry`
+				WHERE
+					`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for StewardshipContribution
 		//-------------------------------------------------------------------
 
@@ -8055,6 +8527,8 @@
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
 	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
+	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntry
+	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntryAsSignupBy
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
@@ -8177,6 +8651,10 @@
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
 				case 'SearchQuery':
 					return new QQReverseReferenceNodeSearchQuery($this, 'searchquery', 'reverse_reference', 'person_id');
+				case 'SignupEntry':
+					return new QQReverseReferenceNodeSignupEntry($this, 'signupentry', 'reverse_reference', 'person_id');
+				case 'SignupEntryAsSignupBy':
+					return new QQReverseReferenceNodeSignupEntry($this, 'signupentryassignupby', 'reverse_reference', 'signup_by_person_id');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'person_id');
 				case 'StewardshipPledge':
@@ -8254,6 +8732,8 @@
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
 	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
+	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntry
+	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntryAsSignupBy
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
@@ -8377,6 +8857,10 @@
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
 				case 'SearchQuery':
 					return new QQReverseReferenceNodeSearchQuery($this, 'searchquery', 'reverse_reference', 'person_id');
+				case 'SignupEntry':
+					return new QQReverseReferenceNodeSignupEntry($this, 'signupentry', 'reverse_reference', 'person_id');
+				case 'SignupEntryAsSignupBy':
+					return new QQReverseReferenceNodeSignupEntry($this, 'signupentryassignupby', 'reverse_reference', 'signup_by_person_id');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'person_id');
 				case 'StewardshipPledge':

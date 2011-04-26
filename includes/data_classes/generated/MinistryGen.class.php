@@ -32,6 +32,8 @@
 	 * @property GroupRole[] $_GroupRoleArray the value for the private _objGroupRoleArray (Read-Only) if set due to an ExpandAsArray on the group_role.ministry_id reverse relationship
 	 * @property Ministry $_ChildMinistry the value for the private _objChildMinistry (Read-Only) if set due to an expansion on the ministry.parent_ministry_id reverse relationship
 	 * @property Ministry[] $_ChildMinistryArray the value for the private _objChildMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry.parent_ministry_id reverse relationship
+	 * @property SignupForm $_SignupForm the value for the private _objSignupForm (Read-Only) if set due to an expansion on the signup_form.ministry_id reverse relationship
+	 * @property SignupForm[] $_SignupFormArray the value for the private _objSignupFormArray (Read-Only) if set due to an ExpandAsArray on the signup_form.ministry_id reverse relationship
 	 * @property StewardshipFund $_StewardshipFund the value for the private _objStewardshipFund (Read-Only) if set due to an expansion on the stewardship_fund.ministry_id reverse relationship
 	 * @property StewardshipFund[] $_StewardshipFundArray the value for the private _objStewardshipFundArray (Read-Only) if set due to an ExpandAsArray on the stewardship_fund.ministry_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -171,6 +173,22 @@
 		 * @var Ministry[] _objChildMinistryArray;
 		 */
 		private $_objChildMinistryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupForm object
+		 * (of type SignupForm), if this Ministry object was restored with
+		 * an expansion on the signup_form association table.
+		 * @var SignupForm _objSignupForm;
+		 */
+		private $_objSignupForm;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupForm objects
+		 * (of type SignupForm[]), if this Ministry object was restored with
+		 * an ExpandAsArray on the signup_form association table.
+		 * @var SignupForm[] _objSignupFormArray;
+		 */
+		private $_objSignupFormArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipFund object
@@ -644,6 +662,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'signupform__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupFormArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupFormArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupFormArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupFormArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'stewardshipfund__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -751,6 +783,16 @@
 					$objToReturn->_objChildMinistryArray[] = Ministry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childministry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objChildMinistry = Ministry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childministry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupForm Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupform__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupFormArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupForm = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipFund Virtual Binding
@@ -1296,6 +1338,18 @@
 					// if set due to an ExpandAsArray on the ministry.parent_ministry_id reverse relationship
 					// @return Ministry[]
 					return (array) $this->_objChildMinistryArray;
+
+				case '_SignupForm':
+					// Gets the value for the private _objSignupForm (Read-Only)
+					// if set due to an expansion on the signup_form.ministry_id reverse relationship
+					// @return SignupForm
+					return $this->_objSignupForm;
+
+				case '_SignupFormArray':
+					// Gets the value for the private _objSignupFormArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_form.ministry_id reverse relationship
+					// @return SignupForm[]
+					return (array) $this->_objSignupFormArray;
 
 				case '_StewardshipFund':
 					// Gets the value for the private _objStewardshipFund (Read-Only)
@@ -2183,6 +2237,188 @@
 
 			
 		
+		// Related Objects' Methods for SignupForm
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupForms as an array of SignupForm objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupForm[]
+		*/ 
+		public function GetSignupFormArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupForm::LoadArrayByMinistryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupForms
+		 * @return int
+		*/ 
+		public function CountSignupForms() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupForm::CountByMinistryId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function AssociateSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupForm on this unsaved Ministry.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupForm on this Ministry with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->MinistryId = $this->intId;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function UnassociateSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this Ministry with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`ministry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->MinistryId = null;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupForms
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupForms() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByMinistryId($this->intId) as $objSignupForm) {
+					$objSignupForm->MinistryId = null;
+					$objSignupForm->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`ministry_id` = null
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this Ministry with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupForms
+		 * @return void
+		*/ 
+		public function DeleteAllSignupForms() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByMinistryId($this->intId) as $objSignupForm) {
+					$objSignupForm->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for StewardshipFund
 		//-------------------------------------------------------------------
 
@@ -2679,6 +2915,7 @@
 	 * @property-read QQReverseReferenceNodeGroup $Group
 	 * @property-read QQReverseReferenceNodeGroupRole $GroupRole
 	 * @property-read QQReverseReferenceNodeMinistry $ChildMinistry
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeStewardshipFund $StewardshipFund
 	 */
 	class QQNodeMinistry extends QQNode {
@@ -2711,6 +2948,8 @@
 					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
+				case 'SignupForm':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'ministry_id');
 				case 'StewardshipFund':
 					return new QQReverseReferenceNodeStewardshipFund($this, 'stewardshipfund', 'reverse_reference', 'ministry_id');
 
@@ -2740,6 +2979,7 @@
 	 * @property-read QQReverseReferenceNodeGroup $Group
 	 * @property-read QQReverseReferenceNodeGroupRole $GroupRole
 	 * @property-read QQReverseReferenceNodeMinistry $ChildMinistry
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeStewardshipFund $StewardshipFund
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -2773,6 +3013,8 @@
 					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
+				case 'SignupForm':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'ministry_id');
 				case 'StewardshipFund':
 					return new QQReverseReferenceNodeStewardshipFund($this, 'stewardshipfund', 'reverse_reference', 'ministry_id');
 

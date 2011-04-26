@@ -97,6 +97,27 @@
 		QApplicationBase::$ClassFile['emailoutgoingqueuemetacontrol'] = __DATA_META_CONTROLS__ . '/EmailOutgoingQueueMetaControl.class.php';
 		QApplicationBase::$ClassFile['emailoutgoingqueuedatagrid'] = __DATA_META_CONTROLS__ . '/EmailOutgoingQueueDataGrid.class.php';
 
+	// ClassPaths for the EventSignupForm class
+		QApplicationBase::$ClassFile['eventsignupform'] = __DATA_CLASSES__ . '/EventSignupForm.class.php';
+		QApplicationBase::$ClassFile['qqnodeeventsignupform'] = __DATA_CLASSES__ . '/EventSignupForm.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeeventsignupform'] = __DATA_CLASSES__ . '/EventSignupForm.class.php';
+		QApplicationBase::$ClassFile['eventsignupformmetacontrol'] = __DATA_META_CONTROLS__ . '/EventSignupFormMetaControl.class.php';
+		QApplicationBase::$ClassFile['eventsignupformdatagrid'] = __DATA_META_CONTROLS__ . '/EventSignupFormDataGrid.class.php';
+
+	// ClassPaths for the FormAnswer class
+		QApplicationBase::$ClassFile['formanswer'] = __DATA_CLASSES__ . '/FormAnswer.class.php';
+		QApplicationBase::$ClassFile['qqnodeformanswer'] = __DATA_CLASSES__ . '/FormAnswer.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeformanswer'] = __DATA_CLASSES__ . '/FormAnswer.class.php';
+		QApplicationBase::$ClassFile['formanswermetacontrol'] = __DATA_META_CONTROLS__ . '/FormAnswerMetaControl.class.php';
+		QApplicationBase::$ClassFile['formanswerdatagrid'] = __DATA_META_CONTROLS__ . '/FormAnswerDataGrid.class.php';
+
+	// ClassPaths for the FormQuestion class
+		QApplicationBase::$ClassFile['formquestion'] = __DATA_CLASSES__ . '/FormQuestion.class.php';
+		QApplicationBase::$ClassFile['qqnodeformquestion'] = __DATA_CLASSES__ . '/FormQuestion.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeformquestion'] = __DATA_CLASSES__ . '/FormQuestion.class.php';
+		QApplicationBase::$ClassFile['formquestionmetacontrol'] = __DATA_META_CONTROLS__ . '/FormQuestionMetaControl.class.php';
+		QApplicationBase::$ClassFile['formquestiondatagrid'] = __DATA_META_CONTROLS__ . '/FormQuestionDataGrid.class.php';
+
 	// ClassPaths for the Group class
 		QApplicationBase::$ClassFile['group'] = __DATA_CLASSES__ . '/Group.class.php';
 		QApplicationBase::$ClassFile['qqnodegroup'] = __DATA_CLASSES__ . '/Group.class.php';
@@ -285,6 +306,20 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodesearchquery'] = __DATA_CLASSES__ . '/SearchQuery.class.php';
 		QApplicationBase::$ClassFile['searchquerymetacontrol'] = __DATA_META_CONTROLS__ . '/SearchQueryMetaControl.class.php';
 		QApplicationBase::$ClassFile['searchquerydatagrid'] = __DATA_META_CONTROLS__ . '/SearchQueryDataGrid.class.php';
+
+	// ClassPaths for the SignupEntry class
+		QApplicationBase::$ClassFile['signupentry'] = __DATA_CLASSES__ . '/SignupEntry.class.php';
+		QApplicationBase::$ClassFile['qqnodesignupentry'] = __DATA_CLASSES__ . '/SignupEntry.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesignupentry'] = __DATA_CLASSES__ . '/SignupEntry.class.php';
+		QApplicationBase::$ClassFile['signupentrymetacontrol'] = __DATA_META_CONTROLS__ . '/SignupEntryMetaControl.class.php';
+		QApplicationBase::$ClassFile['signupentrydatagrid'] = __DATA_META_CONTROLS__ . '/SignupEntryDataGrid.class.php';
+
+	// ClassPaths for the SignupForm class
+		QApplicationBase::$ClassFile['signupform'] = __DATA_CLASSES__ . '/SignupForm.class.php';
+		QApplicationBase::$ClassFile['qqnodesignupform'] = __DATA_CLASSES__ . '/SignupForm.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesignupform'] = __DATA_CLASSES__ . '/SignupForm.class.php';
+		QApplicationBase::$ClassFile['signupformmetacontrol'] = __DATA_META_CONTROLS__ . '/SignupFormMetaControl.class.php';
+		QApplicationBase::$ClassFile['signupformdatagrid'] = __DATA_META_CONTROLS__ . '/SignupFormDataGrid.class.php';
 
 	// ClassPaths for the SmartGroup class
 		QApplicationBase::$ClassFile['smartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';

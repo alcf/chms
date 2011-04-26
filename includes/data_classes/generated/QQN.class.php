@@ -85,6 +85,24 @@
 			return new QQNodeEmailOutgoingQueue('email_outgoing_queue', null, null);
 		}
 		/**
+		 * @return QQNodeEventSignupForm
+		 */
+		static public function EventSignupForm() {
+			return new QQNodeEventSignupForm('event_signup_form', null, null);
+		}
+		/**
+		 * @return QQNodeFormAnswer
+		 */
+		static public function FormAnswer() {
+			return new QQNodeFormAnswer('form_answer', null, null);
+		}
+		/**
+		 * @return QQNodeFormQuestion
+		 */
+		static public function FormQuestion() {
+			return new QQNodeFormQuestion('form_question', null, null);
+		}
+		/**
 		 * @return QQNodeGroup
 		 */
 		static public function Group() {
@@ -245,6 +263,18 @@
 		 */
 		static public function SearchQuery() {
 			return new QQNodeSearchQuery('search_query', null, null);
+		}
+		/**
+		 * @return QQNodeSignupEntry
+		 */
+		static public function SignupEntry() {
+			return new QQNodeSignupEntry('signup_entry', null, null);
+		}
+		/**
+		 * @return QQNodeSignupForm
+		 */
+		static public function SignupForm() {
+			return new QQNodeSignupForm('signup_form', null, null);
 		}
 		/**
 		 * @return QQNodeSmartGroup
