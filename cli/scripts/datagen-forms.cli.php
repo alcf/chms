@@ -28,12 +28,16 @@
 				self::DisplayForEachTaskNext($strDescription);
 
 				$intCount = rand(self::FormsPerMinistryMinimum, self::FormsPerMinistryMaximum);
-				for ($i = 0; $i < $intCount; $i++)
-					self::GenerateFormInMinistry($objMinistry); 
+				self::DisplayForEachTaskStart($strDescriptionInside = '   Generating Signup Forms', $intCount);
+				for ($i = 0; $i < $intCount; $i++) {
+					self::DisplayForEachTaskNext($strDescriptionInside);
+					self::GenerateFormInMinistry($objMinistry);
+				}
+				self::DisplayForEachTaskEnd($strDescriptionInside, true);
 			}
 			self::DisplayForEachTaskEnd($strDescription);
 		}
-		
+
 		public static function GenerateFormInMinistry(Ministry $objMinistry) {
 			$objSignupForm = new SignupForm();
 			$objSignupForm->SignupFormTypeId = SignupFormType::Event;
@@ -175,7 +179,7 @@
 						while (!$objPerson) {
 							$objPerson = Person::Load(rand(1, self::$MaximumPersonId));
 							
-							if (!$objSignupForm->AllowMultipleFlag && $objSignupForm->IsPersonRegistered($objPerson)) $objPerson = null;
+							if ($objPerson && !$objSignupForm->AllowMultipleFlag && $objSignupForm->IsPersonRegistered($objPerson)) $objPerson = null;
 						}
 
 						$objSignup = new SignupEntry();
@@ -189,7 +193,7 @@
 								$objSignup->RefreshAmountBalance();
 								break;
 							case FormPaymentType::VariablePayment:
-								$objSignup->AmountPaid = rand(0, 3) ? rand(0, $ObjSignupForm->Cost) : $objSignupForm->Cost;
+								$objSignup->AmountPaid = rand(0, 3) ? rand(0, $objSignupForm->Cost) : $objSignupForm->Cost;
 								$objSignup->RefreshAmountBalance();
 								break;
 							case FormPaymentType::PayInFull:
