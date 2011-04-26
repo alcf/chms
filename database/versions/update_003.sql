@@ -95,6 +95,17 @@ CREATE TABLE `signup_form_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE INDEX `signup_form_id_idx` ON `signup_entry`(`signup_form_id`);
+ALTER TABLE `signup_entry` ADD FOREIGN KEY signup_form_id_idxfk_2 (`signup_form_id`) REFERENCES `signup_form` (`id`);
+
+CREATE INDEX `person_id_idx` ON `signup_entry`(`person_id`);
+ALTER TABLE `signup_entry` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `signup_by_person_id_idx` ON `signup_entry`(`signup_by_person_id`);
+ALTER TABLE `signup_entry` ADD FOREIGN KEY signup_by_person_id_idxfk (`signup_by_person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `amount_balance_idx` ON `signup_entry`(`amount_balance`);
+
 CREATE UNIQUE INDEX `form_answer_idx` ON `form_answer` (`signup_entry_id`,`form_question_id`);
 
 CREATE INDEX `signup_entry_id_idx` ON `form_answer`(`signup_entry_id`);
