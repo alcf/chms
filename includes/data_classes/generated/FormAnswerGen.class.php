@@ -18,7 +18,6 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $SignupEntryId the value for intSignupEntryId (Not Null)
 	 * @property integer $FormQuestionId the value for intFormQuestionId (Not Null)
-	 * @property integer $KeyedTableId the value for intKeyedTableId 
 	 * @property string $TextValue the value for strTextValue 
 	 * @property integer $IntegerValue the value for intIntegerValue 
 	 * @property boolean $BooleanValue the value for blnBooleanValue 
@@ -55,14 +54,6 @@
 		 */
 		protected $intFormQuestionId;
 		const FormQuestionIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column form_answer.keyed_table_id
-		 * @var integer intKeyedTableId
-		 */
-		protected $intKeyedTableId;
-		const KeyedTableIdDefault = null;
 
 
 		/**
@@ -452,7 +443,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'signup_entry_id', $strAliasPrefix . 'signup_entry_id');
 			$objBuilder->AddSelectItem($strTableName, 'form_question_id', $strAliasPrefix . 'form_question_id');
-			$objBuilder->AddSelectItem($strTableName, 'keyed_table_id', $strAliasPrefix . 'keyed_table_id');
 			$objBuilder->AddSelectItem($strTableName, 'text_value', $strAliasPrefix . 'text_value');
 			$objBuilder->AddSelectItem($strTableName, 'integer_value', $strAliasPrefix . 'integer_value');
 			$objBuilder->AddSelectItem($strTableName, 'boolean_value', $strAliasPrefix . 'boolean_value');
@@ -494,8 +484,6 @@
 			$objToReturn->intSignupEntryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'form_question_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'form_question_id'] : $strAliasPrefix . 'form_question_id';
 			$objToReturn->intFormQuestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'keyed_table_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'keyed_table_id'] : $strAliasPrefix . 'keyed_table_id';
-			$objToReturn->intKeyedTableId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'text_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_value'] : $strAliasPrefix . 'text_value';
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'integer_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'integer_value'] : $strAliasPrefix . 'integer_value';
@@ -727,7 +715,6 @@
 						INSERT INTO `form_answer` (
 							`signup_entry_id`,
 							`form_question_id`,
-							`keyed_table_id`,
 							`text_value`,
 							`integer_value`,
 							`boolean_value`,
@@ -735,7 +722,6 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
 							' . $objDatabase->SqlVariable($this->intFormQuestionId) . ',
-							' . $objDatabase->SqlVariable($this->intKeyedTableId) . ',
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->intIntegerValue) . ',
 							' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
@@ -761,7 +747,6 @@
 						SET
 							`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
 							`form_question_id` = ' . $objDatabase->SqlVariable($this->intFormQuestionId) . ',
-							`keyed_table_id` = ' . $objDatabase->SqlVariable($this->intKeyedTableId) . ',
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`integer_value` = ' . $objDatabase->SqlVariable($this->intIntegerValue) . ',
 							`boolean_value` = ' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
@@ -852,7 +837,6 @@
 			// Update $this's local variables to match
 			$this->SignupEntryId = $objReloaded->SignupEntryId;
 			$this->FormQuestionId = $objReloaded->FormQuestionId;
-			$this->intKeyedTableId = $objReloaded->intKeyedTableId;
 			$this->strTextValue = $objReloaded->strTextValue;
 			$this->intIntegerValue = $objReloaded->intIntegerValue;
 			$this->blnBooleanValue = $objReloaded->blnBooleanValue;
@@ -872,7 +856,6 @@
 					`id`,
 					`signup_entry_id`,
 					`form_question_id`,
-					`keyed_table_id`,
 					`text_value`,
 					`integer_value`,
 					`boolean_value`,
@@ -884,7 +867,6 @@
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
 					' . $objDatabase->SqlVariable($this->intFormQuestionId) . ',
-					' . $objDatabase->SqlVariable($this->intKeyedTableId) . ',
 					' . $objDatabase->SqlVariable($this->strTextValue) . ',
 					' . $objDatabase->SqlVariable($this->intIntegerValue) . ',
 					' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
@@ -953,11 +935,6 @@
 					// Gets the value for intFormQuestionId (Not Null)
 					// @return integer
 					return $this->intFormQuestionId;
-
-				case 'KeyedTableId':
-					// Gets the value for intKeyedTableId 
-					// @return integer
-					return $this->intKeyedTableId;
 
 				case 'TextValue':
 					// Gets the value for strTextValue 
@@ -1059,17 +1036,6 @@
 					try {
 						$this->objFormQuestion = null;
 						return ($this->intFormQuestionId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'KeyedTableId':
-					// Sets the value for intKeyedTableId 
-					// @param integer $mixValue
-					// @return integer
-					try {
-						return ($this->intKeyedTableId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1223,7 +1189,6 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="SignupEntry" type="xsd1:SignupEntry"/>';
 			$strToReturn .= '<element name="FormQuestion" type="xsd1:FormQuestion"/>';
-			$strToReturn .= '<element name="KeyedTableId" type="xsd:int"/>';
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="IntegerValue" type="xsd:int"/>';
 			$strToReturn .= '<element name="BooleanValue" type="xsd:boolean"/>';
@@ -1260,8 +1225,6 @@
 			if ((property_exists($objSoapObject, 'FormQuestion')) &&
 				($objSoapObject->FormQuestion))
 				$objToReturn->FormQuestion = FormQuestion::GetObjectFromSoapObject($objSoapObject->FormQuestion);
-			if (property_exists($objSoapObject, 'KeyedTableId'))
-				$objToReturn->intKeyedTableId = $objSoapObject->KeyedTableId;
 			if (property_exists($objSoapObject, 'TextValue'))
 				$objToReturn->strTextValue = $objSoapObject->TextValue;
 			if (property_exists($objSoapObject, 'IntegerValue'))
@@ -1318,7 +1281,6 @@
 	 * @property-read QQNodeSignupEntry $SignupEntry
 	 * @property-read QQNode $FormQuestionId
 	 * @property-read QQNodeFormQuestion $FormQuestion
-	 * @property-read QQNode $KeyedTableId
 	 * @property-read QQNode $TextValue
 	 * @property-read QQNode $IntegerValue
 	 * @property-read QQNode $BooleanValue
@@ -1340,8 +1302,6 @@
 					return new QQNode('form_question_id', 'FormQuestionId', 'integer', $this);
 				case 'FormQuestion':
 					return new QQNodeFormQuestion('form_question_id', 'FormQuestion', 'integer', $this);
-				case 'KeyedTableId':
-					return new QQNode('keyed_table_id', 'KeyedTableId', 'integer', $this);
 				case 'TextValue':
 					return new QQNode('text_value', 'TextValue', 'string', $this);
 				case 'IntegerValue':
@@ -1370,7 +1330,6 @@
 	 * @property-read QQNodeSignupEntry $SignupEntry
 	 * @property-read QQNode $FormQuestionId
 	 * @property-read QQNodeFormQuestion $FormQuestion
-	 * @property-read QQNode $KeyedTableId
 	 * @property-read QQNode $TextValue
 	 * @property-read QQNode $IntegerValue
 	 * @property-read QQNode $BooleanValue
@@ -1393,8 +1352,6 @@
 					return new QQNode('form_question_id', 'FormQuestionId', 'integer', $this);
 				case 'FormQuestion':
 					return new QQNodeFormQuestion('form_question_id', 'FormQuestion', 'integer', $this);
-				case 'KeyedTableId':
-					return new QQNode('keyed_table_id', 'KeyedTableId', 'integer', $this);
 				case 'TextValue':
 					return new QQNode('text_value', 'TextValue', 'string', $this);
 				case 'IntegerValue':

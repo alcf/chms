@@ -298,7 +298,6 @@
 				case 'SignupEntry': return QQN::FormAnswer()->SignupEntry;
 				case 'FormQuestionId': return QQN::FormAnswer()->FormQuestionId;
 				case 'FormQuestion': return QQN::FormAnswer()->FormQuestion;
-				case 'KeyedTableId': return QQN::FormAnswer()->KeyedTableId;
 				case 'TextValue': return QQN::FormAnswer()->TextValue;
 				case 'IntegerValue': return QQN::FormAnswer()->IntegerValue;
 				case 'BooleanValue': return QQN::FormAnswer()->BooleanValue;

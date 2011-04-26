@@ -22,8 +22,6 @@
 	 * property-read QLabel $SignupEntryIdLabel
 	 * property QListBox $FormQuestionIdControl
 	 * property-read QLabel $FormQuestionIdLabel
-	 * property QIntegerTextBox $KeyedTableIdControl
-	 * property-read QLabel $KeyedTableIdLabel
 	 * property QTextBox $TextValueControl
 	 * property-read QLabel $TextValueLabel
 	 * property QIntegerTextBox $IntegerValueControl
@@ -82,12 +80,6 @@
 		protected $lstFormQuestion;
 
         /**
-         * @var QIntegerTextBox txtKeyedTableId;
-         * @access protected
-         */
-		protected $txtKeyedTableId;
-
-        /**
          * @var QTextBox txtTextValue;
          * @access protected
          */
@@ -124,12 +116,6 @@
          * @access protected
          */
 		protected $lblFormQuestionId;
-
-        /**
-         * @var QLabel lblKeyedTableId
-         * @access protected
-         */
-		protected $lblKeyedTableId;
 
         /**
          * @var QLabel lblTextValue
@@ -355,32 +341,6 @@
 		}
 
 		/**
-		 * Create and setup QIntegerTextBox txtKeyedTableId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QIntegerTextBox
-		 */
-		public function txtKeyedTableId_Create($strControlId = null) {
-			$this->txtKeyedTableId = new QIntegerTextBox($this->objParentObject, $strControlId);
-			$this->txtKeyedTableId->Name = QApplication::Translate('Keyed Table Id');
-			$this->txtKeyedTableId->Text = $this->objFormAnswer->KeyedTableId;
-			return $this->txtKeyedTableId;
-		}
-
-		/**
-		 * Create and setup QLabel lblKeyedTableId
-		 * @param string $strControlId optional ControlId to use
-		 * @param string $strFormat optional sprintf format to use
-		 * @return QLabel
-		 */
-		public function lblKeyedTableId_Create($strControlId = null, $strFormat = null) {
-			$this->lblKeyedTableId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblKeyedTableId->Name = QApplication::Translate('Keyed Table Id');
-			$this->lblKeyedTableId->Text = $this->objFormAnswer->KeyedTableId;
-			$this->lblKeyedTableId->Format = $strFormat;
-			return $this->lblKeyedTableId;
-		}
-
-		/**
 		 * Create and setup QTextBox txtTextValue
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -525,9 +485,6 @@
 			}
 			if ($this->lblFormQuestionId) $this->lblFormQuestionId->Text = ($this->objFormAnswer->FormQuestion) ? $this->objFormAnswer->FormQuestion->__toString() : null;
 
-			if ($this->txtKeyedTableId) $this->txtKeyedTableId->Text = $this->objFormAnswer->KeyedTableId;
-			if ($this->lblKeyedTableId) $this->lblKeyedTableId->Text = $this->objFormAnswer->KeyedTableId;
-
 			if ($this->txtTextValue) $this->txtTextValue->Text = $this->objFormAnswer->TextValue;
 			if ($this->lblTextValue) $this->lblTextValue->Text = $this->objFormAnswer->TextValue;
 
@@ -565,7 +522,6 @@
 				// Update any fields for controls that have been created
 				if ($this->lstSignupEntry) $this->objFormAnswer->SignupEntryId = $this->lstSignupEntry->SelectedValue;
 				if ($this->lstFormQuestion) $this->objFormAnswer->FormQuestionId = $this->lstFormQuestion->SelectedValue;
-				if ($this->txtKeyedTableId) $this->objFormAnswer->KeyedTableId = $this->txtKeyedTableId->Text;
 				if ($this->txtTextValue) $this->objFormAnswer->TextValue = $this->txtTextValue->Text;
 				if ($this->txtIntegerValue) $this->objFormAnswer->IntegerValue = $this->txtIntegerValue->Text;
 				if ($this->chkBooleanValue) $this->objFormAnswer->BooleanValue = $this->chkBooleanValue->Checked;
@@ -630,12 +586,6 @@
 				case 'FormQuestionIdLabel':
 					if (!$this->lblFormQuestionId) return $this->lblFormQuestionId_Create();
 					return $this->lblFormQuestionId;
-				case 'KeyedTableIdControl':
-					if (!$this->txtKeyedTableId) return $this->txtKeyedTableId_Create();
-					return $this->txtKeyedTableId;
-				case 'KeyedTableIdLabel':
-					if (!$this->lblKeyedTableId) return $this->lblKeyedTableId_Create();
-					return $this->lblKeyedTableId;
 				case 'TextValueControl':
 					if (!$this->txtTextValue) return $this->txtTextValue_Create();
 					return $this->txtTextValue;
@@ -688,8 +638,6 @@
 						return ($this->lstSignupEntry = QType::Cast($mixValue, 'QControl'));
 					case 'FormQuestionIdControl':
 						return ($this->lstFormQuestion = QType::Cast($mixValue, 'QControl'));
-					case 'KeyedTableIdControl':
-						return ($this->txtKeyedTableId = QType::Cast($mixValue, 'QControl'));
 					case 'TextValueControl':
 						return ($this->txtTextValue = QType::Cast($mixValue, 'QControl'));
 					case 'IntegerValueControl':

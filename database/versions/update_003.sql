@@ -17,7 +17,6 @@ CREATE TABLE `form_answer`
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `signup_entry_id` INTEGER UNSIGNED NOT NULL,
 `form_question_id` INTEGER UNSIGNED NOT NULL,
-`keyed_table_id` INTEGER UNSIGNED,
 `text_value` TEXT,
 `integer_value` INTEGER,
 `boolean_value` BOOLEAN,

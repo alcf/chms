@@ -160,19 +160,21 @@
 						case FormQuestionType::SingleSelect:
 							$objFormQuestion->ShortDescription = 'One Item';
 							$objFormQuestion->Question = 'Which is it?';
+							$objFormQuestion->Options = "Option One\nOption Two\nOption Three";
 							break;
 	
 						case FormQuestionType::MultipleSelect:
 							$objFormQuestion->ShortDescription = 'Multiple Item';
 							$objFormQuestion->Question = 'What are they?';
+							$objFormQuestion->Options = "Option One\nOption Two\nOption Three";
 							break;
 	
 						default:
 							throw new QCallerException(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
 					}
-					
+
 					$objFormQuestion->Save();
-					
+
 					$intPersonCount = rand(self::SignupsPerFormMinimum, self::SignupsPerFormMaximum);
 					for ($i = 0; $i < $intPersonCount; $i++) {
 						$objPerson = null;
@@ -204,6 +206,75 @@
 							default:
 								$objSignup->Save();
 								break;
+						}
+
+						// Create hte form answers for each question
+						foreach ($objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+							if ($objFormQuestion->RequiredFlag || rand(0, 1)) {
+								$objFormAnswer = new FormAnswer();
+								$objFormAnswer->SignupEntry = $objSignup;
+								$objFormAnswer->FormQuestion = $objFormQuestion;
+
+								switch ($objFormQuestion->FormQuestionTypeId) {
+									case FormQuestionType::Name:
+										$objFormAnswer->TextValue = $objPerson->Name;
+										break;
+
+									case FormQuestionType::SpouseName:
+										$objFormAnswer->TextValue = 'Spouse Name';
+										break;
+
+									case FormQuestionType::Address:
+										$objFormAnswer->TextValue = $objPerson->PrimaryAddressText . ', ' . $objPerson->PrimaryCityText;
+										break;
+
+									case FormQuestionType::Age:
+										$objFormAnswer->IntegerValue = $objPerson->Age;
+										break;
+
+									case FormQuestionType::DateofBirth:
+										if ($objPerson->DateOfBirth) $objFormAnswer->DateValue = $objPerson->DateOfBirth;
+										break;
+
+									case FormQuestionType::Phone:
+										if (count($objArray = $objPerson->GetPhoneArray())) {
+											$objFormAnswer->TextValue = $objArray[0]->Number;
+										}
+										break;
+
+									case FormQuestionType::Email:
+										if (count($objArray = $objPerson->GetEmailArray())) {
+											$objFormAnswer->TextValue = $objArray[0]->Address;
+										}
+										break;
+
+									case FormQuestionType::ShortText:
+										$objFormAnswer->TextValue = 'Foo Bar';
+										break;
+
+									case FormQuestionType::LongText:
+										$objFormAnswer->TextValue = 'The quick brown fox jumps over the lazy dog.';
+										break;
+
+									case FormQuestionType::Number:
+										$objFormAnswer->IntegerValue = 28;
+										break;
+
+									case FormQuestionType::YesNo:
+										$objFormAnswer->BooleanValue = rand(0, 1);
+										break;
+
+									case FormQuestionType::SingleSelect:
+										$objFormAnswer->TextValue = "Option Two";
+										break;
+
+									case FormQuestionType::MultipleSelect:
+										$objFormAnswer->TextValue = "Option One\nOption Three";
+										break;
+								}
+
+								$objFormAnswer->Save();
+							}
 						}
 					}
 				}
