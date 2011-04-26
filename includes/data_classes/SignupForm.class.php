@@ -27,6 +27,17 @@
 			return sprintf('SignupForm Object %s',  $this->intId);
 		}
 
+		/**
+		 * Returns a boolean on whether or not the person has been registered on this form
+		 * @param Person $objPerson
+		 * @return boolean
+		 */
+		public function IsPersonRegistered(Person $objPerson) {
+			if (SignupEntry::CountBySignupFormIdPersonId($this->Id, $intPersonId))
+				return true;
+			else
+				return false;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

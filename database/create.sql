@@ -490,42 +490,6 @@ CREATE TABLE `attributevalue_multipleattributeoption_assn`
 PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `person`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`membership_status_type_id` INTEGER UNSIGNED NOT NULL,
-`marital_status_type_id` INTEGER UNSIGNED NOT NULL,
-`first_name` VARCHAR(100),
-`middle_name` VARCHAR(100),
-`last_name` VARCHAR(100),
-`mailing_label` VARCHAR(200),
-`prior_last_names` VARCHAR(255),
-`nickname` VARCHAR(100),
-`title` VARCHAR(40),
-`suffix` VARCHAR(40),
-`gender` VARCHAR(1),
-`date_of_birth` DATE,
-`dob_year_approximate_flag` BOOLEAN,
-`dob_guessed_flag` BOOLEAN,
-`age` INTEGER,
-`deceased_flag` BOOLEAN NOT NULL,
-`date_deceased` DATE,
-`current_head_shot_id` INTEGER UNSIGNED UNIQUE,
-`mailing_address_id` INTEGER UNSIGNED,
-`stewardship_address_id` INTEGER UNSIGNED,
-`primary_phone_id` INTEGER UNSIGNED,
-`primary_email_id` INTEGER UNSIGNED UNIQUE,
-`can_mail_flag` BOOLEAN,
-`can_phone_flag` BOOLEAN,
-`can_email_flag` BOOLEAN,
-`primary_address_text` VARCHAR(255),
-`primary_city_text` VARCHAR(100),
-`primary_state_text` VARCHAR(2),
-`primary_zip_code_text` VARCHAR(10),
-`primary_phone_text` VARCHAR(20),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `email`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -702,6 +666,42 @@ CREATE TABLE `phone`
 `person_id` INTEGER UNSIGNED,
 `mobile_provider_id` INTEGER UNSIGNED,
 `number` VARCHAR(20),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `person`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`membership_status_type_id` INTEGER UNSIGNED NOT NULL,
+`marital_status_type_id` INTEGER UNSIGNED NOT NULL,
+`first_name` VARCHAR(100),
+`middle_name` VARCHAR(100),
+`last_name` VARCHAR(100),
+`mailing_label` VARCHAR(200),
+`prior_last_names` VARCHAR(255),
+`nickname` VARCHAR(100),
+`title` VARCHAR(40),
+`suffix` VARCHAR(40),
+`gender` VARCHAR(1),
+`date_of_birth` DATE,
+`dob_year_approximate_flag` BOOLEAN,
+`dob_guessed_flag` BOOLEAN,
+`age` INTEGER,
+`deceased_flag` BOOLEAN NOT NULL,
+`date_deceased` DATE,
+`current_head_shot_id` INTEGER UNSIGNED UNIQUE,
+`mailing_address_id` INTEGER UNSIGNED,
+`stewardship_address_id` INTEGER UNSIGNED,
+`primary_phone_id` INTEGER UNSIGNED,
+`primary_email_id` INTEGER UNSIGNED UNIQUE,
+`can_mail_flag` BOOLEAN,
+`can_phone_flag` BOOLEAN,
+`can_email_flag` BOOLEAN,
+`primary_address_text` VARCHAR(255),
+`primary_city_text` VARCHAR(100),
+`primary_state_text` VARCHAR(2),
+`primary_zip_code_text` VARCHAR(10),
+`primary_phone_text` VARCHAR(20),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -997,25 +997,6 @@ ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attrib
 
 ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
 
-CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
-ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
-
-CREATE INDEX `marital_status_type_id_idx` ON `person`(`marital_status_type_id`);
-ALTER TABLE `person` ADD FOREIGN KEY marital_status_type_id_idxfk (`marital_status_type_id`) REFERENCES `marital_status_type` (`id`);
-
-ALTER TABLE `person` ADD FOREIGN KEY current_head_shot_id_idxfk (`current_head_shot_id`) REFERENCES `head_shot` (`id`);
-
-CREATE INDEX `mailing_address_id_idx` ON `person`(`mailing_address_id`);
-ALTER TABLE `person` ADD FOREIGN KEY mailing_address_id_idxfk (`mailing_address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
-ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
-ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
-
-ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
-
 CREATE INDEX `person_id_idx` ON `email`(`person_id`);
 ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
 
@@ -1078,6 +1059,8 @@ ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY person_id_idxfk_8 (`person_id
 
 ALTER TABLE `person_nameitem_assn` ADD FOREIGN KEY name_item_id_idxfk (`name_item_id`) REFERENCES `name_item` (`id`);
 
+CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`);
+
 CREATE INDEX `signup_form_id_idx` ON `signup_entry`(`signup_form_id`);
 ALTER TABLE `signup_entry` ADD FOREIGN KEY signup_form_id_idxfk_2 (`signup_form_id`) REFERENCES `signup_form` (`id`);
 
@@ -1130,7 +1113,7 @@ CREATE INDEX `household_id_idx` ON `address`(`household_id`);
 ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_2 (`household_id`) REFERENCES `household` (`id`);
 
 CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
-ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
+ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
 
 CREATE INDEX `verification_checked_flag_idx` ON `address`(`verification_checked_flag`);
 CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
@@ -1146,6 +1129,25 @@ CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
 ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
 
 CREATE INDEX `number_idx` ON `phone`(`number`);
+CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
+ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
+
+CREATE INDEX `marital_status_type_id_idx` ON `person`(`marital_status_type_id`);
+ALTER TABLE `person` ADD FOREIGN KEY marital_status_type_id_idxfk (`marital_status_type_id`) REFERENCES `marital_status_type` (`id`);
+
+ALTER TABLE `person` ADD FOREIGN KEY current_head_shot_id_idxfk (`current_head_shot_id`) REFERENCES `head_shot` (`id`);
+
+CREATE INDEX `mailing_address_id_idx` ON `person`(`mailing_address_id`);
+ALTER TABLE `person` ADD FOREIGN KEY mailing_address_id_idxfk (`mailing_address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
+ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
+ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
+
+ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
+
 CREATE INDEX `role_type_id_idx` ON `login`(`role_type_id`);
 ALTER TABLE `login` ADD FOREIGN KEY role_type_id_idxfk (`role_type_id`) REFERENCES `role_type` (`id`);
 

@@ -27,6 +27,15 @@
 			return sprintf('SignupEntry Object %s',  $this->intId);
 		}
 
+		/**
+		 * Update the AmountBalance calculated field
+		 * @param boolean $blnSaveFlag whether or not to save the record after updating
+		 * @return float
+		 */
+		public function RefreshAmountBalance($blnSaveFlag = true) {
+			$this->AmountBalance = $this->SignupForm->Cost - $this->AmountPaid;
+			if ($blnSaveFlag) $this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -2952,8 +2952,8 @@
             <y>2000.000000</y>
         </location>
         <size>
-            <width>272.000000</width>
-            <height>160.000000</height>
+            <width>310.000000</width>
+            <height>180.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -3036,6 +3036,23 @@
             <indexed><![CDATA[1]]></indexed>
             <uid><![CDATA[3E5E4A5F-31BD-4F25-BC8B-CAB82D40F56C]]></uid>
         </SQLField>
+        <SQLIndex>
+            <name><![CDATA[signup_entry_idx]]></name>
+            <fieldName><![CDATA[signup_form_id]]></fieldName>
+            <fieldName><![CDATA[person_id]]></fieldName>
+            <SQLIndexEntry>
+                <name><![CDATA[signup_form_id]]></name>
+                <prefixSize><![CDATA[]]></prefixSize>
+                <fieldUid><![CDATA[D094906F-95FE-471B-8BA9-7E5BF59C1AF0]]></fieldUid>
+            </SQLIndexEntry>
+            <SQLIndexEntry>
+                <name><![CDATA[person_id]]></name>
+                <prefixSize><![CDATA[]]></prefixSize>
+                <fieldUid><![CDATA[C47036BC-F819-4549-8244-9474E0B1960D]]></fieldUid>
+            </SQLIndexEntry>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[CD6D3F38-D71C-4382-9934-31AB66926DEC]]></uid>
+        </SQLIndex>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[86ABCE9F-BAFA-435E-B0C3-469F2DF24CA5]]></uid>
         <zorder><![CDATA[-1]]></zorder>
@@ -5891,7 +5908,7 @@ Zn2hgcgEgRgDhoaG
         <SourceSplitViewState><![CDATA[2 -240 1133]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
         <windowHeight><![CDATA[878.000000]]></windowHeight>
-        <windowLocationX><![CDATA[298.000000]]></windowLocationX>
+        <windowLocationX><![CDATA[57.000000]]></windowLocationX>
         <windowLocationY><![CDATA[0.000000]]></windowLocationY>
         <windowWidth><![CDATA[1142.000000]]></windowWidth>
     </SQLDocumentInfo>

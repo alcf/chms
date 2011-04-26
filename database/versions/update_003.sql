@@ -132,6 +132,7 @@ ALTER TABLE `form_question` ADD FOREIGN KEY signup_form_id_idxfk_1 (`signup_form
 CREATE INDEX `form_question_type_id_idx` ON `form_question`(`form_question_type_id`);
 ALTER TABLE `form_question` ADD FOREIGN KEY form_question_type_id_idxfk (`form_question_type_id`) REFERENCES `form_question_type` (`id`);
 
+CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`);
 
 
 
