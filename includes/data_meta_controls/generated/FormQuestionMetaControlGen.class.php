@@ -32,6 +32,8 @@
 	 * property-read QLabel $RequiredFlagLabel
 	 * property QTextBox $OptionsControl
 	 * property-read QLabel $OptionsLabel
+	 * property QCheckBox $AllowOtherFlagControl
+	 * property-read QLabel $AllowOtherFlagLabel
 	 * property QCheckBox $ViewFlagControl
 	 * property-read QLabel $ViewFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -114,6 +116,12 @@
 		protected $txtOptions;
 
         /**
+         * @var QCheckBox chkAllowOtherFlag;
+         * @access protected
+         */
+		protected $chkAllowOtherFlag;
+
+        /**
          * @var QCheckBox chkViewFlag;
          * @access protected
          */
@@ -162,6 +170,12 @@
          * @access protected
          */
 		protected $lblOptions;
+
+        /**
+         * @var QLabel lblAllowOtherFlag
+         * @access protected
+         */
+		protected $lblAllowOtherFlag;
 
         /**
          * @var QLabel lblViewFlag
@@ -478,6 +492,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkAllowOtherFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkAllowOtherFlag_Create($strControlId = null) {
+			$this->chkAllowOtherFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkAllowOtherFlag->Name = QApplication::Translate('Allow Other Flag');
+			$this->chkAllowOtherFlag->Checked = $this->objFormQuestion->AllowOtherFlag;
+			return $this->chkAllowOtherFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblAllowOtherFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblAllowOtherFlag_Create($strControlId = null) {
+			$this->lblAllowOtherFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAllowOtherFlag->Name = QApplication::Translate('Allow Other Flag');
+			$this->lblAllowOtherFlag->Text = ($this->objFormQuestion->AllowOtherFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblAllowOtherFlag;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkViewFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -546,6 +584,9 @@
 			if ($this->txtOptions) $this->txtOptions->Text = $this->objFormQuestion->Options;
 			if ($this->lblOptions) $this->lblOptions->Text = $this->objFormQuestion->Options;
 
+			if ($this->chkAllowOtherFlag) $this->chkAllowOtherFlag->Checked = $this->objFormQuestion->AllowOtherFlag;
+			if ($this->lblAllowOtherFlag) $this->lblAllowOtherFlag->Text = ($this->objFormQuestion->AllowOtherFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->chkViewFlag) $this->chkViewFlag->Checked = $this->objFormQuestion->ViewFlag;
 			if ($this->lblViewFlag) $this->lblViewFlag->Text = ($this->objFormQuestion->ViewFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -579,6 +620,7 @@
 				if ($this->txtQuestion) $this->objFormQuestion->Question = $this->txtQuestion->Text;
 				if ($this->chkRequiredFlag) $this->objFormQuestion->RequiredFlag = $this->chkRequiredFlag->Checked;
 				if ($this->txtOptions) $this->objFormQuestion->Options = $this->txtOptions->Text;
+				if ($this->chkAllowOtherFlag) $this->objFormQuestion->AllowOtherFlag = $this->chkAllowOtherFlag->Checked;
 				if ($this->chkViewFlag) $this->objFormQuestion->ViewFlag = $this->chkViewFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -670,6 +712,12 @@
 				case 'OptionsLabel':
 					if (!$this->lblOptions) return $this->lblOptions_Create();
 					return $this->lblOptions;
+				case 'AllowOtherFlagControl':
+					if (!$this->chkAllowOtherFlag) return $this->chkAllowOtherFlag_Create();
+					return $this->chkAllowOtherFlag;
+				case 'AllowOtherFlagLabel':
+					if (!$this->lblAllowOtherFlag) return $this->lblAllowOtherFlag_Create();
+					return $this->lblAllowOtherFlag;
 				case 'ViewFlagControl':
 					if (!$this->chkViewFlag) return $this->chkViewFlag_Create();
 					return $this->chkViewFlag;
@@ -714,6 +762,8 @@
 						return ($this->chkRequiredFlag = QType::Cast($mixValue, 'QControl'));
 					case 'OptionsControl':
 						return ($this->txtOptions = QType::Cast($mixValue, 'QControl'));
+					case 'AllowOtherFlagControl':
+						return ($this->chkAllowOtherFlag = QType::Cast($mixValue, 'QControl'));
 					case 'ViewFlagControl':
 						return ($this->chkViewFlag = QType::Cast($mixValue, 'QControl'));
 					default:

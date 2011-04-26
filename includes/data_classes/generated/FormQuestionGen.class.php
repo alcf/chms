@@ -23,6 +23,7 @@
 	 * @property string $Question the value for strQuestion 
 	 * @property boolean $RequiredFlag the value for blnRequiredFlag 
 	 * @property string $Options the value for strOptions 
+	 * @property boolean $AllowOtherFlag the value for blnAllowOtherFlag 
 	 * @property boolean $ViewFlag the value for blnViewFlag 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
 	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.form_question_id reverse relationship
@@ -99,6 +100,14 @@
 		 */
 		protected $strOptions;
 		const OptionsDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_question.allow_other_flag
+		 * @var boolean blnAllowOtherFlag
+		 */
+		protected $blnAllowOtherFlag;
+		const AllowOtherFlagDefault = null;
 
 
 		/**
@@ -475,6 +484,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'question', $strAliasPrefix . 'question');
 			$objBuilder->AddSelectItem($strTableName, 'required_flag', $strAliasPrefix . 'required_flag');
 			$objBuilder->AddSelectItem($strTableName, 'options', $strAliasPrefix . 'options');
+			$objBuilder->AddSelectItem($strTableName, 'allow_other_flag', $strAliasPrefix . 'allow_other_flag');
 			$objBuilder->AddSelectItem($strTableName, 'view_flag', $strAliasPrefix . 'view_flag');
 		}
 
@@ -555,6 +565,8 @@
 			$objToReturn->blnRequiredFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'options', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'options'] : $strAliasPrefix . 'options';
 			$objToReturn->strOptions = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'allow_other_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'allow_other_flag'] : $strAliasPrefix . 'allow_other_flag';
+			$objToReturn->blnAllowOtherFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'view_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'view_flag'] : $strAliasPrefix . 'view_flag';
 			$objToReturn->blnViewFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
@@ -773,6 +785,7 @@
 							`question`,
 							`required_flag`,
 							`options`,
+							`allow_other_flag`,
 							`view_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
@@ -782,6 +795,7 @@
 							' . $objDatabase->SqlVariable($this->strQuestion) . ',
 							' . $objDatabase->SqlVariable($this->blnRequiredFlag) . ',
 							' . $objDatabase->SqlVariable($this->strOptions) . ',
+							' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnViewFlag) . '
 						)
 					');
@@ -809,6 +823,7 @@
 							`question` = ' . $objDatabase->SqlVariable($this->strQuestion) . ',
 							`required_flag` = ' . $objDatabase->SqlVariable($this->blnRequiredFlag) . ',
 							`options` = ' . $objDatabase->SqlVariable($this->strOptions) . ',
+							`allow_other_flag` = ' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							`view_flag` = ' . $objDatabase->SqlVariable($this->blnViewFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -901,6 +916,7 @@
 			$this->strQuestion = $objReloaded->strQuestion;
 			$this->blnRequiredFlag = $objReloaded->blnRequiredFlag;
 			$this->strOptions = $objReloaded->strOptions;
+			$this->blnAllowOtherFlag = $objReloaded->blnAllowOtherFlag;
 			$this->blnViewFlag = $objReloaded->blnViewFlag;
 		}
 
@@ -922,6 +938,7 @@
 					`question`,
 					`required_flag`,
 					`options`,
+					`allow_other_flag`,
 					`view_flag`,
 					__sys_login_id,
 					__sys_action,
@@ -935,6 +952,7 @@
 					' . $objDatabase->SqlVariable($this->strQuestion) . ',
 					' . $objDatabase->SqlVariable($this->blnRequiredFlag) . ',
 					' . $objDatabase->SqlVariable($this->strOptions) . ',
+					' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 					' . $objDatabase->SqlVariable($this->blnViewFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1025,6 +1043,11 @@
 					// Gets the value for strOptions 
 					// @return string
 					return $this->strOptions;
+
+				case 'AllowOtherFlag':
+					// Gets the value for blnAllowOtherFlag 
+					// @return boolean
+					return $this->blnAllowOtherFlag;
 
 				case 'ViewFlag':
 					// Gets the value for blnViewFlag 
@@ -1165,6 +1188,17 @@
 					// @return string
 					try {
 						return ($this->strOptions = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'AllowOtherFlag':
+					// Sets the value for blnAllowOtherFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnAllowOtherFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1442,6 +1476,7 @@
 			$strToReturn .= '<element name="Question" type="xsd:string"/>';
 			$strToReturn .= '<element name="RequiredFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Options" type="xsd:string"/>';
+			$strToReturn .= '<element name="AllowOtherFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="ViewFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1483,6 +1518,8 @@
 				$objToReturn->blnRequiredFlag = $objSoapObject->RequiredFlag;
 			if (property_exists($objSoapObject, 'Options'))
 				$objToReturn->strOptions = $objSoapObject->Options;
+			if (property_exists($objSoapObject, 'AllowOtherFlag'))
+				$objToReturn->blnAllowOtherFlag = $objSoapObject->AllowOtherFlag;
 			if (property_exists($objSoapObject, 'ViewFlag'))
 				$objToReturn->blnViewFlag = $objSoapObject->ViewFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1531,6 +1568,7 @@
 	 * @property-read QQNode $Question
 	 * @property-read QQNode $RequiredFlag
 	 * @property-read QQNode $Options
+	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $ViewFlag
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 */
@@ -1558,6 +1596,8 @@
 					return new QQNode('required_flag', 'RequiredFlag', 'boolean', $this);
 				case 'Options':
 					return new QQNode('options', 'Options', 'string', $this);
+				case 'AllowOtherFlag':
+					return new QQNode('allow_other_flag', 'AllowOtherFlag', 'boolean', $this);
 				case 'ViewFlag':
 					return new QQNode('view_flag', 'ViewFlag', 'boolean', $this);
 				case 'FormAnswer':
@@ -1586,6 +1626,7 @@
 	 * @property-read QQNode $Question
 	 * @property-read QQNode $RequiredFlag
 	 * @property-read QQNode $Options
+	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $ViewFlag
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -1614,6 +1655,8 @@
 					return new QQNode('required_flag', 'RequiredFlag', 'boolean', $this);
 				case 'Options':
 					return new QQNode('options', 'Options', 'string', $this);
+				case 'AllowOtherFlag':
+					return new QQNode('allow_other_flag', 'AllowOtherFlag', 'boolean', $this);
 				case 'ViewFlag':
 					return new QQNode('view_flag', 'ViewFlag', 'boolean', $this);
 				case 'FormAnswer':

@@ -84,6 +84,7 @@ CREATE TABLE `form_question`
 `question` VARCHAR(200),
 `required_flag` BOOLEAN,
 `options` TEXT,
+`allow_other_flag` BOOLEAN,
 `view_flag` BOOLEAN,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

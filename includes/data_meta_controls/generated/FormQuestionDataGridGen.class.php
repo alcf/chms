@@ -302,6 +302,7 @@
 				case 'Question': return QQN::FormQuestion()->Question;
 				case 'RequiredFlag': return QQN::FormQuestion()->RequiredFlag;
 				case 'Options': return QQN::FormQuestion()->Options;
+				case 'AllowOtherFlag': return QQN::FormQuestion()->AllowOtherFlag;
 				case 'ViewFlag': return QQN::FormQuestion()->ViewFlag;
 				default: throw new QCallerException('Simple Property not found in FormQuestionDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
