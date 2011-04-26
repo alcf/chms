@@ -16,6 +16,8 @@
 		 * @return void
 		 */
 		public static function Run() {
+			self::$SystemStartDate = new QDateTime('2004-01-01');
+
 			self::DisplayForEachTaskStart($strDescription = 'Generating Signup Forms for Ministry', Ministry::CountByActiveFlag(true));
 			foreach (Ministry::LoadArrayByActiveFlag(true) as $objMinistry) {
 				self::DisplayForEachTaskNext($strDescription);
@@ -40,7 +42,7 @@
 			}
 			$objSignupForm->ActiveFlag = rand(0, 10);
 			$objSignupForm->Description = self::GenerateContent(rand(1, 3), 8, 20);
-			$objSignupForm->InformationUlr = 'http://www.yahoo.com/';
+			$objSignupForm->InformationUrl = 'http://www.yahoo.com/';
 			$objSignupForm->AllowOtherFlag = rand(0, 1);
 			$objSignupForm->AllowMultipleFlag = rand(0, 1);
 			$objSignupForm->FormPaymentTypeId = self::GenerateFromArray(array_keys(FormPaymentType::$NameArray));
@@ -77,6 +79,52 @@
 			$objEventSignupForm->DateEnd = new QDateTime('2011-05-30 12:00');
 			$objEventSignupForm->Location = 'Camp Hammer, Boulder Creek, CA';
 			$objEventSignupForm->Save();
+			
+			foreach (FormQuestionType::$NameArray as $intFormQuestionTypeId => $strName) {
+				switch ($intFormQuestionTypeId) {
+					case FormQuestionType::Name:
+						break;
+
+					case FormQuestionType::SpouseName:
+						break;
+
+					case FormQuestionType::Address:
+						break;
+
+					case FormQuestionType::Age:
+						break;
+
+					case FormQuestionType::DateofBirth:
+						break;
+
+					case FormQuestionType::Phone:
+						break;
+
+					case FormQuestionType::Email:
+						break;
+
+					case FormQuestionType::ShortText:
+						break;
+
+					case FormQuestionType::LongText:
+						break;
+
+					case FormQuestionType::Number:
+						break;
+
+					case FormQuestionType::YesNo:
+						break;
+
+					case FormQuestionType::SingleSelect:
+						break;
+
+					case FormQuestionType::MultipleSelect:
+						break;
+
+					default:
+						throw new QCallerException(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
+				}
+			}
 		}
 	}
 
