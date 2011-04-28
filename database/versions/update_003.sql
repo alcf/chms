@@ -2,6 +2,8 @@
 UPDATE _version SET version='003';
 ##############################################
 
+ALTER TABLE ministry ADD COLUMN signup_form_type_bitmap integer(10) unsigned DEFAULT NULL;
+UPDATE ministry SET signup_form_type_bitmap = 1;
 
 CREATE TABLE `event_signup_form`
 (

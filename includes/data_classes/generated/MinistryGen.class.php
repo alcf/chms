@@ -20,6 +20,7 @@
 	 * @property string $Name the value for strName 
 	 * @property integer $ParentMinistryId the value for intParentMinistryId 
 	 * @property integer $GroupTypeBitmap the value for intGroupTypeBitmap 
+	 * @property integer $SignupFormTypeBitmap the value for intSignupFormTypeBitmap 
 	 * @property boolean $ActiveFlag the value for blnActiveFlag (Not Null)
 	 * @property Ministry $ParentMinistry the value for the Ministry object referenced by intParentMinistryId 
 	 * @property Login $_Login the value for the private _objLogin (Read-Only) if set due to an expansion on the ministry_login_assn association table
@@ -84,6 +85,14 @@
 		 */
 		protected $intGroupTypeBitmap;
 		const GroupTypeBitmapDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column ministry.signup_form_type_bitmap
+		 * @var integer intSignupFormTypeBitmap
+		 */
+		protected $intSignupFormTypeBitmap;
+		const SignupFormTypeBitmapDefault = null;
 
 
 		/**
@@ -553,6 +562,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'parent_ministry_id', $strAliasPrefix . 'parent_ministry_id');
 			$objBuilder->AddSelectItem($strTableName, 'group_type_bitmap', $strAliasPrefix . 'group_type_bitmap');
+			$objBuilder->AddSelectItem($strTableName, 'signup_form_type_bitmap', $strAliasPrefix . 'signup_form_type_bitmap');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
 		}
 
@@ -711,6 +721,8 @@
 			$objToReturn->intParentMinistryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'group_type_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_type_bitmap'] : $strAliasPrefix . 'group_type_bitmap';
 			$objToReturn->intGroupTypeBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'signup_form_type_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_form_type_bitmap'] : $strAliasPrefix . 'signup_form_type_bitmap';
+			$objToReturn->intSignupFormTypeBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
@@ -1029,12 +1041,14 @@
 							`name`,
 							`parent_ministry_id`,
 							`group_type_bitmap`,
+							`signup_form_type_bitmap`,
 							`active_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strToken) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
+							' . $objDatabase->SqlVariable($this->intSignupFormTypeBitmap) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						)
 					');
@@ -1059,6 +1073,7 @@
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`parent_ministry_id` = ' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
 							`group_type_bitmap` = ' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
+							`signup_form_type_bitmap` = ' . $objDatabase->SqlVariable($this->intSignupFormTypeBitmap) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -1148,6 +1163,7 @@
 			$this->strName = $objReloaded->strName;
 			$this->ParentMinistryId = $objReloaded->ParentMinistryId;
 			$this->intGroupTypeBitmap = $objReloaded->intGroupTypeBitmap;
+			$this->intSignupFormTypeBitmap = $objReloaded->intSignupFormTypeBitmap;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
 
@@ -1166,6 +1182,7 @@
 					`name`,
 					`parent_ministry_id`,
 					`group_type_bitmap`,
+					`signup_form_type_bitmap`,
 					`active_flag`,
 					__sys_login_id,
 					__sys_action,
@@ -1176,6 +1193,7 @@
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
 					' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
+					' . $objDatabase->SqlVariable($this->intSignupFormTypeBitmap) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1251,6 +1269,11 @@
 					// Gets the value for intGroupTypeBitmap 
 					// @return integer
 					return $this->intGroupTypeBitmap;
+
+				case 'SignupFormTypeBitmap':
+					// Gets the value for intSignupFormTypeBitmap 
+					// @return integer
+					return $this->intSignupFormTypeBitmap;
 
 				case 'ActiveFlag':
 					// Gets the value for blnActiveFlag (Not Null)
@@ -1430,6 +1453,17 @@
 					// @return integer
 					try {
 						return ($this->intGroupTypeBitmap = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SignupFormTypeBitmap':
+					// Sets the value for intSignupFormTypeBitmap 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intSignupFormTypeBitmap = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2797,6 +2831,7 @@
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="ParentMinistry" type="xsd1:Ministry"/>';
 			$strToReturn .= '<element name="GroupTypeBitmap" type="xsd:int"/>';
+			$strToReturn .= '<element name="SignupFormTypeBitmap" type="xsd:int"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2832,6 +2867,8 @@
 				$objToReturn->ParentMinistry = Ministry::GetObjectFromSoapObject($objSoapObject->ParentMinistry);
 			if (property_exists($objSoapObject, 'GroupTypeBitmap'))
 				$objToReturn->intGroupTypeBitmap = $objSoapObject->GroupTypeBitmap;
+			if (property_exists($objSoapObject, 'SignupFormTypeBitmap'))
+				$objToReturn->intSignupFormTypeBitmap = $objSoapObject->SignupFormTypeBitmap;
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2909,6 +2946,7 @@
 	 * @property-read QQNode $ParentMinistryId
 	 * @property-read QQNodeMinistry $ParentMinistry
 	 * @property-read QQNode $GroupTypeBitmap
+	 * @property-read QQNode $SignupFormTypeBitmap
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNodeMinistryLogin $Login
 	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
@@ -2936,6 +2974,8 @@
 					return new QQNodeMinistry('parent_ministry_id', 'ParentMinistry', 'integer', $this);
 				case 'GroupTypeBitmap':
 					return new QQNode('group_type_bitmap', 'GroupTypeBitmap', 'integer', $this);
+				case 'SignupFormTypeBitmap':
+					return new QQNode('signup_form_type_bitmap', 'SignupFormTypeBitmap', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'Login':
@@ -2973,6 +3013,7 @@
 	 * @property-read QQNode $ParentMinistryId
 	 * @property-read QQNodeMinistry $ParentMinistry
 	 * @property-read QQNode $GroupTypeBitmap
+	 * @property-read QQNode $SignupFormTypeBitmap
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNodeMinistryLogin $Login
 	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
@@ -3001,6 +3042,8 @@
 					return new QQNodeMinistry('parent_ministry_id', 'ParentMinistry', 'integer', $this);
 				case 'GroupTypeBitmap':
 					return new QQNode('group_type_bitmap', 'GroupTypeBitmap', 'integer', $this);
+				case 'SignupFormTypeBitmap':
+					return new QQNode('signup_form_type_bitmap', 'SignupFormTypeBitmap', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'Login':

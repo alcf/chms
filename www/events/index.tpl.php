@@ -8,7 +8,7 @@
 			<?php $this->dtgSignupForms->Render(); ?>
 			<?php $this->lblStartText->Render(); ?>
 		</div>
-		<div class="buttonBar" style="height: 0px;"><?php $this->lstGroupType->Render(); ?></div>
+		<div class="buttonBar" style="height: 0px;"><?php $this->lstSignupFormType->Render(); ?></div>
 		<div class="buttonBar buttonBarLeft" style="color: #333;"><?php $this->chkViewAll->Render(); ?></div>
 	</div>
 	

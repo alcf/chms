@@ -300,6 +300,7 @@
 				case 'Name': return QQN::SignupForm()->Name;
 				case 'Token': return QQN::SignupForm()->Token;
 				case 'ActiveFlag': return QQN::SignupForm()->ActiveFlag;
+				case 'ConfidentialFlag': return QQN::SignupForm()->ConfidentialFlag;
 				case 'Description': return QQN::SignupForm()->Description;
 				case 'InformationUrl': return QQN::SignupForm()->InformationUrl;
 				case 'AllowOtherFlag': return QQN::SignupForm()->AllowOtherFlag;

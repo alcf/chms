@@ -21,6 +21,7 @@
 	 * @property string $Name the value for strName 
 	 * @property string $Token the value for strToken (Unique)
 	 * @property boolean $ActiveFlag the value for blnActiveFlag 
+	 * @property boolean $ConfidentialFlag the value for blnConfidentialFlag 
 	 * @property string $Description the value for strDescription 
 	 * @property string $InformationUrl the value for strInformationUrl 
 	 * @property boolean $AllowOtherFlag the value for blnAllowOtherFlag 
@@ -94,6 +95,14 @@
 		 */
 		protected $blnActiveFlag;
 		const ActiveFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_form.confidential_flag
+		 * @var boolean blnConfidentialFlag
+		 */
+		protected $blnConfidentialFlag;
+		const ConfidentialFlagDefault = null;
 
 
 		/**
@@ -583,6 +592,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
+			$objBuilder->AddSelectItem($strTableName, 'confidential_flag', $strAliasPrefix . 'confidential_flag');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'information_url', $strAliasPrefix . 'information_url');
 			$objBuilder->AddSelectItem($strTableName, 'allow_other_flag', $strAliasPrefix . 'allow_other_flag');
@@ -683,6 +693,8 @@
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'confidential_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'confidential_flag'] : $strAliasPrefix . 'confidential_flag';
+			$objToReturn->blnConfidentialFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'information_url', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'information_url'] : $strAliasPrefix . 'information_url';
@@ -985,6 +997,7 @@
 							`name`,
 							`token`,
 							`active_flag`,
+							`confidential_flag`,
 							`description`,
 							`information_url`,
 							`allow_other_flag`,
@@ -1002,6 +1015,7 @@
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strToken) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
 							' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
@@ -1037,6 +1051,7 @@
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`information_url` = ' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
 							`allow_other_flag` = ' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
@@ -1166,6 +1181,7 @@
 			$this->strName = $objReloaded->strName;
 			$this->strToken = $objReloaded->strToken;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
+			$this->blnConfidentialFlag = $objReloaded->blnConfidentialFlag;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->strInformationUrl = $objReloaded->strInformationUrl;
 			$this->blnAllowOtherFlag = $objReloaded->blnAllowOtherFlag;
@@ -1195,6 +1211,7 @@
 					`name`,
 					`token`,
 					`active_flag`,
+					`confidential_flag`,
 					`description`,
 					`information_url`,
 					`allow_other_flag`,
@@ -1216,6 +1233,7 @@
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->strToken) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
 					' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
@@ -1306,6 +1324,11 @@
 					// Gets the value for blnActiveFlag 
 					// @return boolean
 					return $this->blnActiveFlag;
+
+				case 'ConfidentialFlag':
+					// Gets the value for blnConfidentialFlag 
+					// @return boolean
+					return $this->blnConfidentialFlag;
 
 				case 'Description':
 					// Gets the value for strDescription 
@@ -1504,6 +1527,17 @@
 					// @return boolean
 					try {
 						return ($this->blnActiveFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ConfidentialFlag':
+					// Sets the value for blnConfidentialFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnConfidentialFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2108,6 +2142,7 @@
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="ConfidentialFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="InformationUrl" type="xsd:string"/>';
 			$strToReturn .= '<element name="AllowOtherFlag" type="xsd:boolean"/>';
@@ -2155,6 +2190,8 @@
 				$objToReturn->strToken = $objSoapObject->Token;
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
+			if (property_exists($objSoapObject, 'ConfidentialFlag'))
+				$objToReturn->blnConfidentialFlag = $objSoapObject->ConfidentialFlag;
 			if (property_exists($objSoapObject, 'Description'))
 				$objToReturn->strDescription = $objSoapObject->Description;
 			if (property_exists($objSoapObject, 'InformationUrl'))
@@ -2223,6 +2260,7 @@
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Token
 	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $InformationUrl
 	 * @property-read QQNode $AllowOtherFlag
@@ -2258,6 +2296,8 @@
 					return new QQNode('token', 'Token', 'string', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
+				case 'ConfidentialFlag':
+					return new QQNode('confidential_flag', 'ConfidentialFlag', 'boolean', $this);
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'InformationUrl':
@@ -2308,6 +2348,7 @@
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Token
 	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $InformationUrl
 	 * @property-read QQNode $AllowOtherFlag
@@ -2344,6 +2385,8 @@
 					return new QQNode('token', 'Token', 'string', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
+				case 'ConfidentialFlag':
+					return new QQNode('confidential_flag', 'ConfidentialFlag', 'boolean', $this);
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'InformationUrl':

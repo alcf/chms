@@ -220,6 +220,7 @@ CREATE TABLE `ministry`
 `name` VARCHAR(100),
 `parent_ministry_id` INTEGER UNSIGNED,
 `group_type_bitmap` INTEGER UNSIGNED,
+`signup_form_type_bitmap` INTEGER UNSIGNED,
 `active_flag` BOOLEAN NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;

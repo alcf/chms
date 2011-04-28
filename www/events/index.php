@@ -69,22 +69,22 @@
 		}
 
 		public function chkViewAll_Click() {
-			$this->dtgGroups->Refresh();
+			$this->dtgSignupForms->Refresh();
 		}
 
 		public function dtgSignupForms_Bind() {
 			if ($this->intMinistryId) {
-				$this->dtgGroups->DataSource = Group::LoadOrderedArrayByMinistryIdAndConfidentiality(
+				$this->dtgSignupForms->DataSource = SignupForm::LoadOrderedArrayByMinistryIdAndConfidentiality(
 					$this->intMinistryId,
 					Ministry::Load($this->intMinistryId)->IsLoginCanAdminMinistry(QApplication::$Login),
 					!$this->chkViewAll->Checked);
-				$this->dtgGroups->Visible = true;
+				$this->dtgSignupForms->Visible = true;
 			} else {
-				$this->dtgGroups->DataSource = null;
-				$this->dtgGroups->Visible = false;
+				$this->dtgSignupForms->DataSource = null;
+				$this->dtgSignupForms->Visible = false;
 			}
 
-			$this->lblStartText->Visible = !$this->dtgGroups->Visible;
+			$this->lblStartText->Visible = !$this->dtgSignupForms->Visible;
 		}
 
 		public function lstGroupType_Change($strFormId, $strControlId, $strParameter) {
@@ -153,7 +153,7 @@
 				$this->pnlMinistry_Refresh($intOldMinistryId);
 				$this->pnlMinistry_Refresh($this->intMinistryId);
 				$this->lblMinistry_Refresh();
-				$this->dtgGroups->Refresh();
+				$this->dtgSignupForms->Refresh();
 				
 				$objMinistry = Ministry::Load($this->intMinistryId);
 				if ($objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) {

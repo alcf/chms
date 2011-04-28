@@ -39,6 +39,26 @@
 				return false;
 		}
 
+		/**
+		 * This will return an array of SignupForm items
+		 * correctly ordered for a given ministry
+		 * @param integer $intMinistryId
+		 * @param boolean $blnIncludeConfidential
+		 * @param boolean $blnActiveOnly (optional) will only return the "active" ones
+		 * @return SignupForm[]
+		 */
+		public static function LoadOrderedArrayByMinistryIdAndConfidentiality($intMinistryId, $blnIncludeConfidential, $blnActiveOnly = false) {
+			$objCondition = QQ::Equal(QQN::SignupForm()->MinistryId, $intMinistryId);
+
+			if (!$blnIncludeConfidential)
+				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::SignupForm()->ConfidentialFlag, false));
+
+			if ($blnActiveOnly)
+				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::SignupForm()->ActiveFlag, true));
+
+			return SignupForm::QueryArray($objCondition, QQ::OrderBy(QQN::SignupForm()->DateCreated, false));
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

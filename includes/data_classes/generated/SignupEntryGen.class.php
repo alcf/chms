@@ -682,6 +682,46 @@
 			
 		/**
 		 * Load an array of SignupEntry objects,
+		 * by SignupFormId, PersonId Index(es)
+		 * @param integer $intSignupFormId
+		 * @param integer $intPersonId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupEntry[]
+		*/
+		public static function LoadArrayBySignupFormIdPersonId($intSignupFormId, $intPersonId, $objOptionalClauses = null) {
+			// Call SignupEntry::QueryArray to perform the LoadArrayBySignupFormIdPersonId query
+			try {
+				return SignupEntry::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
+					QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SignupEntries
+		 * by SignupFormId, PersonId Index(es)
+		 * @param integer $intSignupFormId
+		 * @param integer $intPersonId
+		 * @return int
+		*/
+		public static function CountBySignupFormIdPersonId($intSignupFormId, $intPersonId) {
+			// Call SignupEntry::QueryCount to perform the CountBySignupFormIdPersonId query
+			return SignupEntry::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
+				QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId)
+				)
+			);
+		}
+			
+		/**
+		 * Load an array of SignupEntry objects,
 		 * by SignupFormId Index(es)
 		 * @param integer $intSignupFormId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -805,46 +845,6 @@
 			// Call SignupEntry::QueryCount to perform the CountByAmountBalance query
 			return SignupEntry::QueryCount(
 				QQ::Equal(QQN::SignupEntry()->AmountBalance, $fltAmountBalance)
-			);
-		}
-			
-		/**
-		 * Load an array of SignupEntry objects,
-		 * by SignupFormId, PersonId Index(es)
-		 * @param integer $intSignupFormId
-		 * @param integer $intPersonId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return SignupEntry[]
-		*/
-		public static function LoadArrayBySignupFormIdPersonId($intSignupFormId, $intPersonId, $objOptionalClauses = null) {
-			// Call SignupEntry::QueryArray to perform the LoadArrayBySignupFormIdPersonId query
-			try {
-				return SignupEntry::QueryArray(
-					QQ::AndCondition(
-					QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
-					QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId)
-					),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count SignupEntries
-		 * by SignupFormId, PersonId Index(es)
-		 * @param integer $intSignupFormId
-		 * @param integer $intPersonId
-		 * @return int
-		*/
-		public static function CountBySignupFormIdPersonId($intSignupFormId, $intPersonId) {
-			// Call SignupEntry::QueryCount to perform the CountBySignupFormIdPersonId query
-			return SignupEntry::QueryCount(
-				QQ::AndCondition(
-				QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
-				QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId)
-				)
 			);
 		}
 

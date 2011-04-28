@@ -28,6 +28,8 @@
 	 * property-read QLabel $TokenLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
+	 * property QCheckBox $ConfidentialFlagControl
+	 * property-read QLabel $ConfidentialFlagLabel
 	 * property QTextBox $DescriptionControl
 	 * property-read QLabel $DescriptionLabel
 	 * property QTextBox $InformationUrlControl
@@ -118,6 +120,12 @@
          * @access protected
          */
 		protected $chkActiveFlag;
+
+        /**
+         * @var QCheckBox chkConfidentialFlag;
+         * @access protected
+         */
+		protected $chkConfidentialFlag;
 
         /**
          * @var QTextBox txtDescription;
@@ -216,6 +224,12 @@
          * @access protected
          */
 		protected $lblActiveFlag;
+
+        /**
+         * @var QLabel lblConfidentialFlag
+         * @access protected
+         */
+		protected $lblConfidentialFlag;
 
         /**
          * @var QLabel lblDescription
@@ -550,6 +564,30 @@
 			$this->lblActiveFlag->Name = QApplication::Translate('Active Flag');
 			$this->lblActiveFlag->Text = ($this->objSignupForm->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 			return $this->lblActiveFlag;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkConfidentialFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkConfidentialFlag_Create($strControlId = null) {
+			$this->chkConfidentialFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkConfidentialFlag->Name = QApplication::Translate('Confidential Flag');
+			$this->chkConfidentialFlag->Checked = $this->objSignupForm->ConfidentialFlag;
+			return $this->chkConfidentialFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblConfidentialFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblConfidentialFlag_Create($strControlId = null) {
+			$this->lblConfidentialFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblConfidentialFlag->Name = QApplication::Translate('Confidential Flag');
+			$this->lblConfidentialFlag->Text = ($this->objSignupForm->ConfidentialFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblConfidentialFlag;
 		}
 
 		/**
@@ -920,6 +958,9 @@
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objSignupForm->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objSignupForm->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->chkConfidentialFlag) $this->chkConfidentialFlag->Checked = $this->objSignupForm->ConfidentialFlag;
+			if ($this->lblConfidentialFlag) $this->lblConfidentialFlag->Text = ($this->objSignupForm->ConfidentialFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->txtDescription) $this->txtDescription->Text = $this->objSignupForm->Description;
 			if ($this->lblDescription) $this->lblDescription->Text = $this->objSignupForm->Description;
 
@@ -999,6 +1040,7 @@
 				if ($this->txtName) $this->objSignupForm->Name = $this->txtName->Text;
 				if ($this->txtToken) $this->objSignupForm->Token = $this->txtToken->Text;
 				if ($this->chkActiveFlag) $this->objSignupForm->ActiveFlag = $this->chkActiveFlag->Checked;
+				if ($this->chkConfidentialFlag) $this->objSignupForm->ConfidentialFlag = $this->chkConfidentialFlag->Checked;
 				if ($this->txtDescription) $this->objSignupForm->Description = $this->txtDescription->Text;
 				if ($this->txtInformationUrl) $this->objSignupForm->InformationUrl = $this->txtInformationUrl->Text;
 				if ($this->chkAllowOtherFlag) $this->objSignupForm->AllowOtherFlag = $this->chkAllowOtherFlag->Checked;
@@ -1089,6 +1131,12 @@
 				case 'ActiveFlagLabel':
 					if (!$this->lblActiveFlag) return $this->lblActiveFlag_Create();
 					return $this->lblActiveFlag;
+				case 'ConfidentialFlagControl':
+					if (!$this->chkConfidentialFlag) return $this->chkConfidentialFlag_Create();
+					return $this->chkConfidentialFlag;
+				case 'ConfidentialFlagLabel':
+					if (!$this->lblConfidentialFlag) return $this->lblConfidentialFlag_Create();
+					return $this->lblConfidentialFlag;
 				case 'DescriptionControl':
 					if (!$this->txtDescription) return $this->txtDescription_Create();
 					return $this->txtDescription;
@@ -1195,6 +1243,8 @@
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
+					case 'ConfidentialFlagControl':
+						return ($this->chkConfidentialFlag = QType::Cast($mixValue, 'QControl'));
 					case 'DescriptionControl':
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'InformationUrlControl':
