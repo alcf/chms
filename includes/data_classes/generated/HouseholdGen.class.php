@@ -25,10 +25,10 @@
 	 * @property Address[] $_AddressArray the value for the private _objAddressArray (Read-Only) if set due to an ExpandAsArray on the address.household_id reverse relationship
 	 * @property HouseholdParticipation $_HouseholdParticipation the value for the private _objHouseholdParticipation (Read-Only) if set due to an expansion on the household_participation.household_id reverse relationship
 	 * @property HouseholdParticipation[] $_HouseholdParticipationArray the value for the private _objHouseholdParticipationArray (Read-Only) if set due to an ExpandAsArray on the household_participation.household_id reverse relationship
-	 * @property HouseholdSplit $_HouseholdSplitAsSplit the value for the private _objHouseholdSplitAsSplit (Read-Only) if set due to an expansion on the household_split.split_household_id reverse relationship
-	 * @property HouseholdSplit[] $_HouseholdSplitAsSplitArray the value for the private _objHouseholdSplitAsSplitArray (Read-Only) if set due to an ExpandAsArray on the household_split.split_household_id reverse relationship
 	 * @property HouseholdSplit $_HouseholdSplit the value for the private _objHouseholdSplit (Read-Only) if set due to an expansion on the household_split.household_id reverse relationship
 	 * @property HouseholdSplit[] $_HouseholdSplitArray the value for the private _objHouseholdSplitArray (Read-Only) if set due to an ExpandAsArray on the household_split.household_id reverse relationship
+	 * @property HouseholdSplit $_HouseholdSplitAsSplit the value for the private _objHouseholdSplitAsSplit (Read-Only) if set due to an expansion on the household_split.split_household_id reverse relationship
+	 * @property HouseholdSplit[] $_HouseholdSplitAsSplitArray the value for the private _objHouseholdSplitAsSplitArray (Read-Only) if set due to an ExpandAsArray on the household_split.split_household_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class HouseholdGen extends QBaseClass {
@@ -112,22 +112,6 @@
 		private $_objHouseholdParticipationArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single HouseholdSplitAsSplit object
-		 * (of type HouseholdSplit), if this Household object was restored with
-		 * an expansion on the household_split association table.
-		 * @var HouseholdSplit _objHouseholdSplitAsSplit;
-		 */
-		private $_objHouseholdSplitAsSplit;
-
-		/**
-		 * Private member variable that stores a reference to an array of HouseholdSplitAsSplit objects
-		 * (of type HouseholdSplit[]), if this Household object was restored with
-		 * an ExpandAsArray on the household_split association table.
-		 * @var HouseholdSplit[] _objHouseholdSplitAsSplitArray;
-		 */
-		private $_objHouseholdSplitAsSplitArray = array();
-
-		/**
 		 * Private member variable that stores a reference to a single HouseholdSplit object
 		 * (of type HouseholdSplit), if this Household object was restored with
 		 * an expansion on the household_split association table.
@@ -142,6 +126,22 @@
 		 * @var HouseholdSplit[] _objHouseholdSplitArray;
 		 */
 		private $_objHouseholdSplitArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single HouseholdSplitAsSplit object
+		 * (of type HouseholdSplit), if this Household object was restored with
+		 * an expansion on the household_split association table.
+		 * @var HouseholdSplit _objHouseholdSplitAsSplit;
+		 */
+		private $_objHouseholdSplitAsSplit;
+
+		/**
+		 * Private member variable that stores a reference to an array of HouseholdSplitAsSplit objects
+		 * (of type HouseholdSplit[]), if this Household object was restored with
+		 * an ExpandAsArray on the household_split association table.
+		 * @var HouseholdSplit[] _objHouseholdSplitAsSplitArray;
+		 */
+		private $_objHouseholdSplitAsSplitArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -556,20 +556,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				$strAlias = $strAliasPrefix . 'householdsplitassplit__id';
-				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objHouseholdSplitAsSplitArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objHouseholdSplitAsSplitArray[$intPreviousChildItemCount - 1];
-						$objChildItem = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
-						if ($objChildItem)
-							$objPreviousItem->_objHouseholdSplitAsSplitArray[] = $objChildItem;
-					} else
-						$objPreviousItem->_objHouseholdSplitAsSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-					$blnExpandedViaArray = true;
-				}
-
 				$strAlias = $strAliasPrefix . 'householdsplit__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -581,6 +567,20 @@
 							$objPreviousItem->_objHouseholdSplitArray[] = $objChildItem;
 					} else
 						$objPreviousItem->_objHouseholdSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'householdsplitassplit__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objHouseholdSplitAsSplitArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objHouseholdSplitAsSplitArray[$intPreviousChildItemCount - 1];
+						$objChildItem = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objHouseholdSplitAsSplitArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objHouseholdSplitAsSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -647,16 +647,6 @@
 					$objToReturn->_objHouseholdParticipation = HouseholdParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-			// Check for HouseholdSplitAsSplit Virtual Binding
-			$strAlias = $strAliasPrefix . 'householdsplitassplit__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objHouseholdSplitAsSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objHouseholdSplitAsSplit = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
-
 			// Check for HouseholdSplit Virtual Binding
 			$strAlias = $strAliasPrefix . 'householdsplit__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -665,6 +655,16 @@
 					$objToReturn->_objHouseholdSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objHouseholdSplit = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for HouseholdSplitAsSplit Virtual Binding
+			$strAlias = $strAliasPrefix . 'householdsplitassplit__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objHouseholdSplitAsSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objHouseholdSplitAsSplit = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplitassplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1059,18 +1059,6 @@
 					// @return HouseholdParticipation[]
 					return (array) $this->_objHouseholdParticipationArray;
 
-				case '_HouseholdSplitAsSplit':
-					// Gets the value for the private _objHouseholdSplitAsSplit (Read-Only)
-					// if set due to an expansion on the household_split.split_household_id reverse relationship
-					// @return HouseholdSplit
-					return $this->_objHouseholdSplitAsSplit;
-
-				case '_HouseholdSplitAsSplitArray':
-					// Gets the value for the private _objHouseholdSplitAsSplitArray (Read-Only)
-					// if set due to an ExpandAsArray on the household_split.split_household_id reverse relationship
-					// @return HouseholdSplit[]
-					return (array) $this->_objHouseholdSplitAsSplitArray;
-
 				case '_HouseholdSplit':
 					// Gets the value for the private _objHouseholdSplit (Read-Only)
 					// if set due to an expansion on the household_split.household_id reverse relationship
@@ -1082,6 +1070,18 @@
 					// if set due to an ExpandAsArray on the household_split.household_id reverse relationship
 					// @return HouseholdSplit[]
 					return (array) $this->_objHouseholdSplitArray;
+
+				case '_HouseholdSplitAsSplit':
+					// Gets the value for the private _objHouseholdSplitAsSplit (Read-Only)
+					// if set due to an expansion on the household_split.split_household_id reverse relationship
+					// @return HouseholdSplit
+					return $this->_objHouseholdSplitAsSplit;
+
+				case '_HouseholdSplitAsSplitArray':
+					// Gets the value for the private _objHouseholdSplitAsSplitArray (Read-Only)
+					// if set due to an ExpandAsArray on the household_split.split_household_id reverse relationship
+					// @return HouseholdSplit[]
+					return (array) $this->_objHouseholdSplitAsSplitArray;
 
 
 				case '__Restored':
@@ -1582,188 +1582,6 @@
 
 			
 		
-		// Related Objects' Methods for HouseholdSplitAsSplit
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated HouseholdSplitsAsSplit as an array of HouseholdSplit objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return HouseholdSplit[]
-		*/ 
-		public function GetHouseholdSplitAsSplitArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated HouseholdSplitsAsSplit
-		 * @return int
-		*/ 
-		public function CountHouseholdSplitsAsSplit() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return HouseholdSplit::CountBySplitHouseholdId($this->intId);
-		}
-
-		/**
-		 * Associates a HouseholdSplitAsSplit
-		 * @param HouseholdSplit $objHouseholdSplit
-		 * @return void
-		*/ 
-		public function AssociateHouseholdSplitAsSplit(HouseholdSplit $objHouseholdSplit) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateHouseholdSplitAsSplit on this unsaved Household.');
-			if ((is_null($objHouseholdSplit->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateHouseholdSplitAsSplit on this Household with an unsaved HouseholdSplit.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Household::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`household_split`
-				SET
-					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . '
-			');
-
-			// Journaling (if applicable)
-			if ($objDatabase->JournalingDatabase) {
-				$objHouseholdSplit->SplitHouseholdId = $this->intId;
-				$objHouseholdSplit->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates a HouseholdSplitAsSplit
-		 * @param HouseholdSplit $objHouseholdSplit
-		 * @return void
-		*/ 
-		public function UnassociateHouseholdSplitAsSplit(HouseholdSplit $objHouseholdSplit) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
-			if ((is_null($objHouseholdSplit->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this Household with an unsaved HouseholdSplit.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Household::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`household_split`
-				SET
-					`split_household_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
-					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objHouseholdSplit->SplitHouseholdId = null;
-				$objHouseholdSplit->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates all HouseholdSplitsAsSplit
-		 * @return void
-		*/ 
-		public function UnassociateAllHouseholdSplitsAsSplit() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Household::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
-					$objHouseholdSplit->SplitHouseholdId = null;
-					$objHouseholdSplit->Journal('UPDATE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`household_split`
-				SET
-					`split_household_id` = null
-				WHERE
-					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated HouseholdSplitAsSplit
-		 * @param HouseholdSplit $objHouseholdSplit
-		 * @return void
-		*/ 
-		public function DeleteAssociatedHouseholdSplitAsSplit(HouseholdSplit $objHouseholdSplit) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
-			if ((is_null($objHouseholdSplit->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this Household with an unsaved HouseholdSplit.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Household::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`household_split`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
-					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objHouseholdSplit->Journal('DELETE');
-			}
-		}
-
-		/**
-		 * Deletes all associated HouseholdSplitsAsSplit
-		 * @return void
-		*/ 
-		public function DeleteAllHouseholdSplitsAsSplit() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Household::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
-					$objHouseholdSplit->Journal('DELETE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`household_split`
-				WHERE
-					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for HouseholdSplit
 		//-------------------------------------------------------------------
 
@@ -1944,6 +1762,188 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for HouseholdSplitAsSplit
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated HouseholdSplitsAsSplit as an array of HouseholdSplit objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return HouseholdSplit[]
+		*/ 
+		public function GetHouseholdSplitAsSplitArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated HouseholdSplitsAsSplit
+		 * @return int
+		*/ 
+		public function CountHouseholdSplitsAsSplit() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return HouseholdSplit::CountBySplitHouseholdId($this->intId);
+		}
+
+		/**
+		 * Associates a HouseholdSplitAsSplit
+		 * @param HouseholdSplit $objHouseholdSplit
+		 * @return void
+		*/ 
+		public function AssociateHouseholdSplitAsSplit(HouseholdSplit $objHouseholdSplit) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateHouseholdSplitAsSplit on this unsaved Household.');
+			if ((is_null($objHouseholdSplit->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateHouseholdSplitAsSplit on this Household with an unsaved HouseholdSplit.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`household_split`
+				SET
+					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->SplitHouseholdId = $this->intId;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a HouseholdSplitAsSplit
+		 * @param HouseholdSplit $objHouseholdSplit
+		 * @return void
+		*/ 
+		public function UnassociateHouseholdSplitAsSplit(HouseholdSplit $objHouseholdSplit) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
+			if ((is_null($objHouseholdSplit->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this Household with an unsaved HouseholdSplit.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`household_split`
+				SET
+					`split_household_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
+					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->SplitHouseholdId = null;
+				$objHouseholdSplit->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all HouseholdSplitsAsSplit
+		 * @return void
+		*/ 
+		public function UnassociateAllHouseholdSplitsAsSplit() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
+					$objHouseholdSplit->SplitHouseholdId = null;
+					$objHouseholdSplit->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`household_split`
+				SET
+					`split_household_id` = null
+				WHERE
+					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated HouseholdSplitAsSplit
+		 * @param HouseholdSplit $objHouseholdSplit
+		 * @return void
+		*/ 
+		public function DeleteAssociatedHouseholdSplitAsSplit(HouseholdSplit $objHouseholdSplit) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
+			if ((is_null($objHouseholdSplit->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this Household with an unsaved HouseholdSplit.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`household_split`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objHouseholdSplit->Id) . ' AND
+					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objHouseholdSplit->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated HouseholdSplitsAsSplit
+		 * @return void
+		*/ 
+		public function DeleteAllHouseholdSplitsAsSplit() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateHouseholdSplitAsSplit on this unsaved Household.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (HouseholdSplit::LoadArrayBySplitHouseholdId($this->intId) as $objHouseholdSplit) {
+					$objHouseholdSplit->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`household_split`
+				WHERE
+					`split_household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -2038,8 +2038,8 @@
 	 * @property-read QQNode $Members
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
-	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
 	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplit
+	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
 	 */
 	class QQNodeHousehold extends QQNode {
 		protected $strTableName = 'household';
@@ -2063,10 +2063,10 @@
 					return new QQReverseReferenceNodeAddress($this, 'address', 'reverse_reference', 'household_id');
 				case 'HouseholdParticipation':
 					return new QQReverseReferenceNodeHouseholdParticipation($this, 'householdparticipation', 'reverse_reference', 'household_id');
-				case 'HouseholdSplitAsSplit':
-					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplitassplit', 'reverse_reference', 'split_household_id');
 				case 'HouseholdSplit':
 					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplit', 'reverse_reference', 'household_id');
+				case 'HouseholdSplitAsSplit':
+					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplitassplit', 'reverse_reference', 'split_household_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -2090,8 +2090,8 @@
 	 * @property-read QQNode $Members
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
-	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
 	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplit
+	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeHousehold extends QQReverseReferenceNode {
@@ -2116,10 +2116,10 @@
 					return new QQReverseReferenceNodeAddress($this, 'address', 'reverse_reference', 'household_id');
 				case 'HouseholdParticipation':
 					return new QQReverseReferenceNodeHouseholdParticipation($this, 'householdparticipation', 'reverse_reference', 'household_id');
-				case 'HouseholdSplitAsSplit':
-					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplitassplit', 'reverse_reference', 'split_household_id');
 				case 'HouseholdSplit':
 					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplit', 'reverse_reference', 'household_id');
+				case 'HouseholdSplitAsSplit':
+					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplitassplit', 'reverse_reference', 'split_household_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

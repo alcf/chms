@@ -47,6 +47,7 @@ CREATE TABLE `signup_form`
 `name` VARCHAR(200),
 `token` VARCHAR(200) UNIQUE,
 `active_flag` BOOLEAN,
+`confidential_flag` BOOLEAN,
 `description` TEXT,
 `information_url` VARCHAR(200),
 `allow_other_flag` BOOLEAN,

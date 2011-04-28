@@ -809,38 +809,6 @@
 			
 		/**
 		 * Load an array of Phone objects,
-		 * by MobileProviderId Index(es)
-		 * @param integer $intMobileProviderId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Phone[]
-		*/
-		public static function LoadArrayByMobileProviderId($intMobileProviderId, $objOptionalClauses = null) {
-			// Call Phone::QueryArray to perform the LoadArrayByMobileProviderId query
-			try {
-				return Phone::QueryArray(
-					QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count Phones
-		 * by MobileProviderId Index(es)
-		 * @param integer $intMobileProviderId
-		 * @return int
-		*/
-		public static function CountByMobileProviderId($intMobileProviderId) {
-			// Call Phone::QueryCount to perform the CountByMobileProviderId query
-			return Phone::QueryCount(
-				QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId)
-			);
-		}
-			
-		/**
-		 * Load an array of Phone objects,
 		 * by Number Index(es)
 		 * @param string $strNumber
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -868,6 +836,38 @@
 			// Call Phone::QueryCount to perform the CountByNumber query
 			return Phone::QueryCount(
 				QQ::Equal(QQN::Phone()->Number, $strNumber)
+			);
+		}
+			
+		/**
+		 * Load an array of Phone objects,
+		 * by MobileProviderId Index(es)
+		 * @param integer $intMobileProviderId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Phone[]
+		*/
+		public static function LoadArrayByMobileProviderId($intMobileProviderId, $objOptionalClauses = null) {
+			// Call Phone::QueryArray to perform the LoadArrayByMobileProviderId query
+			try {
+				return Phone::QueryArray(
+					QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Phones
+		 * by MobileProviderId Index(es)
+		 * @param integer $intMobileProviderId
+		 * @return int
+		*/
+		public static function CountByMobileProviderId($intMobileProviderId) {
+			// Call Phone::QueryCount to perform the CountByMobileProviderId query
+			return Phone::QueryCount(
+				QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId)
 			);
 		}
 
