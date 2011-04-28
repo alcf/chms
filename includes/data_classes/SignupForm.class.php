@@ -27,6 +27,20 @@
 			return sprintf('SignupForm Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Type': return SignupFormType::$NameArray[$this->intSignupFormTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		/**
 		 * Returns a boolean on whether or not the person has been registered on this form
 		 * @param Person $objPerson

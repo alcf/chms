@@ -56,9 +56,9 @@
 
 			$this->dtgSignupForms = new QDataGrid($this);
 			$this->dtgSignupForms->CssClass = 'datagrid';
-			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Group Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=260px'));
-			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=120px'));
-			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Email', '<?= $_ITEM->EmailTypeHtml ; ?>', 'HtmlEntities=false', 'Width=350px'));
+			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Form Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=440px'));
+			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=160px'));
+			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Date Created', '<?= $_ITEM->DateCreated->ToString("DDD, MMM D, YYYY"); ?>', 'Width=140px'));
 			$this->dtgSignupForms->SetDataBinder('dtgSignupForms_Bind');
 
 			$this->lblStartText = new QLabel($this);
@@ -94,21 +94,15 @@
 			$this->lstGroupType->SelectedIndex = 0;
 		}
 
-		public function RenderName(Group $objGroup) {
-			if ($objGroup->ActiveFlag) {
-				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, null);
+		public function RenderName(SignupForm $objSignupForm) {
+			if ($objSignupForm->ActiveFlag) {
+				$this->dtgSignupForms->OverrideRowStyle($this->dtgSignupForms->CurrentRowIndex, null);
 			} else {
 				$objStyle = new QDataGridRowStyle();
 				$objStyle->BackColor = '#ccc';
-				$this->dtgGroups->OverrideRowStyle($this->dtgGroups->CurrentRowIndex, $objStyle);
+				$this->dtgSignupForms->OverrideRowStyle($this->dtgSignupForms->CurrentRowIndex, $objStyle);
 			}
-			$strName = sprintf('<a href="/groups/group.php#%s">%s</a>', $objGroup->Id, QApplication::HtmlEntities($objGroup->Name));
-
-			// Add Pointer
-			$strName = ($objGroup->HierarchyLevel) ? '&gt;&nbsp;' . $strName : $strName;
-
-			// Add Indent
-			$strName = str_repeat('&nbsp;&nbsp;&nbsp;', $objGroup->HierarchyLevel) . $strName;
+			$strName = sprintf('<a href="/events/form.php/%s">%s</a>', $objSignupForm->Id, QApplication::HtmlEntities($objSignupForm->Name));
 
 			return $strName;
 		}
@@ -135,7 +129,7 @@
 			$objMinistry = Ministry::Load($this->intMinistryId);
 			if ($objMinistry) {
 				$this->lblMinistry->Visible = true;
-				$this->lblMinistry->Text = 'Groups in ' . $objMinistry->Name;
+				$this->lblMinistry->Text = 'Signup Forms in ' . $objMinistry->Name;
 			} else {
 				$this->lblMinistry->Visible = false;
 			}
@@ -158,14 +152,13 @@
 				$objMinistry = Ministry::Load($this->intMinistryId);
 				if ($objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) {
 					$this->chkViewAll->Visible = true;
-					$this->lstGroupType->Visible = true;
-					$this->lstGroupType->RemoveAllItems();
-					$this->lstGroupType->AddItem('- Create New... -');
-					foreach (GroupType::$NameArray as $intId => $strName)
-						if ($objMinistry->GroupTypeBitmap & $intId) $this->lstGroupType->AddItem($strName, $intId);
+					$this->lstSignupFormType->Visible = true;
+					$this->lstSignupFormType->RemoveAllItems();
+					$this->lstSignupFormType->AddItem('- Create New... -');
+					foreach (SignupFormType::$NameArray as $intId => $strName)
+						if ($objMinistry->SignupFormTypeBitmap & $intId) $this->lstSignupFormType->AddItem($strName, $intId);
 				} else {
-					$this->lstGroupType->Visible = true;
-					$this->lstGroupType->Visible = false;
+					$this->lstSignupFormType->Visible = false;
 				}
 			}
 		}
