@@ -27,6 +27,51 @@
 			return sprintf('FormQuestion Object %s',  $this->intId);
 		}
 
+		public static function RefreshOrderNumber($intSignupFormId) {
+			$intOrderNumber = 1;
+			foreach (FormQuestion::LoadArrayBySignupFormId($intSignupFormId, QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+				$objFormQuestion->OrderNumber = $intOrderNumber;
+				$objFormQuestion->Save();
+				$intOrderNumber++;
+			}
+		}
+
+		public function MoveUp() {
+			$objToSwapWith = null;
+			foreach (FormQuestion::LoadArrayBySignupFormId($this->intSignupFormId, QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+				if ($objFormQuestion->Id == $this->Id)
+					break;
+				$objToSwapWith = $objFormQuestion;
+			}
+
+			$this->OrderNumber--;
+			$this->Save();
+
+			if ($objToSwapWith) {
+				$objToSwapWith->OrderNumber++;
+				$objToSwapWith->Save();
+			}
+
+			self::RefreshOrderNumber($this->intSignupFormId);
+		}
+		
+		public function MoveDown() {
+			$blnFound = false;
+			foreach (FormQuestion::LoadArrayBySignupFormId($this->intSignupFormId, QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+				if ($blnFound) break;
+				if ($objFormQuestion->Id == $this->Id) $blnFound = true;
+			}
+
+			$this->OrderNumber++;
+			$this->Save();
+
+			if ($objFormQuestion) {
+				$objFormQuestion->OrderNumber--;
+				$objFormQuestion->Save();
+			}
+
+			self::RefreshOrderNumber($this->intSignupFormId);
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -29,6 +29,13 @@
 		<?php $this->dtgQuestions->Render(); ?>
 	</div>
 
+<?php if ($this->lstCreateNewQuestion) { ?>
+	<div class="buttonBar">
+		<?php $this->lstCreateNewQuestion->Render(); ?>
+	</div>
+	<br clear="all"/>
+<?php } ?>
+
 	<h3>Signups</h3>
 	<div class="section">
 		<?php $this->dtgSignupEntries->Render(); ?>

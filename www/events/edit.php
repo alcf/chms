@@ -45,6 +45,8 @@
 				if (!QApplication::PathInfo(1)) QApplication::Redirect('/events/');
 				$objSignupForm = new SignupForm();
 				$objSignupForm->SignupFormTypeId = QApplication::PathInfo(1);
+				$objSignupForm->DateCreated = QDateTime::Now();
+				$objSignupForm->ActiveFlag = true;
 				$this->strPageTitle .= 'Create New Form';
 				$this->lblHeading->Text = 'Create New ' . $objSignupForm->Type . ' Form';
 			}
@@ -135,7 +137,7 @@
 					$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 				} else {
 					$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to DELETE this Signup Form?  This cannot be undone.'));
-					$this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
+					$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
 					$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 				}
 			}
@@ -214,7 +216,10 @@
 		}
 
 		public function btnDelete_Click() {
-			// TODO: Perform Delete Logic
+			$this->mctSignupForm->SignupForm->DeleteAllFormQuestions();
+			if ($this->mctSignupForm->SignupForm->EventSignupForm) $this->mctSignupForm->SignupForm->EventSignupForm->Delete();
+			$this->mctSignupForm->DeleteSignupForm();
+
 			QApplication::Redirect('/events/');
 		}
 	}

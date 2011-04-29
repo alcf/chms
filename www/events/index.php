@@ -67,6 +67,10 @@
 			
 			$this->SetUrlHashProcessor('Form_ProcessHash');
 		}
+		
+		public function lstSignupFormType_Change() {
+			QApplication::Redirect('/events/edit.php/0/' . $this->lstSignupFormType->SelectedValue);
+		}
 
 		public function chkViewAll_Click() {
 			$this->dtgSignupForms->Refresh();
