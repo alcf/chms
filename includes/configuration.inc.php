@@ -21,6 +21,7 @@
 					define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
 					define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
 					define ('MICRIMAGE_IP', '10.128.2.88');
+					define ('MY_ALCF_URL', 'http://my.alcf.dev');
 					break;
 
 				case 'harris':

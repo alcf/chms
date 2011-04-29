@@ -30,6 +30,12 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return SignupFormType::$NameArray[$this->intSignupFormTypeId];
+				case 'SignupUrl':
+					if ($this->strToken) {
+						return MY_ALCF_URL . '/signup/form.php/' . $this->strToken;
+					} else {
+						return MY_ALCF_URL . '/signup/form.php/' . $this->intId;
+					}
 
 				default:
 					try {

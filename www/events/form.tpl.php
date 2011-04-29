@@ -4,6 +4,17 @@
 	<h3><?php _p($this->objSignupForm->Name); ?></h3>
 
 	<div class="section">
+		<?php $this->lblName->RenderWithName(); ?>
+		<?php $this->lblActive->RenderWithName(); ?>
+		<?php $this->lblSignupUrl->RenderWithName(); ?>
+		<?php $this->lblConfidential->RenderWithName(); ?>
+		
+		<?php $this->lblDescription->RenderWithName('Width=700px', 'TagName=div'); ?>
+		<?php $this->lblInformationUrl->RenderWithName(); ?>
+		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations per Person'); ?>
+		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Ability to Register Someone Else'); ?>
+		<?php $this->lblPaymentInfo->RenderWithName(); ?>
+		<?php $this->lblLimitInfo->RenderWithName(); ?>
 	</div>
 	<div class="buttonBar">
 		<input type="button" class="primary" value="Edit" onclick="document.location=&quot;/events/edit.php/<?php _p($this->objSignupForm->Id); ?>&quot;; return false;"/>
