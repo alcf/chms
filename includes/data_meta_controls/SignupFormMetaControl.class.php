@@ -19,5 +19,17 @@
 	 * @subpackage MetaControls
 	 */
 	class SignupFormMetaControl extends SignupFormMetaControlGen {
+		/**
+		 * Create and setup QTextBox txtInformationUrl
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtInformationUrl_Create($strControlId = null) {
+			$this->txtInformationUrl = new UrlTextbox($this->objParentObject, $strControlId);
+			$this->txtInformationUrl->Name = QApplication::Translate('Information Url');
+			$this->txtInformationUrl->Text = $this->objSignupForm->InformationUrl;
+			$this->txtInformationUrl->MaxLength = SignupForm::InformationUrlMaxLength;
+			return $this->txtInformationUrl;
+		}
 	}
 ?>

@@ -45,6 +45,9 @@
 	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	input.textbox:disabled { background-color: #bbb; color: #999; }
+	textarea.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
+	textarea.textbox:focus { background-color: #fff; }
+	textarea.textbox:disabled { background-color: #bbb; color: #999; }
 	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }

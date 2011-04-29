@@ -11,23 +11,26 @@
 		
 		<?php $this->lblDescription->RenderWithName('Width=700px', 'TagName=div'); ?>
 		<?php $this->lblInformationUrl->RenderWithName(); ?>
-		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations per Person'); ?>
-		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Ability to Register Someone Else'); ?>
+		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations'); ?>
+		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
 		<?php $this->lblPaymentInfo->RenderWithName(); ?>
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
 	</div>
+	
+<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
 	<div class="buttonBar">
 		<input type="button" class="primary" value="Edit" onclick="document.location=&quot;/events/edit.php/<?php _p($this->objSignupForm->Id); ?>&quot;; return false;"/>
 	</div>
 	<br clear="all"/>
+<?php } ?>
 
+	<h3>Form Questions / Fields</h3>
 	<div class="section">
-		<h3>Form Questions / Fields</h3>
 		<?php $this->dtgQuestions->Render(); ?>
 	</div>
 
+	<h3>Signups</h3>
 	<div class="section">
-		<h3>Signups</h3>
 		<?php $this->dtgSignupEntries->Render(); ?>
 	</div>
 	

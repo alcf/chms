@@ -103,7 +103,7 @@
 						$this->objSignupForm->Cost, $this->objSignupForm->Deposit);
 					break;
 				case FormPaymentType::VariablePayment:
-					$this->lblPaymentInfo->Text = sprintf('Cost: $%.2f - Registrar can deposit any value up to $%.2f', $this->objSignupForm->Cost, $this->objSignupForm->Cost);
+					$this->lblPaymentInfo->Text = sprintf('Cost: $%.2f - Registrar can pay in full, or place a deposit of any value that is at least $%.2f', $this->objSignupForm->Cost, $this->objSignupForm->Deposit);
 					break;
 				case FormPaymentType::PayInFull:
 					$this->lblPaymentInfo->Text = sprintf('Cost: $%.2f - Must pay in full with registration', $this->objSignupForm->Cost);
@@ -114,12 +114,13 @@
 			
 			$this->lblLimitInfo = new QLabel($this);
 			$this->lblLimitInfo->Name = 'Registration Capacity';
+			$this->lblLimitInfo->HtmlEntities = false;
 			$strArray = array();
 			if (!is_null($this->objSignupForm->SignupLimit)) $strArray[] = 'Overall Capacity: ' . $this->objSignupForm->SignupLimit . ' Registrations';
 			if (!is_null($this->objSignupForm->SignupFemaleLimit)) $strArray[] = 'Female Capacity: ' . $this->objSignupForm->SignupFemaleLimit . ' Registrations';
 			if (!is_null($this->objSignupForm->SignupMaleLimit)) $strArray[] = 'Male Capacity: ' . $this->objSignupForm->SignupMaleLimit . ' Registrations';
 			if (count($strArray))
-				$this->lblLimitInfo->Text = implode(' - ', $strArray);
+				$this->lblLimitInfo->Text = implode(' &nbsp; - &nbsp; ', $strArray);
 			else
 				$this->lblLimitInfo->Text = 'None (unlimited)'; 
 		}
