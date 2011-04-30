@@ -4,6 +4,13 @@
 	<?php $this->lblHeading->Render('TagName=h3')?>
 
 	<div class="section">
+		<?php $this->lblFormQuestionType->RenderWithName(); ?>
+		<?php $this->txtShortDescription->RenderWithName(); ?>
+		<?php $this->txtQuestion->RenderWithName(); ?>
+		<?php $this->chkRequiredFlag->RenderWithName(); ?>
+
+		<?php $this->txtOptions->RenderWithName(); ?>
+		<?php $this->chkAllowOtherFlag->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">
