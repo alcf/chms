@@ -44,7 +44,7 @@
 			<br/>
 			<a href="/events/export_to_excel.php/<?php _p($this->objSignupForm->Id); ?>/<?php _p($this->objSignupForm->CsvFilename); ?>"><img src="/assets/images/icons/page_excel.png"> Download as Excel</a>
 		</div>
-		<div style="float: left;">
+		<div style="float: left; width: 800px; ">
 			<?php $this->dtgSignupEntries->Render(); ?>
 		</div>
 		<br clear="all"/>
