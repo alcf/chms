@@ -323,6 +323,13 @@ div.shopInfo div.shopLeft { float: left; }
 	div#selectPersonPanel_ctl div.right { height: 200px; overflow: auto; }
 	div.createPersonPanel { border: 1px solid #ccc; background-color: #eee; padding: 5px; width: 650px; }
 	
+	div.columnSelectorColumn { float: left; font-family: arial; font-size: 11px; width: 150px; margin-right: 5px; }
+	div.columnSelectorColumn a { text-decoration: none; }
+	div.columnSelectorColumn a:hover { text-decoration: underline; }
+	div.columnSelectorColumn table.columnSelector { background-color: #ccc; width: 150px; font-size: 10px; }
+	
+	
+	
 	/* QDataGrid */
 	p.datagrid { font-style: italic; }
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }

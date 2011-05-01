@@ -37,15 +37,18 @@
 			if (!$this->objSignupForm) QApplication::Redirect('/events/');
 			$this->mctSignupForm = SignupFormMetaControl::Create($this, $this->objSignupForm->Id);
 
-			if ($this->objSignupForm->ConfidentialFlag && !$this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) {
+			if (!$this->objSignupForm->IsLoginCanView(QApplication::$Login)) {
 				QApplication::Redirect('/events/');
 			}
 			
 			$this->strPageTitle .= $this->objSignupForm->Name;
 
-			$this->dtgSignupEntries = new QDataGrid($this);
+			$this->dtgSignupEntries = new SignupEntryDataGrid($this);
 			$this->dtgSignupEntries->CssClass = 'datagrid';
 			$this->dtgSignupEntries->SetDataBinder('dtgSignupEntries_Bind');
+			$this->dtgSignupEntries->Paginator = new QPaginator($this->dtgSignupEntries);
+			$this->dtgSignupEntries->SortColumnIndex = 1;
+			$this->dtgSignupEntries->FontSize = '10px';
 
 			$this->dtgQuestions = new FormQuestionDataGrid($this);
 			$this->dtgQuestions->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorder($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
@@ -64,10 +67,15 @@
 			}
 
 			$this->cblColumns = new QCheckBoxList($this);
+			$this->cblColumns->AddAction(new QClickEvent(), new QAjaxAction('cblColumns_Click'));
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 				$this->cblColumns->AddItem($objFormQuestion->ShortDescription, $objFormQuestion->Id, $objFormQuestion->ViewFlag);
 			}
 			
+			// Setup dtgSignups
+			$this->dtgSignupEntries_SetupColumns();
+			
+			// Setup "About Event" label controls
 			$this->SetupLabels();
 			switch ($this->objSignupForm->SignupFormTypeId) {
 				case SignupFormType::Event:
@@ -186,9 +194,70 @@
 			$objFormQuestion->MoveUp();
 			$this->dtgQuestions->Refresh();
 		}
+		
+		public function cblColumns_Click() {
+			foreach ($this->cblColumns->GetAllItems() as $objItem) {
+				$objQuestion = FormQuestion::Load($objItem->Value);
+				$objQuestion->ViewFlag = $objItem->Selected;
+				$objQuestion->Save();
+			}
+			$this->dtgSignupEntries_SetupColumns();
+			$this->dtgSignupEntries->Refresh();
+		}
 
-		public function dtgSignupEntries_Bind() {
+		public function dtgSignupEntries_SetupColumns() {
+			$this->dtgSignupEntries->RemoveAllColumns();
+			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->FirstName);
+			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->LastName);
 			
+			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+				if ($objFormQuestion->ViewFlag) {
+					$this->dtgSignupEntries->AddColumn(new QDataGridColumn($objFormQuestion->ShortDescription, '<?= $_FORM->RenderAnswer($_ITEM, ' . $objFormQuestion->Id . ',' . $objFormQuestion->FormQuestionTypeId . '); ?>', 'HtmlEntities=false'));
+				}
+			}
+
+			if ($this->objSignupForm->FormPaymentTypeId != FormPaymentType::NoPayment) {
+				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountPaid, 'Name=Paid', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountPaid); ?>');
+				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountBalance, 'Name=Balance', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountBalance); ?>');
+			}
+			
+			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted->ToString("MMM D YYYY"); ?>');
+		}
+
+		public function RenderAmount($fltAmount) {
+			return QApplication::DisplayCurrency($fltAmount);
+		}
+
+		public function RenderAnswer(SignupEntry $objSignupEntry, $intFormQuestionId, $intFormQuestionTypeId) {
+			$objAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($objSignupEntry->Id, $intFormQuestionId);
+			if (!$objAnswer) return;
+
+			switch ($intFormQuestionTypeId) {
+				case FormQuestionType::YesNo:
+					if ($objAnswer->BooleanValue) return 'Yes';
+					break;
+
+				case FormQuestionType::SpouseName:
+				case FormQuestionType::Address:
+				case FormQuestionType::Phone:
+				case FormQuestionType::Email:
+				case FormQuestionType::ShortText:
+				case FormQuestionType::LongText:
+				case FormQuestionType::SingleSelect:
+				case FormQuestionType::MultipleSelect:
+					return QString::Truncate(QApplication::HtmlEntities($objAnswer->TextValue), 50);
+
+				case FormQuestionType::Number:
+				case FormQuestionType::Age:
+					return $objAnswer->IntegerValue;
+
+				case FormQuestionType::DateofBirth:
+					return $objAnswer->DateValue->ToString('MMM D YYYY');
+			}
+		}
+		
+		public function dtgSignupEntries_Bind() {
+			$this->dtgSignupEntries->MetaDataBinder(QQ::Equal(QQN::SignupEntry()->SignupFormId, $this->objSignupForm->Id));
 		}
 
 		public function dtgQuestions_Bind() {

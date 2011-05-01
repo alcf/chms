@@ -36,6 +36,17 @@
 					} else {
 						return MY_ALCF_URL . '/signup/form.php/' . $this->intId;
 					}
+				case 'CsvFilename':
+					$strName = $this->strName;
+					$strToReturn = null;
+					for ($i = 0; $i < strlen($strName); $i++) {
+						$intOrd = ord($strName[$i]);
+						if ((($intOrd >= ord('a')) && ($intOrd <= ord('z'))) ||
+							(($intOrd >= ord('A')) && ($intOrd <= ord('Z'))) ||
+							(($intOrd >= ord('0')) && ($intOrd <= ord('9'))))
+							$strToReturn .= $strName[$i];
+					}
+					return $strToReturn . '.csv';
 
 				default:
 					try {
@@ -57,6 +68,12 @@
 				return true;
 			else
 				return false;
+		}
+
+		public function IsLoginCanView(Login $objLogin) {
+			if (!$this->ConfidentialFlag) return true;
+			if ($this->Ministry->IsLoginCanAdminMinistry($objLogin)) return true;
+			return false;
 		}
 
 		/**
