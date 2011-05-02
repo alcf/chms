@@ -22,6 +22,7 @@
 	 * @property QDateTime $DateSubmitted the value for dttDateSubmitted (Not Null)
 	 * @property double $AmountPaid the value for fltAmountPaid 
 	 * @property double $AmountBalance the value for fltAmountBalance 
+	 * @property string $InternalNotes the value for strInternalNotes 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId 
@@ -89,6 +90,14 @@
 		 */
 		protected $fltAmountBalance;
 		const AmountBalanceDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_entry.internal_notes
+		 * @var string strInternalNotes
+		 */
+		protected $strInternalNotes;
+		const InternalNotesDefault = null;
 
 
 		/**
@@ -476,6 +485,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'date_submitted', $strAliasPrefix . 'date_submitted');
 			$objBuilder->AddSelectItem($strTableName, 'amount_paid', $strAliasPrefix . 'amount_paid');
 			$objBuilder->AddSelectItem($strTableName, 'amount_balance', $strAliasPrefix . 'amount_balance');
+			$objBuilder->AddSelectItem($strTableName, 'internal_notes', $strAliasPrefix . 'internal_notes');
 		}
 
 
@@ -553,6 +563,8 @@
 			$objToReturn->fltAmountPaid = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount_balance', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_balance'] : $strAliasPrefix . 'amount_balance';
 			$objToReturn->fltAmountBalance = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'internal_notes', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'internal_notes'] : $strAliasPrefix . 'internal_notes';
+			$objToReturn->strInternalNotes = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -883,14 +895,16 @@
 							`signup_by_person_id`,
 							`date_submitted`,
 							`amount_paid`,
-							`amount_balance`
+							`amount_balance`,
+							`internal_notes`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intSignupByPersonId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateSubmitted) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
-							' . $objDatabase->SqlVariable($this->fltAmountBalance) . '
+							' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
+							' . $objDatabase->SqlVariable($this->strInternalNotes) . '
 						)
 					');
 
@@ -915,7 +929,8 @@
 							`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intSignupByPersonId) . ',
 							`date_submitted` = ' . $objDatabase->SqlVariable($this->dttDateSubmitted) . ',
 							`amount_paid` = ' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
-							`amount_balance` = ' . $objDatabase->SqlVariable($this->fltAmountBalance) . '
+							`amount_balance` = ' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
+							`internal_notes` = ' . $objDatabase->SqlVariable($this->strInternalNotes) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1006,6 +1021,7 @@
 			$this->dttDateSubmitted = $objReloaded->dttDateSubmitted;
 			$this->fltAmountPaid = $objReloaded->fltAmountPaid;
 			$this->fltAmountBalance = $objReloaded->fltAmountBalance;
+			$this->strInternalNotes = $objReloaded->strInternalNotes;
 		}
 
 		/**
@@ -1025,6 +1041,7 @@
 					`date_submitted`,
 					`amount_paid`,
 					`amount_balance`,
+					`internal_notes`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1036,6 +1053,7 @@
 					' . $objDatabase->SqlVariable($this->dttDateSubmitted) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
+					' . $objDatabase->SqlVariable($this->strInternalNotes) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1120,6 +1138,11 @@
 					// Gets the value for fltAmountBalance 
 					// @return double
 					return $this->fltAmountBalance;
+
+				case 'InternalNotes':
+					// Gets the value for strInternalNotes 
+					// @return string
+					return $this->strInternalNotes;
 
 
 				///////////////////
@@ -1270,6 +1293,17 @@
 					// @return double
 					try {
 						return ($this->fltAmountBalance = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'InternalNotes':
+					// Sets the value for strInternalNotes 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strInternalNotes = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1595,6 +1629,7 @@
 			$strToReturn .= '<element name="DateSubmitted" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="AmountPaid" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountBalance" type="xsd:float"/>';
+			$strToReturn .= '<element name="InternalNotes" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1637,6 +1672,8 @@
 				$objToReturn->fltAmountPaid = $objSoapObject->AmountPaid;
 			if (property_exists($objSoapObject, 'AmountBalance'))
 				$objToReturn->fltAmountBalance = $objSoapObject->AmountBalance;
+			if (property_exists($objSoapObject, 'InternalNotes'))
+				$objToReturn->strInternalNotes = $objSoapObject->InternalNotes;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1694,6 +1731,7 @@
 	 * @property-read QQNode $DateSubmitted
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
+	 * @property-read QQNode $InternalNotes
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 */
 	class QQNodeSignupEntry extends QQNode {
@@ -1722,6 +1760,8 @@
 					return new QQNode('amount_paid', 'AmountPaid', 'double', $this);
 				case 'AmountBalance':
 					return new QQNode('amount_balance', 'AmountBalance', 'double', $this);
+				case 'InternalNotes':
+					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
 				case 'FormAnswer':
 					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'signup_entry_id');
 
@@ -1749,6 +1789,7 @@
 	 * @property-read QQNode $DateSubmitted
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
+	 * @property-read QQNode $InternalNotes
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1778,6 +1819,8 @@
 					return new QQNode('amount_paid', 'AmountPaid', 'double', $this);
 				case 'AmountBalance':
 					return new QQNode('amount_balance', 'AmountBalance', 'double', $this);
+				case 'InternalNotes':
+					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
 				case 'FormAnswer':
 					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'signup_entry_id');
 

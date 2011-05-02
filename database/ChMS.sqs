@@ -830,6 +830,101 @@
         <zorder><![CDATA[-1]]></zorder>
     </SQLTable>
     <SQLTable>
+        <name><![CDATA[public_login]]></name>
+        <schema><![CDATA[]]></schema>
+        <tableType><![CDATA[InnoDB]]></tableType>
+        <location>
+            <x>1648.000000</x>
+            <y>1760.000000</y>
+        </location>
+        <size>
+            <width>264.000000</width>
+            <height>220.000000</height>
+        </size>
+        <SQLField>
+            <name><![CDATA[id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <notNull>1</notNull>
+            <autoIncrement>1</autoIncrement>
+            <primaryKey>1</primaryKey>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[7FAD3232-5F4A-43BD-826F-D926E32EA8DF]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[person_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <notNull>1</notNull>
+            <referencesField>id</referencesField>
+            <referencesTable>person</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[person]]></referencesTable>
+            <sourceCardinality>2</sourceCardinality>
+            <destinationCardinality>1</destinationCardinality>
+            <referencesFieldUID><![CDATA[C5FA9BB7-E1A4-4050-AD84-B222124D0F6E]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[6E71867A-FAA2-4654-AC6A-A50B14A46CE5]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[C04E2E51-210E-4977-8AC6-B9781ECEC4C4]]></uid>
+            <unique><![CDATA[1]]></unique>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[active_flag]]></name>
+            <type><![CDATA[BOOLEAN]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[792823C3-84B8-4D5D-A513-4F56562E343C]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[username]]></name>
+            <type><![CDATA[VARCHAR(20)]]></type>
+            <notNull>1</notNull>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[A9E05AAA-4528-43BF-BAF9-F01B236B021D]]></uid>
+            <unique><![CDATA[1]]></unique>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[password]]></name>
+            <type><![CDATA[VARCHAR(32)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[5C29FB6A-4B9D-4855-84B7-103363EEAE6C]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[lost_password_question]]></name>
+            <type><![CDATA[VARCHAR(255)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[0D6EED6E-77C9-4831-AE8D-7B29FA80084A]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[lost_password_answer]]></name>
+            <type><![CDATA[VARCHAR(255)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[8906CBE3-74E5-4FB2-841F-B5E87B56DD2B]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[temporary_password_flag]]></name>
+            <type><![CDATA[BOOLEAN]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[DF8C28C8-8821-43EF-A85D-556EBCC6B5B0]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[date_registered]]></name>
+            <type><![CDATA[DATETIME]]></type>
+            <notNull>1</notNull>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[175F1BAD-502E-43F1-B5C0-098DD375FA2A]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[date_last_login]]></name>
+            <type><![CDATA[DATETIME]]></type>
+            <notNull>1</notNull>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[25769CDD-7645-42E5-8520-95600E5C19DD]]></uid>
+        </SQLField>
+        <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+        <uid><![CDATA[2D9AEA96-C36E-4EBD-A39A-47B2BE6A6269]]></uid>
+        <zorder><![CDATA[-1]]></zorder>
+    </SQLTable>
+    <SQLTable>
         <name><![CDATA[marriage_status_type]]></name>
         <schema><![CDATA[]]></schema>
         <tableType><![CDATA[InnoDB]]></tableType>
@@ -1492,11 +1587,11 @@
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
             <x>800.000000</x>
-            <y>2160.000000</y>
+            <y>2176.000000</y>
         </location>
         <size>
-            <width>403.000000</width>
-            <height>180.000000</height>
+            <width>400.000000</width>
+            <height>208.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -1547,6 +1642,22 @@
             <type><![CDATA[TEXT]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[6C5DB43E-2805-461A-B7FC-F3CC2847D56C]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[address_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <referencesField>id</referencesField>
+            <referencesTable>address</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[address]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>2</destinationCardinality>
+            <referencesFieldUID><![CDATA[38BD6E2C-624A-4CB2-8123-FBA3112AD95B]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[4599059D-E58E-4A81-A134-6E2B2C5EFC2A]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[AF774E64-5D70-417B-8E43-C65785D923C6]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
             <name><![CDATA[integer_value]]></name>
@@ -2946,7 +3057,7 @@
         </location>
         <size>
             <width>310.000000</width>
-            <height>180.000000</height>
+            <height>200.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -3028,6 +3139,12 @@
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <indexed><![CDATA[1]]></indexed>
             <uid><![CDATA[3E5E4A5F-31BD-4F25-BC8B-CAB82D40F56C]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[internal_notes]]></name>
+            <type><![CDATA[TEXT]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[E0D5441A-3D91-4BA3-B94C-A0FEE64B8B53]]></uid>
         </SQLField>
         <SQLIndex>
             <name><![CDATA[signup_entry_idx]]></name>
@@ -5917,9 +6034,9 @@ Zn2hgcgEgRgDhoaG
         <snapToGrid><![CDATA[1]]></snapToGrid>
         <SourceSplitViewState><![CDATA[2 -296 1398]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
-        <windowHeight><![CDATA[1048.000000]]></windowHeight>
-        <windowLocationX><![CDATA[180.000000]]></windowLocationX>
-        <windowLocationY><![CDATA[40.000000]]></windowLocationY>
+        <windowHeight><![CDATA[878.000000]]></windowHeight>
+        <windowLocationX><![CDATA[33.000000]]></windowLocationX>
+        <windowLocationY><![CDATA[0.000000]]></windowLocationY>
         <windowWidth><![CDATA[1407.000000]]></windowWidth>
     </SQLDocumentInfo>
     <AllowsIndexRenamingOnInsert><![CDATA[1]]></AllowsIndexRenamingOnInsert>

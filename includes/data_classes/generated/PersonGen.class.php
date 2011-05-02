@@ -52,6 +52,7 @@
 	 * @property Phone $PrimaryPhone the value for the Phone object referenced by intPrimaryPhoneId 
 	 * @property Email $PrimaryEmail the value for the Email object referenced by intPrimaryEmailId (Unique)
 	 * @property Household $HouseholdAsHead the value for the Household object that uniquely references this Person
+	 * @property PublicLogin $PublicLogin the value for the PublicLogin object that uniquely references this Person
 	 * @property CheckingAccountLookup $_CheckingAccountLookup the value for the private _objCheckingAccountLookup (Read-Only) if set due to an expansion on the checkingaccountlookup_person_assn association table
 	 * @property CheckingAccountLookup[] $_CheckingAccountLookupArray the value for the private _objCheckingAccountLookupArray (Read-Only) if set due to an ExpandAsArray on the checkingaccountlookup_person_assn association table
 	 * @property CommunicationList $_CommunicationList the value for the private _objCommunicationList (Read-Only) if set due to an expansion on the communicationlist_person_assn association table
@@ -843,6 +844,24 @@
 		 * NOTE: Do not manually update this value 
 		 */
 		protected $blnDirtyHouseholdAsHead;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column public_login.person_id.
+		 *
+		 * NOTE: Always use the PublicLogin property getter to correctly retrieve this PublicLogin object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var PublicLogin objPublicLogin
+		 */
+		protected $objPublicLogin;
+		
+		/**
+		 * Used internally to manage whether the adjoined PublicLogin object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyPublicLogin;
 
 
 
@@ -1688,6 +1707,18 @@
 					$objToReturn->objHouseholdAsHead = false;
 			}
 
+			// Check for PublicLogin Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'publiclogin__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objPublicLogin = PublicLogin::InstantiateDbRow($objDbRow, $strAliasPrefix . 'publiclogin__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objPublicLogin = false;
+			}
+
 
 			// Check for CheckingAccountLookup Virtual Binding
 			$strAlias = $strAliasPrefix . 'checkingaccountlookup__checking_account_lookup_id__id';
@@ -2458,6 +2489,26 @@
 					// Reset the "Dirty" flag
 					$this->blnDirtyHouseholdAsHead = false;
 				}
+		
+		
+				// Update the adjoined PublicLogin object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyPublicLogin) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = PublicLogin::LoadByPersonId($this->intId)) {
+						$objAssociated->PersonId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objPublicLogin) {
+						$this->objPublicLogin->PersonId = $this->intId;
+						$this->objPublicLogin->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyPublicLogin = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -2489,6 +2540,15 @@
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
 			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
 			if ($objAssociated = Household::LoadByHeadPersonId($this->intId)) {
+				$objAssociated->Delete();
+			}
+			
+			
+			// Update the adjoined PublicLogin object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = PublicLogin::LoadByPersonId($this->intId)) {
 				$objAssociated->Delete();
 			}
 
@@ -2933,6 +2993,24 @@
 						if (!$this->objHouseholdAsHead)
 							$this->objHouseholdAsHead = Household::LoadByHeadPersonId($this->intId);
 						return $this->objHouseholdAsHead;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'PublicLogin':
+					// Gets the value for the PublicLogin object that uniquely references this Person
+					// by objPublicLogin (Unique)
+					// @return PublicLogin
+					try {
+						if ($this->objPublicLogin === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objPublicLogin)
+							$this->objPublicLogin = PublicLogin::LoadByPersonId($this->intId);
+						return $this->objPublicLogin;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -3776,6 +3854,43 @@
 
 							// Update Local Member Variable
 							$this->objHouseholdAsHead = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'PublicLogin':
+					// Sets the value for the PublicLogin object referenced by objPublicLogin (Unique)
+					// @param PublicLogin $mixValue
+					// @return PublicLogin
+					if (is_null($mixValue)) {
+						$this->objPublicLogin = null;
+
+						// Make sure we update the adjoined PublicLogin object the next time we call Save()
+						$this->blnDirtyPublicLogin = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a PublicLogin object
+						try {
+							$mixValue = QType::Cast($mixValue, 'PublicLogin');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objPublicLogin to a DIFFERENT $mixValue?
+						if ((!$this->PublicLogin) || ($this->PublicLogin->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined PublicLogin object the next time we call Save()
+							$this->blnDirtyPublicLogin = true;
+
+							// Update Local Member Variable
+							$this->objPublicLogin = $mixValue;
 						} else {
 							// Nope -- therefore, make no changes
 						}
@@ -8524,6 +8639,7 @@
 	 * @property-read QQReverseReferenceNodeMembership $Membership
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodePhone $Phone
+	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
 	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
@@ -8645,6 +8761,8 @@
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'Phone':
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
+				case 'PublicLogin':
+					return new QQReverseReferenceNodePublicLogin($this, 'publiclogin', 'reverse_reference', 'person_id', 'PublicLogin');
 				case 'Relationship':
 					return new QQReverseReferenceNodeRelationship($this, 'relationship', 'reverse_reference', 'person_id');
 				case 'RelationshipAsRelatedTo':
@@ -8729,6 +8847,7 @@
 	 * @property-read QQReverseReferenceNodeMembership $Membership
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodePhone $Phone
+	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
 	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
@@ -8851,6 +8970,8 @@
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'Phone':
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
+				case 'PublicLogin':
+					return new QQReverseReferenceNodePublicLogin($this, 'publiclogin', 'reverse_reference', 'person_id', 'PublicLogin');
 				case 'Relationship':
 					return new QQReverseReferenceNodeRelationship($this, 'relationship', 'reverse_reference', 'person_id');
 				case 'RelationshipAsRelatedTo':

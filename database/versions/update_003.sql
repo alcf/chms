@@ -20,12 +20,12 @@ CREATE TABLE `form_answer`
 `signup_entry_id` INTEGER UNSIGNED NOT NULL,
 `form_question_id` INTEGER UNSIGNED NOT NULL,
 `text_value` TEXT,
+`address_id` INTEGER UNSIGNED,
 `integer_value` INTEGER,
 `boolean_value` BOOLEAN,
 `date_value` DATE,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
 
 CREATE TABLE `form_payment_type`
 (
@@ -73,6 +73,7 @@ CREATE TABLE `signup_entry`
 `date_submitted` DATETIME NOT NULL,
 `amount_paid` DECIMAL(10,2),
 `amount_balance` DECIMAL(10,2),
+`internal_notes` TEXT,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -95,6 +96,21 @@ CREATE TABLE `signup_form_type`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `name` VARCHAR(40) NOT NULL UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `public_login`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`person_id` INTEGER UNSIGNED NOT NULL UNIQUE,
+`active_flag` BOOLEAN,
+`username` VARCHAR(20) NOT NULL UNIQUE,
+`password` VARCHAR(32),
+`lost_password_question` VARCHAR(255),
+`lost_password_answer` VARCHAR(255),
+`temporary_password_flag` BOOLEAN,
+`date_registered` DATETIME NOT NULL,
+`date_last_login` DATETIME NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -136,21 +152,24 @@ ALTER TABLE `form_question` ADD FOREIGN KEY form_question_type_id_idxfk (`form_q
 
 CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`);
 
+CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
+ALTER TABLE `form_answer` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
+
+ALTER TABLE `public_login` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `person` (`id`);
 
 
-INSERT INTO form_question_type VALUES(1, 'Name');
-INSERT INTO form_question_type VALUES(2, 'Spouse Name');
-INSERT INTO form_question_type VALUES(3, 'Address');
-INSERT INTO form_question_type VALUES(4, 'Age');
-INSERT INTO form_question_type VALUES(5, 'Date of Birth');
-INSERT INTO form_question_type VALUES(6, 'Phone');
-INSERT INTO form_question_type VALUES(7, 'Email');
-INSERT INTO form_question_type VALUES(8, 'Short Text');
-INSERT INTO form_question_type VALUES(9, 'Long Text');
-INSERT INTO form_question_type VALUES(10, 'Number');
-INSERT INTO form_question_type VALUES(11, 'Yes No');
-INSERT INTO form_question_type VALUES(12, 'Single Select');
-INSERT INTO form_question_type VALUES(13, 'Multiple Select');
+INSERT INTO form_question_type VALUES(1, 'Spouse Name');
+INSERT INTO form_question_type VALUES(2, 'Address');
+INSERT INTO form_question_type VALUES(3, 'Age');
+INSERT INTO form_question_type VALUES(4, 'Date of Birth');
+INSERT INTO form_question_type VALUES(5, 'Phone');
+INSERT INTO form_question_type VALUES(6, 'Email');
+INSERT INTO form_question_type VALUES(7, 'Short Text');
+INSERT INTO form_question_type VALUES(8, 'Long Text');
+INSERT INTO form_question_type VALUES(9, 'Number');
+INSERT INTO form_question_type VALUES(10, 'Yes No');
+INSERT INTO form_question_type VALUES(11, 'Single Select');
+INSERT INTO form_question_type VALUES(12, 'Multiple Select');
 
 INSERT INTO signup_form_type VALUES(1, 'Event');
 

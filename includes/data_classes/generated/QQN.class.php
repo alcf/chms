@@ -229,6 +229,12 @@
 			return new QQNodePhone('phone', null, null);
 		}
 		/**
+		 * @return QQNodePublicLogin
+		 */
+		static public function PublicLogin() {
+			return new QQNodePublicLogin('public_login', null, null);
+		}
+		/**
 		 * @return QQNodeQueryCondition
 		 */
 		static public function QueryCondition() {

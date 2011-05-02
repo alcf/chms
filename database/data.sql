@@ -264,19 +264,18 @@ INSERT INTO stewardship_batch_status_type VALUES(3, 'Unposted Changes Exist');
 
 
 
-INSERT INTO form_question_type VALUES(1, 'Name');
-INSERT INTO form_question_type VALUES(2, 'Spouse Name');
-INSERT INTO form_question_type VALUES(3, 'Address');
-INSERT INTO form_question_type VALUES(4, 'Age');
-INSERT INTO form_question_type VALUES(5, 'Date of Birth');
-INSERT INTO form_question_type VALUES(6, 'Phone');
-INSERT INTO form_question_type VALUES(7, 'Email');
-INSERT INTO form_question_type VALUES(8, 'Short Text');
-INSERT INTO form_question_type VALUES(9, 'Long Text');
-INSERT INTO form_question_type VALUES(10, 'Number');
-INSERT INTO form_question_type VALUES(11, 'Yes No');
-INSERT INTO form_question_type VALUES(12, 'Single Select');
-INSERT INTO form_question_type VALUES(13, 'Multiple Select');
+INSERT INTO form_question_type VALUES(1, 'Spouse Name');
+INSERT INTO form_question_type VALUES(2, 'Address');
+INSERT INTO form_question_type VALUES(3, 'Age');
+INSERT INTO form_question_type VALUES(4, 'Date of Birth');
+INSERT INTO form_question_type VALUES(5, 'Phone');
+INSERT INTO form_question_type VALUES(6, 'Email');
+INSERT INTO form_question_type VALUES(7, 'Short Text');
+INSERT INTO form_question_type VALUES(8, 'Long Text');
+INSERT INTO form_question_type VALUES(9, 'Number');
+INSERT INTO form_question_type VALUES(10, 'Yes No');
+INSERT INTO form_question_type VALUES(11, 'Single Select');
+INSERT INTO form_question_type VALUES(12, 'Multiple Select');
 
 INSERT INTO signup_form_type VALUES(1, 'Event');
 

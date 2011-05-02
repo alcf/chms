@@ -17,6 +17,10 @@ mysql -uroot $dbname < $dbpath/create.sql
 mysql -uroot $dbname < $dbpath/data.sql
 echo "Done."
 
+if [ $1 ]; then
+	exit 0
+fi
+
 echo -n "Building [$dblogname]... "
 mysql -uroot mysql -e "DROP DATABASE IF EXISTS $dblogname"
 mysql -uroot mysql -e "CREATE DATABASE $dblogname DEFAULT CHARACTER SET UTF8"

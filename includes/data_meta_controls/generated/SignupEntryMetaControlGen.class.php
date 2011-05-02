@@ -30,6 +30,8 @@
 	 * property-read QLabel $AmountPaidLabel
 	 * property QFloatTextBox $AmountBalanceControl
 	 * property-read QLabel $AmountBalanceLabel
+	 * property QTextBox $InternalNotesControl
+	 * property-read QLabel $InternalNotesLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -103,6 +105,12 @@
          */
 		protected $txtAmountBalance;
 
+        /**
+         * @var QTextBox txtInternalNotes;
+         * @access protected
+         */
+		protected $txtInternalNotes;
+
 
 		// Controls that allow the viewing of SignupEntry's individual data fields
         /**
@@ -140,6 +148,12 @@
          * @access protected
          */
 		protected $lblAmountBalance;
+
+        /**
+         * @var QLabel lblInternalNotes
+         * @access protected
+         */
+		protected $lblInternalNotes;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -463,6 +477,31 @@
 			return $this->lblAmountBalance;
 		}
 
+		/**
+		 * Create and setup QTextBox txtInternalNotes
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtInternalNotes_Create($strControlId = null) {
+			$this->txtInternalNotes = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtInternalNotes->Name = QApplication::Translate('Internal Notes');
+			$this->txtInternalNotes->Text = $this->objSignupEntry->InternalNotes;
+			$this->txtInternalNotes->TextMode = QTextMode::MultiLine;
+			return $this->txtInternalNotes;
+		}
+
+		/**
+		 * Create and setup QLabel lblInternalNotes
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblInternalNotes_Create($strControlId = null) {
+			$this->lblInternalNotes = new QLabel($this->objParentObject, $strControlId);
+			$this->lblInternalNotes->Name = QApplication::Translate('Internal Notes');
+			$this->lblInternalNotes->Text = $this->objSignupEntry->InternalNotes;
+			return $this->lblInternalNotes;
+		}
+
 
 
 		/**
@@ -526,6 +565,9 @@
 			if ($this->txtAmountBalance) $this->txtAmountBalance->Text = $this->objSignupEntry->AmountBalance;
 			if ($this->lblAmountBalance) $this->lblAmountBalance->Text = $this->objSignupEntry->AmountBalance;
 
+			if ($this->txtInternalNotes) $this->txtInternalNotes->Text = $this->objSignupEntry->InternalNotes;
+			if ($this->lblInternalNotes) $this->lblInternalNotes->Text = $this->objSignupEntry->InternalNotes;
+
 		}
 
 
@@ -555,6 +597,7 @@
 				if ($this->calDateSubmitted) $this->objSignupEntry->DateSubmitted = $this->calDateSubmitted->DateTime;
 				if ($this->txtAmountPaid) $this->objSignupEntry->AmountPaid = $this->txtAmountPaid->Text;
 				if ($this->txtAmountBalance) $this->objSignupEntry->AmountBalance = $this->txtAmountBalance->Text;
+				if ($this->txtInternalNotes) $this->objSignupEntry->InternalNotes = $this->txtInternalNotes->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -639,6 +682,12 @@
 				case 'AmountBalanceLabel':
 					if (!$this->lblAmountBalance) return $this->lblAmountBalance_Create();
 					return $this->lblAmountBalance;
+				case 'InternalNotesControl':
+					if (!$this->txtInternalNotes) return $this->txtInternalNotes_Create();
+					return $this->txtInternalNotes;
+				case 'InternalNotesLabel':
+					if (!$this->lblInternalNotes) return $this->lblInternalNotes_Create();
+					return $this->lblInternalNotes;
 				default:
 					try {
 						return parent::__get($strName);
@@ -675,6 +724,8 @@
 						return ($this->txtAmountPaid = QType::Cast($mixValue, 'QControl'));
 					case 'AmountBalanceControl':
 						return ($this->txtAmountBalance = QType::Cast($mixValue, 'QControl'));
+					case 'InternalNotesControl':
+						return ($this->txtInternalNotes = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

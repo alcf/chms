@@ -265,6 +265,13 @@
 		QApplicationBase::$ClassFile['phonemetacontrol'] = __DATA_META_CONTROLS__ . '/PhoneMetaControl.class.php';
 		QApplicationBase::$ClassFile['phonedatagrid'] = __DATA_META_CONTROLS__ . '/PhoneDataGrid.class.php';
 
+	// ClassPaths for the PublicLogin class
+		QApplicationBase::$ClassFile['publiclogin'] = __DATA_CLASSES__ . '/PublicLogin.class.php';
+		QApplicationBase::$ClassFile['qqnodepubliclogin'] = __DATA_CLASSES__ . '/PublicLogin.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodepubliclogin'] = __DATA_CLASSES__ . '/PublicLogin.class.php';
+		QApplicationBase::$ClassFile['publicloginmetacontrol'] = __DATA_META_CONTROLS__ . '/PublicLoginMetaControl.class.php';
+		QApplicationBase::$ClassFile['publiclogindatagrid'] = __DATA_META_CONTROLS__ . '/PublicLoginDataGrid.class.php';
+
 	// ClassPaths for the QueryCondition class
 		QApplicationBase::$ClassFile['querycondition'] = __DATA_CLASSES__ . '/QueryCondition.class.php';
 		QApplicationBase::$ClassFile['qqnodequerycondition'] = __DATA_CLASSES__ . '/QueryCondition.class.php';

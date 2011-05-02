@@ -1,9 +1,9 @@
 <?php
 	/**
 	 * This is the "Meta" DataGrid class for the List functionality
-	 * of the Person class.  This code-generated class
+	 * of the PublicLogin class.  This code-generated class
 	 * contains a QDataGrid class which can be used by any QForm or QPanel,
-	 * listing a collection of Person objects.  It includes
+	 * listing a collection of PublicLogin objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
@@ -16,7 +16,7 @@
 	 * @subpackage MetaControls
 	 * 
 	 */
-	class PersonDataGridGen extends QDataGrid {
+	class PublicLoginDataGridGen extends QDataGrid {
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own BindAllRows method (which can obviousy be switched to something else).
@@ -35,9 +35,9 @@
 
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
-		 * way of adding a column to this Person datagrid.  The description of a column's
+		 * way of adding a column to this PublicLogin datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
-		 * in the Person object, or it can be any QQNode extending from QQN::Person().
+		 * in the PublicLogin object, or it can be any QQNode extending from QQN::PublicLogin().
 		 * 
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
@@ -45,7 +45,7 @@
 		 * Any of these things can be overridden with OverrideParameters.
 		 * 
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
-		 * sorting using two fields from the Person object.
+		 * sorting using two fields from the PublicLogin object.
 		 *
 		 * @param mixed $mixContents
 		 * @param string $objOverrideParameters[]
@@ -127,7 +127,7 @@
 		 * 
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
-		 * @param mixed $mixContent string or QQNode from Person
+		 * @param mixed $mixContent string or QQNode from PublicLogin
 		 * @param string $strTypeClassName the name of the TypeClass to use $NameArray against
 		 * @param mixed $objOverrideParameters
 		 */
@@ -251,7 +251,7 @@
 			$objClauses = ($objOptionalClauses) ? $objOptionalClauses : array();
 
 			// We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-			if ($this->Paginator) $this->TotalItemCount = Person::QueryCount($objCondition, $objClauses);
+			if ($this->Paginator) $this->TotalItemCount = PublicLogin::QueryCount($objCondition, $objClauses);
 
 			// If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
 			// the OrderByClause to the $objClauses array
@@ -260,8 +260,8 @@
 			// Add the LimitClause information, as well
 			if ($objClause = $this->LimitClause) array_push($objClauses, $objClause);
 
-			// Set the DataSource to be a Query result from Person, given the clauses above
-			$this->DataSource = Person::QueryArray($objCondition, $objClauses);
+			// Set the DataSource to be a Query result from PublicLogin, given the clauses above
+			$this->DataSource = PublicLogin::QueryArray($objCondition, $objClauses);
 		}
 
 
@@ -269,8 +269,8 @@
 		/**
 		 * Used internally by the Meta-based Add Column tools.
 		 *
-		 * Given a QQNode or a Text String, this will return a Person-based QQNode.
-		 * It will also verify that it is a proper Person-based QQNode, and will throw an exception otherwise.
+		 * Given a QQNode or a Text String, this will return a PublicLogin-based QQNode.
+		 * It will also verify that it is a proper PublicLogin-based QQNode, and will throw an exception otherwise.
 		 *
 		 * @param mixed $mixContent
 		 * @return QQNode
@@ -279,7 +279,7 @@
 			if ($mixContent instanceof QQNode) {
 				if (!$mixContent->_ParentNode)
 					throw new QCallerException('Content QQNode cannot be a Top Level Node');
-				if ($mixContent->_RootTableName == 'person') {
+				if ($mixContent->_RootTableName == 'public_login') {
 					if (($mixContent instanceof QQReverseReferenceNode) && !($mixContent->_PropertyName))
 						throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 					$objCurrentNode = $mixContent;
@@ -291,49 +291,20 @@
 					}
 					return $mixContent;
 				} else
-					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "person".');
+					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "public_login".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
-				case 'Id': return QQN::Person()->Id;
-				case 'MembershipStatusTypeId': return QQN::Person()->MembershipStatusTypeId;
-				case 'MaritalStatusTypeId': return QQN::Person()->MaritalStatusTypeId;
-				case 'FirstName': return QQN::Person()->FirstName;
-				case 'MiddleName': return QQN::Person()->MiddleName;
-				case 'LastName': return QQN::Person()->LastName;
-				case 'MailingLabel': return QQN::Person()->MailingLabel;
-				case 'PriorLastNames': return QQN::Person()->PriorLastNames;
-				case 'Nickname': return QQN::Person()->Nickname;
-				case 'Title': return QQN::Person()->Title;
-				case 'Suffix': return QQN::Person()->Suffix;
-				case 'Gender': return QQN::Person()->Gender;
-				case 'DateOfBirth': return QQN::Person()->DateOfBirth;
-				case 'DobYearApproximateFlag': return QQN::Person()->DobYearApproximateFlag;
-				case 'DobGuessedFlag': return QQN::Person()->DobGuessedFlag;
-				case 'Age': return QQN::Person()->Age;
-				case 'DeceasedFlag': return QQN::Person()->DeceasedFlag;
-				case 'DateDeceased': return QQN::Person()->DateDeceased;
-				case 'CurrentHeadShotId': return QQN::Person()->CurrentHeadShotId;
-				case 'CurrentHeadShot': return QQN::Person()->CurrentHeadShot;
-				case 'MailingAddressId': return QQN::Person()->MailingAddressId;
-				case 'MailingAddress': return QQN::Person()->MailingAddress;
-				case 'StewardshipAddressId': return QQN::Person()->StewardshipAddressId;
-				case 'StewardshipAddress': return QQN::Person()->StewardshipAddress;
-				case 'PrimaryPhoneId': return QQN::Person()->PrimaryPhoneId;
-				case 'PrimaryPhone': return QQN::Person()->PrimaryPhone;
-				case 'PrimaryEmailId': return QQN::Person()->PrimaryEmailId;
-				case 'PrimaryEmail': return QQN::Person()->PrimaryEmail;
-				case 'CanMailFlag': return QQN::Person()->CanMailFlag;
-				case 'CanPhoneFlag': return QQN::Person()->CanPhoneFlag;
-				case 'CanEmailFlag': return QQN::Person()->CanEmailFlag;
-				case 'PrimaryAddressText': return QQN::Person()->PrimaryAddressText;
-				case 'PrimaryCityText': return QQN::Person()->PrimaryCityText;
-				case 'PrimaryStateText': return QQN::Person()->PrimaryStateText;
-				case 'PrimaryZipCodeText': return QQN::Person()->PrimaryZipCodeText;
-				case 'PrimaryPhoneText': return QQN::Person()->PrimaryPhoneText;
-				case 'HouseholdAsHead': return QQN::Person()->HouseholdAsHead;
-
-				case 'PublicLogin': return QQN::Person()->PublicLogin;
-
-				default: throw new QCallerException('Simple Property not found in PersonDataGrid content: ' . $mixContent);
+				case 'Id': return QQN::PublicLogin()->Id;
+				case 'PersonId': return QQN::PublicLogin()->PersonId;
+				case 'Person': return QQN::PublicLogin()->Person;
+				case 'ActiveFlag': return QQN::PublicLogin()->ActiveFlag;
+				case 'Username': return QQN::PublicLogin()->Username;
+				case 'Password': return QQN::PublicLogin()->Password;
+				case 'LostPasswordQuestion': return QQN::PublicLogin()->LostPasswordQuestion;
+				case 'LostPasswordAnswer': return QQN::PublicLogin()->LostPasswordAnswer;
+				case 'TemporaryPasswordFlag': return QQN::PublicLogin()->TemporaryPasswordFlag;
+				case 'DateRegistered': return QQN::PublicLogin()->DateRegistered;
+				case 'DateLastLogin': return QQN::PublicLogin()->DateLastLogin;
+				default: throw new QCallerException('Simple Property not found in PublicLoginDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 			else

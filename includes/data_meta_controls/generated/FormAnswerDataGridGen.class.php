@@ -299,6 +299,8 @@
 				case 'FormQuestionId': return QQN::FormAnswer()->FormQuestionId;
 				case 'FormQuestion': return QQN::FormAnswer()->FormQuestion;
 				case 'TextValue': return QQN::FormAnswer()->TextValue;
+				case 'AddressId': return QQN::FormAnswer()->AddressId;
+				case 'Address': return QQN::FormAnswer()->Address;
 				case 'IntegerValue': return QQN::FormAnswer()->IntegerValue;
 				case 'BooleanValue': return QQN::FormAnswer()->BooleanValue;
 				case 'DateValue': return QQN::FormAnswer()->DateValue;

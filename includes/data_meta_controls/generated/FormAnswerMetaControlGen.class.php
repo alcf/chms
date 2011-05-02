@@ -24,6 +24,8 @@
 	 * property-read QLabel $FormQuestionIdLabel
 	 * property QTextBox $TextValueControl
 	 * property-read QLabel $TextValueLabel
+	 * property QListBox $AddressIdControl
+	 * property-read QLabel $AddressIdLabel
 	 * property QIntegerTextBox $IntegerValueControl
 	 * property-read QLabel $IntegerValueLabel
 	 * property QCheckBox $BooleanValueControl
@@ -86,6 +88,12 @@
 		protected $txtTextValue;
 
         /**
+         * @var QListBox lstAddress;
+         * @access protected
+         */
+		protected $lstAddress;
+
+        /**
          * @var QIntegerTextBox txtIntegerValue;
          * @access protected
          */
@@ -122,6 +130,12 @@
          * @access protected
          */
 		protected $lblTextValue;
+
+        /**
+         * @var QLabel lblAddressId
+         * @access protected
+         */
+		protected $lblAddressId;
 
         /**
          * @var QLabel lblIntegerValue
@@ -366,6 +380,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstAddress_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstAddress = new QListBox($this->objParentObject, $strControlId);
+			$this->lstAddress->Name = QApplication::Translate('Address');
+			$this->lstAddress->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objAddressCursor = Address::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objAddress = Address::InstantiateCursor($objAddressCursor)) {
+				$objListItem = new QListItem($objAddress->__toString(), $objAddress->Id);
+				if (($this->objFormAnswer->Address) && ($this->objFormAnswer->Address->Id == $objAddress->Id))
+					$objListItem->Selected = true;
+				$this->lstAddress->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstAddress;
+		}
+
+		/**
+		 * Create and setup QLabel lblAddressId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblAddressId_Create($strControlId = null) {
+			$this->lblAddressId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAddressId->Name = QApplication::Translate('Address');
+			$this->lblAddressId->Text = ($this->objFormAnswer->Address) ? $this->objFormAnswer->Address->__toString() : null;
+			return $this->lblAddressId;
+		}
+
+		/**
 		 * Create and setup QIntegerTextBox txtIntegerValue
 		 * @param string $strControlId optional ControlId to use
 		 * @return QIntegerTextBox
@@ -488,6 +542,19 @@
 			if ($this->txtTextValue) $this->txtTextValue->Text = $this->objFormAnswer->TextValue;
 			if ($this->lblTextValue) $this->lblTextValue->Text = $this->objFormAnswer->TextValue;
 
+			if ($this->lstAddress) {
+					$this->lstAddress->RemoveAllItems();
+				$this->lstAddress->AddItem(QApplication::Translate('- Select One -'), null);
+				$objAddressArray = Address::LoadAll();
+				if ($objAddressArray) foreach ($objAddressArray as $objAddress) {
+					$objListItem = new QListItem($objAddress->__toString(), $objAddress->Id);
+					if (($this->objFormAnswer->Address) && ($this->objFormAnswer->Address->Id == $objAddress->Id))
+						$objListItem->Selected = true;
+					$this->lstAddress->AddItem($objListItem);
+				}
+			}
+			if ($this->lblAddressId) $this->lblAddressId->Text = ($this->objFormAnswer->Address) ? $this->objFormAnswer->Address->__toString() : null;
+
 			if ($this->txtIntegerValue) $this->txtIntegerValue->Text = $this->objFormAnswer->IntegerValue;
 			if ($this->lblIntegerValue) $this->lblIntegerValue->Text = $this->objFormAnswer->IntegerValue;
 
@@ -523,6 +590,7 @@
 				if ($this->lstSignupEntry) $this->objFormAnswer->SignupEntryId = $this->lstSignupEntry->SelectedValue;
 				if ($this->lstFormQuestion) $this->objFormAnswer->FormQuestionId = $this->lstFormQuestion->SelectedValue;
 				if ($this->txtTextValue) $this->objFormAnswer->TextValue = $this->txtTextValue->Text;
+				if ($this->lstAddress) $this->objFormAnswer->AddressId = $this->lstAddress->SelectedValue;
 				if ($this->txtIntegerValue) $this->objFormAnswer->IntegerValue = $this->txtIntegerValue->Text;
 				if ($this->chkBooleanValue) $this->objFormAnswer->BooleanValue = $this->chkBooleanValue->Checked;
 				if ($this->calDateValue) $this->objFormAnswer->DateValue = $this->calDateValue->DateTime;
@@ -592,6 +660,12 @@
 				case 'TextValueLabel':
 					if (!$this->lblTextValue) return $this->lblTextValue_Create();
 					return $this->lblTextValue;
+				case 'AddressIdControl':
+					if (!$this->lstAddress) return $this->lstAddress_Create();
+					return $this->lstAddress;
+				case 'AddressIdLabel':
+					if (!$this->lblAddressId) return $this->lblAddressId_Create();
+					return $this->lblAddressId;
 				case 'IntegerValueControl':
 					if (!$this->txtIntegerValue) return $this->txtIntegerValue_Create();
 					return $this->txtIntegerValue;
@@ -640,6 +714,8 @@
 						return ($this->lstFormQuestion = QType::Cast($mixValue, 'QControl'));
 					case 'TextValueControl':
 						return ($this->txtTextValue = QType::Cast($mixValue, 'QControl'));
+					case 'AddressIdControl':
+						return ($this->lstAddress = QType::Cast($mixValue, 'QControl'));
 					case 'IntegerValueControl':
 						return ($this->txtIntegerValue = QType::Cast($mixValue, 'QControl'));
 					case 'BooleanValueControl':
