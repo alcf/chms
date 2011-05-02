@@ -102,11 +102,6 @@
 					$objFormQuestion->ViewFlag = rand(0, 1);
 
 					switch ($intFormQuestionTypeId) {
-						case FormQuestionType::Name:
-							$objFormQuestion->ShortDescription = 'Your Name';
-							$objFormQuestion->Question = 'What is your name?';
-							break;
-
 						case FormQuestionType::SpouseName:
 							$objFormQuestion->ShortDescription = 'Spouse\'s Name';
 							$objFormQuestion->Question = 'What is your spouse\'s name?';
@@ -216,16 +211,22 @@
 								$objFormAnswer->FormQuestion = $objFormQuestion;
 
 								switch ($objFormQuestion->FormQuestionTypeId) {
-									case FormQuestionType::Name:
-										$objFormAnswer->TextValue = $objPerson->Name;
-										break;
-
 									case FormQuestionType::SpouseName:
 										$objFormAnswer->TextValue = 'Spouse Name';
 										break;
 
 									case FormQuestionType::Address:
 										$objFormAnswer->TextValue = $objPerson->PrimaryAddressText . ', ' . $objPerson->PrimaryCityText;
+										$objArray = $objPerson->GetHouseholdParticipationArray();
+										if (count($objArray)) {
+											$objFormAnswer->AddressId = $objArray[0]->Household->GetCurrentAddress()->Id;
+										} else {
+											$objArray = $objPerson->GetAddressArray();
+											if (count($objArray))
+												$objFormAnswer->AddressId = $objArray[0]->Id;
+											else
+												$objFormAnswer = null;
+										}
 										break;
 
 									case FormQuestionType::Age:
@@ -273,7 +274,7 @@
 										break;
 								}
 
-								$objFormAnswer->Save();
+								if ($objFormAnswer) $objFormAnswer->Save();
 							}
 						}
 					}
