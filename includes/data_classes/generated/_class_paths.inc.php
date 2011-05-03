@@ -342,6 +342,13 @@
 		QApplicationBase::$ClassFile['signuppaymentmetacontrol'] = __DATA_META_CONTROLS__ . '/SignupPaymentMetaControl.class.php';
 		QApplicationBase::$ClassFile['signuppaymentdatagrid'] = __DATA_META_CONTROLS__ . '/SignupPaymentDataGrid.class.php';
 
+	// ClassPaths for the SignupProduct class
+		QApplicationBase::$ClassFile['signupproduct'] = __DATA_CLASSES__ . '/SignupProduct.class.php';
+		QApplicationBase::$ClassFile['qqnodesignupproduct'] = __DATA_CLASSES__ . '/SignupProduct.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesignupproduct'] = __DATA_CLASSES__ . '/SignupProduct.class.php';
+		QApplicationBase::$ClassFile['signupproductmetacontrol'] = __DATA_META_CONTROLS__ . '/SignupProductMetaControl.class.php';
+		QApplicationBase::$ClassFile['signupproductdatagrid'] = __DATA_META_CONTROLS__ . '/SignupProductDataGrid.class.php';
+
 	// ClassPaths for the SmartGroup class
 		QApplicationBase::$ClassFile['smartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';
 		QApplicationBase::$ClassFile['qqnodesmartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';

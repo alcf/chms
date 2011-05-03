@@ -166,6 +166,17 @@ CREATE TABLE `form_answer`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `signup_product`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`signup_entry_id` INTEGER UNSIGNED NOT NULL,
+`form_product_id` INTEGER UNSIGNED NOT NULL,
+`quanitity` INTEGER UNSIGNED NOT NULL,
+`amount` DECIMAL(10,2),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+
 CREATE INDEX `signup_form_type_id_idx` ON `signup_form`(`signup_form_type_id`);
 ALTER TABLE `signup_form` ADD FOREIGN KEY signup_form_type_id_idxfk (`signup_form_type_id`) REFERENCES `signup_form_type` (`id`);
 
@@ -211,6 +222,12 @@ ALTER TABLE `form_answer` ADD FOREIGN KEY signup_entry_id_idxfk_1 (`signup_entry
 CREATE INDEX `form_question_id_idx` ON `form_answer`(`form_question_id`);
 ALTER TABLE `form_answer` ADD FOREIGN KEY form_question_id_idxfk (`form_question_id`) REFERENCES `form_question` (`id`);
 
+CREATE INDEX `signup_entry_id_idx` ON `signup_product`(`signup_entry_id`);
+ALTER TABLE `signup_product` ADD FOREIGN KEY signup_entry_id_idxfk_2 (`signup_entry_id`) REFERENCES `signup_entry` (`id`);
+
+CREATE INDEX `form_product_id_idx` ON `signup_product`(`form_product_id`);
+ALTER TABLE `signup_product` ADD FOREIGN KEY form_product_id_idxfk (`form_product_id`) REFERENCES `form_product` (`id`);
+
 CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
 
 ######### EXTERNAL FKs
@@ -245,7 +262,7 @@ INSERT INTO form_payment_type VALUES(3, 'Variable Payment');
 INSERT INTO form_payment_type VALUES(4, 'Donation');
 
 INSERT INTO form_product_type VALUES(1, 'Required');
-INSERT INTO form_product_type VALUES(2, 'Required with Choice');
+INSERT INTO form_product_type VALUES(2, 'Required With Choice');
 INSERT INTO form_product_type VALUES(3, 'Optional');
 
 INSERT INTO signup_entry_status_type VALUES(1, 'Incomplete');

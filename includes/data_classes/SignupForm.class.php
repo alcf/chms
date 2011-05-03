@@ -95,7 +95,19 @@
 
 			return SignupForm::QueryArray($objCondition, QQ::OrderBy(QQN::SignupForm()->DateCreated, false));
 		}
-		
+
+		/**
+		 * @param integer $intFormProductTypeId
+		 * @param QClause[] $objClauses
+		 * @return FormProduct[];
+		 */
+		public function GetFormProductArrayByType($intFormProductTypeId, $objClauses = array()) {
+			return FormProduct::QueryArray(QQ::AndCondition(
+				QQ::Equal(QQN::FormProduct()->SignupFormId, $this->Id),
+				QQ::Equal(QQN::FormProduct()->FormProductTypeId, $intFormProductTypeId)
+			), $objClauses);
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

@@ -286,7 +286,7 @@ INSERT INTO form_payment_type VALUES(3, 'Variable Payment');
 INSERT INTO form_payment_type VALUES(4, 'Donation');
 
 INSERT INTO form_product_type VALUES(1, 'Required');
-INSERT INTO form_product_type VALUES(2, 'Required with Choice');
+INSERT INTO form_product_type VALUES(2, 'Required With Choice');
 INSERT INTO form_product_type VALUES(3, 'Optional');
 
 INSERT INTO signup_entry_status_type VALUES(1, 'Incomplete');

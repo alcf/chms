@@ -43,7 +43,7 @@
             <uid><![CDATA[39884632-40AE-464F-872C-C6AF5612819A]]></uid>
         </SQLField>
         <uid><![CDATA[005564CC-C9F7-475C-A331-6D9D609297E6]]></uid>
-        <zorder><![CDATA[3]]></zorder>
+        <zorder><![CDATA[0]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[country]]></name>
@@ -79,7 +79,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[028C170B-0760-4EBF-8F39-1CF34F2CEF4D]]></uid>
-        <zorder><![CDATA[4]]></zorder>
+        <zorder><![CDATA[3]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[email_message]]></name>
@@ -163,7 +163,7 @@
             <uid><![CDATA[F41E3129-3821-4583-955C-FDA37889E5A0]]></uid>
         </SQLField>
         <uid><![CDATA[06F1CAFB-865D-411F-B8D6-CFF034487ECF]]></uid>
-        <zorder><![CDATA[49]]></zorder>
+        <zorder><![CDATA[44]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[search_query]]></name>
@@ -224,7 +224,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[08087ED6-0846-4A30-9F1F-13CF86DAB72A]]></uid>
-        <zorder><![CDATA[69]]></zorder>
+        <zorder><![CDATA[54]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[query_condition]]></name>
@@ -316,7 +316,7 @@
             <uid><![CDATA[0BE2B10C-F693-49CE-A407-8A3BAA551031]]></uid>
         </SQLField>
         <uid><![CDATA[08258EED-093D-40B4-8AE2-1F79A359AD6B]]></uid>
-        <zorder><![CDATA[70]]></zorder>
+        <zorder><![CDATA[55]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[us_state]]></name>
@@ -352,7 +352,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[0B0D35B3-417E-4EDF-965F-08F933C6EB16]]></uid>
-        <zorder><![CDATA[5]]></zorder>
+        <zorder><![CDATA[4]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[signup_payment]]></name>
@@ -434,7 +434,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[100363:11e2766da55:-7ac6]]></uid>
-        <zorder><![CDATA[67]]></zorder>
+        <zorder><![CDATA[92]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[image_type]]></name>
@@ -467,7 +467,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[permission_type_1]]></temporaryOriginalName>
         <uid><![CDATA[10DC7070-4C34-4E4C-A114-9BE4F0EA829F]]></uid>
-        <zorder><![CDATA[6]]></zorder>
+        <zorder><![CDATA[5]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[attribute]]></name>
@@ -513,7 +513,7 @@
             <uid><![CDATA[8294067D-23A5-463E-BCF3-7B7E19E299D8]]></uid>
         </SQLField>
         <uid><![CDATA[1618E0BC-1308-44B5-AAC3-1100804A7145]]></uid>
-        <zorder><![CDATA[28]]></zorder>
+        <zorder><![CDATA[33]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_contribution_amount]]></name>
@@ -574,7 +574,7 @@
             <uid><![CDATA[97F2446D-3155-47B1-90A1-6832F5DEF5F1]]></uid>
         </SQLField>
         <uid><![CDATA[1B1CEC6D-A4C6-4A82-BF1C-32B4E8B3F757]]></uid>
-        <zorder><![CDATA[88]]></zorder>
+        <zorder><![CDATA[86]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[phone]]></name>
@@ -669,7 +669,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[1CD2B232-AEDF-493D-AD4E-69C39A174AE1]]></uid>
-        <zorder><![CDATA[76]]></zorder>
+        <zorder><![CDATA[61]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[phone_type]]></name>
@@ -702,7 +702,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[1DAD9900-6465-40A3-9E65-9A0FB8462EF5]]></uid>
-        <zorder><![CDATA[7]]></zorder>
+        <zorder><![CDATA[6]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[form_product]]></name>
@@ -723,6 +723,7 @@
             <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <forcedUnique><![CDATA[1]]></forcedUnique>
             <uid><![CDATA[0FEEFF04-5426-468F-AABA-5A3161A3E08B]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
@@ -815,7 +816,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[2227FBA5-9DF0-4AFC-8C30-5C6013A336EA]]></uid>
-        <zorder><![CDATA[93]]></zorder>
+        <zorder><![CDATA[47]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[query_operation]]></name>
@@ -876,7 +877,7 @@
             <uid><![CDATA[B9BF6307-2DC3-49DF-B320-F469A68DADF0]]></uid>
         </SQLField>
         <uid><![CDATA[233E8542-2667-42DA-8E69-63B1F416E32B]]></uid>
-        <zorder><![CDATA[8]]></zorder>
+        <zorder><![CDATA[7]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[_version]]></name>
@@ -896,7 +897,7 @@
             <uid><![CDATA[2AE792D5-3AFD-4A39-86A1-9DB684B6007A]]></uid>
         </SQLField>
         <uid><![CDATA[27C25D47-1F2C-4D63-841C-4CBB492E8AA9]]></uid>
-        <zorder><![CDATA[9]]></zorder>
+        <zorder><![CDATA[8]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_post]]></name>
@@ -989,7 +990,7 @@
             <uid><![CDATA[02AB83C8-E829-4A56-B712-EB0C5BFE75B8]]></uid>
         </SQLIndex>
         <uid><![CDATA[2828C1DE-1E05-4004-A292-09F0FD1C295C]]></uid>
-        <zorder><![CDATA[84]]></zorder>
+        <zorder><![CDATA[83]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[form_payment_type]]></name>
@@ -1022,7 +1023,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[28408A3F-751D-4A0C-BEA3-E32068CE376E]]></uid>
-        <zorder><![CDATA[10]]></zorder>
+        <zorder><![CDATA[9]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[public_login]]></name>
@@ -1117,7 +1118,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[2D9AEA96-C36E-4EBD-A39A-47B2BE6A6269]]></uid>
-        <zorder><![CDATA[54]]></zorder>
+        <zorder><![CDATA[56]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[marriage_status_type]]></name>
@@ -1149,7 +1150,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[2E23DFB6-6E5D-4B1D-916D-6217C8D1B53C]]></uid>
-        <zorder><![CDATA[11]]></zorder>
+        <zorder><![CDATA[10]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[email]]></name>
@@ -1196,7 +1197,7 @@
             <uid><![CDATA[9B5EACE5-B708-4491-818D-1D251A937E1A]]></uid>
         </SQLField>
         <uid><![CDATA[3420FF35-785E-44E6-82F4-4F3AA9EA131D]]></uid>
-        <zorder><![CDATA[55]]></zorder>
+        <zorder><![CDATA[57]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[attributevalue_multipleattributeoption_assn]]></name>
@@ -1245,7 +1246,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[attributevalue_option_assn]]></temporaryOriginalName>
         <uid><![CDATA[34509062-70DB-4BB1-BC09-D3138DB21B8B]]></uid>
-        <zorder><![CDATA[72]]></zorder>
+        <zorder><![CDATA[68]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[comment]]></name>
@@ -1350,7 +1351,7 @@
             <uid><![CDATA[BB98DC64-044C-45AA-B428-D39AB838A1C3]]></uid>
         </SQLField>
         <uid><![CDATA[3F941104-59F7-4318-9A81-33A850092C8C]]></uid>
-        <zorder><![CDATA[79]]></zorder>
+        <zorder><![CDATA[71]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[household]]></name>
@@ -1408,7 +1409,7 @@
             <uid><![CDATA[C42B956F-868A-42D6-8C9B-F27ED351AF73]]></uid>
         </SQLField>
         <uid><![CDATA[408F623C-69C7-48BF-87E7-906790C7DD34]]></uid>
-        <zorder><![CDATA[56]]></zorder>
+        <zorder><![CDATA[58]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[communicationlist_communicationlistentry_assn]]></name>
@@ -1455,7 +1456,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[412AD54E-060A-4433-9F4F-7DFCD001E42C]]></uid>
-        <zorder><![CDATA[46]]></zorder>
+        <zorder><![CDATA[51]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[name_item]]></name>
@@ -1486,7 +1487,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[417404CE-0F29-433F-8F83-3C6006FAACDA]]></uid>
-        <zorder><![CDATA[12]]></zorder>
+        <zorder><![CDATA[11]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[marriage]]></name>
@@ -1584,7 +1585,7 @@
             <uid><![CDATA[CEA6F9EA-4217-4DB9-B4D5-0028D45C0ACD]]></uid>
         </SQLField>
         <uid><![CDATA[4450B3FF-3B06-40BF-AFD0-962F478805B7]]></uid>
-        <zorder><![CDATA[58]]></zorder>
+        <zorder><![CDATA[59]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[address]]></name>
@@ -1742,7 +1743,7 @@
             <uid><![CDATA[164D127B-56E7-44F9-83AA-90CA96C0D876]]></uid>
         </SQLIndex>
         <uid><![CDATA[4599059D-E58E-4A81-A134-6E2B2C5EFC2A]]></uid>
-        <zorder><![CDATA[77]]></zorder>
+        <zorder><![CDATA[60]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[query_data_type]]></name>
@@ -1774,7 +1775,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[48AC0AAD-B2D7-4DF3-ADE2-901D4DCCA143]]></uid>
-        <zorder><![CDATA[13]]></zorder>
+        <zorder><![CDATA[12]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[form_answer]]></name>
@@ -1892,7 +1893,7 @@
         </SQLIndex>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[4A6EC20E-732B-4151-A180-C08F559D421B]]></uid>
-        <zorder><![CDATA[74]]></zorder>
+        <zorder><![CDATA[93]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[membership]]></name>
@@ -1965,7 +1966,7 @@
             <uid><![CDATA[F82D6266-419C-4F3E-8D90-FC2B2599B7CF]]></uid>
         </SQLIndex>
         <uid><![CDATA[53183778-A462-4FA1-8AF5-EC26B869DA01]]></uid>
-        <zorder><![CDATA[59]]></zorder>
+        <zorder><![CDATA[62]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[signup_form_type]]></name>
@@ -1998,7 +1999,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[5884A354-0378-4ECC-AD85-FCDB393A03D3]]></uid>
-        <zorder><![CDATA[14]]></zorder>
+        <zorder><![CDATA[13]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[query_node_type]]></name>
@@ -2030,7 +2031,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[5AEBFEDE-6110-4508-9F13-D589DD91ACC4]]></uid>
-        <zorder><![CDATA[15]]></zorder>
+        <zorder><![CDATA[14]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[group_participation]]></name>
@@ -2130,7 +2131,7 @@
             <uid><![CDATA[295840D9-52B8-4D11-8354-2EB31DF503ED]]></uid>
         </SQLIndex>
         <uid><![CDATA[5F9DB5BF-BC55-4745-9A62-227F87C24098]]></uid>
-        <zorder><![CDATA[91]]></zorder>
+        <zorder><![CDATA[81]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[household_participation]]></name>
@@ -2214,7 +2215,7 @@
             <uid><![CDATA[C20A84B3-B55C-42B0-9B9D-7454B8C117BD]]></uid>
         </SQLIndex>
         <uid><![CDATA[61024FCD-3237-4C4B-A56F-82D905DF24EA]]></uid>
-        <zorder><![CDATA[60]]></zorder>
+        <zorder><![CDATA[63]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[growth_group]]></name>
@@ -2332,7 +2333,7 @@
             <uid><![CDATA[20E75769-2763-4DBB-BE78-BA03DA97AF45]]></uid>
         </SQLField>
         <uid><![CDATA[61B33C99-76C0-464A-9E7F-DD5513B7E20C]]></uid>
-        <zorder><![CDATA[43]]></zorder>
+        <zorder><![CDATA[52]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_post_amount]]></name>
@@ -2393,7 +2394,7 @@
             <uid><![CDATA[64A14795-CB30-4178-84B6-23F28FD86765]]></uid>
         </SQLField>
         <uid><![CDATA[64AA9481-1727-4182-A64E-57DF46E4BD1A]]></uid>
-        <zorder><![CDATA[85]]></zorder>
+        <zorder><![CDATA[84]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[role_type]]></name>
@@ -2425,7 +2426,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[64C2A73A-5800-40E6-94E4-094FA0446E26]]></uid>
-        <zorder><![CDATA[16]]></zorder>
+        <zorder><![CDATA[15]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[group_type]]></name>
@@ -2458,7 +2459,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[661FE2AB-6769-4389-8D7A-BDD4944B6C51]]></uid>
-        <zorder><![CDATA[17]]></zorder>
+        <zorder><![CDATA[16]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[relationship]]></name>
@@ -2547,7 +2548,7 @@
             <uid><![CDATA[5290723D-9C8E-4CC1-AF3C-EB872CF30E0F]]></uid>
         </SQLIndex>
         <uid><![CDATA[68E191C4-5C1F-40AA-A53A-09F90C090029]]></uid>
-        <zorder><![CDATA[62]]></zorder>
+        <zorder><![CDATA[64]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[head_shot]]></name>
@@ -2611,7 +2612,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[mug_shot]]></temporaryOriginalName>
         <uid><![CDATA[6C83B1E7-9FBB-48D2-A770-0E4EE1FB0C48]]></uid>
-        <zorder><![CDATA[61]]></zorder>
+        <zorder><![CDATA[65]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[person]]></name>
@@ -2861,7 +2862,7 @@
             <uid><![CDATA[E74859CA-99F8-4F28-997C-74DA6C576A5C]]></uid>
         </SQLField>
         <uid><![CDATA[6E71867A-FAA2-4654-AC6A-A50B14A46CE5]]></uid>
-        <zorder><![CDATA[75]]></zorder>
+        <zorder><![CDATA[66]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[form_question_type]]></name>
@@ -2894,7 +2895,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[72B4447D-C11F-4DC8-8872-328273EEF17E]]></uid>
-        <zorder><![CDATA[18]]></zorder>
+        <zorder><![CDATA[17]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[attribute_value]]></name>
@@ -3004,7 +3005,7 @@
             <uid><![CDATA[F23BE037-32A4-4E5A-93A2-959CC4DD0A6F]]></uid>
         </SQLIndex>
         <uid><![CDATA[780EEAE3-F437-4B8E-BF0B-845B5271FE58]]></uid>
-        <zorder><![CDATA[71]]></zorder>
+        <zorder><![CDATA[67]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[other_contact_method]]></name>
@@ -3035,7 +3036,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[791D76E4-00B1-43A7-A7B6-0504EFD5203C]]></uid>
-        <zorder><![CDATA[19]]></zorder>
+        <zorder><![CDATA[25]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[ministry_login_assn]]></name>
@@ -3082,7 +3083,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[7A637CE9-9D4C-4B74-84BB-2028FE466911]]></uid>
-        <zorder><![CDATA[80]]></zorder>
+        <zorder><![CDATA[72]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[relationship_type]]></name>
@@ -3114,7 +3115,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[7D52CDEA-1B62-4661-9956-6386F7D68602]]></uid>
-        <zorder><![CDATA[20]]></zorder>
+        <zorder><![CDATA[29]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_pledge]]></name>
@@ -3240,7 +3241,7 @@
             <uid><![CDATA[31FA2D5C-0961-45AD-8E19-DAE6908EB325]]></uid>
         </SQLIndex>
         <uid><![CDATA[81B28FAE-73CA-419D-B8DD-328D349A6DE2]]></uid>
-        <zorder><![CDATA[68]]></zorder>
+        <zorder><![CDATA[69]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[signup_entry]]></name>
@@ -3389,7 +3390,7 @@
         </SQLIndex>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[86ABCE9F-BAFA-435E-B0C3-469F2DF24CA5]]></uid>
-        <zorder><![CDATA[66]]></zorder>
+        <zorder><![CDATA[91]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[signup_payment_type]]></name>
@@ -3469,7 +3470,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[8878F9AC-4C9E-4B4E-854D-4A3EBB4BB991]]></uid>
-        <zorder><![CDATA[64]]></zorder>
+        <zorder><![CDATA[73]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[household_split]]></name>
@@ -3533,7 +3534,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[Table55]]></temporaryOriginalName>
         <uid><![CDATA[90A30552-35C9-4575-A344-12BAF3EF0C51]]></uid>
-        <zorder><![CDATA[57]]></zorder>
+        <zorder><![CDATA[74]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[form_product_type]]></name>
@@ -3599,7 +3600,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[email_message_status_type]]></temporaryOriginalName>
         <uid><![CDATA[9AE36BFC-AD63-496D-88CF-EB5AF217FB90]]></uid>
-        <zorder><![CDATA[21]]></zorder>
+        <zorder><![CDATA[18]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_contribution]]></name>
@@ -3802,7 +3803,7 @@
             <uid><![CDATA[7E367D4B-CC05-4B05-8786-08B4C4936991]]></uid>
         </SQLIndex>
         <uid><![CDATA[9D6891E5-F487-4B3F-B802-49E6F67355C5]]></uid>
-        <zorder><![CDATA[86]]></zorder>
+        <zorder><![CDATA[88]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[other_contact_info]]></name>
@@ -3864,7 +3865,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[9FC5BE3D-EB0B-4FB4-B857-AE1FE8304D0D]]></uid>
-        <zorder><![CDATA[63]]></zorder>
+        <zorder><![CDATA[75]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[communication_list_entry]]></name>
@@ -3911,7 +3912,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[A0BABA44-5812-4FD5-9895-9A70958CC814]]></uid>
-        <zorder><![CDATA[22]]></zorder>
+        <zorder><![CDATA[19]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[email_broadcast_type]]></name>
@@ -3943,7 +3944,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[A17F3156-4BCA-4D2F-AB60-1A85C7BB6718]]></uid>
-        <zorder><![CDATA[23]]></zorder>
+        <zorder><![CDATA[20]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[checking_account_lookup]]></name>
@@ -3995,7 +3996,7 @@
             <uid><![CDATA[6F93223B-B379-417B-BFB4-8D3A0E816BBD]]></uid>
         </SQLIndex>
         <uid><![CDATA[A2D8CEE8-26A6-4C0E-80A9-A6FAF29A8EB8]]></uid>
-        <zorder><![CDATA[24]]></zorder>
+        <zorder><![CDATA[21]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[address_type]]></name>
@@ -4027,7 +4028,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[A3154215-9389-49AE-9475-7BAC8F59681C]]></uid>
-        <zorder><![CDATA[25]]></zorder>
+        <zorder><![CDATA[22]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[group_category]]></name>
@@ -4069,7 +4070,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[A52B740D-65F3-467D-966A-9AA7766A56BB]]></uid>
-        <zorder><![CDATA[36]]></zorder>
+        <zorder><![CDATA[50]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[person_nameitem_assn]]></name>
@@ -4116,7 +4117,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[A5EC709D-6C91-4018-970B-51F2B308C053]]></uid>
-        <zorder><![CDATA[65]]></zorder>
+        <zorder><![CDATA[76]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[query_node]]></name>
@@ -4188,7 +4189,7 @@
             <uid><![CDATA[09F3BB36-7BA6-42E4-A99B-B3C5B96EB81C]]></uid>
         </SQLField>
         <uid><![CDATA[A7FB62A6-D85A-4767-8928-F862AD422626]]></uid>
-        <zorder><![CDATA[26]]></zorder>
+        <zorder><![CDATA[23]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[attribute_data_type]]></name>
@@ -4222,7 +4223,7 @@
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <temporaryOriginalName><![CDATA[permission_type_1]]></temporaryOriginalName>
         <uid><![CDATA[A7FC0C79-2CB2-455C-944F-DAD2F8A21005]]></uid>
-        <zorder><![CDATA[27]]></zorder>
+        <zorder><![CDATA[24]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[email_message_route]]></name>
@@ -4337,7 +4338,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[AF02D98F-5E66-4BBC-B91D-EF8B8871EC91]]></uid>
-        <zorder><![CDATA[81]]></zorder>
+        <zorder><![CDATA[77]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[event_signup_form]]></name>
@@ -4388,7 +4389,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[AF3CBE04-892B-447D-8FDA-0426A1971FCA]]></uid>
-        <zorder><![CDATA[33]]></zorder>
+        <zorder><![CDATA[45]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_contribution_type]]></name>
@@ -4421,7 +4422,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[email_message_status_type]]></temporaryOriginalName>
         <uid><![CDATA[B236EFFE-65E8-4EA3-A274-CE9C722F1F69]]></uid>
-        <zorder><![CDATA[29]]></zorder>
+        <zorder><![CDATA[26]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[signup_form]]></name>
@@ -4565,7 +4566,7 @@
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <temporaryOriginalName><![CDATA[event_form]]></temporaryOriginalName>
         <uid><![CDATA[B5A7D74F-C258-4D32-835B-228FC99BBEC4]]></uid>
-        <zorder><![CDATA[32]]></zorder>
+        <zorder><![CDATA[30]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[comment_privacy_type]]></name>
@@ -4598,7 +4599,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[permission_type_1]]></temporaryOriginalName>
         <uid><![CDATA[BEC5546D-E7C7-426A-84CC-8D7FA16C6527]]></uid>
-        <zorder><![CDATA[30]]></zorder>
+        <zorder><![CDATA[27]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_fund]]></name>
@@ -4659,7 +4660,7 @@
             <uid><![CDATA[CF8C6F3D-2FD9-4DC9-A461-922ECAB1C59B]]></uid>
         </SQLField>
         <uid><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></uid>
-        <zorder><![CDATA[34]]></zorder>
+        <zorder><![CDATA[32]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_stack]]></name>
@@ -4739,7 +4740,7 @@
             <uid><![CDATA[B3F3DC04-15BF-41B0-8C9E-5B9E7C9460FA]]></uid>
         </SQLIndex>
         <uid><![CDATA[C2FAC508-3D00-4937-B7FE-55BE929A1056]]></uid>
-        <zorder><![CDATA[83]]></zorder>
+        <zorder><![CDATA[87]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[ministry]]></name>
@@ -4814,7 +4815,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[C5E11824-C227-4150-A921-3223A309FF06]]></uid>
-        <zorder><![CDATA[31]]></zorder>
+        <zorder><![CDATA[28]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[smart_group]]></name>
@@ -4863,7 +4864,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[C807C91A-3A1C-4E6D-B6BD-CF027D22DCF6]]></uid>
-        <zorder><![CDATA[37]]></zorder>
+        <zorder><![CDATA[39]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[group_role]]></name>
@@ -4925,7 +4926,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[D22035DB-AB93-42EF-A36E-39E3C099D4DA]]></uid>
-        <zorder><![CDATA[90]]></zorder>
+        <zorder><![CDATA[80]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[group]]></name>
@@ -5050,7 +5051,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[D6B29DC5-8342-4606-AC1C-F6DE222A69AD]]></uid>
-        <zorder><![CDATA[35]]></zorder>
+        <zorder><![CDATA[31]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[communicationlist_person_assn]]></name>
@@ -5097,7 +5098,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <uid><![CDATA[D7B55732-876F-459B-B573-92607D027CBC]]></uid>
-        <zorder><![CDATA[73]]></zorder>
+        <zorder><![CDATA[78]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[attribute_option]]></name>
@@ -5160,7 +5161,7 @@
             <uid><![CDATA[D518F0EB-72F9-4120-B4C8-488BA101210B]]></uid>
         </SQLIndex>
         <uid><![CDATA[D7E08A4F-0B2A-4627-B4CE-2AD890D62B77]]></uid>
-        <zorder><![CDATA[38]]></zorder>
+        <zorder><![CDATA[34]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_post_line_item]]></name>
@@ -5258,7 +5259,7 @@
             <uid><![CDATA[522BE7E8-110F-4A8C-84C7-536CA5132234]]></uid>
         </SQLField>
         <uid><![CDATA[D814EFA5-F771-4053-BB4F-7D2796FAF78B]]></uid>
-        <zorder><![CDATA[87]]></zorder>
+        <zorder><![CDATA[85]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[registry]]></name>
@@ -5297,7 +5298,7 @@
             <uid><![CDATA[D9559589-27E3-4C2A-8748-14E3F322B7F7]]></uid>
         </SQLField>
         <uid><![CDATA[D8242EC3-3EA6-45D1-A632-78106213569B]]></uid>
-        <zorder><![CDATA[39]]></zorder>
+        <zorder><![CDATA[35]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[comment_category]]></name>
@@ -5336,7 +5337,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[permission_type_2]]></temporaryOriginalName>
         <uid><![CDATA[DF3E0A8E-5F6E-4FAC-BB04-D1B52CBDA308]]></uid>
-        <zorder><![CDATA[40]]></zorder>
+        <zorder><![CDATA[36]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[membership_status_type]]></name>
@@ -5368,7 +5369,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[E0C171B9-EA3B-48BA-A688-9668DEEDBE79]]></uid>
-        <zorder><![CDATA[41]]></zorder>
+        <zorder><![CDATA[37]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[stewardship_batch]]></name>
@@ -5574,7 +5575,7 @@
             <uid><![CDATA[D116FBCB-AFCC-4588-B0CB-5AC55E9D3B57]]></uid>
         </SQLIndex>
         <uid><![CDATA[E5A5DCE9-E68F-4313-A873-20D823715F03]]></uid>
-        <zorder><![CDATA[50]]></zorder>
+        <zorder><![CDATA[49]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[growth_group_day_type]]></name>
@@ -5607,7 +5608,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[growth_group_meeting_type]]></temporaryOriginalName>
         <uid><![CDATA[E9822549-16E7-48BE-9B63-B50074F002F7]]></uid>
-        <zorder><![CDATA[42]]></zorder>
+        <zorder><![CDATA[38]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[growthgroupstructure_growthgroup_assn]]></name>
@@ -5655,7 +5656,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[growthgroupstructure_growthgroup_assn]]></temporaryOriginalName>
         <uid><![CDATA[EA2DB6ED-BDA5-47AA-A2A1-0DD86DDB62BA]]></uid>
-        <zorder><![CDATA[52]]></zorder>
+        <zorder><![CDATA[53]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[form_question]]></name>
@@ -5758,7 +5759,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[ECDDE4ED-0683-4AF3-98C1-B0E56CB7C4FE]]></uid>
-        <zorder><![CDATA[44]]></zorder>
+        <zorder><![CDATA[40]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[communication_list]]></name>
@@ -5828,7 +5829,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[ED0E0394-4632-4975-8529-808B2355ECA3]]></uid>
-        <zorder><![CDATA[45]]></zorder>
+        <zorder><![CDATA[41]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[mobile_provider]]></name>
@@ -5867,7 +5868,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[F29C2177-9082-4F48-99DB-C2927F8387EC]]></uid>
-        <zorder><![CDATA[47]]></zorder>
+        <zorder><![CDATA[42]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[signup_entry_status_type]]></name>
@@ -5900,7 +5901,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[F2BB2BF9-7D7F-4681-8D59-0BEFBC209E49]]></uid>
-        <zorder><![CDATA[-1]]></zorder>
+        <zorder><![CDATA[90]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[email_message_status_type]]></name>
@@ -5933,7 +5934,7 @@
         </SQLField>
         <temporaryOriginalName><![CDATA[email_message_status_type]]></temporaryOriginalName>
         <uid><![CDATA[F30CA47B-D2C8-4501-98B2-5A002B46CC33]]></uid>
-        <zorder><![CDATA[48]]></zorder>
+        <zorder><![CDATA[43]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[growth_group_structure]]></name>
@@ -5963,7 +5964,81 @@
             <uid><![CDATA[67228C58-67D9-472C-A2F4-B08D9B229201]]></uid>
         </SQLField>
         <uid><![CDATA[F5D0899A-CE28-4221-8B3C-87FD4FD616F6]]></uid>
-        <zorder><![CDATA[51]]></zorder>
+        <zorder><![CDATA[46]]></zorder>
+    </SQLTable>
+    <SQLTable>
+        <name><![CDATA[signup_product]]></name>
+        <schema><![CDATA[]]></schema>
+        <tableType><![CDATA[InnoDB]]></tableType>
+        <location>
+            <x>2016.000000</x>
+            <y>2272.000000</y>
+        </location>
+        <size>
+            <width>272.000000</width>
+            <height>128.000000</height>
+        </size>
+        <SQLField>
+            <name><![CDATA[id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <notNull>1</notNull>
+            <autoIncrement>1</autoIncrement>
+            <primaryKey>1</primaryKey>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[4562D756-7930-4EB5-BF3D-2D6B4A339EDE]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[signup_entry_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <notNull>1</notNull>
+            <referencesField>id</referencesField>
+            <referencesTable>signup_entry</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[signup_entry]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>1</destinationCardinality>
+            <referencesFieldUID><![CDATA[9A2DB6C6-688B-4C36-B9B5-CC0CCBA2FC6D]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[86ABCE9F-BAFA-435E-B0C3-469F2DF24CA5]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[1FF38ACB-AEFD-4A1E-BC43-B5F3B5F28F50]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[form_product_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <notNull>1</notNull>
+            <referencesField>id</referencesField>
+            <referencesTable>form_product</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[form_product]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>1</destinationCardinality>
+            <referencesFieldUID><![CDATA[0FEEFF04-5426-468F-AABA-5A3161A3E08B]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[2227FBA5-9DF0-4AFC-8C30-5C6013A336EA]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[02479B32-BC67-45A4-811E-9E7FE1F566D1]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[quanitity]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <notNull>1</notNull>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[0ECBE10B-2DD6-4DAE-8251-5D72E147EEE4]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[amount]]></name>
+            <type><![CDATA[DECIMAL(10,2)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[166A1E4D-3678-444B-9435-3C45D897B438]]></uid>
+        </SQLField>
+        <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+        <uid><![CDATA[F835B703-9179-4ADA-BB4D-1DC36B79631B]]></uid>
+        <zorder><![CDATA[-1]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[marital_status_type]]></name>
@@ -5995,7 +6070,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[FAC770FB-03DA-49C3-86E7-02B70BFD2A8A]]></uid>
-        <zorder><![CDATA[53]]></zorder>
+        <zorder><![CDATA[48]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[login]]></name>
@@ -6096,7 +6171,7 @@
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[FCA2FA2C-2BDC-4B3C-A833-576082E64540]]></uid>
-        <zorder><![CDATA[78]]></zorder>
+        <zorder><![CDATA[70]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[group_role_type]]></name>
@@ -6128,7 +6203,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[FFBB517A-8FBA-4823-B7D8-8D1194397743]]></uid>
-        <zorder><![CDATA[89]]></zorder>
+        <zorder><![CDATA[79]]></zorder>
     </SQLTable>
     <SQLTable>
         <name><![CDATA[permission_type]]></name>
@@ -6159,7 +6234,7 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <uid><![CDATA[FFBF8830-86A1-4267-9A70-67CB9E7C2CF8]]></uid>
-        <zorder><![CDATA[92]]></zorder>
+        <zorder><![CDATA[89]]></zorder>
     </SQLTable>
     <SQLDocumentInfo>
         <encodedPrintInfo><![CDATA[BAtzdHJlYW10eXBlZIHoA4QBQISEhAtOU1ByaW50SW5mbwGEhAhOU09iamVjdACF

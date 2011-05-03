@@ -52,22 +52,9 @@
 			$objSignupForm->ActiveFlag = rand(0, 10);
 			$objSignupForm->Description = self::GenerateContent(rand(1, 3), 8, 20);
 			$objSignupForm->InformationUrl = 'http://www.yahoo.com/';
+			$objSignupForm->EmailNotification = (rand(0, 1) ? 'mike@michaelho.com, mike.ho@alcf.net' : null);
 			$objSignupForm->AllowOtherFlag = rand(0, 1);
 			$objSignupForm->AllowMultipleFlag = rand(0, 1);
-			$objSignupForm->FormPaymentTypeId = self::GenerateFromArray(array_keys(FormPaymentType::$NameArray));
-			
-			switch ($objSignupForm->FormPaymentTypeId) {
-				case FormPaymentType::DepositRequired:
-					$objSignupForm->Cost = rand(1, 10) * 10;
-					$objSignupForm->Deposit = $objSignupForm->Cost / 2;
-					break;
-				case FormPaymentType::VariablePayment:
-					$objSignupForm->Cost = rand(1, 10) * 10;
-					break;
-				case FormPaymentType::PayInFull:
-					$objSignupForm->Cost = rand(1, 10) * 10;
-					break;
-			}
 			
 			switch(rand(0, 5)) {
 				case 1:
@@ -84,11 +71,82 @@
 
 			$objEventSignupForm = new EventSignupForm();
 			$objEventSignupForm->SignupForm = $objSignupForm;
-			$objEventSignupForm->DateStart = new QDateTime('2011-05-27 17:00');
-			$objEventSignupForm->DateEnd = new QDateTime('2011-05-30 12:00');
+			$objEventSignupForm->DateStart = new QDateTime('2011-06-27 17:00');
+			$objEventSignupForm->DateEnd = new QDateTime('2011-06-30 12:00');
 			$objEventSignupForm->Location = 'Camp Hammer, Boulder Creek, CA';
 			$objEventSignupForm->Save();
 
+			// Add form products information
+
+			// 1: Required Product
+			if (rand(0, 1)) {
+				$objFormProduct = new FormProduct();
+				$objFormProduct->SignupForm = $objSignupForm;
+				$objFormProduct->FormProductTypeId = FormProductType::Required;
+				$objFormProduct->FormPaymentTypeId = self::GenerateFromArray(array_keys(FormPaymentType::$NameArray));
+				$objFormProduct->Name = 'Main Registration Fee';
+
+				switch ($objSignupForm->FormPaymentTypeId) {
+					case FormPaymentType::DepositRequired:
+						$objFormProduct->Cost = rand(1, 10) * 10;
+						$objFormProduct->Deposit = $objSignupForm->Cost / 2;
+						break;
+					case FormPaymentType::VariablePayment:
+						$objFormProduct->Cost = rand(1, 10) * 10;
+						$objFormProduct->Deposit = $objSignupForm->Cost / 2;
+						break;
+					case FormPaymentType::PayInFull:
+						$objFormProduct->Cost = rand(1, 10) * 10;
+						break;
+					case FormPaymentType::Donation:
+						$objFormProduct->FormPaymentTypeId = FormPaymentType::PayInFull;
+						$objFormProduct->Cost = rand(1, 10) * 10;
+						break;
+				}
+
+				$objFormProduct->Save();
+			}
+			
+			// 2: Required w/ Choice Product
+			if (rand(0, 1)) {
+				$arrProduct = array('100' => 'Standard Accommodation', '150' => 'Deluxe Accommodation');
+				foreach ($arrProduct as $fltAmount => $strName) {
+					$objFormProduct = new FormProduct();
+					$objFormProduct->SignupForm = $objSignupForm;
+					$objFormProduct->FormProductTypeId = FormProductType::RequiredWithChoice;
+					$objFormProduct->FormPaymentTypeId = FormPaymentType::PayInFull;
+					$objFormProduct->Name = $strName;
+					$objFormProduct->Description = self::GenerateContent(1, 3, 10);
+					$objFormProduct->Cost = $fltAmount;
+					$objFormProduct->Save();
+				}
+			}
+
+			// 3: Optional Product(s)
+			$intProductCount = rand(0, 3);
+			for ($i = 0; $i < $intProductCount; $i++) {
+				$objFormProduct = new FormProduct();
+				$objFormProduct->SignupForm = $objSignupForm;
+				$objFormProduct->FormProductTypeId = FormProductType::Optional;
+				$objFormProduct->FormPaymentTypeId = FormPaymentType::PayInFull;
+				$objFormProduct->Name = self::GenerateTitle(2, 5);
+				$objFormProduct->Description = self::GenerateContent(1, 3, 10);
+				$objFormProduct->Cost = rand(1, 10) * 5;
+				$objFormProduct->Save();
+			}
+			
+			// 4: Otpional Donation
+			if (rand(0, 1)) {
+				$objFormProduct = new FormProduct();
+				$objFormProduct->SignupForm = $objSignupForm;
+				$objFormProduct->FormProductTypeId = FormProductType::Optional;
+				$objFormProduct->FormPaymentTypeId = FormPaymentType::Donation;
+				$objFormProduct->Name = 'Donation';
+				$objFormProduct->Description = self::GenerateContent(1, 3, 10);
+				$objFormProduct->Save();
+			}
+
+			// Add Form Questions
 			$intOrderNumber = 1;
 			foreach (FormQuestionType::$NameArray as $intFormQuestionTypeId => $strName) {
 				if (rand(0, 1))
@@ -182,25 +240,46 @@
 						$objSignup = new SignupEntry();
 						$objSignup->SignupForm = $objSignupForm;
 						$objSignup->Person = $objPerson;
-						$objSignup->DateSubmitted = self::GenerateDateTime($objSignupForm->DateCreated, QDateTime::Now());
-						
-						switch ($objSignupForm->FormPaymentTypeId) {
-							case FormPaymentType::DepositRequired:
-								$objSignup->AmountPaid = rand(0, 3) ? $objSignupForm->Deposit : $objSignupForm->Cost;
-								$objSignup->RefreshAmountBalance();
-								break;
-							case FormPaymentType::VariablePayment:
-								$objSignup->AmountPaid = rand(0, 3) ? rand(0, $objSignupForm->Cost) : $objSignupForm->Cost;
-								$objSignup->RefreshAmountBalance();
-								break;
-							case FormPaymentType::PayInFull:
-								$objSignup->AmountPaid = $objSignupForm->Cost;
-								$objSignup->RefreshAmountBalance();
-								break;
+						$objSignup->DateCreated = self::GenerateDateTime($objSignupForm->DateCreated, QDateTime::Now());
+						$objSignup->InternalNotes = (!rand(0, 2) ? self::GenerateContent(1, 5, 10) : null);
+						$objSignup->Save();
 
-							default:
-								$objSignup->Save();
-								break;
+						// Rqeuired Products
+						foreach ($objSignupForm->GetFormProductArrayByType(FormProductType::Required) as $objFormProduct) {
+							$objSignupProduct = new SignupProduct();
+							$objSignupProduct->SignupEntry = $objSignup;
+							$objSignupProduct->FormProduct = $objFormProduct;
+							$objSignupProduct->Quantity = 1;
+
+							switch ($objFormProduct->FormPaymentTypeId) {
+								case FormPaymentType::DepositRequired:
+									$objSignup->AmountTotal = rand(0, 3) ? $objFormProduct->Deposit : $objFormProduct->Cost;
+									$objSignup->RefreshAmountBalance();
+									break;
+								case FormPaymentType::VariablePayment:
+									$objSignup->AmountPaid = rand(0, 3) ? rand(0, $objFormProduct->Cost) : $objFormProduct->Cost;
+									$objSignup->RefreshAmountBalance();
+									break;
+								case FormPaymentType::PayInFull:
+									$objSignup->AmountPaid = $objFormProduct->Cost;
+									$objSignup->RefreshAmountBalance();
+									break;
+								default:
+									throw new Exception('Should not be here with id: ' . $objFormProduct->FormPaymentTypeId);
+							}
+							
+							$objSignupProduct->Save();
+						}
+						
+						// Required with Choice
+						$objArray = $objSignupForm->GetFormProductArrayByType(FormProductType::RequiredWithChoice);
+						if (count($objArray)) {
+							$objSignupProduct = new SignupProduct();
+							$objSignupProduct->SignupEntry = $objSignup;
+							$objSignupProduct->FormProduct = self::GenerateFromArray($objArray);
+							$objSignupProduct->Quantity = 1;
+							$objSignupProduct
+							
 						}
 
 						// Create hte form answers for each question

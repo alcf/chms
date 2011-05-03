@@ -295,6 +295,12 @@
 			return new QQNodeSignupPayment('signup_payment', null, null);
 		}
 		/**
+		 * @return QQNodeSignupProduct
+		 */
+		static public function SignupProduct() {
+			return new QQNodeSignupProduct('signup_product', null, null);
+		}
+		/**
 		 * @return QQNodeSmartGroup
 		 */
 		static public function SmartGroup() {

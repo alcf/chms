@@ -26,6 +26,8 @@
 	 * @property double $Cost the value for fltCost 
 	 * @property double $Deposit the value for fltDeposit 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
+	 * @property SignupProduct $_SignupProduct the value for the private _objSignupProduct (Read-Only) if set due to an expansion on the signup_product.form_product_id reverse relationship
+	 * @property SignupProduct[] $_SignupProductArray the value for the private _objSignupProductArray (Read-Only) if set due to an ExpandAsArray on the signup_product.form_product_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class FormProductGen extends QBaseClass {
@@ -115,6 +117,22 @@
 		protected $fltDeposit;
 		const DepositDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single SignupProduct object
+		 * (of type SignupProduct), if this FormProduct object was restored with
+		 * an expansion on the signup_product association table.
+		 * @var SignupProduct _objSignupProduct;
+		 */
+		private $_objSignupProduct;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupProduct objects
+		 * (of type SignupProduct[]), if this FormProduct object was restored with
+		 * an ExpandAsArray on the signup_product association table.
+		 * @var SignupProduct[] _objSignupProductArray;
+		 */
+		private $_objSignupProductArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -494,6 +512,38 @@
 			if (!$objDbRow)
 				return null;
 
+			// See if we're doing an array expansion on the previous item
+			$strAlias = $strAliasPrefix . 'id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (($strExpandAsArrayNodes) && ($objPreviousItem) &&
+				($objPreviousItem->intId == $objDbRow->GetColumn($strAliasName, 'Integer'))) {
+
+				// We are.  Now, prepare to check for ExpandAsArray clauses
+				$blnExpandedViaArray = false;
+				if (!$strAliasPrefix)
+					$strAliasPrefix = 'form_product__';
+
+
+				$strAlias = $strAliasPrefix . 'signupproduct__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupProductArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupProductArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupproduct__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupProductArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupProductArray[] = SignupProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
+				if ($blnExpandedViaArray)
+					return false;
+				else if ($strAliasPrefix == 'form_product__')
+					$strAliasPrefix = null;
+			}
 
 			// Create a new instance of the FormProduct object
 			$objToReturn = new FormProduct();
@@ -540,6 +590,16 @@
 
 
 
+
+			// Check for SignupProduct Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupproduct__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupProductArray[] = SignupProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupProduct = SignupProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			return $objToReturn;
 		}
@@ -1048,6 +1108,18 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_SignupProduct':
+					// Gets the value for the private _objSignupProduct (Read-Only)
+					// if set due to an expansion on the signup_product.form_product_id reverse relationship
+					// @return SignupProduct
+					return $this->_objSignupProduct;
+
+				case '_SignupProductArray':
+					// Gets the value for the private _objSignupProductArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_product.form_product_id reverse relationship
+					// @return SignupProduct[]
+					return (array) $this->_objSignupProductArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1236,6 +1308,188 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
+			
+		
+		// Related Objects' Methods for SignupProduct
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupProducts as an array of SignupProduct objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupProduct[]
+		*/ 
+		public function GetSignupProductArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupProduct::LoadArrayByFormProductId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupProducts
+		 * @return int
+		*/ 
+		public function CountSignupProducts() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupProduct::CountByFormProductId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupProduct
+		 * @param SignupProduct $objSignupProduct
+		 * @return void
+		*/ 
+		public function AssociateSignupProduct(SignupProduct $objSignupProduct) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupProduct on this unsaved FormProduct.');
+			if ((is_null($objSignupProduct->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupProduct on this FormProduct with an unsaved SignupProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = FormProduct::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_product`
+				SET
+					`form_product_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupProduct->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupProduct->FormProductId = $this->intId;
+				$objSignupProduct->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupProduct
+		 * @param SignupProduct $objSignupProduct
+		 * @return void
+		*/ 
+		public function UnassociateSignupProduct(SignupProduct $objSignupProduct) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupProduct on this unsaved FormProduct.');
+			if ((is_null($objSignupProduct->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupProduct on this FormProduct with an unsaved SignupProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = FormProduct::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_product`
+				SET
+					`form_product_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupProduct->Id) . ' AND
+					`form_product_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupProduct->FormProductId = null;
+				$objSignupProduct->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupProducts
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupProducts() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupProduct on this unsaved FormProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = FormProduct::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupProduct::LoadArrayByFormProductId($this->intId) as $objSignupProduct) {
+					$objSignupProduct->FormProductId = null;
+					$objSignupProduct->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_product`
+				SET
+					`form_product_id` = null
+				WHERE
+					`form_product_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupProduct
+		 * @param SignupProduct $objSignupProduct
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupProduct(SignupProduct $objSignupProduct) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupProduct on this unsaved FormProduct.');
+			if ((is_null($objSignupProduct->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupProduct on this FormProduct with an unsaved SignupProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = FormProduct::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_product`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupProduct->Id) . ' AND
+					`form_product_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupProduct->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupProducts
+		 * @return void
+		*/ 
+		public function DeleteAllSignupProducts() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupProduct on this unsaved FormProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = FormProduct::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupProduct::LoadArrayByFormProductId($this->intId) as $objSignupProduct) {
+					$objSignupProduct->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_product`
+				WHERE
+					`form_product_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1352,6 +1606,7 @@
 	 * @property-read QQNode $DateEnd
 	 * @property-read QQNode $Cost
 	 * @property-read QQNode $Deposit
+	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
 	 */
 	class QQNodeFormProduct extends QQNode {
 		protected $strTableName = 'form_product';
@@ -1381,6 +1636,8 @@
 					return new QQNode('cost', 'Cost', 'double', $this);
 				case 'Deposit':
 					return new QQNode('deposit', 'Deposit', 'double', $this);
+				case 'SignupProduct':
+					return new QQReverseReferenceNodeSignupProduct($this, 'signupproduct', 'reverse_reference', 'form_product_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1407,6 +1664,7 @@
 	 * @property-read QQNode $DateEnd
 	 * @property-read QQNode $Cost
 	 * @property-read QQNode $Deposit
+	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeFormProduct extends QQReverseReferenceNode {
@@ -1437,6 +1695,8 @@
 					return new QQNode('cost', 'Cost', 'double', $this);
 				case 'Deposit':
 					return new QQNode('deposit', 'Deposit', 'double', $this);
+				case 'SignupProduct':
+					return new QQReverseReferenceNodeSignupProduct($this, 'signupproduct', 'reverse_reference', 'form_product_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

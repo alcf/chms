@@ -19,25 +19,25 @@
 	 */
 	abstract class FormProductTypeGen extends QBaseClass {
 		const Required = 1;
-		const RequiredwithChoice = 2;
+		const RequiredWithChoice = 2;
 		const Optional = 3;
 
 		const MaxId = 3;
 
 		public static $NameArray = array(
 			1 => 'Required',
-			2 => 'Required with Choice',
+			2 => 'Required With Choice',
 			3 => 'Optional');
 
 		public static $TokenArray = array(
 			1 => 'Required',
-			2 => 'RequiredwithChoice',
+			2 => 'RequiredWithChoice',
 			3 => 'Optional');
 
 		public static function ToString($intFormProductTypeId) {
 			switch ($intFormProductTypeId) {
 				case 1: return 'Required';
-				case 2: return 'Required with Choice';
+				case 2: return 'Required With Choice';
 				case 3: return 'Optional';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormProductTypeId: %s', $intFormProductTypeId));
@@ -47,7 +47,7 @@
 		public static function ToToken($intFormProductTypeId) {
 			switch ($intFormProductTypeId) {
 				case 1: return 'Required';
-				case 2: return 'RequiredwithChoice';
+				case 2: return 'RequiredWithChoice';
 				case 3: return 'Optional';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormProductTypeId: %s', $intFormProductTypeId));
