@@ -131,10 +131,12 @@
 				$objFormProduct->FormPaymentTypeId = FormPaymentType::PayInFull;
 				$objFormProduct->Name = self::GenerateTitle(2, 5);
 				$objFormProduct->Description = self::GenerateContent(1, 3, 10);
+				$objFormProduct->MinimumQuantity = 1;
+				$objFormProduct->MaximumQuantity = rand(1, 3);
 				$objFormProduct->Cost = rand(1, 10) * 5;
 				$objFormProduct->Save();
 			}
-			
+
 			// 4: Otpional Donation
 			if (rand(0, 1)) {
 				$objFormProduct = new FormProduct();
@@ -143,6 +145,8 @@
 				$objFormProduct->FormPaymentTypeId = FormPaymentType::Donation;
 				$objFormProduct->Name = 'Donation';
 				$objFormProduct->Description = self::GenerateContent(1, 3, 10);
+				$objFormProduct->MinimumQuantity = 1;
+				$objFormProduct->MaximumQuantity = 1;
 				$objFormProduct->Save();
 			}
 
@@ -246,42 +250,27 @@
 
 						// Rqeuired Products
 						foreach ($objSignupForm->GetFormProductArrayByType(FormProductType::Required) as $objFormProduct) {
-							$objSignupProduct = new SignupProduct();
-							$objSignupProduct->SignupEntry = $objSignup;
-							$objSignupProduct->FormProduct = $objFormProduct;
-							$objSignupProduct->Quantity = 1;
-
-							switch ($objFormProduct->FormPaymentTypeId) {
-								case FormPaymentType::DepositRequired:
-									$objSignup->AmountTotal = rand(0, 3) ? $objFormProduct->Deposit : $objFormProduct->Cost;
-									$objSignup->RefreshAmountBalance();
-									break;
-								case FormPaymentType::VariablePayment:
-									$objSignup->AmountPaid = rand(0, 3) ? rand(0, $objFormProduct->Cost) : $objFormProduct->Cost;
-									$objSignup->RefreshAmountBalance();
-									break;
-								case FormPaymentType::PayInFull:
-									$objSignup->AmountPaid = $objFormProduct->Cost;
-									$objSignup->RefreshAmountBalance();
-									break;
-								default:
-									throw new Exception('Should not be here with id: ' . $objFormProduct->FormPaymentTypeId);
-							}
-							
-							$objSignupProduct->Save();
+							$objSignup->AddProduct(self::GenerateFromArray($objFormProduct));
 						}
-						
+
 						// Required with Choice
 						$objArray = $objSignupForm->GetFormProductArrayByType(FormProductType::RequiredWithChoice);
 						if (count($objArray)) {
-							$objSignupProduct = new SignupProduct();
-							$objSignupProduct->SignupEntry = $objSignup;
-							$objSignupProduct->FormProduct = self::GenerateFromArray($objArray);
-							$objSignupProduct->Quantity = 1;
-							$objSignupProduct
-							
+							$objSignup->AddProduct(self::GenerateFromArray($objArray));
 						}
 
+						// Optionals (including donations)
+						foreach ($objSignupForm->GetFormProductArrayByType(FormProductType::Optional) as $objFormProduct) {
+							if (rand(0, 1)) {
+								if ($objFormProduct->FormPaymentTypeId == FormPaymentType::Donation)
+									$objSignup->AddProduct($objFormProduct, rand($objFormProduct->MinimumQuantity, $objFormProduct->MaximumQuantityQuantity), rand(1, 10) * 10);
+								else
+									$objSignup->AddProduct($objFormProduct, rand($objFormProduct->MinimumQuantity, $objFormProduct->MaximumQuantityQuantity));
+							}
+						}
+
+						// TODO: Payments
+						
 						// Create hte form answers for each question
 						foreach ($objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 							if ($objFormQuestion->RequiredFlag || rand(0, 1)) {

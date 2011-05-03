@@ -37,6 +37,16 @@
 			if ($blnSaveFlag) $this->Save();
 		}
 
+		/**
+		 * Adds a product selection to this signup entry
+		 * @param FormProduct $objFormProduct
+		 * @param integer $intQuantity only specify if we are dealing with an "optional" product, otherwise we assume 1
+		 * @param float $fltAmount only specify if we are allowed a variable amount to specify (e.g. for a donation), otherwise leave blank
+		 */
+		public function AddProduct(FormProduct $objFormProduct, $intQuantity = 1, $fltAmount = null) {
+			
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

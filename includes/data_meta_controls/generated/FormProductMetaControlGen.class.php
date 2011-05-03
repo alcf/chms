@@ -32,6 +32,10 @@
 	 * property-read QLabel $DateStartLabel
 	 * property QDateTimePicker $DateEndControl
 	 * property-read QLabel $DateEndLabel
+	 * property QIntegerTextBox $MinimumQuantityControl
+	 * property-read QLabel $MinimumQuantityLabel
+	 * property QIntegerTextBox $MaximumQuantityControl
+	 * property-read QLabel $MaximumQuantityLabel
 	 * property QFloatTextBox $CostControl
 	 * property-read QLabel $CostLabel
 	 * property QFloatTextBox $DepositControl
@@ -116,6 +120,18 @@
 		protected $calDateEnd;
 
         /**
+         * @var QIntegerTextBox txtMinimumQuantity;
+         * @access protected
+         */
+		protected $txtMinimumQuantity;
+
+        /**
+         * @var QIntegerTextBox txtMaximumQuantity;
+         * @access protected
+         */
+		protected $txtMaximumQuantity;
+
+        /**
          * @var QFloatTextBox txtCost;
          * @access protected
          */
@@ -170,6 +186,18 @@
          * @access protected
          */
 		protected $lblDateEnd;
+
+        /**
+         * @var QLabel lblMinimumQuantity
+         * @access protected
+         */
+		protected $lblMinimumQuantity;
+
+        /**
+         * @var QLabel lblMaximumQuantity
+         * @access protected
+         */
+		protected $lblMaximumQuantity;
 
         /**
          * @var QLabel lblCost
@@ -502,6 +530,58 @@
 		protected $strDateEndDateTimeFormat;
 
 		/**
+		 * Create and setup QIntegerTextBox txtMinimumQuantity
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtMinimumQuantity_Create($strControlId = null) {
+			$this->txtMinimumQuantity = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtMinimumQuantity->Name = QApplication::Translate('Minimum Quantity');
+			$this->txtMinimumQuantity->Text = $this->objFormProduct->MinimumQuantity;
+			return $this->txtMinimumQuantity;
+		}
+
+		/**
+		 * Create and setup QLabel lblMinimumQuantity
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblMinimumQuantity_Create($strControlId = null, $strFormat = null) {
+			$this->lblMinimumQuantity = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMinimumQuantity->Name = QApplication::Translate('Minimum Quantity');
+			$this->lblMinimumQuantity->Text = $this->objFormProduct->MinimumQuantity;
+			$this->lblMinimumQuantity->Format = $strFormat;
+			return $this->lblMinimumQuantity;
+		}
+
+		/**
+		 * Create and setup QIntegerTextBox txtMaximumQuantity
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtMaximumQuantity_Create($strControlId = null) {
+			$this->txtMaximumQuantity = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtMaximumQuantity->Name = QApplication::Translate('Maximum Quantity');
+			$this->txtMaximumQuantity->Text = $this->objFormProduct->MaximumQuantity;
+			return $this->txtMaximumQuantity;
+		}
+
+		/**
+		 * Create and setup QLabel lblMaximumQuantity
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblMaximumQuantity_Create($strControlId = null, $strFormat = null) {
+			$this->lblMaximumQuantity = new QLabel($this->objParentObject, $strControlId);
+			$this->lblMaximumQuantity->Name = QApplication::Translate('Maximum Quantity');
+			$this->lblMaximumQuantity->Text = $this->objFormProduct->MaximumQuantity;
+			$this->lblMaximumQuantity->Format = $strFormat;
+			return $this->lblMaximumQuantity;
+		}
+
+		/**
 		 * Create and setup QFloatTextBox txtCost
 		 * @param string $strControlId optional ControlId to use
 		 * @return QFloatTextBox
@@ -598,6 +678,12 @@
 			if ($this->calDateEnd) $this->calDateEnd->DateTime = $this->objFormProduct->DateEnd;
 			if ($this->lblDateEnd) $this->lblDateEnd->Text = sprintf($this->objFormProduct->DateEnd) ? $this->objFormProduct->__toString($this->strDateEndDateTimeFormat) : null;
 
+			if ($this->txtMinimumQuantity) $this->txtMinimumQuantity->Text = $this->objFormProduct->MinimumQuantity;
+			if ($this->lblMinimumQuantity) $this->lblMinimumQuantity->Text = $this->objFormProduct->MinimumQuantity;
+
+			if ($this->txtMaximumQuantity) $this->txtMaximumQuantity->Text = $this->objFormProduct->MaximumQuantity;
+			if ($this->lblMaximumQuantity) $this->lblMaximumQuantity->Text = $this->objFormProduct->MaximumQuantity;
+
 			if ($this->txtCost) $this->txtCost->Text = $this->objFormProduct->Cost;
 			if ($this->lblCost) $this->lblCost->Text = $this->objFormProduct->Cost;
 
@@ -634,6 +720,8 @@
 				if ($this->txtDescription) $this->objFormProduct->Description = $this->txtDescription->Text;
 				if ($this->calDateStart) $this->objFormProduct->DateStart = $this->calDateStart->DateTime;
 				if ($this->calDateEnd) $this->objFormProduct->DateEnd = $this->calDateEnd->DateTime;
+				if ($this->txtMinimumQuantity) $this->objFormProduct->MinimumQuantity = $this->txtMinimumQuantity->Text;
+				if ($this->txtMaximumQuantity) $this->objFormProduct->MaximumQuantity = $this->txtMaximumQuantity->Text;
 				if ($this->txtCost) $this->objFormProduct->Cost = $this->txtCost->Text;
 				if ($this->txtDeposit) $this->objFormProduct->Deposit = $this->txtDeposit->Text;
 
@@ -726,6 +814,18 @@
 				case 'DateEndLabel':
 					if (!$this->lblDateEnd) return $this->lblDateEnd_Create();
 					return $this->lblDateEnd;
+				case 'MinimumQuantityControl':
+					if (!$this->txtMinimumQuantity) return $this->txtMinimumQuantity_Create();
+					return $this->txtMinimumQuantity;
+				case 'MinimumQuantityLabel':
+					if (!$this->lblMinimumQuantity) return $this->lblMinimumQuantity_Create();
+					return $this->lblMinimumQuantity;
+				case 'MaximumQuantityControl':
+					if (!$this->txtMaximumQuantity) return $this->txtMaximumQuantity_Create();
+					return $this->txtMaximumQuantity;
+				case 'MaximumQuantityLabel':
+					if (!$this->lblMaximumQuantity) return $this->lblMaximumQuantity_Create();
+					return $this->lblMaximumQuantity;
 				case 'CostControl':
 					if (!$this->txtCost) return $this->txtCost_Create();
 					return $this->txtCost;
@@ -776,6 +876,10 @@
 						return ($this->calDateStart = QType::Cast($mixValue, 'QControl'));
 					case 'DateEndControl':
 						return ($this->calDateEnd = QType::Cast($mixValue, 'QControl'));
+					case 'MinimumQuantityControl':
+						return ($this->txtMinimumQuantity = QType::Cast($mixValue, 'QControl'));
+					case 'MaximumQuantityControl':
+						return ($this->txtMaximumQuantity = QType::Cast($mixValue, 'QControl'));
 					case 'CostControl':
 						return ($this->txtCost = QType::Cast($mixValue, 'QControl'));
 					case 'DepositControl':

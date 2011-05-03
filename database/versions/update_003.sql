@@ -90,6 +90,8 @@ CREATE TABLE `form_product`
 `description` VARCHAR(255),
 `date_start` DATETIME,
 `date_end` DATETIME,
+`minimum_quantity` INTEGER,
+`maximum_quantity` INTEGER,
 `cost` DECIMAL(10,2),
 `deposit` DECIMAL(10,2),
 PRIMARY KEY (`id`)

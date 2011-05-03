@@ -302,6 +302,8 @@
 				case 'Description': return QQN::FormProduct()->Description;
 				case 'DateStart': return QQN::FormProduct()->DateStart;
 				case 'DateEnd': return QQN::FormProduct()->DateEnd;
+				case 'MinimumQuantity': return QQN::FormProduct()->MinimumQuantity;
+				case 'MaximumQuantity': return QQN::FormProduct()->MaximumQuantity;
 				case 'Cost': return QQN::FormProduct()->Cost;
 				case 'Deposit': return QQN::FormProduct()->Deposit;
 				default: throw new QCallerException('Simple Property not found in FormProductDataGrid content: ' . $mixContent);

@@ -23,6 +23,8 @@
 	 * @property string $Description the value for strDescription 
 	 * @property QDateTime $DateStart the value for dttDateStart 
 	 * @property QDateTime $DateEnd the value for dttDateEnd 
+	 * @property integer $MinimumQuantity the value for intMinimumQuantity 
+	 * @property integer $MaximumQuantity the value for intMaximumQuantity 
 	 * @property double $Cost the value for fltCost 
 	 * @property double $Deposit the value for fltDeposit 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
@@ -100,6 +102,22 @@
 		 */
 		protected $dttDateEnd;
 		const DateEndDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_product.minimum_quantity
+		 * @var integer intMinimumQuantity
+		 */
+		protected $intMinimumQuantity;
+		const MinimumQuantityDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_product.maximum_quantity
+		 * @var integer intMaximumQuantity
+		 */
+		protected $intMaximumQuantity;
+		const MaximumQuantityDefault = null;
 
 
 		/**
@@ -484,6 +502,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'date_start', $strAliasPrefix . 'date_start');
 			$objBuilder->AddSelectItem($strTableName, 'date_end', $strAliasPrefix . 'date_end');
+			$objBuilder->AddSelectItem($strTableName, 'minimum_quantity', $strAliasPrefix . 'minimum_quantity');
+			$objBuilder->AddSelectItem($strTableName, 'maximum_quantity', $strAliasPrefix . 'maximum_quantity');
 			$objBuilder->AddSelectItem($strTableName, 'cost', $strAliasPrefix . 'cost');
 			$objBuilder->AddSelectItem($strTableName, 'deposit', $strAliasPrefix . 'deposit');
 		}
@@ -565,6 +585,10 @@
 			$objToReturn->dttDateStart = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_end', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_end'] : $strAliasPrefix . 'date_end';
 			$objToReturn->dttDateEnd = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'minimum_quantity', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'minimum_quantity'] : $strAliasPrefix . 'minimum_quantity';
+			$objToReturn->intMinimumQuantity = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'maximum_quantity', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'maximum_quantity'] : $strAliasPrefix . 'maximum_quantity';
+			$objToReturn->intMaximumQuantity = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'cost', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'cost'] : $strAliasPrefix . 'cost';
 			$objToReturn->fltCost = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'deposit', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'deposit'] : $strAliasPrefix . 'deposit';
@@ -817,6 +841,8 @@
 							`description`,
 							`date_start`,
 							`date_end`,
+							`minimum_quantity`,
+							`maximum_quantity`,
 							`cost`,
 							`deposit`
 						) VALUES (
@@ -827,6 +853,8 @@
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->dttDateStart) . ',
 							' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+							' . $objDatabase->SqlVariable($this->intMinimumQuantity) . ',
+							' . $objDatabase->SqlVariable($this->intMaximumQuantity) . ',
 							' . $objDatabase->SqlVariable($this->fltCost) . ',
 							' . $objDatabase->SqlVariable($this->fltDeposit) . '
 						)
@@ -855,6 +883,8 @@
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`date_start` = ' . $objDatabase->SqlVariable($this->dttDateStart) . ',
 							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+							`minimum_quantity` = ' . $objDatabase->SqlVariable($this->intMinimumQuantity) . ',
+							`maximum_quantity` = ' . $objDatabase->SqlVariable($this->intMaximumQuantity) . ',
 							`cost` = ' . $objDatabase->SqlVariable($this->fltCost) . ',
 							`deposit` = ' . $objDatabase->SqlVariable($this->fltDeposit) . '
 						WHERE
@@ -948,6 +978,8 @@
 			$this->strDescription = $objReloaded->strDescription;
 			$this->dttDateStart = $objReloaded->dttDateStart;
 			$this->dttDateEnd = $objReloaded->dttDateEnd;
+			$this->intMinimumQuantity = $objReloaded->intMinimumQuantity;
+			$this->intMaximumQuantity = $objReloaded->intMaximumQuantity;
 			$this->fltCost = $objReloaded->fltCost;
 			$this->fltDeposit = $objReloaded->fltDeposit;
 		}
@@ -970,6 +1002,8 @@
 					`description`,
 					`date_start`,
 					`date_end`,
+					`minimum_quantity`,
+					`maximum_quantity`,
 					`cost`,
 					`deposit`,
 					__sys_login_id,
@@ -984,6 +1018,8 @@
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
 					' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+					' . $objDatabase->SqlVariable($this->intMinimumQuantity) . ',
+					' . $objDatabase->SqlVariable($this->intMaximumQuantity) . ',
 					' . $objDatabase->SqlVariable($this->fltCost) . ',
 					' . $objDatabase->SqlVariable($this->fltDeposit) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
@@ -1075,6 +1111,16 @@
 					// Gets the value for dttDateEnd 
 					// @return QDateTime
 					return $this->dttDateEnd;
+
+				case 'MinimumQuantity':
+					// Gets the value for intMinimumQuantity 
+					// @return integer
+					return $this->intMinimumQuantity;
+
+				case 'MaximumQuantity':
+					// Gets the value for intMaximumQuantity 
+					// @return integer
+					return $this->intMaximumQuantity;
 
 				case 'Cost':
 					// Gets the value for fltCost 
@@ -1220,6 +1266,28 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateEnd = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'MinimumQuantity':
+					// Sets the value for intMinimumQuantity 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intMinimumQuantity = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'MaximumQuantity':
+					// Sets the value for intMaximumQuantity 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intMaximumQuantity = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1508,6 +1576,8 @@
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateStart" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateEnd" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="MinimumQuantity" type="xsd:int"/>';
+			$strToReturn .= '<element name="MaximumQuantity" type="xsd:int"/>';
 			$strToReturn .= '<element name="Cost" type="xsd:float"/>';
 			$strToReturn .= '<element name="Deposit" type="xsd:float"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1550,6 +1620,10 @@
 				$objToReturn->dttDateStart = new QDateTime($objSoapObject->DateStart);
 			if (property_exists($objSoapObject, 'DateEnd'))
 				$objToReturn->dttDateEnd = new QDateTime($objSoapObject->DateEnd);
+			if (property_exists($objSoapObject, 'MinimumQuantity'))
+				$objToReturn->intMinimumQuantity = $objSoapObject->MinimumQuantity;
+			if (property_exists($objSoapObject, 'MaximumQuantity'))
+				$objToReturn->intMaximumQuantity = $objSoapObject->MaximumQuantity;
 			if (property_exists($objSoapObject, 'Cost'))
 				$objToReturn->fltCost = $objSoapObject->Cost;
 			if (property_exists($objSoapObject, 'Deposit'))
@@ -1604,6 +1678,8 @@
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $DateStart
 	 * @property-read QQNode $DateEnd
+	 * @property-read QQNode $MinimumQuantity
+	 * @property-read QQNode $MaximumQuantity
 	 * @property-read QQNode $Cost
 	 * @property-read QQNode $Deposit
 	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
@@ -1632,6 +1708,10 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
+				case 'MinimumQuantity':
+					return new QQNode('minimum_quantity', 'MinimumQuantity', 'integer', $this);
+				case 'MaximumQuantity':
+					return new QQNode('maximum_quantity', 'MaximumQuantity', 'integer', $this);
 				case 'Cost':
 					return new QQNode('cost', 'Cost', 'double', $this);
 				case 'Deposit':
@@ -1662,6 +1742,8 @@
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $DateStart
 	 * @property-read QQNode $DateEnd
+	 * @property-read QQNode $MinimumQuantity
+	 * @property-read QQNode $MaximumQuantity
 	 * @property-read QQNode $Cost
 	 * @property-read QQNode $Deposit
 	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
@@ -1691,6 +1773,10 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
+				case 'MinimumQuantity':
+					return new QQNode('minimum_quantity', 'MinimumQuantity', 'integer', $this);
+				case 'MaximumQuantity':
+					return new QQNode('maximum_quantity', 'MaximumQuantity', 'integer', $this);
 				case 'Cost':
 					return new QQNode('cost', 'Cost', 'double', $this);
 				case 'Deposit':
