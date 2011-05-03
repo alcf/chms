@@ -19,7 +19,10 @@
 	 * @property integer $SignupFormId the value for intSignupFormId (Not Null)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $SignupByPersonId the value for intSignupByPersonId 
-	 * @property QDateTime $DateSubmitted the value for dttDateSubmitted (Not Null)
+	 * @property integer $SignupEntryStatusTypeId the value for intSignupEntryStatusTypeId (Not Null)
+	 * @property QDateTime $DateCreated the value for dttDateCreated (Not Null)
+	 * @property QDateTime $DateSubmitted the value for dttDateSubmitted 
+	 * @property double $AmountTotal the value for fltAmountTotal 
 	 * @property double $AmountPaid the value for fltAmountPaid 
 	 * @property double $AmountBalance the value for fltAmountBalance 
 	 * @property string $InternalNotes the value for strInternalNotes 
@@ -28,6 +31,8 @@
 	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId 
 	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.signup_entry_id reverse relationship
 	 * @property FormAnswer[] $_FormAnswerArray the value for the private _objFormAnswerArray (Read-Only) if set due to an ExpandAsArray on the form_answer.signup_entry_id reverse relationship
+	 * @property SignupPayment $_SignupPayment the value for the private _objSignupPayment (Read-Only) if set due to an expansion on the signup_payment.signup_entry_id reverse relationship
+	 * @property SignupPayment[] $_SignupPaymentArray the value for the private _objSignupPaymentArray (Read-Only) if set due to an ExpandAsArray on the signup_payment.signup_entry_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class SignupEntryGen extends QBaseClass {
@@ -69,11 +74,35 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column signup_entry.signup_entry_status_type_id
+		 * @var integer intSignupEntryStatusTypeId
+		 */
+		protected $intSignupEntryStatusTypeId;
+		const SignupEntryStatusTypeIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_entry.date_created
+		 * @var QDateTime dttDateCreated
+		 */
+		protected $dttDateCreated;
+		const DateCreatedDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column signup_entry.date_submitted
 		 * @var QDateTime dttDateSubmitted
 		 */
 		protected $dttDateSubmitted;
 		const DateSubmittedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_entry.amount_total
+		 * @var double fltAmountTotal
+		 */
+		protected $fltAmountTotal;
+		const AmountTotalDefault = null;
 
 
 		/**
@@ -115,6 +144,22 @@
 		 * @var FormAnswer[] _objFormAnswerArray;
 		 */
 		private $_objFormAnswerArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupPayment object
+		 * (of type SignupPayment), if this SignupEntry object was restored with
+		 * an expansion on the signup_payment association table.
+		 * @var SignupPayment _objSignupPayment;
+		 */
+		private $_objSignupPayment;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupPayment objects
+		 * (of type SignupPayment[]), if this SignupEntry object was restored with
+		 * an ExpandAsArray on the signup_payment association table.
+		 * @var SignupPayment[] _objSignupPaymentArray;
+		 */
+		private $_objSignupPaymentArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -482,7 +527,10 @@
 			$objBuilder->AddSelectItem($strTableName, 'signup_form_id', $strAliasPrefix . 'signup_form_id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'signup_by_person_id', $strAliasPrefix . 'signup_by_person_id');
+			$objBuilder->AddSelectItem($strTableName, 'signup_entry_status_type_id', $strAliasPrefix . 'signup_entry_status_type_id');
+			$objBuilder->AddSelectItem($strTableName, 'date_created', $strAliasPrefix . 'date_created');
 			$objBuilder->AddSelectItem($strTableName, 'date_submitted', $strAliasPrefix . 'date_submitted');
+			$objBuilder->AddSelectItem($strTableName, 'amount_total', $strAliasPrefix . 'amount_total');
 			$objBuilder->AddSelectItem($strTableName, 'amount_paid', $strAliasPrefix . 'amount_paid');
 			$objBuilder->AddSelectItem($strTableName, 'amount_balance', $strAliasPrefix . 'amount_balance');
 			$objBuilder->AddSelectItem($strTableName, 'internal_notes', $strAliasPrefix . 'internal_notes');
@@ -538,6 +586,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'signuppayment__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupPaymentArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupPaymentArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupPaymentArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupPaymentArray[] = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -557,8 +619,14 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'signup_by_person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_by_person_id'] : $strAliasPrefix . 'signup_by_person_id';
 			$objToReturn->intSignupByPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'signup_entry_status_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_entry_status_type_id'] : $strAliasPrefix . 'signup_entry_status_type_id';
+			$objToReturn->intSignupEntryStatusTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_created'] : $strAliasPrefix . 'date_created';
+			$objToReturn->dttDateCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_submitted', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_submitted'] : $strAliasPrefix . 'date_submitted';
 			$objToReturn->dttDateSubmitted = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'amount_total', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_total'] : $strAliasPrefix . 'amount_total';
+			$objToReturn->fltAmountTotal = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount_paid', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_paid'] : $strAliasPrefix . 'amount_paid';
 			$objToReturn->fltAmountPaid = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount_balance', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_balance'] : $strAliasPrefix . 'amount_balance';
@@ -607,6 +675,16 @@
 					$objToReturn->_objFormAnswerArray[] = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objFormAnswer = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupPayment Virtual Binding
+			$strAlias = $strAliasPrefix . 'signuppayment__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupPaymentArray[] = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupPayment = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -830,16 +908,16 @@
 			
 		/**
 		 * Load an array of SignupEntry objects,
-		 * by AmountBalance Index(es)
-		 * @param double $fltAmountBalance
+		 * by SignupEntryStatusTypeId Index(es)
+		 * @param integer $intSignupEntryStatusTypeId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return SignupEntry[]
 		*/
-		public static function LoadArrayByAmountBalance($fltAmountBalance, $objOptionalClauses = null) {
-			// Call SignupEntry::QueryArray to perform the LoadArrayByAmountBalance query
+		public static function LoadArrayBySignupEntryStatusTypeId($intSignupEntryStatusTypeId, $objOptionalClauses = null) {
+			// Call SignupEntry::QueryArray to perform the LoadArrayBySignupEntryStatusTypeId query
 			try {
 				return SignupEntry::QueryArray(
-					QQ::Equal(QQN::SignupEntry()->AmountBalance, $fltAmountBalance),
+					QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -849,14 +927,14 @@
 
 		/**
 		 * Count SignupEntries
-		 * by AmountBalance Index(es)
-		 * @param double $fltAmountBalance
+		 * by SignupEntryStatusTypeId Index(es)
+		 * @param integer $intSignupEntryStatusTypeId
 		 * @return int
 		*/
-		public static function CountByAmountBalance($fltAmountBalance) {
-			// Call SignupEntry::QueryCount to perform the CountByAmountBalance query
+		public static function CountBySignupEntryStatusTypeId($intSignupEntryStatusTypeId) {
+			// Call SignupEntry::QueryCount to perform the CountBySignupEntryStatusTypeId query
 			return SignupEntry::QueryCount(
-				QQ::Equal(QQN::SignupEntry()->AmountBalance, $fltAmountBalance)
+				QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId)
 			);
 		}
 
@@ -893,7 +971,10 @@
 							`signup_form_id`,
 							`person_id`,
 							`signup_by_person_id`,
+							`signup_entry_status_type_id`,
+							`date_created`,
 							`date_submitted`,
+							`amount_total`,
 							`amount_paid`,
 							`amount_balance`,
 							`internal_notes`
@@ -901,7 +982,10 @@
 							' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intSignupByPersonId) . ',
+							' . $objDatabase->SqlVariable($this->intSignupEntryStatusTypeId) . ',
+							' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
 							' . $objDatabase->SqlVariable($this->dttDateSubmitted) . ',
+							' . $objDatabase->SqlVariable($this->fltAmountTotal) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
 							' . $objDatabase->SqlVariable($this->strInternalNotes) . '
@@ -927,7 +1011,10 @@
 							`signup_form_id` = ' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`signup_by_person_id` = ' . $objDatabase->SqlVariable($this->intSignupByPersonId) . ',
+							`signup_entry_status_type_id` = ' . $objDatabase->SqlVariable($this->intSignupEntryStatusTypeId) . ',
+							`date_created` = ' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
 							`date_submitted` = ' . $objDatabase->SqlVariable($this->dttDateSubmitted) . ',
+							`amount_total` = ' . $objDatabase->SqlVariable($this->fltAmountTotal) . ',
 							`amount_paid` = ' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 							`amount_balance` = ' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
 							`internal_notes` = ' . $objDatabase->SqlVariable($this->strInternalNotes) . '
@@ -1018,7 +1105,10 @@
 			$this->SignupFormId = $objReloaded->SignupFormId;
 			$this->PersonId = $objReloaded->PersonId;
 			$this->SignupByPersonId = $objReloaded->SignupByPersonId;
+			$this->SignupEntryStatusTypeId = $objReloaded->SignupEntryStatusTypeId;
+			$this->dttDateCreated = $objReloaded->dttDateCreated;
 			$this->dttDateSubmitted = $objReloaded->dttDateSubmitted;
+			$this->fltAmountTotal = $objReloaded->fltAmountTotal;
 			$this->fltAmountPaid = $objReloaded->fltAmountPaid;
 			$this->fltAmountBalance = $objReloaded->fltAmountBalance;
 			$this->strInternalNotes = $objReloaded->strInternalNotes;
@@ -1038,7 +1128,10 @@
 					`signup_form_id`,
 					`person_id`,
 					`signup_by_person_id`,
+					`signup_entry_status_type_id`,
+					`date_created`,
 					`date_submitted`,
+					`amount_total`,
 					`amount_paid`,
 					`amount_balance`,
 					`internal_notes`,
@@ -1050,7 +1143,10 @@
 					' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
 					' . $objDatabase->SqlVariable($this->intPersonId) . ',
 					' . $objDatabase->SqlVariable($this->intSignupByPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intSignupEntryStatusTypeId) . ',
+					' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
 					' . $objDatabase->SqlVariable($this->dttDateSubmitted) . ',
+					' . $objDatabase->SqlVariable($this->fltAmountTotal) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
 					' . $objDatabase->SqlVariable($this->strInternalNotes) . ',
@@ -1124,10 +1220,25 @@
 					// @return integer
 					return $this->intSignupByPersonId;
 
+				case 'SignupEntryStatusTypeId':
+					// Gets the value for intSignupEntryStatusTypeId (Not Null)
+					// @return integer
+					return $this->intSignupEntryStatusTypeId;
+
+				case 'DateCreated':
+					// Gets the value for dttDateCreated (Not Null)
+					// @return QDateTime
+					return $this->dttDateCreated;
+
 				case 'DateSubmitted':
-					// Gets the value for dttDateSubmitted (Not Null)
+					// Gets the value for dttDateSubmitted 
 					// @return QDateTime
 					return $this->dttDateSubmitted;
+
+				case 'AmountTotal':
+					// Gets the value for fltAmountTotal 
+					// @return double
+					return $this->fltAmountTotal;
 
 				case 'AmountPaid':
 					// Gets the value for fltAmountPaid 
@@ -1202,6 +1313,18 @@
 					// @return FormAnswer[]
 					return (array) $this->_objFormAnswerArray;
 
+				case '_SignupPayment':
+					// Gets the value for the private _objSignupPayment (Read-Only)
+					// if set due to an expansion on the signup_payment.signup_entry_id reverse relationship
+					// @return SignupPayment
+					return $this->_objSignupPayment;
+
+				case '_SignupPaymentArray':
+					// Gets the value for the private _objSignupPaymentArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_payment.signup_entry_id reverse relationship
+					// @return SignupPayment[]
+					return (array) $this->_objSignupPaymentArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1265,12 +1388,45 @@
 						throw $objExc;
 					}
 
+				case 'SignupEntryStatusTypeId':
+					// Sets the value for intSignupEntryStatusTypeId (Not Null)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intSignupEntryStatusTypeId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateCreated':
+					// Sets the value for dttDateCreated (Not Null)
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateCreated = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'DateSubmitted':
-					// Sets the value for dttDateSubmitted (Not Null)
+					// Sets the value for dttDateSubmitted 
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
 						return ($this->dttDateSubmitted = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'AmountTotal':
+					// Sets the value for fltAmountTotal 
+					// @param double $mixValue
+					// @return double
+					try {
+						return ($this->fltAmountTotal = QType::Cast($mixValue, QType::Float));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1612,6 +1768,188 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for SignupPayment
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupPayments as an array of SignupPayment objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupPayment[]
+		*/ 
+		public function GetSignupPaymentArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupPayment::LoadArrayBySignupEntryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupPayments
+		 * @return int
+		*/ 
+		public function CountSignupPayments() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupPayment::CountBySignupEntryId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupPayment
+		 * @param SignupPayment $objSignupPayment
+		 * @return void
+		*/ 
+		public function AssociateSignupPayment(SignupPayment $objSignupPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupPayment on this unsaved SignupEntry.');
+			if ((is_null($objSignupPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupPayment on this SignupEntry with an unsaved SignupPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupEntry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_payment`
+				SET
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupPayment->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupPayment->SignupEntryId = $this->intId;
+				$objSignupPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupPayment
+		 * @param SignupPayment $objSignupPayment
+		 * @return void
+		*/ 
+		public function UnassociateSignupPayment(SignupPayment $objSignupPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPayment on this unsaved SignupEntry.');
+			if ((is_null($objSignupPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPayment on this SignupEntry with an unsaved SignupPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupEntry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_payment`
+				SET
+					`signup_entry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupPayment->Id) . ' AND
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupPayment->SignupEntryId = null;
+				$objSignupPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupPayments
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupPayments() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPayment on this unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupEntry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupPayment::LoadArrayBySignupEntryId($this->intId) as $objSignupPayment) {
+					$objSignupPayment->SignupEntryId = null;
+					$objSignupPayment->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_payment`
+				SET
+					`signup_entry_id` = null
+				WHERE
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupPayment
+		 * @param SignupPayment $objSignupPayment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupPayment(SignupPayment $objSignupPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPayment on this unsaved SignupEntry.');
+			if ((is_null($objSignupPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPayment on this SignupEntry with an unsaved SignupPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupEntry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_payment`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupPayment->Id) . ' AND
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupPayment->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupPayments
+		 * @return void
+		*/ 
+		public function DeleteAllSignupPayments() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPayment on this unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupEntry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupPayment::LoadArrayBySignupEntryId($this->intId) as $objSignupPayment) {
+					$objSignupPayment->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_payment`
+				WHERE
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1626,7 +1964,10 @@
 			$strToReturn .= '<element name="SignupForm" type="xsd1:SignupForm"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="SignupByPerson" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="SignupEntryStatusTypeId" type="xsd:int"/>';
+			$strToReturn .= '<element name="DateCreated" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateSubmitted" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="AmountTotal" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountPaid" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountBalance" type="xsd:float"/>';
 			$strToReturn .= '<element name="InternalNotes" type="xsd:string"/>';
@@ -1666,8 +2007,14 @@
 			if ((property_exists($objSoapObject, 'SignupByPerson')) &&
 				($objSoapObject->SignupByPerson))
 				$objToReturn->SignupByPerson = Person::GetObjectFromSoapObject($objSoapObject->SignupByPerson);
+			if (property_exists($objSoapObject, 'SignupEntryStatusTypeId'))
+				$objToReturn->intSignupEntryStatusTypeId = $objSoapObject->SignupEntryStatusTypeId;
+			if (property_exists($objSoapObject, 'DateCreated'))
+				$objToReturn->dttDateCreated = new QDateTime($objSoapObject->DateCreated);
 			if (property_exists($objSoapObject, 'DateSubmitted'))
 				$objToReturn->dttDateSubmitted = new QDateTime($objSoapObject->DateSubmitted);
+			if (property_exists($objSoapObject, 'AmountTotal'))
+				$objToReturn->fltAmountTotal = $objSoapObject->AmountTotal;
 			if (property_exists($objSoapObject, 'AmountPaid'))
 				$objToReturn->fltAmountPaid = $objSoapObject->AmountPaid;
 			if (property_exists($objSoapObject, 'AmountBalance'))
@@ -1704,6 +2051,8 @@
 				$objObject->objSignupByPerson = Person::GetSoapObjectFromObject($objObject->objSignupByPerson, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intSignupByPersonId = null;
+			if ($objObject->dttDateCreated)
+				$objObject->dttDateCreated = $objObject->dttDateCreated->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateSubmitted)
 				$objObject->dttDateSubmitted = $objObject->dttDateSubmitted->__toString(QDateTime::FormatSoap);
 			return $objObject;
@@ -1728,11 +2077,15 @@
 	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $SignupByPersonId
 	 * @property-read QQNodePerson $SignupByPerson
+	 * @property-read QQNode $SignupEntryStatusTypeId
+	 * @property-read QQNode $DateCreated
 	 * @property-read QQNode $DateSubmitted
+	 * @property-read QQNode $AmountTotal
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
 	 * @property-read QQNode $InternalNotes
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
+	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 */
 	class QQNodeSignupEntry extends QQNode {
 		protected $strTableName = 'signup_entry';
@@ -1754,8 +2107,14 @@
 					return new QQNode('signup_by_person_id', 'SignupByPersonId', 'integer', $this);
 				case 'SignupByPerson':
 					return new QQNodePerson('signup_by_person_id', 'SignupByPerson', 'integer', $this);
+				case 'SignupEntryStatusTypeId':
+					return new QQNode('signup_entry_status_type_id', 'SignupEntryStatusTypeId', 'integer', $this);
+				case 'DateCreated':
+					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
 				case 'DateSubmitted':
 					return new QQNode('date_submitted', 'DateSubmitted', 'QDateTime', $this);
+				case 'AmountTotal':
+					return new QQNode('amount_total', 'AmountTotal', 'double', $this);
 				case 'AmountPaid':
 					return new QQNode('amount_paid', 'AmountPaid', 'double', $this);
 				case 'AmountBalance':
@@ -1764,6 +2123,8 @@
 					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
 				case 'FormAnswer':
 					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'signup_entry_id');
+				case 'SignupPayment':
+					return new QQReverseReferenceNodeSignupPayment($this, 'signuppayment', 'reverse_reference', 'signup_entry_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1786,11 +2147,15 @@
 	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $SignupByPersonId
 	 * @property-read QQNodePerson $SignupByPerson
+	 * @property-read QQNode $SignupEntryStatusTypeId
+	 * @property-read QQNode $DateCreated
 	 * @property-read QQNode $DateSubmitted
+	 * @property-read QQNode $AmountTotal
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
 	 * @property-read QQNode $InternalNotes
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
+	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeSignupEntry extends QQReverseReferenceNode {
@@ -1813,8 +2178,14 @@
 					return new QQNode('signup_by_person_id', 'SignupByPersonId', 'integer', $this);
 				case 'SignupByPerson':
 					return new QQNodePerson('signup_by_person_id', 'SignupByPerson', 'integer', $this);
+				case 'SignupEntryStatusTypeId':
+					return new QQNode('signup_entry_status_type_id', 'SignupEntryStatusTypeId', 'integer', $this);
+				case 'DateCreated':
+					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
 				case 'DateSubmitted':
 					return new QQNode('date_submitted', 'DateSubmitted', 'QDateTime', $this);
+				case 'AmountTotal':
+					return new QQNode('amount_total', 'AmountTotal', 'double', $this);
 				case 'AmountPaid':
 					return new QQNode('amount_paid', 'AmountPaid', 'double', $this);
 				case 'AmountBalance':
@@ -1823,6 +2194,8 @@
 					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
 				case 'FormAnswer':
 					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'signup_entry_id');
+				case 'SignupPayment':
+					return new QQReverseReferenceNodeSignupPayment($this, 'signuppayment', 'reverse_reference', 'signup_entry_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

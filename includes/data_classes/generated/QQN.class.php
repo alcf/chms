@@ -97,6 +97,12 @@
 			return new QQNodeFormAnswer('form_answer', null, null);
 		}
 		/**
+		 * @return QQNodeFormProduct
+		 */
+		static public function FormProduct() {
+			return new QQNodeFormProduct('form_product', null, null);
+		}
+		/**
 		 * @return QQNodeFormQuestion
 		 */
 		static public function FormQuestion() {
@@ -281,6 +287,12 @@
 		 */
 		static public function SignupForm() {
 			return new QQNodeSignupForm('signup_form', null, null);
+		}
+		/**
+		 * @return QQNodeSignupPayment
+		 */
+		static public function SignupPayment() {
+			return new QQNodeSignupPayment('signup_payment', null, null);
 		}
 		/**
 		 * @return QQNodeSmartGroup

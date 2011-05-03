@@ -34,16 +34,12 @@
 	 * property-read QLabel $DescriptionLabel
 	 * property QTextBox $InformationUrlControl
 	 * property-read QLabel $InformationUrlLabel
+	 * property QTextBox $EmailNotificationControl
+	 * property-read QLabel $EmailNotificationLabel
 	 * property QCheckBox $AllowOtherFlagControl
 	 * property-read QLabel $AllowOtherFlagLabel
 	 * property QCheckBox $AllowMultipleFlagControl
 	 * property-read QLabel $AllowMultipleFlagLabel
-	 * property QListBox $FormPaymentTypeIdControl
-	 * property-read QLabel $FormPaymentTypeIdLabel
-	 * property QFloatTextBox $CostControl
-	 * property-read QLabel $CostLabel
-	 * property QFloatTextBox $DepositControl
-	 * property-read QLabel $DepositLabel
 	 * property QIntegerTextBox $SignupLimitControl
 	 * property-read QLabel $SignupLimitLabel
 	 * property QIntegerTextBox $SignupMaleLimitControl
@@ -140,6 +136,12 @@
 		protected $txtInformationUrl;
 
         /**
+         * @var QTextBox txtEmailNotification;
+         * @access protected
+         */
+		protected $txtEmailNotification;
+
+        /**
          * @var QCheckBox chkAllowOtherFlag;
          * @access protected
          */
@@ -150,24 +152,6 @@
          * @access protected
          */
 		protected $chkAllowMultipleFlag;
-
-        /**
-         * @var QListBox lstFormPaymentType;
-         * @access protected
-         */
-		protected $lstFormPaymentType;
-
-        /**
-         * @var QFloatTextBox txtCost;
-         * @access protected
-         */
-		protected $txtCost;
-
-        /**
-         * @var QFloatTextBox txtDeposit;
-         * @access protected
-         */
-		protected $txtDeposit;
 
         /**
          * @var QIntegerTextBox txtSignupLimit;
@@ -244,6 +228,12 @@
 		protected $lblInformationUrl;
 
         /**
+         * @var QLabel lblEmailNotification
+         * @access protected
+         */
+		protected $lblEmailNotification;
+
+        /**
          * @var QLabel lblAllowOtherFlag
          * @access protected
          */
@@ -254,24 +244,6 @@
          * @access protected
          */
 		protected $lblAllowMultipleFlag;
-
-        /**
-         * @var QLabel lblFormPaymentTypeId
-         * @access protected
-         */
-		protected $lblFormPaymentTypeId;
-
-        /**
-         * @var QLabel lblCost
-         * @access protected
-         */
-		protected $lblCost;
-
-        /**
-         * @var QLabel lblDeposit
-         * @access protected
-         */
-		protected $lblDeposit;
 
         /**
          * @var QLabel lblSignupLimit
@@ -641,6 +613,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtEmailNotification
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtEmailNotification_Create($strControlId = null) {
+			$this->txtEmailNotification = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtEmailNotification->Name = QApplication::Translate('Email Notification');
+			$this->txtEmailNotification->Text = $this->objSignupForm->EmailNotification;
+			$this->txtEmailNotification->TextMode = QTextMode::MultiLine;
+			return $this->txtEmailNotification;
+		}
+
+		/**
+		 * Create and setup QLabel lblEmailNotification
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblEmailNotification_Create($strControlId = null) {
+			$this->lblEmailNotification = new QLabel($this->objParentObject, $strControlId);
+			$this->lblEmailNotification->Name = QApplication::Translate('Email Notification');
+			$this->lblEmailNotification->Text = $this->objSignupForm->EmailNotification;
+			return $this->lblEmailNotification;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkAllowOtherFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -686,84 +683,6 @@
 			$this->lblAllowMultipleFlag->Name = QApplication::Translate('Allow Multiple Flag');
 			$this->lblAllowMultipleFlag->Text = ($this->objSignupForm->AllowMultipleFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 			return $this->lblAllowMultipleFlag;
-		}
-
-		/**
-		 * Create and setup QListBox lstFormPaymentType
-		 * @param string $strControlId optional ControlId to use
-		 * @return QListBox
-		 */
-		public function lstFormPaymentType_Create($strControlId = null) {
-			$this->lstFormPaymentType = new QListBox($this->objParentObject, $strControlId);
-			$this->lstFormPaymentType->Name = QApplication::Translate('Form Payment Type');
-			$this->lstFormPaymentType->AddItem(QApplication::Translate('- Select One -'), null);
-			foreach (FormPaymentType::$NameArray as $intId => $strValue)
-				$this->lstFormPaymentType->AddItem(new QListItem($strValue, $intId, $this->objSignupForm->FormPaymentTypeId == $intId));
-			return $this->lstFormPaymentType;
-		}
-
-		/**
-		 * Create and setup QLabel lblFormPaymentTypeId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblFormPaymentTypeId_Create($strControlId = null) {
-			$this->lblFormPaymentTypeId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblFormPaymentTypeId->Name = QApplication::Translate('Form Payment Type');
-			$this->lblFormPaymentTypeId->Text = ($this->objSignupForm->FormPaymentTypeId) ? FormPaymentType::$NameArray[$this->objSignupForm->FormPaymentTypeId] : null;
-			return $this->lblFormPaymentTypeId;
-		}
-
-		/**
-		 * Create and setup QFloatTextBox txtCost
-		 * @param string $strControlId optional ControlId to use
-		 * @return QFloatTextBox
-		 */
-		public function txtCost_Create($strControlId = null) {
-			$this->txtCost = new QFloatTextBox($this->objParentObject, $strControlId);
-			$this->txtCost->Name = QApplication::Translate('Cost');
-			$this->txtCost->Text = $this->objSignupForm->Cost;
-			return $this->txtCost;
-		}
-
-		/**
-		 * Create and setup QLabel lblCost
-		 * @param string $strControlId optional ControlId to use
-		 * @param string $strFormat optional sprintf format to use
-		 * @return QLabel
-		 */
-		public function lblCost_Create($strControlId = null, $strFormat = null) {
-			$this->lblCost = new QLabel($this->objParentObject, $strControlId);
-			$this->lblCost->Name = QApplication::Translate('Cost');
-			$this->lblCost->Text = $this->objSignupForm->Cost;
-			$this->lblCost->Format = $strFormat;
-			return $this->lblCost;
-		}
-
-		/**
-		 * Create and setup QFloatTextBox txtDeposit
-		 * @param string $strControlId optional ControlId to use
-		 * @return QFloatTextBox
-		 */
-		public function txtDeposit_Create($strControlId = null) {
-			$this->txtDeposit = new QFloatTextBox($this->objParentObject, $strControlId);
-			$this->txtDeposit->Name = QApplication::Translate('Deposit');
-			$this->txtDeposit->Text = $this->objSignupForm->Deposit;
-			return $this->txtDeposit;
-		}
-
-		/**
-		 * Create and setup QLabel lblDeposit
-		 * @param string $strControlId optional ControlId to use
-		 * @param string $strFormat optional sprintf format to use
-		 * @return QLabel
-		 */
-		public function lblDeposit_Create($strControlId = null, $strFormat = null) {
-			$this->lblDeposit = new QLabel($this->objParentObject, $strControlId);
-			$this->lblDeposit->Name = QApplication::Translate('Deposit');
-			$this->lblDeposit->Text = $this->objSignupForm->Deposit;
-			$this->lblDeposit->Format = $strFormat;
-			return $this->lblDeposit;
 		}
 
 		/**
@@ -967,20 +886,14 @@
 			if ($this->txtInformationUrl) $this->txtInformationUrl->Text = $this->objSignupForm->InformationUrl;
 			if ($this->lblInformationUrl) $this->lblInformationUrl->Text = $this->objSignupForm->InformationUrl;
 
+			if ($this->txtEmailNotification) $this->txtEmailNotification->Text = $this->objSignupForm->EmailNotification;
+			if ($this->lblEmailNotification) $this->lblEmailNotification->Text = $this->objSignupForm->EmailNotification;
+
 			if ($this->chkAllowOtherFlag) $this->chkAllowOtherFlag->Checked = $this->objSignupForm->AllowOtherFlag;
 			if ($this->lblAllowOtherFlag) $this->lblAllowOtherFlag->Text = ($this->objSignupForm->AllowOtherFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
 			if ($this->chkAllowMultipleFlag) $this->chkAllowMultipleFlag->Checked = $this->objSignupForm->AllowMultipleFlag;
 			if ($this->lblAllowMultipleFlag) $this->lblAllowMultipleFlag->Text = ($this->objSignupForm->AllowMultipleFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
-			if ($this->lstFormPaymentType) $this->lstFormPaymentType->SelectedValue = $this->objSignupForm->FormPaymentTypeId;
-			if ($this->lblFormPaymentTypeId) $this->lblFormPaymentTypeId->Text = ($this->objSignupForm->FormPaymentTypeId) ? FormPaymentType::$NameArray[$this->objSignupForm->FormPaymentTypeId] : null;
-
-			if ($this->txtCost) $this->txtCost->Text = $this->objSignupForm->Cost;
-			if ($this->lblCost) $this->lblCost->Text = $this->objSignupForm->Cost;
-
-			if ($this->txtDeposit) $this->txtDeposit->Text = $this->objSignupForm->Deposit;
-			if ($this->lblDeposit) $this->lblDeposit->Text = $this->objSignupForm->Deposit;
 
 			if ($this->txtSignupLimit) $this->txtSignupLimit->Text = $this->objSignupForm->SignupLimit;
 			if ($this->lblSignupLimit) $this->lblSignupLimit->Text = $this->objSignupForm->SignupLimit;
@@ -1043,11 +956,9 @@
 				if ($this->chkConfidentialFlag) $this->objSignupForm->ConfidentialFlag = $this->chkConfidentialFlag->Checked;
 				if ($this->txtDescription) $this->objSignupForm->Description = $this->txtDescription->Text;
 				if ($this->txtInformationUrl) $this->objSignupForm->InformationUrl = $this->txtInformationUrl->Text;
+				if ($this->txtEmailNotification) $this->objSignupForm->EmailNotification = $this->txtEmailNotification->Text;
 				if ($this->chkAllowOtherFlag) $this->objSignupForm->AllowOtherFlag = $this->chkAllowOtherFlag->Checked;
 				if ($this->chkAllowMultipleFlag) $this->objSignupForm->AllowMultipleFlag = $this->chkAllowMultipleFlag->Checked;
-				if ($this->lstFormPaymentType) $this->objSignupForm->FormPaymentTypeId = $this->lstFormPaymentType->SelectedValue;
-				if ($this->txtCost) $this->objSignupForm->Cost = $this->txtCost->Text;
-				if ($this->txtDeposit) $this->objSignupForm->Deposit = $this->txtDeposit->Text;
 				if ($this->txtSignupLimit) $this->objSignupForm->SignupLimit = $this->txtSignupLimit->Text;
 				if ($this->txtSignupMaleLimit) $this->objSignupForm->SignupMaleLimit = $this->txtSignupMaleLimit->Text;
 				if ($this->txtSignupFemaleLimit) $this->objSignupForm->SignupFemaleLimit = $this->txtSignupFemaleLimit->Text;
@@ -1149,6 +1060,12 @@
 				case 'InformationUrlLabel':
 					if (!$this->lblInformationUrl) return $this->lblInformationUrl_Create();
 					return $this->lblInformationUrl;
+				case 'EmailNotificationControl':
+					if (!$this->txtEmailNotification) return $this->txtEmailNotification_Create();
+					return $this->txtEmailNotification;
+				case 'EmailNotificationLabel':
+					if (!$this->lblEmailNotification) return $this->lblEmailNotification_Create();
+					return $this->lblEmailNotification;
 				case 'AllowOtherFlagControl':
 					if (!$this->chkAllowOtherFlag) return $this->chkAllowOtherFlag_Create();
 					return $this->chkAllowOtherFlag;
@@ -1161,24 +1078,6 @@
 				case 'AllowMultipleFlagLabel':
 					if (!$this->lblAllowMultipleFlag) return $this->lblAllowMultipleFlag_Create();
 					return $this->lblAllowMultipleFlag;
-				case 'FormPaymentTypeIdControl':
-					if (!$this->lstFormPaymentType) return $this->lstFormPaymentType_Create();
-					return $this->lstFormPaymentType;
-				case 'FormPaymentTypeIdLabel':
-					if (!$this->lblFormPaymentTypeId) return $this->lblFormPaymentTypeId_Create();
-					return $this->lblFormPaymentTypeId;
-				case 'CostControl':
-					if (!$this->txtCost) return $this->txtCost_Create();
-					return $this->txtCost;
-				case 'CostLabel':
-					if (!$this->lblCost) return $this->lblCost_Create();
-					return $this->lblCost;
-				case 'DepositControl':
-					if (!$this->txtDeposit) return $this->txtDeposit_Create();
-					return $this->txtDeposit;
-				case 'DepositLabel':
-					if (!$this->lblDeposit) return $this->lblDeposit_Create();
-					return $this->lblDeposit;
 				case 'SignupLimitControl':
 					if (!$this->txtSignupLimit) return $this->txtSignupLimit_Create();
 					return $this->txtSignupLimit;
@@ -1249,16 +1148,12 @@
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'InformationUrlControl':
 						return ($this->txtInformationUrl = QType::Cast($mixValue, 'QControl'));
+					case 'EmailNotificationControl':
+						return ($this->txtEmailNotification = QType::Cast($mixValue, 'QControl'));
 					case 'AllowOtherFlagControl':
 						return ($this->chkAllowOtherFlag = QType::Cast($mixValue, 'QControl'));
 					case 'AllowMultipleFlagControl':
 						return ($this->chkAllowMultipleFlag = QType::Cast($mixValue, 'QControl'));
-					case 'FormPaymentTypeIdControl':
-						return ($this->lstFormPaymentType = QType::Cast($mixValue, 'QControl'));
-					case 'CostControl':
-						return ($this->txtCost = QType::Cast($mixValue, 'QControl'));
-					case 'DepositControl':
-						return ($this->txtDeposit = QType::Cast($mixValue, 'QControl'));
 					case 'SignupLimitControl':
 						return ($this->txtSignupLimit = QType::Cast($mixValue, 'QControl'));
 					case 'SignupMaleLimitControl':

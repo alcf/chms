@@ -303,11 +303,9 @@
 				case 'ConfidentialFlag': return QQN::SignupForm()->ConfidentialFlag;
 				case 'Description': return QQN::SignupForm()->Description;
 				case 'InformationUrl': return QQN::SignupForm()->InformationUrl;
+				case 'EmailNotification': return QQN::SignupForm()->EmailNotification;
 				case 'AllowOtherFlag': return QQN::SignupForm()->AllowOtherFlag;
 				case 'AllowMultipleFlag': return QQN::SignupForm()->AllowMultipleFlag;
-				case 'FormPaymentTypeId': return QQN::SignupForm()->FormPaymentTypeId;
-				case 'Cost': return QQN::SignupForm()->Cost;
-				case 'Deposit': return QQN::SignupForm()->Deposit;
 				case 'SignupLimit': return QQN::SignupForm()->SignupLimit;
 				case 'SignupMaleLimit': return QQN::SignupForm()->SignupMaleLimit;
 				case 'SignupFemaleLimit': return QQN::SignupForm()->SignupFemaleLimit;

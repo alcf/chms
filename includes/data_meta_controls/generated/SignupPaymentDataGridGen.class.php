@@ -1,9 +1,9 @@
 <?php
 	/**
 	 * This is the "Meta" DataGrid class for the List functionality
-	 * of the SignupEntry class.  This code-generated class
+	 * of the SignupPayment class.  This code-generated class
 	 * contains a QDataGrid class which can be used by any QForm or QPanel,
-	 * listing a collection of SignupEntry objects.  It includes
+	 * listing a collection of SignupPayment objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
@@ -16,7 +16,7 @@
 	 * @subpackage MetaControls
 	 * 
 	 */
-	class SignupEntryDataGridGen extends QDataGrid {
+	class SignupPaymentDataGridGen extends QDataGrid {
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own BindAllRows method (which can obviousy be switched to something else).
@@ -35,9 +35,9 @@
 
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
-		 * way of adding a column to this SignupEntry datagrid.  The description of a column's
+		 * way of adding a column to this SignupPayment datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
-		 * in the SignupEntry object, or it can be any QQNode extending from QQN::SignupEntry().
+		 * in the SignupPayment object, or it can be any QQNode extending from QQN::SignupPayment().
 		 * 
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
@@ -45,7 +45,7 @@
 		 * Any of these things can be overridden with OverrideParameters.
 		 * 
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
-		 * sorting using two fields from the SignupEntry object.
+		 * sorting using two fields from the SignupPayment object.
 		 *
 		 * @param mixed $mixContents
 		 * @param string $objOverrideParameters[]
@@ -127,7 +127,7 @@
 		 * 
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
-		 * @param mixed $mixContent string or QQNode from SignupEntry
+		 * @param mixed $mixContent string or QQNode from SignupPayment
 		 * @param string $strTypeClassName the name of the TypeClass to use $NameArray against
 		 * @param mixed $objOverrideParameters
 		 */
@@ -251,7 +251,7 @@
 			$objClauses = ($objOptionalClauses) ? $objOptionalClauses : array();
 
 			// We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-			if ($this->Paginator) $this->TotalItemCount = SignupEntry::QueryCount($objCondition, $objClauses);
+			if ($this->Paginator) $this->TotalItemCount = SignupPayment::QueryCount($objCondition, $objClauses);
 
 			// If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
 			// the OrderByClause to the $objClauses array
@@ -260,8 +260,8 @@
 			// Add the LimitClause information, as well
 			if ($objClause = $this->LimitClause) array_push($objClauses, $objClause);
 
-			// Set the DataSource to be a Query result from SignupEntry, given the clauses above
-			$this->DataSource = SignupEntry::QueryArray($objCondition, $objClauses);
+			// Set the DataSource to be a Query result from SignupPayment, given the clauses above
+			$this->DataSource = SignupPayment::QueryArray($objCondition, $objClauses);
 		}
 
 
@@ -269,8 +269,8 @@
 		/**
 		 * Used internally by the Meta-based Add Column tools.
 		 *
-		 * Given a QQNode or a Text String, this will return a SignupEntry-based QQNode.
-		 * It will also verify that it is a proper SignupEntry-based QQNode, and will throw an exception otherwise.
+		 * Given a QQNode or a Text String, this will return a SignupPayment-based QQNode.
+		 * It will also verify that it is a proper SignupPayment-based QQNode, and will throw an exception otherwise.
 		 *
 		 * @param mixed $mixContent
 		 * @return QQNode
@@ -279,7 +279,7 @@
 			if ($mixContent instanceof QQNode) {
 				if (!$mixContent->_ParentNode)
 					throw new QCallerException('Content QQNode cannot be a Top Level Node');
-				if ($mixContent->_RootTableName == 'signup_entry') {
+				if ($mixContent->_RootTableName == 'signup_payment') {
 					if (($mixContent instanceof QQReverseReferenceNode) && !($mixContent->_PropertyName))
 						throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 					$objCurrentNode = $mixContent;
@@ -291,23 +291,16 @@
 					}
 					return $mixContent;
 				} else
-					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "signup_entry".');
+					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "signup_payment".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
-				case 'Id': return QQN::SignupEntry()->Id;
-				case 'SignupFormId': return QQN::SignupEntry()->SignupFormId;
-				case 'SignupForm': return QQN::SignupEntry()->SignupForm;
-				case 'PersonId': return QQN::SignupEntry()->PersonId;
-				case 'Person': return QQN::SignupEntry()->Person;
-				case 'SignupByPersonId': return QQN::SignupEntry()->SignupByPersonId;
-				case 'SignupByPerson': return QQN::SignupEntry()->SignupByPerson;
-				case 'SignupEntryStatusTypeId': return QQN::SignupEntry()->SignupEntryStatusTypeId;
-				case 'DateCreated': return QQN::SignupEntry()->DateCreated;
-				case 'DateSubmitted': return QQN::SignupEntry()->DateSubmitted;
-				case 'AmountTotal': return QQN::SignupEntry()->AmountTotal;
-				case 'AmountPaid': return QQN::SignupEntry()->AmountPaid;
-				case 'AmountBalance': return QQN::SignupEntry()->AmountBalance;
-				case 'InternalNotes': return QQN::SignupEntry()->InternalNotes;
-				default: throw new QCallerException('Simple Property not found in SignupEntryDataGrid content: ' . $mixContent);
+				case 'Id': return QQN::SignupPayment()->Id;
+				case 'SignupEntryId': return QQN::SignupPayment()->SignupEntryId;
+				case 'SignupEntry': return QQN::SignupPayment()->SignupEntry;
+				case 'SignupPaymentTypeId': return QQN::SignupPayment()->SignupPaymentTypeId;
+				case 'TransactionDate': return QQN::SignupPayment()->TransactionDate;
+				case 'TransactionCode': return QQN::SignupPayment()->TransactionCode;
+				case 'Amount': return QQN::SignupPayment()->Amount;
+				default: throw new QCallerException('Simple Property not found in SignupPaymentDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 			else

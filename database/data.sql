@@ -268,23 +268,39 @@ INSERT INTO form_question_type VALUES(1, 'Spouse Name');
 INSERT INTO form_question_type VALUES(2, 'Address');
 INSERT INTO form_question_type VALUES(3, 'Age');
 INSERT INTO form_question_type VALUES(4, 'Date of Birth');
-INSERT INTO form_question_type VALUES(5, 'Phone');
-INSERT INTO form_question_type VALUES(6, 'Email');
-INSERT INTO form_question_type VALUES(7, 'Short Text');
-INSERT INTO form_question_type VALUES(8, 'Long Text');
-INSERT INTO form_question_type VALUES(9, 'Number');
-INSERT INTO form_question_type VALUES(10, 'Yes No');
-INSERT INTO form_question_type VALUES(11, 'Single Select');
-INSERT INTO form_question_type VALUES(12, 'Multiple Select');
+INSERT INTO form_question_type VALUES(5, 'Gender');
+INSERT INTO form_question_type VALUES(6, 'Phone');
+INSERT INTO form_question_type VALUES(7, 'Email');
+INSERT INTO form_question_type VALUES(8, 'Short Text');
+INSERT INTO form_question_type VALUES(9, 'Long Text');
+INSERT INTO form_question_type VALUES(10, 'Number');
+INSERT INTO form_question_type VALUES(11, 'Yes No');
+INSERT INTO form_question_type VALUES(12, 'Single Select');
+INSERT INTO form_question_type VALUES(13, 'Multiple Select');
 
 INSERT INTO signup_form_type VALUES(1, 'Event');
 
-INSERT INTO form_payment_type VALUES(1, 'No Payment');
-INSERT INTO form_payment_type VALUES(2, 'Pay In Full');
-INSERT INTO form_payment_type VALUES(3, 'Deposit Required');
-INSERT INTO form_payment_type VALUES(4, 'Variable Payment');
+INSERT INTO form_payment_type VALUES(1, 'Pay In Full');
+INSERT INTO form_payment_type VALUES(2, 'Deposit Required');
+INSERT INTO form_payment_type VALUES(3, 'Variable Payment');
+INSERT INTO form_payment_type VALUES(4, 'Donation');
 
+INSERT INTO form_product_type VALUES(1, 'Required');
+INSERT INTO form_product_type VALUES(2, 'Required with Choice');
+INSERT INTO form_product_type VALUES(3, 'Optional');
 
+INSERT INTO signup_entry_status_type VALUES(1, 'Incomplete');
+INSERT INTO signup_entry_status_type VALUES(2, 'Test');
+INSERT INTO signup_entry_status_type VALUES(3, 'Complete');
+
+INSERT INTO signup_payment_type(id, name) VALUES (1, 'Cash');
+INSERT INTO signup_payment_type(id, name) VALUES (2, 'Check');
+INSERT INTO signup_payment_type(id, name) VALUES (3, 'Scholarship');
+INSERT INTO signup_payment_type(id, name) VALUES (4, 'Discount');
+INSERT INTO signup_payment_type(id, name) VALUES (5, 'Credit Card');
+INSERT INTO signup_payment_type(id, name) VALUES (6, 'Refund');
+INSERT INTO signup_payment_type(id, name) VALUES (7, 'Transfer');
+INSERT INTO signup_payment_type(id, name) VALUES (8, 'Other');
 
 ##############
 # Starter Data

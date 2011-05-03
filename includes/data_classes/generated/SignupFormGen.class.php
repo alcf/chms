@@ -24,17 +24,17 @@
 	 * @property boolean $ConfidentialFlag the value for blnConfidentialFlag 
 	 * @property string $Description the value for strDescription 
 	 * @property string $InformationUrl the value for strInformationUrl 
+	 * @property string $EmailNotification the value for strEmailNotification 
 	 * @property boolean $AllowOtherFlag the value for blnAllowOtherFlag 
 	 * @property boolean $AllowMultipleFlag the value for blnAllowMultipleFlag 
-	 * @property integer $FormPaymentTypeId the value for intFormPaymentTypeId 
-	 * @property double $Cost the value for fltCost 
-	 * @property double $Deposit the value for fltDeposit 
 	 * @property integer $SignupLimit the value for intSignupLimit 
 	 * @property integer $SignupMaleLimit the value for intSignupMaleLimit 
 	 * @property integer $SignupFemaleLimit the value for intSignupFemaleLimit 
 	 * @property QDateTime $DateCreated the value for dttDateCreated (Not Null)
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property EventSignupForm $EventSignupForm the value for the EventSignupForm object that uniquely references this SignupForm
+	 * @property FormProduct $_FormProduct the value for the private _objFormProduct (Read-Only) if set due to an expansion on the form_product.signup_form_id reverse relationship
+	 * @property FormProduct[] $_FormProductArray the value for the private _objFormProductArray (Read-Only) if set due to an ExpandAsArray on the form_product.signup_form_id reverse relationship
 	 * @property FormQuestion $_FormQuestion the value for the private _objFormQuestion (Read-Only) if set due to an expansion on the form_question.signup_form_id reverse relationship
 	 * @property FormQuestion[] $_FormQuestionArray the value for the private _objFormQuestionArray (Read-Only) if set due to an ExpandAsArray on the form_question.signup_form_id reverse relationship
 	 * @property SignupEntry $_SignupEntry the value for the private _objSignupEntry (Read-Only) if set due to an expansion on the signup_entry.signup_form_id reverse relationship
@@ -123,6 +123,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column signup_form.email_notification
+		 * @var string strEmailNotification
+		 */
+		protected $strEmailNotification;
+		const EmailNotificationDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column signup_form.allow_other_flag
 		 * @var boolean blnAllowOtherFlag
 		 */
@@ -136,30 +144,6 @@
 		 */
 		protected $blnAllowMultipleFlag;
 		const AllowMultipleFlagDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column signup_form.form_payment_type_id
-		 * @var integer intFormPaymentTypeId
-		 */
-		protected $intFormPaymentTypeId;
-		const FormPaymentTypeIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column signup_form.cost
-		 * @var double fltCost
-		 */
-		protected $fltCost;
-		const CostDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column signup_form.deposit
-		 * @var double fltDeposit
-		 */
-		protected $fltDeposit;
-		const DepositDefault = null;
 
 
 		/**
@@ -193,6 +177,22 @@
 		protected $dttDateCreated;
 		const DateCreatedDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single FormProduct object
+		 * (of type FormProduct), if this SignupForm object was restored with
+		 * an expansion on the form_product association table.
+		 * @var FormProduct _objFormProduct;
+		 */
+		private $_objFormProduct;
+
+		/**
+		 * Private member variable that stores a reference to an array of FormProduct objects
+		 * (of type FormProduct[]), if this SignupForm object was restored with
+		 * an ExpandAsArray on the form_product association table.
+		 * @var FormProduct[] _objFormProductArray;
+		 */
+		private $_objFormProductArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single FormQuestion object
@@ -595,11 +595,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'confidential_flag', $strAliasPrefix . 'confidential_flag');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'information_url', $strAliasPrefix . 'information_url');
+			$objBuilder->AddSelectItem($strTableName, 'email_notification', $strAliasPrefix . 'email_notification');
 			$objBuilder->AddSelectItem($strTableName, 'allow_other_flag', $strAliasPrefix . 'allow_other_flag');
 			$objBuilder->AddSelectItem($strTableName, 'allow_multiple_flag', $strAliasPrefix . 'allow_multiple_flag');
-			$objBuilder->AddSelectItem($strTableName, 'form_payment_type_id', $strAliasPrefix . 'form_payment_type_id');
-			$objBuilder->AddSelectItem($strTableName, 'cost', $strAliasPrefix . 'cost');
-			$objBuilder->AddSelectItem($strTableName, 'deposit', $strAliasPrefix . 'deposit');
 			$objBuilder->AddSelectItem($strTableName, 'signup_limit', $strAliasPrefix . 'signup_limit');
 			$objBuilder->AddSelectItem($strTableName, 'signup_male_limit', $strAliasPrefix . 'signup_male_limit');
 			$objBuilder->AddSelectItem($strTableName, 'signup_female_limit', $strAliasPrefix . 'signup_female_limit');
@@ -641,6 +639,20 @@
 				if (!$strAliasPrefix)
 					$strAliasPrefix = 'signup_form__';
 
+
+				$strAlias = $strAliasPrefix . 'formproduct__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objFormProductArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objFormProductArray[$intPreviousChildItemCount - 1];
+						$objChildItem = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objFormProductArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objFormProductArray[] = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
 
 				$strAlias = $strAliasPrefix . 'formquestion__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -699,16 +711,12 @@
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'information_url', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'information_url'] : $strAliasPrefix . 'information_url';
 			$objToReturn->strInformationUrl = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'email_notification', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email_notification'] : $strAliasPrefix . 'email_notification';
+			$objToReturn->strEmailNotification = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'allow_other_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'allow_other_flag'] : $strAliasPrefix . 'allow_other_flag';
 			$objToReturn->blnAllowOtherFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'allow_multiple_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'allow_multiple_flag'] : $strAliasPrefix . 'allow_multiple_flag';
 			$objToReturn->blnAllowMultipleFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'form_payment_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'form_payment_type_id'] : $strAliasPrefix . 'form_payment_type_id';
-			$objToReturn->intFormPaymentTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'cost', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'cost'] : $strAliasPrefix . 'cost';
-			$objToReturn->fltCost = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAliasName = array_key_exists($strAliasPrefix . 'deposit', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'deposit'] : $strAliasPrefix . 'deposit';
-			$objToReturn->fltDeposit = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'signup_limit', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_limit'] : $strAliasPrefix . 'signup_limit';
 			$objToReturn->intSignupLimit = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'signup_male_limit', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_male_limit'] : $strAliasPrefix . 'signup_male_limit';
@@ -750,6 +758,16 @@
 			}
 
 
+
+			// Check for FormProduct Virtual Binding
+			$strAlias = $strAliasPrefix . 'formproduct__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objFormProductArray[] = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objFormProduct = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			// Check for FormQuestion Virtual Binding
 			$strAlias = $strAliasPrefix . 'formquestion__id';
@@ -929,38 +947,6 @@
 				QQ::Equal(QQN::SignupForm()->MinistryId, $intMinistryId)
 			);
 		}
-			
-		/**
-		 * Load an array of SignupForm objects,
-		 * by FormPaymentTypeId Index(es)
-		 * @param integer $intFormPaymentTypeId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return SignupForm[]
-		*/
-		public static function LoadArrayByFormPaymentTypeId($intFormPaymentTypeId, $objOptionalClauses = null) {
-			// Call SignupForm::QueryArray to perform the LoadArrayByFormPaymentTypeId query
-			try {
-				return SignupForm::QueryArray(
-					QQ::Equal(QQN::SignupForm()->FormPaymentTypeId, $intFormPaymentTypeId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count SignupForms
-		 * by FormPaymentTypeId Index(es)
-		 * @param integer $intFormPaymentTypeId
-		 * @return int
-		*/
-		public static function CountByFormPaymentTypeId($intFormPaymentTypeId) {
-			// Call SignupForm::QueryCount to perform the CountByFormPaymentTypeId query
-			return SignupForm::QueryCount(
-				QQ::Equal(QQN::SignupForm()->FormPaymentTypeId, $intFormPaymentTypeId)
-			);
-		}
 
 
 
@@ -1000,11 +986,9 @@
 							`confidential_flag`,
 							`description`,
 							`information_url`,
+							`email_notification`,
 							`allow_other_flag`,
 							`allow_multiple_flag`,
-							`form_payment_type_id`,
-							`cost`,
-							`deposit`,
 							`signup_limit`,
 							`signup_male_limit`,
 							`signup_female_limit`,
@@ -1018,11 +1002,9 @@
 							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
+							' . $objDatabase->SqlVariable($this->strEmailNotification) . ',
 							' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnAllowMultipleFlag) . ',
-							' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
-							' . $objDatabase->SqlVariable($this->fltCost) . ',
-							' . $objDatabase->SqlVariable($this->fltDeposit) . ',
 							' . $objDatabase->SqlVariable($this->intSignupLimit) . ',
 							' . $objDatabase->SqlVariable($this->intSignupMaleLimit) . ',
 							' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
@@ -1054,11 +1036,9 @@
 							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`information_url` = ' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
+							`email_notification` = ' . $objDatabase->SqlVariable($this->strEmailNotification) . ',
 							`allow_other_flag` = ' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							`allow_multiple_flag` = ' . $objDatabase->SqlVariable($this->blnAllowMultipleFlag) . ',
-							`form_payment_type_id` = ' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
-							`cost` = ' . $objDatabase->SqlVariable($this->fltCost) . ',
-							`deposit` = ' . $objDatabase->SqlVariable($this->fltDeposit) . ',
 							`signup_limit` = ' . $objDatabase->SqlVariable($this->intSignupLimit) . ',
 							`signup_male_limit` = ' . $objDatabase->SqlVariable($this->intSignupMaleLimit) . ',
 							`signup_female_limit` = ' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
@@ -1184,11 +1164,9 @@
 			$this->blnConfidentialFlag = $objReloaded->blnConfidentialFlag;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->strInformationUrl = $objReloaded->strInformationUrl;
+			$this->strEmailNotification = $objReloaded->strEmailNotification;
 			$this->blnAllowOtherFlag = $objReloaded->blnAllowOtherFlag;
 			$this->blnAllowMultipleFlag = $objReloaded->blnAllowMultipleFlag;
-			$this->FormPaymentTypeId = $objReloaded->FormPaymentTypeId;
-			$this->fltCost = $objReloaded->fltCost;
-			$this->fltDeposit = $objReloaded->fltDeposit;
 			$this->intSignupLimit = $objReloaded->intSignupLimit;
 			$this->intSignupMaleLimit = $objReloaded->intSignupMaleLimit;
 			$this->intSignupFemaleLimit = $objReloaded->intSignupFemaleLimit;
@@ -1214,11 +1192,9 @@
 					`confidential_flag`,
 					`description`,
 					`information_url`,
+					`email_notification`,
 					`allow_other_flag`,
 					`allow_multiple_flag`,
-					`form_payment_type_id`,
-					`cost`,
-					`deposit`,
 					`signup_limit`,
 					`signup_male_limit`,
 					`signup_female_limit`,
@@ -1236,11 +1212,9 @@
 					' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
+					' . $objDatabase->SqlVariable($this->strEmailNotification) . ',
 					' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 					' . $objDatabase->SqlVariable($this->blnAllowMultipleFlag) . ',
-					' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
-					' . $objDatabase->SqlVariable($this->fltCost) . ',
-					' . $objDatabase->SqlVariable($this->fltDeposit) . ',
 					' . $objDatabase->SqlVariable($this->intSignupLimit) . ',
 					' . $objDatabase->SqlVariable($this->intSignupMaleLimit) . ',
 					' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
@@ -1340,6 +1314,11 @@
 					// @return string
 					return $this->strInformationUrl;
 
+				case 'EmailNotification':
+					// Gets the value for strEmailNotification 
+					// @return string
+					return $this->strEmailNotification;
+
 				case 'AllowOtherFlag':
 					// Gets the value for blnAllowOtherFlag 
 					// @return boolean
@@ -1349,21 +1328,6 @@
 					// Gets the value for blnAllowMultipleFlag 
 					// @return boolean
 					return $this->blnAllowMultipleFlag;
-
-				case 'FormPaymentTypeId':
-					// Gets the value for intFormPaymentTypeId 
-					// @return integer
-					return $this->intFormPaymentTypeId;
-
-				case 'Cost':
-					// Gets the value for fltCost 
-					// @return double
-					return $this->fltCost;
-
-				case 'Deposit':
-					// Gets the value for fltDeposit 
-					// @return double
-					return $this->fltDeposit;
 
 				case 'SignupLimit':
 					// Gets the value for intSignupLimit 
@@ -1424,6 +1388,18 @@
 				// Virtual Object References (Many to Many and Reverse References)
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
+
+				case '_FormProduct':
+					// Gets the value for the private _objFormProduct (Read-Only)
+					// if set due to an expansion on the form_product.signup_form_id reverse relationship
+					// @return FormProduct
+					return $this->_objFormProduct;
+
+				case '_FormProductArray':
+					// Gets the value for the private _objFormProductArray (Read-Only)
+					// if set due to an ExpandAsArray on the form_product.signup_form_id reverse relationship
+					// @return FormProduct[]
+					return (array) $this->_objFormProductArray;
 
 				case '_FormQuestion':
 					// Gets the value for the private _objFormQuestion (Read-Only)
@@ -1565,6 +1541,17 @@
 						throw $objExc;
 					}
 
+				case 'EmailNotification':
+					// Sets the value for strEmailNotification 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strEmailNotification = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'AllowOtherFlag':
 					// Sets the value for blnAllowOtherFlag 
 					// @param boolean $mixValue
@@ -1582,39 +1569,6 @@
 					// @return boolean
 					try {
 						return ($this->blnAllowMultipleFlag = QType::Cast($mixValue, QType::Boolean));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'FormPaymentTypeId':
-					// Sets the value for intFormPaymentTypeId 
-					// @param integer $mixValue
-					// @return integer
-					try {
-						return ($this->intFormPaymentTypeId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Cost':
-					// Sets the value for fltCost 
-					// @param double $mixValue
-					// @return double
-					try {
-						return ($this->fltCost = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Deposit':
-					// Sets the value for fltDeposit 
-					// @param double $mixValue
-					// @return double
-					try {
-						return ($this->fltDeposit = QType::Cast($mixValue, QType::Float));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1761,6 +1715,188 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
+
+			
+		
+		// Related Objects' Methods for FormProduct
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated FormProducts as an array of FormProduct objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return FormProduct[]
+		*/ 
+		public function GetFormProductArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return FormProduct::LoadArrayBySignupFormId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated FormProducts
+		 * @return int
+		*/ 
+		public function CountFormProducts() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return FormProduct::CountBySignupFormId($this->intId);
+		}
+
+		/**
+		 * Associates a FormProduct
+		 * @param FormProduct $objFormProduct
+		 * @return void
+		*/ 
+		public function AssociateFormProduct(FormProduct $objFormProduct) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormProduct on this unsaved SignupForm.');
+			if ((is_null($objFormProduct->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormProduct on this SignupForm with an unsaved FormProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupForm::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_product`
+				SET
+					`signup_form_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormProduct->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objFormProduct->SignupFormId = $this->intId;
+				$objFormProduct->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a FormProduct
+		 * @param FormProduct $objFormProduct
+		 * @return void
+		*/ 
+		public function UnassociateFormProduct(FormProduct $objFormProduct) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved SignupForm.');
+			if ((is_null($objFormProduct->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this SignupForm with an unsaved FormProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupForm::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_product`
+				SET
+					`signup_form_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormProduct->Id) . ' AND
+					`signup_form_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objFormProduct->SignupFormId = null;
+				$objFormProduct->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all FormProducts
+		 * @return void
+		*/ 
+		public function UnassociateAllFormProducts() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupForm::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (FormProduct::LoadArrayBySignupFormId($this->intId) as $objFormProduct) {
+					$objFormProduct->SignupFormId = null;
+					$objFormProduct->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_product`
+				SET
+					`signup_form_id` = null
+				WHERE
+					`signup_form_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated FormProduct
+		 * @param FormProduct $objFormProduct
+		 * @return void
+		*/ 
+		public function DeleteAssociatedFormProduct(FormProduct $objFormProduct) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved SignupForm.');
+			if ((is_null($objFormProduct->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this SignupForm with an unsaved FormProduct.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupForm::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`form_product`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormProduct->Id) . ' AND
+					`signup_form_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objFormProduct->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated FormProducts
+		 * @return void
+		*/ 
+		public function DeleteAllFormProducts() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = SignupForm::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (FormProduct::LoadArrayBySignupFormId($this->intId) as $objFormProduct) {
+					$objFormProduct->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`form_product`
+				WHERE
+					`signup_form_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
 
 			
 		
@@ -2145,11 +2281,9 @@
 			$strToReturn .= '<element name="ConfidentialFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="InformationUrl" type="xsd:string"/>';
+			$strToReturn .= '<element name="EmailNotification" type="xsd:string"/>';
 			$strToReturn .= '<element name="AllowOtherFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="AllowMultipleFlag" type="xsd:boolean"/>';
-			$strToReturn .= '<element name="FormPaymentTypeId" type="xsd:int"/>';
-			$strToReturn .= '<element name="Cost" type="xsd:float"/>';
-			$strToReturn .= '<element name="Deposit" type="xsd:float"/>';
 			$strToReturn .= '<element name="SignupLimit" type="xsd:int"/>';
 			$strToReturn .= '<element name="SignupMaleLimit" type="xsd:int"/>';
 			$strToReturn .= '<element name="SignupFemaleLimit" type="xsd:int"/>';
@@ -2196,16 +2330,12 @@
 				$objToReturn->strDescription = $objSoapObject->Description;
 			if (property_exists($objSoapObject, 'InformationUrl'))
 				$objToReturn->strInformationUrl = $objSoapObject->InformationUrl;
+			if (property_exists($objSoapObject, 'EmailNotification'))
+				$objToReturn->strEmailNotification = $objSoapObject->EmailNotification;
 			if (property_exists($objSoapObject, 'AllowOtherFlag'))
 				$objToReturn->blnAllowOtherFlag = $objSoapObject->AllowOtherFlag;
 			if (property_exists($objSoapObject, 'AllowMultipleFlag'))
 				$objToReturn->blnAllowMultipleFlag = $objSoapObject->AllowMultipleFlag;
-			if (property_exists($objSoapObject, 'FormPaymentTypeId'))
-				$objToReturn->intFormPaymentTypeId = $objSoapObject->FormPaymentTypeId;
-			if (property_exists($objSoapObject, 'Cost'))
-				$objToReturn->fltCost = $objSoapObject->Cost;
-			if (property_exists($objSoapObject, 'Deposit'))
-				$objToReturn->fltDeposit = $objSoapObject->Deposit;
 			if (property_exists($objSoapObject, 'SignupLimit'))
 				$objToReturn->intSignupLimit = $objSoapObject->SignupLimit;
 			if (property_exists($objSoapObject, 'SignupMaleLimit'))
@@ -2263,16 +2393,15 @@
 	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $InformationUrl
+	 * @property-read QQNode $EmailNotification
 	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $AllowMultipleFlag
-	 * @property-read QQNode $FormPaymentTypeId
-	 * @property-read QQNode $Cost
-	 * @property-read QQNode $Deposit
 	 * @property-read QQNode $SignupLimit
 	 * @property-read QQNode $SignupMaleLimit
 	 * @property-read QQNode $SignupFemaleLimit
 	 * @property-read QQNode $DateCreated
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
+	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
 	 * @property-read QQReverseReferenceNodeFormQuestion $FormQuestion
 	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntry
 	 */
@@ -2302,16 +2431,12 @@
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'InformationUrl':
 					return new QQNode('information_url', 'InformationUrl', 'string', $this);
+				case 'EmailNotification':
+					return new QQNode('email_notification', 'EmailNotification', 'string', $this);
 				case 'AllowOtherFlag':
 					return new QQNode('allow_other_flag', 'AllowOtherFlag', 'boolean', $this);
 				case 'AllowMultipleFlag':
 					return new QQNode('allow_multiple_flag', 'AllowMultipleFlag', 'boolean', $this);
-				case 'FormPaymentTypeId':
-					return new QQNode('form_payment_type_id', 'FormPaymentTypeId', 'integer', $this);
-				case 'Cost':
-					return new QQNode('cost', 'Cost', 'double', $this);
-				case 'Deposit':
-					return new QQNode('deposit', 'Deposit', 'double', $this);
 				case 'SignupLimit':
 					return new QQNode('signup_limit', 'SignupLimit', 'integer', $this);
 				case 'SignupMaleLimit':
@@ -2322,6 +2447,8 @@
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
 				case 'EventSignupForm':
 					return new QQReverseReferenceNodeEventSignupForm($this, 'eventsignupform', 'reverse_reference', 'signup_form_id', 'EventSignupForm');
+				case 'FormProduct':
+					return new QQReverseReferenceNodeFormProduct($this, 'formproduct', 'reverse_reference', 'signup_form_id');
 				case 'FormQuestion':
 					return new QQReverseReferenceNodeFormQuestion($this, 'formquestion', 'reverse_reference', 'signup_form_id');
 				case 'SignupEntry':
@@ -2351,16 +2478,15 @@
 	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $InformationUrl
+	 * @property-read QQNode $EmailNotification
 	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $AllowMultipleFlag
-	 * @property-read QQNode $FormPaymentTypeId
-	 * @property-read QQNode $Cost
-	 * @property-read QQNode $Deposit
 	 * @property-read QQNode $SignupLimit
 	 * @property-read QQNode $SignupMaleLimit
 	 * @property-read QQNode $SignupFemaleLimit
 	 * @property-read QQNode $DateCreated
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
+	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
 	 * @property-read QQReverseReferenceNodeFormQuestion $FormQuestion
 	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntry
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -2391,16 +2517,12 @@
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'InformationUrl':
 					return new QQNode('information_url', 'InformationUrl', 'string', $this);
+				case 'EmailNotification':
+					return new QQNode('email_notification', 'EmailNotification', 'string', $this);
 				case 'AllowOtherFlag':
 					return new QQNode('allow_other_flag', 'AllowOtherFlag', 'boolean', $this);
 				case 'AllowMultipleFlag':
 					return new QQNode('allow_multiple_flag', 'AllowMultipleFlag', 'boolean', $this);
-				case 'FormPaymentTypeId':
-					return new QQNode('form_payment_type_id', 'FormPaymentTypeId', 'integer', $this);
-				case 'Cost':
-					return new QQNode('cost', 'Cost', 'double', $this);
-				case 'Deposit':
-					return new QQNode('deposit', 'Deposit', 'double', $this);
 				case 'SignupLimit':
 					return new QQNode('signup_limit', 'SignupLimit', 'integer', $this);
 				case 'SignupMaleLimit':
@@ -2411,6 +2533,8 @@
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
 				case 'EventSignupForm':
 					return new QQReverseReferenceNodeEventSignupForm($this, 'eventsignupform', 'reverse_reference', 'signup_form_id', 'EventSignupForm');
+				case 'FormProduct':
+					return new QQReverseReferenceNodeFormProduct($this, 'formproduct', 'reverse_reference', 'signup_form_id');
 				case 'FormQuestion':
 					return new QQReverseReferenceNodeFormQuestion($this, 'formquestion', 'reverse_reference', 'signup_form_id');
 				case 'SignupEntry':

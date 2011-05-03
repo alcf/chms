@@ -252,7 +252,8 @@
 					return $objAnswer->IntegerValue;
 
 				case FormQuestionType::DateofBirth:
-					return $objAnswer->DateValue->ToString('MMM D YYYY');
+					if ($objAnswer->DateValue) return $objAnswer->DateValue->ToString('MMM D YYYY');
+					break;
 			}
 		}
 		

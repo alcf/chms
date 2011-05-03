@@ -111,6 +111,13 @@
 		QApplicationBase::$ClassFile['formanswermetacontrol'] = __DATA_META_CONTROLS__ . '/FormAnswerMetaControl.class.php';
 		QApplicationBase::$ClassFile['formanswerdatagrid'] = __DATA_META_CONTROLS__ . '/FormAnswerDataGrid.class.php';
 
+	// ClassPaths for the FormProduct class
+		QApplicationBase::$ClassFile['formproduct'] = __DATA_CLASSES__ . '/FormProduct.class.php';
+		QApplicationBase::$ClassFile['qqnodeformproduct'] = __DATA_CLASSES__ . '/FormProduct.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeformproduct'] = __DATA_CLASSES__ . '/FormProduct.class.php';
+		QApplicationBase::$ClassFile['formproductmetacontrol'] = __DATA_META_CONTROLS__ . '/FormProductMetaControl.class.php';
+		QApplicationBase::$ClassFile['formproductdatagrid'] = __DATA_META_CONTROLS__ . '/FormProductDataGrid.class.php';
+
 	// ClassPaths for the FormQuestion class
 		QApplicationBase::$ClassFile['formquestion'] = __DATA_CLASSES__ . '/FormQuestion.class.php';
 		QApplicationBase::$ClassFile['qqnodeformquestion'] = __DATA_CLASSES__ . '/FormQuestion.class.php';
@@ -327,6 +334,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodesignupform'] = __DATA_CLASSES__ . '/SignupForm.class.php';
 		QApplicationBase::$ClassFile['signupformmetacontrol'] = __DATA_META_CONTROLS__ . '/SignupFormMetaControl.class.php';
 		QApplicationBase::$ClassFile['signupformdatagrid'] = __DATA_META_CONTROLS__ . '/SignupFormDataGrid.class.php';
+
+	// ClassPaths for the SignupPayment class
+		QApplicationBase::$ClassFile['signuppayment'] = __DATA_CLASSES__ . '/SignupPayment.class.php';
+		QApplicationBase::$ClassFile['qqnodesignuppayment'] = __DATA_CLASSES__ . '/SignupPayment.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesignuppayment'] = __DATA_CLASSES__ . '/SignupPayment.class.php';
+		QApplicationBase::$ClassFile['signuppaymentmetacontrol'] = __DATA_META_CONTROLS__ . '/SignupPaymentMetaControl.class.php';
+		QApplicationBase::$ClassFile['signuppaymentdatagrid'] = __DATA_META_CONTROLS__ . '/SignupPaymentDataGrid.class.php';
 
 	// ClassPaths for the SmartGroup class
 		QApplicationBase::$ClassFile['smartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';

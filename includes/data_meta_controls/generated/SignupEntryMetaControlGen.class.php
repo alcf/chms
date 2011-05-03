@@ -24,8 +24,14 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QListBox $SignupByPersonIdControl
 	 * property-read QLabel $SignupByPersonIdLabel
+	 * property QListBox $SignupEntryStatusTypeIdControl
+	 * property-read QLabel $SignupEntryStatusTypeIdLabel
+	 * property QDateTimePicker $DateCreatedControl
+	 * property-read QLabel $DateCreatedLabel
 	 * property QDateTimePicker $DateSubmittedControl
 	 * property-read QLabel $DateSubmittedLabel
+	 * property QFloatTextBox $AmountTotalControl
+	 * property-read QLabel $AmountTotalLabel
 	 * property QFloatTextBox $AmountPaidControl
 	 * property-read QLabel $AmountPaidLabel
 	 * property QFloatTextBox $AmountBalanceControl
@@ -88,10 +94,28 @@
 		protected $lstSignupByPerson;
 
         /**
+         * @var QListBox lstSignupEntryStatusType;
+         * @access protected
+         */
+		protected $lstSignupEntryStatusType;
+
+        /**
+         * @var QDateTimePicker calDateCreated;
+         * @access protected
+         */
+		protected $calDateCreated;
+
+        /**
          * @var QDateTimePicker calDateSubmitted;
          * @access protected
          */
 		protected $calDateSubmitted;
+
+        /**
+         * @var QFloatTextBox txtAmountTotal;
+         * @access protected
+         */
+		protected $txtAmountTotal;
 
         /**
          * @var QFloatTextBox txtAmountPaid;
@@ -132,10 +156,28 @@
 		protected $lblSignupByPersonId;
 
         /**
+         * @var QLabel lblSignupEntryStatusTypeId
+         * @access protected
+         */
+		protected $lblSignupEntryStatusTypeId;
+
+        /**
+         * @var QLabel lblDateCreated
+         * @access protected
+         */
+		protected $lblDateCreated;
+
+        /**
          * @var QLabel lblDateSubmitted
          * @access protected
          */
 		protected $lblDateSubmitted;
+
+        /**
+         * @var QLabel lblAmountTotal
+         * @access protected
+         */
+		protected $lblAmountTotal;
 
         /**
          * @var QLabel lblAmountPaid
@@ -395,6 +437,64 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstSignupEntryStatusType
+		 * @param string $strControlId optional ControlId to use
+		 * @return QListBox
+		 */
+		public function lstSignupEntryStatusType_Create($strControlId = null) {
+			$this->lstSignupEntryStatusType = new QListBox($this->objParentObject, $strControlId);
+			$this->lstSignupEntryStatusType->Name = QApplication::Translate('Signup Entry Status Type');
+			$this->lstSignupEntryStatusType->Required = true;
+			foreach (SignupEntryStatusType::$NameArray as $intId => $strValue)
+				$this->lstSignupEntryStatusType->AddItem(new QListItem($strValue, $intId, $this->objSignupEntry->SignupEntryStatusTypeId == $intId));
+			return $this->lstSignupEntryStatusType;
+		}
+
+		/**
+		 * Create and setup QLabel lblSignupEntryStatusTypeId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblSignupEntryStatusTypeId_Create($strControlId = null) {
+			$this->lblSignupEntryStatusTypeId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSignupEntryStatusTypeId->Name = QApplication::Translate('Signup Entry Status Type');
+			$this->lblSignupEntryStatusTypeId->Text = ($this->objSignupEntry->SignupEntryStatusTypeId) ? SignupEntryStatusType::$NameArray[$this->objSignupEntry->SignupEntryStatusTypeId] : null;
+			$this->lblSignupEntryStatusTypeId->Required = true;
+			return $this->lblSignupEntryStatusTypeId;
+		}
+
+		/**
+		 * Create and setup QDateTimePicker calDateCreated
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateCreated_Create($strControlId = null) {
+			$this->calDateCreated = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateCreated->Name = QApplication::Translate('Date Created');
+			$this->calDateCreated->DateTime = $this->objSignupEntry->DateCreated;
+			$this->calDateCreated->DateTimePickerType = QDateTimePickerType::DateTime;
+			$this->calDateCreated->Required = true;
+			return $this->calDateCreated;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateCreated
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateCreated_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateCreated = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateCreated->Name = QApplication::Translate('Date Created');
+			$this->strDateCreatedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateCreated->Text = sprintf($this->objSignupEntry->DateCreated) ? $this->objSignupEntry->DateCreated->__toString($this->strDateCreatedDateTimeFormat) : null;
+			$this->lblDateCreated->Required = true;
+			return $this->lblDateCreated;
+		}
+
+		protected $strDateCreatedDateTimeFormat;
+
+		/**
 		 * Create and setup QDateTimePicker calDateSubmitted
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -404,7 +504,6 @@
 			$this->calDateSubmitted->Name = QApplication::Translate('Date Submitted');
 			$this->calDateSubmitted->DateTime = $this->objSignupEntry->DateSubmitted;
 			$this->calDateSubmitted->DateTimePickerType = QDateTimePickerType::DateTime;
-			$this->calDateSubmitted->Required = true;
 			return $this->calDateSubmitted;
 		}
 
@@ -419,11 +518,36 @@
 			$this->lblDateSubmitted->Name = QApplication::Translate('Date Submitted');
 			$this->strDateSubmittedDateTimeFormat = $strDateTimeFormat;
 			$this->lblDateSubmitted->Text = sprintf($this->objSignupEntry->DateSubmitted) ? $this->objSignupEntry->DateSubmitted->__toString($this->strDateSubmittedDateTimeFormat) : null;
-			$this->lblDateSubmitted->Required = true;
 			return $this->lblDateSubmitted;
 		}
 
 		protected $strDateSubmittedDateTimeFormat;
+
+		/**
+		 * Create and setup QFloatTextBox txtAmountTotal
+		 * @param string $strControlId optional ControlId to use
+		 * @return QFloatTextBox
+		 */
+		public function txtAmountTotal_Create($strControlId = null) {
+			$this->txtAmountTotal = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtAmountTotal->Name = QApplication::Translate('Amount Total');
+			$this->txtAmountTotal->Text = $this->objSignupEntry->AmountTotal;
+			return $this->txtAmountTotal;
+		}
+
+		/**
+		 * Create and setup QLabel lblAmountTotal
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblAmountTotal_Create($strControlId = null, $strFormat = null) {
+			$this->lblAmountTotal = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAmountTotal->Name = QApplication::Translate('Amount Total');
+			$this->lblAmountTotal->Text = $this->objSignupEntry->AmountTotal;
+			$this->lblAmountTotal->Format = $strFormat;
+			return $this->lblAmountTotal;
+		}
 
 		/**
 		 * Create and setup QFloatTextBox txtAmountPaid
@@ -556,8 +680,17 @@
 			}
 			if ($this->lblSignupByPersonId) $this->lblSignupByPersonId->Text = ($this->objSignupEntry->SignupByPerson) ? $this->objSignupEntry->SignupByPerson->__toString() : null;
 
+			if ($this->lstSignupEntryStatusType) $this->lstSignupEntryStatusType->SelectedValue = $this->objSignupEntry->SignupEntryStatusTypeId;
+			if ($this->lblSignupEntryStatusTypeId) $this->lblSignupEntryStatusTypeId->Text = ($this->objSignupEntry->SignupEntryStatusTypeId) ? SignupEntryStatusType::$NameArray[$this->objSignupEntry->SignupEntryStatusTypeId] : null;
+
+			if ($this->calDateCreated) $this->calDateCreated->DateTime = $this->objSignupEntry->DateCreated;
+			if ($this->lblDateCreated) $this->lblDateCreated->Text = sprintf($this->objSignupEntry->DateCreated) ? $this->objSignupEntry->__toString($this->strDateCreatedDateTimeFormat) : null;
+
 			if ($this->calDateSubmitted) $this->calDateSubmitted->DateTime = $this->objSignupEntry->DateSubmitted;
 			if ($this->lblDateSubmitted) $this->lblDateSubmitted->Text = sprintf($this->objSignupEntry->DateSubmitted) ? $this->objSignupEntry->__toString($this->strDateSubmittedDateTimeFormat) : null;
+
+			if ($this->txtAmountTotal) $this->txtAmountTotal->Text = $this->objSignupEntry->AmountTotal;
+			if ($this->lblAmountTotal) $this->lblAmountTotal->Text = $this->objSignupEntry->AmountTotal;
 
 			if ($this->txtAmountPaid) $this->txtAmountPaid->Text = $this->objSignupEntry->AmountPaid;
 			if ($this->lblAmountPaid) $this->lblAmountPaid->Text = $this->objSignupEntry->AmountPaid;
@@ -594,7 +727,10 @@
 				if ($this->lstSignupForm) $this->objSignupEntry->SignupFormId = $this->lstSignupForm->SelectedValue;
 				if ($this->lstPerson) $this->objSignupEntry->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->lstSignupByPerson) $this->objSignupEntry->SignupByPersonId = $this->lstSignupByPerson->SelectedValue;
+				if ($this->lstSignupEntryStatusType) $this->objSignupEntry->SignupEntryStatusTypeId = $this->lstSignupEntryStatusType->SelectedValue;
+				if ($this->calDateCreated) $this->objSignupEntry->DateCreated = $this->calDateCreated->DateTime;
 				if ($this->calDateSubmitted) $this->objSignupEntry->DateSubmitted = $this->calDateSubmitted->DateTime;
+				if ($this->txtAmountTotal) $this->objSignupEntry->AmountTotal = $this->txtAmountTotal->Text;
 				if ($this->txtAmountPaid) $this->objSignupEntry->AmountPaid = $this->txtAmountPaid->Text;
 				if ($this->txtAmountBalance) $this->objSignupEntry->AmountBalance = $this->txtAmountBalance->Text;
 				if ($this->txtInternalNotes) $this->objSignupEntry->InternalNotes = $this->txtInternalNotes->Text;
@@ -664,12 +800,30 @@
 				case 'SignupByPersonIdLabel':
 					if (!$this->lblSignupByPersonId) return $this->lblSignupByPersonId_Create();
 					return $this->lblSignupByPersonId;
+				case 'SignupEntryStatusTypeIdControl':
+					if (!$this->lstSignupEntryStatusType) return $this->lstSignupEntryStatusType_Create();
+					return $this->lstSignupEntryStatusType;
+				case 'SignupEntryStatusTypeIdLabel':
+					if (!$this->lblSignupEntryStatusTypeId) return $this->lblSignupEntryStatusTypeId_Create();
+					return $this->lblSignupEntryStatusTypeId;
+				case 'DateCreatedControl':
+					if (!$this->calDateCreated) return $this->calDateCreated_Create();
+					return $this->calDateCreated;
+				case 'DateCreatedLabel':
+					if (!$this->lblDateCreated) return $this->lblDateCreated_Create();
+					return $this->lblDateCreated;
 				case 'DateSubmittedControl':
 					if (!$this->calDateSubmitted) return $this->calDateSubmitted_Create();
 					return $this->calDateSubmitted;
 				case 'DateSubmittedLabel':
 					if (!$this->lblDateSubmitted) return $this->lblDateSubmitted_Create();
 					return $this->lblDateSubmitted;
+				case 'AmountTotalControl':
+					if (!$this->txtAmountTotal) return $this->txtAmountTotal_Create();
+					return $this->txtAmountTotal;
+				case 'AmountTotalLabel':
+					if (!$this->lblAmountTotal) return $this->lblAmountTotal_Create();
+					return $this->lblAmountTotal;
 				case 'AmountPaidControl':
 					if (!$this->txtAmountPaid) return $this->txtAmountPaid_Create();
 					return $this->txtAmountPaid;
@@ -718,8 +872,14 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'SignupByPersonIdControl':
 						return ($this->lstSignupByPerson = QType::Cast($mixValue, 'QControl'));
+					case 'SignupEntryStatusTypeIdControl':
+						return ($this->lstSignupEntryStatusType = QType::Cast($mixValue, 'QControl'));
+					case 'DateCreatedControl':
+						return ($this->calDateCreated = QType::Cast($mixValue, 'QControl'));
 					case 'DateSubmittedControl':
 						return ($this->calDateSubmitted = QType::Cast($mixValue, 'QControl'));
+					case 'AmountTotalControl':
+						return ($this->txtAmountTotal = QType::Cast($mixValue, 'QControl'));
 					case 'AmountPaidControl':
 						return ($this->txtAmountPaid = QType::Cast($mixValue, 'QControl'));
 					case 'AmountBalanceControl':

@@ -22,44 +22,47 @@
 		const Address = 2;
 		const Age = 3;
 		const DateofBirth = 4;
-		const Phone = 5;
-		const Email = 6;
-		const ShortText = 7;
-		const LongText = 8;
-		const Number = 9;
-		const YesNo = 10;
-		const SingleSelect = 11;
-		const MultipleSelect = 12;
+		const Gender = 5;
+		const Phone = 6;
+		const Email = 7;
+		const ShortText = 8;
+		const LongText = 9;
+		const Number = 10;
+		const YesNo = 11;
+		const SingleSelect = 12;
+		const MultipleSelect = 13;
 
-		const MaxId = 12;
+		const MaxId = 13;
 
 		public static $NameArray = array(
 			1 => 'Spouse Name',
 			2 => 'Address',
 			3 => 'Age',
 			4 => 'Date of Birth',
-			5 => 'Phone',
-			6 => 'Email',
-			7 => 'Short Text',
-			8 => 'Long Text',
-			9 => 'Number',
-			10 => 'Yes No',
-			11 => 'Single Select',
-			12 => 'Multiple Select');
+			5 => 'Gender',
+			6 => 'Phone',
+			7 => 'Email',
+			8 => 'Short Text',
+			9 => 'Long Text',
+			10 => 'Number',
+			11 => 'Yes No',
+			12 => 'Single Select',
+			13 => 'Multiple Select');
 
 		public static $TokenArray = array(
 			1 => 'SpouseName',
 			2 => 'Address',
 			3 => 'Age',
 			4 => 'DateofBirth',
-			5 => 'Phone',
-			6 => 'Email',
-			7 => 'ShortText',
-			8 => 'LongText',
-			9 => 'Number',
-			10 => 'YesNo',
-			11 => 'SingleSelect',
-			12 => 'MultipleSelect');
+			5 => 'Gender',
+			6 => 'Phone',
+			7 => 'Email',
+			8 => 'ShortText',
+			9 => 'LongText',
+			10 => 'Number',
+			11 => 'YesNo',
+			12 => 'SingleSelect',
+			13 => 'MultipleSelect');
 
 		public static function ToString($intFormQuestionTypeId) {
 			switch ($intFormQuestionTypeId) {
@@ -67,14 +70,15 @@
 				case 2: return 'Address';
 				case 3: return 'Age';
 				case 4: return 'Date of Birth';
-				case 5: return 'Phone';
-				case 6: return 'Email';
-				case 7: return 'Short Text';
-				case 8: return 'Long Text';
-				case 9: return 'Number';
-				case 10: return 'Yes No';
-				case 11: return 'Single Select';
-				case 12: return 'Multiple Select';
+				case 5: return 'Gender';
+				case 6: return 'Phone';
+				case 7: return 'Email';
+				case 8: return 'Short Text';
+				case 9: return 'Long Text';
+				case 10: return 'Number';
+				case 11: return 'Yes No';
+				case 12: return 'Single Select';
+				case 13: return 'Multiple Select';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
 			}
@@ -86,14 +90,15 @@
 				case 2: return 'Address';
 				case 3: return 'Age';
 				case 4: return 'DateofBirth';
-				case 5: return 'Phone';
-				case 6: return 'Email';
-				case 7: return 'ShortText';
-				case 8: return 'LongText';
-				case 9: return 'Number';
-				case 10: return 'YesNo';
-				case 11: return 'SingleSelect';
-				case 12: return 'MultipleSelect';
+				case 5: return 'Gender';
+				case 6: return 'Phone';
+				case 7: return 'Email';
+				case 8: return 'ShortText';
+				case 9: return 'LongText';
+				case 10: return 'Number';
+				case 11: return 'YesNo';
+				case 12: return 'SingleSelect';
+				case 13: return 'MultipleSelect';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
 			}
