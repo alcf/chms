@@ -87,14 +87,10 @@
 				$objFormProduct->FormPaymentTypeId = self::GenerateFromArray(array_keys(FormPaymentType::$NameArray));
 				$objFormProduct->Name = 'Main Registration Fee';
 
-				switch ($objSignupForm->FormPaymentTypeId) {
+				switch ($objFormProduct->FormPaymentTypeId) {
 					case FormPaymentType::DepositRequired:
 						$objFormProduct->Cost = rand(1, 10) * 10;
-						$objFormProduct->Deposit = $objSignupForm->Cost / 2;
-						break;
-					case FormPaymentType::VariablePayment:
-						$objFormProduct->Cost = rand(1, 10) * 10;
-						$objFormProduct->Deposit = $objSignupForm->Cost / 2;
+						$objFormProduct->Deposit = $objFormProduct->Cost / 2;
 						break;
 					case FormPaymentType::PayInFull:
 						$objFormProduct->Cost = rand(1, 10) * 10;
@@ -197,6 +193,11 @@
 							$objFormQuestion->Question = 'When were you born';
 							break;
 	
+						case FormQuestionType::Gender:
+							$objFormQuestion->ShortDescription = 'Gender';
+							$objFormQuestion->Question = 'What is your gender?';
+							break;
+							
 						case FormQuestionType::Phone:
 							$objFormQuestion->ShortDescription = 'Phone';
 							$objFormQuestion->Question = 'What is your phone number?';
@@ -264,7 +265,7 @@
 
 						// Rqeuired Products
 						foreach ($objSignupForm->GetFormProductArrayByType(FormProductType::Required) as $objFormProduct) {
-							$objSignup->AddProduct(self::GenerateFromArray($objFormProduct));
+							$objSignup->AddProduct($objFormProduct);
 						}
 
 						// Required with Choice
@@ -277,13 +278,13 @@
 						foreach ($objSignupForm->GetFormProductArrayByType(FormProductType::Optional) as $objFormProduct) {
 							if (rand(0, 1)) {
 								if ($objFormProduct->FormPaymentTypeId == FormPaymentType::Donation)
-									$objSignup->AddProduct($objFormProduct, rand($objFormProduct->MinimumQuantity, $objFormProduct->MaximumQuantityQuantity), rand(1, 10) * 10);
+									$objSignup->AddProduct($objFormProduct, rand($objFormProduct->MinimumQuantity, $objFormProduct->MaximumQuantity), rand(1, 10) * 10);
 								else
-									$objSignup->AddProduct($objFormProduct, rand($objFormProduct->MinimumQuantity, $objFormProduct->MaximumQuantityQuantity));
+									$objSignup->AddProduct($objFormProduct, rand($objFormProduct->MinimumQuantity, $objFormProduct->MaximumQuantity));
 							}
 						}
 
-						// TODO: Payments
+						// Payments
 						if (rand(0, 14)) {
 							$objSignup->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
 							$objSignup->DateSubmitted = new QDateTime($objSignup->DateCreated);
@@ -294,7 +295,7 @@
 							$objSignup->AddPayment(SignupPaymentType::CreditCard, $fltAmount, 'DATAGEN1234', new QDateTime($objSignup->DateSubmitted));
 						}
 
-						// Create hte form answers for each question
+						// Create the form answers for each question
 						foreach ($objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 							if ($objFormQuestion->RequiredFlag || rand(0, 1)) {
 								$objFormAnswer = new FormAnswer();
@@ -310,7 +311,9 @@
 										$objFormAnswer->TextValue = $objPerson->PrimaryAddressText . ', ' . $objPerson->PrimaryCityText;
 										$objArray = $objPerson->GetHouseholdParticipationArray();
 										if (count($objArray)) {
-											$objFormAnswer->AddressId = $objArray[0]->Household->GetCurrentAddress()->Id;
+											$objAddress = $objArray[0]->Household->GetCurrentAddress();
+											if ($objAddress) $objFormAnswer->AddressId = $objAddress->Id;
+											else $objFormAnswer = null;
 										} else {
 											$objArray = $objPerson->GetAddressArray();
 											if (count($objArray))
@@ -326,6 +329,22 @@
 
 									case FormQuestionType::DateofBirth:
 										if ($objPerson->DateOfBirth) $objFormAnswer->DateValue = $objPerson->DateOfBirth;
+										break;
+
+									case FormQuestionType::Gender:
+										switch ($objPerson->Gender) {
+											case 'M':
+												$objFormAnswer->BooleanValue = true;
+												$objFormAnswer->TextValue = 'Male';
+												break;
+											case 'F':
+												$objFormAnswer->BooleanValue = false;
+												$objFormAnswer->TextValue = 'Female';
+												break;
+											default:
+												$objFormAnswer = null;
+												break;
+										}
 										break;
 
 									case FormQuestionType::Phone:
