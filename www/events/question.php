@@ -63,6 +63,10 @@
 						$objQuestion->ShortDescription = 'Date of Birth';
 						break;
 	
+					case FormQuestionType::Gender:
+						$objQuestion->ShortDescription = 'Gender';
+						break;
+	
 					case FormQuestionType::Phone:
 						$objQuestion->ShortDescription = 'Phone Number';
 						break;
@@ -91,6 +95,7 @@
 				case FormQuestionType::Address:
 				case FormQuestionType::Age:
 				case FormQuestionType::DateofBirth:
+				case FormQuestionType::Gender:
 				case FormQuestionType::Phone:
 				case FormQuestionType::Email:
 				case FormQuestionType::ShortText:

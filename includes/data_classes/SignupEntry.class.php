@@ -130,6 +130,8 @@
 					if (is_null($fltAmount) || ($fltAmount < 0)) throw new QCallerException('Invalid Amount entered for Donation');
 					$objSignupProduct->Amount = $fltAmount;
 					break;
+				default:
+					throw new Exception('Unhandled FormPaymentTypeId: ' . $objFormProduct->FormPaymentTypeId);
 			}
 
 			$objSignupProduct->Save();
