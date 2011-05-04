@@ -175,11 +175,11 @@ CREATE TABLE `signup_product`
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `signup_entry_id` INTEGER UNSIGNED NOT NULL,
 `form_product_id` INTEGER UNSIGNED NOT NULL,
-`quanitity` INTEGER UNSIGNED NOT NULL,
+`quantity` INTEGER UNSIGNED NOT NULL,
 `amount` DECIMAL(10,2),
+`deposit` DECIMAL(10,2),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
 
 CREATE INDEX `signup_form_type_id_idx` ON `signup_form`(`signup_form_type_id`);
 ALTER TABLE `signup_form` ADD FOREIGN KEY signup_form_type_id_idxfk (`signup_form_type_id`) REFERENCES `signup_form_type` (`id`);

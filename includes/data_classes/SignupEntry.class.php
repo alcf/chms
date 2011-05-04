@@ -57,14 +57,14 @@
 			foreach ($this->GetSignupProductArray() as $objSignupProduct) {
 				switch ($objSignupProduct->FormProduct->FormPaymentTypeId) {
 					case FormPaymentType::DepositRequired:
-						$fltDeposit += ($objSignupProduct->Quantity * $objSignupProduct->FormProduct->Deposit);
+						$fltDeposit += ($objSignupProduct->Quantity * $objSignupProduct->Deposit);
 						break;
 					default:
 						$fltDeposit += ($objSignupProduct->Quantity * $objSignupProduct->Amount);
 						break;
 				}
 			}
-			
+
 			return $fltDeposit;
 		}
 
@@ -124,6 +124,7 @@
 					break;
 				case FormPaymentType::DepositRequired:
 					$objSignupProduct->Amount = $objFormProduct->Cost;
+					$objSignupProduct->Deposit = $objFormProduct->Deposit;
 					break;
 				case FormPaymentType::Donation:
 					if (is_null($fltAmount) || ($fltAmount < 0)) throw new QCallerException('Invalid Amount entered for Donation');

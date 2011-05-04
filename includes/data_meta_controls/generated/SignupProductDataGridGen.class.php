@@ -298,8 +298,9 @@
 				case 'SignupEntry': return QQN::SignupProduct()->SignupEntry;
 				case 'FormProductId': return QQN::SignupProduct()->FormProductId;
 				case 'FormProduct': return QQN::SignupProduct()->FormProduct;
-				case 'Quanitity': return QQN::SignupProduct()->Quanitity;
+				case 'Quantity': return QQN::SignupProduct()->Quantity;
 				case 'Amount': return QQN::SignupProduct()->Amount;
+				case 'Deposit': return QQN::SignupProduct()->Deposit;
 				default: throw new QCallerException('Simple Property not found in SignupProductDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

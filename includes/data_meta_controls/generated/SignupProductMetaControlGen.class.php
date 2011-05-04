@@ -22,10 +22,12 @@
 	 * property-read QLabel $SignupEntryIdLabel
 	 * property QListBox $FormProductIdControl
 	 * property-read QLabel $FormProductIdLabel
-	 * property QIntegerTextBox $QuanitityControl
-	 * property-read QLabel $QuanitityLabel
+	 * property QIntegerTextBox $QuantityControl
+	 * property-read QLabel $QuantityLabel
 	 * property QFloatTextBox $AmountControl
 	 * property-read QLabel $AmountLabel
+	 * property QFloatTextBox $DepositControl
+	 * property-read QLabel $DepositLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -76,16 +78,22 @@
 		protected $lstFormProduct;
 
         /**
-         * @var QIntegerTextBox txtQuanitity;
+         * @var QIntegerTextBox txtQuantity;
          * @access protected
          */
-		protected $txtQuanitity;
+		protected $txtQuantity;
 
         /**
          * @var QFloatTextBox txtAmount;
          * @access protected
          */
 		protected $txtAmount;
+
+        /**
+         * @var QFloatTextBox txtDeposit;
+         * @access protected
+         */
+		protected $txtDeposit;
 
 
 		// Controls that allow the viewing of SignupProduct's individual data fields
@@ -102,16 +110,22 @@
 		protected $lblFormProductId;
 
         /**
-         * @var QLabel lblQuanitity
+         * @var QLabel lblQuantity
          * @access protected
          */
-		protected $lblQuanitity;
+		protected $lblQuantity;
 
         /**
          * @var QLabel lblAmount
          * @access protected
          */
 		protected $lblAmount;
+
+        /**
+         * @var QLabel lblDeposit
+         * @access protected
+         */
+		protected $lblDeposit;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -313,31 +327,31 @@
 		}
 
 		/**
-		 * Create and setup QIntegerTextBox txtQuanitity
+		 * Create and setup QIntegerTextBox txtQuantity
 		 * @param string $strControlId optional ControlId to use
 		 * @return QIntegerTextBox
 		 */
-		public function txtQuanitity_Create($strControlId = null) {
-			$this->txtQuanitity = new QIntegerTextBox($this->objParentObject, $strControlId);
-			$this->txtQuanitity->Name = QApplication::Translate('Quanitity');
-			$this->txtQuanitity->Text = $this->objSignupProduct->Quanitity;
-			$this->txtQuanitity->Required = true;
-			return $this->txtQuanitity;
+		public function txtQuantity_Create($strControlId = null) {
+			$this->txtQuantity = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtQuantity->Name = QApplication::Translate('Quantity');
+			$this->txtQuantity->Text = $this->objSignupProduct->Quantity;
+			$this->txtQuantity->Required = true;
+			return $this->txtQuantity;
 		}
 
 		/**
-		 * Create and setup QLabel lblQuanitity
+		 * Create and setup QLabel lblQuantity
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblQuanitity_Create($strControlId = null, $strFormat = null) {
-			$this->lblQuanitity = new QLabel($this->objParentObject, $strControlId);
-			$this->lblQuanitity->Name = QApplication::Translate('Quanitity');
-			$this->lblQuanitity->Text = $this->objSignupProduct->Quanitity;
-			$this->lblQuanitity->Required = true;
-			$this->lblQuanitity->Format = $strFormat;
-			return $this->lblQuanitity;
+		public function lblQuantity_Create($strControlId = null, $strFormat = null) {
+			$this->lblQuantity = new QLabel($this->objParentObject, $strControlId);
+			$this->lblQuantity->Name = QApplication::Translate('Quantity');
+			$this->lblQuantity->Text = $this->objSignupProduct->Quantity;
+			$this->lblQuantity->Required = true;
+			$this->lblQuantity->Format = $strFormat;
+			return $this->lblQuantity;
 		}
 
 		/**
@@ -364,6 +378,32 @@
 			$this->lblAmount->Text = $this->objSignupProduct->Amount;
 			$this->lblAmount->Format = $strFormat;
 			return $this->lblAmount;
+		}
+
+		/**
+		 * Create and setup QFloatTextBox txtDeposit
+		 * @param string $strControlId optional ControlId to use
+		 * @return QFloatTextBox
+		 */
+		public function txtDeposit_Create($strControlId = null) {
+			$this->txtDeposit = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtDeposit->Name = QApplication::Translate('Deposit');
+			$this->txtDeposit->Text = $this->objSignupProduct->Deposit;
+			return $this->txtDeposit;
+		}
+
+		/**
+		 * Create and setup QLabel lblDeposit
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblDeposit_Create($strControlId = null, $strFormat = null) {
+			$this->lblDeposit = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDeposit->Name = QApplication::Translate('Deposit');
+			$this->lblDeposit->Text = $this->objSignupProduct->Deposit;
+			$this->lblDeposit->Format = $strFormat;
+			return $this->lblDeposit;
 		}
 
 
@@ -407,11 +447,14 @@
 			}
 			if ($this->lblFormProductId) $this->lblFormProductId->Text = ($this->objSignupProduct->FormProduct) ? $this->objSignupProduct->FormProduct->__toString() : null;
 
-			if ($this->txtQuanitity) $this->txtQuanitity->Text = $this->objSignupProduct->Quanitity;
-			if ($this->lblQuanitity) $this->lblQuanitity->Text = $this->objSignupProduct->Quanitity;
+			if ($this->txtQuantity) $this->txtQuantity->Text = $this->objSignupProduct->Quantity;
+			if ($this->lblQuantity) $this->lblQuantity->Text = $this->objSignupProduct->Quantity;
 
 			if ($this->txtAmount) $this->txtAmount->Text = $this->objSignupProduct->Amount;
 			if ($this->lblAmount) $this->lblAmount->Text = $this->objSignupProduct->Amount;
+
+			if ($this->txtDeposit) $this->txtDeposit->Text = $this->objSignupProduct->Deposit;
+			if ($this->lblDeposit) $this->lblDeposit->Text = $this->objSignupProduct->Deposit;
 
 		}
 
@@ -438,8 +481,9 @@
 				// Update any fields for controls that have been created
 				if ($this->lstSignupEntry) $this->objSignupProduct->SignupEntryId = $this->lstSignupEntry->SelectedValue;
 				if ($this->lstFormProduct) $this->objSignupProduct->FormProductId = $this->lstFormProduct->SelectedValue;
-				if ($this->txtQuanitity) $this->objSignupProduct->Quanitity = $this->txtQuanitity->Text;
+				if ($this->txtQuantity) $this->objSignupProduct->Quantity = $this->txtQuantity->Text;
 				if ($this->txtAmount) $this->objSignupProduct->Amount = $this->txtAmount->Text;
+				if ($this->txtDeposit) $this->objSignupProduct->Deposit = $this->txtDeposit->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -500,18 +544,24 @@
 				case 'FormProductIdLabel':
 					if (!$this->lblFormProductId) return $this->lblFormProductId_Create();
 					return $this->lblFormProductId;
-				case 'QuanitityControl':
-					if (!$this->txtQuanitity) return $this->txtQuanitity_Create();
-					return $this->txtQuanitity;
-				case 'QuanitityLabel':
-					if (!$this->lblQuanitity) return $this->lblQuanitity_Create();
-					return $this->lblQuanitity;
+				case 'QuantityControl':
+					if (!$this->txtQuantity) return $this->txtQuantity_Create();
+					return $this->txtQuantity;
+				case 'QuantityLabel':
+					if (!$this->lblQuantity) return $this->lblQuantity_Create();
+					return $this->lblQuantity;
 				case 'AmountControl':
 					if (!$this->txtAmount) return $this->txtAmount_Create();
 					return $this->txtAmount;
 				case 'AmountLabel':
 					if (!$this->lblAmount) return $this->lblAmount_Create();
 					return $this->lblAmount;
+				case 'DepositControl':
+					if (!$this->txtDeposit) return $this->txtDeposit_Create();
+					return $this->txtDeposit;
+				case 'DepositLabel':
+					if (!$this->lblDeposit) return $this->lblDeposit_Create();
+					return $this->lblDeposit;
 				default:
 					try {
 						return parent::__get($strName);
@@ -540,10 +590,12 @@
 						return ($this->lstSignupEntry = QType::Cast($mixValue, 'QControl'));
 					case 'FormProductIdControl':
 						return ($this->lstFormProduct = QType::Cast($mixValue, 'QControl'));
-					case 'QuanitityControl':
-						return ($this->txtQuanitity = QType::Cast($mixValue, 'QControl'));
+					case 'QuantityControl':
+						return ($this->txtQuantity = QType::Cast($mixValue, 'QControl'));
 					case 'AmountControl':
 						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
+					case 'DepositControl':
+						return ($this->txtDeposit = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}
