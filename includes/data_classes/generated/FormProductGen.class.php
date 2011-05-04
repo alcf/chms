@@ -734,6 +734,46 @@
 			
 		/**
 		 * Load an array of FormProduct objects,
+		 * by SignupFormId, FormProductTypeId Index(es)
+		 * @param integer $intSignupFormId
+		 * @param integer $intFormProductTypeId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return FormProduct[]
+		*/
+		public static function LoadArrayBySignupFormIdFormProductTypeId($intSignupFormId, $intFormProductTypeId, $objOptionalClauses = null) {
+			// Call FormProduct::QueryArray to perform the LoadArrayBySignupFormIdFormProductTypeId query
+			try {
+				return FormProduct::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::FormProduct()->SignupFormId, $intSignupFormId),
+					QQ::Equal(QQN::FormProduct()->FormProductTypeId, $intFormProductTypeId)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count FormProducts
+		 * by SignupFormId, FormProductTypeId Index(es)
+		 * @param integer $intSignupFormId
+		 * @param integer $intFormProductTypeId
+		 * @return int
+		*/
+		public static function CountBySignupFormIdFormProductTypeId($intSignupFormId, $intFormProductTypeId) {
+			// Call FormProduct::QueryCount to perform the CountBySignupFormIdFormProductTypeId query
+			return FormProduct::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::FormProduct()->SignupFormId, $intSignupFormId),
+				QQ::Equal(QQN::FormProduct()->FormProductTypeId, $intFormProductTypeId)
+				)
+			);
+		}
+			
+		/**
+		 * Load an array of FormProduct objects,
 		 * by SignupFormId Index(es)
 		 * @param integer $intSignupFormId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query

@@ -28,7 +28,6 @@
 		protected $lblDescription;
 		protected $lblAllowOtherFlag;
 		protected $lblAllowMultipleFlag;
-		protected $lblPaymentInfo;
 		protected $lblLimitInfo;
 		protected $lblDateCreated;
 
@@ -67,9 +66,14 @@
 			}
 
 			$this->cblColumns = new QCheckBoxList($this);
+			$this->cblColumns->HtmlEntities = false;
 			$this->cblColumns->AddAction(new QClickEvent(), new QAjaxAction('cblColumns_Click'));
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
-				$this->cblColumns->AddItem($objFormQuestion->ShortDescription, $objFormQuestion->Id, $objFormQuestion->ViewFlag);
+				if ($objFormQuestion->RequiredFlag)
+					$strDescription = '<strong>' . QApplication::HtmlEntities($objFormQuestion->ShortDescription) . '</strong>';
+				else
+					$strDescription = QApplication::HtmlEntities($objFormQuestion->ShortDescription);
+				$this->cblColumns->AddItem($strDescription, $objFormQuestion->Id, $objFormQuestion->ViewFlag);
 			}
 			
 			// Setup dtgSignups
@@ -120,26 +124,6 @@
 			$this->lblAllowMultipleFlag = $this->mctSignupForm->lblAllowMultipleFlag_Create();
 			$this->lblAllowOtherFlag = $this->mctSignupForm->lblAllowOtherFlag_Create();
 			$this->lblDateCreated = $this->mctSignupForm->lblDateCreated_Create();
-			
-			$this->lblPaymentInfo = new QLabel($this);
-			$this->lblPaymentInfo->Name = 'Cost and Payment Information';
-			switch ($this->objSignupForm->FormPaymentTypeId) {
-				case FormPaymentType::NoPayment:
-					$this->lblPaymentInfo->Text = 'Free - No Payment Required';
-					break;
-				case FormPaymentType::DepositRequired:
-					$this->lblPaymentInfo->Text = sprintf('Cost: $%.2f - Deposit Required for Registration: $%.2f',
-						$this->objSignupForm->Cost, $this->objSignupForm->Deposit);
-					break;
-				case FormPaymentType::VariablePayment:
-					$this->lblPaymentInfo->Text = sprintf('Cost: $%.2f - Registrar can pay in full, or place a deposit of any value that is at least $%.2f', $this->objSignupForm->Cost, $this->objSignupForm->Deposit);
-					break;
-				case FormPaymentType::PayInFull:
-					$this->lblPaymentInfo->Text = sprintf('Cost: $%.2f - Must pay in full with registration', $this->objSignupForm->Cost);
-					break;
-				default:
-					throw new Exception('Invalid Form Payment Type: ' . $this->objSignupForm->FormPaymentTypeId);
-			}
 			
 			$this->lblLimitInfo = new QLabel($this);
 			$this->lblLimitInfo->Name = 'Registration Capacity';
@@ -216,12 +200,12 @@
 				}
 			}
 
-			if ($this->objSignupForm->FormPaymentTypeId != FormPaymentType::NoPayment) {
+			if ($this->objSignupForm->CountFormProducts()) {
 				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountPaid, 'Name=Paid', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountPaid); ?>');
 				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountBalance, 'Name=Balance', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountBalance); ?>');
 			}
 			
-			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted->ToString("MMM D YYYY"); ?>');
+			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted ? $_ITEM->DateSubmitted->ToString("MMM D YYYY") : null; ?>');
 		}
 
 		public function RenderAmount($fltAmount) {
@@ -239,6 +223,7 @@
 
 				case FormQuestionType::SpouseName:
 				case FormQuestionType::Address:
+				case FormQuestionType::Gender:
 				case FormQuestionType::Phone:
 				case FormQuestionType::Email:
 				case FormQuestionType::ShortText:

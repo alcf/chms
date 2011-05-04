@@ -234,6 +234,8 @@ ALTER TABLE `signup_product` ADD FOREIGN KEY form_product_id_idxfk (`form_produc
 
 CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
 
+CREATE INDEX `form_product_idx` ON `form_product` (`signup_form_id`,`form_product_type_id`);
+
 ######### EXTERNAL FKs
 
 ALTER TABLE `signup_entry` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);

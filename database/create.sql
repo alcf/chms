@@ -981,6 +981,8 @@ ALTER TABLE `signup_form` ADD FOREIGN KEY signup_form_type_id_idxfk (`signup_for
 CREATE INDEX `ministry_id_idx` ON `signup_form`(`ministry_id`);
 ALTER TABLE `signup_form` ADD FOREIGN KEY ministry_id_idxfk (`ministry_id`) REFERENCES `ministry` (`id`);
 
+CREATE INDEX `form_product_idx` ON `form_product` (`signup_form_id`,`form_product_type_id`);
+
 CREATE INDEX `signup_form_id_idx` ON `form_product`(`signup_form_id`);
 ALTER TABLE `form_product` ADD FOREIGN KEY signup_form_id_idxfk (`signup_form_id`) REFERENCES `signup_form` (`id`);
 

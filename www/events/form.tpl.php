@@ -13,7 +13,6 @@
 		<?php $this->lblInformationUrl->RenderWithName(); ?>
 		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations'); ?>
 		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
-		<?php $this->lblPaymentInfo->RenderWithName(); ?>
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
 	</div>
 	
