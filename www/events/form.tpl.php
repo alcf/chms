@@ -30,7 +30,7 @@
 
 		<?php foreach ($this->dtgProductsArray as $dtgProducts) { ?>
 			<div class="line">&nbsp;</div>
-			<h3><?php _p(FormProductType::$NameArray[$dtgProducts->ActionParameter]); ?> Products</h3>
+			<h3><?php _p(FormProductType::$NameArray[$dtgProducts->Name]); ?> Products</h3>
 			<?php $dtgProducts->Render(); ?>
 		<?php } ?>
 	</div>

@@ -67,7 +67,7 @@
 			foreach (FormProductType::$NameArray as $intFormProductTypeId => $strName) {
 				if (FormProduct::CountBySignupFormIdFormProductTypeId($this->objSignupForm->Id, $intFormProductTypeId)) {
 					$dtgProducts = new FormProductDataGrid($this);
-					$dtgProducts->ActionParameter = $intFormProductTypeId;
+					$dtgProducts->Name = $intFormProductTypeId;
 					$dtgProducts->SetDataBinder('dtgProducts_Bind');
 
 					$dtgProducts->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorderProduct($_ITEM, $_CONTROL); ?>', 'HtmlEntities=false', 'Width=60px'));
@@ -237,13 +237,13 @@
 		public function pxyMoveDownProduct_Click($strFormId, $strControlId, $strParameter) {
 			$objFormProduct = FormProduct::Load($strParameter);
 			$objFormProduct->MoveDown();
-			foreach ($this->dtgProductsArray as $dtgProducts) $dtgProducts->Refresh();
+			foreach ($this->dtgProductsArray as $dtgProducts) if ($dtgProducts->Name == $objFormProduct->FormProductTypeId) $dtgProducts->Refresh();
 		}
 
 		public function pxyMoveUpProduct_Click($strFormId, $strControlId, $strParameter) {
 			$objFormProduct = FormProduct::Load($strParameter);
 			$objFormProduct->MoveUp();
-			foreach ($this->dtgProductsArray as $dtgProducts) $dtgProducts->Refresh();
+			foreach ($this->dtgProductsArray as $dtgProducts) if ($dtgProducts->Name == $objFormProduct->FormProductTypeId) $dtgProducts->Refresh();
 		}
 
 		public function cblColumns_Click() {
@@ -322,7 +322,7 @@
 		}
 		
 		public function dtgProducts_Bind(QDataGrid $dtgProducts) {
-			$intFormProductTypeId = $dtgProducts->ActionParameter;
+			$intFormProductTypeId = $dtgProducts->Name;
 			$dtgProducts->DataSource = FormProduct::LoadArrayBySignupFormIdFormProductTypeId($this->objSignupForm->Id, $intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber));
 		}
 		

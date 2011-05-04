@@ -38,7 +38,7 @@
 
 		public function MoveUp() {
 			$objToSwapWith = null;
-			foreach (FormProduct::LoadArrayBySignupFormIdFormProductTypeId($intSignupFormId, $intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
+			foreach (FormProduct::LoadArrayBySignupFormIdFormProductTypeId($this->intSignupFormId, $this->intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
 				if ($objFormProduct->Id == $this->Id)
 					break;
 				$objToSwapWith = $objFormProduct;
@@ -57,7 +57,7 @@
 		
 		public function MoveDown() {
 			$blnFound = false;
-			foreach (FormProduct::LoadArrayBySignupFormIdFormProductTypeId($intSignupFormId, $intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
+			foreach (FormProduct::LoadArrayBySignupFormIdFormProductTypeId($this->intSignupFormId, $this->intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
 				if ($blnFound) break;
 				if ($objFormProduct->Id == $this->Id) $blnFound = true;
 			}
