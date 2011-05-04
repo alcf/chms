@@ -84,6 +84,7 @@ CREATE TABLE `form_product`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `signup_form_id` INTEGER UNSIGNED NOT NULL,
+`order_number` INTEGER,
 `form_product_type_id` INTEGER UNSIGNED NOT NULL,
 `form_payment_type_id` INTEGER UNSIGNED NOT NULL,
 `name` VARCHAR(40),
@@ -94,6 +95,7 @@ CREATE TABLE `form_product`
 `maximum_quantity` INTEGER,
 `cost` DECIMAL(10,2),
 `deposit` DECIMAL(10,2),
+`view_flag` BOOLEAN,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -260,8 +262,7 @@ INSERT INTO signup_form_type VALUES(1, 'Event');
 
 INSERT INTO form_payment_type VALUES(1, 'Pay In Full');
 INSERT INTO form_payment_type VALUES(2, 'Deposit Required');
-INSERT INTO form_payment_type VALUES(3, 'Variable Payment');
-INSERT INTO form_payment_type VALUES(4, 'Donation');
+INSERT INTO form_payment_type VALUES(3, 'Donation');
 
 INSERT INTO form_product_type VALUES(1, 'Required');
 INSERT INTO form_product_type VALUES(2, 'Required With Choice');

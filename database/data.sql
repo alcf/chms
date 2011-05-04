@@ -282,8 +282,7 @@ INSERT INTO signup_form_type VALUES(1, 'Event');
 
 INSERT INTO form_payment_type VALUES(1, 'Pay In Full');
 INSERT INTO form_payment_type VALUES(2, 'Deposit Required');
-INSERT INTO form_payment_type VALUES(3, 'Variable Payment');
-INSERT INTO form_payment_type VALUES(4, 'Donation');
+INSERT INTO form_payment_type VALUES(3, 'Donation');
 
 INSERT INTO form_product_type VALUES(1, 'Required');
 INSERT INTO form_product_type VALUES(2, 'Required With Choice');

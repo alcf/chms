@@ -17,6 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $SignupFormId the value for intSignupFormId (Not Null)
+	 * @property integer $OrderNumber the value for intOrderNumber 
 	 * @property integer $FormProductTypeId the value for intFormProductTypeId (Not Null)
 	 * @property integer $FormPaymentTypeId the value for intFormPaymentTypeId (Not Null)
 	 * @property string $Name the value for strName 
@@ -27,6 +28,7 @@
 	 * @property integer $MaximumQuantity the value for intMaximumQuantity 
 	 * @property double $Cost the value for fltCost 
 	 * @property double $Deposit the value for fltDeposit 
+	 * @property boolean $ViewFlag the value for blnViewFlag 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
 	 * @property SignupProduct $_SignupProduct the value for the private _objSignupProduct (Read-Only) if set due to an expansion on the signup_product.form_product_id reverse relationship
 	 * @property SignupProduct[] $_SignupProductArray the value for the private _objSignupProductArray (Read-Only) if set due to an ExpandAsArray on the signup_product.form_product_id reverse relationship
@@ -52,6 +54,14 @@
 		 */
 		protected $intSignupFormId;
 		const SignupFormIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_product.order_number
+		 * @var integer intOrderNumber
+		 */
+		protected $intOrderNumber;
+		const OrderNumberDefault = null;
 
 
 		/**
@@ -134,6 +144,14 @@
 		 */
 		protected $fltDeposit;
 		const DepositDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_product.view_flag
+		 * @var boolean blnViewFlag
+		 */
+		protected $blnViewFlag;
+		const ViewFlagDefault = null;
 
 
 		/**
@@ -496,6 +514,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'signup_form_id', $strAliasPrefix . 'signup_form_id');
+			$objBuilder->AddSelectItem($strTableName, 'order_number', $strAliasPrefix . 'order_number');
 			$objBuilder->AddSelectItem($strTableName, 'form_product_type_id', $strAliasPrefix . 'form_product_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'form_payment_type_id', $strAliasPrefix . 'form_payment_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
@@ -506,6 +525,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'maximum_quantity', $strAliasPrefix . 'maximum_quantity');
 			$objBuilder->AddSelectItem($strTableName, 'cost', $strAliasPrefix . 'cost');
 			$objBuilder->AddSelectItem($strTableName, 'deposit', $strAliasPrefix . 'deposit');
+			$objBuilder->AddSelectItem($strTableName, 'view_flag', $strAliasPrefix . 'view_flag');
 		}
 
 
@@ -573,6 +593,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'signup_form_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_form_id'] : $strAliasPrefix . 'signup_form_id';
 			$objToReturn->intSignupFormId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'order_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'order_number'] : $strAliasPrefix . 'order_number';
+			$objToReturn->intOrderNumber = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'form_product_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'form_product_type_id'] : $strAliasPrefix . 'form_product_type_id';
 			$objToReturn->intFormProductTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'form_payment_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'form_payment_type_id'] : $strAliasPrefix . 'form_payment_type_id';
@@ -593,6 +615,8 @@
 			$objToReturn->fltCost = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'deposit', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'deposit'] : $strAliasPrefix . 'deposit';
 			$objToReturn->fltDeposit = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'view_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'view_flag'] : $strAliasPrefix . 'view_flag';
+			$objToReturn->blnViewFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -835,6 +859,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `form_product` (
 							`signup_form_id`,
+							`order_number`,
 							`form_product_type_id`,
 							`form_payment_type_id`,
 							`name`,
@@ -844,9 +869,11 @@
 							`minimum_quantity`,
 							`maximum_quantity`,
 							`cost`,
-							`deposit`
+							`deposit`,
+							`view_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
+							' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							' . $objDatabase->SqlVariable($this->intFormProductTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
@@ -856,7 +883,8 @@
 							' . $objDatabase->SqlVariable($this->intMinimumQuantity) . ',
 							' . $objDatabase->SqlVariable($this->intMaximumQuantity) . ',
 							' . $objDatabase->SqlVariable($this->fltCost) . ',
-							' . $objDatabase->SqlVariable($this->fltDeposit) . '
+							' . $objDatabase->SqlVariable($this->fltDeposit) . ',
+							' . $objDatabase->SqlVariable($this->blnViewFlag) . '
 						)
 					');
 
@@ -877,6 +905,7 @@
 							`form_product`
 						SET
 							`signup_form_id` = ' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
+							`order_number` = ' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							`form_product_type_id` = ' . $objDatabase->SqlVariable($this->intFormProductTypeId) . ',
 							`form_payment_type_id` = ' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
@@ -886,7 +915,8 @@
 							`minimum_quantity` = ' . $objDatabase->SqlVariable($this->intMinimumQuantity) . ',
 							`maximum_quantity` = ' . $objDatabase->SqlVariable($this->intMaximumQuantity) . ',
 							`cost` = ' . $objDatabase->SqlVariable($this->fltCost) . ',
-							`deposit` = ' . $objDatabase->SqlVariable($this->fltDeposit) . '
+							`deposit` = ' . $objDatabase->SqlVariable($this->fltDeposit) . ',
+							`view_flag` = ' . $objDatabase->SqlVariable($this->blnViewFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -972,6 +1002,7 @@
 
 			// Update $this's local variables to match
 			$this->SignupFormId = $objReloaded->SignupFormId;
+			$this->intOrderNumber = $objReloaded->intOrderNumber;
 			$this->FormProductTypeId = $objReloaded->FormProductTypeId;
 			$this->FormPaymentTypeId = $objReloaded->FormPaymentTypeId;
 			$this->strName = $objReloaded->strName;
@@ -982,6 +1013,7 @@
 			$this->intMaximumQuantity = $objReloaded->intMaximumQuantity;
 			$this->fltCost = $objReloaded->fltCost;
 			$this->fltDeposit = $objReloaded->fltDeposit;
+			$this->blnViewFlag = $objReloaded->blnViewFlag;
 		}
 
 		/**
@@ -996,6 +1028,7 @@
 				INSERT INTO `form_product` (
 					`id`,
 					`signup_form_id`,
+					`order_number`,
 					`form_product_type_id`,
 					`form_payment_type_id`,
 					`name`,
@@ -1006,12 +1039,14 @@
 					`maximum_quantity`,
 					`cost`,
 					`deposit`,
+					`view_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
+					' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 					' . $objDatabase->SqlVariable($this->intFormProductTypeId) . ',
 					' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
@@ -1022,6 +1057,7 @@
 					' . $objDatabase->SqlVariable($this->intMaximumQuantity) . ',
 					' . $objDatabase->SqlVariable($this->fltCost) . ',
 					' . $objDatabase->SqlVariable($this->fltDeposit) . ',
+					' . $objDatabase->SqlVariable($this->blnViewFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1082,6 +1118,11 @@
 					// @return integer
 					return $this->intSignupFormId;
 
+				case 'OrderNumber':
+					// Gets the value for intOrderNumber 
+					// @return integer
+					return $this->intOrderNumber;
+
 				case 'FormProductTypeId':
 					// Gets the value for intFormProductTypeId (Not Null)
 					// @return integer
@@ -1131,6 +1172,11 @@
 					// Gets the value for fltDeposit 
 					// @return double
 					return $this->fltDeposit;
+
+				case 'ViewFlag':
+					// Gets the value for blnViewFlag 
+					// @return boolean
+					return $this->blnViewFlag;
 
 
 				///////////////////
@@ -1200,6 +1246,17 @@
 					try {
 						$this->objSignupForm = null;
 						return ($this->intSignupFormId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'OrderNumber':
+					// Sets the value for intOrderNumber 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intOrderNumber = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1310,6 +1367,17 @@
 					// @return double
 					try {
 						return ($this->fltDeposit = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ViewFlag':
+					// Sets the value for blnViewFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnViewFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1570,6 +1638,7 @@
 			$strToReturn = '<complexType name="FormProduct"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="SignupForm" type="xsd1:SignupForm"/>';
+			$strToReturn .= '<element name="OrderNumber" type="xsd:int"/>';
 			$strToReturn .= '<element name="FormProductTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="FormPaymentTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
@@ -1580,6 +1649,7 @@
 			$strToReturn .= '<element name="MaximumQuantity" type="xsd:int"/>';
 			$strToReturn .= '<element name="Cost" type="xsd:float"/>';
 			$strToReturn .= '<element name="Deposit" type="xsd:float"/>';
+			$strToReturn .= '<element name="ViewFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1608,6 +1678,8 @@
 			if ((property_exists($objSoapObject, 'SignupForm')) &&
 				($objSoapObject->SignupForm))
 				$objToReturn->SignupForm = SignupForm::GetObjectFromSoapObject($objSoapObject->SignupForm);
+			if (property_exists($objSoapObject, 'OrderNumber'))
+				$objToReturn->intOrderNumber = $objSoapObject->OrderNumber;
 			if (property_exists($objSoapObject, 'FormProductTypeId'))
 				$objToReturn->intFormProductTypeId = $objSoapObject->FormProductTypeId;
 			if (property_exists($objSoapObject, 'FormPaymentTypeId'))
@@ -1628,6 +1700,8 @@
 				$objToReturn->fltCost = $objSoapObject->Cost;
 			if (property_exists($objSoapObject, 'Deposit'))
 				$objToReturn->fltDeposit = $objSoapObject->Deposit;
+			if (property_exists($objSoapObject, 'ViewFlag'))
+				$objToReturn->blnViewFlag = $objSoapObject->ViewFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1672,6 +1746,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $SignupFormId
 	 * @property-read QQNodeSignupForm $SignupForm
+	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $FormProductTypeId
 	 * @property-read QQNode $FormPaymentTypeId
 	 * @property-read QQNode $Name
@@ -1682,6 +1757,7 @@
 	 * @property-read QQNode $MaximumQuantity
 	 * @property-read QQNode $Cost
 	 * @property-read QQNode $Deposit
+	 * @property-read QQNode $ViewFlag
 	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
 	 */
 	class QQNodeFormProduct extends QQNode {
@@ -1696,6 +1772,8 @@
 					return new QQNode('signup_form_id', 'SignupFormId', 'integer', $this);
 				case 'SignupForm':
 					return new QQNodeSignupForm('signup_form_id', 'SignupForm', 'integer', $this);
+				case 'OrderNumber':
+					return new QQNode('order_number', 'OrderNumber', 'integer', $this);
 				case 'FormProductTypeId':
 					return new QQNode('form_product_type_id', 'FormProductTypeId', 'integer', $this);
 				case 'FormPaymentTypeId':
@@ -1716,6 +1794,8 @@
 					return new QQNode('cost', 'Cost', 'double', $this);
 				case 'Deposit':
 					return new QQNode('deposit', 'Deposit', 'double', $this);
+				case 'ViewFlag':
+					return new QQNode('view_flag', 'ViewFlag', 'boolean', $this);
 				case 'SignupProduct':
 					return new QQReverseReferenceNodeSignupProduct($this, 'signupproduct', 'reverse_reference', 'form_product_id');
 
@@ -1736,6 +1816,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $SignupFormId
 	 * @property-read QQNodeSignupForm $SignupForm
+	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $FormProductTypeId
 	 * @property-read QQNode $FormPaymentTypeId
 	 * @property-read QQNode $Name
@@ -1746,6 +1827,7 @@
 	 * @property-read QQNode $MaximumQuantity
 	 * @property-read QQNode $Cost
 	 * @property-read QQNode $Deposit
+	 * @property-read QQNode $ViewFlag
 	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1761,6 +1843,8 @@
 					return new QQNode('signup_form_id', 'SignupFormId', 'integer', $this);
 				case 'SignupForm':
 					return new QQNodeSignupForm('signup_form_id', 'SignupForm', 'integer', $this);
+				case 'OrderNumber':
+					return new QQNode('order_number', 'OrderNumber', 'integer', $this);
 				case 'FormProductTypeId':
 					return new QQNode('form_product_type_id', 'FormProductTypeId', 'integer', $this);
 				case 'FormPaymentTypeId':
@@ -1781,6 +1865,8 @@
 					return new QQNode('cost', 'Cost', 'double', $this);
 				case 'Deposit':
 					return new QQNode('deposit', 'Deposit', 'double', $this);
+				case 'ViewFlag':
+					return new QQNode('view_flag', 'ViewFlag', 'boolean', $this);
 				case 'SignupProduct':
 					return new QQReverseReferenceNodeSignupProduct($this, 'signupproduct', 'reverse_reference', 'form_product_id');
 

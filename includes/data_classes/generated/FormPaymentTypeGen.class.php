@@ -20,29 +20,25 @@
 	abstract class FormPaymentTypeGen extends QBaseClass {
 		const PayInFull = 1;
 		const DepositRequired = 2;
-		const VariablePayment = 3;
-		const Donation = 4;
+		const Donation = 3;
 
-		const MaxId = 4;
+		const MaxId = 3;
 
 		public static $NameArray = array(
 			1 => 'Pay In Full',
 			2 => 'Deposit Required',
-			3 => 'Variable Payment',
-			4 => 'Donation');
+			3 => 'Donation');
 
 		public static $TokenArray = array(
 			1 => 'PayInFull',
 			2 => 'DepositRequired',
-			3 => 'VariablePayment',
-			4 => 'Donation');
+			3 => 'Donation');
 
 		public static function ToString($intFormPaymentTypeId) {
 			switch ($intFormPaymentTypeId) {
 				case 1: return 'Pay In Full';
 				case 2: return 'Deposit Required';
-				case 3: return 'Variable Payment';
-				case 4: return 'Donation';
+				case 3: return 'Donation';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormPaymentTypeId: %s', $intFormPaymentTypeId));
 			}
@@ -52,8 +48,7 @@
 			switch ($intFormPaymentTypeId) {
 				case 1: return 'PayInFull';
 				case 2: return 'DepositRequired';
-				case 3: return 'VariablePayment';
-				case 4: return 'Donation';
+				case 3: return 'Donation';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormPaymentTypeId: %s', $intFormPaymentTypeId));
 			}

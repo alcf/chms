@@ -79,6 +79,7 @@
 			// Add form products information
 
 			// 1: Required Product
+			$intOrderNumber = 1;
 			if (rand(0, 1)) {
 				$objFormProduct = new FormProduct();
 				$objFormProduct->SignupForm = $objSignupForm;
@@ -104,6 +105,9 @@
 						break;
 				}
 
+				$objFormProduct->OrderNumber = $intOrderNumber;
+				$intOrderNumber++;
+				$objFormProduct->ViewFlag = true;
 				$objFormProduct->Save();
 			}
 			
@@ -118,6 +122,9 @@
 					$objFormProduct->Name = $strName;
 					$objFormProduct->Description = self::GenerateContent(1, 3, 10);
 					$objFormProduct->Cost = $fltAmount;
+					$objFormProduct->OrderNumber = $intOrderNumber;
+					$intOrderNumber++;
+					$objFormProduct->ViewFlag = true;
 					$objFormProduct->Save();
 				}
 			}
@@ -134,6 +141,9 @@
 				$objFormProduct->MinimumQuantity = 1;
 				$objFormProduct->MaximumQuantity = rand(1, 3);
 				$objFormProduct->Cost = rand(1, 10) * 5;
+				$objFormProduct->OrderNumber = $intOrderNumber;
+				$intOrderNumber++;
+				$objFormProduct->ViewFlag = true;
 				$objFormProduct->Save();
 			}
 
@@ -147,6 +157,9 @@
 				$objFormProduct->Description = self::GenerateContent(1, 3, 10);
 				$objFormProduct->MinimumQuantity = 1;
 				$objFormProduct->MaximumQuantity = 1;
+				$objFormProduct->OrderNumber = $intOrderNumber;
+				$intOrderNumber++;
+				$objFormProduct->ViewFlag = true;
 				$objFormProduct->Save();
 			}
 
@@ -245,6 +258,7 @@
 						$objSignup->SignupForm = $objSignupForm;
 						$objSignup->Person = $objPerson;
 						$objSignup->DateCreated = self::GenerateDateTime($objSignupForm->DateCreated, QDateTime::Now());
+						$objSignup->SignupEntryStatusTypeId = SignupEntryStatusType::Incomplete;
 						$objSignup->InternalNotes = (!rand(0, 2) ? self::GenerateContent(1, 5, 10) : null);
 						$objSignup->Save();
 
@@ -270,7 +284,16 @@
 						}
 
 						// TODO: Payments
-						
+						if (rand(0, 14)) {
+							$objSignup->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
+							$objSignup->DateSubmitted = new QDateTime($objSignup->DateCreated);
+							$objSignup->DateSubmitted->Minute += 1;
+							$objSignup->Save();
+
+							$fltAmount = rand(0, 1) ? $objSignup->AmountTotal : $objSignup->CalculateMinimumDeposit();
+							$objSignup->AddPayment(SignupPaymentType::CreditCard, $fltAmount, 'DATAGEN1234', new QDateTime($objSignup->DateSubmitted));
+						}
+
 						// Create hte form answers for each question
 						foreach ($objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 							if ($objFormQuestion->RequiredFlag || rand(0, 1)) {

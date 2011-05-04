@@ -20,6 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $SignupFormIdControl
 	 * property-read QLabel $SignupFormIdLabel
+	 * property QIntegerTextBox $OrderNumberControl
+	 * property-read QLabel $OrderNumberLabel
 	 * property QListBox $FormProductTypeIdControl
 	 * property-read QLabel $FormProductTypeIdLabel
 	 * property QListBox $FormPaymentTypeIdControl
@@ -40,6 +42,8 @@
 	 * property-read QLabel $CostLabel
 	 * property QFloatTextBox $DepositControl
 	 * property-read QLabel $DepositLabel
+	 * property QCheckBox $ViewFlagControl
+	 * property-read QLabel $ViewFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -82,6 +86,12 @@
          * @access protected
          */
 		protected $lstSignupForm;
+
+        /**
+         * @var QIntegerTextBox txtOrderNumber;
+         * @access protected
+         */
+		protected $txtOrderNumber;
 
         /**
          * @var QListBox lstFormProductType;
@@ -143,6 +153,12 @@
          */
 		protected $txtDeposit;
 
+        /**
+         * @var QCheckBox chkViewFlag;
+         * @access protected
+         */
+		protected $chkViewFlag;
+
 
 		// Controls that allow the viewing of FormProduct's individual data fields
         /**
@@ -150,6 +166,12 @@
          * @access protected
          */
 		protected $lblSignupFormId;
+
+        /**
+         * @var QLabel lblOrderNumber
+         * @access protected
+         */
+		protected $lblOrderNumber;
 
         /**
          * @var QLabel lblFormProductTypeId
@@ -210,6 +232,12 @@
          * @access protected
          */
 		protected $lblDeposit;
+
+        /**
+         * @var QLabel lblViewFlag
+         * @access protected
+         */
+		protected $lblViewFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -365,6 +393,32 @@
 			$this->lblSignupFormId->Text = ($this->objFormProduct->SignupForm) ? $this->objFormProduct->SignupForm->__toString() : null;
 			$this->lblSignupFormId->Required = true;
 			return $this->lblSignupFormId;
+		}
+
+		/**
+		 * Create and setup QIntegerTextBox txtOrderNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtOrderNumber_Create($strControlId = null) {
+			$this->txtOrderNumber = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtOrderNumber->Name = QApplication::Translate('Order Number');
+			$this->txtOrderNumber->Text = $this->objFormProduct->OrderNumber;
+			return $this->txtOrderNumber;
+		}
+
+		/**
+		 * Create and setup QLabel lblOrderNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblOrderNumber_Create($strControlId = null, $strFormat = null) {
+			$this->lblOrderNumber = new QLabel($this->objParentObject, $strControlId);
+			$this->lblOrderNumber->Name = QApplication::Translate('Order Number');
+			$this->lblOrderNumber->Text = $this->objFormProduct->OrderNumber;
+			$this->lblOrderNumber->Format = $strFormat;
+			return $this->lblOrderNumber;
 		}
 
 		/**
@@ -633,6 +687,30 @@
 			return $this->lblDeposit;
 		}
 
+		/**
+		 * Create and setup QCheckBox chkViewFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkViewFlag_Create($strControlId = null) {
+			$this->chkViewFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkViewFlag->Name = QApplication::Translate('View Flag');
+			$this->chkViewFlag->Checked = $this->objFormProduct->ViewFlag;
+			return $this->chkViewFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblViewFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblViewFlag_Create($strControlId = null) {
+			$this->lblViewFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblViewFlag->Name = QApplication::Translate('View Flag');
+			$this->lblViewFlag->Text = ($this->objFormProduct->ViewFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblViewFlag;
+		}
+
 
 
 		/**
@@ -659,6 +737,9 @@
 				}
 			}
 			if ($this->lblSignupFormId) $this->lblSignupFormId->Text = ($this->objFormProduct->SignupForm) ? $this->objFormProduct->SignupForm->__toString() : null;
+
+			if ($this->txtOrderNumber) $this->txtOrderNumber->Text = $this->objFormProduct->OrderNumber;
+			if ($this->lblOrderNumber) $this->lblOrderNumber->Text = $this->objFormProduct->OrderNumber;
 
 			if ($this->lstFormProductType) $this->lstFormProductType->SelectedValue = $this->objFormProduct->FormProductTypeId;
 			if ($this->lblFormProductTypeId) $this->lblFormProductTypeId->Text = ($this->objFormProduct->FormProductTypeId) ? FormProductType::$NameArray[$this->objFormProduct->FormProductTypeId] : null;
@@ -690,6 +771,9 @@
 			if ($this->txtDeposit) $this->txtDeposit->Text = $this->objFormProduct->Deposit;
 			if ($this->lblDeposit) $this->lblDeposit->Text = $this->objFormProduct->Deposit;
 
+			if ($this->chkViewFlag) $this->chkViewFlag->Checked = $this->objFormProduct->ViewFlag;
+			if ($this->lblViewFlag) $this->lblViewFlag->Text = ($this->objFormProduct->ViewFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 		}
 
 
@@ -714,6 +798,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstSignupForm) $this->objFormProduct->SignupFormId = $this->lstSignupForm->SelectedValue;
+				if ($this->txtOrderNumber) $this->objFormProduct->OrderNumber = $this->txtOrderNumber->Text;
 				if ($this->lstFormProductType) $this->objFormProduct->FormProductTypeId = $this->lstFormProductType->SelectedValue;
 				if ($this->lstFormPaymentType) $this->objFormProduct->FormPaymentTypeId = $this->lstFormPaymentType->SelectedValue;
 				if ($this->txtName) $this->objFormProduct->Name = $this->txtName->Text;
@@ -724,6 +809,7 @@
 				if ($this->txtMaximumQuantity) $this->objFormProduct->MaximumQuantity = $this->txtMaximumQuantity->Text;
 				if ($this->txtCost) $this->objFormProduct->Cost = $this->txtCost->Text;
 				if ($this->txtDeposit) $this->objFormProduct->Deposit = $this->txtDeposit->Text;
+				if ($this->chkViewFlag) $this->objFormProduct->ViewFlag = $this->chkViewFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -778,6 +864,12 @@
 				case 'SignupFormIdLabel':
 					if (!$this->lblSignupFormId) return $this->lblSignupFormId_Create();
 					return $this->lblSignupFormId;
+				case 'OrderNumberControl':
+					if (!$this->txtOrderNumber) return $this->txtOrderNumber_Create();
+					return $this->txtOrderNumber;
+				case 'OrderNumberLabel':
+					if (!$this->lblOrderNumber) return $this->lblOrderNumber_Create();
+					return $this->lblOrderNumber;
 				case 'FormProductTypeIdControl':
 					if (!$this->lstFormProductType) return $this->lstFormProductType_Create();
 					return $this->lstFormProductType;
@@ -838,6 +930,12 @@
 				case 'DepositLabel':
 					if (!$this->lblDeposit) return $this->lblDeposit_Create();
 					return $this->lblDeposit;
+				case 'ViewFlagControl':
+					if (!$this->chkViewFlag) return $this->chkViewFlag_Create();
+					return $this->chkViewFlag;
+				case 'ViewFlagLabel':
+					if (!$this->lblViewFlag) return $this->lblViewFlag_Create();
+					return $this->lblViewFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -864,6 +962,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'SignupFormIdControl':
 						return ($this->lstSignupForm = QType::Cast($mixValue, 'QControl'));
+					case 'OrderNumberControl':
+						return ($this->txtOrderNumber = QType::Cast($mixValue, 'QControl'));
 					case 'FormProductTypeIdControl':
 						return ($this->lstFormProductType = QType::Cast($mixValue, 'QControl'));
 					case 'FormPaymentTypeIdControl':
@@ -884,6 +984,8 @@
 						return ($this->txtCost = QType::Cast($mixValue, 'QControl'));
 					case 'DepositControl':
 						return ($this->txtDeposit = QType::Cast($mixValue, 'QControl'));
+					case 'ViewFlagControl':
+						return ($this->chkViewFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

@@ -296,6 +296,7 @@
 				case 'Id': return QQN::FormProduct()->Id;
 				case 'SignupFormId': return QQN::FormProduct()->SignupFormId;
 				case 'SignupForm': return QQN::FormProduct()->SignupForm;
+				case 'OrderNumber': return QQN::FormProduct()->OrderNumber;
 				case 'FormProductTypeId': return QQN::FormProduct()->FormProductTypeId;
 				case 'FormPaymentTypeId': return QQN::FormProduct()->FormPaymentTypeId;
 				case 'Name': return QQN::FormProduct()->Name;
@@ -306,6 +307,7 @@
 				case 'MaximumQuantity': return QQN::FormProduct()->MaximumQuantity;
 				case 'Cost': return QQN::FormProduct()->Cost;
 				case 'Deposit': return QQN::FormProduct()->Deposit;
+				case 'ViewFlag': return QQN::FormProduct()->ViewFlag;
 				default: throw new QCallerException('Simple Property not found in FormProductDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

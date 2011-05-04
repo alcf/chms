@@ -28,25 +28,114 @@
 		}
 
 		/**
-		 * Update the AmountBalance calculated field
+		 * Update the Amounts-related calculated fields and returns the current balance
 		 * @param boolean $blnSaveFlag whether or not to save the record after updating
 		 * @return float
 		 */
-		public function RefreshAmountBalance($blnSaveFlag = true) {
-			$this->AmountBalance = $this->SignupForm->Cost - $this->AmountPaid;
+		public function RefreshAmounts($blnSaveFlag = true) {
+			$fltAmountTotal = 0;
+			foreach ($this->GetSignupProductArray() as $objSignupProduct) $fltAmountTotal += ($objSignupProduct->Quantity * $objSignupProduct->Amount);
+			
+			$fltAmountPaid = 0;
+			foreach ($this->GetSignupPaymentArray() as $objSignupPayment) $fltAmountPaid += $objSignupPayment->Amount;
+
+			$this->AmountTotal = $fltAmountTotal;
+			$this->AmountPaid = $fltAmountPaid;
+			$this->AmountBalance = $fltAmountTotal - $fltAmountPaid;
 			if ($blnSaveFlag) $this->Save();
+
+			return $this->AmountBalance;
+		}
+		
+		/**
+		 * This will calulate the minimum amount required to register (e.g. it uses "deposit" if applicable, otherwise it uses the full amount, for each
+		 * signup product.
+		 * @return float
+		 */
+		public function CalculateMinimumDeposit() {
+			$fltDeposit = 0;
+			foreach ($this->GetSignupProductArray() as $objSignupProduct) {
+				switch ($objSignupProduct->FormProduct->FormPaymentTypeId) {
+					case FormPaymentType::DepositRequired:
+						$fltDeposit += ($objSignupProduct->Quantity * $objSignupProduct->FormProduct->Deposit);
+						break;
+					default:
+						$fltDeposit += ($objSignupProduct->Quantity * $objSignupProduct->Amount);
+						break;
+				}
+			}
+			
+			return $fltDeposit;
 		}
 
+		/**
+		 * Adds a payment records for this Entry
+		 * @param integer $intSignupPaymentTypeId
+		 * @param float $fltAmount
+		 * @param string $strTransactionCode
+		 * @param QDateTime $dttTransactionDate optional, uses Now() if nothing is passed in
+		 * @return SignupPayment
+		 */
+		public function AddPayment($intSignupPaymentTypeId, $fltAmount, $strTransactionCode, QDateTime $dttTransactionDate = null) {
+			$objSignupPayment = new SignupPayment();
+			$objSignupPayment->SignupEntry = $this;
+			$objSignupPayment->SignupPaymentTypeId = $intSignupPaymentTypeId;
+			$objSignupPayment->TransactionDate = ($dttTransactionDate ? $dttTransactionDate : QDateTime::Now());
+			$objSignupPayment->TransactionCode = $strTransactionCode;
+			$objSignupPayment->Amount = $fltAmount;
+			$objSignupPayment->Save();
+			
+			$this->RefreshAmounts();
+			
+			return $objSignupPayment;
+		}
+		
 		/**
 		 * Adds a product selection to this signup entry
 		 * @param FormProduct $objFormProduct
 		 * @param integer $intQuantity only specify if we are dealing with an "optional" product, otherwise we assume 1
 		 * @param float $fltAmount only specify if we are allowed a variable amount to specify (e.g. for a donation), otherwise leave blank
+		 * @return SignupProduct
 		 */
 		public function AddProduct(FormProduct $objFormProduct, $intQuantity = 1, $fltAmount = null) {
-			
+			$objSignupProduct = new SignupProduct();
+			$objSignupProduct->SignupEntry = $this;
+			$objSignupProduct->FormProduct = $objFormProduct;
+
+			switch ($objFormProduct->FormProductTypeId) {
+				case FormProductType::Required:
+					$objSignupProduct->Quantity = 1;
+					break;
+				case FormProductType::RequiredWithChoice:
+					$objSignupProduct->Quantity = 1;
+					break;
+				case FormProductType::Optional:
+					if (($intQuantity < $objFormProduct->MinimumQuantity) || ($intQuantity > $objFormProduct->MaximumQuantity))
+						throw new QCallerException('Invalid Quantity for Optional Product');
+					$objSignupProduct->Quantity = $intQuantity;
+					break;
+				default:
+					throw new Exception('Unhandled FormProductTypeId: ' . $objFormProduct->FormProductTypeId);
+			}
+
+			switch ($objFormProduct->FormPaymentTypeId) {
+				case FormPaymentType::PayInFull:
+					$objSignupProduct->Amount = $objFormProduct->Cost;
+					break;
+				case FormPaymentType::DepositRequired:
+					$objSignupProduct->Amount = $objFormProduct->Cost;
+					break;
+				case FormPaymentType::Donation:
+					if (is_null($fltAmount) || ($fltAmount < 0)) throw new QCallerException('Invalid Amount entered for Donation');
+					$objSignupProduct->Amount = $fltAmount;
+					break;
+			}
+
+			$objSignupProduct->Save();
+			$this->RefreshAmounts();
+			return $objSignupProduct;
 		}
-		
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
