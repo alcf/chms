@@ -16,9 +16,15 @@
 		protected $dtgQuestions;
 		protected $cblColumns;
 
-		protected $pxyMoveUp;
-		protected $pxyMoveDown;
+		protected $dtgProductsArray;
+		
+		protected $pxyMoveUpQuestion;
+		protected $pxyMoveDownQuestion;
 		protected $lstCreateNewQuestion;
+		
+		protected $pxyMoveUpProduct;
+		protected $pxyMoveDownProduct;
+		protected $lstCreateNewProduct;
 		
 		protected $lblName;
 		protected $lblSignupUrl;
@@ -50,12 +56,26 @@
 			$this->dtgSignupEntries->FontSize = '10px';
 
 			$this->dtgQuestions = new FormQuestionDataGrid($this);
-			$this->dtgQuestions->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorder($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
+			$this->dtgQuestions->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorderQuestion($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
 			$this->dtgQuestions->MetaAddTypeColumn('FormQuestionTypeId', 'FormQuestionType', 'Name=Question Type', 'Width=180px');
 			$this->dtgQuestions->MetaAddColumn('ShortDescription', 'Html=<?= $_FORM->RenderShortDescription($_ITEM); ?>', 'Width=200px', 'HtmlEntities=false');
 			$this->dtgQuestions->MetaAddColumn('Question', 'Width=400px');
 			$this->dtgQuestions->MetaAddColumn('RequiredFlag', 'Width=60px', 'Name=Required?', 'Html=<?= ($_ITEM->RequiredFlag ? "Yes" : null) ?>');
 			$this->dtgQuestions->SetDataBinder('dtgQuestions_Bind');
+			
+			$this->dtgProductsArray = array();
+			foreach (FormProductType::$NameArray as $intFormProductTypeId => $strName) {
+				if (FormProduct::CountBySignupFormIdFormProductTypeId($this->objSignupForm->Id, $intFormProductTypeId)) {
+					$dtgProducts = new FormProductDataGrid($this);
+					$dtgProducts->ActionParameter = $intFormProductTypeId;
+					$dtgProducts->SetDataBinder('dtgProducts_Bind');
+
+					$dtgProducts->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorderProduct($_ITEM, $_CONTROL); ?>', 'HtmlEntities=false', 'Width=60px'));
+					$dtgProducts->MetaAddColumn('Name', 'Html=<?= $_FORM->RenderName($_ITEM); ?>', 'Width=200px', 'HtmlEntities=false');
+					
+					$this->dtgProductsArray[] = $dtgProducts;
+				}
+			}
 			
 			if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) {
 				$this->lstCreateNewQuestion = new QListBox($this);
@@ -63,6 +83,12 @@
 				foreach (FormQuestionType::$NameArray as $intId => $strName)
 					$this->lstCreateNewQuestion->AddItem($strName, $intId);
 				$this->lstCreateNewQuestion->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNewQuestion_Change'));
+
+				$this->lstCreateNewProduct = new QListBox($this);
+				$this->lstCreateNewProduct->AddItem('- Create New Product -', null);
+				foreach (FormProductType::$NameArray as $intId => $strName)
+					$this->lstCreateNewProduct->AddItem($strName, $intId);
+				$this->lstCreateNewProduct->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNewProduct_Change'));
 			}
 
 			$this->cblColumns = new QCheckBoxList($this);
@@ -86,14 +112,22 @@
 					$this->SetupLabelsForEvent();
 					break;
 			}
-			
-			$this->pxyMoveDown = new QControlProxy($this);
-			$this->pxyMoveDown->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveDown_Click'));
-			$this->pxyMoveDown->AddAction(new QClickEvent(), new QTerminateAction());
-			
-			$this->pxyMoveUp = new QControlProxy($this);
-			$this->pxyMoveUp->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveUp_Click'));
-			$this->pxyMoveUp->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->pxyMoveDownQuestion = new QControlProxy($this);
+			$this->pxyMoveDownQuestion->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveDownQuestion_Click'));
+			$this->pxyMoveDownQuestion->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->pxyMoveUpQuestion = new QControlProxy($this);
+			$this->pxyMoveUpQuestion->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveUpQuestion_Click'));
+			$this->pxyMoveUpQuestion->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->pxyMoveDownProduct = new QControlProxy($this);
+			$this->pxyMoveDownProduct->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveDownProduct_Click'));
+			$this->pxyMoveDownProduct->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->pxyMoveUpProduct = new QControlProxy($this);
+			$this->pxyMoveUpProduct->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveUpProduct_Click'));
+			$this->pxyMoveUpProduct->AddAction(new QClickEvent(), new QTerminateAction());
 		}
 
 		protected function SetupLabels() {
@@ -146,14 +180,14 @@
 			return sprintf('<a href="/events/question.php/%s/%s">%s</a>', $this->objSignupForm->Id, $objQuestion->Id, QApplication::HtmlEntities($objQuestion->ShortDescription));
 		}
 
-		public function RenderReorder(FormQuestion $objQuestion) {
+		public function RenderReorderQuestion(FormQuestion $objQuestion) {
 			$strToReturn = null;
 
 			if ($this->dtgQuestions->CurrentRowIndex == 0) {
 				$strToReturn .= '<img src="/assets/images/spacer.png" style="width: 16px; height: 16px;"/>';
 			} else {
 				$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/arrow_up.png" title="Move Up" style="width: 16px; height: 16px;"/></a>',
-					$this->pxyMoveUp->RenderAsEvents($objQuestion->Id, false));
+					$this->pxyMoveUpQuestion->RenderAsEvents($objQuestion->Id, false));
 			}
 
 			$strToReturn .= ' ';
@@ -161,24 +195,57 @@
 				$strToReturn .= '<img src="/assets/images/spacer.png" style="width: 16px; height: 16px;"/>';
 			} else {
 				$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/arrow_down.png" title="Move Down" style="width: 16px; height: 16px;"/></a>',
-					$this->pxyMoveDown->RenderAsEvents($objQuestion->Id, false));
+					$this->pxyMoveDownQuestion->RenderAsEvents($objQuestion->Id, false));
 			}
 			
 			return $strToReturn;
 		}
 
-		public function pxyMoveDown_Click($strFormId, $strControlId, $strParameter) {
+		public function RenderReorderProduct(FormProduct $objProduct, FormProductDataGrid $dtgProducts) {
+			$strToReturn = null;
+
+			if ($dtgProducts->CurrentRowIndex == 0) {
+				$strToReturn .= '<img src="/assets/images/spacer.png" style="width: 16px; height: 16px;"/>';
+			} else {
+				$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/arrow_up.png" title="Move Up" style="width: 16px; height: 16px;"/></a>',
+					$this->pxyMoveUpProduct->RenderAsEvents($objProduct->Id, false));
+			}
+
+			$strToReturn .= ' ';
+			if ($dtgProducts->CurrentRowIndex == (count($dtgProducts->DataSource) - 1)) {
+				$strToReturn .= '<img src="/assets/images/spacer.png" style="width: 16px; height: 16px;"/>';
+			} else {
+				$strToReturn .= sprintf('<a href="#" %s><img src="/assets/images/icons/arrow_down.png" title="Move Down" style="width: 16px; height: 16px;"/></a>',
+					$this->pxyMoveDownProduct->RenderAsEvents($objProduct->Id, false));
+			}
+			
+			return $strToReturn;
+		}
+
+		public function pxyMoveDownQuestion_Click($strFormId, $strControlId, $strParameter) {
 			$objFormQuestion = FormQuestion::Load($strParameter);
 			$objFormQuestion->MoveDown();
 			$this->dtgQuestions->Refresh();
 		}
 
-		public function pxyMoveUp_Click($strFormId, $strControlId, $strParameter) {
+		public function pxyMoveUpQuestion_Click($strFormId, $strControlId, $strParameter) {
 			$objFormQuestion = FormQuestion::Load($strParameter);
 			$objFormQuestion->MoveUp();
 			$this->dtgQuestions->Refresh();
 		}
-		
+
+		public function pxyMoveDownProduct_Click($strFormId, $strControlId, $strParameter) {
+			$objFormProduct = FormProduct::Load($strParameter);
+			$objFormProduct->MoveDown();
+			foreach ($this->dtgProductsArray as $dtgProducts) $dtgProducts->Refresh();
+		}
+
+		public function pxyMoveUpProduct_Click($strFormId, $strControlId, $strParameter) {
+			$objFormProduct = FormProduct::Load($strParameter);
+			$objFormProduct->MoveUp();
+			foreach ($this->dtgProductsArray as $dtgProducts) $dtgProducts->Refresh();
+		}
+
 		public function cblColumns_Click() {
 			foreach ($this->cblColumns->GetAllItems() as $objItem) {
 				$objQuestion = FormQuestion::Load($objItem->Value);
@@ -210,6 +277,10 @@
 
 		public function RenderAmount($fltAmount) {
 			return QApplication::DisplayCurrency($fltAmount);
+		}
+
+		public function RenderName(FormProduct $objProduct) {
+			return sprintf('<a href="/events/product.php/%s/%s">%s</a>', $this->objSignupForm->Id, $objProduct->Id, QApplication::HtmlEntities($objProduct->Name));
 		}
 
 		public function RenderAnswer(SignupEntry $objSignupEntry, $intFormQuestionId, $intFormQuestionTypeId) {
@@ -250,8 +321,17 @@
 			$this->dtgQuestions->DataSource = $this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber));
 		}
 		
+		public function dtgProducts_Bind(QDataGrid $dtgProducts) {
+			$intFormProductTypeId = $dtgProducts->ActionParameter;
+			$dtgProducts->DataSource = FormProduct::LoadArrayBySignupFormIdFormProductTypeId($this->objSignupForm->Id, $intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber));
+		}
+		
 		public function lstCreateNewQuestion_Change() {
 			if ($this->lstCreateNewQuestion->SelectedValue) QApplication::Redirect(sprintf('/events/question.php/%s/0/%s', $this->objSignupForm->Id, $this->lstCreateNewQuestion->SelectedValue));
+		}
+		
+		public function lstCreateNewProduct_Change() {
+			if ($this->lstCreateNewProduct->SelectedValue) QApplication::Redirect(sprintf('/events/product.php/%s/0/%s', $this->objSignupForm->Id, $this->lstCreateNewProduct->SelectedValue));
 		}
 	}
 

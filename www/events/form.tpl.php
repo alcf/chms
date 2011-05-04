@@ -16,24 +16,33 @@
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
 	</div>
 	
-<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
-	<div class="buttonBar">
-		<input type="button" class="primary" value="Edit" onclick="document.location=&quot;/events/edit.php/<?php _p($this->objSignupForm->Id); ?>&quot;; return false;"/>
-	</div>
-	<br clear="all"/>
-<?php } ?>
+	<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
+		<div class="buttonBar">
+			<input type="button" class="primary" value="Edit" onclick="document.location=&quot;/events/edit.php/<?php _p($this->objSignupForm->Id); ?>&quot;; return false;"/>
+		</div>
+		<br clear="all"/>
+	<?php } ?>
 
-	<h3>Form Questions / Fields</h3>
+	<h3>Questions, Fields and Products</h3>
 	<div class="section">
+		<h3>Questions</h3>
 		<?php $this->dtgQuestions->Render(); ?>
+
+		<?php foreach ($this->dtgProductsArray as $dtgProducts) { ?>
+			<div class="line">&nbsp;</div>
+			<h3><?php _p(FormProductType::$NameArray[$dtgProducts->ActionParameter]); ?> Products</h3>
+			<?php $dtgProducts->Render(); ?>
+		<?php } ?>
 	</div>
 
-<?php if ($this->lstCreateNewQuestion) { ?>
-	<div class="buttonBar">
-		<?php $this->lstCreateNewQuestion->Render(); ?>
-	</div>
-	<br clear="all"/>
-<?php } ?>
+	<?php if ($this->lstCreateNewQuestion) { ?>
+		<div class="buttonBar">
+			<?php $this->lstCreateNewQuestion->Render(); ?>
+			&nbsp;
+			<?php $this->lstCreateNewProduct->Render(); ?>
+		</div>
+		<br clear="all"/>
+	<?php } ?>
 
 	<h3>Signups</h3>
 	<div class="section">
