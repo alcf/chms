@@ -30,7 +30,9 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return FormProductType::$NameArray[$this->intFormProductTypeId];
-
+				case 'DateStartHtml': return ($this->dttDateEnd) ? $this->dttDateStart->ToString('MMM D YYYY') . '<br/><span class="na">' . $this->dttDateStart->ToString('hh:mm:ss zz</span>') : null;
+				case 'DateEndHtml': return ($this->dttDateEnd) ? $this->dttDateEnd->ToString('MMM D YYYY') . '<br/><span class="na">' . $this->dttDateEnd->ToString('hh:mm:ss zz</span>') : null;
+				
 				default:
 					try {
 						return parent::__get($strName);

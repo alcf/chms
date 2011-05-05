@@ -71,7 +71,14 @@
 					$dtgProducts->SetDataBinder('dtgProducts_Bind');
 
 					$dtgProducts->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorderProduct($_ITEM, $_CONTROL); ?>', 'HtmlEntities=false', 'Width=60px'));
-					$dtgProducts->MetaAddColumn('Name', 'Html=<?= $_FORM->RenderName($_ITEM); ?>', 'Width=200px', 'HtmlEntities=false');
+					$dtgProducts->MetaAddColumn('Name', 'Html=<?= $_FORM->RenderName($_ITEM); ?>', 'Width=250px', 'HtmlEntities=false');
+					$dtgProducts->MetaAddColumn('DateStart', 'Name=Date Available', 'Html=<?= $_ITEM->DateStartHtml; ?>', 'HtmlEntities=false', 'Width=100px');
+					$dtgProducts->MetaAddColumn('DateEnd', 'Name=Date Unavail.', 'Html=<?= $_ITEM->DateEndHtml; ?>', 'HtmlEntities=false', 'Width=100px');
+					$dtgProducts->MetaAddColumn('MinimumQuantity', 'Name=Min. Qty.', 'Width=70px');
+					$dtgProducts->MetaAddColumn('MaximumQuantity', 'Name=Max. Qty.', 'Width=70px');
+					$dtgProducts->MetaAddTypeColumn('FormPaymentTypeId', 'FormPaymentType', 'Name=Pay Type', 'Width=70px');
+					$dtgProducts->MetaAddColumn('Cost', 'Html=<?= $_FORM->RenderAmount($_ITEM->Cost, false); ?>', 'Width=70px');
+					$dtgProducts->MetaAddColumn('Deposit', 'Html=<?= $_FORM->RenderAmount($_ITEM->Deposit, false); ?>', 'Width=70px');
 					
 					$this->dtgProductsArray[] = $dtgProducts;
 				}
@@ -275,8 +282,9 @@
 			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted ? $_ITEM->DateSubmitted->ToString("MMM D YYYY") : null; ?>');
 		}
 
-		public function RenderAmount($fltAmount) {
-			return QApplication::DisplayCurrency($fltAmount);
+		public function RenderAmount($fltAmount, $blnDisplayNullAsZero = true) {
+			if ($blnDisplayNullAsZero || !is_null($fltAmount))
+				return QApplication::DisplayCurrency($fltAmount);
 		}
 
 		public function RenderName(FormProduct $objProduct) {
