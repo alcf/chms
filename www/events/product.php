@@ -67,6 +67,8 @@
 					default:
 						throw new Exception('Invalid FormProductType: ' . $objProduct->FormProductTypeId);
 				}
+				
+				$objProduct->FormPaymentTypeId = FormPaymentType::PayInFull;
 			}
 
 			$this->mctProduct = new FormProductMetaControl($this, $objProduct);
@@ -89,7 +91,11 @@
 					break;
 				case FormProductType::Optional:
 					$this->txtMaximumQuantity = $this->mctProduct->txtMaximumQuantity_Create();
+					$this->txtMaximumQuantity->Required = true;
+					$this->txtMaximumQuantity->Minimum = 0;
 					$this->txtMinimumQuantity = $this->mctProduct->txtMinimumQuantity_Create();
+					$this->txtMinimumQuantity->Required = true;
+					$this->txtMinimumQuantity->Minimum = 0;
 					break;
 				default:
 					throw new Exception('Invalid FormProductType: ' . $objProduct->FormProductTypeId);
@@ -173,17 +179,48 @@
 			if ($this->txtDeposit->Visible) {
 				if ($this->txtDeposit->Text >= $this->txtCost->Text) {
 					$this->txtDeposit->Warning = 'Deposit must be less than the overall cost';
-					$this->txtDeposit->Blink();
-					$this->txtDeposit->Focus();
 					$blnToReturn = false;
+				}
+			}
+
+			if ($this->txtMinimumQuantity) {
+				if ($this->txtMaximumQuantity->Text < $this->txtMinimumQuantity->Text) {
+					$this->txtMaximumQuantity->Warning = 'Maximum Quantity must be greater or equal to Minimum Quantity';
+					$blnToReturn = false;
+				}
+			}
+
+			if ($this->dtxDateStart->DateTime && $this->dtxDateEnd->DateTime) {
+				if ($this->dtxDateEnd->DateTime->IsEarlierThan($this->dtxDateStart->DateTime)) {
+					$this->dtxDateEnd->Warning = 'Date Unavailable must be after Date Available';
+					$blnToReturn = false;
+				}
+			}
+
+			$blnFirst = true;
+			foreach ($this->GetErrorControls() as $objControl) {
+				$objControl->Blink();
+				if ($blnFirst) {
+					$objControl->Focus();
+					$blnFirst = false;
 				}
 			}
 
 			return $blnToReturn;
 		}
 		protected function btnSave_Click() {
-			$this->mctQuestion->SaveFormQuestion();
-			FormQuestion::RefreshOrderNumber($this->objSignupForm->Id);
+			$this->mctProduct->SaveFormProduct();
+			
+			// Fix up 12AM (no time) issue for end date
+			if ($this->mctProduct->FormProduct->DateEnd &&
+				($this->mctProduct->FormProduct->DateEnd->Hour == 0) &&
+				($this->mctProduct->FormProduct->DateEnd->Minute == 0) &&
+				($this->mctProduct->FormProduct->DateEnd->Second == 0)) {
+				$this->mctProduct->FormProduct->DateEnd->SetTime(23, 59, 59);
+				$this->mctProduct->FormProduct->Save();
+			}
+
+			FormProduct::RefreshOrderNumber($this->objSignupForm->Id, $this->mctProduct->FormProduct->FormProductTypeId);
 			QApplication::Redirect('/events/form.php/' . $this->objSignupForm->Id);
 		}
 		
@@ -192,9 +229,8 @@
 		}
 			
 		protected function btnDelete_Click() {
-			$this->mctQuestion->FormQuestion->DeleteAllFormAnswers();
-			$this->mctQuestion->DeleteFormQuestion();
-			FormQuestion::RefreshOrderNumber($this->objSignupForm->Id);
+			$this->mctProduct->DeleteFormProduct();
+			FormProduct::RefreshOrderNumber($this->objSignupForm->Id, $this->mctProduct->FormProduct->FormProductTypeId);
 			QApplication::Redirect('/events/form.php/' . $this->objSignupForm->Id);
 		}
 	}

@@ -30,7 +30,7 @@
 		public function dtxDateStart_Create($strControlId = null) {
 			$this->dtxDateStart = new QDateTimeTextBox($this->objParentObject, $strControlId);
 			$this->dtxDateStart->Name = "Date Product Available";
-			$this->dtxDateStart->Text = ($this->objFormProduct->DateStart) ? $this->objFormProduct->DateStart->ToString() : null;
+			$this->dtxDateStart->Text = ($this->objFormProduct->DateStart) ? $this->objFormProduct->DateStart->ToString('MMMM DD YYYY, hh:mm:ss zz') : null;
 			return $this->dtxDateStart;
 		}
 
@@ -57,7 +57,7 @@
 		public function dtxDateEnd_Create($strControlId = null) {
 			$this->dtxDateEnd = new QDateTimeTextBox($this->objParentObject, $strControlId);
 			$this->dtxDateEnd->Name = "Date Product Unavailable";
-			$this->dtxDateEnd->Text = ($this->objFormProduct->DateEnd) ? $this->objFormProduct->DateEnd->ToString() : null;
+			$this->dtxDateEnd->Text = ($this->objFormProduct->DateEnd) ? $this->objFormProduct->DateEnd->ToString('MMMM DD YYYY, hh:mm:ss zz') : null;
 			return $this->dtxDateEnd;
 		}
 
