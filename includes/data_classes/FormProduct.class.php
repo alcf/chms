@@ -27,6 +27,20 @@
 			return sprintf('FormProduct Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Type': return FormProductType::$NameArray[$this->intFormProductTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		public static function RefreshOrderNumber($intSignupFormId, $intFormProductTypeId) {
 			$intOrderNumber = 1;
 			foreach (FormProduct::LoadArrayBySignupFormIdFormProductTypeId($intSignupFormId, $intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber)) as $objFormProduct) {

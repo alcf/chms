@@ -16,13 +16,6 @@
 		<?php $this->chkAllowOtherFlag->RenderWithName(); ?>
 	</div>
 
-	<h3>Payment and Cost Information</h3>
-	<div class="section">
-		<?php $this->lstFormPaymentTypeId->RenderWithName('Required=true'); ?>
-		<?php $this->txtCost->RenderWithName(); ?>
-		<?php $this->txtDeposit->RenderWithName(); ?>
-	</div>
-
 	<h3>Registration Capacity and Limits</h3>
 	<div class="section">
 		<?php $this->txtSignupLimit->RenderWithName('Name=Overall Capacity Limit'); ?>

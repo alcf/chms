@@ -21,9 +21,7 @@
 		protected $txtInformationUrl;
 		protected $chkAllowOtherFlag;
 		protected $chkAllowMultipleFlag;
-		protected $lstFormPaymentTypeId;
-		protected $txtCost;
-		protected $txtDeposit;
+
 		protected $txtSignupLimit;
 		protected $txtSignupMaleLimit;
 		protected $txtSignupFemaleLimit;
@@ -93,19 +91,6 @@
 
 			if ($this->mctSignupForm->EditMode) $this->lstMinistry->Enabled = false;
 
-			// Setup Payment
-			$this->lstFormPaymentTypeId = $this->mctSignupForm->lstFormPaymentType_Create();
-			$this->lstFormPaymentTypeId->AddAction(new QChangeEvent(), new QAjaxAction('lstFormPaymentTypeId_Refresh'));
-			
-			$this->txtCost = $this->mctSignupForm->txtCost_Create();
-			$this->txtCost->HtmlBefore = '<span>$ </span>';
-			$this->txtCost->Minimum = 0;
-			$this->txtDeposit = $this->mctSignupForm->txtDeposit_Create();
-			$this->txtDeposit->HtmlBefore = '<span>$ </span>';
-			$this->txtDeposit->Minimum = 0;
-			
-			$this->lstFormPaymentTypeId_Refresh(null, null, null);
-
 			// Setup Limit
 			$this->txtSignupLimit = $this->mctSignupForm->txtSignupLimit_Create();
 			$this->txtSignupLimit->Minimum = 0;
@@ -142,39 +127,6 @@
 				}
 			}
 		}
-		
-		public function lstFormPaymentTypeId_Refresh($strFormId, $strControlId, $strParameter) {
-			switch ($this->lstFormPaymentTypeId->SelectedValue) {
-				case FormPaymentType::NoPayment:
-					$this->txtCost->Text = null;
-					$this->txtDeposit->Text = null;
-					$this->txtCost->Visible = false;
-					$this->txtDeposit->Visible = false;
-					break;
-				case FormPaymentType::DepositRequired:
-					$this->txtCost->Visible = true;
-					$this->txtDeposit->Visible = true;
-					break;
-				case FormPaymentType::VariablePayment:
-					$this->txtCost->Visible = true;
-					$this->txtDeposit->Visible = true;
-					break;
-				case FormPaymentType::PayInFull:
-					$this->txtDeposit->Text = null;
-					$this->txtCost->Visible = true;
-					$this->txtDeposit->Visible = false;
-					break;
-				default:
-					$this->txtCost->Text = null;
-					$this->txtDeposit->Text = null;
-					$this->txtCost->Visible = false;
-					$this->txtDeposit->Visible = false;
-					break;
-			}
-			
-			$this->txtCost->Required = $this->txtCost->Visible;
-			$this->txtDeposit->Required = $this->txtDeposit->Visible;
-		}
 
 		public function btnSave_Click() {
 			// Check for unique token
@@ -192,16 +144,6 @@
 				}
 			} else {
 				$this->txtToken->Text = null;
-			}
-
-			// Check to ensure cost makes sense
-			if ($this->txtDeposit->Visible) {
-				if ($this->txtDeposit->Text >= $this->txtCost->Text) {
-					$this->txtDeposit->Warning = 'Deposit must be less than the overall cost';
-					$this->txtDeposit->Blink();
-					$this->txtDeposit->Focus();
-					return;
-				}
 			}
 			
 			$this->mctSignupForm->SaveSignupForm();
