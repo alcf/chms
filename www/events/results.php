@@ -13,6 +13,7 @@
 
 		protected $dtgSignupEntries;
 		protected $cblColumns;
+		protected $chkShowNonComplete;
 
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
@@ -47,6 +48,15 @@
 
 			// Setup dtgSignups
 			$this->dtgSignupEntries_SetupColumns();
+			
+			$this->chkShowNonComplete = new QCheckBox($this);
+			$this->chkShowNonComplete->Text = 'Show Incomplete / Test';
+			$this->chkShowNonComplete->Checked = false;
+			$this->chkShowNonComplete->AddAction(new QClickEvent(), new QAjaxAction('chkShowNonComplete_Click'));
+		}
+
+		public function chkShowNonComplete_Click() {
+			$this->dtgSignupEntries->Refresh();
 		}
 
 		public function cblColumns_Click() {
@@ -68,8 +78,7 @@
 
 		public function dtgSignupEntries_SetupColumns() {
 			$this->dtgSignupEntries->RemoveAllColumns();
-			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->FirstName);
-			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->LastName);
+			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->LastName, 'Name=Name', 'Html=<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false');
 			
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 				if ($objFormQuestion->ViewFlag) {
@@ -89,6 +98,22 @@
 			}
 			
 			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted ? $_ITEM->DateSubmitted->ToString("MMM D YYYY") : null; ?>');
+		}
+		
+		public function RenderName(SignupEntry $objSignupEntry) {
+			if ($objSignupEntry->SignupEntryStatusTypeId == SignupEntryStatusType::Complete) {
+				$this->dtgSignupEntries->OverrideRowStyle($this->dtgSignupEntries->CurrentRowIndex, null);
+				$strASpan = null;
+			} else {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->ForeColor = '#999';
+				$objStyle->FontItalic = true;
+				$this->dtgSignupEntries->OverrideRowStyle($this->dtgSignupEntries->CurrentRowIndex, $objStyle);
+				$strASpan = ' style="color: #999;"';
+			}
+			
+			return sprintf('<a href="/events/result.php/%s/%s" title="View and Edit this signup" %s>%s</a>',
+				$this->objSignupForm->Id, $objSignupEntry->Id, $strASpan, QApplication::HtmlEntities($objSignupEntry->Person->Name));
 		}
 
 		public function RenderAmount($fltAmount, $blnDisplayNullAsZero = true) {
@@ -133,7 +158,12 @@
 		}
 		
 		public function dtgSignupEntries_Bind() {
-			$this->dtgSignupEntries->MetaDataBinder(QQ::Equal(QQN::SignupEntry()->SignupFormId, $this->objSignupForm->Id));
+			$objCondition = QQ::Equal(QQN::SignupEntry()->SignupFormId, $this->objSignupForm->Id);
+			if (!$this->chkShowNonComplete->Checked) {
+				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, SignupEntryStatusType::Complete));
+			}
+
+			$this->dtgSignupEntries->MetaDataBinder($objCondition);
 		}
 	}
 

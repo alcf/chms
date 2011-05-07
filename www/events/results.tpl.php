@@ -5,6 +5,10 @@
 
 	<div class="section">
 		<div class="columnSelectorColumn">
+			<div style="font-weight: bold; ">Show Non-Complete Entries?</div>
+			<?php $this->chkShowNonComplete->Render(); ?>
+			<br/>
+		
 			<div style="font-weight: bold; ">Select Columns to View</div>
 			<?php $this->cblColumns->Render('CssClass=columnSelector'); ?>
 			<br/>
