@@ -1219,7 +1219,9 @@ ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id
 
 ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
 
-CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`);
+CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`,`signup_entry_status_type_id`);
+
+CREATE INDEX `signup_entry_idx_1` ON `signup_entry` (`signup_form_id`,`signup_entry_status_type_id`);
 
 CREATE INDEX `signup_form_id_idx` ON `signup_entry`(`signup_form_id`);
 ALTER TABLE `signup_entry` ADD FOREIGN KEY signup_form_id_idxfk_3 (`signup_form_id`) REFERENCES `signup_form` (`id`);
@@ -1249,6 +1251,8 @@ ALTER TABLE `form_answer` ADD FOREIGN KEY form_question_id_idxfk (`form_question
 
 CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
 ALTER TABLE `form_answer` ADD FOREIGN KEY address_id_idxfk_1 (`address_id`) REFERENCES `address` (`id`);
+
+CREATE UNIQUE INDEX `signup_product_idx` ON `signup_product` (`signup_entry_id`,`form_product_id`);
 
 CREATE INDEX `signup_entry_id_idx` ON `signup_product`(`signup_entry_id`);
 ALTER TABLE `signup_product` ADD FOREIGN KEY signup_entry_id_idxfk_2 (`signup_entry_id`) REFERENCES `signup_entry` (`id`);

@@ -64,7 +64,7 @@
 		 * @return boolean
 		 */
 		public function IsPersonRegistered(Person $objPerson) {
-			if (SignupEntry::CountBySignupFormIdPersonId($this->Id, $objPerson->Id))
+			if (SignupEntry::CountBySignupFormIdPersonIdSignupEntryStatusTypeId($this->Id, $objPerson->Id, SignupEntryStatusType::Complete))
 				return true;
 			else
 				return false;

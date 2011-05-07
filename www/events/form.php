@@ -12,9 +12,7 @@
 		protected $objSignupForm;
 		protected $mctSignupForm;
 
-		protected $dtgSignupEntries;
 		protected $dtgQuestions;
-		protected $cblColumns;
 
 		protected $dtgProductsArray;
 		
@@ -25,7 +23,7 @@
 		protected $pxyMoveUpProduct;
 		protected $pxyMoveDownProduct;
 		protected $lstCreateNewProduct;
-		
+
 		protected $lblName;
 		protected $lblSignupUrl;
 		protected $lblInformationUrl;
@@ -47,13 +45,6 @@
 			}
 			
 			$this->strPageTitle .= $this->objSignupForm->Name;
-
-			$this->dtgSignupEntries = new SignupEntryDataGrid($this);
-			$this->dtgSignupEntries->CssClass = 'datagrid';
-			$this->dtgSignupEntries->SetDataBinder('dtgSignupEntries_Bind');
-			$this->dtgSignupEntries->Paginator = new QPaginator($this->dtgSignupEntries);
-			$this->dtgSignupEntries->SortColumnIndex = 1;
-			$this->dtgSignupEntries->FontSize = '10px';
 
 			$this->dtgQuestions = new FormQuestionDataGrid($this);
 			$this->dtgQuestions->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorderQuestion($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
@@ -98,20 +89,6 @@
 				$this->lstCreateNewProduct->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNewProduct_Change'));
 			}
 
-			$this->cblColumns = new QCheckBoxList($this);
-			$this->cblColumns->HtmlEntities = false;
-			$this->cblColumns->AddAction(new QClickEvent(), new QAjaxAction('cblColumns_Click'));
-			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
-				if ($objFormQuestion->RequiredFlag)
-					$strDescription = '<strong>' . QApplication::HtmlEntities($objFormQuestion->ShortDescription) . '</strong>';
-				else
-					$strDescription = QApplication::HtmlEntities($objFormQuestion->ShortDescription);
-				$this->cblColumns->AddItem($strDescription, $objFormQuestion->Id, $objFormQuestion->ViewFlag);
-			}
-			
-			// Setup dtgSignups
-			$this->dtgSignupEntries_SetupColumns();
-			
 			// Setup "About Event" label controls
 			$this->SetupLabels();
 			switch ($this->objSignupForm->SignupFormTypeId) {
@@ -229,6 +206,15 @@
 			return $strToReturn;
 		}
 
+		public function RenderAmount($fltAmount, $blnDisplayNullAsZero = true) {
+			if ($blnDisplayNullAsZero || !is_null($fltAmount))
+				return QApplication::DisplayCurrency($fltAmount);
+		}
+
+		public function RenderName(FormProduct $objProduct) {
+			return sprintf('<a href="/events/product.php/%s/%s">%s</a>', $this->objSignupForm->Id, $objProduct->Id, QApplication::HtmlEntities($objProduct->Name));
+		}
+
 		public function pxyMoveDownQuestion_Click($strFormId, $strControlId, $strParameter) {
 			$objFormQuestion = FormQuestion::Load($strParameter);
 			$objFormQuestion->MoveDown();
@@ -251,78 +237,6 @@
 			$objFormProduct = FormProduct::Load($strParameter);
 			$objFormProduct->MoveUp();
 			foreach ($this->dtgProductsArray as $dtgProducts) if ($dtgProducts->Name == $objFormProduct->FormProductTypeId) $dtgProducts->Refresh();
-		}
-
-		public function cblColumns_Click() {
-			foreach ($this->cblColumns->GetAllItems() as $objItem) {
-				$objQuestion = FormQuestion::Load($objItem->Value);
-				$objQuestion->ViewFlag = $objItem->Selected;
-				$objQuestion->Save();
-			}
-			$this->dtgSignupEntries_SetupColumns();
-			$this->dtgSignupEntries->Refresh();
-		}
-
-		public function dtgSignupEntries_SetupColumns() {
-			$this->dtgSignupEntries->RemoveAllColumns();
-			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->FirstName);
-			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->LastName);
-			
-			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
-				if ($objFormQuestion->ViewFlag) {
-					$this->dtgSignupEntries->AddColumn(new QDataGridColumn($objFormQuestion->ShortDescription, '<?= $_FORM->RenderAnswer($_ITEM, ' . $objFormQuestion->Id . ',' . $objFormQuestion->FormQuestionTypeId . '); ?>', 'HtmlEntities=false'));
-				}
-			}
-
-			if ($this->objSignupForm->CountFormProducts()) {
-				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountPaid, 'Name=Paid', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountPaid); ?>');
-				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountBalance, 'Name=Balance', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountBalance); ?>');
-			}
-			
-			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted ? $_ITEM->DateSubmitted->ToString("MMM D YYYY") : null; ?>');
-		}
-
-		public function RenderAmount($fltAmount, $blnDisplayNullAsZero = true) {
-			if ($blnDisplayNullAsZero || !is_null($fltAmount))
-				return QApplication::DisplayCurrency($fltAmount);
-		}
-
-		public function RenderName(FormProduct $objProduct) {
-			return sprintf('<a href="/events/product.php/%s/%s">%s</a>', $this->objSignupForm->Id, $objProduct->Id, QApplication::HtmlEntities($objProduct->Name));
-		}
-
-		public function RenderAnswer(SignupEntry $objSignupEntry, $intFormQuestionId, $intFormQuestionTypeId) {
-			$objAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($objSignupEntry->Id, $intFormQuestionId);
-			if (!$objAnswer) return;
-
-			switch ($intFormQuestionTypeId) {
-				case FormQuestionType::YesNo:
-					if ($objAnswer->BooleanValue) return 'Yes';
-					break;
-
-				case FormQuestionType::SpouseName:
-				case FormQuestionType::Address:
-				case FormQuestionType::Gender:
-				case FormQuestionType::Phone:
-				case FormQuestionType::Email:
-				case FormQuestionType::ShortText:
-				case FormQuestionType::LongText:
-				case FormQuestionType::SingleSelect:
-				case FormQuestionType::MultipleSelect:
-					return QString::Truncate(QApplication::HtmlEntities($objAnswer->TextValue), 50);
-
-				case FormQuestionType::Number:
-				case FormQuestionType::Age:
-					return $objAnswer->IntegerValue;
-
-				case FormQuestionType::DateofBirth:
-					if ($objAnswer->DateValue) return $objAnswer->DateValue->ToString('MMM D YYYY');
-					break;
-			}
-		}
-		
-		public function dtgSignupEntries_Bind() {
-			$this->dtgSignupEntries->MetaDataBinder(QQ::Equal(QQN::SignupEntry()->SignupFormId, $this->objSignupForm->Id));
 		}
 
 		public function dtgQuestions_Bind() {

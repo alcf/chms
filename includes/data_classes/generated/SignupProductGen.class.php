@@ -592,6 +592,22 @@
 		}
 			
 		/**
+		 * Load a single SignupProduct object,
+		 * by SignupEntryId, FormProductId Index(es)
+		 * @param integer $intSignupEntryId
+		 * @param integer $intFormProductId
+		 * @return SignupProduct
+		*/
+		public static function LoadBySignupEntryIdFormProductId($intSignupEntryId, $intFormProductId) {
+			return SignupProduct::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::SignupProduct()->SignupEntryId, $intSignupEntryId),
+				QQ::Equal(QQN::SignupProduct()->FormProductId, $intFormProductId)
+				)
+			);
+		}
+			
+		/**
 		 * Load an array of SignupProduct objects,
 		 * by SignupEntryId Index(es)
 		 * @param integer $intSignupEntryId

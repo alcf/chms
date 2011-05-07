@@ -57,7 +57,8 @@
 			$this->dtgSignupForms = new QDataGrid($this);
 			$this->dtgSignupForms->CssClass = 'datagrid';
 			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Form Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=440px'));
-			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=160px'));
+			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Signups', '<?= SignupEntry::CountBySignupFormIdSignupEntryStatusTypeId($_ITEM->Id, SignupEntryStatusType::Complete); ?>', 'Width=60px'));
+			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Type', '<?= $_ITEM->Type; ?>', 'Width=80px'));
 			$this->dtgSignupForms->AddColumn(new QDataGridColumn('Date Created', '<?= $_ITEM->DateCreated->ToString("DDD, MMM D, YYYY"); ?>', 'Width=140px'));
 			$this->dtgSignupForms->SetDataBinder('dtgSignupForms_Bind');
 
@@ -106,7 +107,7 @@
 				$objStyle->BackColor = '#ccc';
 				$this->dtgSignupForms->OverrideRowStyle($this->dtgSignupForms->CurrentRowIndex, $objStyle);
 			}
-			$strName = sprintf('<a href="/events/form.php/%s">%s</a>', $objSignupForm->Id, QApplication::HtmlEntities($objSignupForm->Name));
+			$strName = sprintf('%s<br/><span class="sublinks"><a href="/events/form.php/%s">Form Details</a> | <a href="/events/results.php/%s">Results</a></span>', QApplication::HtmlEntities($objSignupForm->Name), $objSignupForm->Id, $objSignupForm->Id);
 
 			return $strName;
 		}

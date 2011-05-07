@@ -26,8 +26,8 @@
 	foreach ($objFormQuestionArray as $objFormQuestion) {
 		print ("," . EscapeCsv($objFormQuestion->ShortDescription));
 	}
-	if ($objSignupForm->FormPaymentTypeId != FormPaymentType::NoPayment) {
-		print ",Paid,Balance";
+	if ($objSignupForm->CountFormProducts() > 0) {
+		print ",Total,Paid,Balance";
 	}
 	print ",Date Submitted\r\n";
 
@@ -51,6 +51,7 @@
 					case FormQuestionType::Address:
 					case FormQuestionType::Phone:
 					case FormQuestionType::Email:
+					case FormQuestionType::Gender:
 					case FormQuestionType::ShortText:
 					case FormQuestionType::LongText:
 					case FormQuestionType::SingleSelect:
@@ -64,21 +65,23 @@
 						break;
 						
 					case FormQuestionType::DateofBirth:
-						print $objAnswer->DateValue->ToString('M/D/YYYY');
+						if ($objAnswer->DateValue) print $objAnswer->DateValue->ToString('M/D/YYYY');
 						break;
 				}
 			}
 			print ",";
 		}
 
-		if ($objSignupForm->FormPaymentTypeId != FormPaymentType::NoPayment) {
+		if ($objSignupForm->CountFormProducts() > 0) {
+			print QApplication::DisplayCurrency($objSignupEntry->AmountTotal);
+			print ",";
 			print QApplication::DisplayCurrency($objSignupEntry->AmountPaid);
 			print ",";
 			print QApplication::DisplayCurrency($objSignupEntry->AmountBalance);
 			print ",";
 		}
 
-		print EscapeCsv($objSignupEntry->DateSubmitted->ToString('M/D/YYYY'));
+		if ($objSignupEntry->DateSubmitted) print EscapeCsv($objSignupEntry->DateSubmitted->ToString('M/D/YYYY'));
 		print "\r\n";
 	}
 ?>
