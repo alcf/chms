@@ -112,8 +112,13 @@
 				$strASpan = ' style="color: #999;"';
 			}
 			
-			return sprintf('<a href="/events/result.php/%s/%s" title="View and Edit this signup" %s>%s</a>',
-				$this->objSignupForm->Id, $objSignupEntry->Id, $strASpan, QApplication::HtmlEntities($objSignupEntry->Person->Name));
+			// Show a link if we can edit
+			if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplicatioN::$Login)) {
+				return sprintf('<a href="/events/result.php/%s/%s" title="View and Edit this signup" %s>%s</a>',
+					$this->objSignupForm->Id, $objSignupEntry->Id, $strASpan, QApplication::HtmlEntities($objSignupEntry->Person->Name));
+			} else {
+				return QApplication::HtmlEntities($objSignupEntry->Person->Name);
+			}
 		}
 
 		public function RenderAmount($fltAmount, $blnDisplayNullAsZero = true) {
