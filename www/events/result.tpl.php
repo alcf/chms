@@ -1,6 +1,8 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<h1><?php _p($this->objSignupForm->Name); ?></h1>
+	<h1><?php _p($this->objSignupForm->Name); ?>
+		<button class="primary" onclick="document.location=&quot;/events/results.php/<?php _p($this->objSignupForm->Id); ?>&quot;; return false;">Back to All Results</button>
+	</h1>
 	<h3>View Signup</h3>
 
 	<div class="section">
@@ -16,6 +18,9 @@
 	</div>
 
 	<h3>View Signup Form Responses</h3>
+	<div class="section">
+		<?php $this->dtgFormQuestions->Render();?>
+	</div>
 	
 	<?php $this->dlgEdit->Render('Width=800px'); ?>
 	<br clear="all"/>

@@ -1,7 +1,7 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<h1><?php _p($this->objSignupForm->Ministry->Name); ?></h1>
-	<h3>Signups - <?php _p($this->objSignupForm->Name); ?></h3>
+	<h1><?php _p($this->objSignupForm->Name); ?></h3>
+	<h3>All Signups</h3>
 
 	<div class="section">
 		<div class="columnSelectorColumn">
