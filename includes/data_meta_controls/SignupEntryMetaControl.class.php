@@ -19,5 +19,27 @@
 	 * @subpackage MetaControls
 	 */
 	class SignupEntryMetaControl extends SignupEntryMetaControlGen {
+
+		/**
+		 * Create and setup QLabel lblInternalNotes
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblInternalNotes_Create($strControlId = null) {
+			$this->lblInternalNotes = new QLabel($this->objParentObject, $strControlId);
+			$this->lblInternalNotes->Name = QApplication::Translate('Internal Notes');
+			$this->lblInternalNotes->HtmlEntities = false;
+
+			$this->lblInternalNotes_Refresh();
+			return $this->lblInternalNotes;
+		}
+		
+		public function lblInternalNotes_Refresh() {
+			if (strlen($strNote = trim($this->objSignupEntry->InternalNotes)) > 0) {
+				$this->lblInternalNotes->Text = nl2br(QApplication::HtmlEntities($strNote), true);
+			} else {
+				$this->lblInternalNotes->Text = '<span class="na">None</span>';
+			}
+		}
 	}
 ?>

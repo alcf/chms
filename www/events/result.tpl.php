@@ -9,8 +9,14 @@
 		<?php $this->lblSignupEntryStatusType->RenderWithName('Required=false','Name=Registration Status'); ?>
 		<?php $this->lblDateCreated->RenderWithName('Required=false'); ?>
 		<?php $this->lblDateSubmitted->RenderWithName(); ?>
-		
+		<?php $this->lblInternalNotes->RenderWithName(); ?>
 	</div>
+	<div class="buttonBar">
+		<?php $this->btnEditNote->Render(); ?>
+	</div>
+
+	<h3>View Signup Form Responses</h3>
 	
+	<?php $this->dlgEdit->Render('Width=800px'); ?>
 	<br clear="all"/>
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
