@@ -8,8 +8,17 @@
 			break;
 
 		case FormQuestionType::SpouseName:
+			$this->txtTextbox->RenderWithName();
+			break;
+
 		case FormQuestionType::Address:
+			$this->lstListbox->RenderWithName();
+			break;
+
 		case FormQuestionType::Gender:
+			$this->lstListbox->RenderWithName();
+			break;
+
 		case FormQuestionType::Phone:
 		case FormQuestionType::Email:
 		case FormQuestionType::ShortText:

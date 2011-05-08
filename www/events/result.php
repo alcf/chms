@@ -205,10 +205,43 @@
 					break;
 
 				case FormQuestionType::SpouseName:
+					$this->txtTextbox->Name = 'Spouse\'s Name';
+					$this->txtTextbox->Text = $this->objAnswer->TextValue;
+					$this->txtTextbox->Focus();
+					break;
+
 				case FormQuestionType::Address:
+					$objAddresses = array();
+					foreach ($this->mctSignupEntry->SignupEntry->Person->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+						foreach ($objHouseholdParticipation->Household->GetAddressArray() as $objAddress)
+							if ($objAddress->CurrentFlag) $objAddresses[$objAddress->Id] = $objAddress;
+					}
+					foreach (Address::LoadArrayByPersonId($this->mctSignupEntry->SignupEntry->Person->Id) as $objAddress) {
+						if ($objAddress->CurrentFlag) $objAddresses[$objAddress->Id] = $objAddress;
+					}
+					$this->lstListbox->RemoveAllItems();
+					foreach ($objAddresses as $objAddress) {
+						$this->lstListbox->AddItem(
+							sprintf('%s (%s)', $objAddress->Label, $objAddress->AddressShortLine),
+								$objAddress->Id,
+								$objAddress->Id == $this->objAnswer->AddressId);
+					}
+					$this->lstListbox->Name = $objFormQuestion->ShortDescription;
+					break;
+
 				case FormQuestionType::Gender:
+					$this->lstListbox->RemoveAllItems();
+					$this->lstListbox->AddItem('Male', true, $this->mctSignupEntry->SignupEntry->Person->Gender == 'M');
+					$this->lstListbox->AddItem('Female', false, $this->mctSignupEntry->SignupEntry->Person->Gender == 'F');
+					$this->lstListbox->Name = 'Gender';
+					break;
+
 				case FormQuestionType::Phone:
+					break;
+
 				case FormQuestionType::Email:
+					break;
+
 				case FormQuestionType::ShortText:
 				case FormQuestionType::LongText:
 				case FormQuestionType::SingleSelect:
