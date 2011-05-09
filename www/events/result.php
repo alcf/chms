@@ -184,7 +184,7 @@
 					case FormQuestionType::LongText:
 					case FormQuestionType::SingleSelect:
 					case FormQuestionType::MultipleSelect:
-						$strToReturn = QApplication::HtmlEntities(trim($objFormAnswer->TextValue));
+						$strToReturn = nl2br(QApplication::HtmlEntities(trim($objFormAnswer->TextValue)), true);
 						break;
 
 					case FormQuestionType::Number:
@@ -499,6 +499,7 @@
 			// Save based on the type of question
 			switch ($objFormQuestion->FormQuestionTypeId) {
 				case FormQuestionType::YesNo:
+					$this->objAnswer->BooleanValue = $this->chkBoolean->Checked;
 					break;
 
 				case FormQuestionType::SpouseName:
@@ -509,6 +510,16 @@
 					break;
 
 				case FormQuestionType::Gender:
+					switch ($objPerson->Gender) {
+						case 'M':
+							$this->objAnswer->TextValue = 'Male';
+							break;
+						case 'F':
+							$this->objAnswer->TextValue = 'Female';
+							break;
+						default:
+							$this->objAnswer = null;
+					}
 					break;
 
 				case FormQuestionType::Phone:
@@ -518,24 +529,38 @@
 					break;
 
 				case FormQuestionType::ShortText:
+					$this->objAnswer->TextValue = trim($this->txtTextbox->Text);
 					break;
 
 				case FormQuestionType::LongText:
+					$this->objAnswer->TextValue = trim($this->txtTextArea->Text);
 					break;
 
 				case FormQuestionType::SingleSelect:
+					if ($this->lstListbox->SelectedValue === false)
+						$this->objAnswer->TextValue = trim($this->txtTextbox->Text);
+					else
+						$this->objAnswer->TextValue = $this->lstListbox->SelectedValue; 
 					break;
 
 				case FormQuestionType::MultipleSelect:
+					$strArray = array();
+					foreach ($this->lstListbox->SelectedValues as $strValue) {
+						$strArray[] = trim($strValue);
+					}
+					$this->objAnswer->TextValue = implode("\n", $strArray);
 					break;
 
 				case FormQuestionType::Number:
+					$this->objAnswer->IntegerValue = $this->txtInteger->Text;
 					break;
 
 				case FormQuestionType::Age:
+					$this->objAnswer->IntegerValue = $objPerson->Age;
 					break;
 
 				case FormQuestionType::DateofBirth:
+					$this->objAnswer->DateValue = $objPerson->DateOfBirth;
 					break;
 			}
 

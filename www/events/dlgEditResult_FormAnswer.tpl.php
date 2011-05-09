@@ -4,7 +4,7 @@
 <?php
 	switch ($_FORM->objAnswer->FormQuestion->FormQuestionTypeId) {
 		case FormQuestionType::YesNo:
-			$this->chkBoolean->RenderWithName('Required=true');
+			$this->chkBoolean->RenderWithName();
 			break;
 
 		case FormQuestionType::SpouseName:
