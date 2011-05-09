@@ -30,6 +30,11 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return FormQuestionType::$NameArray[$this->intFormQuestionTypeId];
+				case 'ShortDescriptionBoldIfRequiredHtml':
+					if ($this->blnRequiredFlag)
+						return '<strong>' . QApplication::HtmlEntities($this->strShortDescription) . '</strong>';
+					else
+						return QApplication::HtmlEntities($this->strShortDescription);
 
 				default:
 					try {

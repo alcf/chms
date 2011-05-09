@@ -94,7 +94,7 @@
 			$this->btnEditNote->CssClass = 'primary';
 
 			$this->dtgFormQuestions = new QDataGrid($this);
-			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Question', '<?= $_ITEM->ShortDescription; ?>', 'Width=200px'));
+			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Question', '<?= $_ITEM->ShortDescriptionBoldIfRequiredHtml; ?>', 'Width=200px', 'HtmlEntities=false'));
 			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Response', '<?= $_FORM->RenderResponse($_ITEM); ?>', 'Width=600px', 'HtmlEntities=false'));
 			$this->dtgFormQuestions->SetDataBinder('dtgFormQuestions_Bind');
 
@@ -137,6 +137,9 @@
 			$this->btnDelete = new QLinkButton($this->dlgEdit);
 			$this->btnDelete->Text = 'Delete';
 			$this->btnDelete->CssClass = 'delete';
+			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to delete this?'));
+			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
+			$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 		}
 
 		protected function dtgFormQuestions_Bind() {
@@ -157,6 +160,7 @@
 			$this->lstListbox->RemoveAllActions(QChangeEvent::EventName);
 
 			$this->txtTextbox->RemoveAllActions(QEnterKeyEvent::EventName);
+			$this->txtTextbox->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtTextbox->Instructions = null;		
 		}
 
@@ -224,6 +228,9 @@
 				$this->objAnswer = new FormAnswer();
 				$this->objAnswer->SignupEntryId = $objSignupEntry->Id;
 				$this->objAnswer->FormQuestionId = $objFormQuestion->Id;
+				$this->btnDelete->Visible = false;
+			} else {
+				$this->btnDelete->Visible = true;
 			}
 
 			// Reset
@@ -372,6 +379,7 @@
 					if ($objFormQuestion->AllowOtherFlag) {
 						$this->txtTextbox->Name = 'Other...';
 						$this->txtTextbox->Text = null;
+						$this->txtTextbox->RemoveAllActions(QEnterKeyEvent::EventName);
 						$this->txtTextbox->AddAction(new QEnterKeyEvent(), new QAjaxAction('txtTextbox_EnterKey'));
 						$this->txtTextbox->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 						$this->txtTextbox->Instructions = 'Type in a value and hit <strong>return</strong> to add it to the list';
@@ -432,6 +440,23 @@
 			$this->intEditTag = -1;
 		}
 
+		protected function btnDelete_Click() {
+			if (!$this->intEditTag) $this->btnCancel_Click();
+			
+			switch ($this->intEditTag) {
+				case -2:
+					break;
+				case -1:
+					break;
+				default:
+					$this->objAnswer->Delete();
+					$this->dtgFormQuestions->Refresh();
+					break;
+			}
+			
+			$this->btnCancel_Click();
+		}
+
 		protected function btnSave_Click() {
 			if (!$this->intEditTag) $this->btnCancel_Click();
 			
@@ -444,15 +469,88 @@
 					$this->mctSignupEntry->lblInternalNotes_Refresh();
 					break;
 				default:
+					if (!$this->PerformFormAnswerSave()) return;
+					$this->dtgFormQuestions->Refresh();
 					break;
 			}
 			
 			$this->btnCancel_Click();
 		}
 		
+		/**
+		 * @return boolean whether or not the save was successful
+		 */
+		protected function PerformFormAnswerSave() {
+			/**
+			 * @var FormQuestion
+			 */
+			$objFormQuestion = $this->objAnswer->FormQuestion;
+
+			/**
+			 * @var SignupEntry
+			 */
+			$objSignupEntry = $this->mctSignupEntry->SignupEntry;
+
+			/**
+			 * @var Person
+			 */
+			$objPerson = $this->mctSignupEntry->SignupEntry->Person;
+
+			// Save based on the type of question
+			switch ($objFormQuestion->FormQuestionTypeId) {
+				case FormQuestionType::YesNo:
+					break;
+
+				case FormQuestionType::SpouseName:
+					$this->objAnswer->TextValue = trim($this->txtTextbox->Text);
+					break;
+
+				case FormQuestionType::Address:
+					break;
+
+				case FormQuestionType::Gender:
+					break;
+
+				case FormQuestionType::Phone:
+					break;
+
+				case FormQuestionType::Email:
+					break;
+
+				case FormQuestionType::ShortText:
+					break;
+
+				case FormQuestionType::LongText:
+					break;
+
+				case FormQuestionType::SingleSelect:
+					break;
+
+				case FormQuestionType::MultipleSelect:
+					break;
+
+				case FormQuestionType::Number:
+					break;
+
+				case FormQuestionType::Age:
+					break;
+
+				case FormQuestionType::DateofBirth:
+					break;
+			}
+
+			if ($this->objAnswer) {
+				$this->objAnswer->Save();
+				$this->objAnswer = null;
+			}
+			
+			return true;
+		}
+
 		protected function btnCancel_Click() {
 			$this->intEditTag = null;
 			$this->dlgEdit->HideDialogBox();
+			$this->dlgEdit->Template = null;
 		}
 	}
 
