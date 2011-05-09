@@ -48,13 +48,13 @@
 			break;
 
 		case FormQuestionType::Age:
-			$this->txtInteger->RenderWithName();
+			$this->txtTextbox->RenderWithName();
 			print '<br/>';
 			$this->lblInstructions->Render();
 			break;
 
 		case FormQuestionType::DateofBirth:
-			$this->dtxDateValue->RenderWithName();
+			$this->txtTextbox->RenderWithName();
 			print '<br/>';
 			$this->lblInstructions->Render();
 			break;

@@ -384,13 +384,25 @@
 					break;
 
 				case FormQuestionType::Age:
+					$this->txtTextbox->Name = $objFormQuestion->ShortDescription;
+					$this->txtTextbox->Text = $objPerson->Age;
+					$this->txtTextbox->Enabled = false;
+					$this->lblInstructions->Text = sprintf(
+						'If you need modify the person\'s age, you will need to <a href="%s">update this person\'s NOAH information</a>.',
+						$objPerson->LinkUrl);
 					break;
 
 				case FormQuestionType::DateofBirth:
+					$this->txtTextbox->Name = $objFormQuestion->ShortDescription;
+					$this->txtTextbox->Text = ($objPerson->DateOfBirth ? $objPerson->DateOfBirth->ToString('MMM D YYYY') : null);
+					$this->txtTextbox->Enabled = false;
+					$this->lblInstructions->Text = sprintf(
+						'If you need modify the person\'s date of birth, you will need to <a href="%s">update this person\'s NOAH information</a>.',
+						$objPerson->LinkUrl);
 					break;
 			}
 		}
-		
+
 		protected function txtTextbox_EnterKey() {
 			$strText = trim($this->txtTextbox->Text);
 			if (strlen($strText))
