@@ -20,12 +20,16 @@
 	 * @property integer $FormQuestionId the value for intFormQuestionId (Not Null)
 	 * @property string $TextValue the value for strTextValue 
 	 * @property integer $AddressId the value for intAddressId 
+	 * @property integer $PhoneId the value for intPhoneId 
+	 * @property integer $EmailId the value for intEmailId 
 	 * @property integer $IntegerValue the value for intIntegerValue 
 	 * @property boolean $BooleanValue the value for blnBooleanValue 
 	 * @property QDateTime $DateValue the value for dttDateValue 
 	 * @property SignupEntry $SignupEntry the value for the SignupEntry object referenced by intSignupEntryId (Not Null)
 	 * @property FormQuestion $FormQuestion the value for the FormQuestion object referenced by intFormQuestionId (Not Null)
 	 * @property Address $Address the value for the Address object referenced by intAddressId 
+	 * @property Phone $Phone the value for the Phone object referenced by intPhoneId 
+	 * @property Email $Email the value for the Email object referenced by intEmailId 
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class FormAnswerGen extends QBaseClass {
@@ -72,6 +76,22 @@
 		 */
 		protected $intAddressId;
 		const AddressIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_answer.phone_id
+		 * @var integer intPhoneId
+		 */
+		protected $intPhoneId;
+		const PhoneIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_answer.email_id
+		 * @var integer intEmailId
+		 */
+		protected $intEmailId;
+		const EmailIdDefault = null;
 
 
 		/**
@@ -149,6 +169,26 @@
 		 * @var Address objAddress
 		 */
 		protected $objAddress;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column form_answer.phone_id.
+		 *
+		 * NOTE: Always use the Phone property getter to correctly retrieve this Phone object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Phone objPhone
+		 */
+		protected $objPhone;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column form_answer.email_id.
+		 *
+		 * NOTE: Always use the Email property getter to correctly retrieve this Email object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Email objEmail
+		 */
+		protected $objEmail;
 
 
 
@@ -465,6 +505,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'form_question_id', $strAliasPrefix . 'form_question_id');
 			$objBuilder->AddSelectItem($strTableName, 'text_value', $strAliasPrefix . 'text_value');
 			$objBuilder->AddSelectItem($strTableName, 'address_id', $strAliasPrefix . 'address_id');
+			$objBuilder->AddSelectItem($strTableName, 'phone_id', $strAliasPrefix . 'phone_id');
+			$objBuilder->AddSelectItem($strTableName, 'email_id', $strAliasPrefix . 'email_id');
 			$objBuilder->AddSelectItem($strTableName, 'integer_value', $strAliasPrefix . 'integer_value');
 			$objBuilder->AddSelectItem($strTableName, 'boolean_value', $strAliasPrefix . 'boolean_value');
 			$objBuilder->AddSelectItem($strTableName, 'date_value', $strAliasPrefix . 'date_value');
@@ -509,6 +551,10 @@
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'address_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'address_id'] : $strAliasPrefix . 'address_id';
 			$objToReturn->intAddressId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'phone_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'phone_id'] : $strAliasPrefix . 'phone_id';
+			$objToReturn->intPhoneId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'email_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email_id'] : $strAliasPrefix . 'email_id';
+			$objToReturn->intEmailId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'integer_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'integer_value'] : $strAliasPrefix . 'integer_value';
 			$objToReturn->intIntegerValue = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'boolean_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'boolean_value'] : $strAliasPrefix . 'boolean_value';
@@ -545,6 +591,18 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objAddress = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'address_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for Phone Early Binding
+			$strAlias = $strAliasPrefix . 'phone_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objPhone = Phone::InstantiateDbRow($objDbRow, $strAliasPrefix . 'phone_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for Email Early Binding
+			$strAlias = $strAliasPrefix . 'email_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objEmail = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'email_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -743,6 +801,70 @@
 				QQ::Equal(QQN::FormAnswer()->AddressId, $intAddressId)
 			);
 		}
+			
+		/**
+		 * Load an array of FormAnswer objects,
+		 * by PhoneId Index(es)
+		 * @param integer $intPhoneId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return FormAnswer[]
+		*/
+		public static function LoadArrayByPhoneId($intPhoneId, $objOptionalClauses = null) {
+			// Call FormAnswer::QueryArray to perform the LoadArrayByPhoneId query
+			try {
+				return FormAnswer::QueryArray(
+					QQ::Equal(QQN::FormAnswer()->PhoneId, $intPhoneId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count FormAnswers
+		 * by PhoneId Index(es)
+		 * @param integer $intPhoneId
+		 * @return int
+		*/
+		public static function CountByPhoneId($intPhoneId) {
+			// Call FormAnswer::QueryCount to perform the CountByPhoneId query
+			return FormAnswer::QueryCount(
+				QQ::Equal(QQN::FormAnswer()->PhoneId, $intPhoneId)
+			);
+		}
+			
+		/**
+		 * Load an array of FormAnswer objects,
+		 * by EmailId Index(es)
+		 * @param integer $intEmailId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return FormAnswer[]
+		*/
+		public static function LoadArrayByEmailId($intEmailId, $objOptionalClauses = null) {
+			// Call FormAnswer::QueryArray to perform the LoadArrayByEmailId query
+			try {
+				return FormAnswer::QueryArray(
+					QQ::Equal(QQN::FormAnswer()->EmailId, $intEmailId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count FormAnswers
+		 * by EmailId Index(es)
+		 * @param integer $intEmailId
+		 * @return int
+		*/
+		public static function CountByEmailId($intEmailId) {
+			// Call FormAnswer::QueryCount to perform the CountByEmailId query
+			return FormAnswer::QueryCount(
+				QQ::Equal(QQN::FormAnswer()->EmailId, $intEmailId)
+			);
+		}
 
 
 
@@ -778,6 +900,8 @@
 							`form_question_id`,
 							`text_value`,
 							`address_id`,
+							`phone_id`,
+							`email_id`,
 							`integer_value`,
 							`boolean_value`,
 							`date_value`
@@ -786,6 +910,8 @@
 							' . $objDatabase->SqlVariable($this->intFormQuestionId) . ',
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->intAddressId) . ',
+							' . $objDatabase->SqlVariable($this->intPhoneId) . ',
+							' . $objDatabase->SqlVariable($this->intEmailId) . ',
 							' . $objDatabase->SqlVariable($this->intIntegerValue) . ',
 							' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
 							' . $objDatabase->SqlVariable($this->dttDateValue) . '
@@ -812,6 +938,8 @@
 							`form_question_id` = ' . $objDatabase->SqlVariable($this->intFormQuestionId) . ',
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`address_id` = ' . $objDatabase->SqlVariable($this->intAddressId) . ',
+							`phone_id` = ' . $objDatabase->SqlVariable($this->intPhoneId) . ',
+							`email_id` = ' . $objDatabase->SqlVariable($this->intEmailId) . ',
 							`integer_value` = ' . $objDatabase->SqlVariable($this->intIntegerValue) . ',
 							`boolean_value` = ' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
 							`date_value` = ' . $objDatabase->SqlVariable($this->dttDateValue) . '
@@ -903,6 +1031,8 @@
 			$this->FormQuestionId = $objReloaded->FormQuestionId;
 			$this->strTextValue = $objReloaded->strTextValue;
 			$this->AddressId = $objReloaded->AddressId;
+			$this->PhoneId = $objReloaded->PhoneId;
+			$this->EmailId = $objReloaded->EmailId;
 			$this->intIntegerValue = $objReloaded->intIntegerValue;
 			$this->blnBooleanValue = $objReloaded->blnBooleanValue;
 			$this->dttDateValue = $objReloaded->dttDateValue;
@@ -923,6 +1053,8 @@
 					`form_question_id`,
 					`text_value`,
 					`address_id`,
+					`phone_id`,
+					`email_id`,
 					`integer_value`,
 					`boolean_value`,
 					`date_value`,
@@ -935,6 +1067,8 @@
 					' . $objDatabase->SqlVariable($this->intFormQuestionId) . ',
 					' . $objDatabase->SqlVariable($this->strTextValue) . ',
 					' . $objDatabase->SqlVariable($this->intAddressId) . ',
+					' . $objDatabase->SqlVariable($this->intPhoneId) . ',
+					' . $objDatabase->SqlVariable($this->intEmailId) . ',
 					' . $objDatabase->SqlVariable($this->intIntegerValue) . ',
 					' . $objDatabase->SqlVariable($this->blnBooleanValue) . ',
 					' . $objDatabase->SqlVariable($this->dttDateValue) . ',
@@ -1013,6 +1147,16 @@
 					// @return integer
 					return $this->intAddressId;
 
+				case 'PhoneId':
+					// Gets the value for intPhoneId 
+					// @return integer
+					return $this->intPhoneId;
+
+				case 'EmailId':
+					// Gets the value for intEmailId 
+					// @return integer
+					return $this->intEmailId;
+
 				case 'IntegerValue':
 					// Gets the value for intIntegerValue 
 					// @return integer
@@ -1063,6 +1207,30 @@
 						if ((!$this->objAddress) && (!is_null($this->intAddressId)))
 							$this->objAddress = Address::Load($this->intAddressId);
 						return $this->objAddress;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Phone':
+					// Gets the value for the Phone object referenced by intPhoneId 
+					// @return Phone
+					try {
+						if ((!$this->objPhone) && (!is_null($this->intPhoneId)))
+							$this->objPhone = Phone::Load($this->intPhoneId);
+						return $this->objPhone;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Email':
+					// Gets the value for the Email object referenced by intEmailId 
+					// @return Email
+					try {
+						if ((!$this->objEmail) && (!is_null($this->intEmailId)))
+							$this->objEmail = Email::Load($this->intEmailId);
+						return $this->objEmail;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1143,6 +1311,30 @@
 					try {
 						$this->objAddress = null;
 						return ($this->intAddressId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PhoneId':
+					// Sets the value for intPhoneId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objPhone = null;
+						return ($this->intPhoneId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'EmailId':
+					// Sets the value for intEmailId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objEmail = null;
+						return ($this->intEmailId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1275,6 +1467,66 @@
 					}
 					break;
 
+				case 'Phone':
+					// Sets the value for the Phone object referenced by intPhoneId 
+					// @param Phone $mixValue
+					// @return Phone
+					if (is_null($mixValue)) {
+						$this->intPhoneId = null;
+						$this->objPhone = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Phone object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Phone');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Phone object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved Phone for this FormAnswer');
+
+						// Update Local Member Variables
+						$this->objPhone = $mixValue;
+						$this->intPhoneId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Email':
+					// Sets the value for the Email object referenced by intEmailId 
+					// @param Email $mixValue
+					// @return Email
+					if (is_null($mixValue)) {
+						$this->intEmailId = null;
+						$this->objEmail = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Email object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Email');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Email object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved Email for this FormAnswer');
+
+						// Update Local Member Variables
+						$this->objEmail = $mixValue;
+						$this->intEmailId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -1317,6 +1569,8 @@
 			$strToReturn .= '<element name="FormQuestion" type="xsd1:FormQuestion"/>';
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="Address" type="xsd1:Address"/>';
+			$strToReturn .= '<element name="Phone" type="xsd1:Phone"/>';
+			$strToReturn .= '<element name="Email" type="xsd1:Email"/>';
 			$strToReturn .= '<element name="IntegerValue" type="xsd:int"/>';
 			$strToReturn .= '<element name="BooleanValue" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="DateValue" type="xsd:dateTime"/>';
@@ -1331,6 +1585,8 @@
 				SignupEntry::AlterSoapComplexTypeArray($strComplexTypeArray);
 				FormQuestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Phone::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Email::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1358,6 +1614,12 @@
 			if ((property_exists($objSoapObject, 'Address')) &&
 				($objSoapObject->Address))
 				$objToReturn->Address = Address::GetObjectFromSoapObject($objSoapObject->Address);
+			if ((property_exists($objSoapObject, 'Phone')) &&
+				($objSoapObject->Phone))
+				$objToReturn->Phone = Phone::GetObjectFromSoapObject($objSoapObject->Phone);
+			if ((property_exists($objSoapObject, 'Email')) &&
+				($objSoapObject->Email))
+				$objToReturn->Email = Email::GetObjectFromSoapObject($objSoapObject->Email);
 			if (property_exists($objSoapObject, 'IntegerValue'))
 				$objToReturn->intIntegerValue = $objSoapObject->IntegerValue;
 			if (property_exists($objSoapObject, 'BooleanValue'))
@@ -1394,6 +1656,14 @@
 				$objObject->objAddress = Address::GetSoapObjectFromObject($objObject->objAddress, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intAddressId = null;
+			if ($objObject->objPhone)
+				$objObject->objPhone = Phone::GetSoapObjectFromObject($objObject->objPhone, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intPhoneId = null;
+			if ($objObject->objEmail)
+				$objObject->objEmail = Email::GetSoapObjectFromObject($objObject->objEmail, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intEmailId = null;
 			if ($objObject->dttDateValue)
 				$objObject->dttDateValue = $objObject->dttDateValue->__toString(QDateTime::FormatSoap);
 			return $objObject;
@@ -1419,6 +1689,10 @@
 	 * @property-read QQNode $TextValue
 	 * @property-read QQNode $AddressId
 	 * @property-read QQNodeAddress $Address
+	 * @property-read QQNode $PhoneId
+	 * @property-read QQNodePhone $Phone
+	 * @property-read QQNode $EmailId
+	 * @property-read QQNodeEmail $Email
 	 * @property-read QQNode $IntegerValue
 	 * @property-read QQNode $BooleanValue
 	 * @property-read QQNode $DateValue
@@ -1445,6 +1719,14 @@
 					return new QQNode('address_id', 'AddressId', 'integer', $this);
 				case 'Address':
 					return new QQNodeAddress('address_id', 'Address', 'integer', $this);
+				case 'PhoneId':
+					return new QQNode('phone_id', 'PhoneId', 'integer', $this);
+				case 'Phone':
+					return new QQNodePhone('phone_id', 'Phone', 'integer', $this);
+				case 'EmailId':
+					return new QQNode('email_id', 'EmailId', 'integer', $this);
+				case 'Email':
+					return new QQNodeEmail('email_id', 'Email', 'integer', $this);
 				case 'IntegerValue':
 					return new QQNode('integer_value', 'IntegerValue', 'integer', $this);
 				case 'BooleanValue':
@@ -1474,6 +1756,10 @@
 	 * @property-read QQNode $TextValue
 	 * @property-read QQNode $AddressId
 	 * @property-read QQNodeAddress $Address
+	 * @property-read QQNode $PhoneId
+	 * @property-read QQNodePhone $Phone
+	 * @property-read QQNode $EmailId
+	 * @property-read QQNodeEmail $Email
 	 * @property-read QQNode $IntegerValue
 	 * @property-read QQNode $BooleanValue
 	 * @property-read QQNode $DateValue
@@ -1501,6 +1787,14 @@
 					return new QQNode('address_id', 'AddressId', 'integer', $this);
 				case 'Address':
 					return new QQNodeAddress('address_id', 'Address', 'integer', $this);
+				case 'PhoneId':
+					return new QQNode('phone_id', 'PhoneId', 'integer', $this);
+				case 'Phone':
+					return new QQNodePhone('phone_id', 'Phone', 'integer', $this);
+				case 'EmailId':
+					return new QQNode('email_id', 'EmailId', 'integer', $this);
+				case 'Email':
+					return new QQNodeEmail('email_id', 'Email', 'integer', $this);
 				case 'IntegerValue':
 					return new QQNode('integer_value', 'IntegerValue', 'integer', $this);
 				case 'BooleanValue':

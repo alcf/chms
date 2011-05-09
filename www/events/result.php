@@ -237,9 +237,35 @@
 					break;
 
 				case FormQuestionType::Phone:
+					$objPhones = array();
+					foreach ($this->mctSignupEntry->SignupEntry->Person->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+						foreach ($objHouseholdParticipation->Household->GetAddressArray() as $objAddress) {
+							foreach ($objAddress->GetPhoneArray() as $objPhone) {
+								$objPhones[] = $objPhone;
+							}
+						}
+					}
+					foreach ($this->mctSignupEntry->SignupEntry->Person->GetPhoneArray() as $objPhone) $objPhones[] = $objPhone;
+
+					$this->lstListbox->RemoveAllItems();
+					foreach ($objPhones as $objPhone) {
+						$this->lstListbox->AddItem(
+							sprintf('%s (%s)', $objPhone->Number, $objPhone->Type),
+							$objPhone->Id,
+							$objPhone->Id == $this->objAnswer->PhoneId);
+					}
+					$this->lstListbox->Name = $objFormQuestion->ShortDescription;
 					break;
 
 				case FormQuestionType::Email:
+					$this->lstListbox->RemoveAllItems();
+					foreach ($this->mctSignupEntry->SignupEntry->Person->GetEmailArray() as $objEmail) {
+						$this->lstListbox->AddItem(
+							$objEmail->Address,
+							$objEmail->Id,
+							$objEmail->Id == $this->objAnswer->EmailId);
+					}
+					$this->lstListbox->Name = $objFormQuestion->ShortDescription;
 					break;
 
 				case FormQuestionType::ShortText:

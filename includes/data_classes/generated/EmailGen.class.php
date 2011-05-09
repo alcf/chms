@@ -20,6 +20,8 @@
 	 * @property string $Address the value for strAddress 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Person $PersonAsPrimary the value for the Person object that uniquely references this Email
+	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.email_id reverse relationship
+	 * @property FormAnswer[] $_FormAnswerArray the value for the private _objFormAnswerArray (Read-Only) if set due to an ExpandAsArray on the form_answer.email_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class EmailGen extends QBaseClass {
@@ -52,6 +54,22 @@
 		const AddressMaxLength = 200;
 		const AddressDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single FormAnswer object
+		 * (of type FormAnswer), if this Email object was restored with
+		 * an expansion on the form_answer association table.
+		 * @var FormAnswer _objFormAnswer;
+		 */
+		private $_objFormAnswer;
+
+		/**
+		 * Private member variable that stores a reference to an array of FormAnswer objects
+		 * (of type FormAnswer[]), if this Email object was restored with
+		 * an ExpandAsArray on the form_answer association table.
+		 * @var FormAnswer[] _objFormAnswerArray;
+		 */
+		private $_objFormAnswerArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -442,6 +460,38 @@
 			if (!$objDbRow)
 				return null;
 
+			// See if we're doing an array expansion on the previous item
+			$strAlias = $strAliasPrefix . 'id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (($strExpandAsArrayNodes) && ($objPreviousItem) &&
+				($objPreviousItem->intId == $objDbRow->GetColumn($strAliasName, 'Integer'))) {
+
+				// We are.  Now, prepare to check for ExpandAsArray clauses
+				$blnExpandedViaArray = false;
+				if (!$strAliasPrefix)
+					$strAliasPrefix = 'email__';
+
+
+				$strAlias = $strAliasPrefix . 'formanswer__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objFormAnswerArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objFormAnswerArray[$intPreviousChildItemCount - 1];
+						$objChildItem = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objFormAnswerArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objFormAnswerArray[] = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
+				if ($blnExpandedViaArray)
+					return false;
+				else if ($strAliasPrefix == 'email__')
+					$strAliasPrefix = null;
+			}
 
 			// Create a new instance of the Email object
 			$objToReturn = new Email();
@@ -486,6 +536,16 @@
 			}
 
 
+
+			// Check for FormAnswer Virtual Binding
+			$strAlias = $strAliasPrefix . 'formanswer__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objFormAnswerArray[] = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objFormAnswer = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			return $objToReturn;
 		}
@@ -933,6 +993,18 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_FormAnswer':
+					// Gets the value for the private _objFormAnswer (Read-Only)
+					// if set due to an expansion on the form_answer.email_id reverse relationship
+					// @return FormAnswer
+					return $this->_objFormAnswer;
+
+				case '_FormAnswerArray':
+					// Gets the value for the private _objFormAnswerArray (Read-Only)
+					// if set due to an ExpandAsArray on the form_answer.email_id reverse relationship
+					// @return FormAnswer[]
+					return (array) $this->_objFormAnswerArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1081,6 +1153,188 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
+			
+		
+		// Related Objects' Methods for FormAnswer
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated FormAnswers as an array of FormAnswer objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return FormAnswer[]
+		*/ 
+		public function GetFormAnswerArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return FormAnswer::LoadArrayByEmailId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated FormAnswers
+		 * @return int
+		*/ 
+		public function CountFormAnswers() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return FormAnswer::CountByEmailId($this->intId);
+		}
+
+		/**
+		 * Associates a FormAnswer
+		 * @param FormAnswer $objFormAnswer
+		 * @return void
+		*/ 
+		public function AssociateFormAnswer(FormAnswer $objFormAnswer) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormAnswer on this unsaved Email.');
+			if ((is_null($objFormAnswer->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormAnswer on this Email with an unsaved FormAnswer.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Email::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_answer`
+				SET
+					`email_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormAnswer->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objFormAnswer->EmailId = $this->intId;
+				$objFormAnswer->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a FormAnswer
+		 * @param FormAnswer $objFormAnswer
+		 * @return void
+		*/ 
+		public function UnassociateFormAnswer(FormAnswer $objFormAnswer) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Email.');
+			if ((is_null($objFormAnswer->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this Email with an unsaved FormAnswer.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Email::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_answer`
+				SET
+					`email_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormAnswer->Id) . ' AND
+					`email_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objFormAnswer->EmailId = null;
+				$objFormAnswer->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all FormAnswers
+		 * @return void
+		*/ 
+		public function UnassociateAllFormAnswers() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Email.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Email::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (FormAnswer::LoadArrayByEmailId($this->intId) as $objFormAnswer) {
+					$objFormAnswer->EmailId = null;
+					$objFormAnswer->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_answer`
+				SET
+					`email_id` = null
+				WHERE
+					`email_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated FormAnswer
+		 * @param FormAnswer $objFormAnswer
+		 * @return void
+		*/ 
+		public function DeleteAssociatedFormAnswer(FormAnswer $objFormAnswer) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Email.');
+			if ((is_null($objFormAnswer->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this Email with an unsaved FormAnswer.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Email::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`form_answer`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormAnswer->Id) . ' AND
+					`email_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objFormAnswer->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated FormAnswers
+		 * @return void
+		*/ 
+		public function DeleteAllFormAnswers() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Email.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Email::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (FormAnswer::LoadArrayByEmailId($this->intId) as $objFormAnswer) {
+					$objFormAnswer->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`form_answer`
+				WHERE
+					`email_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1165,6 +1419,7 @@
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $Address
+	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
 	 */
 	class QQNodeEmail extends QQNode {
@@ -1181,6 +1436,8 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'Address':
 					return new QQNode('address', 'Address', 'string', $this);
+				case 'FormAnswer':
+					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'email_id');
 				case 'PersonAsPrimary':
 					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_email_id', 'PersonAsPrimary');
 
@@ -1202,6 +1459,7 @@
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $Address
+	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1219,6 +1477,8 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'Address':
 					return new QQNode('address', 'Address', 'string', $this);
+				case 'FormAnswer':
+					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'email_id');
 				case 'PersonAsPrimary':
 					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_email_id', 'PersonAsPrimary');
 

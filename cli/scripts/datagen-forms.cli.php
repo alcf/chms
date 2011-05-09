@@ -350,12 +350,14 @@
 									case FormQuestionType::Phone:
 										if (count($objArray = $objPerson->GetPhoneArray())) {
 											$objFormAnswer->TextValue = $objArray[0]->Number;
+											$objFormAnswer->PhoneId = $objArray[0]->Id;
 										}
 										break;
 
 									case FormQuestionType::Email:
 										if (count($objArray = $objPerson->GetEmailArray())) {
 											$objFormAnswer->TextValue = $objArray[0]->Address;
+											$objFormAnswer->EmailId = $objArray[0]->Id;
 										}
 										break;
 

@@ -26,6 +26,8 @@
 	 * @property MobileProvider $MobileProvider the value for the MobileProvider object referenced by intMobileProviderId 
 	 * @property Address $_AddressAsPrimary the value for the private _objAddressAsPrimary (Read-Only) if set due to an expansion on the address.primary_phone_id reverse relationship
 	 * @property Address[] $_AddressAsPrimaryArray the value for the private _objAddressAsPrimaryArray (Read-Only) if set due to an ExpandAsArray on the address.primary_phone_id reverse relationship
+	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.phone_id reverse relationship
+	 * @property FormAnswer[] $_FormAnswerArray the value for the private _objFormAnswerArray (Read-Only) if set due to an ExpandAsArray on the form_answer.phone_id reverse relationship
 	 * @property Person $_PersonAsPrimary the value for the private _objPersonAsPrimary (Read-Only) if set due to an expansion on the person.primary_phone_id reverse relationship
 	 * @property Person[] $_PersonAsPrimaryArray the value for the private _objPersonAsPrimaryArray (Read-Only) if set due to an ExpandAsArray on the person.primary_phone_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -100,6 +102,22 @@
 		 * @var Address[] _objAddressAsPrimaryArray;
 		 */
 		private $_objAddressAsPrimaryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single FormAnswer object
+		 * (of type FormAnswer), if this Phone object was restored with
+		 * an expansion on the form_answer association table.
+		 * @var FormAnswer _objFormAnswer;
+		 */
+		private $_objFormAnswer;
+
+		/**
+		 * Private member variable that stores a reference to an array of FormAnswer objects
+		 * (of type FormAnswer[]), if this Phone object was restored with
+		 * an ExpandAsArray on the form_answer association table.
+		 * @var FormAnswer[] _objFormAnswerArray;
+		 */
+		private $_objFormAnswerArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single PersonAsPrimary object
@@ -537,6 +555,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'formanswer__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objFormAnswerArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objFormAnswerArray[$intPreviousChildItemCount - 1];
+						$objChildItem = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objFormAnswerArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objFormAnswerArray[] = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'personasprimary__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -616,6 +648,16 @@
 					$objToReturn->_objAddressAsPrimaryArray[] = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'addressasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objAddressAsPrimary = Address::InstantiateDbRow($objDbRow, $strAliasPrefix . 'addressasprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for FormAnswer Virtual Binding
+			$strAlias = $strAliasPrefix . 'formanswer__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objFormAnswerArray[] = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objFormAnswer = FormAnswer::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formanswer__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for PersonAsPrimary Virtual Binding
@@ -1191,6 +1233,18 @@
 					// @return Address[]
 					return (array) $this->_objAddressAsPrimaryArray;
 
+				case '_FormAnswer':
+					// Gets the value for the private _objFormAnswer (Read-Only)
+					// if set due to an expansion on the form_answer.phone_id reverse relationship
+					// @return FormAnswer
+					return $this->_objFormAnswer;
+
+				case '_FormAnswerArray':
+					// Gets the value for the private _objFormAnswerArray (Read-Only)
+					// if set due to an ExpandAsArray on the form_answer.phone_id reverse relationship
+					// @return FormAnswer[]
+					return (array) $this->_objFormAnswerArray;
+
 				case '_PersonAsPrimary':
 					// Gets the value for the private _objPersonAsPrimary (Read-Only)
 					// if set due to an expansion on the person.primary_phone_id reverse relationship
@@ -1593,6 +1647,188 @@
 
 			
 		
+		// Related Objects' Methods for FormAnswer
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated FormAnswers as an array of FormAnswer objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return FormAnswer[]
+		*/ 
+		public function GetFormAnswerArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return FormAnswer::LoadArrayByPhoneId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated FormAnswers
+		 * @return int
+		*/ 
+		public function CountFormAnswers() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return FormAnswer::CountByPhoneId($this->intId);
+		}
+
+		/**
+		 * Associates a FormAnswer
+		 * @param FormAnswer $objFormAnswer
+		 * @return void
+		*/ 
+		public function AssociateFormAnswer(FormAnswer $objFormAnswer) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormAnswer on this unsaved Phone.');
+			if ((is_null($objFormAnswer->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormAnswer on this Phone with an unsaved FormAnswer.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_answer`
+				SET
+					`phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormAnswer->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objFormAnswer->PhoneId = $this->intId;
+				$objFormAnswer->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a FormAnswer
+		 * @param FormAnswer $objFormAnswer
+		 * @return void
+		*/ 
+		public function UnassociateFormAnswer(FormAnswer $objFormAnswer) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Phone.');
+			if ((is_null($objFormAnswer->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this Phone with an unsaved FormAnswer.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_answer`
+				SET
+					`phone_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormAnswer->Id) . ' AND
+					`phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objFormAnswer->PhoneId = null;
+				$objFormAnswer->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all FormAnswers
+		 * @return void
+		*/ 
+		public function UnassociateAllFormAnswers() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Phone.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (FormAnswer::LoadArrayByPhoneId($this->intId) as $objFormAnswer) {
+					$objFormAnswer->PhoneId = null;
+					$objFormAnswer->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`form_answer`
+				SET
+					`phone_id` = null
+				WHERE
+					`phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated FormAnswer
+		 * @param FormAnswer $objFormAnswer
+		 * @return void
+		*/ 
+		public function DeleteAssociatedFormAnswer(FormAnswer $objFormAnswer) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Phone.');
+			if ((is_null($objFormAnswer->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this Phone with an unsaved FormAnswer.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`form_answer`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objFormAnswer->Id) . ' AND
+					`phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objFormAnswer->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated FormAnswers
+		 * @return void
+		*/ 
+		public function DeleteAllFormAnswers() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormAnswer on this unsaved Phone.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Phone::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (FormAnswer::LoadArrayByPhoneId($this->intId) as $objFormAnswer) {
+					$objFormAnswer->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`form_answer`
+				WHERE
+					`phone_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for PersonAsPrimary
 		//-------------------------------------------------------------------
 
@@ -1884,6 +2120,7 @@
 	 * @property-read QQNodeMobileProvider $MobileProvider
 	 * @property-read QQNode $Number
 	 * @property-read QQReverseReferenceNodeAddress $AddressAsPrimary
+	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
 	 */
 	class QQNodePhone extends QQNode {
@@ -1912,6 +2149,8 @@
 					return new QQNode('number', 'Number', 'string', $this);
 				case 'AddressAsPrimary':
 					return new QQReverseReferenceNodeAddress($this, 'addressasprimary', 'reverse_reference', 'primary_phone_id');
+				case 'FormAnswer':
+					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'phone_id');
 				case 'PersonAsPrimary':
 					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_phone_id');
 
@@ -1939,6 +2178,7 @@
 	 * @property-read QQNodeMobileProvider $MobileProvider
 	 * @property-read QQNode $Number
 	 * @property-read QQReverseReferenceNodeAddress $AddressAsPrimary
+	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodePerson $PersonAsPrimary
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1968,6 +2208,8 @@
 					return new QQNode('number', 'Number', 'string', $this);
 				case 'AddressAsPrimary':
 					return new QQReverseReferenceNodeAddress($this, 'addressasprimary', 'reverse_reference', 'primary_phone_id');
+				case 'FormAnswer':
+					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'phone_id');
 				case 'PersonAsPrimary':
 					return new QQReverseReferenceNodePerson($this, 'personasprimary', 'reverse_reference', 'primary_phone_id');
 

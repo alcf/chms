@@ -1828,7 +1828,7 @@
         </location>
         <size>
             <width>403.000000</width>
-            <height>200.000000</height>
+            <height>240.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -1894,6 +1894,38 @@
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <indexed><![CDATA[1]]></indexed>
             <uid><![CDATA[AF774E64-5D70-417B-8E43-C65785D923C6]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[phone_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <referencesField>id</referencesField>
+            <referencesTable>phone</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[phone]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>2</destinationCardinality>
+            <referencesFieldUID><![CDATA[15C7CEF8-D69D-4C8E-8FEF-1BB9643AACA6]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[1CD2B232-AEDF-493D-AD4E-69C39A174AE1]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[B0FDA23C-E591-4C3F-B617-8C93F97FB646]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[email_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <referencesField>id</referencesField>
+            <referencesTable>email</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[email]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>2</destinationCardinality>
+            <referencesFieldUID><![CDATA[5C322FC7-4A28-48F0-965F-47DE8AC461EC]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[3420FF35-785E-44E6-82F4-4F3AA9EA131D]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[B5A163DA-6522-4690-A268-1918CA02E76D]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
@@ -6487,7 +6519,7 @@ hpKEmZkHdGFibG9pZIaShJmZC05TUGFwZXJTaXplhpKEnJyEhAx7X05TU2l6ZT1m
 Zn2hgcgEgRgDhoaG
 ]]></encodedPrintInfo>
         <autoSizeTablesOption><![CDATA[1]]></autoSizeTablesOption>
-        <documentScaleFactor><![CDATA[0.95]]></documentScaleFactor>
+        <documentScaleFactor><![CDATA[0.75]]></documentScaleFactor>
         <dropTableOption><![CDATA[0]]></dropTableOption>
         <exportDialect><![CDATA[mysql]]></exportDialect>
         <fileversion><![CDATA[3.1]]></fileversion>

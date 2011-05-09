@@ -301,6 +301,10 @@
 				case 'TextValue': return QQN::FormAnswer()->TextValue;
 				case 'AddressId': return QQN::FormAnswer()->AddressId;
 				case 'Address': return QQN::FormAnswer()->Address;
+				case 'PhoneId': return QQN::FormAnswer()->PhoneId;
+				case 'Phone': return QQN::FormAnswer()->Phone;
+				case 'EmailId': return QQN::FormAnswer()->EmailId;
+				case 'Email': return QQN::FormAnswer()->Email;
 				case 'IntegerValue': return QQN::FormAnswer()->IntegerValue;
 				case 'BooleanValue': return QQN::FormAnswer()->BooleanValue;
 				case 'DateValue': return QQN::FormAnswer()->DateValue;

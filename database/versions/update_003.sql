@@ -164,6 +164,8 @@ CREATE TABLE `form_answer`
 `form_question_id` INTEGER UNSIGNED NOT NULL,
 `text_value` TEXT,
 `address_id` INTEGER UNSIGNED,
+`phone_id` INTEGER UNSIGNED,
+`email_id` INTEGER UNSIGNED,
 `integer_value` INTEGER,
 `boolean_value` BOOLEAN,
 `date_value` DATE,
@@ -227,6 +229,12 @@ ALTER TABLE `form_answer` ADD FOREIGN KEY signup_entry_id_idxfk_1 (`signup_entry
 
 CREATE INDEX `form_question_id_idx` ON `form_answer`(`form_question_id`);
 ALTER TABLE `form_answer` ADD FOREIGN KEY form_question_id_idxfk (`form_question_id`) REFERENCES `form_question` (`id`);
+
+CREATE INDEX `phone_id_idx` ON `form_answer`(`phone_id`);
+ALTER TABLE `form_answer` ADD FOREIGN KEY phone_id_idxfk (`phone_id`) REFERENCES `phone` (`id`);
+
+CREATE INDEX `email_id_idx` ON `form_answer`(`email_id`);
+ALTER TABLE `form_answer` ADD FOREIGN KEY email_id_idxfk (`email_id`) REFERENCES `email` (`id`);
 
 CREATE INDEX `signup_entry_id_idx` ON `signup_product`(`signup_entry_id`);
 ALTER TABLE `signup_product` ADD FOREIGN KEY signup_entry_id_idxfk_2 (`signup_entry_id`) REFERENCES `signup_entry` (`id`);

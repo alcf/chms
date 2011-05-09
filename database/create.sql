@@ -490,33 +490,6 @@ CREATE TABLE `marital_status_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `household_split`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`household_id` INTEGER UNSIGNED NOT NULL,
-`split_household_id` INTEGER UNSIGNED NOT NULL,
-`date_split` DATETIME,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `query_condition`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`search_query_id` INTEGER UNSIGNED,
-`or_query_condition_id` INTEGER UNSIGNED UNIQUE,
-`query_operation_id` INTEGER UNSIGNED NOT NULL,
-`query_node_id` INTEGER UNSIGNED NOT NULL,
-`value` VARCHAR(255),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `attributevalue_multipleattributeoption_assn`
-(
-`attribute_value_id` INTEGER UNSIGNED NOT NULL,
-`attribute_option_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `public_login`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -547,6 +520,15 @@ CREATE TABLE `household`
 `head_person_id` INTEGER UNSIGNED NOT NULL UNIQUE,
 `combined_stewardship_flag` BOOLEAN,
 `members` VARCHAR(255),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `household_split`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`household_id` INTEGER UNSIGNED NOT NULL,
+`split_household_id` INTEGER UNSIGNED NOT NULL,
+`date_split` DATETIME,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -647,6 +629,17 @@ CREATE TABLE `search_query`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `query_condition`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`search_query_id` INTEGER UNSIGNED,
+`or_query_condition_id` INTEGER UNSIGNED UNIQUE,
+`query_operation_id` INTEGER UNSIGNED NOT NULL,
+`query_node_id` INTEGER UNSIGNED NOT NULL,
+`value` VARCHAR(255),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `attribute_value`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -660,43 +653,18 @@ CREATE TABLE `attribute_value`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `attributevalue_multipleattributeoption_assn`
+(
+`attribute_value_id` INTEGER UNSIGNED NOT NULL,
+`attribute_option_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `communicationlist_person_assn`
 (
 `communication_list_id` INTEGER UNSIGNED NOT NULL,
 `person_id` INTEGER UNSIGNED NOT NULL,
 PRIMARY KEY (`communication_list_id`,`person_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `address`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`address_type_id` INTEGER UNSIGNED NOT NULL,
-`person_id` INTEGER UNSIGNED,
-`household_id` INTEGER UNSIGNED,
-`primary_phone_id` INTEGER UNSIGNED,
-`address_1` VARCHAR(200),
-`address_2` VARCHAR(200),
-`address_3` VARCHAR(200),
-`city` VARCHAR(100),
-`state` VARCHAR(100),
-`zip_code` VARCHAR(10),
-`country` VARCHAR(2),
-`current_flag` BOOLEAN,
-`invalid_flag` BOOLEAN,
-`verification_checked_flag` BOOLEAN,
-`date_until_when` DATE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `phone`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`phone_type_id` INTEGER UNSIGNED NOT NULL,
-`address_id` INTEGER UNSIGNED,
-`person_id` INTEGER UNSIGNED,
-`mobile_provider_id` INTEGER UNSIGNED,
-`number` VARCHAR(20),
-PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `person`
@@ -735,6 +703,38 @@ CREATE TABLE `person`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `phone`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`phone_type_id` INTEGER UNSIGNED NOT NULL,
+`address_id` INTEGER UNSIGNED,
+`person_id` INTEGER UNSIGNED,
+`mobile_provider_id` INTEGER UNSIGNED,
+`number` VARCHAR(20),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `address`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`address_type_id` INTEGER UNSIGNED NOT NULL,
+`person_id` INTEGER UNSIGNED,
+`household_id` INTEGER UNSIGNED,
+`primary_phone_id` INTEGER UNSIGNED,
+`address_1` VARCHAR(200),
+`address_2` VARCHAR(200),
+`address_3` VARCHAR(200),
+`city` VARCHAR(100),
+`state` VARCHAR(100),
+`zip_code` VARCHAR(10),
+`country` VARCHAR(2),
+`current_flag` BOOLEAN,
+`invalid_flag` BOOLEAN,
+`verification_checked_flag` BOOLEAN,
+`date_until_when` DATE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `signup_entry`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -769,6 +769,8 @@ CREATE TABLE `form_answer`
 `form_question_id` INTEGER UNSIGNED NOT NULL,
 `text_value` TEXT,
 `address_id` INTEGER UNSIGNED,
+`phone_id` INTEGER UNSIGNED,
+`email_id` INTEGER UNSIGNED,
 `integer_value` INTEGER,
 `boolean_value` BOOLEAN,
 `date_value` DATE,
@@ -1057,27 +1059,6 @@ ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group
 
 ALTER TABLE `growthgroupstructure_growthgroup_assn` ADD FOREIGN KEY growth_group_id_idxfk (`growth_group_id`) REFERENCES `growth_group` (`group_id`);
 
-CREATE INDEX `household_id_idx` ON `household_split`(`household_id`);
-ALTER TABLE `household_split` ADD FOREIGN KEY household_id_idxfk (`household_id`) REFERENCES `household` (`id`);
-
-CREATE INDEX `split_household_id_idx` ON `household_split`(`split_household_id`);
-ALTER TABLE `household_split` ADD FOREIGN KEY split_household_id_idxfk (`split_household_id`) REFERENCES `household` (`id`);
-
-CREATE INDEX `search_query_id_idx` ON `query_condition`(`search_query_id`);
-ALTER TABLE `query_condition` ADD FOREIGN KEY search_query_id_idxfk (`search_query_id`) REFERENCES `search_query` (`id`);
-
-ALTER TABLE `query_condition` ADD FOREIGN KEY or_query_condition_id_idxfk (`or_query_condition_id`) REFERENCES `query_condition` (`id`);
-
-CREATE INDEX `query_operation_id_idx` ON `query_condition`(`query_operation_id`);
-ALTER TABLE `query_condition` ADD FOREIGN KEY query_operation_id_idxfk (`query_operation_id`) REFERENCES `query_operation` (`id`);
-
-CREATE INDEX `query_node_id_idx` ON `query_condition`(`query_node_id`);
-ALTER TABLE `query_condition` ADD FOREIGN KEY query_node_id_idxfk (`query_node_id`) REFERENCES `query_node` (`id`);
-
-ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
-
-ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
-
 ALTER TABLE `public_login` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `person_id_idx` ON `email`(`person_id`);
@@ -1085,6 +1066,12 @@ ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `
 
 CREATE INDEX `address_idx` ON `email`(`address`);
 ALTER TABLE `household` ADD FOREIGN KEY head_person_id_idxfk (`head_person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `household_id_idx` ON `household_split`(`household_id`);
+ALTER TABLE `household_split` ADD FOREIGN KEY household_id_idxfk (`household_id`) REFERENCES `household` (`id`);
+
+CREATE INDEX `split_household_id_idx` ON `household_split`(`split_household_id`);
+ALTER TABLE `household_split` ADD FOREIGN KEY split_household_id_idxfk (`split_household_id`) REFERENCES `household` (`id`);
 
 ALTER TABLE `marriage` ADD FOREIGN KEY linked_marriage_id_idxfk (`linked_marriage_id`) REFERENCES `marriage` (`id`);
 
@@ -1157,6 +1144,17 @@ ALTER TABLE `search_query` ADD FOREIGN KEY smart_group_id_idxfk (`smart_group_id
 CREATE INDEX `person_id_idx` ON `search_query`(`person_id`);
 ALTER TABLE `search_query` ADD FOREIGN KEY person_id_idxfk_11 (`person_id`) REFERENCES `person` (`id`);
 
+CREATE INDEX `search_query_id_idx` ON `query_condition`(`search_query_id`);
+ALTER TABLE `query_condition` ADD FOREIGN KEY search_query_id_idxfk (`search_query_id`) REFERENCES `search_query` (`id`);
+
+ALTER TABLE `query_condition` ADD FOREIGN KEY or_query_condition_id_idxfk (`or_query_condition_id`) REFERENCES `query_condition` (`id`);
+
+CREATE INDEX `query_operation_id_idx` ON `query_condition`(`query_operation_id`);
+ALTER TABLE `query_condition` ADD FOREIGN KEY query_operation_id_idxfk (`query_operation_id`) REFERENCES `query_operation` (`id`);
+
+CREATE INDEX `query_node_id_idx` ON `query_condition`(`query_node_id`);
+ALTER TABLE `query_condition` ADD FOREIGN KEY query_node_id_idxfk (`query_node_id`) REFERENCES `query_node` (`id`);
+
 CREATE UNIQUE INDEX `attribute_value_idx` ON `attribute_value` (`attribute_id`,`person_id`);
 
 CREATE INDEX `attribute_id_idx` ON `attribute_value`(`attribute_id`);
@@ -1168,38 +1166,14 @@ ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk_12 (`person_id`) R
 CREATE INDEX `single_attribute_option_id_idx` ON `attribute_value`(`single_attribute_option_id`);
 ALTER TABLE `attribute_value` ADD FOREIGN KEY single_attribute_option_id_idxfk (`single_attribute_option_id`) REFERENCES `attribute_option` (`id`);
 
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
+
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY communication_list_id_idxfk_1 (`communication_list_id`) REFERENCES `communication_list` (`id`);
 
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY person_id_idxfk_13 (`person_id`) REFERENCES `person` (`id`);
 
-CREATE INDEX `address_idx` ON `address` (`household_id`,`current_flag`);
-
-CREATE INDEX `address_type_id_idx` ON `address`(`address_type_id`);
-ALTER TABLE `address` ADD FOREIGN KEY address_type_id_idxfk (`address_type_id`) REFERENCES `address_type` (`id`);
-
-CREATE INDEX `person_id_idx` ON `address`(`person_id`);
-ALTER TABLE `address` ADD FOREIGN KEY person_id_idxfk_14 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `household_id_idx` ON `address`(`household_id`);
-ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_2 (`household_id`) REFERENCES `household` (`id`);
-
-CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
-ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
-
-CREATE INDEX `verification_checked_flag_idx` ON `address`(`verification_checked_flag`);
-CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY phone_type_id_idxfk (`phone_type_id`) REFERENCES `phone_type` (`id`);
-
-CREATE INDEX `address_id_idx` ON `phone`(`address_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `person_id_idx` ON `phone`(`person_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY person_id_idxfk_15 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
-
-CREATE INDEX `number_idx` ON `phone`(`number`);
 CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
 ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
 
@@ -1215,10 +1189,38 @@ CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
 ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
 
 CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
-ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
+ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
 
 ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
 
+CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY phone_type_id_idxfk (`phone_type_id`) REFERENCES `phone_type` (`id`);
+
+CREATE INDEX `address_id_idx` ON `phone`(`address_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `person_id_idx` ON `phone`(`person_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY person_id_idxfk_14 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
+
+CREATE INDEX `number_idx` ON `phone`(`number`);
+CREATE INDEX `address_idx` ON `address` (`household_id`,`current_flag`);
+
+CREATE INDEX `address_type_id_idx` ON `address`(`address_type_id`);
+ALTER TABLE `address` ADD FOREIGN KEY address_type_id_idxfk (`address_type_id`) REFERENCES `address_type` (`id`);
+
+CREATE INDEX `person_id_idx` ON `address`(`person_id`);
+ALTER TABLE `address` ADD FOREIGN KEY person_id_idxfk_15 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `household_id_idx` ON `address`(`household_id`);
+ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_2 (`household_id`) REFERENCES `household` (`id`);
+
+CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
+ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
+
+CREATE INDEX `verification_checked_flag_idx` ON `address`(`verification_checked_flag`);
 CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`,`signup_entry_status_type_id`);
 
 CREATE INDEX `signup_entry_idx_1` ON `signup_entry` (`signup_form_id`,`signup_entry_status_type_id`);
@@ -1251,6 +1253,12 @@ ALTER TABLE `form_answer` ADD FOREIGN KEY form_question_id_idxfk (`form_question
 
 CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
 ALTER TABLE `form_answer` ADD FOREIGN KEY address_id_idxfk_1 (`address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `phone_id_idx` ON `form_answer`(`phone_id`);
+ALTER TABLE `form_answer` ADD FOREIGN KEY phone_id_idxfk (`phone_id`) REFERENCES `phone` (`id`);
+
+CREATE INDEX `email_id_idx` ON `form_answer`(`email_id`);
+ALTER TABLE `form_answer` ADD FOREIGN KEY email_id_idxfk (`email_id`) REFERENCES `email` (`id`);
 
 CREATE UNIQUE INDEX `signup_product_idx` ON `signup_product` (`signup_entry_id`,`form_product_id`);
 

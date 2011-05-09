@@ -26,6 +26,10 @@
 	 * property-read QLabel $TextValueLabel
 	 * property QListBox $AddressIdControl
 	 * property-read QLabel $AddressIdLabel
+	 * property QListBox $PhoneIdControl
+	 * property-read QLabel $PhoneIdLabel
+	 * property QListBox $EmailIdControl
+	 * property-read QLabel $EmailIdLabel
 	 * property QIntegerTextBox $IntegerValueControl
 	 * property-read QLabel $IntegerValueLabel
 	 * property QCheckBox $BooleanValueControl
@@ -94,6 +98,18 @@
 		protected $lstAddress;
 
         /**
+         * @var QListBox lstPhone;
+         * @access protected
+         */
+		protected $lstPhone;
+
+        /**
+         * @var QListBox lstEmail;
+         * @access protected
+         */
+		protected $lstEmail;
+
+        /**
          * @var QIntegerTextBox txtIntegerValue;
          * @access protected
          */
@@ -136,6 +152,18 @@
          * @access protected
          */
 		protected $lblAddressId;
+
+        /**
+         * @var QLabel lblPhoneId
+         * @access protected
+         */
+		protected $lblPhoneId;
+
+        /**
+         * @var QLabel lblEmailId
+         * @access protected
+         */
+		protected $lblEmailId;
 
         /**
          * @var QLabel lblIntegerValue
@@ -420,6 +448,86 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstPhone
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstPhone_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstPhone = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPhone->Name = QApplication::Translate('Phone');
+			$this->lstPhone->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPhoneCursor = Phone::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPhone = Phone::InstantiateCursor($objPhoneCursor)) {
+				$objListItem = new QListItem($objPhone->__toString(), $objPhone->Id);
+				if (($this->objFormAnswer->Phone) && ($this->objFormAnswer->Phone->Id == $objPhone->Id))
+					$objListItem->Selected = true;
+				$this->lstPhone->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstPhone;
+		}
+
+		/**
+		 * Create and setup QLabel lblPhoneId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPhoneId_Create($strControlId = null) {
+			$this->lblPhoneId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPhoneId->Name = QApplication::Translate('Phone');
+			$this->lblPhoneId->Text = ($this->objFormAnswer->Phone) ? $this->objFormAnswer->Phone->__toString() : null;
+			return $this->lblPhoneId;
+		}
+
+		/**
+		 * Create and setup QListBox lstEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstEmail_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstEmail = new QListBox($this->objParentObject, $strControlId);
+			$this->lstEmail->Name = QApplication::Translate('Email');
+			$this->lstEmail->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objEmailCursor = Email::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objEmail = Email::InstantiateCursor($objEmailCursor)) {
+				$objListItem = new QListItem($objEmail->__toString(), $objEmail->Id);
+				if (($this->objFormAnswer->Email) && ($this->objFormAnswer->Email->Id == $objEmail->Id))
+					$objListItem->Selected = true;
+				$this->lstEmail->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstEmail;
+		}
+
+		/**
+		 * Create and setup QLabel lblEmailId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblEmailId_Create($strControlId = null) {
+			$this->lblEmailId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblEmailId->Name = QApplication::Translate('Email');
+			$this->lblEmailId->Text = ($this->objFormAnswer->Email) ? $this->objFormAnswer->Email->__toString() : null;
+			return $this->lblEmailId;
+		}
+
+		/**
 		 * Create and setup QIntegerTextBox txtIntegerValue
 		 * @param string $strControlId optional ControlId to use
 		 * @return QIntegerTextBox
@@ -555,6 +663,32 @@
 			}
 			if ($this->lblAddressId) $this->lblAddressId->Text = ($this->objFormAnswer->Address) ? $this->objFormAnswer->Address->__toString() : null;
 
+			if ($this->lstPhone) {
+					$this->lstPhone->RemoveAllItems();
+				$this->lstPhone->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPhoneArray = Phone::LoadAll();
+				if ($objPhoneArray) foreach ($objPhoneArray as $objPhone) {
+					$objListItem = new QListItem($objPhone->__toString(), $objPhone->Id);
+					if (($this->objFormAnswer->Phone) && ($this->objFormAnswer->Phone->Id == $objPhone->Id))
+						$objListItem->Selected = true;
+					$this->lstPhone->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPhoneId) $this->lblPhoneId->Text = ($this->objFormAnswer->Phone) ? $this->objFormAnswer->Phone->__toString() : null;
+
+			if ($this->lstEmail) {
+					$this->lstEmail->RemoveAllItems();
+				$this->lstEmail->AddItem(QApplication::Translate('- Select One -'), null);
+				$objEmailArray = Email::LoadAll();
+				if ($objEmailArray) foreach ($objEmailArray as $objEmail) {
+					$objListItem = new QListItem($objEmail->__toString(), $objEmail->Id);
+					if (($this->objFormAnswer->Email) && ($this->objFormAnswer->Email->Id == $objEmail->Id))
+						$objListItem->Selected = true;
+					$this->lstEmail->AddItem($objListItem);
+				}
+			}
+			if ($this->lblEmailId) $this->lblEmailId->Text = ($this->objFormAnswer->Email) ? $this->objFormAnswer->Email->__toString() : null;
+
 			if ($this->txtIntegerValue) $this->txtIntegerValue->Text = $this->objFormAnswer->IntegerValue;
 			if ($this->lblIntegerValue) $this->lblIntegerValue->Text = $this->objFormAnswer->IntegerValue;
 
@@ -591,6 +725,8 @@
 				if ($this->lstFormQuestion) $this->objFormAnswer->FormQuestionId = $this->lstFormQuestion->SelectedValue;
 				if ($this->txtTextValue) $this->objFormAnswer->TextValue = $this->txtTextValue->Text;
 				if ($this->lstAddress) $this->objFormAnswer->AddressId = $this->lstAddress->SelectedValue;
+				if ($this->lstPhone) $this->objFormAnswer->PhoneId = $this->lstPhone->SelectedValue;
+				if ($this->lstEmail) $this->objFormAnswer->EmailId = $this->lstEmail->SelectedValue;
 				if ($this->txtIntegerValue) $this->objFormAnswer->IntegerValue = $this->txtIntegerValue->Text;
 				if ($this->chkBooleanValue) $this->objFormAnswer->BooleanValue = $this->chkBooleanValue->Checked;
 				if ($this->calDateValue) $this->objFormAnswer->DateValue = $this->calDateValue->DateTime;
@@ -666,6 +802,18 @@
 				case 'AddressIdLabel':
 					if (!$this->lblAddressId) return $this->lblAddressId_Create();
 					return $this->lblAddressId;
+				case 'PhoneIdControl':
+					if (!$this->lstPhone) return $this->lstPhone_Create();
+					return $this->lstPhone;
+				case 'PhoneIdLabel':
+					if (!$this->lblPhoneId) return $this->lblPhoneId_Create();
+					return $this->lblPhoneId;
+				case 'EmailIdControl':
+					if (!$this->lstEmail) return $this->lstEmail_Create();
+					return $this->lstEmail;
+				case 'EmailIdLabel':
+					if (!$this->lblEmailId) return $this->lblEmailId_Create();
+					return $this->lblEmailId;
 				case 'IntegerValueControl':
 					if (!$this->txtIntegerValue) return $this->txtIntegerValue_Create();
 					return $this->txtIntegerValue;
@@ -716,6 +864,10 @@
 						return ($this->txtTextValue = QType::Cast($mixValue, 'QControl'));
 					case 'AddressIdControl':
 						return ($this->lstAddress = QType::Cast($mixValue, 'QControl'));
+					case 'PhoneIdControl':
+						return ($this->lstPhone = QType::Cast($mixValue, 'QControl'));
+					case 'EmailIdControl':
+						return ($this->lstEmail = QType::Cast($mixValue, 'QControl'));
 					case 'IntegerValueControl':
 						return ($this->txtIntegerValue = QType::Cast($mixValue, 'QControl'));
 					case 'BooleanValueControl':
