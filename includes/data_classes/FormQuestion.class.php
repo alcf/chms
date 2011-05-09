@@ -41,6 +41,20 @@
 			}
 		}
 
+
+		/**
+		 * Returns an array of strings that indicate the "options" for this selection box
+		 * @return string[]
+		 */
+		public function GetOptionsAsArray() {
+			$strArrayToReturn = array();
+			foreach (explode("\n", $this->strOptions) as $strOption) {
+				$strOption = trim($strOption);
+				if (strlen($strOption)) $strArrayToReturn[] = $strOption;
+			}
+			return $strArrayToReturn;
+		}
+
 		public static function RefreshOrderNumber($intSignupFormId) {
 			$intOrderNumber = 1;
 			foreach (FormQuestion::LoadArrayBySignupFormId($intSignupFormId, QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {

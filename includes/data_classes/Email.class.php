@@ -27,6 +27,24 @@
 			return sprintf('Email Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Label':
+					if ($this->PersonAsPrimary)
+						return sprintf('%s (Primary)', $this->strAddress);
+					else
+						return $this->strAddress;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		public function Delete() {
 			try {
 				$objPerson = $this->PersonAsPrimary;

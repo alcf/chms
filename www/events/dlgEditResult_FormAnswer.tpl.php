@@ -12,29 +12,51 @@
 			break;
 
 		case FormQuestionType::Address:
+		case FormQuestionType::Phone:
+		case FormQuestionType::Email:
 			$this->lstListbox->RenderWithName();
+			print '<br/>';
+			$this->lblInstructions->Render();
 			break;
 
 		case FormQuestionType::Gender:
 			$this->lstListbox->RenderWithName();
+			print '<br/>';
+			$this->lblInstructions->Render();
 			break;
 
-		case FormQuestionType::Phone:
-		case FormQuestionType::Email:
 		case FormQuestionType::ShortText:
+			$this->txtTextbox->RenderWithName();
+			break;
+	
 		case FormQuestionType::LongText:
+			$this->txtTextArea->RenderWithName();
+			break;
+
 		case FormQuestionType::SingleSelect:
+			$this->lstListbox->RenderWithName();
+			if ($_FORM->objAnswer->FormQuestion->AllowOtherFlag) $this->txtTextbox->RenderWithName();
+			break;
+
 		case FormQuestionType::MultipleSelect:
-			$strToReturn = QApplication::HtmlEntities(trim($objFormAnswer->TextValue));
+			$this->lstListbox->RenderWithName();
+			if ($_FORM->objAnswer->FormQuestion->AllowOtherFlag) $this->txtTextbox->RenderWithName();
 			break;
 
 		case FormQuestionType::Number:
+			$this->txtInteger->RenderWithName();
+			break;
+
 		case FormQuestionType::Age:
-			$strToReturn = $objFormAnswer->IntegerValue;
+			$this->txtInteger->RenderWithName();
+			print '<br/>';
+			$this->lblInstructions->Render();
 			break;
 
 		case FormQuestionType::DateofBirth:
-			if ($objFormAnswer->DateValue) $strToReturn = $objFormAnswer->DateValue->ToString('MMM D YYYY');
+			$this->dtxDateValue->RenderWithName();
+			print '<br/>';
+			$this->lblInstructions->Render();
 			break;
 	}
 ?>

@@ -27,6 +27,19 @@
 			return sprintf('FormAnswer Object %s',  $this->intId);
 		}
 
+		/**
+		 * Returns an array of strings that indicate the "selected" multiple choice answers.
+		 * The string value is both the key AND the value of the array
+		 * @return string[]
+		 */
+		public function GetSelectedMultipleChoiceArray() {
+			$strArrayToReturn = array();
+			foreach (explode("\n", $this->strTextValue) as $strOption) {
+				$strOption = trim($strOption);
+				if (strlen($strOption)) $strArrayToReturn[$strOption] = $strOption;
+			}
+			return $strArrayToReturn;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

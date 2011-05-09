@@ -27,6 +27,24 @@
 			return sprintf('Phone Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Label':
+					if ($this->CountAddressesAsPrimary() || $this->CountPeopleAsPrimary())
+						return sprintf('Primary %s', PhoneType::$NameArray[$this->intPhoneTypeId]);
+					else
+						return PhoneType::$NameArray[$this->intPhoneTypeId];
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		public function Delete() {
 			$this->UnassociateAllAddressesAsPrimary();
 			$this->UnassociateAllPeopleAsPrimary();

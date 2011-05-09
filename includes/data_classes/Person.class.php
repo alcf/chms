@@ -192,6 +192,9 @@
 				case 'LinkUrl':
 					return sprintf('/individuals/view.php/%s#general', $this->intId);
 
+				case 'ContactInfoLinkUrl':
+					return sprintf('/individuals/view.php/%s#contact', $this->intId);
+
 				case 'RefreshLinkUrl':
 					return sprintf('/individuals/refresh_view.php/%s', $this->intId);
 
