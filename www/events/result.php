@@ -168,6 +168,11 @@
 			$objFormAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($this->mctSignupEntry->SignupEntry->Id, $objFormQuestion->Id);
 			$strToReturn = null;
 
+			/**
+			 * @var Person
+			 */
+			$objPerson = $this->mctSignupEntry->SignupEntry->Person;
+
 			if ($objFormAnswer) {
 				switch ($objFormQuestion->FormQuestionTypeId) {
 					case FormQuestionType::YesNo:
@@ -175,11 +180,30 @@
 						if ($objFormAnswer->BooleanValue === false) $strToReturn = 'No';
 						break;
 
-					case FormQuestionType::SpouseName:
 					case FormQuestionType::Address:
-					case FormQuestionType::Gender:
+						if ($objFormAnswer->Address) $strToReturn = $objFormAnswer->Address->AddressShortLine;
+						break;
+
 					case FormQuestionType::Phone:
+						if ($objFormAnswer->Phone) $strToReturn = $objFormAnswer->Phone->Number;
+						break;
+
 					case FormQuestionType::Email:
+						if ($objFormAnswer->Email) $strToReturn = $objFormAnswer->Email->Address;
+						break;
+
+					case FormQuestionType::Gender:
+						switch ($objPerson->Gender) {
+							case 'M':
+								$strToReturn = 'Male';
+								break;
+							case 'F':
+								$strToReturn = 'Female';
+								break;
+						}
+						break;
+
+					case FormQuestionType::SpouseName:
 					case FormQuestionType::ShortText:
 					case FormQuestionType::LongText:
 					case FormQuestionType::SingleSelect:
@@ -188,12 +212,15 @@
 						break;
 
 					case FormQuestionType::Number:
-					case FormQuestionType::Age:
 						$strToReturn = $objFormAnswer->IntegerValue;
+						break;
+						
+					case FormQuestionType::Age:
+						$strToReturn = $objPerson->Age;
 						break;
 
 					case FormQuestionType::DateofBirth:
-						if ($objFormAnswer->DateValue) $strToReturn = $objFormAnswer->DateValue->ToString('MMM D YYYY');
+						if ($objPerson->DateOfBirth) $strToReturn = $objPerson->DateOfBirth->ToString('MMM D YYYY');
 						break;
 				}
 			}
@@ -507,9 +534,17 @@
 					break;
 
 				case FormQuestionType::Address:
+					$this->objAnswer->AddressId = $this->lstListbox->SelectedValue;
 					break;
 
 				case FormQuestionType::Gender:
+					if ($this->lstListbox->SelectedValue) {
+						$objPerson->Gender = 'M';
+					} else {
+						$objPerson->Gender = 'F';
+					}
+					$objPerson->Save();
+
 					switch ($objPerson->Gender) {
 						case 'M':
 							$this->objAnswer->TextValue = 'Male';
@@ -523,9 +558,11 @@
 					break;
 
 				case FormQuestionType::Phone:
+					$this->objAnswer->PhoneId = $this->lstListbox->SelectedValue;
 					break;
 
 				case FormQuestionType::Email:
+					$this->objAnswer->EmailId = $this->lstListbox->SelectedValue;
 					break;
 
 				case FormQuestionType::ShortText:
