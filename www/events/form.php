@@ -18,11 +18,11 @@
 		
 		protected $pxyMoveUpQuestion;
 		protected $pxyMoveDownQuestion;
-		protected $lstCreateNewQuestion;
 		
 		protected $pxyMoveUpProduct;
 		protected $pxyMoveDownProduct;
-		protected $lstCreateNewProduct;
+
+		protected $lstCreateNew;
 
 		protected $lblName;
 		protected $lblSignupUrl;
@@ -76,17 +76,14 @@
 			}
 			
 			if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) {
-				$this->lstCreateNewQuestion = new QListBox($this);
-				$this->lstCreateNewQuestion->AddItem('- Create New Question -', null);
+				$this->lstCreateNew = new QListBox($this);
+				$this->lstCreateNew->AddItem('- Create New Question or Product -', null);
 				foreach (FormQuestionType::$NameArray as $intId => $strName)
-					$this->lstCreateNewQuestion->AddItem($strName, $intId);
-				$this->lstCreateNewQuestion->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNewQuestion_Change'));
-
-				$this->lstCreateNewProduct = new QListBox($this);
-				$this->lstCreateNewProduct->AddItem('- Create New Product -', null);
+					$this->lstCreateNew->AddItem($strName, $intId, false, 'Question Types');
 				foreach (FormProductType::$NameArray as $intId => $strName)
-					$this->lstCreateNewProduct->AddItem($strName, $intId);
-				$this->lstCreateNewProduct->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNewProduct_Change'));
+					$this->lstCreateNew->AddItem($strName, $intId * -1, false, 'Product Types');
+
+				$this->lstCreateNew->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNew_Change'));
 			}
 
 			// Setup "About Event" label controls
@@ -248,12 +245,13 @@
 			$dtgProducts->DataSource = FormProduct::LoadArrayBySignupFormIdFormProductTypeId($this->objSignupForm->Id, $intFormProductTypeId, QQ::OrderBy(QQN::FormProduct()->OrderNumber));
 		}
 		
-		public function lstCreateNewQuestion_Change() {
-			if ($this->lstCreateNewQuestion->SelectedValue) QApplication::Redirect(sprintf('/events/question.php/%s/0/%s', $this->objSignupForm->Id, $this->lstCreateNewQuestion->SelectedValue));
-		}
-		
-		public function lstCreateNewProduct_Change() {
-			if ($this->lstCreateNewProduct->SelectedValue) QApplication::Redirect(sprintf('/events/product.php/%s/0/%s', $this->objSignupForm->Id, $this->lstCreateNewProduct->SelectedValue));
+		public function lstCreateNew_Change() {
+			if ($intId = $this->lstCreateNew->SelectedValue) {
+				if ($intId > 0)
+					QApplication::Redirect(sprintf('/events/question.php/%s/0/%s', $this->objSignupForm->Id, $intId));
+				else
+					QApplication::Redirect(sprintf('/events/product.php/%s/0/%s', $this->objSignupForm->Id, $intId * -1));
+			}
 		}
 	}
 

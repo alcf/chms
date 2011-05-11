@@ -35,11 +35,9 @@
 		<?php } ?>
 	</div>
 
-	<?php if ($this->lstCreateNewQuestion) { ?>
+	<?php if ($this->lstCreateNew) { ?>
 		<div class="buttonBar">
-			<?php $this->lstCreateNewQuestion->Render(); ?>
-			&nbsp;
-			<?php $this->lstCreateNewProduct->Render(); ?>
+			<?php $this->lstCreateNew->Render(); ?>
 		</div>
 		<br clear="all"/>
 	<?php } ?>
