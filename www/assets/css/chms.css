@@ -171,10 +171,18 @@
 	ul.subnavSideStewardship li a.selected div.info { font-style: normal; color: #555; text-shadow: none; }
 
 	ul.subnavSide li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; text-shadow: 1px 1px #9ab; }
+	
 
 	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; }
 	ul.subnavSide li.last a { -moz-border-radius: 0 0 0 5px; }
 
+		/** Alterations for "SwitchStyle" **/
+		ul#switchStyle { float: none; display: inline; }
+		ui#switchStyle li { }
+		ul#switchStyle li a { width: 100px; float: left; text-align: center; border-width: 1px 0; border-style: solid; border-color: #998877;}
+
+		ul#switchStyle li.first a { -moz-border-radius: 5px 0 0 5px; border-left-width: 1px; }
+		ul#switchStyle li.last a { -moz-border-radius:  0 5px 5px 0; border-right-width: 1px; }
 
 	/*** SUBNAV-SIDE CONTENT ***/
 

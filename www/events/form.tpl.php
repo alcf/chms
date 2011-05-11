@@ -1,7 +1,18 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<h1><?php _p($this->objSignupForm->Ministry->Name); ?></h1>
-	<h3><?php _p($this->objSignupForm->Name); ?></h3>
+	<div style="float: right; width: 250px; ">
+		<ul class="subnavSide" id="switchStyle">
+			<li class="first"><a href="/events/form.php/<?php _p($this->objSignupForm->Id); ?>" class="selected">Form Details</a></li>
+			<li class="last"><a href="/events/results.php/<?php _p($this->objSignupForm->Id); ?>">All Signups</a></li>
+		</ul>
+	</div><div style="float: left;">
+		<h1><?php _p($this->objSignupForm->Name); ?></h1>
+	</div>
+	<br clear="all"/>
+
+	<h3>Form Details
+		<button class="primary" onclick="document.location=&quot;/events/#<?php _p($this->objSignupForm->MinistryId); ?>&quot;; return false;">Back to All Events</button>
+	</h3>
 
 	<div class="section">
 		<?php $this->lblName->RenderWithName(); ?>
