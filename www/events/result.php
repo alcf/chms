@@ -24,13 +24,12 @@
 		protected $dtgFormQuestions;
 		protected $pxyEditFormQuestion;
 
-		protected $dtgSignupProducts;
+		protected $dtgFormProducts;
+		protected $pxyEditFormProduct;
 
 		protected $dlgEdit;
 		/**
-		 * Tag should be -1 if we are editing the "note"
-		 * Should be -2 if we are entering a payment
-		 * Otherwise it's the ID# of the SignupForm's FormQuestion Id being edited/created
+		 * Tag should be one of the EditTag constants
 		 * @var integer
 		 */
 		protected $intEditTag;
@@ -49,8 +48,12 @@
 		protected $chkBoolean;
 		protected $dtxDateValue;
 		protected $lblInstructions;
-		
 
+		const EditTagNote = 1;
+		const EditTagPayment = 2;
+		const EditTagAnswer = 3;
+		const EditTagProduct = 4;
+		
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
 			if (!$this->objSignupForm) QApplication::Redirect('/events/');
@@ -94,15 +97,63 @@
 			$this->btnEditNote->CssClass = 'primary';
 
 			$this->dtgFormQuestions = new QDataGrid($this);
-			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Question', '<?= $_ITEM->ShortDescriptionBoldIfRequiredHtml; ?>', 'Width=200px', 'HtmlEntities=false'));
-			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Response', '<?= $_FORM->RenderResponse($_ITEM); ?>', 'Width=600px', 'HtmlEntities=false'));
+			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Question', '<?= $_ITEM->ShortDescriptionBoldIfRequiredHtml; ?>', 'Width=300px', 'HtmlEntities=false'));
+			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Response', '<?= $_FORM->RenderResponse($_ITEM); ?>', 'Width=640px', 'HtmlEntities=false'));
 			$this->dtgFormQuestions->SetDataBinder('dtgFormQuestions_Bind');
 
 			$this->pxyEditFormQuestion = new QControlProxy($this);
 			$this->pxyEditFormQuestion->AddAction(new QClickEvent(), new QAjaxAction('pxyEditFormQuestion_Click'));
 			$this->pxyEditFormQuestion->AddAction(new QClickEvent(), new QTerminateAction());
-		
+
+			$this->dtgFormProducts = new QDataGrid($this);
+			$this->dtgFormProducts->AddColumn(new QDataGridColumn('Product Name', '<?= $_FORM->RenderProductName($_ITEM); ?>', 'Width=300px', 'HtmlEntities=false'));
+			$this->dtgFormProducts->AddColumn(new QDataGridColumn('Purchased / Quantity', '<?= $_FORM->RenderProductQuantity($_ITEM); ?>', 'Width=475px', 'HtmlEntities=false'));
+			$this->dtgFormProducts->AddColumn(new QDataGridColumn('Total Cost', '<?= $_FORM->RenderProductCost($_ITEM); ?>', 'Width=150px', 'HtmlEntities=false'));
+			$this->dtgFormProducts->SetDataBinder('dtgFormProducts_Bind');
+			
+			$this->pxyEditFormProduct = new QControlProxy($this);
+			$this->pxyEditFormProduct->AddAction(new QClickEvent(), new QAjaxAction('pxyEditFormProduct_Click'));
+			$this->pxyEditFormProduct->AddAction(new QClickEvent(), new QTerminateAction());
+
 			$this->dlgEdit_Create();
+		}
+		
+		/**
+		 * @var SignupProduct
+		 */
+		protected $objSignupProduct;
+		public function RenderProductName(FormProduct $objProduct) {
+			$this->objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($this->mctSignupEntry->SignupEntry->Id, $objProduct->Id);
+			
+			$objStyle = new QDataGridRowStyle();
+			if ($this->objSignupProduct) {
+				$objStyle->FontBold = true;
+			} else {
+				$objStyle->ForeColor = '#999';
+			}
+			$this->dtgFormProducts->OverrideRowStyle($this->dtgFormProducts->CurrentRowIndex, $objStyle);
+			
+			return QApplication::HtmlEntities($objProduct->Name);
+		}
+
+		public function RenderProductQuantity(FormProduct $objProduct) {
+			if (!$this->objSignupProduct) return (sprintf('<a href="#" style="color: #999; font-size: 10px;" %s>Not Purchased</a>', $this->pxyEditFormProduct->RenderAsEvents($objProduct->Id, false)));
+
+			switch ($objProduct->FormProductTypeId) {
+				case FormProductType::Required:
+					return (sprintf('<a href="#" %s><img src="/assets/images/icons/tick.png" title="Purchased"/></a>', $this->pxyEditFormProduct->RenderAsEvents($objProduct->Id, false)));
+
+				case FormProductType::RequiredWithChoice:
+					return (sprintf('<a href="#" %s><img src="/assets/images/icons/tick.png" title="Purchased"/></a>', $this->pxyEditFormProduct->RenderAsEvents($objProduct->Id, false)));
+
+				case FormProductType::Optional:
+					return (sprintf('<a href="#" %s>%s</a>', $this->pxyEditFormProduct->RenderAsEvents($objProduct->Id, false), $this->objSignupProduct->Quantity));
+			}
+		}
+				
+		public function RenderProductCost(FormProduct $objProduct) {
+			if (!$this->objSignupProduct) return null;
+			return QApplication::DisplayCurrency($this->objSignupProduct->TotalAmount);
 		}
 		
 		protected function dlgEdit_Create() {
@@ -145,7 +196,11 @@
 		protected function dtgFormQuestions_Bind() {
 			$this->dtgFormQuestions->DataSource = $this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber));
 		}
-		
+
+		protected function dtgFormProducts_Bind() {
+			$this->dtgFormProducts->DataSource = $this->objSignupForm->GetFormProductArray(QQ::OrderBy(QQN::FormProduct()->FormProductTypeId, QQN::FormProduct()->OrderNumber));
+		}
+
 		public function ResetDialogControls() {
 			$this->txtTextArea->Required = false;
 			$this->txtTextbox->Required = false;
@@ -158,6 +213,7 @@
 			$this->lstListbox->Height = null;
 			$this->lstListbox->Width = null;
 			$this->lstListbox->RemoveAllActions(QChangeEvent::EventName);
+			$this->lstListbox->RemoveAllItems();
 
 			$this->txtTextbox->RemoveAllActions(QEnterKeyEvent::EventName);
 			$this->txtTextbox->AddAction(new QEnterKeyEvent(), new QTerminateAction());
@@ -234,6 +290,48 @@
 			}
 		}
 
+		protected function pxyEditFormProduct_Click($strFormId, $strControlId, $strParameter) {
+			$objFormProduct = FormProduct::Load($strParameter);
+			if ($objFormProduct->SignupFormId != $this->objSignupForm->Id) return;
+			
+
+			/**
+			 * @var SignupEntry
+			 */
+			$objSignupEntry = $this->mctSignupEntry->SignupEntry;
+			/**
+			 * @var Person
+			 */
+			$objPerson = $this->mctSignupEntry->SignupEntry->Person;
+			
+			$this->dlgEdit->ShowDialogBox();
+			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_SignupProduct.tpl.php';
+			$this->intEditTag = self::EditTagProduct;
+
+			$this->objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($objSignupEntry->Id, $objFormProduct->Id);
+
+			if (!$this->objSignupProduct) {
+				$this->objSignupProduct = new SignupProduct();
+				$this->objSignupProduct->SignupEntryId = $objSignupEntry->Id;
+				$this->objSignupProduct->FormProductId = $objFormProduct->Id;
+				$this->objSignupProduct->Amount = $objFormProduct->Cost;
+				$this->objSignupProduct->Deposit = $objFormProduct->Deposit;
+				$this->objSignupProduct->Quantity = $objFormProduct->MinimumQuantity;
+				$this->btnDelete->Visible = false;
+			} else {
+				$this->btnDelete->Visible = true;
+			}
+			
+			// Reset
+			$this->ResetDialogControls();
+
+			$this->lstListbox->Name = 'Quantity';
+			for ($i = $objFormProduct->MinimumQuantity; $i <= $objFormProduct->MaximumQuantity; $i++)
+				$this->lstListbox->AddItem($i, $i, $i == $this->objSignupProduct->Quantity);
+			$this->txtTextbox->Name = 'Cost per Item';
+			$this->txtTextbox->Text = $this->objSignupProduct->Amount;		
+		}
+
 		protected function pxyEditFormQuestion_Click($strFormId, $strControlId, $strParameter) {
 			$objFormQuestion = FormQuestion::Load($strParameter);
 			if ($objFormQuestion->SignupFormId != $this->objSignupForm->Id) return;
@@ -249,7 +347,7 @@
 			
 			$this->dlgEdit->ShowDialogBox();
 			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_FormAnswer.tpl.php';
-			$this->intEditTag = $objFormQuestion->Id;
+			$this->intEditTag = self::EditTagAnswer;
 			$this->objAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($objSignupEntry->Id, $objFormQuestion->Id);
 			if (!$this->objAnswer) {
 				$this->objAnswer = new FormAnswer();
@@ -464,23 +562,27 @@
 			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_InternalNote.tpl.php';
 			$this->txtTextArea->Text = trim($this->mctSignupEntry->SignupEntry->InternalNotes);
 			$this->txtTextArea->Focus();
-			$this->intEditTag = -1;
+			$this->intEditTag = self::EditTagNote;
 		}
 
 		protected function btnDelete_Click() {
 			if (!$this->intEditTag) $this->btnCancel_Click();
 			
 			switch ($this->intEditTag) {
-				case -2:
+				case self::EditTagNote:
 					break;
-				case -1:
+				case self::EditTagPayment:
 					break;
-				default:
+				case self::EditTagAnswer:
 					$this->objAnswer->Delete();
 					$this->dtgFormQuestions->Refresh();
 					break;
+				case self::EditTagProduct:
+					$this->objSignupProduct->Delete();
+					$this->dtgFormProducts->Refresh();
+					break;
 			}
-			
+
 			$this->btnCancel_Click();
 		}
 
@@ -488,22 +590,56 @@
 			if (!$this->intEditTag) $this->btnCancel_Click();
 			
 			switch ($this->intEditTag) {
-				case -2:
+				case self::EditTagPayment:
 					break;
-				case -1:
+				case self::EditTagNote:
 					$this->mctSignupEntry->SignupEntry->InternalNotes = trim($this->txtTextArea->Text);
 					$this->mctSignupEntry->SaveSignupEntry();
 					$this->mctSignupEntry->lblInternalNotes_Refresh();
 					break;
-				default:
+				case self::EditTagAnswer:
 					if (!$this->PerformFormAnswerSave()) return;
 					$this->dtgFormQuestions->Refresh();
+					break;
+				case self::EditTagProduct;
+					if (!$this->PerformSignupProductSave()) return;
+					$this->dtgFormProducts->Refresh();
 					break;
 			}
 			
 			$this->btnCancel_Click();
 		}
 		
+		/**
+		 * @return boolean whether or not the save was successful
+		 */
+		protected function PerformSignupProductSave() {
+			/**
+			 * @var SignupEntry
+			 */
+			$objSignupEntry = $this->mctSignupEntry->SignupEntry;
+
+			/**
+			 * @var FormProduct
+			 */
+			$objFormProduct =  $this->objSignupProduct->FormProduct;
+
+			// Delete the "other" required w/ choice items if we are switching it
+			if ($objFormProduct->FormProductTypeId == FormProductType::RequiredWithChoice) {
+				foreach ($objSignupEntry->GetSignupProductArray() as $objSignupProduct) {
+					if (($objSignupProduct->FormProduct->FormProductTypeId == FormProductType::RequiredWithChoice) &&
+						($objSignupProduct->Id != $this->objSignupProduct->Id))
+						$objSignupProduct->Delete();
+				}
+			}
+
+			$this->objSignupProduct->Quantity = $this->lstListbox->SelectedValue;
+			$this->objSignupProduct->Amount = $this->txtTextbox->Text;
+			$this->objSignupProduct->Save();
+			
+			return true;
+		}
+
 		/**
 		 * @return boolean whether or not the save was successful
 		 */

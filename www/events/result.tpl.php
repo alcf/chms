@@ -20,6 +20,8 @@
 	<h3>View Signup Form Responses</h3>
 	<div class="section">
 		<?php $this->dtgFormQuestions->Render();?>
+		<br/>
+		<?php $this->dtgFormProducts->Render();?>
 	</div>
 	
 	<?php $this->dlgEdit->Render('Width=800px'); ?>

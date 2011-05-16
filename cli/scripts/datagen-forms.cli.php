@@ -104,6 +104,8 @@
 				$objFormProduct->OrderNumber = $intOrderNumber;
 				$intOrderNumber++;
 				$objFormProduct->ViewFlag = true;
+				$objFormProduct->MinimumQuantity = 1;
+				$objFormProduct->MaximumQuantity = 1;
 				$objFormProduct->Save();
 			}
 			
@@ -119,6 +121,8 @@
 					$objFormProduct->Description = self::GenerateContent(1, 3, 10);
 					$objFormProduct->Cost = $fltAmount;
 					$objFormProduct->OrderNumber = $intOrderNumber;
+					$objFormProduct->MinimumQuantity = 1;
+					$objFormProduct->MaximumQuantity = 1;
 					$intOrderNumber++;
 					$objFormProduct->ViewFlag = true;
 					$objFormProduct->Save();
