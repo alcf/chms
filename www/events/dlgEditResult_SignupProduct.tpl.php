@@ -2,7 +2,7 @@
 <p><?php _p($_FORM->objSignupProduct->FormProduct->Description); ?></p>
 
 <?php $this->lstListbox->RenderWithName('Required=true'); ?>
-<?php $this->txtTextbox->RenderWithName('Required=true'); ?>
+<?php $this->txtFloat->RenderWithName('Required=true'); ?>
 
 <div class="buttonBar">
 	<?php $_FORM->btnSave->Render(); ?>

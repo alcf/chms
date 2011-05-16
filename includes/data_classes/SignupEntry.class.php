@@ -41,7 +41,7 @@
 
 			$this->AmountTotal = $fltAmountTotal;
 			$this->AmountPaid = $fltAmountPaid;
-			$this->AmountBalance = $fltAmountTotal - $fltAmountPaid;
+			$this->AmountBalance = -1 * ($fltAmountTotal - $fltAmountPaid);
 			if ($blnSaveFlag) $this->Save();
 
 			return $this->AmountBalance;

@@ -27,6 +27,9 @@
 		protected $dtgFormProducts;
 		protected $pxyEditFormProduct;
 
+		protected $dtgPayments;
+		protected $lstAddPayment;
+
 		protected $dlgEdit;
 		/**
 		 * Tag should be one of the EditTag constants
@@ -45,6 +48,7 @@
 		protected $txtTextbox;
 		protected $lstListbox;
 		protected $txtInteger;
+		protected $txtFloat;
 		protected $chkBoolean;
 		protected $dtxDateValue;
 		protected $lblInstructions;
@@ -77,7 +81,8 @@
 			$this->mctSignupEntry = new SignupEntryMetaControl($this, $objSignupEntry);
 			$this->lblPerson = new QLabel($this);
 			$this->lblPerson->Name = 'Person';
-			$this->lblPerson->Text = $this->mctSignupEntry->SignupEntry->Person->Name;
+			$this->lblPerson->HtmlEntities = false;
+			$this->lblPerson->Text = $this->mctSignupEntry->SignupEntry->Person->LinkHtml;
 			
 			$this->lblSignupEntryStatusType = $this->mctSignupEntry->lblSignupEntryStatusTypeId_Create();
 			$this->lblDateCreated = $this->mctSignupEntry->lblDateCreated_Create();
@@ -86,7 +91,8 @@
 			if (($this->mctSignupEntry->SignupEntry->PersonId != $this->mctSignupEntry->SignupEntry->SignupByPersonId) &&
 				($this->mctSignupEntry->SignupEntry->SignupByPersonId)) {
 				$this->lblSignupByPerson = new QLabel($this);
-				$this->lblSignupByPerson->Text = $this->mctSignupEntry->SignupEntry->SignupByPerson->Name;
+				$this->lblSignupByPerson->HtmlEntities = false;
+				$this->lblSignupByPerson->Text = $this->mctSignupEntry->SignupEntry->SignupByPerson->LinkHtml;
 			}
 
 			$this->lblInternalNotes = $this->mctSignupEntry->lblInternalNotes_Create();
@@ -114,6 +120,21 @@
 			$this->pxyEditFormProduct = new QControlProxy($this);
 			$this->pxyEditFormProduct->AddAction(new QClickEvent(), new QAjaxAction('pxyEditFormProduct_Click'));
 			$this->pxyEditFormProduct->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->dtgPayments = new SignupPaymentDataGrid($this);
+			$this->dtgPayments->MetaAddColumn('TransactionDate', 'Width=160px');
+			$this->dtgPayments->MetaAddTypeColumn('SignupPaymentTypeId', 'SignupPaymentType', 'Name=Type', 'Width=160px');
+			$this->dtgPayments->MetaAddColumn('TransactionCode', 'Width=445px', 'Html=<?= $_FORM->RenderPaymentCode($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgPayments->MetaAddColumn('Amount', 'Width=150px', 'Html=<?= $_FORM->RenderPaymentAmount($_ITEM); ?>', 'HtmlEntities=false', 'FontBold=true');
+			$this->dtgPayments->SetDataBinder('dtgPayments_Bind');
+			$this->dtgPayments->SortColumnIndex = 0;
+			
+			$this->lstAddPayment = new QListBox($this);
+			$this->lstAddPayment->AddItem('- Add Payment -');
+			foreach (SignupPaymentType::$NameArray as $intId => $strName) {
+				$this->lstAddPayment->AddItem($strName, $intId);
+			}
+			$this->lstAddPayment->AddAction(new QChangeEvent(), new QAjaxAction('lstAddPayment_Change'));
 
 			$this->dlgEdit_Create();
 		}
@@ -150,7 +171,21 @@
 					return (sprintf('<a href="#" %s>%s</a>', $this->pxyEditFormProduct->RenderAsEvents($objProduct->Id, false), $this->objSignupProduct->Quantity));
 			}
 		}
-				
+
+		public function RenderPaymentAmount(SignupPayment $objPayment) {
+			if ($objPayment->Id)
+				return QApplication::DisplayCurrencyHtml($objPayment->Amount);
+			else
+				return QApplication::DisplayCurrencyHtml($this->mctSignupEntry->SignupEntry->RefreshAmounts());
+		}
+
+		public function RenderPaymentCode(SignupPayment $objPayment) {
+			if ($objPayment->Id)
+				return QApplication::HtmlEntities($objPayment->TransactionCode);
+			else
+				return '<strong>BALANCE REMAINING</strong>';
+		}
+
 		public function RenderProductCost(FormProduct $objProduct) {
 			if (!$this->objSignupProduct) return null;
 			return QApplication::DisplayCurrency($this->objSignupProduct->TotalAmount);
@@ -168,6 +203,7 @@
 			$this->txtTextbox = new QTextBox($this->dlgEdit);
 			$this->lstListbox = new QListBox($this->dlgEdit);
 			$this->txtInteger = new QIntegerTextBox($this->dlgEdit);
+			$this->txtFloat = new QFloatTextBox($this->dlgEdit);
 			$this->chkBoolean = new QCheckBox($this->dlgEdit);
 			$this->dtxDateValue = new QDateTimeTextBox($this->dlgEdit);
 			$this->lblInstructions = new QLabel($this->dlgEdit);
@@ -201,11 +237,19 @@
 			$this->dtgFormProducts->DataSource = $this->objSignupForm->GetFormProductArray(QQ::OrderBy(QQN::FormProduct()->FormProductTypeId, QQN::FormProduct()->OrderNumber));
 		}
 
+		protected function dtgPayments_Bind() {
+			$this->dtgPayments->MetaDataBinder(QQ::Equal(QQN::SignupPayment()->SignupEntryId, $this->mctSignupEntry->SignupEntry->Id));
+			$objDataSource = $this->dtgPayments->DataSource;
+			$objDataSource[] = new SignupPayment();
+			$this->dtgPayments->DataSource = $objDataSource;
+		}
+
 		public function ResetDialogControls() {
 			$this->txtTextArea->Required = false;
 			$this->txtTextbox->Required = false;
 			$this->lstListbox->Required = false;
 			$this->txtInteger->Required = false;
+			$this->txtFloat->Required = false;
 			$this->chkBoolean->Required = false;
 			$this->dtxDateValue->Required = false;
 
@@ -218,6 +262,14 @@
 			$this->txtTextbox->RemoveAllActions(QEnterKeyEvent::EventName);
 			$this->txtTextbox->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtTextbox->Instructions = null;		
+
+			$this->txtFloat->RemoveAllActions(QEnterKeyEvent::EventName);
+			$this->txtFloat->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtFloat->Instructions = null;		
+
+			$this->txtInteger->RemoveAllActions(QEnterKeyEvent::EventName);
+			$this->txtInteger->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtInteger->Instructions = null;		
 		}
 
 		public function RenderResponse(FormQuestion $objFormQuestion) {
@@ -328,8 +380,79 @@
 			$this->lstListbox->Name = 'Quantity';
 			for ($i = $objFormProduct->MinimumQuantity; $i <= $objFormProduct->MaximumQuantity; $i++)
 				$this->lstListbox->AddItem($i, $i, $i == $this->objSignupProduct->Quantity);
-			$this->txtTextbox->Name = 'Cost per Item';
-			$this->txtTextbox->Text = $this->objSignupProduct->Amount;		
+			$this->txtFloat->Name = 'Cost per Item';
+			$this->txtFloat->Text = $this->objSignupProduct->Amount;		
+		}
+
+		protected function lstAddPayment_Change($strFormId, $strControlId, $strParameter) {
+			if ($this->lstAddPayment->SelectedValue) {
+				$this->objPayment = new SignupPayment();
+				$this->objPayment->SignupPaymentTypeId = $this->lstAddPayment->SelectedValue;
+				$this->objPayment->SignupEntry = $this->mctSignupEntry->SignupEntry;
+				$this->PaymentDialogBox();
+			}
+		}
+
+		/**
+		 * @var SignupPayment
+		 */
+		protected $objPayment;
+		protected function PaymentDialogBox() {
+			$this->dlgEdit->ShowDialogBox();
+			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_Payment.tpl.php';
+			$this->intEditTag = self::EditTagPayment;
+
+			// Reset
+			$this->ResetDialogControls();
+
+			if (!$this->objPayment->Id) $this->btnDelete->Visible = false;
+			
+			$this->txtFloat->Name = 'Amount';
+			$this->txtFloat->Required = true;
+			$this->txtFloat->Minimum = 0;
+			$this->txtFloat->Maximum = null;
+
+			// Setup the appropriate control
+			switch ($this->objPayment->SignupPaymentTypeId) {
+				case SignupPaymentType::Cash:
+					$this->txtTextbox->Name = 'Note';
+					break;
+				case SignupPaymentType::Check:
+					$this->txtTextbox->Name = 'Check Number';
+					$this->txtTextbox->Required = true;
+					break;
+				case SignupPaymentType::CreditCard:
+					$this->txtTextbox->Name = 'Transaction Confirmation';
+					$this->txtTextbox->Required = true;
+					break;
+				case SignupPaymentType::Discount:
+					$this->txtTextbox->Name = 'Note / Reason';
+					$this->txtTextbox->Required = true;
+					break;
+				case SignupPaymentType::Other:
+					$this->txtTextbox->Name = 'Note';
+					break;
+				case SignupPaymentType::Refund:
+					$this->txtTextbox->Name = 'Note';
+					$this->txtTextbox->Required = true;
+					$this->txtFloat->Maximum = 0;
+					$this->txtFloat->Minimum = null;
+					break;
+				case SignupPaymentType::Scholarship:
+					$this->txtTextbox->Name = 'Note / Reason';
+					$this->txtTextbox->Required = true;
+					break;
+				case SignupPaymentType::Transfer:
+					$this->txtTextbox->Name = 'Note';
+					$this->txtFloat->Maximum = 0;
+					$this->txtFloat->Minimum = null;
+					$this->lstListbox->Name = 'Transfer To';
+					foreach ($this->mctSignupEntry->SignupEntry->SignupForm->GetSignupEntryArray(QQ::OrderBy(QQN::SignupEntry()->Person->LastName, QQN::SignupEntry()->Person->FirstName)) as $objSignupEntry) {
+						$this->lstListbox->AddItem($objSignupEntry->Person->Name, $objSignupEntry->Id);
+					}
+					$this->lstListbox->Required = true;
+					break;
+			}
 		}
 
 		protected function pxyEditFormQuestion_Click($strFormId, $strControlId, $strParameter) {
@@ -591,6 +714,8 @@
 			
 			switch ($this->intEditTag) {
 				case self::EditTagPayment:
+					if (!$this->PerformPaymentSave()) return;
+					$this->dtgPayments->Refresh();
 					break;
 				case self::EditTagNote:
 					$this->mctSignupEntry->SignupEntry->InternalNotes = trim($this->txtTextArea->Text);
@@ -604,9 +729,10 @@
 				case self::EditTagProduct;
 					if (!$this->PerformSignupProductSave()) return;
 					$this->dtgFormProducts->Refresh();
+					$this->dtgPayments->Refresh();
 					break;
 			}
-			
+
 			$this->btnCancel_Click();
 		}
 		
@@ -634,9 +760,20 @@
 			}
 
 			$this->objSignupProduct->Quantity = $this->lstListbox->SelectedValue;
-			$this->objSignupProduct->Amount = $this->txtTextbox->Text;
+			$this->objSignupProduct->Amount = $this->txtFloat->Text;
 			$this->objSignupProduct->Save();
 			
+			return true;
+		}
+
+		/**
+		 * @return boolean whether or not the save was successful
+		 */
+		protected function PerformPaymentSave() {
+			if (!$this->objPayment->TransactionDate) $this->objPayment->TransactionDate = QDateTime::Now();
+			$this->objPayment->TransactionCode = trim($this->txtTextbox->Text);
+			$this->objPayment->Amount = $this->txtFloat->Text;
+			$this->objPayment->Save();
 			return true;
 		}
 
