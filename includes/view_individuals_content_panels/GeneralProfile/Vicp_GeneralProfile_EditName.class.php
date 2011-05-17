@@ -19,7 +19,7 @@
 		public $lstGender;
 
 		private $strTitleArray = array('Dr.', 'Lady', 'Madam', 'Miss', 'Mr.', 'Mrs.', 'Ms.', 'Sir');
-		private $strSuffixArray = array('Sr.', 'Jr.', 'III', 'PhD', 'MD');
+		private $strSuffixArray = array('Sr.', 'Jr.', 'II', 'III', 'PhD', 'MD');
 
 		public $lstDateOfBirth;
 
