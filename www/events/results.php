@@ -29,7 +29,7 @@
 			$this->dtgSignupEntries->CssClass = 'datagrid';
 			$this->dtgSignupEntries->SetDataBinder('dtgSignupEntries_Bind');
 			$this->dtgSignupEntries->Paginator = new QPaginator($this->dtgSignupEntries);
-			$this->dtgSignupEntries->SortColumnIndex = 1;
+			$this->dtgSignupEntries->SortColumnIndex = 0;
 			$this->dtgSignupEntries->FontSize = '10px';
 
 			$this->cblColumns = new QCheckBoxList($this);
@@ -79,7 +79,8 @@
 		public function dtgSignupEntries_SetupColumns() {
 			$this->dtgSignupEntries->RemoveAllColumns();
 			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->LastName, 'Name=Name', 'Html=<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false');
-			
+			$this->dtgSignupEntries->MetaAddTypeColumn('SignupEntryStatusTypeId', 'SignupEntryStatusType', 'Name=Status');
+
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 				if ($objFormQuestion->ViewFlag) {
 					$this->dtgSignupEntries->AddColumn(new QDataGridColumn($objFormQuestion->ShortDescription, '<?= $_FORM->RenderAnswer($_ITEM, ' . $objFormQuestion->Id . ',' . $objFormQuestion->FormQuestionTypeId . '); ?>', 'HtmlEntities=false'));

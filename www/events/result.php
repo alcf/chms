@@ -20,6 +20,7 @@
 
 		protected $lblInternalNotes;
 		protected $btnEditNote;
+		protected $btnToggleStatus;
 
 		protected $dtgFormQuestions;
 		protected $pxyEditFormQuestion;
@@ -102,6 +103,13 @@
 			$this->btnEditNote->AddAction(new QClickEvent(), new QAjaxAction('btnEditNote_Click'));
 			$this->btnEditNote->CssClass = 'primary';
 
+			$this->btnToggleStatus = new QLinkButton($this);
+			$this->btnToggleStatus->Text = 'Toggle Registration Status';
+			$this->btnToggleStatus->CssClass = 'cancel';
+			$this->btnToggleStatus->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to change this person\'s registration status?'));
+			$this->btnToggleStatus->AddAction(new QClickEvent(), new QAjaxAction('btnToggleStatus_Click'));
+			$this->btnToggleStatus->AddAction(new QClickEvent(), new QTerminateAction());
+			
 			$this->dtgFormQuestions = new QDataGrid($this);
 			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Question', '<?= $_ITEM->ShortDescriptionBoldIfRequiredHtml; ?>', 'Width=300px', 'HtmlEntities=false'));
 			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Response', '<?= $_FORM->RenderResponse($_ITEM); ?>', 'Width=640px', 'HtmlEntities=false'));
@@ -678,6 +686,14 @@
 			}
 		}
 
+		protected function btnToggleStatus_Click() {
+			$this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId++;
+			if ($this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId > SignupEntryStatusType::MaxId) $this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId = 1;
+			$this->mctSignupEntry->SaveSignupEntry();
+			$this->lblSignupEntryStatusType->Text = SignupEntryStatusType::$NameArray[$this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId];
+			$this->lblSignupEntryStatusType->Blink();
+		}
+		
 		protected function btnEditNote_Click() {
 			$this->ResetDialogControls();
 

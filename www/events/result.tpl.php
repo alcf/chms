@@ -15,6 +15,8 @@
 	</div>
 	<div class="buttonBar">
 		<?php $this->btnEditNote->Render(); ?>
+		&nbsp;
+		<?php $this->btnToggleStatus->Render(); ?>
 	</div>
 
 	<h3><?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?>'s Signup Details</h3>
