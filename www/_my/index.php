@@ -1,5 +1,5 @@
 <?php
-	require(dirname(__FILE__) . '/../includes/prepend.inc.php');
+	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 
 	class LoginForm extends ChmsForm {
 		protected $lblMessage;
