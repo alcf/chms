@@ -85,6 +85,10 @@
 			)));
 
 			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xQP_ZWxLT5ZChSi7vNzFF8-f25brRRAhJaO78n_nmvIL1CP64_e6YEcnQ');
+			if (file_exists(dirname(__FILE__) . '/public_login_salt.local'))
+				define('PUBLIC_LOGIN_SALT', trim(file_get_contents(dirname(__FILE__) . '/public_login_salt.local')));
+			else
+				define('PUBLIC_LOGIN_SALT', 'salt');
 			break;
 
 		case 'test':
@@ -165,6 +169,7 @@
 			)));
 
 			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
+			define('PUBLIC_LOGIN_SALT', 'PROD_PASSSALT');
 			break;
 	}
 
