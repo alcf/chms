@@ -27,6 +27,53 @@
 			return sprintf('EventSignupForm Object %s',  $this->intSignupFormId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'GeneratedDescription':
+					if ($this->strLocation || $this->dttDateStart || $this->dttDateEnd) {
+						$strToReturn = ', to be held';
+						if ($this->strLocation) {
+							$strToReturn .= ' at ' . $this->strLocation;
+						}
+
+						if ($this->dttDateStart && $this->dttDateEnd) {
+							$dttCompare1 = new QDateTime($this->dttDateStart);
+							$dttCompare2 = new QDateTime($this->dttDateEnd);
+							$dttCompare1->SetTime(null, null, null);
+							$dttCompare2->SetTime(null, null, null);
+							if ($dttCompare1->IsEqualTo($dttCompare2)) {
+								$strToReturn .= ' on ' . $this->dttDateStart->ToString('MMMM D YYYY');
+								$strToReturn .= ' from ' . $this->dttDateStart->ToString('h:mm z');
+								$strToReturn .= ' to ' . $this->dttDateEnd->ToString('h:mm z');
+							} else {
+								$strToReturn .= ' from ' . $this->dttDateStart->ToString('MMMM D');
+								$strToReturn .= ' to ' . $this->dttDateEnd->ToString('MMMM D YYYY');
+							}
+
+						} else if ($this->dttDateStart) {
+							$strToReturn .= ' on ' . $this->dttDateStart->ToString('MMMM D YYYY');
+							if ($this->dttDateStart->Hour || $this->dttDateStart->Minute) $strToReturn .= ' @ ' . $this->dttDateStart->ToString('h:mm z');
+
+						} else if ($this->dttDateEnd) {
+							$strToReturn .= ' until ' . $this->dttDateEnd->ToString('MMMM D YYYY');
+							if ($this->dttDateStart->Hour || $this->dttDateEnd->Minute) $strToReturn .= ' @ ' . $this->dttDateEnd->ToString('h:mm z'); 
+						}
+
+						return $strToReturn;
+					} else {
+						return null;
+					}
+					break;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
@@ -102,19 +149,6 @@
 /*
 		protected $strSomeNewProperty;
 
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {
