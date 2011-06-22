@@ -32,9 +32,9 @@
 				case 'Type': return SignupFormType::$NameArray[$this->intSignupFormTypeId];
 				case 'SignupUrl':
 					if ($this->strToken) {
-						return MY_ALCF_URL . '/signup/form.php/' . $this->strToken;
+						return MY_ALCF_URL . '/signup/event.php/' . $this->strToken;
 					} else {
-						return MY_ALCF_URL . '/signup/form.php/' . $this->intId;
+						return MY_ALCF_URL . '/signup/event.php/' . $this->intId;
 					}
 				case 'CsvFilename':
 					$strName = $this->strName;
