@@ -129,7 +129,7 @@
 			}
 
 			if (array_key_exists('intPublicLoginId', $_SESSION)) {
-				QApplication::$PublicLogin = Login::Load($_SESSION['intPublicLoginId']);
+				QApplication::$PublicLogin = PublicLogin::Load($_SESSION['intPublicLoginId']);
 
 				// If NO object, update session
 				if (!QApplication::$PublicLogin) {
@@ -239,6 +239,18 @@
 			unset($_SESSION['intLoginId']);
 			QApplication::$Login = null;
 			QApplication::$LoginId = null;
+			QApplication::Redirect('/index.php/1');
+		}
+		
+		/**
+		 * Logs the PUBLIC user out (if applicable) and will redirect user to the public login page
+		 * @return void
+		 */
+		public static function PublicLogout() {
+			$_SESSION['intPublicLoginId'] = null;
+			unset($_SESSION['intPublicLoginId']);
+			QApplication::$PublicLogin = null;
+			QApplication::$PublicLoginId = null;
 			QApplication::Redirect('/index.php/1');
 		}
 

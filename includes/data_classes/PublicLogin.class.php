@@ -27,6 +27,67 @@
 			return sprintf('PublicLogin Object %s',  $this->intId);
 		}
 
+		/**
+		 * Sets the password as the password hash for this user.  Does NOT save the object.
+		 * @param string $strPassword
+		 * @return void
+		 */
+		public function SetPassword($strPassword) {
+			$strPassword = trim(strtolower($strPassword));
+			$strHash = md5(PUBLIC_LOGIN_SALT . $strPassword);
+			$this->strPassword = $strHash;
+		}
+
+		/**
+		 * Checks whether the password is correct, returning true/false
+		 * @param string $strPassword
+		 * @return boolean
+		 */
+		public function IsPasswordValid($strPassword) {
+			$strPassword = trim(strtolower($strPassword));
+			$strHash = md5(PUBLIC_LOGIN_SALT . $strPassword);
+			return ($this->strPassword == $strHash);
+		}
+
+		/**
+		 * Given a username and a password, this will attempt to load the valid PublicLogin object.
+		 * @param string $strUsername
+		 * @param string $strPassword
+		 * @return PublicLogin
+		 */
+		public static function LoadByUsernamePassword($strUsername, $strPassword) {
+			$strUsername = trim(strtolower($strUsername));
+
+			// First, let's get the Login object via Username
+			$objLogin = PublicLogin::LoadByUsername($strUsername);
+
+			// If it still fails, indicate so by returning null
+			if (!$objLogin) return;
+
+			// If password is incorrect, indicate so by returning null
+			if (!$objLogin->IsPasswordValid($strPassword)) return;
+
+			// Return the valid Login object
+			return $objLogin;
+		}
+		
+		/**
+		 * Whether or not this login is "allowed" to use the VMS
+		 * @return boolean
+		 */
+		public function IsAllowedToUseChms() {
+			if (!$this->ActiveFlag) return false;
+			return true;
+		}
+
+		/**
+		 * Refreshes the date of the "Date Last Login" for this record and saves the record.
+		 * @return void
+		 */
+		public function RefreshDateLastLogin() {
+			$this->dttDateLastLogin = QDateTime::Now();
+			$this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

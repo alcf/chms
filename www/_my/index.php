@@ -1,7 +1,7 @@
 <?php
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 
-	class LoginForm extends ChmsForm {
+	class PublicLoginForm extends ChmsForm {
 		protected $lblMessage;
 		protected $txtUsername;
 		protected $txtPassword;
@@ -10,7 +10,7 @@
 		protected $strPageTitle = 'Log In';
 
 		protected function Form_Run() {
-			if (QApplication::$Login) QApplication::Redirect('/main/');
+			if (QApplication::$PublicLogin) QApplication::Redirect('/main/');
 		}
 
 		protected function Form_Create() {
@@ -63,8 +63,7 @@
 		}
 
 		protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
-			$objLogin = Login::LoadByUsernamePassword(trim(strtolower($this->txtUsername->Text)), $this->txtPassword->Text);
-				
+			$objLogin = PublicLogin::LoadByUsernamePassword(trim(strtolower($this->txtUsername->Text)), $this->txtPassword->Text);
 
 			if (!$objLogin || !$objLogin->IsAllowedToUseChms()) {
 				$this->lblMessage->Text = 'Invalid email, username or password.';
@@ -80,10 +79,10 @@
 				setcookie('username', null, 1, '/', null);
 			}
 
-			QApplication::Login($objLogin);
+			QApplication::PublicLogin($objLogin);
 			QApplication::Redirect('/main/');
 		}
 	}
 
-	LoginForm::Run('LoginForm');
+	PublicLoginForm::Run('PublicLoginForm');
 ?>
