@@ -16,11 +16,22 @@
 	  src: local("MyraidPro-Bold"), url( /assets/fonts/MYRIADAB.TTF ) format("truetype"); /* non-IE */  
 	}
 
+	@font-face {  
+	  font-family: "CenturyGothic";  
+	  src: url( /assets/fonts/MYRIADAB.EOT ); /* IE */  
+	  src: local("Century Gothic"), url( /assets/fonts/Century-Gothic.ttf ) format("truetype"); /* non-IE */  
+	}
 
 
 	/*** BASICS ***/
 
-	body { margin: 0; padding: 0; }
+
+	body {
+		margin: 0; padding: 0; background: url('/assets/images/my_background.png');
+		font-family: verdana, arial, helvetica, sans-serif;
+		font-size: 12px; 
+	}
+
 	form { margin: 0; padding: 0; }
 	a { color: inherit; }
 	a:hover { text-decoration: none; }
@@ -58,145 +69,70 @@
 
 	/*** TYPOGRAPHY ***/
 
-	h1 { font-size: 20px; font-family: verdana; color: #333; padding: 0; margin: 4px 0 14px 0; }
-	h1 span.subhead { font-size: 13px; font-family: verdana; color: #555; font-weight: normal; }
-	h1 a.right { display: block; float: right; color: #666; font-family: arial, helvetica, sans-serif; font-size: 13px; font-weight: normal; position: relative; top: 8px; *top: -18px; }
-	h3 { color: #636; font-family: verdana; font-size: 14px; padding: 0; margin: 4px 0 14px 0; }
-	h3 span.subhead { font-size: 11px; font-weight: normal; color: #555; }
-	h3 .moveUp { margin-top: -16px; }
-
-	h1 button.primary, h3 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
-	h1 input.primary, h3 input.primary { *margin-top: -15px; margin-left: 10px; float: right; }
-
-	h1 p.notice {
-		margin: 0; padding: 0; font-size: 15px; font-family: arial, helvetica, sans-serif; color: #633; font-weight: normal; 
+	h1, h2, h3, h4, h5, h6{
+	  color: #0D7191;
+	  font-family: Futura, Century Gothic, AppleGothic, sans-serif;
+	  font-weight: normal;
+	  line-height: normal;
+	  margin: 0px;
+	  padding: 0px;
+	  text-transform: uppercase;
+	}
+	
+	h1 {
+		font-size: 36px;
+		color: #bdb350;
+	}
+	
+	h2 {
+		font-size: 24px;
+		color: #342752;
+	}
+	
+	h3 {
+		font-size: 18px;
+		text-transform: none;
+		color: #bdb350;
+		font-weight: bold;	
+	}
+	
+	h4 {
+		font-size: 18px;
+		text-transform: uppercase;
+		font-weight: bold;
+		color: #a092b4;
+	}
+	
+	h5 {
+		font-size: 13px;
+		color: #412d5d;
 	}
 
 	/*** PAGE STRUCTURE ***/
 
-	div.headerBackground { width: 100%; position: absolute; font-size: 1px; left: 0; background-color: #ddebee; height: 80px; }
-		div.headerBackground div.left { width: 50%; height: 80px; background-color: #eff0f3; }
+	div.navbar ul { background-color: red; list-style-type: none; margin: 0; padding: 0;  }
+	div.navbar li { margin: 0; padding: 0 25px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #fff; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
+		div.navbar li.first { padding-left: 15px; }
+		div.navbar li a { color: #fff; text-decoration: none; }
+		div.navbar li a:hover { text-decoration: underline; }
 
+	div.footerPane { height: 1px; overflow: visible; }
+
+	div.footerPaneBackground { height: 80px; background-color: #000; opacity: 0.25; }
+	
 	div.footer {
-		width: 980px; padding: 12px 0;
-		clear: both;
-		font-family: arial, helvetica; font-size: 10px; color: #4a3f5d; text-align: center;
-	}
-	div.footer a { color: #4a3f5d; }
-	div.footer a.footerLink { font-weight: bold; text-decoration: none; }
-	div.footer a.footerLink:hover { text-decoration: underline; }
-
-	div.header {
-		width: 980px; height: 80px; margin: 0 auto;
-		background: url(/assets/images/header.png);
+		z-index: 1;
 		position: relative;
-		cursor: pointer;
-	}
-
-	div.header div.serverInstance {
-		width: 980px; text-align: right; position: absolute;
-		font-family: arial black; font-size: 18px; color: #666;
-	}
-
-	div.header div.status {
-		padding-right: 40px; padding-top: 42px;
-		font: 11px arial; color: #4a3f5d;
+		padding: 15px 0;
+		width: 960px; margin: 0 auto;
+		font-family: verdana, arial, helvetica, sans-serif;
+		font-size: 12px;
+		color: #fff;
 		text-align: right;
 	}
-	div.header div.status a { color: #4a3f5d; }
-
-	div.header div.status span.subhead { font-size: 10px; color: #5a768e; }
-
-	div.header div.button { padding-right: 40px; position: relative; top: -60px; text-align: right; }
-
-	div.contentBackground { width: 100%; background: url(/assets/images/main_content_background.png); height: 500px; }
-	div.content { width: 980px; margin: 0 auto; padding-top: 10px; }
-
-
-
-	/*** MAIN NAVBAR **/
-
-	div.navbar { background: url(/assets/images/navbar_background.png); width: 100%; height: 32px; }
-	ul.navbar { list-style: none; width: 980px; margin: 0 auto; padding: 0; }
-	ul.navbar li { margin: 0; padding: 0; float: left; font-family: MyriadProBold, courier; /* font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; */ font-size: 18px; color: #fff; width: 163px; text-align: center; }
-	ul.navbar li a { height: 32px; display: block; text-decoration: none; color: #fff; line-height: 32px; text-shadow: 1px 1px 3px #323; } 
-	ul.navbar li a.selected { background: url(/assets/images/navbar_background_selected.png); }
-	ul.navbar li a:hover { background: url(/assets/images/navbar_background_hover.png); color: #4a3f5d; text-shadow: 1px 1px 2px #777; }
-
-
-
-	/*** SUBNAV-TOP ***/
-
-	ul.subnavTop { list-style: none; width: 810px; margin: 0 0 0 170px; padding: 0; }
-	ul.subnavTop li {
-		margin: 0 3px 0 0; 
-		float: left;
-		font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; font-size: 13px; color: #fff; font-weight: bold; text-align: center; }
-	ul.subnavTop li a {
-		background-color: #5a768e; background-image: url(/assets/images/topsubnav_background.png); background-repeat: no-repeat;
-		width: 140px; height: 40px; padding: 10px 0 0 0 ; 
-		display: block; text-decoration: none; color: #fff; }
-	ul.subnavTop li a.selected { background-color: #fff; background-image: url(/assets/images/topsubnav_background_selected.png); background-repeat: no-repeat; color: #000; }
-	ul.subnavTop li a:hover { background-color: #fff; background-image: url(/assets/images/topsubnav_background_hover.png); background-repeat: no-repeat; color: #5a768e;  }
-	ul.subnavTop li a span.subhead { display: block; font-size: 11px; font-weight: normal; font-style: italic; }
-
-
-
-	/*** SUBNAV-SIDE ***/
-
-	ul.subnavSide { list-style: none; width: 170px; margin: 0; padding: 0; float: left; margin-bottom: 12px; }
-	ul.subnavSide li a { 
-		font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
-		font-size: 13px;
-		color: #ddd;
-		display: block; border-color: #859da9; border-style: solid; border-width: 1px 0 0 1px; background-color: #5a768e; text-decoration: none; padding: 8px 12px 8px 12px;
-		text-shadow: 1px 1px #444;
-	}
-	ul.subnavSideSmall li a {
-		font-size: 12px; padding: 2px 4px;
-	}
-
-	ul.subnavSide li a.selected { background-color: #fff; border-color: #fff; 
-		font-style: italic;
-		font-weight: bold; 
-		color: #00679c;
-		text-shadow: 1px 1px #abc; 
-	}
-
-	ul.subnavSideStewardship li a { padding: 2px 10px; }
-	ul.subnavSideStewardship li a div.info div.left { float : left; font-size: 10px; position:relative; top: 2px; font-weight: normal; }
-	ul.subnavSideStewardship li a div.info div.leftStack { font-size: 13px; top: 0; }
-	ul.subnavSideStewardship li a div.info div.right { float : right;  text-align: right; }
-	ul.subnavSideStewardship li a div.info div.rightSmall { font-size: 10px; position: relative; top: 2px;}
-	ul.subnavSideStewardship li a.selected div.info { font-style: normal; color: #555; text-shadow: none; }
-
-	ul.subnavSide li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; text-shadow: 1px 1px #9ab; }
-
-	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; }
-	ul.subnavSide li.last a { -moz-border-radius: 0 0 0 5px; }
-
-
-	/*** SUBNAV-SIDE CONTENT ***/
-
-	div.subnavSideContent { background-color: #5a768e; width: 150px; margin-bottom: 12px; padding: 10px; -moz-border-radius: 5px 0 0 5px;}
-	div.subnavSideContent h4 { color: #ddd; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
-		font-size: 13px;
-		color: #ddd;
-		text-shadow: 1px 1px #444;
-		padding: 0; margin: 0; margin-bottom: 10px; font-weight: normal; }
-	div.subnavSideContent p { color: #ddd; font-family: arial, helvetica, sans-serif;
-		font-size: 12px;
-		color: #ddd;
-		padding: 0; margin: 0; margin-bottom: 10px; font-weight: normal; padding: 0; margin: 0; }
-	div.subnavSideContent a { color: #ddd; }
-
-
-	/*** SUBNAV-CONTENT ***/
-
-	div.subnavContent { background: url(/assets/images/content_background.png); min-height: 500px; border: 1px solid #fff; width: 788px; float: left; padding: 10px;
-		-moz-border-radius: 0 5px 5px 5px;
-	}
-
+	
+	div.footer a { color: white; }
+	div.footer a:hover { text-decoration: none; }
 
 
 	/*** Label/Value Pair ***/

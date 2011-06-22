@@ -84,8 +84,18 @@
 		public static $LoginId;
 
 		/**
+		 * @var PublicLogin
+		 */
+		public static $PublicLogin;
+
+		/**
+		 * @var integer
+		 */
+		public static $PublicLoginId;
+
+		/**
 		 * Called by initialize_chms.inc.php to setup QApplication::$Login
-		 * from data in Session
+		 * and QApplication::$PublicLogin from data in Session
 		 * @return void
 		 */
 		public static function InitializeLogin() {
@@ -117,6 +127,26 @@
 					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
 				}
 			}
+
+			if (array_key_exists('intPublicLoginId', $_SESSION)) {
+				QApplication::$PublicLogin = Login::Load($_SESSION['intPublicLoginId']);
+
+				// If NO object, update session
+				if (!QApplication::$PublicLogin) {
+					$_SESSION['intPublicLoginId'] = null;
+					unset($_SESSION['intPublicLoginId']);
+					return;
+				}
+
+				// Make sure this Login is allowed to use Chms
+				if (!QApplication::$PublicLogin->IsAllowedToUseChms()) {
+					$_SESSION['intPublicLoginId'] = null;
+					unset($_SESSION['intPublicLoginId']);
+					QApplication::$PublicLogin = null;
+				} else {
+					QApplication::$PublicLoginId = QApplication::$PublicLogin->Id;
+				}
+			}
 		}
 
 		/**
@@ -129,6 +159,29 @@
 			QApplication::$LoginId = $objLogin->Id;
 			QApplication::$Login->RefreshDateLastLogin();
 			$_SESSION['intLoginId'] = $objLogin->Id;
+		}
+		
+		/**
+		 * Called by the PublicLoginForm to actually peform a Login
+		 * @param PublicLogin $objPublicLogin
+		 * @return void
+		 */
+		public static function PublicLogin(PublicLogin $objPublicLogin) {
+			QApplication::$PublicLogin = $objPublicLogin;
+			QApplication::$PublicLoginId = $objPublicLogin->Id;
+			QApplication::$PublicLogin->RefreshDateLastLogin();
+			$_SESSION['intPublicLoginId'] = $objPublicLogin->Id;
+		}
+
+		/**
+		 * Verifies that the user is logged in, and if not, will redirect user to the public login page
+		 * @return void
+		 */
+		public static function AuthenticatePublic() {
+			if (!QApplication::$PublicLogin) QApplication::Redirect('/index.php/2');
+
+			// If we're here, then we're good
+			return;
 		}
 
 		/**

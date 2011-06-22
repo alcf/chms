@@ -1,9 +1,9 @@
 	</div>
 </div>
 
-	<div style="height: 20px; font-size: 1px;">&nbsp;</div>
+	<div id="bottomPad" style="height: 20px; font-size: 1px;">&nbsp;</div>
 
-<div class="footerPane"><div class="footerPaneBackground">&nbsp;</div></div>
+<div id="footerPane" class="footerPane"><div class="footerPaneBackground">&nbsp;</div></div>
 <div class="footer">
 	Developed and Maintained by the <a href="http://www.alcf.net/it/" class="footerLink" target="_blank">ALCF Web Development Team</a><br/>
 	<a href="http://www.alcf.net/" class="footerLink" target="_blank">Abundant Life Christian Fellowship</a>, 2581 Leghorn Street, Mountain View, CA 94043

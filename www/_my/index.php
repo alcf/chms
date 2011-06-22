@@ -21,7 +21,7 @@
 					$this->lblMessage->Text = 'You have successfully logged out.';
 					break;
 				case 2:
-					$this->lblMessage->Text = 'You have requested a resource that requires a login.  Please log in.';
+					$this->lblMessage->Text = 'You have requested a page that requires a login.  Please log in.';
 					break;
 				default:
 					$this->lblMessage->Text = 'Please Log In';
@@ -29,7 +29,7 @@
 			}
 
 			$this->txtUsername = new QTextBox($this);
-			$this->txtUsername->Name = 'Email or Username';
+			$this->txtUsername->Name = 'Username';
 
 			$this->txtPassword = new QTextBox($this);
 			$this->txtPassword->Name = 'Password';
