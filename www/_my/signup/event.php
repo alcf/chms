@@ -234,7 +234,50 @@
 						break;
 
 					case FormQuestionType::Phone:
+						$objPhoneArray = array();
+						
+						// Add Household Numbers (if applicable)
+						foreach ($objPerson->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+							foreach ($objHouseholdParticipation->Household->GetCurrentAddress()->GetPhoneArray() as $objPhone) {
+								$objPhoneArray[] = $objPhone;
+							}
+						}
+
+						// Add Personal Numbers
+						foreach ($objPerson->GetPhoneArray() as $objPhone) $objPhoneArray[] = $objPhone;
+						
+						if (count($objPhoneArray)) {
+							$lstPhone = new QListBox($this, $strControlId . 'id');
+							$lstPhone->ActionParameter = $strControlId . 'phone';
+							$lstPhone->Name = $objFormQuestion->Question;
+							$lstPhone->AddItem('- Select One -', null);
+							rsort($objPhoneArray);
+							foreach ($objPhoneArray as $objPhone)
+								$lstPhone->AddItem($objPhone->Number, $objPhone->Id);
+							$lstPhone->AddItem('- Other... -', false);
+								
+							if ($objFormQuestion->RequiredFlag) $lstPhone->Required = true;
+							$lstPhone->RenderMethod = 'RenderWithName';
+							$this->objFormQuestionControlArray[] = $lstPhone;
+							
+							$lstPhone->AddAction(new QChangeEvent(), new QAjaxAction('lst_ToggleOther'));
+						}
+
+						$txtPhone = new QTextBox($this, $strControlId . 'phone');
+						$this->objFormQuestionControlArray[] = $txtPhone;
+						$txtPhone->RenderMethod = 'RenderWithName';
+						
+						if (count($objPhoneArray)) {
+							$txtPhone->Visible = false;
+							$txtPhone->Required = false;
+						} else {
+							$txtPhone->Visible = true;
+							$txtPhone->Required = $objFormQuestion->RequiredFlag;
+							$txtPhone->Name = $objFormQuestion->Question;
+						}
+
 						break;
+
 					case FormQuestionType::Email:
 						break;
 					case FormQuestionType::ShortText:
