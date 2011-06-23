@@ -128,58 +128,63 @@
 							$rblAddress->RepeatColumns = 2;
 							$rblAddress->AddAction(new QClickEvent(), new QAjaxAction('rblAddress_Change'));
 
-							$txtAddress1 = new QTextBox($this, $strControlId . 'address1');
-							$txtAddress1->Name = 'Address 1';
-							$txtAddress1->RenderMethod = 'RenderWithName';
-							$txtAddress1->Text = $objAddress->Address1;
-							
-							$txtAddress2 = new QTextBox($this, $strControlId . 'address2');
-							$txtAddress2->Name = 'Address 2';
-							$txtAddress2->RenderMethod = 'RenderWithName';
-							$txtAddress2->Text = $objAddress->Address2;
-							
-							$txtCity = new QTextBox($this, $strControlId . 'city');
-							$txtCity->Name = 'City, State and Zip';
-							$txtCity->RenderMethod = 'RenderWithName';
-							$txtCity->Text = $objAddress->City;
+							$this->objFormQuestionControlArray[] = $rblAddress;
+						} else {
+							$objAddress = new Address();
+						}
 
-							$lstState = new QListBox($this, $strControlId . 'state');
-							$lstState->ActionParameter = '_' . $strControlId . 'city';
-							$lstState->Name = QApplication::Translate('State');
-							$lstState->RenderMethod = 'RenderWithError';
-							$lstState->AddItem(QApplication::Translate('- Select One -'), null);
-							foreach (UsState::LoadAll(QQ::OrderBy(QQN::UsState()->Name)) as $objUsState) {
-								$lstState->AddItem($objUsState->Name, $objUsState->Abbreviation, $objAddress->State == $objUsState->Abbreviation);
-							}
-							
-							$txtZipCode = new QTextBox($this, $strControlId . 'zipcode');
-							$txtZipCode->ActionParameter = '_' . $strControlId . 'city';
-							$txtZipCode->Name = 'Zip Code';
-							$txtZipCode->RenderMethod = 'RenderWithError';
-							$txtZipCode->Text = $objAddress->ZipCode;
-							$txtZipCode->Width = '80px';
+						$txtAddress1 = new QTextBox($this, $strControlId . 'address1');
+						$txtAddress1->Name = 'Address 1';
+						$txtAddress1->RenderMethod = 'RenderWithName';
+						$txtAddress1->Text = $objAddress->Address1;
+						
+						$txtAddress2 = new QTextBox($this, $strControlId . 'address2');
+						$txtAddress2->Name = 'Address 2';
+						$txtAddress2->RenderMethod = 'RenderWithName';
+						$txtAddress2->Text = $objAddress->Address2;
+						
+						$txtCity = new QTextBox($this, $strControlId . 'city');
+						$txtCity->Name = 'City, State and Zip';
+						$txtCity->RenderMethod = 'RenderWithName';
+						$txtCity->Text = $objAddress->City;
 
-							if ($objFormQuestion->RequiredFlag) {
-								$txtAddress1->Required = true;
-								$txtCity->Required = true;
-								$lstState->Required = true;
-								$txtZipCode->Required = true;
-							}
-							
+						$lstState = new QListBox($this, $strControlId . 'state');
+						$lstState->ActionParameter = '_' . $strControlId . 'city';
+						$lstState->Name = QApplication::Translate('State');
+						$lstState->RenderMethod = 'RenderWithError';
+						$lstState->AddItem(QApplication::Translate('- Select One -'), null);
+						foreach (UsState::LoadAll(QQ::OrderBy(QQN::UsState()->Name)) as $objUsState) {
+							$lstState->AddItem($objUsState->Name, $objUsState->Abbreviation, $objAddress->State == $objUsState->Abbreviation);
+						}
+						
+						$txtZipCode = new QTextBox($this, $strControlId . 'zipcode');
+						$txtZipCode->ActionParameter = '_' . $strControlId . 'city';
+						$txtZipCode->Name = 'Zip Code';
+						$txtZipCode->RenderMethod = 'RenderWithError';
+						$txtZipCode->Text = $objAddress->ZipCode;
+						$txtZipCode->Width = '80px';
+
+						if ($objFormQuestion->RequiredFlag) {
+							$txtAddress1->Required = true;
+							$txtCity->Required = true;
+							$lstState->Required = true;
+							$txtZipCode->Required = true;
+						}
+
+						$this->objFormQuestionControlArray[] = $txtAddress1;
+						$this->objFormQuestionControlArray[] = $txtAddress2;
+						$this->objFormQuestionControlArray[] = $txtCity;
+						$this->objFormQuestionControlArray[] = $lstState;
+						$this->objFormQuestionControlArray[] = $txtZipCode;
+						
+						if ($objAddress->Id) {
 							$txtAddress1->Enabled = false;
 							$txtAddress2->Enabled = false;
 							$txtCity->Enabled = false;
 							$lstState->Enabled = false;
 							$txtZipCode->Enabled = false;
-
-							$this->objFormQuestionControlArray[] = $rblAddress;
-							$this->objFormQuestionControlArray[] = $txtAddress1;
-							$this->objFormQuestionControlArray[] = $txtAddress2;
-							$this->objFormQuestionControlArray[] = $txtCity;
-							$this->objFormQuestionControlArray[] = $lstState;
-							$this->objFormQuestionControlArray[] = $txtZipCode;
 						} else {
-							
+							$txtAddress1->Name = $objFormQuestion->Question;
 						}
 						break;
 
@@ -215,11 +220,11 @@
 		 * This will toggle the controlId for ActionParameter.  It will set the visible property and required property (if applicable)
 		 * @param string $strFormId
 		 * @param string $strControlId
-		 * @param string $strActionParameter
+		 * @param string $strParameter
 		 */
 		public function lst_ToggleOther($strFormId, $strControlId, $strParameter) {
 			$lstControl = $this->GetControl($strControlId);
-			$objControlToToggle = $this->GetControl($strActionParameter);
+			$objControlToToggle = $this->GetControl($strParameter);
 			
 			if ($lstControl->SelectedValue === false) {
 				$objControlToToggle->Visible = true;
