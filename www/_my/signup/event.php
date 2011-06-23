@@ -279,7 +279,43 @@
 						break;
 
 					case FormQuestionType::Email:
+						$objEmailArray = array();
+						
+						// Add Personal Emails
+						foreach ($objPerson->GetEmailArray() as $objEmail) $objEmailArray[] = $objEmail;
+						
+						if (count($objEmailArray)) {
+							$lstEmail = new QListBox($this, $strControlId . 'id');
+							$lstEmail->ActionParameter = $strControlId . 'email';
+							$lstEmail->Name = $objFormQuestion->Question;
+							$lstEmail->AddItem('- Select One -', null);
+							rsort($objEmailArray);
+							foreach ($objEmailArray as $objEmail)
+								$lstEmail->AddItem($objEmail->Address, $objEmail->Id);
+							$lstEmail->AddItem('- Other... -', false);
+
+							if ($objFormQuestion->RequiredFlag) $lstEmail->Required = true;
+							$lstEmail->RenderMethod = 'RenderWithName';
+							$this->objFormQuestionControlArray[] = $lstEmail;
+							
+							$lstEmail->AddAction(new QChangeEvent(), new QAjaxAction('lst_ToggleOther'));
+						}
+
+						$txtEmail = new QEmailTextBox($this, $strControlId . 'email');
+						$this->objFormQuestionControlArray[] = $txtEmail;
+						$txtEmail->RenderMethod = 'RenderWithName';
+						
+						if (count($objEmailArray)) {
+							$txtEmail->Visible = false;
+							$txtEmail->Required = false;
+						} else {
+							$txtEmail->Visible = true;
+							$txtEmail->Required = $objFormQuestion->RequiredFlag;
+							$txtEmail->Name = $objFormQuestion->Question;
+						}
+
 						break;
+
 					case FormQuestionType::ShortText:
 						break;
 					case FormQuestionType::LongText:
@@ -311,6 +347,7 @@
 			if ($lstControl->SelectedValue === false) {
 				$objControlToToggle->Visible = true;
 				$objControlToToggle->Required = $lstControl->Required;
+				$objControlToToggle->Focus();
 			} else {
 				$objControlToToggle->Visible = false;
 				$objControlToToggle->Required = false;
@@ -346,6 +383,8 @@
 				$txtCity->Enabled = true;
 				$lstState->Enabled = true;
 				$txtZipCode->Enabled = true;
+				
+				$txtAddress1->Focus();
 			}
 		}
 
