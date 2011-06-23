@@ -179,6 +179,7 @@
 							$this->objFormQuestionControlArray[] = $rblAddress;
 						} else {
 							$objAddress = new Address();
+							$rblAddress = null;
 						}
 
 						$txtAddress1 = new QTextBox($this, $strControlId . 'address1');
@@ -225,15 +226,33 @@
 						$this->objFormQuestionControlArray[] = $lstState;
 						$this->objFormQuestionControlArray[] = $txtZipCode;
 						
-						if ($objAddress->Id) {
-							$txtAddress1->Enabled = false;
-							$txtAddress2->Enabled = false;
-							$txtCity->Enabled = false;
-							$lstState->Enabled = false;
-							$txtZipCode->Enabled = false;
+						if ($rblAddress) {
+							if ($objFormAnswer && strlen($objFormAnswer->TextValue)) {
+								$objAddress = Address::DeduceAddressFromFullLine($objFormAnswer->TextValue);
+								if (($objFormAnswer->AddressId == $rblAddress->SelectedValue) || !$objAddress) {
+									$txtAddress1->Enabled = false;
+									$txtAddress2->Enabled = false;
+									$txtCity->Enabled = false;
+									$lstState->Enabled = false;
+									$txtZipCode->Enabled = false;
+								} else {
+									$txtAddress1->Text = $objAddress->Address1;
+									$txtAddress2->Text = $objAddress->Address2;
+									$txtCity->Text = $objAddress->City;
+									$txtZipCode->Text = $objAddress->ZipCode;
+									$lstState->SelectedValue = $objAddress->State;
+									$rblAddress->SelectedIndex = 1;
+								}
+							}
+
+
+							
 						} else {
 							$txtAddress1->Name = $objFormQuestion->Question;
 						}
+						
+						
+						
 						break;
 
 					case FormQuestionType::Age:
@@ -532,6 +551,25 @@
 						break;
 
 					case FormQuestionType::Address:
+						$rblAddress = $this->GetControl($strControlId . 'switch');
+						$txtAddress1 = $this->GetControl($strControlId . 'address1');
+						$txtAddress2 = $this->GetControl($strControlId . 'address2');
+						$txtCity = $this->GetControl($strControlId . 'city');
+						$lstState = $this->GetControl($strControlId . 'state');
+						$txtZipCode = $this->GetControl($strControlId . 'zipcode');
+						if ($rblAddress && $rblAddress->SelectedValue) {
+							$objFormAnswer->AddressId = $rblAddress->SelectedValue;
+							$objFormAnswer->TextValue = $objFormAnswer->Address->AddressFullLine;
+						} else {
+							$objFormAnswer->AddressId = null;
+							$objAddress = new Address();
+							$objAddress->Address1 = trim($txtAddress1->Text);
+							$objAddress->Address2 = trim($txtAddress2->Text);
+							$objAddress->City = trim($txtCity->Text);
+							$objAddress->State = $lstState->SelectedValue;
+							$objAddress->ZipCode = trim($txtZipCode->Text);
+							$objFormAnswer->TextValue = $objAddress->AddressFullLine;
+						}
 						break;
 
 					case FormQuestionType::Age:
