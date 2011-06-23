@@ -17,6 +17,8 @@
 		 * @var SignupEntry
 		 */
 		protected $objSignupEntry;
+		
+		protected $objFormQuestionControlArray = array();
 
 		protected function Form_Create() {
 			// Attempt to load by Token and then by ID
@@ -59,8 +61,236 @@
 			$this->CreateFormItemControls();
 		}
 
+		/**
+		 * Creates all the controls for each "question" in the form.
+		 * Note: For any fields that are looked up from the user's profile (e.g. address, phone, etc.) -- a drop down is available for quick access.
+		 * However, if they select "other", we save the data and do NOT link it to any records!
+		 * (e.g. if an "other" phone is used, that data is not stored anywhere else)
+		 */
 		protected function CreateFormItemControls() {
+			/**
+			 * @var Person
+			 */
+			$objPerson = $this->objSignupEntry->Person;
+
+			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+				$strControlId = 'fq' . $objFormQuestion->Id;
+				switch ($objFormQuestion->FormQuestionTypeId) {
+					case FormQuestionType::SpouseName:
+						if (($objMarriage = $objPerson->GetMostRecentMarriage()) &&
+							($objMarriage->MarriedToPerson)) {
+							$lstSpouse = new QListBox($this, $strControlId . 'id');
+							$lstSpouse->ActionParameter = $strControlId . 'nm';
+							if (!$objFormQuestion->RequiredFlag) $lstSpouse->AddItem('- Select One -', null);
+							$lstSpouse->AddItem($objMarriage->MarriedToPerson->Name, $objMarriage->MarriedToPerson->Id, true);
+							$lstSpouse->AddItem('- Other... -', false);
+							$lstSpouse->AddAction(new QChangeEvent(), new QAjaxAction('lst_ToggleOther'));
+
+							$lstSpouse->Name = $objFormQuestion->Question;
+							if ($objFormQuestion->RequiredFlag) $lstSpouse->Required = true;
+							$lstSpouse->RenderMethod = 'RenderWithName';
+							$this->objFormQuestionControlArray[] = $lstSpouse;
+
+							$txtName = new QTextBox($this, $strControlId . 'nm');
+							$txtName->RenderMethod = 'RenderWithName';
+							$this->objFormQuestionControlArray[] = $txtName;
+							$txtName->Visible = false;
+							$txtName->Required = false;
+						} else {
+							$lstSpouse = new QListBox($this, $strControlId . 'id');
+							$lstSpouse->Visible = false;
+							if ($objFormQuestion->RequiredFlag) $lstSpouse->Required = true;
+							$lstSpouse->RenderMethod = 'RenderWithName';
+							$this->objFormQuestionControlArray[] = $lstSpouse;
+
+							$txtName = new QTextBox($this, $strControlId . 'nm');
+							$txtName->Name = $objFormQuestion->Question;
+							$txtName->RenderMethod = 'RenderWithName';
+							$this->objFormQuestionControlArray[] = $txtName;
+							$txtName->Visible = true;
+							$txtName->Required = $objFormQuestion->RequiredFlag;
+						}
+						break;
+
+					case FormQuestionType::Address:
+						$objHouseholdArray = Household::LoadArrayBySharedHouseholds($objPerson, $this->objSignupEntry->SignupByPerson);
+						if (count($objHouseholdArray) > 1) {
+							// TODO: Implement!
+							throw new Exception('TODO: Not Implemented');
+						} else if (count($objHouseholdArray) == 1) {
+							$objAddress = $objHouseholdArray[0]->GetCurrentAddress();
+
+							$rblAddress = new QRadioButtonList($this, $strControlId . 'switch');
+							$rblAddress->Name = $objFormQuestion->Question;
+							$rblAddress->RenderMethod = 'RenderWithName';
+							$rblAddress->AddItem('Use Home Address Below', $objAddress->Id, true);
+							$rblAddress->AddItem('Edit Home Address', false, false);
+							$rblAddress->RepeatColumns = 2;
+							$rblAddress->AddAction(new QClickEvent(), new QAjaxAction('rblAddress_Change'));
+
+							$txtAddress1 = new QTextBox($this, $strControlId . 'address1');
+							$txtAddress1->Name = 'Address 1';
+							$txtAddress1->RenderMethod = 'RenderWithName';
+							$txtAddress1->Text = $objAddress->Address1;
+							
+							$txtAddress2 = new QTextBox($this, $strControlId . 'address2');
+							$txtAddress2->Name = 'Address 2';
+							$txtAddress2->RenderMethod = 'RenderWithName';
+							$txtAddress2->Text = $objAddress->Address2;
+							
+							$txtCity = new QTextBox($this, $strControlId . 'city');
+							$txtCity->Name = 'City, State and Zip';
+							$txtCity->RenderMethod = 'RenderWithName';
+							$txtCity->Text = $objAddress->City;
+
+							$lstState = new QListBox($this, $strControlId . 'state');
+							$lstState->ActionParameter = '_' . $strControlId . 'city';
+							$lstState->Name = QApplication::Translate('State');
+							$lstState->RenderMethod = 'RenderWithError';
+							$lstState->AddItem(QApplication::Translate('- Select One -'), null);
+							foreach (UsState::LoadAll(QQ::OrderBy(QQN::UsState()->Name)) as $objUsState) {
+								$lstState->AddItem($objUsState->Name, $objUsState->Abbreviation, $objAddress->State == $objUsState->Abbreviation);
+							}
+							
+							$txtZipCode = new QTextBox($this, $strControlId . 'zipcode');
+							$txtZipCode->ActionParameter = '_' . $strControlId . 'city';
+							$txtZipCode->Name = 'Zip Code';
+							$txtZipCode->RenderMethod = 'RenderWithError';
+							$txtZipCode->Text = $objAddress->ZipCode;
+							$txtZipCode->Width = '80px';
+
+							if ($objFormQuestion->RequiredFlag) {
+								$txtAddress1->Required = true;
+								$txtCity->Required = true;
+								$lstState->Required = true;
+								$txtZipCode->Required = true;
+							}
+							
+							$txtAddress1->Enabled = false;
+							$txtAddress2->Enabled = false;
+							$txtCity->Enabled = false;
+							$lstState->Enabled = false;
+							$txtZipCode->Enabled = false;
+
+							$this->objFormQuestionControlArray[] = $rblAddress;
+							$this->objFormQuestionControlArray[] = $txtAddress1;
+							$this->objFormQuestionControlArray[] = $txtAddress2;
+							$this->objFormQuestionControlArray[] = $txtCity;
+							$this->objFormQuestionControlArray[] = $lstState;
+							$this->objFormQuestionControlArray[] = $txtZipCode;
+						} else {
+							
+						}
+						break;
+
+					case FormQuestionType::Age:
+						break;
+					case FormQuestionType::DateofBirth:
+						break;
+					case FormQuestionType::Gender:
+						break;
+					case FormQuestionType::Phone:
+						break;
+					case FormQuestionType::Email:
+						break;
+					case FormQuestionType::ShortText:
+						break;
+					case FormQuestionType::LongText:
+						break;
+					case FormQuestionType::Number:
+						break;
+					case FormQuestionType::YesNo:
+						break;
+					case FormQuestionType::SingleSelect:
+						break;
+					case FormQuestionType::MultipleSelect:
+						break;
+					default:
+						throw new Exception('Invalid FormQuestionTypeId: ' . $objFormQuestion->FormQuestionTypeId);
+				}
+			}
+		}
+
+		/**
+		 * This will toggle the controlId for ActionParameter.  It will set the visible property and required property (if applicable)
+		 * @param string $strFormId
+		 * @param string $strControlId
+		 * @param string $strActionParameter
+		 */
+		public function lst_ToggleOther($strFormId, $strControlId, $strParameter) {
+			$lstControl = $this->GetControl($strControlId);
+			$objControlToToggle = $this->GetControl($strActionParameter);
 			
+			if ($lstControl->SelectedValue === false) {
+				$objControlToToggle->Visible = true;
+				$objControlToToggle->Required = $lstControl->Required;
+			} else {
+				$objControlToToggle->Visible = false;
+				$objControlToToggle->Required = false;
+			}
+		}
+		
+		public function rblAddress_Change($strFormId, $strControlId, $strParameter) {
+			$strControlIdRoot = str_replace('switch', '', $strControlId);
+			$rblAddress = $this->GetControl($strControlId);
+			$txtAddress1 = $this->GetControl($strControlIdRoot . 'address1');
+			$txtAddress2 = $this->GetControl($strControlIdRoot . 'address2');
+			$txtCity = $this->GetControl($strControlIdRoot . 'city');
+			$lstState = $this->GetControl($strControlIdRoot . 'state');
+			$txtZipCode = $this->GetControl($strControlIdRoot . 'zipcode');
+
+
+			if ($rblAddress->SelectedValue) {
+				$objAddress = Address::Load($rblAddress->SelectedValue);
+				$txtAddress1->Text = $objAddress->Address1;
+				$txtAddress2->Text = $objAddress->Address2;
+				$txtCity->Text = $objAddress->City;
+				$lstState->SelectedValue = $objAddress->State;
+				$txtZipCode->Text = $objAddress->ZipCode;
+				
+				$txtAddress1->Enabled = false;
+				$txtAddress2->Enabled = false;
+				$txtCity->Enabled = false;
+				$lstState->Enabled = false;
+				$txtZipCode->Enabled = false;
+			} else {
+				$txtAddress1->Enabled = true;
+				$txtAddress2->Enabled = true;
+				$txtCity->Enabled = true;
+				$lstState->Enabled = true;
+				$txtZipCode->Enabled = true;
+			}
+		}
+
+		protected function SaveData() {
+			switch ($objFormQuestion->FormQuestionTypeId) {
+				case FormQuestionType::SpouseName:
+					break;
+				case FormQuestionType::Address:
+					break;
+				case FormQuestionType::Age:
+					break;
+				case FormQuestionType::DateofBirth:
+					break;
+				case FormQuestionType::Gender:
+					break;
+				case FormQuestionType::Phone:
+					break;
+				case FormQuestionType::Email:
+					break;
+				case FormQuestionType::ShortText:
+					break;
+				case FormQuestionType::LongText:
+					break;
+				case FormQuestionType::Number:
+					break;
+				case FormQuestionType::YesNo:
+					break;
+				case FormQuestionType::SingleSelect:
+					break;
+				case FormQuestionType::MultipleSelect:
+					break;
+			}
 		}
 
 		protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {

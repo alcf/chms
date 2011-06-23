@@ -451,6 +451,21 @@
 			return Household::InstantiateDbResult(Household::GetDatabase()->Query($strQuery));
 		}
 
+		/**
+		 * Gets an array of Household objects shared by two people (e.g. all households where both people are participants.
+		 * @param Person $objPerson1
+		 * @param Person $objPerson2
+		 */
+		public static function LoadArrayBySharedHouseholds(Person $objPerson1, Person $objPerson2) {
+			$intSharedHouseholdIdArray = array();
+			foreach ($objPerson1->GetHouseholdParticipationArray() as $objHouseholdParticipation)
+				$intSharedHouseholdIdArray[] = $objHouseholdParticipation->HouseholdId;
+
+			return Household::QueryArray(QQ::AndCondition(
+				QQ::Equal(QQN::Household()->HouseholdParticipation->PersonId, $objPerson2->Id),
+				QQ::In(QQN::Household()->Id, $intSharedHouseholdIdArray)
+			));
+		}
 
 		/**
 		 * Attempts to get the StewardshipAddress record for this Household

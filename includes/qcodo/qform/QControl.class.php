@@ -45,8 +45,11 @@
 			else
 				$strInstructions = '';
 
-			$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, $this->strName, $strInstructions);
-
+			if (strlen($this->strName))
+				$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, $this->strName, $strInstructions);
+			else
+				$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, '&nbsp;', $strInstructions);
+				
 			// Render the Right side
 			if ($this->strValidationError)
 				$strMessage = sprintf('<span class="error"><br/>%s</span>', $this->strValidationError);

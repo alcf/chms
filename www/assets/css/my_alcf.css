@@ -55,13 +55,14 @@
 
 	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
-	input.textbox:disabled { background-color: #bbb; color: #999; }
+	input.textbox:disabled { background-color: #e0e0e0; color: #999; }
 	textarea.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
 	textarea.textbox:focus { background-color: #fff; }
-	textarea.textbox:disabled { background-color: #bbb; color: #999; }
-	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
+	textarea.textbox:disabled { background-color: #e0e0e0; color: #999; }
+	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 2px; }
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
+	select.listbox:disabled { background-color: #e0e0e0; color: #999; }
 
 	span.negative { color: #922; text-shadow: none; }
 	span.positive { color: #4c4; text-shadow: none; }
@@ -150,7 +151,7 @@
 	div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
 	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #5a768e; font-size: 12px; font-style: italic; font-family: trebuchet ms; position: relative; top: 2px; }
 	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; }
-	div.renderWithName div.required:after {content: " *"; } 
+/*	div.renderWithName div.required:after {content: " *"; } */ 
 	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
 	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600; }
