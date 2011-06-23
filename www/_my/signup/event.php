@@ -72,7 +72,16 @@
 			 * @var Person
 			 */
 			$objPerson = $this->objSignupEntry->Person;
+			
+			// First, set up for the Person Name label
+			$lblPersonName = new QLabel($this, 'lblPersonName');
+			$lblPersonName->Name = 'Name';
+			$lblPersonName->Required = true;
+			$lblPersonName->Text = $objPerson->Name;
+			$lblPersonName->RenderMethod = 'RenderWithName';
+			$this->objFormQuestionControlArray[] = $lblPersonName;
 
+			// Go through all the other fields
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 				$strControlId = 'fq' . $objFormQuestion->Id;
 				switch ($objFormQuestion->FormQuestionTypeId) {
@@ -189,11 +198,41 @@
 						break;
 
 					case FormQuestionType::Age:
+						$txtAge = new QIntegerTextBox($this, $strControlId . 'age');
+						$txtAge->Name = $objFormQuestion->Question;
+						$txtAge->Minimum = 0;
+						$txtAge->Maximum = 130;
+						$txtAge->MaxLength = 3;
+						if ((!$objPerson->DobYearApproximateFlag) && $objPerson->Age)
+							$txtAge->Text = $objPerson->Age;
+						if ($objFormQuestion->RequiredFlag) $txtAge->Required = true;
+						$txtAge->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $txtAge;
+						$txtAge->Width = '50px';
 						break;
+
 					case FormQuestionType::DateofBirth:
+						$dtxDateOfBirth = new QDateTimeTextBox($this, $strControlId . 'dob');
+						$dtxDateOfBirth->Name = $objFormQuestion->Question;
+						if ((!$objPerson->DobYearApproximateFlag) && (!$objPerson->DobGuessedFlag) && $objPerson->DateOfBirth)
+							$dtxDateOfBirth->Text = $objPerson->DateOfBirth->ToString('MMM D YYYY');
+						if ($objFormQuestion->RequiredFlag) $dtxDateOfBirth->Required = true;
+						$dtxDateOfBirth->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $dtxDateOfBirth;
+						$dtxDateOfBirth->Width = '150px';
 						break;
+
 					case FormQuestionType::Gender:
+						$lstGender = new QListBox($this, $strControlId . 'gender');
+						$lstGender->Name = $objFormQuestion->Question;
+						$lstGender->AddItem('- Select One -', null);
+						$lstGender->AddItem('Male', true, $objPerson->Gender == 'M');
+						$lstGender->AddItem('Female', true, $objPerson->Gender == 'F');
+						if ($objFormQuestion->RequiredFlag) $lstGender->Required = true;
+						$lstGender->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $lstGender;
 						break;
+
 					case FormQuestionType::Phone:
 						break;
 					case FormQuestionType::Email:
