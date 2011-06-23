@@ -30,5 +30,7 @@
 		}
 	?>
 	</div>
-
+	<div class="buttonBar">
+		<?php $this->btnSubmit->Render(); ?>
+	</div>
 <?php require(__INCLUDES__ . '/footer_my.inc.php'); ?>

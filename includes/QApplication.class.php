@@ -173,12 +173,20 @@
 			$_SESSION['intPublicLoginId'] = $objPublicLogin->Id;
 		}
 
+		public static function RedirectToLogin($intMessageId) {
+			print '<script type="text/javascript" src="' . __JS_ASSETS__ . '/urlencode.js"></script>';
+			print '<script type="text/javascript">';
+			print 'document.location = ("/index.php/' . $intMessageId . '?r=" + urlencode(document.location));';
+			print '</script>';
+			exit();
+		}
+
 		/**
 		 * Verifies that the user is logged in, and if not, will redirect user to the public login page
 		 * @return void
 		 */
 		public static function AuthenticatePublic() {
-			if (!QApplication::$PublicLogin) QApplication::Redirect('/index.php/2');
+			if (!QApplication::$PublicLogin) QApplication::RedirectToLogin(2);
 
 			// If we're here, then we're good
 			return;
@@ -192,7 +200,7 @@
 		 * @return void
 		 */
 		public static function Authenticate($intAcceptableRoleTypeIdArray = null, $intRequiredPermissionArray = null) {
-			if (!QApplication::$Login) QApplication::Redirect('/index.php/2');
+			if (!QApplication::$Login) QApplication::RedirectToLogin(2);
 
 			// Check against RoleTypeIdArray (if applicable)
 			if (is_array($intAcceptableRoleTypeIdArray)) {

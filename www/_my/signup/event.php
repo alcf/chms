@@ -19,6 +19,8 @@
 		protected $objSignupEntry;
 		
 		protected $objFormQuestionControlArray = array();
+		
+		protected $btnSubmit;
 
 		protected function Form_Create() {
 			// Attempt to load by Token and then by ID
@@ -59,8 +61,21 @@
 			}
 			
 			$this->CreateFormItemControls();
+			
+			$this->btnSubmit = new QButton($this);
+			$this->btnSubmit->CausesValidation = true;
+			$this->btnSubmit->CssClass = 'primary';
+			if ($this->objSignupForm->CountFormProducts())
+				$this->btnSubmit->Text = 'Next';
+			else
+				$this->btnSubmit->Text = 'Submit Registration';
+			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
 		}
 
+		public function btnSubmit_Click() {
+			QApplication::DisplayAlert('TODO');
+		}
+		
 		/**
 		 * Creates all the controls for each "question" in the form.
 		 * Note: For any fields that are looked up from the user's profile (e.g. address, phone, etc.) -- a drop down is available for quick access.
