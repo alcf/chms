@@ -71,9 +71,19 @@
 				$this->btnSubmit->Text = 'Submit Registration';
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
 		}
-
-		public function btnSubmit_Click() {
-			QApplication::DisplayAlert('TODO');
+		
+		public function Form_Validate() {
+			$blnToReturn = parent::Form_Validate();
+			$blnFirst = true;
+			foreach ($this->GetErrorControls() as $objControl) {
+				$objControl->Blink();
+				if ($blnFirst) {
+					$objControl->Focus();
+					$blnFirst = false;
+				}
+			}
+			
+			return $blnToReturn;
 		}
 		
 		/**
@@ -99,6 +109,8 @@
 			// Go through all the other fields
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 				$strControlId = 'fq' . $objFormQuestion->Id;
+				$objFormAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($this->objSignupEntry->Id, $objFormQuestion->Id);
+
 				switch ($objFormQuestion->FormQuestionTypeId) {
 					case FormQuestionType::SpouseName:
 						if (($objMarriage = $objPerson->GetMostRecentMarriage()) &&
@@ -120,6 +132,14 @@
 							$this->objFormQuestionControlArray[] = $txtName;
 							$txtName->Visible = false;
 							$txtName->Required = false;
+
+							if ($objFormAnswer && strlen($objFormAnswer->TextValue)) {
+								if ($lstSpouse->SelectedName != $objFormAnswer->TextValue) {
+									$lstSpouse->SelectedIndex = count($lstSpouse->GetAllItems()) - 1;
+									$txtName->Text = $objFormAnswer->TextValue;
+									$this->lst_ToggleOther(null, $lstSpouse->ControlId, $lstSpouse->ActionParameter);
+								}
+							}
 						} else {
 							$lstSpouse = new QListBox($this, $strControlId . 'id');
 							$lstSpouse->Visible = false;
@@ -133,6 +153,10 @@
 							$this->objFormQuestionControlArray[] = $txtName;
 							$txtName->Visible = true;
 							$txtName->Required = $objFormQuestion->RequiredFlag;
+
+							if ($objFormAnswer && strlen($objFormAnswer->TextValue)) {
+								$txtName->Text = $objFormAnswer->TextValue;
+							}
 						}
 						break;
 
@@ -228,6 +252,7 @@
 
 					case FormQuestionType::DateofBirth:
 						$dtxDateOfBirth = new QDateTimeTextBox($this, $strControlId . 'dob');
+						$dtxDateOfBirth->LabelForInvalid = 'For example, "Mar 20 1977"';
 						$dtxDateOfBirth->Name = $objFormQuestion->Question;
 						if ((!$objPerson->DobYearApproximateFlag) && (!$objPerson->DobGuessedFlag) && $objPerson->DateOfBirth)
 							$dtxDateOfBirth->Text = $objPerson->DateOfBirth->ToString('MMM D YYYY');
@@ -328,21 +353,90 @@
 							$txtEmail->Required = $objFormQuestion->RequiredFlag;
 							$txtEmail->Name = $objFormQuestion->Question;
 						}
-
 						break;
 
 					case FormQuestionType::ShortText:
+						$txtAnswer = new QTextBox($this, $strControlId);
+						$txtAnswer->Name = $objFormQuestion->Question;
+						$txtAnswer->Required = $objFormQuestion->RequiredFlag;
+						$txtAnswer->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $txtAnswer;
 						break;
+
 					case FormQuestionType::LongText:
+						$txtAnswer = new QTextBox($this, $strControlId);
+						$txtAnswer->Name = $objFormQuestion->Question;
+						$txtAnswer->Required = $objFormQuestion->RequiredFlag;
+						$txtAnswer->RenderMethod = 'RenderWithName';
+						$txtAnswer->TextMode = QTextMode::MultiLine;
+						$this->objFormQuestionControlArray[] = $txtAnswer;
 						break;
+
 					case FormQuestionType::Number:
+						$txtAnswer = new QIntegerTextBox($this, $strControlId);
+						$txtAnswer->Name = $objFormQuestion->Question;
+						$txtAnswer->Required = $objFormQuestion->RequiredFlag;
+						$txtAnswer->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $txtAnswer;
+						$txtAnswer->Width = '50px';
+						$txtAnswer->MaxLength = 6;
 						break;
+
 					case FormQuestionType::YesNo:
+						$chkAnswer = new QCheckBox($this, $strControlId);
+						$chkAnswer->Name = $objFormQuestion->Question;
+						$chkAnswer->Required = $objFormQuestion->RequiredFlag;
+						$chkAnswer->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $chkAnswer;
 						break;
+
 					case FormQuestionType::SingleSelect:
+						$lstAnswer = new QListBox($this, $strControlId);
+						$lstAnswer->Name = $objFormQuestion->Question;
+						$lstAnswer->Required = $objFormQuestion->RequiredFlag;
+						$lstAnswer->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $lstAnswer;
+						$lstAnswer->AddItem('- Select One -', null);
+						foreach (explode("\n", $objFormQuestion->Options) as $strItem) {
+							$strItem = trim($strItem);
+							$lstAnswer->AddItem($strItem, $strItem);
+						}
+						if ($objFormQuestion->AllowOtherFlag) {
+							$lstAnswer->ActionParameter = $strControlId . 'other';
+							$lstAnswer->AddAction(new QChangeEvent(), new QAjaxAction('lst_ToggleOther'));
+							$lstAnswer->AddItem('- Other... -', false);
+
+							$txtAnswer = new QTextBox($this, $strControlId . 'other');
+							$txtAnswer->RenderMethod = 'RenderWithName';
+							$txtAnswer->Required = false;
+							$txtAnswer->Visible = false;
+							$this->objFormQuestionControlArray[] = $txtAnswer;
+						}
 						break;
+
 					case FormQuestionType::MultipleSelect:
+						$lstAnswer = new QListBox($this, $strControlId);
+						$lstAnswer->Name = $objFormQuestion->Question;
+						$lstAnswer->SelectionMode = QSelectionMode::Multiple;
+						$lstAnswer->Rows = 10;
+						$lstAnswer->Required = $objFormQuestion->RequiredFlag;
+						$lstAnswer->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $lstAnswer;
+						foreach (explode("\n", $objFormQuestion->Options) as $strItem) {
+							$strItem = trim($strItem);
+							$lstAnswer->AddItem($strItem, $strItem);
+						}
+						if ($objFormQuestion->AllowOtherFlag) {
+							$txtAnswer = new QTextBox($this, $strControlId . 'other');
+							$txtAnswer->RenderMethod = 'RenderWithName';
+							$txtAnswer->HtmlBefore = 'Add another option and hit <strong>Enter</strong>:<br/>';
+							$txtAnswer->Visible = true;
+							$txtAnswer->ActionParameter = $strControlId;
+							$txtAnswer->AddAction(new QEnterKeyEvent(), new QAjaxAction('txtMultipleSelectOther_Enter'));
+							$this->objFormQuestionControlArray[] = $txtAnswer;
+						}
 						break;
+
 					default:
 						throw new Exception('Invalid FormQuestionTypeId: ' . $objFormQuestion->FormQuestionTypeId);
 				}
@@ -367,6 +461,17 @@
 				$objControlToToggle->Visible = false;
 				$objControlToToggle->Required = false;
 			}
+		}
+		
+		public function txtMultipleSelectOther_Enter($strFormId, $strControlId, $strParameter) {
+			$txtOther = $this->GetControl($strControlId);
+			$lstOther = $this->GetControl($strParameter);
+			
+			if (strlen($strText = trim($txtOther->Text)) > 0) {
+				$lstOther->AddItem($strText, $strText, true);
+			}
+			
+			$txtOther->Text = null;
 		}
 		
 		public function rblAddress_Change($strFormId, $strControlId, $strParameter) {
@@ -403,39 +508,74 @@
 			}
 		}
 
-		protected function SaveData() {
-			switch ($objFormQuestion->FormQuestionTypeId) {
-				case FormQuestionType::SpouseName:
-					break;
-				case FormQuestionType::Address:
-					break;
-				case FormQuestionType::Age:
-					break;
-				case FormQuestionType::DateofBirth:
-					break;
-				case FormQuestionType::Gender:
-					break;
-				case FormQuestionType::Phone:
-					break;
-				case FormQuestionType::Email:
-					break;
-				case FormQuestionType::ShortText:
-					break;
-				case FormQuestionType::LongText:
-					break;
-				case FormQuestionType::Number:
-					break;
-				case FormQuestionType::YesNo:
-					break;
-				case FormQuestionType::SingleSelect:
-					break;
-				case FormQuestionType::MultipleSelect:
-					break;
-			}
-		}
+		protected function btnSubmit_Click($strFormId, $strControlId, $strParameter) {
+			$this->objSignupEntry->Save();
 
-		protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
-			
+			foreach ($this->objSignupForm->GetFormQuestionArray() as $objFormQuestion) {
+				$strControlId = 'fq' . $objFormQuestion->Id;
+				$objFormAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($this->objSignupEntry->Id, $objFormQuestion->Id);
+				if (!$objFormAnswer) {
+					$objFormAnswer = new FormAnswer();
+					$objFormAnswer->SignupEntry = $this->objSignupEntry;
+					$objFormAnswer->FormQuestion = $objFormQuestion;
+				}
+
+				switch ($objFormQuestion->FormQuestionTypeId) {
+					case FormQuestionType::SpouseName:
+						$lstSpouse = $this->GetControl($strControlId . 'id');
+						$txtSpouse = $this->GetControl($strControlId . 'nm');
+						if ($lstSpouse->SelectedValue) {
+							$objFormAnswer->TextValue = Person::Load($lstSpouse->SelectedValue)->Name;
+						} else {
+							$objFormAnswer->TextValue = trim($txtSpouse->Text);
+						}
+						break;
+
+					case FormQuestionType::Address:
+						break;
+
+					case FormQuestionType::Age:
+						break;
+
+					case FormQuestionType::DateofBirth:
+						break;
+
+					case FormQuestionType::Gender:
+						break;
+
+					case FormQuestionType::Phone:
+						break;
+
+					case FormQuestionType::Email:
+						break;
+
+					case FormQuestionType::ShortText:
+						break;
+
+					case FormQuestionType::LongText:
+						break;
+
+					case FormQuestionType::Number:
+						break;
+
+					case FormQuestionType::YesNo:
+						break;
+
+					case FormQuestionType::SingleSelect:
+						break;
+
+					case FormQuestionType::MultipleSelect:
+						break;
+
+					default:
+						throw new Exception('Invalid FormQuestionTypeId: ' . $objFormQuestion->FormQuestionTypeId);
+				}
+				
+				$objFormAnswer->Save();
+			}
+
+			QApplication::DisplayAlert('TODO');
+//			QApplication::Redirect('')
 		}
 	}
 
