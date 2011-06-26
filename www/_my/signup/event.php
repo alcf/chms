@@ -281,7 +281,9 @@
 						$dtxDateOfBirth = new QDateTimeTextBox($this, $strControlId . 'dob');
 						$dtxDateOfBirth->LabelForInvalid = 'For example, "Mar 20 1977"';
 						$dtxDateOfBirth->Name = $objFormQuestion->Question;
-						if ((!$objPerson->DobYearApproximateFlag) && (!$objPerson->DobGuessedFlag) && $objPerson->DateOfBirth)
+						if ($objFormAnswer && !is_null($objFormAnswer->DateValue))
+							$dtxDateOfBirth->Text = $objFormAnswer->DateValue->ToString('MMM D YYYY');
+						else if ((!$objPerson->DobYearApproximateFlag) && (!$objPerson->DobGuessedFlag) && $objPerson->DateOfBirth)
 							$dtxDateOfBirth->Text = $objPerson->DateOfBirth->ToString('MMM D YYYY');
 						if ($objFormQuestion->RequiredFlag) $dtxDateOfBirth->Required = true;
 						$dtxDateOfBirth->RenderMethod = 'RenderWithName';
@@ -294,7 +296,7 @@
 						$lstGender->Name = $objFormQuestion->Question;
 						$lstGender->AddItem('- Select One -', null);
 						$lstGender->AddItem('Male', true, $objPerson->Gender == 'M');
-						$lstGender->AddItem('Female', true, $objPerson->Gender == 'F');
+						$lstGender->AddItem('Female', false, $objPerson->Gender == 'F');
 						if ($objFormQuestion->RequiredFlag) $lstGender->Required = true;
 						$lstGender->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $lstGender;
@@ -589,9 +591,34 @@
 						break;
 
 					case FormQuestionType::DateofBirth:
+						$dtxDateOfBirth = $this->GetControl($strControlId . 'dob');
+						if ($dtxDateOfBirth->DateTime) {
+							$objFormAnswer->DateValue = $dtxDateOfBirth->DateTime;
+
+							// Update the Person Information
+							$this->objSignupEntry->Person->DateOfBirth = $objFormAnswer->DateValue;
+							$this->objSignupEntry->Person->Save();
+						} else {
+							$objFormAnswer->DateValue = null;
+						}
 						break;
 
 					case FormQuestionType::Gender:
+						$lstGender = $this->GetControl($strControlId . 'gender');
+						if ($lstGender->SelectedValue === true) {
+							$objFormAnswer->TextValue = 'Male';
+							$objFormAnswer->BooleanValue = true;
+							$this->objSignupEntry->Person->Gender = 'M';
+							$this->objSignupEntry->Person->Save();
+						} else if ($lstGender->SelectedValue === false) {
+							$objFormAnswer->TextValue = 'Female';
+							$objFormAnswer->BooleanValue = false;
+							$this->objSignupEntry->Person->Gender = 'F';
+							$this->objSignupEntry->Person->Save();
+						} else {
+							$objFormAnswer->TextValue = null;
+							$objFormAnswer->BooleanValue = null;
+						}
 						break;
 
 					case FormQuestionType::Phone:
