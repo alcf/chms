@@ -226,8 +226,12 @@
 						$this->objFormQuestionControlArray[] = $lstState;
 						$this->objFormQuestionControlArray[] = $txtZipCode;
 						
+						// Final configuration based on whether or not we've got a household record for this person
+						// (in which case we have defined a rblAddress)
 						if ($rblAddress) {
+							// Check to see if the question has been answered before
 							if ($objFormAnswer && strlen($objFormAnswer->TextValue)) {
+								// If it 
 								$objAddress = Address::DeduceAddressFromFullLine($objFormAnswer->TextValue);
 								if (($objFormAnswer->AddressId == $rblAddress->SelectedValue) || !$objAddress) {
 									$txtAddress1->Enabled = false;
@@ -243,16 +247,18 @@
 									$lstState->SelectedValue = $objAddress->State;
 									$rblAddress->SelectedIndex = 1;
 								}
+							// It has not -- let's default to having the address be presumed correct
+							} else {
+								$txtAddress1->Enabled = false;
+								$txtAddress2->Enabled = false;
+								$txtCity->Enabled = false;
+								$lstState->Enabled = false;
+								$txtZipCode->Enabled = false;
 							}
-
-
-							
+						// No rblAddress - so let's update the address1 label to match the form question's question text
 						} else {
 							$txtAddress1->Name = $objFormQuestion->Question;
 						}
-						
-						
-						
 						break;
 
 					case FormQuestionType::Age:
@@ -261,7 +267,9 @@
 						$txtAge->Minimum = 0;
 						$txtAge->Maximum = 130;
 						$txtAge->MaxLength = 3;
-						if ((!$objPerson->DobYearApproximateFlag) && $objPerson->Age)
+						if ($objFormAnswer && !is_null($objFormAnswer->IntegerValue))
+							$txtAge->Text = $objFormAnswer->IntegerValue;
+						else if ((!$objPerson->DobYearApproximateFlag) && $objPerson->Age)
 							$txtAge->Text = $objPerson->Age;
 						if ($objFormQuestion->RequiredFlag) $txtAge->Required = true;
 						$txtAge->RenderMethod = 'RenderWithName';
@@ -573,6 +581,11 @@
 						break;
 
 					case FormQuestionType::Age:
+						$txtAge = $this->GetControl($strControlId . 'age');
+						if (strlen(trim($txtAge->Text)))
+							$objFormAnswer->IntegerValue = $txtAge->Text;
+						else
+							$objFormAnswer->IntegerValue = null;
 						break;
 
 					case FormQuestionType::DateofBirth:
