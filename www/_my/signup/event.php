@@ -379,7 +379,7 @@
 							$lstEmail->AddItem('- Select One -', null);
 							rsort($objEmailArray);
 							foreach ($objEmailArray as $objEmail)
-								$lstEmail->AddItem($objEmail->Address, $objEmail->Id);
+								$lstEmail->AddItem($objEmail->Address, $objEmail->Id, $objFormAnswer && $objFormAnswer->EmailId == $objEmail->Id);
 							$lstEmail->AddItem('- Other... -', false);
 
 							if ($objFormQuestion->RequiredFlag) $lstEmail->Required = true;
@@ -392,14 +392,27 @@
 						$txtEmail = new QEmailTextBox($this, $strControlId . 'email');
 						$this->objFormQuestionControlArray[] = $txtEmail;
 						$txtEmail->RenderMethod = 'RenderWithName';
-						
+
+						// We need to deduce whether or not we should show an explicit text-valued email address from before
+						$blnExplicitlyTextValueOnly = ($objFormAnswer && $objFormAnswer->TextValue && (!$lstEmail || !$lstEmail->SelectedValue));
+
 						if (count($objEmailArray)) {
-							$txtEmail->Visible = false;
-							$txtEmail->Required = false;
+							if ($blnExplicitlyTextValueOnly) {
+								$lstEmail->SelectedIndex = count($lstEmail->GetAllItems()) - 1;
+								$txtEmail->Visible = true;
+								$txtEmail->Required = $objFormQuestion->RequiredFlag;
+								$txtEmail->Text = $objFormAnswer->TextValue;
+							} else {
+								$txtEmail->Visible = false;
+								$txtEmail->Required = false;
+							}
 						} else {
 							$txtEmail->Visible = true;
 							$txtEmail->Required = $objFormQuestion->RequiredFlag;
 							$txtEmail->Name = $objFormQuestion->Question;
+							if ($blnExplicitlyTextValueOnly) {
+								$txtEmail->Text = $objFormAnswer->TextValue;
+							}
 						}
 						break;
 
@@ -409,6 +422,7 @@
 						$txtAnswer->Required = $objFormQuestion->RequiredFlag;
 						$txtAnswer->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $txtAnswer;
+						if ($objFormAnswer) $txtAnswer->Text = $objFormAnswer->TextValue;
 						break;
 
 					case FormQuestionType::LongText:
@@ -418,6 +432,7 @@
 						$txtAnswer->RenderMethod = 'RenderWithName';
 						$txtAnswer->TextMode = QTextMode::MultiLine;
 						$this->objFormQuestionControlArray[] = $txtAnswer;
+						if ($objFormAnswer) $txtAnswer->Text = $objFormAnswer->TextValue;
 						break;
 
 					case FormQuestionType::Number:
@@ -428,6 +443,7 @@
 						$this->objFormQuestionControlArray[] = $txtAnswer;
 						$txtAnswer->Width = '50px';
 						$txtAnswer->MaxLength = 6;
+						if ($objFormAnswer) $txtAnswer->Text = $objFormAnswer->IntegerValue;
 						break;
 
 					case FormQuestionType::YesNo:
@@ -436,6 +452,7 @@
 						$chkAnswer->Required = $objFormQuestion->RequiredFlag;
 						$chkAnswer->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $chkAnswer;
+						if ($objFormAnswer) $chkAnswer->Checked = $objFormAnswer->BooleanValue;
 						break;
 
 					case FormQuestionType::SingleSelect:
@@ -447,7 +464,7 @@
 						$lstAnswer->AddItem('- Select One -', null);
 						foreach (explode("\n", $objFormQuestion->Options) as $strItem) {
 							$strItem = trim($strItem);
-							$lstAnswer->AddItem($strItem, $strItem);
+							$lstAnswer->AddItem($strItem, $strItem, $objFormAnswer && $objFormAnswer->TextValue == $strItem);
 						}
 						if ($objFormQuestion->AllowOtherFlag) {
 							$lstAnswer->ActionParameter = $strControlId . 'other';
@@ -460,9 +477,25 @@
 							$txtAnswer->Visible = false;
 							$this->objFormQuestionControlArray[] = $txtAnswer;
 						}
+
+						if ($objFormAnswer && strlen($objFormAnswer->TextValue) && !$lstAnswer->SelectedValue) {
+							if ($objFormQuestion->AllowOtherFlag) {
+								$lstAnswer->SelectedIndex = count($lstAnswer->GetAllItems()) - 1;
+								$txtAnswer->Text = $objFormAnswer->TextValue;
+								$txtAnswer->Visible = true;
+							} else {
+								$lstAnswer->AddItem($objFormAnswer->TextValue, $objFormAnswer->TextValue, true);
+							}
+						}
 						break;
 
 					case FormQuestionType::MultipleSelect:
+						$strAnswerArray = array();
+						if ($objFormAnswer) {
+							foreach (explode("\n", $objFormAnswer->TextValue) as $strAnswer) if (strlen($strAnswer = trim($strAnswer))) {
+								$strAnswerArray[$strAnswer] = $strAnswer;
+							}
+						}
 						$lstAnswer = new QListBox($this, $strControlId);
 						$lstAnswer->Name = $objFormQuestion->Question;
 						$lstAnswer->SelectionMode = QSelectionMode::Multiple;
@@ -472,8 +505,14 @@
 						$this->objFormQuestionControlArray[] = $lstAnswer;
 						foreach (explode("\n", $objFormQuestion->Options) as $strItem) {
 							$strItem = trim($strItem);
-							$lstAnswer->AddItem($strItem, $strItem);
+							$lstAnswer->AddItem($strItem, $strItem, array_key_exists($strItem, $strAnswerArray));
+							$strAnswerArray[$strItem] = null;
+							unset($strAnswerArray[$strItem]);
 						}
+
+						foreach ($strAnswerArray as $strAnswer)
+							$lstAnswer->AddItem($strAnswer, $strAnswer, true);
+						
 						if ($objFormQuestion->AllowOtherFlag) {
 							$txtAnswer = new QTextBox($this, $strControlId . 'other');
 							$txtAnswer->RenderMethod = 'RenderWithName';
@@ -656,24 +695,72 @@
 						break;
 
 					case FormQuestionType::Email:
+						$lstEmail = $this->GetControl($strControlId . 'id');
+						$txtEmail = $this->GetControl($strControlId . 'email');
+						if ($lstEmail && $lstEmail->SelectedValue) {
+							$objFormAnswer->EmailId = $lstEmail->SelectedValue;
+							$objFormAnswer->TextValue = $objFormAnswer->Email->Address;
+						} else if ($strNumber = trim($txtEmail->Text)) {
+							$objFormAnswer->EmailId = null;
+							$objFormAnswer->TextValue = $strNumber;
+						} else {
+							$objFormAnswer->EmailId = null;
+							$objFormAnswer->TextValue = null;
+						}
 						break;
 
 					case FormQuestionType::ShortText:
-						break;
-
 					case FormQuestionType::LongText:
+						$txtAnswer = $this->GetControl($strControlId);
+						if (strlen($strText = trim($txtAnswer->Text))) {
+							$objFormAnswer->TextValue = $strText;
+						} else {
+							$objFormAnswer->TextValue = null;
+						}
 						break;
 
 					case FormQuestionType::Number:
+						$txtAnswer = $this->GetControl($strControlId);
+						if (strlen($strText = trim($txtAnswer->Text))) {
+							$objFormAnswer->IntegerValue = $strText;
+						} else {
+							$objFormAnswer->IntegerValue = null;
+						}
 						break;
 
 					case FormQuestionType::YesNo:
+						$chkAnswer = $this->GetControl($strControlId);
+						$objFormAnswer->BooleanValue = $chkAnswer->Checked;
 						break;
 
 					case FormQuestionType::SingleSelect:
+						$lstAnswer = $this->GetControl($strControlId);
+						$txtAnswer = $this->GetControl($strControlId . 'other');
+						// No item selected ("-select one-" still selected)
+						if (is_null($lstAnswer->SelectedValue)) {
+							$objFormAnswer->TextValue = null;
+
+						// "Other" option
+						} else if ($lstAnswer->SelectedValue === false) {
+							if (strlen($strText = trim($txtAnswer->Text)))
+								$objFormAnswer->TextValue = $strText;
+							else
+								$objFormAnswer->TextValue = null;
+
+						// Regular List Selection
+						} else {
+							$objFormAnswer->TextValue = trim($lstAnswer->SelectedValue);
+						}
 						break;
 
 					case FormQuestionType::MultipleSelect:
+						$lstAnswer = $this->GetControl($strControlId);
+						$strSelectedArray = $lstAnswer->SelectedValues;
+						if (count($strSelectedArray)) {
+							$objFormAnswer->TextValue = implode("\r\n", $strSelectedArray);
+						} else {
+							$objFormAnswer->TextValue = null;
+						}
 						break;
 
 					default:
