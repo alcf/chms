@@ -295,8 +295,13 @@
 						$lstGender = new QListBox($this, $strControlId . 'gender');
 						$lstGender->Name = $objFormQuestion->Question;
 						$lstGender->AddItem('- Select One -', null);
-						$lstGender->AddItem('Male', true, $objPerson->Gender == 'M');
-						$lstGender->AddItem('Female', false, $objPerson->Gender == 'F');
+						if ($objFormAnswer && $objFormAnswer->TextValue) {
+							$lstGender->AddItem('Male', true, $objFormAnswer->BooleanValue);
+							$lstGender->AddItem('Female', false, !$objFormAnswer->BooleanValue);
+						} else {
+							$lstGender->AddItem('Male', true, $objPerson->Gender == 'M');
+							$lstGender->AddItem('Female', false, $objPerson->Gender == 'F');
+						}
 						if ($objFormQuestion->RequiredFlag) $lstGender->Required = true;
 						$lstGender->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $lstGender;
@@ -322,9 +327,9 @@
 							$lstPhone->AddItem('- Select One -', null);
 							rsort($objPhoneArray);
 							foreach ($objPhoneArray as $objPhone)
-								$lstPhone->AddItem($objPhone->Number, $objPhone->Id);
+								$lstPhone->AddItem($objPhone->Number, $objPhone->Id, $objFormAnswer && $objFormAnswer->PhoneId == $objPhone->Id);
 							$lstPhone->AddItem('- Other... -', false);
-								
+
 							if ($objFormQuestion->RequiredFlag) $lstPhone->Required = true;
 							$lstPhone->RenderMethod = 'RenderWithName';
 							$this->objFormQuestionControlArray[] = $lstPhone;
@@ -332,17 +337,31 @@
 							$lstPhone->AddAction(new QChangeEvent(), new QAjaxAction('lst_ToggleOther'));
 						}
 
-						$txtPhone = new QTextBox($this, $strControlId . 'phone');
+						$txtPhone = new PhoneTextBox($this, $strControlId . 'phone');
 						$this->objFormQuestionControlArray[] = $txtPhone;
 						$txtPhone->RenderMethod = 'RenderWithName';
-						
+
+						// We need to deduce whether or not we should show an explicit text-valued phone number from before
+						$blnExplicitlyTextValueOnly = ($objFormAnswer && $objFormAnswer->TextValue && (!$lstPhone || !$lstPhone->SelectedValue));
+
 						if (count($objPhoneArray)) {
-							$txtPhone->Visible = false;
-							$txtPhone->Required = false;
+							if ($blnExplicitlyTextValueOnly) {
+								$lstPhone->SelectedIndex = count($lstPhone->GetAllItems()) - 1;
+								$txtPhone->Visible = true;
+								$txtPhone->Required = $objFormQuestion->RequiredFlag;
+								$txtPhone->Text = $objFormAnswer->TextValue;
+							} else {
+								$txtPhone->Visible = false;
+								$txtPhone->Required = false;
+							}
 						} else {
 							$txtPhone->Visible = true;
 							$txtPhone->Required = $objFormQuestion->RequiredFlag;
 							$txtPhone->Name = $objFormQuestion->Question;
+
+							if ($blnExplicitlyTextValueOnly) {
+								$txtPhone->Text = $objFormAnswer->TextValue;
+							}
 						}
 
 						break;
@@ -622,6 +641,18 @@
 						break;
 
 					case FormQuestionType::Phone:
+						$lstPhone = $this->GetControl($strControlId . 'id');
+						$txtPhone = $this->GetControl($strControlId . 'phone');
+						if ($lstPhone && $lstPhone->SelectedValue) {
+							$objFormAnswer->PhoneId = $lstPhone->SelectedValue;
+							$objFormAnswer->TextValue = $objFormAnswer->Phone->Number;
+						} else if ($strNumber = trim($txtPhone->Text)) {
+							$objFormAnswer->PhoneId = null;
+							$objFormAnswer->TextValue = $strNumber;
+						} else {
+							$objFormAnswer->PhoneId = null;
+							$objFormAnswer->TextValue = null;
+						}
 						break;
 
 					case FormQuestionType::Email:
