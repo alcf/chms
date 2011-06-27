@@ -36,6 +36,7 @@
 					} else {
 						return MY_ALCF_URL . '/signup/event.php/' . $this->intId;
 					}
+
 				case 'CsvFilename':
 					$strName = $this->strName;
 					$strToReturn = null;
@@ -47,6 +48,10 @@
 							$strToReturn .= $strName[$i];
 					}
 					return $strToReturn . '.csv';
+
+				case 'InformationLinkHtml':
+					if ($this->strInformationUrl) return sprintf('For more information, please see <a href="%s">%s</a>.', $this->strInformationUrl, $this->strInformationUrl);
+					break;
 
 				default:
 					try {

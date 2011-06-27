@@ -33,13 +33,15 @@
 				return;
 			}
 
+			$this->strPageTitle = $this->objSignupForm->Name . ' - Signup';
+
 			// Ensure it is Active
 			if (!$this->objSignupForm->ActiveFlag) {
 				$this->strHtmlIncludeFilePath = '_notactive.tpl.php';
 				return;
 			}
-			
-			// Finally, ensure we are not double registering where not allowed
+
+			// Ensure we are not double registering where not allowed
 			if (!$this->objSignupForm->AllowMultipleFlag &&
 				count(SignupEntry::LoadArrayBySignupFormIdPersonIdSignupEntryStatusTypeId($this->objSignupForm->Id, QApplication::$PublicLogin->PersonId, SignupEntryStatusType::Complete))) {
 				$this->strHtmlIncludeFilePath = '_registered.tpl.php';
@@ -770,8 +772,14 @@
 				$objFormAnswer->Save();
 			}
 
-			QApplication::DisplayAlert('TODO');
-//			QApplication::Redirect('')
+			if ($this->objSignupForm->CountFormProducts()) {
+				QApplication::Redirect($this->objSignupEntry->PaymentUrl);
+			} else {
+				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
+				$this->objSignupEntry->Save();
+				$this->objSignupEntry->SendConfirmationEmail();
+				QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
+			}
 		}
 	}
 

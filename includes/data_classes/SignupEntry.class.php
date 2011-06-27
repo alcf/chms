@@ -27,6 +27,49 @@
 			return sprintf('SignupEntry Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'ConfirmationUrl': 
+					if ($this->SignupForm->Token) {
+						return MY_ALCF_URL . '/signup/confirmation.php/' . $this->SignupForm->Token . '/' . $this->intId;
+					} else {
+						return MY_ALCF_URL . '/signup/confirmation.php/' . $this->SignupFormId . '/' . $this->intId;
+					}
+
+				case 'PaymentUrl': 
+					if ($this->SignupForm->Token) {
+						return MY_ALCF_URL . '/signup/payment.php/' . $this->SignupForm->Token . '/' . $this->intId;
+					} else {
+						return MY_ALCF_URL . '/signup/payment.php/' . $this->SignupFormId . '/' . $this->intId;
+					}
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
+		/**
+		 * Queues a "confirmation email" to be sent out to the person signing up
+		 */
+		public function SendConfirmationEmail() {
+			// TODO
+		}
+		
+		/**
+		 * Given various properties of the signup itself, the person who is registered, and the one who is registering "on behalf of",
+		 * this will calculate the correct email address to send out to
+		 * @return string a string containing the email address to send out to
+		 */
+		public function CalculateConfirmationEmailAddress() {
+			// TODO
+			return 'todo@email.com';
+		}
+
 		/**
 		 * Update the Amounts-related calculated fields and returns the current balance
 		 * @param boolean $blnSaveFlag whether or not to save the record after updating
@@ -213,19 +256,6 @@
 /*
 		protected $strSomeNewProperty;
 
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {
