@@ -4,7 +4,7 @@
 	<h2>
 		Payment Information
 		<?php if ($this->objSignupForm->CountFormProducts()) { ?>
-			<div style="float: right; font-size: 12px; ">Step 2 of 2</div>
+			<div style="float: right; font-size: 12px; "><a href="<?php _p($this->objSignupForm->SignupUrl); ?>">Go Back</a> &nbsp;|&nbsp; Step 2 of 2</div>
 		<?php } ?>
 	</h2>
 

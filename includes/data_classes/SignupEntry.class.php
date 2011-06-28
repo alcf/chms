@@ -140,7 +140,7 @@
 		 * @param float $fltAmount only specify if we are allowed a variable amount to specify (e.g. for a donation), otherwise leave blank
 		 * @return SignupProduct
 		 */
-		public function AddProduct(FormProduct $objFormProduct, $intQuantity = 1, $fltAmount = null) {
+		public function AddProduct(FormProduct $objFormProduct, $intQuantity = 1, $fltAmount = 0) {
 			$objSignupProduct = new SignupProduct();
 			$objSignupProduct->SignupEntry = $this;
 			$objSignupProduct->FormProduct = $objFormProduct;
@@ -154,7 +154,7 @@
 					break;
 				case FormProductType::Optional:
 					if (($intQuantity < $objFormProduct->MinimumQuantity) || ($intQuantity > $objFormProduct->MaximumQuantity))
-						throw new QCallerException('Invalid Quantity for Optional Product');
+						$intQuantity = $objFormProduct->MinimumQuantity;
 					$objSignupProduct->Quantity = $intQuantity;
 					break;
 				default:
@@ -170,7 +170,7 @@
 					$objSignupProduct->Deposit = $objFormProduct->Deposit;
 					break;
 				case FormPaymentType::Donation:
-					if (is_null($fltAmount) || ($fltAmount < 0)) throw new QCallerException('Invalid Amount entered for Donation');
+					if ($fltAmount < 0) throw new QCallerException('Invalid Amount entered for Donation');
 					$objSignupProduct->Amount = $fltAmount;
 					break;
 				default:

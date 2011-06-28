@@ -99,11 +99,12 @@
 			foreach ($this->GetErrorControls() as $objControl) {
 				$objControl->Blink();
 				if ($blnFirst) {
+					$this->btnSubmit->Enabled = true;
 					$objControl->Focus();
 					$blnFirst = false;
 				}
 			}
-			
+
 			return $blnToReturn;
 		}
 		
@@ -159,9 +160,12 @@
 					$lstQuantity = $this->GetControl('lstQuantity' . $objItem->Id);
 					if (!$lstQuantity) {
 						$lstQuantity = new QListBox($this->dtgProducts, 'lstQuantity' . $objItem->Id);
+						$lstQuantity->ActionParameter = $objItem->Id;
+						$lstQuantity->AddItem(0, 0);
 						for ($intQuantity = $objItem->MinimumQuantity; $intQuantity <= $objItem->MaximumQuantity; $intQuantity++)
 							$lstQuantity->AddItem($intQuantity, $intQuantity);
 						$lstQuantity->SelectedIndex = 0;
+						$lstQuantity->AddAction(new QChangeEvent(), new QAjaxAction('lstQuantity_Change'));
 					}
 					
 					return $lstQuantity->Render(false);
@@ -186,7 +190,19 @@
 					case FormPaymentType::DepositRequired:
 						return QApplication::DisplayCurrency($objItem->Cost);
 					case FormPaymentType::Donation:
-						return 'TextBox TODO';
+						$txtDonation = $this->GetControl('txtDonation' . $objItem->Id);
+						if (!$txtDonation) {
+							$txtDonation = new QFloatTextBox($this->dtgProducts, 'txtDonation' . $objItem->Id);
+							$txtDonation->ActionParameter = $objItem->Id;
+							$txtDonation->Minimum = 0;
+							$txtDonation->Width = '60px';
+							$txtDonation->MaxLength = 8;
+							$txtDonation->Required = ($objItem->FormProductTypeId == FormProductType::Required);
+							$txtDonation->AddAction(new QChangeEvent(), new QAjaxAction('txtDonation_Change'));
+							$txtDonation->AddAction(new QEnterKeyEvent(), new QAjaxAction('txtDonation_Change'));
+							$txtDonation->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+						}
+						return '$ ' . $txtDonation->Render(false);
 				}
 
 			// Payment Entries
@@ -202,35 +218,30 @@
 					case FormPaymentType::DepositRequired:
 						return QApplication::DisplayCurrency($objProduct->Cost);
 					case FormPaymentType::Donation:
-						return 'TextBox TODO';
+						$txtDonation = $this->GetControl('txtDonation' . $objProduct->Id);
+						if (!$txtDonation) {
+							$txtDonation = new QFloatTextBox($this->dtgProducts, 'txtDonation' . $objProduct->Id);
+							$txtDonation->ActionParameter = $objProduct->Id;
+							$txtDonation->Minimum = 0;
+							$txtDonation->Width = '60px';
+							$txtDonation->MaxLength = 8;
+							$txtDonation->Required = true;
+							$txtDonation->AddAction(new QChangeEvent(), new QAjaxAction('txtDonation_Change'));
+							$txtDonation->AddAction(new QEnterKeyEvent(), new QAjaxAction('txtDonation_Change'));
+							$txtDonation->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+						}
+						return '$ ' . $txtDonation->Render(false);
 				}
 			}
 		}
-				
+
 		public function RenderTotal($objItem) {
 			// Required and Optional Products
 			if ($objItem instanceof FormProduct) {
-				
-				// Required Products
-				if ($objItem->FormProductTypeId == FormProductType::Required) {
-					if ($objItem->FormPaymentTypeId == FormPaymentType::PayInFull) {
-						return QApplication::DisplayCurrency($objItem->Cost);
-					} else if ($objItem->FormPaymentTypeId == FormPaymentType::DepositRequired) {
-						return QApplication::DisplayCurrency($objItem->Cost);
-					} else if ($objItem->FormPaymentTypeId == FormPaymentType::Donation) {
-						return 'Value TODO';
-					}
-				
-				// Optional Products
-				} else if ($objItem->FormProductTypeId == FormProductType::Optional) {
-					if ($objItem->FormPaymentTypeId == FormPaymentType::PayInFull) {
-						return 'Value TODO';
-					} else if ($objItem->FormPaymentTypeId == FormPaymentType::DepositRequired) {
-						return 'Value TODO';
-					} else if ($objItem->FormPaymentTypeId == FormPaymentType::Donation) {
-						return 'Value TODO';
-					}
-				}
+				$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($this->objSignupEntry->Id, $objItem->Id);
+
+				if ($objSignupProduct) return QApplication::DisplayCurrency($objSignupProduct->TotalAmount);
+				return null;
 			
 			// Payment Entries
 			} else if ($objItem instanceof SignupPayment) {
@@ -279,6 +290,42 @@
 			$arrDataSource[] = null;
 
 			$this->dtgProducts->DataSource = $arrDataSource;
+		}
+
+		public function txtDonation_Change($strFormId, $strControlId, $strParameter) {
+			$txtDonation = $this->GetControl($strControlId);
+			$objFormProduct = FormProduct::Load($strParameter);
+			
+			$txtDonation->Text = sprintf('%.2f', (float) $txtDonation->Text);
+			
+			$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($this->objSignupEntry->Id, $objFormProduct->Id);
+			if (!$objSignupProduct) {
+				$this->objSignupEntry->AddProduct($objFormProduct, 1, $txtDonation->Text);
+			} else {
+				$objSignupProduct->Amount = $txtDonation->Text;
+				$objSignupProduct->Save();
+				$this->objSignupEntry->RefreshAmounts();
+			}
+			$this->dtgProducts->Refresh();
+		}
+
+		public function lstQuantity_Change($strFormId, $strControlId, $strParameter) {
+			$lstQuantity = $this->GetControl($strControlId);
+			$objFormProduct = FormProduct::Load($strParameter);
+			
+			$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($this->objSignupEntry->Id, $objFormProduct->Id);
+			if (!$objSignupProduct) {
+				if ($lstQuantity->SelectedValue) $this->objSignupEntry->AddProduct($objFormProduct, $lstQuantity->SelectedValue);
+			} else {
+				if ($lstQuantity->SelectedValue) {
+					$objSignupProduct->Quantity = $lstQuantity->SelectedValue;
+					$objSignupProduct->Save();
+				} else {
+					$objSignupProduct->Delete();
+				}
+				$this->objSignupEntry->RefreshAmounts();
+			}
+			$this->dtgProducts->Refresh();
 		}
 
 		public function lstRequiredWithChoice_Change() {
