@@ -262,6 +262,7 @@
 						$objSignup = new SignupEntry();
 						$objSignup->SignupForm = $objSignupForm;
 						$objSignup->Person = $objPerson;
+						$objSignup->SignupByPerson = $objPerson;
 						$objSignup->DateCreated = self::GenerateDateTime($objSignupForm->DateCreated, QDateTime::Now());
 						$objSignup->SignupEntryStatusTypeId = SignupEntryStatusType::Incomplete;
 						$objSignup->InternalNotes = (!rand(0, 2) ? self::GenerateContent(1, 5, 10) : null);

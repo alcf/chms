@@ -135,16 +135,16 @@
 		 * Adds a payment records for this Entry
 		 * @param integer $intSignupPaymentTypeId
 		 * @param float $fltAmount
-		 * @param string $strTransactionCode
+		 * @param string $strTransactionDescription
 		 * @param QDateTime $dttTransactionDate optional, uses Now() if nothing is passed in
 		 * @return SignupPayment
 		 */
-		public function AddPayment($intSignupPaymentTypeId, $fltAmount, $strTransactionCode, QDateTime $dttTransactionDate = null) {
+		public function AddPayment($intSignupPaymentTypeId, $fltAmount, $strTransactionDescription, QDateTime $dttTransactionDate = null) {
 			$objSignupPayment = new SignupPayment();
 			$objSignupPayment->SignupEntry = $this;
 			$objSignupPayment->SignupPaymentTypeId = $intSignupPaymentTypeId;
 			$objSignupPayment->TransactionDate = ($dttTransactionDate ? $dttTransactionDate : QDateTime::Now());
-			$objSignupPayment->TransactionCode = $strTransactionCode;
+			$objSignupPayment->TransactionDescription = $strTransactionDescription;
 			$objSignupPayment->Amount = $fltAmount;
 			$objSignupPayment->Save();
 			
