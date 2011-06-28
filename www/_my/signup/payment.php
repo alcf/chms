@@ -208,7 +208,10 @@
 		}
 				
 		public function RenderTotal($objItem) {
+			// Required and Optional Products
 			if ($objItem instanceof FormProduct) {
+				
+				// Required Products
 				if ($objItem->FormProductTypeId == FormProductType::Required) {
 					if ($objItem->FormPaymentTypeId == FormPaymentType::PayInFull) {
 						return QApplication::DisplayCurrency($objItem->Cost);
@@ -217,6 +220,8 @@
 					} else if ($objItem->FormPaymentTypeId == FormPaymentType::Donation) {
 						return 'Value TODO';
 					}
+				
+				// Optional Products
 				} else if ($objItem->FormProductTypeId == FormProductType::Optional) {
 					if ($objItem->FormPaymentTypeId == FormPaymentType::PayInFull) {
 						return 'Value TODO';
@@ -226,12 +231,24 @@
 						return 'Value TODO';
 					}
 				}
+			
+			// Payment Entries
 			} else if ($objItem instanceof SignupPayment) {
 				return QApplication::DisplayCurrency(-1 * $objItem->Amount);
+			
+			// "Required with Choice" Products
 			} else if ($objItem == -1) {
-				return 'Value TODO';
+				if ($intFormProductId = $this->lstRequiredWithChoice->SelectedValue) {
+					$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($this->objSignupEntry->Id, $intFormProductId);
+					if ($objSignupProduct) {
+						return QApplication::DisplayCurrency($objSignupProduct->TotalAmount);
+					}
+				}
+				return null;
+
+			// Balance Entry
 			} else if (is_null($objItem)) {
-				return 'BALANCE TODO';
+				return '<strong>' . QApplication::DisplayCurrency(-1 * $this->objSignupEntry->AmountBalance) . '</strong>';
 			}
 		}
 		
