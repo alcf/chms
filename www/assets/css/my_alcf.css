@@ -45,6 +45,7 @@
 		text-transform: uppercase;
 	}
 	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
+	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #666; color: #999; }
 
 	input.alternate, button.alternate {
 		background-image: url(/assets/images/button_alternate.png); border: 1px solid #859da9; height: 24px; -moz-border-radius: 5px; 
@@ -160,7 +161,7 @@
 
 	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
 
-	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; }
+	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; font-size: 10px; }
 
 	/*** OTHER ***/
 

@@ -30,7 +30,7 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return FormProductType::$NameArray[$this->intFormProductTypeId];
-				case 'DateStartHtml': return ($this->dttDateEnd) ? $this->dttDateStart->ToString('MMM D YYYY') . '<br/><span class="na">' . $this->dttDateStart->ToString('hh:mm:ss zz</span>') : null;
+				case 'DateStartHtml': return ($this->dttDateStart) ? $this->dttDateStart->ToString('MMM D YYYY') . '<br/><span class="na">' . $this->dttDateStart->ToString('hh:mm:ss zz</span>') : null;
 				case 'DateEndHtml': return ($this->dttDateEnd) ? $this->dttDateEnd->ToString('MMM D YYYY') . '<br/><span class="na">' . $this->dttDateEnd->ToString('hh:mm:ss zz</span>') : null;
 				
 				default:
@@ -87,6 +87,21 @@
 			}
 
 			self::RefreshOrderNumber($this->intSignupFormId, $this->intFormProductTypeId);
+		}
+
+		/**
+		 * Specifies whether this specific product is available "right now" given start and end dates (if applicable)
+		 * @return boolean
+		 */
+		public function IsAvailableRightNow() {
+			if (!$this->dttDateEnd && !$this->dttDateStart) return true;
+
+			if ($this->dttDateEnd && $this->dttDateStart) {
+				return (QDateTime::Now()->IsLaterOrEqualTo($this->dttDateStart) && QDateTime::Now()->IsEarlierOrEqualTo($this->dttDateEnd));
+			}
+
+			if ($this->dttDateEnd) return QDateTime::Now()->IsEarlierOrEqualTo($this->dttDateEnd);
+			if ($this->dttDateStart) return QDateTime::Now()->IsLaterOrEqualTo($this->dttDateStart);
 		}
 
 		// Override or Create New Load/Count methods

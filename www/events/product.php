@@ -211,6 +211,13 @@
 		protected function btnSave_Click() {
 			$this->mctProduct->SaveFormProduct();
 			
+			// Fixup Quantity for Donations
+			if ($this->mctProduct->FormProduct->FormPaymentTypeId == FormPaymentType::Donation) {
+				$this->mctProduct->FormProduct->MinimumQuantity = 1;
+				$this->mctProduct->FormProduct->MaximumQuantity = 1;
+				$this->mctProduct->FormProduct->Save();
+			}
+			
 			// Fix up 12AM (no time) issue for end date
 			if ($this->mctProduct->FormProduct->DateEnd &&
 				($this->mctProduct->FormProduct->DateEnd->Hour == 0) &&
