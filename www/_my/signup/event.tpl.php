@@ -8,7 +8,7 @@
 		<?php } ?>
 	</h2>
 
-	<?php if (strlen($strText = trim($this->objSignupForm->Description))) _p('<p style="font-size: 14px;">' . nl2br(QApplication::HtmlEntities($strText), true) . '</p>', false);?>
+	<?php if (strlen($strText = trim($this->objSignupForm->Description))) _p('<div class="section" style="font-size: 14px;">' . nl2br(QApplication::HtmlEntities($strText), true) . '</div>', false);?>
 	Please fill out the following form to sign up for <strong><?php _p($this->objSignupForm->Name); ?></strong><?php _p($this->objEvent->GeneratedDescription); ?>.
 	<?php if ($this->objSignupForm->InformationUrl) _p($this->objSignupForm->InformationLinkHtml, false); ?>
 	(*) Fields in <strong>BOLD</strong> are required.

@@ -8,7 +8,6 @@
 		<?php } ?>
 	</h2>
 
-	<?php if (strlen($strText = trim($this->objSignupForm->Description))) _p('<p style="font-size: 14px;">' . nl2br(QApplication::HtmlEntities($strText), true) . '</p>', false);?>
 	Please fill out the following form to sign up for <strong><?php _p($this->objSignupForm->Name); ?></strong><?php _p($this->objChild->GeneratedDescription); ?>.
 	<?php if ($this->objSignupForm->InformationUrl) _p($this->objSignupForm->InformationLinkHtml, false); ?>
 	(*) Fields in <strong>BOLD</strong> are required.
@@ -18,13 +17,7 @@
 	<div class="section">
 		<?php $this->dtgProducts->Render(); ?>
 	</div>
-
-	<div class="section">
-	</div>
-
-	<div class="buttonBar">
-		<?php $this->btnSubmit->Render(); ?>
-	</div>
-
+	<br/>
+	<?php $this->pnlPayment->Render(); ?>
 	
 <?php require(__INCLUDES__ . '/footer_my.inc.php'); ?>

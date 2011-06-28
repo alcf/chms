@@ -71,6 +71,26 @@
 		}
 
 		/**
+		 * If the form has an "address" field, it will return the address data as an address record
+		 * NOT linked with the database.  This is primarily used for pre-filling credit card data/forms.
+		 * 
+		 * This will return NULL if no address can be retrieved.
+		 * @return Address
+		 */
+		public function RetrieveAnyValidAddressObject() {
+			foreach ($this->SignupForm->GetFormQuestionArray() as $objFormQuestion) {
+				if ($objFormQuestion->FormQuestionTypeId == FormQuestionType::Address) {
+					if ($objFormAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($this->intId, $objFormQuestion->Id)) {
+						$objAddress = Address::DeduceAddressFromFullLine($objFormAnswer->TextValue);
+						if ($objAddress) return $objAddress;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		/**
 		 * Update the Amounts-related calculated fields and returns the current balance
 		 * @param boolean $blnSaveFlag whether or not to save the record after updating
 		 * @return float

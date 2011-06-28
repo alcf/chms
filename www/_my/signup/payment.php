@@ -19,8 +19,11 @@
 		protected $dtgProducts;
 		protected $lstRequiredWithChoice;
 
-		protected $btnSubmit;
-
+		/**
+		 * @var PaymentPanel
+		 */
+		protected $pnlPayment;
+		
 		protected function Form_Create() {
 			// Attempt to load by Token and then by ID
 			$this->objSignupForm = SignupForm::LoadByToken(QApplication::PathInfo(0));
@@ -71,14 +74,6 @@
 			$this->dtgProducts->AddColumn(new QDataGridColumn('Total', '<?= $_FORM->RenderTotal($_ITEM); ?>', 'HtmlEntities=false', 'Width=100px'));
 			$this->dtgProducts->SetDataBinder('dtgProducts_Bind');
 
-			$this->btnSubmit = new QButton($this);
-			$this->btnSubmit->CausesValidation = true;
-			$this->btnSubmit->CssClass = 'primary';
-			$this->btnSubmit->Text = 'Submit Registration';
-			$this->btnSubmit->AddAction(new QClickEvent(), new QConfirmAction('By proceeding, your credit card will be charged for the amount shown.  Are you SURE you wish to proceed?'));
-			$this->btnSubmit->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnSubmit));
-			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
-
 			// Remove All Product Selections
 			$this->objSignupEntry->DeleteAllSignupProducts();
 
@@ -91,6 +86,14 @@
 					}
 				}
 			}
+
+			// Figure out which address to use
+			$objAddress = $this->objSignupEntry->RetrieveAnyValidAddressObject();
+			if (!$objAddress) $objAddress = QApplication::$PublicLogin->Person->DeducePrimaryAddress();
+
+			// Create the Payment Panel
+			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, QApplication::$PublicLogin->Person->Name);
+			$this->pnlPayment->SetButtonText('Submit Payment');
 		}
 
 		public function Form_Validate() {
@@ -99,7 +102,7 @@
 			foreach ($this->GetErrorControls() as $objControl) {
 				$objControl->Blink();
 				if ($blnFirst) {
-					$this->btnSubmit->Enabled = true;
+					$this->pnlPayment->btnSubmit_Reset();
 					$objControl->Focus();
 					$blnFirst = false;
 				}
@@ -340,10 +343,6 @@
 			$objFormProduct = FormProduct::Load($this->lstRequiredWithChoice->SelectedValue);
 			if ($objFormProduct) $this->objSignupEntry->AddProduct($objFormProduct);
 			$this->dtgProducts->Refresh();
-		}
-
-		public function btnSubmit_Click($strFormId, $strControlId, $strParameter) {
-			
 		}
 	}
 

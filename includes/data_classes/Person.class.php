@@ -256,6 +256,32 @@
 		}
 
 		/**
+		 * This will try and figure out the primary address and return it as an object
+		 * (used for things like pre-filling address fields on my.alcf
+		 * @return Address
+		 */
+		public function DeducePrimaryAddress() {
+			$objAddress = null;
+
+			if ($this->MailingAddress) {
+				return $this->MailingAddress;
+			} else {
+				$objHouseholdParticipationArray = $this->GetHouseholdParticipationArray();
+				if (count($objHouseholdParticipationArray) > 1) {
+					return null;
+				} else if (count($objHouseholdParticipationArray) == 1) {
+					$objHouseholdParticipation = $objHouseholdParticipationArray[0];
+					$objAddressArray = Address::LoadArrayByHouseholdIdCurrentFlag($objHouseholdParticipation->HouseholdId, true);
+					foreach ($objAddressArray as $objAddressToTest) {
+						if (!$objAddressToTest->InvalidFlag) $objAddress = $objAddressToTest;
+					}
+				}
+			}
+			
+			return $objAddress;
+		}
+
+		/**
 		 * This single method will refresh all the denormalized PrimaryFooText fields for Address, Phone and City.
 		 * (Note that PrimaryEmailText does not exist -- it simply uses the PrimaryEmail object)
 		 * @param boolean $blnSave
