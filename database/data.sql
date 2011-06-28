@@ -290,8 +290,6 @@ INSERT INTO form_question_type VALUES(11, 'Yes No');
 INSERT INTO form_question_type VALUES(12, 'Single Select');
 INSERT INTO form_question_type VALUES(13, 'Multiple Select');
 
-INSERT INTO signup_form_type VALUES(1, 'Event');
-
 INSERT INTO form_payment_type VALUES(1, 'Pay In Full');
 INSERT INTO form_payment_type VALUES(2, 'Deposit Required');
 INSERT INTO form_payment_type VALUES(3, 'Donation');
@@ -304,6 +302,8 @@ INSERT INTO signup_entry_status_type VALUES(1, 'Incomplete');
 INSERT INTO signup_entry_status_type VALUES(2, 'Complete');
 INSERT INTO signup_entry_status_type VALUES(3, 'Cancelled');
 INSERT INTO signup_entry_status_type VALUES(4, 'Test');
+
+INSERT INTO signup_form_type VALUES(1, 'Event');
 
 INSERT INTO signup_payment_type(id, name) VALUES (1, 'Cash');
 INSERT INTO signup_payment_type(id, name) VALUES (2, 'Check');
@@ -392,8 +392,8 @@ INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',   1, 'Gro
 ####
 
 
-INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, null, true);
-INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, null, true);
-INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null, null, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, null, true, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, null, true, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null, null, true, true);
 
 INSERT INTO login VALUES(null, 3, 65535, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');
