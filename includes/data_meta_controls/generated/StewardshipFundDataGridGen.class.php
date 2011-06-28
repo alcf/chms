@@ -300,6 +300,7 @@
 				case 'AccountNumber': return QQN::StewardshipFund()->AccountNumber;
 				case 'FundNumber': return QQN::StewardshipFund()->FundNumber;
 				case 'ActiveFlag': return QQN::StewardshipFund()->ActiveFlag;
+				case 'ExternalFlag': return QQN::StewardshipFund()->ExternalFlag;
 				default: throw new QCallerException('Simple Property not found in StewardshipFundDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

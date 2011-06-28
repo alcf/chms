@@ -5,6 +5,10 @@
 		QApplicationBase::$ClassFile['attributedatatype'] = __DATA_CLASSES__ . '/AttributeDataType.class.php';
 	// ClassPaths for the CommentPrivacyType type class
 		QApplicationBase::$ClassFile['commentprivacytype'] = __DATA_CLASSES__ . '/CommentPrivacyType.class.php';
+	// ClassPaths for the CreditCardStatusType type class
+		QApplicationBase::$ClassFile['creditcardstatustype'] = __DATA_CLASSES__ . '/CreditCardStatusType.class.php';
+	// ClassPaths for the CreditCardType type class
+		QApplicationBase::$ClassFile['creditcardtype'] = __DATA_CLASSES__ . '/CreditCardType.class.php';
 	// ClassPaths for the EmailBroadcastType type class
 		QApplicationBase::$ClassFile['emailbroadcasttype'] = __DATA_CLASSES__ . '/EmailBroadcastType.class.php';
 	// ClassPaths for the EmailMessageStatusType type class

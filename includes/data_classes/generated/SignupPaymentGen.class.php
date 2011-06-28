@@ -19,9 +19,11 @@
 	 * @property integer $SignupEntryId the value for intSignupEntryId (Not Null)
 	 * @property integer $SignupPaymentTypeId the value for intSignupPaymentTypeId (Not Null)
 	 * @property QDateTime $TransactionDate the value for dttTransactionDate 
-	 * @property string $TransactionCode the value for strTransactionCode 
+	 * @property string $TransactionDescription the value for strTransactionDescription 
 	 * @property double $Amount the value for fltAmount 
+	 * @property integer $CreditCardPaymentId the value for intCreditCardPaymentId (Unique)
 	 * @property SignupEntry $SignupEntry the value for the SignupEntry object referenced by intSignupEntryId (Not Null)
+	 * @property CreditCardPayment $CreditCardPayment the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class SignupPaymentGen extends QBaseClass {
@@ -63,12 +65,12 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column signup_payment.transaction_code
-		 * @var string strTransactionCode
+		 * Protected member variable that maps to the database column signup_payment.transaction_description
+		 * @var string strTransactionDescription
 		 */
-		protected $strTransactionCode;
-		const TransactionCodeMaxLength = 100;
-		const TransactionCodeDefault = null;
+		protected $strTransactionDescription;
+		const TransactionDescriptionMaxLength = 255;
+		const TransactionDescriptionDefault = null;
 
 
 		/**
@@ -77,6 +79,14 @@
 		 */
 		protected $fltAmount;
 		const AmountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_payment.credit_card_payment_id
+		 * @var integer intCreditCardPaymentId
+		 */
+		protected $intCreditCardPaymentId;
+		const CreditCardPaymentIdDefault = null;
 
 
 		/**
@@ -110,6 +120,16 @@
 		 * @var SignupEntry objSignupEntry
 		 */
 		protected $objSignupEntry;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column signup_payment.credit_card_payment_id.
+		 *
+		 * NOTE: Always use the CreditCardPayment property getter to correctly retrieve this CreditCardPayment object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var CreditCardPayment objCreditCardPayment
+		 */
+		protected $objCreditCardPayment;
 
 
 
@@ -425,8 +445,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'signup_entry_id', $strAliasPrefix . 'signup_entry_id');
 			$objBuilder->AddSelectItem($strTableName, 'signup_payment_type_id', $strAliasPrefix . 'signup_payment_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'transaction_date', $strAliasPrefix . 'transaction_date');
-			$objBuilder->AddSelectItem($strTableName, 'transaction_code', $strAliasPrefix . 'transaction_code');
+			$objBuilder->AddSelectItem($strTableName, 'transaction_description', $strAliasPrefix . 'transaction_description');
 			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
+			$objBuilder->AddSelectItem($strTableName, 'credit_card_payment_id', $strAliasPrefix . 'credit_card_payment_id');
 		}
 
 
@@ -466,10 +487,12 @@
 			$objToReturn->intSignupPaymentTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'transaction_date', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'transaction_date'] : $strAliasPrefix . 'transaction_date';
 			$objToReturn->dttTransactionDate = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'transaction_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'transaction_code'] : $strAliasPrefix . 'transaction_code';
-			$objToReturn->strTransactionCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'transaction_description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'transaction_description'] : $strAliasPrefix . 'transaction_description';
+			$objToReturn->strTransactionDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount'] : $strAliasPrefix . 'amount';
 			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_payment_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_payment_id'] : $strAliasPrefix . 'credit_card_payment_id';
+			$objToReturn->intCreditCardPaymentId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -488,6 +511,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objSignupEntry = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signup_entry_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for CreditCardPayment Early Binding
+			$strAlias = $strAliasPrefix . 'credit_card_payment_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objCreditCardPayment = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'credit_card_payment_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -572,6 +601,18 @@
 		public static function LoadById($intId) {
 			return SignupPayment::QuerySingle(
 				QQ::Equal(QQN::SignupPayment()->Id, $intId)
+			);
+		}
+			
+		/**
+		 * Load a single SignupPayment object,
+		 * by CreditCardPaymentId Index(es)
+		 * @param integer $intCreditCardPaymentId
+		 * @return SignupPayment
+		*/
+		public static function LoadByCreditCardPaymentId($intCreditCardPaymentId) {
+			return SignupPayment::QuerySingle(
+				QQ::Equal(QQN::SignupPayment()->CreditCardPaymentId, $intCreditCardPaymentId)
 			);
 		}
 			
@@ -672,14 +713,16 @@
 							`signup_entry_id`,
 							`signup_payment_type_id`,
 							`transaction_date`,
-							`transaction_code`,
-							`amount`
+							`transaction_description`,
+							`amount`,
+							`credit_card_payment_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
 							' . $objDatabase->SqlVariable($this->intSignupPaymentTypeId) . ',
 							' . $objDatabase->SqlVariable($this->dttTransactionDate) . ',
-							' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
-							' . $objDatabase->SqlVariable($this->fltAmount) . '
+							' . $objDatabase->SqlVariable($this->strTransactionDescription) . ',
+							' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						)
 					');
 
@@ -702,8 +745,9 @@
 							`signup_entry_id` = ' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
 							`signup_payment_type_id` = ' . $objDatabase->SqlVariable($this->intSignupPaymentTypeId) . ',
 							`transaction_date` = ' . $objDatabase->SqlVariable($this->dttTransactionDate) . ',
-							`transaction_code` = ' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
-							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . '
+							`transaction_description` = ' . $objDatabase->SqlVariable($this->strTransactionDescription) . ',
+							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -791,8 +835,9 @@
 			$this->SignupEntryId = $objReloaded->SignupEntryId;
 			$this->SignupPaymentTypeId = $objReloaded->SignupPaymentTypeId;
 			$this->dttTransactionDate = $objReloaded->dttTransactionDate;
-			$this->strTransactionCode = $objReloaded->strTransactionCode;
+			$this->strTransactionDescription = $objReloaded->strTransactionDescription;
 			$this->fltAmount = $objReloaded->fltAmount;
+			$this->CreditCardPaymentId = $objReloaded->CreditCardPaymentId;
 		}
 
 		/**
@@ -809,8 +854,9 @@
 					`signup_entry_id`,
 					`signup_payment_type_id`,
 					`transaction_date`,
-					`transaction_code`,
+					`transaction_description`,
 					`amount`,
+					`credit_card_payment_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -819,8 +865,9 @@
 					' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
 					' . $objDatabase->SqlVariable($this->intSignupPaymentTypeId) . ',
 					' . $objDatabase->SqlVariable($this->dttTransactionDate) . ',
-					' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
+					' . $objDatabase->SqlVariable($this->strTransactionDescription) . ',
 					' . $objDatabase->SqlVariable($this->fltAmount) . ',
+					' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -891,15 +938,20 @@
 					// @return QDateTime
 					return $this->dttTransactionDate;
 
-				case 'TransactionCode':
-					// Gets the value for strTransactionCode 
+				case 'TransactionDescription':
+					// Gets the value for strTransactionDescription 
 					// @return string
-					return $this->strTransactionCode;
+					return $this->strTransactionDescription;
 
 				case 'Amount':
 					// Gets the value for fltAmount 
 					// @return double
 					return $this->fltAmount;
+
+				case 'CreditCardPaymentId':
+					// Gets the value for intCreditCardPaymentId (Unique)
+					// @return integer
+					return $this->intCreditCardPaymentId;
 
 
 				///////////////////
@@ -912,6 +964,18 @@
 						if ((!$this->objSignupEntry) && (!is_null($this->intSignupEntryId)))
 							$this->objSignupEntry = SignupEntry::Load($this->intSignupEntryId);
 						return $this->objSignupEntry;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CreditCardPayment':
+					// Gets the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
+					// @return CreditCardPayment
+					try {
+						if ((!$this->objCreditCardPayment) && (!is_null($this->intCreditCardPaymentId)))
+							$this->objCreditCardPayment = CreditCardPayment::Load($this->intCreditCardPaymentId);
+						return $this->objCreditCardPayment;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -984,12 +1048,12 @@
 						throw $objExc;
 					}
 
-				case 'TransactionCode':
-					// Sets the value for strTransactionCode 
+				case 'TransactionDescription':
+					// Sets the value for strTransactionDescription 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strTransactionCode = QType::Cast($mixValue, QType::String));
+						return ($this->strTransactionDescription = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1001,6 +1065,18 @@
 					// @return double
 					try {
 						return ($this->fltAmount = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CreditCardPaymentId':
+					// Sets the value for intCreditCardPaymentId (Unique)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objCreditCardPayment = null;
+						return ($this->intCreditCardPaymentId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1034,6 +1110,36 @@
 						// Update Local Member Variables
 						$this->objSignupEntry = $mixValue;
 						$this->intSignupEntryId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'CreditCardPayment':
+					// Sets the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
+					// @param CreditCardPayment $mixValue
+					// @return CreditCardPayment
+					if (is_null($mixValue)) {
+						$this->intCreditCardPaymentId = null;
+						$this->objCreditCardPayment = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a CreditCardPayment object
+						try {
+							$mixValue = QType::Cast($mixValue, 'CreditCardPayment');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED CreditCardPayment object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved CreditCardPayment for this SignupPayment');
+
+						// Update Local Member Variables
+						$this->objCreditCardPayment = $mixValue;
+						$this->intCreditCardPaymentId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1081,8 +1187,9 @@
 			$strToReturn .= '<element name="SignupEntry" type="xsd1:SignupEntry"/>';
 			$strToReturn .= '<element name="SignupPaymentTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="TransactionDate" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="TransactionCode" type="xsd:string"/>';
+			$strToReturn .= '<element name="TransactionDescription" type="xsd:string"/>';
 			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
+			$strToReturn .= '<element name="CreditCardPayment" type="xsd1:CreditCardPayment"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1092,6 +1199,7 @@
 			if (!array_key_exists('SignupPayment', $strComplexTypeArray)) {
 				$strComplexTypeArray['SignupPayment'] = SignupPayment::GetSoapComplexTypeXml();
 				SignupEntry::AlterSoapComplexTypeArray($strComplexTypeArray);
+				CreditCardPayment::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1115,10 +1223,13 @@
 				$objToReturn->intSignupPaymentTypeId = $objSoapObject->SignupPaymentTypeId;
 			if (property_exists($objSoapObject, 'TransactionDate'))
 				$objToReturn->dttTransactionDate = new QDateTime($objSoapObject->TransactionDate);
-			if (property_exists($objSoapObject, 'TransactionCode'))
-				$objToReturn->strTransactionCode = $objSoapObject->TransactionCode;
+			if (property_exists($objSoapObject, 'TransactionDescription'))
+				$objToReturn->strTransactionDescription = $objSoapObject->TransactionDescription;
 			if (property_exists($objSoapObject, 'Amount'))
 				$objToReturn->fltAmount = $objSoapObject->Amount;
+			if ((property_exists($objSoapObject, 'CreditCardPayment')) &&
+				($objSoapObject->CreditCardPayment))
+				$objToReturn->CreditCardPayment = CreditCardPayment::GetObjectFromSoapObject($objSoapObject->CreditCardPayment);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1143,6 +1254,10 @@
 				$objObject->intSignupEntryId = null;
 			if ($objObject->dttTransactionDate)
 				$objObject->dttTransactionDate = $objObject->dttTransactionDate->__toString(QDateTime::FormatSoap);
+			if ($objObject->objCreditCardPayment)
+				$objObject->objCreditCardPayment = CreditCardPayment::GetSoapObjectFromObject($objObject->objCreditCardPayment, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intCreditCardPaymentId = null;
 			return $objObject;
 		}
 
@@ -1163,8 +1278,10 @@
 	 * @property-read QQNodeSignupEntry $SignupEntry
 	 * @property-read QQNode $SignupPaymentTypeId
 	 * @property-read QQNode $TransactionDate
-	 * @property-read QQNode $TransactionCode
+	 * @property-read QQNode $TransactionDescription
 	 * @property-read QQNode $Amount
+	 * @property-read QQNode $CreditCardPaymentId
+	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
 	 */
 	class QQNodeSignupPayment extends QQNode {
 		protected $strTableName = 'signup_payment';
@@ -1182,10 +1299,14 @@
 					return new QQNode('signup_payment_type_id', 'SignupPaymentTypeId', 'integer', $this);
 				case 'TransactionDate':
 					return new QQNode('transaction_date', 'TransactionDate', 'QDateTime', $this);
-				case 'TransactionCode':
-					return new QQNode('transaction_code', 'TransactionCode', 'string', $this);
+				case 'TransactionDescription':
+					return new QQNode('transaction_description', 'TransactionDescription', 'string', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'CreditCardPaymentId':
+					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
+				case 'CreditCardPayment':
+					return new QQNodeCreditCardPayment('credit_card_payment_id', 'CreditCardPayment', 'integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1206,8 +1327,10 @@
 	 * @property-read QQNodeSignupEntry $SignupEntry
 	 * @property-read QQNode $SignupPaymentTypeId
 	 * @property-read QQNode $TransactionDate
-	 * @property-read QQNode $TransactionCode
+	 * @property-read QQNode $TransactionDescription
 	 * @property-read QQNode $Amount
+	 * @property-read QQNode $CreditCardPaymentId
+	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeSignupPayment extends QQReverseReferenceNode {
@@ -1226,10 +1349,14 @@
 					return new QQNode('signup_payment_type_id', 'SignupPaymentTypeId', 'integer', $this);
 				case 'TransactionDate':
 					return new QQNode('transaction_date', 'TransactionDate', 'QDateTime', $this);
-				case 'TransactionCode':
-					return new QQNode('transaction_code', 'TransactionCode', 'string', $this);
+				case 'TransactionDescription':
+					return new QQNode('transaction_description', 'TransactionDescription', 'string', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'CreditCardPaymentId':
+					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
+				case 'CreditCardPayment':
+					return new QQNodeCreditCardPayment('credit_card_payment_id', 'CreditCardPayment', 'integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

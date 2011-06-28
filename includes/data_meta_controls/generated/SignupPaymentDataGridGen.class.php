@@ -298,8 +298,10 @@
 				case 'SignupEntry': return QQN::SignupPayment()->SignupEntry;
 				case 'SignupPaymentTypeId': return QQN::SignupPayment()->SignupPaymentTypeId;
 				case 'TransactionDate': return QQN::SignupPayment()->TransactionDate;
-				case 'TransactionCode': return QQN::SignupPayment()->TransactionCode;
+				case 'TransactionDescription': return QQN::SignupPayment()->TransactionDescription;
 				case 'Amount': return QQN::SignupPayment()->Amount;
+				case 'CreditCardPaymentId': return QQN::SignupPayment()->CreditCardPaymentId;
+				case 'CreditCardPayment': return QQN::SignupPayment()->CreditCardPayment;
 				default: throw new QCallerException('Simple Property not found in SignupPaymentDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

@@ -262,7 +262,19 @@ INSERT INTO stewardship_batch_status_type VALUES(1, 'New Batch');
 INSERT INTO stewardship_batch_status_type VALUES(2, 'Posted In Full');
 INSERT INTO stewardship_batch_status_type VALUES(3, 'Unposted Changes Exist');
 
+#######################
+# Added for Version 003
+#######################
 
+INSERT INTO credit_card_type VALUES(1, 'American Express');
+INSERT INTO credit_card_type VALUES(2, 'Discover');
+INSERT INTO credit_card_type VALUES(3, 'Mastercard');
+INSERT INTO credit_card_type VALUES(4, 'Visa');
+
+INSERT INTO credit_card_status_type VALUES(1, 'Authorized');
+INSERT INTO credit_card_status_type VALUES(2, 'Captured');
+INSERT INTO credit_card_status_type VALUES(3, 'Reconciled');
+INSERT INTO credit_card_status_type VALUES(4, 'Charged Back');
 
 INSERT INTO form_question_type VALUES(1, 'Spouse Name');
 INSERT INTO form_question_type VALUES(2, 'Address');
@@ -289,8 +301,9 @@ INSERT INTO form_product_type VALUES(2, 'Required With Choice');
 INSERT INTO form_product_type VALUES(3, 'Optional');
 
 INSERT INTO signup_entry_status_type VALUES(1, 'Incomplete');
-INSERT INTO signup_entry_status_type VALUES(2, 'Test');
-INSERT INTO signup_entry_status_type VALUES(3, 'Complete');
+INSERT INTO signup_entry_status_type VALUES(2, 'Complete');
+INSERT INTO signup_entry_status_type VALUES(3, 'Cancelled');
+INSERT INTO signup_entry_status_type VALUES(4, 'Test');
 
 INSERT INTO signup_payment_type(id, name) VALUES (1, 'Cash');
 INSERT INTO signup_payment_type(id, name) VALUES (2, 'Check');

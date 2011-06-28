@@ -24,10 +24,12 @@
 	 * property-read QLabel $SignupPaymentTypeIdLabel
 	 * property QDateTimePicker $TransactionDateControl
 	 * property-read QLabel $TransactionDateLabel
-	 * property QTextBox $TransactionCodeControl
-	 * property-read QLabel $TransactionCodeLabel
+	 * property QTextBox $TransactionDescriptionControl
+	 * property-read QLabel $TransactionDescriptionLabel
 	 * property QFloatTextBox $AmountControl
 	 * property-read QLabel $AmountLabel
+	 * property QListBox $CreditCardPaymentIdControl
+	 * property-read QLabel $CreditCardPaymentIdLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -84,16 +86,22 @@
 		protected $calTransactionDate;
 
         /**
-         * @var QTextBox txtTransactionCode;
+         * @var QTextBox txtTransactionDescription;
          * @access protected
          */
-		protected $txtTransactionCode;
+		protected $txtTransactionDescription;
 
         /**
          * @var QFloatTextBox txtAmount;
          * @access protected
          */
 		protected $txtAmount;
+
+        /**
+         * @var QListBox lstCreditCardPayment;
+         * @access protected
+         */
+		protected $lstCreditCardPayment;
 
 
 		// Controls that allow the viewing of SignupPayment's individual data fields
@@ -116,16 +124,22 @@
 		protected $lblTransactionDate;
 
         /**
-         * @var QLabel lblTransactionCode
+         * @var QLabel lblTransactionDescription
          * @access protected
          */
-		protected $lblTransactionCode;
+		protected $lblTransactionDescription;
 
         /**
          * @var QLabel lblAmount
          * @access protected
          */
 		protected $lblAmount;
+
+        /**
+         * @var QLabel lblCreditCardPaymentId
+         * @access protected
+         */
+		protected $lblCreditCardPaymentId;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -340,28 +354,28 @@
 		protected $strTransactionDateDateTimeFormat;
 
 		/**
-		 * Create and setup QTextBox txtTransactionCode
+		 * Create and setup QTextBox txtTransactionDescription
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtTransactionCode_Create($strControlId = null) {
-			$this->txtTransactionCode = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtTransactionCode->Name = QApplication::Translate('Transaction Code');
-			$this->txtTransactionCode->Text = $this->objSignupPayment->TransactionCode;
-			$this->txtTransactionCode->MaxLength = SignupPayment::TransactionCodeMaxLength;
-			return $this->txtTransactionCode;
+		public function txtTransactionDescription_Create($strControlId = null) {
+			$this->txtTransactionDescription = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtTransactionDescription->Name = QApplication::Translate('Transaction Description');
+			$this->txtTransactionDescription->Text = $this->objSignupPayment->TransactionDescription;
+			$this->txtTransactionDescription->MaxLength = SignupPayment::TransactionDescriptionMaxLength;
+			return $this->txtTransactionDescription;
 		}
 
 		/**
-		 * Create and setup QLabel lblTransactionCode
+		 * Create and setup QLabel lblTransactionDescription
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblTransactionCode_Create($strControlId = null) {
-			$this->lblTransactionCode = new QLabel($this->objParentObject, $strControlId);
-			$this->lblTransactionCode->Name = QApplication::Translate('Transaction Code');
-			$this->lblTransactionCode->Text = $this->objSignupPayment->TransactionCode;
-			return $this->lblTransactionCode;
+		public function lblTransactionDescription_Create($strControlId = null) {
+			$this->lblTransactionDescription = new QLabel($this->objParentObject, $strControlId);
+			$this->lblTransactionDescription->Name = QApplication::Translate('Transaction Description');
+			$this->lblTransactionDescription->Text = $this->objSignupPayment->TransactionDescription;
+			return $this->lblTransactionDescription;
 		}
 
 		/**
@@ -388,6 +402,46 @@
 			$this->lblAmount->Text = $this->objSignupPayment->Amount;
 			$this->lblAmount->Format = $strFormat;
 			return $this->lblAmount;
+		}
+
+		/**
+		 * Create and setup QListBox lstCreditCardPayment
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstCreditCardPayment_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCreditCardPayment = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCreditCardPayment->Name = QApplication::Translate('Credit Card Payment');
+			$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCreditCardPaymentCursor = CreditCardPayment::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCreditCardPayment = CreditCardPayment::InstantiateCursor($objCreditCardPaymentCursor)) {
+				$objListItem = new QListItem($objCreditCardPayment->__toString(), $objCreditCardPayment->Id);
+				if (($this->objSignupPayment->CreditCardPayment) && ($this->objSignupPayment->CreditCardPayment->Id == $objCreditCardPayment->Id))
+					$objListItem->Selected = true;
+				$this->lstCreditCardPayment->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstCreditCardPayment;
+		}
+
+		/**
+		 * Create and setup QLabel lblCreditCardPaymentId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCreditCardPaymentId_Create($strControlId = null) {
+			$this->lblCreditCardPaymentId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCreditCardPaymentId->Name = QApplication::Translate('Credit Card Payment');
+			$this->lblCreditCardPaymentId->Text = ($this->objSignupPayment->CreditCardPayment) ? $this->objSignupPayment->CreditCardPayment->__toString() : null;
+			return $this->lblCreditCardPaymentId;
 		}
 
 
@@ -423,11 +477,24 @@
 			if ($this->calTransactionDate) $this->calTransactionDate->DateTime = $this->objSignupPayment->TransactionDate;
 			if ($this->lblTransactionDate) $this->lblTransactionDate->Text = sprintf($this->objSignupPayment->TransactionDate) ? $this->objSignupPayment->__toString($this->strTransactionDateDateTimeFormat) : null;
 
-			if ($this->txtTransactionCode) $this->txtTransactionCode->Text = $this->objSignupPayment->TransactionCode;
-			if ($this->lblTransactionCode) $this->lblTransactionCode->Text = $this->objSignupPayment->TransactionCode;
+			if ($this->txtTransactionDescription) $this->txtTransactionDescription->Text = $this->objSignupPayment->TransactionDescription;
+			if ($this->lblTransactionDescription) $this->lblTransactionDescription->Text = $this->objSignupPayment->TransactionDescription;
 
 			if ($this->txtAmount) $this->txtAmount->Text = $this->objSignupPayment->Amount;
 			if ($this->lblAmount) $this->lblAmount->Text = $this->objSignupPayment->Amount;
+
+			if ($this->lstCreditCardPayment) {
+					$this->lstCreditCardPayment->RemoveAllItems();
+				$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCreditCardPaymentArray = CreditCardPayment::LoadAll();
+				if ($objCreditCardPaymentArray) foreach ($objCreditCardPaymentArray as $objCreditCardPayment) {
+					$objListItem = new QListItem($objCreditCardPayment->__toString(), $objCreditCardPayment->Id);
+					if (($this->objSignupPayment->CreditCardPayment) && ($this->objSignupPayment->CreditCardPayment->Id == $objCreditCardPayment->Id))
+						$objListItem->Selected = true;
+					$this->lstCreditCardPayment->AddItem($objListItem);
+				}
+			}
+			if ($this->lblCreditCardPaymentId) $this->lblCreditCardPaymentId->Text = ($this->objSignupPayment->CreditCardPayment) ? $this->objSignupPayment->CreditCardPayment->__toString() : null;
 
 		}
 
@@ -455,8 +522,9 @@
 				if ($this->lstSignupEntry) $this->objSignupPayment->SignupEntryId = $this->lstSignupEntry->SelectedValue;
 				if ($this->lstSignupPaymentType) $this->objSignupPayment->SignupPaymentTypeId = $this->lstSignupPaymentType->SelectedValue;
 				if ($this->calTransactionDate) $this->objSignupPayment->TransactionDate = $this->calTransactionDate->DateTime;
-				if ($this->txtTransactionCode) $this->objSignupPayment->TransactionCode = $this->txtTransactionCode->Text;
+				if ($this->txtTransactionDescription) $this->objSignupPayment->TransactionDescription = $this->txtTransactionDescription->Text;
 				if ($this->txtAmount) $this->objSignupPayment->Amount = $this->txtAmount->Text;
+				if ($this->lstCreditCardPayment) $this->objSignupPayment->CreditCardPaymentId = $this->lstCreditCardPayment->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -523,18 +591,24 @@
 				case 'TransactionDateLabel':
 					if (!$this->lblTransactionDate) return $this->lblTransactionDate_Create();
 					return $this->lblTransactionDate;
-				case 'TransactionCodeControl':
-					if (!$this->txtTransactionCode) return $this->txtTransactionCode_Create();
-					return $this->txtTransactionCode;
-				case 'TransactionCodeLabel':
-					if (!$this->lblTransactionCode) return $this->lblTransactionCode_Create();
-					return $this->lblTransactionCode;
+				case 'TransactionDescriptionControl':
+					if (!$this->txtTransactionDescription) return $this->txtTransactionDescription_Create();
+					return $this->txtTransactionDescription;
+				case 'TransactionDescriptionLabel':
+					if (!$this->lblTransactionDescription) return $this->lblTransactionDescription_Create();
+					return $this->lblTransactionDescription;
 				case 'AmountControl':
 					if (!$this->txtAmount) return $this->txtAmount_Create();
 					return $this->txtAmount;
 				case 'AmountLabel':
 					if (!$this->lblAmount) return $this->lblAmount_Create();
 					return $this->lblAmount;
+				case 'CreditCardPaymentIdControl':
+					if (!$this->lstCreditCardPayment) return $this->lstCreditCardPayment_Create();
+					return $this->lstCreditCardPayment;
+				case 'CreditCardPaymentIdLabel':
+					if (!$this->lblCreditCardPaymentId) return $this->lblCreditCardPaymentId_Create();
+					return $this->lblCreditCardPaymentId;
 				default:
 					try {
 						return parent::__get($strName);
@@ -565,10 +639,12 @@
 						return ($this->lstSignupPaymentType = QType::Cast($mixValue, 'QControl'));
 					case 'TransactionDateControl':
 						return ($this->calTransactionDate = QType::Cast($mixValue, 'QControl'));
-					case 'TransactionCodeControl':
-						return ($this->txtTransactionCode = QType::Cast($mixValue, 'QControl'));
+					case 'TransactionDescriptionControl':
+						return ($this->txtTransactionDescription = QType::Cast($mixValue, 'QControl'));
 					case 'AmountControl':
 						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
+					case 'CreditCardPaymentIdControl':
+						return ($this->lstCreditCardPayment = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

@@ -65,6 +65,8 @@
 	 * @property AttributeValue[] $_AttributeValueArray the value for the private _objAttributeValueArray (Read-Only) if set due to an ExpandAsArray on the attribute_value.person_id reverse relationship
 	 * @property Comment $_Comment the value for the private _objComment (Read-Only) if set due to an expansion on the comment.person_id reverse relationship
 	 * @property Comment[] $_CommentArray the value for the private _objCommentArray (Read-Only) if set due to an ExpandAsArray on the comment.person_id reverse relationship
+	 * @property CreditCardPayment $_CreditCardPayment the value for the private _objCreditCardPayment (Read-Only) if set due to an expansion on the credit_card_payment.person_id reverse relationship
+	 * @property CreditCardPayment[] $_CreditCardPaymentArray the value for the private _objCreditCardPaymentArray (Read-Only) if set due to an ExpandAsArray on the credit_card_payment.person_id reverse relationship
 	 * @property Email $_Email the value for the private _objEmail (Read-Only) if set due to an expansion on the email.person_id reverse relationship
 	 * @property Email[] $_EmailArray the value for the private _objEmailArray (Read-Only) if set due to an ExpandAsArray on the email.person_id reverse relationship
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.person_id reverse relationship
@@ -466,6 +468,22 @@
 		 * @var Comment[] _objCommentArray;
 		 */
 		private $_objCommentArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single CreditCardPayment object
+		 * (of type CreditCardPayment), if this Person object was restored with
+		 * an expansion on the credit_card_payment association table.
+		 * @var CreditCardPayment _objCreditCardPayment;
+		 */
+		private $_objCreditCardPayment;
+
+		/**
+		 * Private member variable that stores a reference to an array of CreditCardPayment objects
+		 * (of type CreditCardPayment[]), if this Person object was restored with
+		 * an ExpandAsArray on the credit_card_payment association table.
+		 * @var CreditCardPayment[] _objCreditCardPaymentArray;
+		 */
+		private $_objCreditCardPaymentArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single Email object
@@ -1326,6 +1344,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'creditcardpayment__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objCreditCardPaymentArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objCreditCardPaymentArray[$intPreviousChildItemCount - 1];
+						$objChildItem = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objCreditCardPaymentArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objCreditCardPaymentArray[] = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'email__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1779,6 +1811,16 @@
 					$objToReturn->_objCommentArray[] = Comment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'comment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objComment = Comment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'comment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for CreditCardPayment Virtual Binding
+			$strAlias = $strAliasPrefix . 'creditcardpayment__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objCreditCardPaymentArray[] = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objCreditCardPayment = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for Email Virtual Binding
@@ -3093,6 +3135,18 @@
 					// if set due to an ExpandAsArray on the comment.person_id reverse relationship
 					// @return Comment[]
 					return (array) $this->_objCommentArray;
+
+				case '_CreditCardPayment':
+					// Gets the value for the private _objCreditCardPayment (Read-Only)
+					// if set due to an expansion on the credit_card_payment.person_id reverse relationship
+					// @return CreditCardPayment
+					return $this->_objCreditCardPayment;
+
+				case '_CreditCardPaymentArray':
+					// Gets the value for the private _objCreditCardPaymentArray (Read-Only)
+					// if set due to an ExpandAsArray on the credit_card_payment.person_id reverse relationship
+					// @return CreditCardPayment[]
+					return (array) $this->_objCreditCardPaymentArray;
 
 				case '_Email':
 					// Gets the value for the private _objEmail (Read-Only)
@@ -4468,6 +4522,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`comment`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for CreditCardPayment
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated CreditCardPayments as an array of CreditCardPayment objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return CreditCardPayment[]
+		*/ 
+		public function GetCreditCardPaymentArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return CreditCardPayment::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated CreditCardPayments
+		 * @return int
+		*/ 
+		public function CountCreditCardPayments() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return CreditCardPayment::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a CreditCardPayment
+		 * @param CreditCardPayment $objCreditCardPayment
+		 * @return void
+		*/ 
+		public function AssociateCreditCardPayment(CreditCardPayment $objCreditCardPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCreditCardPayment on this unsaved Person.');
+			if ((is_null($objCreditCardPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCreditCardPayment on this Person with an unsaved CreditCardPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`credit_card_payment`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objCreditCardPayment->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objCreditCardPayment->PersonId = $this->intId;
+				$objCreditCardPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a CreditCardPayment
+		 * @param CreditCardPayment $objCreditCardPayment
+		 * @return void
+		*/ 
+		public function UnassociateCreditCardPayment(CreditCardPayment $objCreditCardPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
+			if ((is_null($objCreditCardPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this Person with an unsaved CreditCardPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`credit_card_payment`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objCreditCardPayment->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objCreditCardPayment->PersonId = null;
+				$objCreditCardPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all CreditCardPayments
+		 * @return void
+		*/ 
+		public function UnassociateAllCreditCardPayments() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (CreditCardPayment::LoadArrayByPersonId($this->intId) as $objCreditCardPayment) {
+					$objCreditCardPayment->PersonId = null;
+					$objCreditCardPayment->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`credit_card_payment`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated CreditCardPayment
+		 * @param CreditCardPayment $objCreditCardPayment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedCreditCardPayment(CreditCardPayment $objCreditCardPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
+			if ((is_null($objCreditCardPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this Person with an unsaved CreditCardPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`credit_card_payment`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objCreditCardPayment->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objCreditCardPayment->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated CreditCardPayments
+		 * @return void
+		*/ 
+		public function DeleteAllCreditCardPayments() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (CreditCardPayment::LoadArrayByPersonId($this->intId) as $objCreditCardPayment) {
+					$objCreditCardPayment->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`credit_card_payment`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -8628,6 +8864,7 @@
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
 	 * @property-read QQReverseReferenceNodeComment $Comment
+	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
@@ -8739,6 +8976,8 @@
 					return new QQReverseReferenceNodeAttributeValue($this, 'attributevalue', 'reverse_reference', 'person_id');
 				case 'Comment':
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
+				case 'CreditCardPayment':
+					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
 				case 'EmailMessageRoute':
@@ -8836,6 +9075,7 @@
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
 	 * @property-read QQReverseReferenceNodeComment $Comment
+	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
@@ -8948,6 +9188,8 @@
 					return new QQReverseReferenceNodeAttributeValue($this, 'attributevalue', 'reverse_reference', 'person_id');
 				case 'Comment':
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
+				case 'CreditCardPayment':
+					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
 				case 'EmailMessageRoute':

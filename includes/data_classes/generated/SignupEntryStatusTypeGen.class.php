@@ -19,26 +19,30 @@
 	 */
 	abstract class SignupEntryStatusTypeGen extends QBaseClass {
 		const Incomplete = 1;
-		const Test = 2;
-		const Complete = 3;
+		const Complete = 2;
+		const Cancelled = 3;
+		const Test = 4;
 
-		const MaxId = 3;
+		const MaxId = 4;
 
 		public static $NameArray = array(
 			1 => 'Incomplete',
-			2 => 'Test',
-			3 => 'Complete');
+			2 => 'Complete',
+			3 => 'Cancelled',
+			4 => 'Test');
 
 		public static $TokenArray = array(
 			1 => 'Incomplete',
-			2 => 'Test',
-			3 => 'Complete');
+			2 => 'Complete',
+			3 => 'Cancelled',
+			4 => 'Test');
 
 		public static function ToString($intSignupEntryStatusTypeId) {
 			switch ($intSignupEntryStatusTypeId) {
 				case 1: return 'Incomplete';
-				case 2: return 'Test';
-				case 3: return 'Complete';
+				case 2: return 'Complete';
+				case 3: return 'Cancelled';
+				case 4: return 'Test';
 				default:
 					throw new QCallerException(sprintf('Invalid intSignupEntryStatusTypeId: %s', $intSignupEntryStatusTypeId));
 			}
@@ -47,8 +51,9 @@
 		public static function ToToken($intSignupEntryStatusTypeId) {
 			switch ($intSignupEntryStatusTypeId) {
 				case 1: return 'Incomplete';
-				case 2: return 'Test';
-				case 3: return 'Complete';
+				case 2: return 'Complete';
+				case 3: return 'Cancelled';
+				case 4: return 'Test';
 				default:
 					throw new QCallerException(sprintf('Invalid intSignupEntryStatusTypeId: %s', $intSignupEntryStatusTypeId));
 			}

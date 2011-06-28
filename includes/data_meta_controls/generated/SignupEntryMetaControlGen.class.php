@@ -406,7 +406,9 @@
 		public function lstSignupByPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstSignupByPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSignupByPerson->Name = QApplication::Translate('Signup By Person');
-			$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstSignupByPerson->Required = true;
+			if (!$this->blnEditMode)
+				$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -433,6 +435,7 @@
 			$this->lblSignupByPersonId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblSignupByPersonId->Name = QApplication::Translate('Signup By Person');
 			$this->lblSignupByPersonId->Text = ($this->objSignupEntry->SignupByPerson) ? $this->objSignupEntry->SignupByPerson->__toString() : null;
+			$this->lblSignupByPersonId->Required = true;
 			return $this->lblSignupByPersonId;
 		}
 
@@ -669,7 +672,8 @@
 
 			if ($this->lstSignupByPerson) {
 					$this->lstSignupByPerson->RemoveAllItems();
-				$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				if (!$this->blnEditMode)
+					$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
 				$objSignupByPersonArray = Person::LoadAll();
 				if ($objSignupByPersonArray) foreach ($objSignupByPersonArray as $objSignupByPerson) {
 					$objListItem = new QListItem($objSignupByPerson->__toString(), $objSignupByPerson->Id);

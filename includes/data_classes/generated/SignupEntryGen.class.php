@@ -18,7 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $SignupFormId the value for intSignupFormId (Not Null)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
-	 * @property integer $SignupByPersonId the value for intSignupByPersonId 
+	 * @property integer $SignupByPersonId the value for intSignupByPersonId (Not Null)
 	 * @property integer $SignupEntryStatusTypeId the value for intSignupEntryStatusTypeId (Not Null)
 	 * @property QDateTime $DateCreated the value for dttDateCreated (Not Null)
 	 * @property QDateTime $DateSubmitted the value for dttDateSubmitted 
@@ -28,7 +28,7 @@
 	 * @property string $InternalNotes the value for strInternalNotes 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
-	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId 
+	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId (Not Null)
 	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.signup_entry_id reverse relationship
 	 * @property FormAnswer[] $_FormAnswerArray the value for the private _objFormAnswerArray (Read-Only) if set due to an ExpandAsArray on the form_answer.signup_entry_id reverse relationship
 	 * @property SignupPayment $_SignupPayment the value for the private _objSignupPayment (Read-Only) if set due to an expansion on the signup_payment.signup_entry_id reverse relationship
@@ -1302,7 +1302,7 @@
 					return $this->intPersonId;
 
 				case 'SignupByPersonId':
-					// Gets the value for intSignupByPersonId 
+					// Gets the value for intSignupByPersonId (Not Null)
 					// @return integer
 					return $this->intSignupByPersonId;
 
@@ -1370,7 +1370,7 @@
 					}
 
 				case 'SignupByPerson':
-					// Gets the value for the Person object referenced by intSignupByPersonId 
+					// Gets the value for the Person object referenced by intSignupByPersonId (Not Null)
 					// @return Person
 					try {
 						if ((!$this->objSignupByPerson) && (!is_null($this->intSignupByPersonId)))
@@ -1475,7 +1475,7 @@
 					}
 
 				case 'SignupByPersonId':
-					// Sets the value for intSignupByPersonId 
+					// Sets the value for intSignupByPersonId (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
@@ -1628,7 +1628,7 @@
 					break;
 
 				case 'SignupByPerson':
-					// Sets the value for the Person object referenced by intSignupByPersonId 
+					// Sets the value for the Person object referenced by intSignupByPersonId (Not Null)
 					// @param Person $mixValue
 					// @return Person
 					if (is_null($mixValue)) {

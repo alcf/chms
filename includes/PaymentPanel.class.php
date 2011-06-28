@@ -18,6 +18,12 @@
 		public $lstState;
 		public $txtZipCode;
 
+		public $lstCcType;
+		public $txtCcNumber;
+		public $lstCcExpMonth;
+		public $lstCcExpYear;
+		public $txtCcCsc;
+
 		public $btnSubmit;
 
 		public function __construct($objParentObject, $strControlId = null, Address $objAddress = null, $strName = null) {

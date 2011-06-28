@@ -13,7 +13,7 @@
 		 * @var SignupEntry
 		 */
 		protected $objSignupEntry;
-		
+
 		protected $objChild;
 
 		protected $dtgProducts;

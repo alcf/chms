@@ -69,6 +69,13 @@
 		QApplicationBase::$ClassFile['countrymetacontrol'] = __DATA_META_CONTROLS__ . '/CountryMetaControl.class.php';
 		QApplicationBase::$ClassFile['countrydatagrid'] = __DATA_META_CONTROLS__ . '/CountryDataGrid.class.php';
 
+	// ClassPaths for the CreditCardPayment class
+		QApplicationBase::$ClassFile['creditcardpayment'] = __DATA_CLASSES__ . '/CreditCardPayment.class.php';
+		QApplicationBase::$ClassFile['qqnodecreditcardpayment'] = __DATA_CLASSES__ . '/CreditCardPayment.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodecreditcardpayment'] = __DATA_CLASSES__ . '/CreditCardPayment.class.php';
+		QApplicationBase::$ClassFile['creditcardpaymentmetacontrol'] = __DATA_META_CONTROLS__ . '/CreditCardPaymentMetaControl.class.php';
+		QApplicationBase::$ClassFile['creditcardpaymentdatagrid'] = __DATA_META_CONTROLS__ . '/CreditCardPaymentDataGrid.class.php';
+
 	// ClassPaths for the Email class
 		QApplicationBase::$ClassFile['email'] = __DATA_CLASSES__ . '/Email.class.php';
 		QApplicationBase::$ClassFile['qqnodeemail'] = __DATA_CLASSES__ . '/Email.class.php';
@@ -244,6 +251,20 @@
 		QApplicationBase::$ClassFile['nameitemmetacontrol'] = __DATA_META_CONTROLS__ . '/NameItemMetaControl.class.php';
 		QApplicationBase::$ClassFile['nameitemdatagrid'] = __DATA_META_CONTROLS__ . '/NameItemDataGrid.class.php';
 
+	// ClassPaths for the OnlineDonation class
+		QApplicationBase::$ClassFile['onlinedonation'] = __DATA_CLASSES__ . '/OnlineDonation.class.php';
+		QApplicationBase::$ClassFile['qqnodeonlinedonation'] = __DATA_CLASSES__ . '/OnlineDonation.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeonlinedonation'] = __DATA_CLASSES__ . '/OnlineDonation.class.php';
+		QApplicationBase::$ClassFile['onlinedonationmetacontrol'] = __DATA_META_CONTROLS__ . '/OnlineDonationMetaControl.class.php';
+		QApplicationBase::$ClassFile['onlinedonationdatagrid'] = __DATA_META_CONTROLS__ . '/OnlineDonationDataGrid.class.php';
+
+	// ClassPaths for the OnlineDonationLineItem class
+		QApplicationBase::$ClassFile['onlinedonationlineitem'] = __DATA_CLASSES__ . '/OnlineDonationLineItem.class.php';
+		QApplicationBase::$ClassFile['qqnodeonlinedonationlineitem'] = __DATA_CLASSES__ . '/OnlineDonationLineItem.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeonlinedonationlineitem'] = __DATA_CLASSES__ . '/OnlineDonationLineItem.class.php';
+		QApplicationBase::$ClassFile['onlinedonationlineitemmetacontrol'] = __DATA_META_CONTROLS__ . '/OnlineDonationLineItemMetaControl.class.php';
+		QApplicationBase::$ClassFile['onlinedonationlineitemdatagrid'] = __DATA_META_CONTROLS__ . '/OnlineDonationLineItemDataGrid.class.php';
+
 	// ClassPaths for the OtherContactInfo class
 		QApplicationBase::$ClassFile['othercontactinfo'] = __DATA_CLASSES__ . '/OtherContactInfo.class.php';
 		QApplicationBase::$ClassFile['qqnodeothercontactinfo'] = __DATA_CLASSES__ . '/OtherContactInfo.class.php';
@@ -257,6 +278,20 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodeothercontactmethod'] = __DATA_CLASSES__ . '/OtherContactMethod.class.php';
 		QApplicationBase::$ClassFile['othercontactmethodmetacontrol'] = __DATA_META_CONTROLS__ . '/OtherContactMethodMetaControl.class.php';
 		QApplicationBase::$ClassFile['othercontactmethoddatagrid'] = __DATA_META_CONTROLS__ . '/OtherContactMethodDataGrid.class.php';
+
+	// ClassPaths for the OutgoingEmailQueue class
+		QApplicationBase::$ClassFile['outgoingemailqueue'] = __DATA_CLASSES__ . '/OutgoingEmailQueue.class.php';
+		QApplicationBase::$ClassFile['qqnodeoutgoingemailqueue'] = __DATA_CLASSES__ . '/OutgoingEmailQueue.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeoutgoingemailqueue'] = __DATA_CLASSES__ . '/OutgoingEmailQueue.class.php';
+		QApplicationBase::$ClassFile['outgoingemailqueuemetacontrol'] = __DATA_META_CONTROLS__ . '/OutgoingEmailQueueMetaControl.class.php';
+		QApplicationBase::$ClassFile['outgoingemailqueuedatagrid'] = __DATA_META_CONTROLS__ . '/OutgoingEmailQueueDataGrid.class.php';
+
+	// ClassPaths for the PaypalBatch class
+		QApplicationBase::$ClassFile['paypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
+		QApplicationBase::$ClassFile['qqnodepaypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodepaypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
+		QApplicationBase::$ClassFile['paypalbatchmetacontrol'] = __DATA_META_CONTROLS__ . '/PaypalBatchMetaControl.class.php';
+		QApplicationBase::$ClassFile['paypalbatchdatagrid'] = __DATA_META_CONTROLS__ . '/PaypalBatchDataGrid.class.php';
 
 	// ClassPaths for the Person class
 		QApplicationBase::$ClassFile['person'] = __DATA_CLASSES__ . '/Person.class.php';

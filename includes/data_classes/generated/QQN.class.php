@@ -61,6 +61,12 @@
 			return new QQNodeCountry('country', null, null);
 		}
 		/**
+		 * @return QQNodeCreditCardPayment
+		 */
+		static public function CreditCardPayment() {
+			return new QQNodeCreditCardPayment('credit_card_payment', null, null);
+		}
+		/**
 		 * @return QQNodeEmail
 		 */
 		static public function Email() {
@@ -211,6 +217,18 @@
 			return new QQNodeNameItem('name_item', null, null);
 		}
 		/**
+		 * @return QQNodeOnlineDonation
+		 */
+		static public function OnlineDonation() {
+			return new QQNodeOnlineDonation('online_donation', null, null);
+		}
+		/**
+		 * @return QQNodeOnlineDonationLineItem
+		 */
+		static public function OnlineDonationLineItem() {
+			return new QQNodeOnlineDonationLineItem('online_donation_line_item', null, null);
+		}
+		/**
 		 * @return QQNodeOtherContactInfo
 		 */
 		static public function OtherContactInfo() {
@@ -221,6 +239,18 @@
 		 */
 		static public function OtherContactMethod() {
 			return new QQNodeOtherContactMethod('other_contact_method', null, null);
+		}
+		/**
+		 * @return QQNodeOutgoingEmailQueue
+		 */
+		static public function OutgoingEmailQueue() {
+			return new QQNodeOutgoingEmailQueue('outgoing_email_queue', null, null);
+		}
+		/**
+		 * @return QQNodePaypalBatch
+		 */
+		static public function PaypalBatch() {
+			return new QQNodePaypalBatch('paypal_batch', null, null);
 		}
 		/**
 		 * @return QQNodePerson
