@@ -16,18 +16,18 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
-	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $CreditCardStatusTypeId the value for intCreditCardStatusTypeId (Not Null)
 	 * @property integer $CreditCardTypeId the value for intCreditCardTypeId (Not Null)
 	 * @property string $CreditCardLastFour the value for strCreditCardLastFour (Not Null)
 	 * @property string $TransactionCode the value for strTransactionCode (Unique)
+	 * @property string $AuthorizationCode the value for strAuthorizationCode 
 	 * @property boolean $AddressMatchFlag the value for blnAddressMatchFlag 
-	 * @property QDateTime $DateCharged the value for dttDateCharged 
+	 * @property QDateTime $DateAuthorized the value for dttDateAuthorized 
+	 * @property QDateTime $DateCaptured the value for dttDateCaptured 
 	 * @property double $AmountCharged the value for fltAmountCharged 
 	 * @property double $AmountFee the value for fltAmountFee 
 	 * @property double $AmountCleared the value for fltAmountCleared 
 	 * @property integer $PaypalBatchId the value for intPaypalBatchId 
-	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property PaypalBatch $PaypalBatch the value for the PaypalBatch object referenced by intPaypalBatchId 
 	 * @property OnlineDonation $OnlineDonation the value for the OnlineDonation object that uniquely references this CreditCardPayment
 	 * @property SignupPayment $SignupPayment the value for the SignupPayment object that uniquely references this CreditCardPayment
@@ -45,14 +45,6 @@
 		 */
 		protected $intId;
 		const IdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column credit_card_payment.person_id
-		 * @var integer intPersonId
-		 */
-		protected $intPersonId;
-		const PersonIdDefault = null;
 
 
 		/**
@@ -90,6 +82,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column credit_card_payment.authorization_code
+		 * @var string strAuthorizationCode
+		 */
+		protected $strAuthorizationCode;
+		const AuthorizationCodeMaxLength = 40;
+		const AuthorizationCodeDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column credit_card_payment.address_match_flag
 		 * @var boolean blnAddressMatchFlag
 		 */
@@ -98,11 +99,19 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column credit_card_payment.date_charged
-		 * @var QDateTime dttDateCharged
+		 * Protected member variable that maps to the database column credit_card_payment.date_authorized
+		 * @var QDateTime dttDateAuthorized
 		 */
-		protected $dttDateCharged;
-		const DateChargedDefault = null;
+		protected $dttDateAuthorized;
+		const DateAuthorizedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column credit_card_payment.date_captured
+		 * @var QDateTime dttDateCaptured
+		 */
+		protected $dttDateCaptured;
+		const DateCapturedDefault = null;
 
 
 		/**
@@ -158,16 +167,6 @@
 		///////////////////////////////
 		// PROTECTED MEMBER OBJECTS
 		///////////////////////////////
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column credit_card_payment.person_id.
-		 *
-		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Person objPerson
-		 */
-		protected $objPerson;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -526,13 +525,14 @@
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
-			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_status_type_id', $strAliasPrefix . 'credit_card_status_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_type_id', $strAliasPrefix . 'credit_card_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_last_four', $strAliasPrefix . 'credit_card_last_four');
 			$objBuilder->AddSelectItem($strTableName, 'transaction_code', $strAliasPrefix . 'transaction_code');
+			$objBuilder->AddSelectItem($strTableName, 'authorization_code', $strAliasPrefix . 'authorization_code');
 			$objBuilder->AddSelectItem($strTableName, 'address_match_flag', $strAliasPrefix . 'address_match_flag');
-			$objBuilder->AddSelectItem($strTableName, 'date_charged', $strAliasPrefix . 'date_charged');
+			$objBuilder->AddSelectItem($strTableName, 'date_authorized', $strAliasPrefix . 'date_authorized');
+			$objBuilder->AddSelectItem($strTableName, 'date_captured', $strAliasPrefix . 'date_captured');
 			$objBuilder->AddSelectItem($strTableName, 'amount_charged', $strAliasPrefix . 'amount_charged');
 			$objBuilder->AddSelectItem($strTableName, 'amount_fee', $strAliasPrefix . 'amount_fee');
 			$objBuilder->AddSelectItem($strTableName, 'amount_cleared', $strAliasPrefix . 'amount_cleared');
@@ -570,8 +570,6 @@
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
-			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_status_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_status_type_id'] : $strAliasPrefix . 'credit_card_status_type_id';
 			$objToReturn->intCreditCardStatusTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_type_id'] : $strAliasPrefix . 'credit_card_type_id';
@@ -580,10 +578,14 @@
 			$objToReturn->strCreditCardLastFour = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'transaction_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'transaction_code'] : $strAliasPrefix . 'transaction_code';
 			$objToReturn->strTransactionCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'authorization_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'authorization_code'] : $strAliasPrefix . 'authorization_code';
+			$objToReturn->strAuthorizationCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'address_match_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'address_match_flag'] : $strAliasPrefix . 'address_match_flag';
 			$objToReturn->blnAddressMatchFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_charged', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_charged'] : $strAliasPrefix . 'date_charged';
-			$objToReturn->dttDateCharged = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_authorized', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_authorized'] : $strAliasPrefix . 'date_authorized';
+			$objToReturn->dttDateAuthorized = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_captured', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_captured'] : $strAliasPrefix . 'date_captured';
+			$objToReturn->dttDateCaptured = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount_charged', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_charged'] : $strAliasPrefix . 'amount_charged';
 			$objToReturn->fltAmountCharged = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount_fee', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_fee'] : $strAliasPrefix . 'amount_fee';
@@ -604,12 +606,6 @@
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'credit_card_payment__';
-
-			// Check for Person Early Binding
-			$strAlias = $strAliasPrefix . 'person_id__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for PaypalBatch Early Binding
 			$strAlias = $strAliasPrefix . 'paypal_batch_id__id';
@@ -741,38 +737,6 @@
 			
 		/**
 		 * Load an array of CreditCardPayment objects,
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return CreditCardPayment[]
-		*/
-		public static function LoadArrayByPersonId($intPersonId, $objOptionalClauses = null) {
-			// Call CreditCardPayment::QueryArray to perform the LoadArrayByPersonId query
-			try {
-				return CreditCardPayment::QueryArray(
-					QQ::Equal(QQN::CreditCardPayment()->PersonId, $intPersonId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count CreditCardPayments
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
-		 * @return int
-		*/
-		public static function CountByPersonId($intPersonId) {
-			// Call CreditCardPayment::QueryCount to perform the CountByPersonId query
-			return CreditCardPayment::QueryCount(
-				QQ::Equal(QQN::CreditCardPayment()->PersonId, $intPersonId)
-			);
-		}
-			
-		/**
-		 * Load an array of CreditCardPayment objects,
 		 * by CreditCardStatusTypeId Index(es)
 		 * @param integer $intCreditCardStatusTypeId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -897,25 +861,27 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `credit_card_payment` (
-							`person_id`,
 							`credit_card_status_type_id`,
 							`credit_card_type_id`,
 							`credit_card_last_four`,
 							`transaction_code`,
+							`authorization_code`,
 							`address_match_flag`,
-							`date_charged`,
+							`date_authorized`,
+							`date_captured`,
 							`amount_charged`,
 							`amount_fee`,
 							`amount_cleared`,
 							`paypal_batch_id`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intCreditCardStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intCreditCardTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strCreditCardLastFour) . ',
 							' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
+							' . $objDatabase->SqlVariable($this->strAuthorizationCode) . ',
 							' . $objDatabase->SqlVariable($this->blnAddressMatchFlag) . ',
-							' . $objDatabase->SqlVariable($this->dttDateCharged) . ',
+							' . $objDatabase->SqlVariable($this->dttDateAuthorized) . ',
+							' . $objDatabase->SqlVariable($this->dttDateCaptured) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
@@ -939,13 +905,14 @@
 						UPDATE
 							`credit_card_payment`
 						SET
-							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`credit_card_status_type_id` = ' . $objDatabase->SqlVariable($this->intCreditCardStatusTypeId) . ',
 							`credit_card_type_id` = ' . $objDatabase->SqlVariable($this->intCreditCardTypeId) . ',
 							`credit_card_last_four` = ' . $objDatabase->SqlVariable($this->strCreditCardLastFour) . ',
 							`transaction_code` = ' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
+							`authorization_code` = ' . $objDatabase->SqlVariable($this->strAuthorizationCode) . ',
 							`address_match_flag` = ' . $objDatabase->SqlVariable($this->blnAddressMatchFlag) . ',
-							`date_charged` = ' . $objDatabase->SqlVariable($this->dttDateCharged) . ',
+							`date_authorized` = ' . $objDatabase->SqlVariable($this->dttDateAuthorized) . ',
+							`date_captured` = ' . $objDatabase->SqlVariable($this->dttDateCaptured) . ',
 							`amount_charged` = ' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
 							`amount_fee` = ' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 							`amount_cleared` = ' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
@@ -1024,12 +991,13 @@
 
 			
 			
-			// Update the adjoined OnlineDonation object (if applicable) and perform a delete
+			// Update the adjoined OnlineDonation object (if applicable) and perform the unassociation
 
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
 			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
 			if ($objAssociated = OnlineDonation::LoadByCreditCardPaymentId($this->intId)) {
-				$objAssociated->Delete();
+				$objAssociated->CreditCardPaymentId = null;
+				$objAssociated->Save();
 			}
 			
 			
@@ -1093,13 +1061,14 @@
 			$objReloaded = CreditCardPayment::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->PersonId = $objReloaded->PersonId;
 			$this->CreditCardStatusTypeId = $objReloaded->CreditCardStatusTypeId;
 			$this->CreditCardTypeId = $objReloaded->CreditCardTypeId;
 			$this->strCreditCardLastFour = $objReloaded->strCreditCardLastFour;
 			$this->strTransactionCode = $objReloaded->strTransactionCode;
+			$this->strAuthorizationCode = $objReloaded->strAuthorizationCode;
 			$this->blnAddressMatchFlag = $objReloaded->blnAddressMatchFlag;
-			$this->dttDateCharged = $objReloaded->dttDateCharged;
+			$this->dttDateAuthorized = $objReloaded->dttDateAuthorized;
+			$this->dttDateCaptured = $objReloaded->dttDateCaptured;
 			$this->fltAmountCharged = $objReloaded->fltAmountCharged;
 			$this->fltAmountFee = $objReloaded->fltAmountFee;
 			$this->fltAmountCleared = $objReloaded->fltAmountCleared;
@@ -1117,13 +1086,14 @@
 			$objDatabase->NonQuery('
 				INSERT INTO `credit_card_payment` (
 					`id`,
-					`person_id`,
 					`credit_card_status_type_id`,
 					`credit_card_type_id`,
 					`credit_card_last_four`,
 					`transaction_code`,
+					`authorization_code`,
 					`address_match_flag`,
-					`date_charged`,
+					`date_authorized`,
+					`date_captured`,
 					`amount_charged`,
 					`amount_fee`,
 					`amount_cleared`,
@@ -1133,13 +1103,14 @@
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
-					' . $objDatabase->SqlVariable($this->intPersonId) . ',
 					' . $objDatabase->SqlVariable($this->intCreditCardStatusTypeId) . ',
 					' . $objDatabase->SqlVariable($this->intCreditCardTypeId) . ',
 					' . $objDatabase->SqlVariable($this->strCreditCardLastFour) . ',
 					' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
+					' . $objDatabase->SqlVariable($this->strAuthorizationCode) . ',
 					' . $objDatabase->SqlVariable($this->blnAddressMatchFlag) . ',
-					' . $objDatabase->SqlVariable($this->dttDateCharged) . ',
+					' . $objDatabase->SqlVariable($this->dttDateAuthorized) . ',
+					' . $objDatabase->SqlVariable($this->dttDateCaptured) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
@@ -1199,11 +1170,6 @@
 					// @return integer
 					return $this->intId;
 
-				case 'PersonId':
-					// Gets the value for intPersonId (Not Null)
-					// @return integer
-					return $this->intPersonId;
-
 				case 'CreditCardStatusTypeId':
 					// Gets the value for intCreditCardStatusTypeId (Not Null)
 					// @return integer
@@ -1224,15 +1190,25 @@
 					// @return string
 					return $this->strTransactionCode;
 
+				case 'AuthorizationCode':
+					// Gets the value for strAuthorizationCode 
+					// @return string
+					return $this->strAuthorizationCode;
+
 				case 'AddressMatchFlag':
 					// Gets the value for blnAddressMatchFlag 
 					// @return boolean
 					return $this->blnAddressMatchFlag;
 
-				case 'DateCharged':
-					// Gets the value for dttDateCharged 
+				case 'DateAuthorized':
+					// Gets the value for dttDateAuthorized 
 					// @return QDateTime
-					return $this->dttDateCharged;
+					return $this->dttDateAuthorized;
+
+				case 'DateCaptured':
+					// Gets the value for dttDateCaptured 
+					// @return QDateTime
+					return $this->dttDateCaptured;
 
 				case 'AmountCharged':
 					// Gets the value for fltAmountCharged 
@@ -1258,18 +1234,6 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Person':
-					// Gets the value for the Person object referenced by intPersonId (Not Null)
-					// @return Person
-					try {
-						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
-							$this->objPerson = Person::Load($this->intPersonId);
-						return $this->objPerson;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'PaypalBatch':
 					// Gets the value for the PaypalBatch object referenced by intPaypalBatchId 
 					// @return PaypalBatch
@@ -1351,18 +1315,6 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'PersonId':
-					// Sets the value for intPersonId (Not Null)
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objPerson = null;
-						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'CreditCardStatusTypeId':
 					// Sets the value for intCreditCardStatusTypeId (Not Null)
 					// @param integer $mixValue
@@ -1407,6 +1359,17 @@
 						throw $objExc;
 					}
 
+				case 'AuthorizationCode':
+					// Sets the value for strAuthorizationCode 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strAuthorizationCode = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'AddressMatchFlag':
 					// Sets the value for blnAddressMatchFlag 
 					// @param boolean $mixValue
@@ -1418,12 +1381,23 @@
 						throw $objExc;
 					}
 
-				case 'DateCharged':
-					// Sets the value for dttDateCharged 
+				case 'DateAuthorized':
+					// Sets the value for dttDateAuthorized 
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
-						return ($this->dttDateCharged = QType::Cast($mixValue, QType::DateTime));
+						return ($this->dttDateAuthorized = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateCaptured':
+					// Sets the value for dttDateCaptured 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateCaptured = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1478,36 +1452,6 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Person':
-					// Sets the value for the Person object referenced by intPersonId (Not Null)
-					// @param Person $mixValue
-					// @return Person
-					if (is_null($mixValue)) {
-						$this->intPersonId = null;
-						$this->objPerson = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a Person object
-						try {
-							$mixValue = QType::Cast($mixValue, 'Person');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED Person object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Person for this CreditCardPayment');
-
-						// Update Local Member Variables
-						$this->objPerson = $mixValue;
-						$this->intPersonId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
 				case 'PaypalBatch':
 					// Sets the value for the PaypalBatch object referenced by intPaypalBatchId 
 					// @param PaypalBatch $mixValue
@@ -1650,13 +1594,14 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="CreditCardPayment"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
-			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="CreditCardStatusTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="CreditCardTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="CreditCardLastFour" type="xsd:string"/>';
 			$strToReturn .= '<element name="TransactionCode" type="xsd:string"/>';
+			$strToReturn .= '<element name="AuthorizationCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="AddressMatchFlag" type="xsd:boolean"/>';
-			$strToReturn .= '<element name="DateCharged" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateAuthorized" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateCaptured" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="AmountCharged" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountFee" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountCleared" type="xsd:float"/>';
@@ -1669,7 +1614,6 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('CreditCardPayment', $strComplexTypeArray)) {
 				$strComplexTypeArray['CreditCardPayment'] = CreditCardPayment::GetSoapComplexTypeXml();
-				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				PaypalBatch::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1687,9 +1631,6 @@
 			$objToReturn = new CreditCardPayment();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
-			if ((property_exists($objSoapObject, 'Person')) &&
-				($objSoapObject->Person))
-				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if (property_exists($objSoapObject, 'CreditCardStatusTypeId'))
 				$objToReturn->intCreditCardStatusTypeId = $objSoapObject->CreditCardStatusTypeId;
 			if (property_exists($objSoapObject, 'CreditCardTypeId'))
@@ -1698,10 +1639,14 @@
 				$objToReturn->strCreditCardLastFour = $objSoapObject->CreditCardLastFour;
 			if (property_exists($objSoapObject, 'TransactionCode'))
 				$objToReturn->strTransactionCode = $objSoapObject->TransactionCode;
+			if (property_exists($objSoapObject, 'AuthorizationCode'))
+				$objToReturn->strAuthorizationCode = $objSoapObject->AuthorizationCode;
 			if (property_exists($objSoapObject, 'AddressMatchFlag'))
 				$objToReturn->blnAddressMatchFlag = $objSoapObject->AddressMatchFlag;
-			if (property_exists($objSoapObject, 'DateCharged'))
-				$objToReturn->dttDateCharged = new QDateTime($objSoapObject->DateCharged);
+			if (property_exists($objSoapObject, 'DateAuthorized'))
+				$objToReturn->dttDateAuthorized = new QDateTime($objSoapObject->DateAuthorized);
+			if (property_exists($objSoapObject, 'DateCaptured'))
+				$objToReturn->dttDateCaptured = new QDateTime($objSoapObject->DateCaptured);
 			if (property_exists($objSoapObject, 'AmountCharged'))
 				$objToReturn->fltAmountCharged = $objSoapObject->AmountCharged;
 			if (property_exists($objSoapObject, 'AmountFee'))
@@ -1729,12 +1674,10 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objPerson)
-				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intPersonId = null;
-			if ($objObject->dttDateCharged)
-				$objObject->dttDateCharged = $objObject->dttDateCharged->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateAuthorized)
+				$objObject->dttDateAuthorized = $objObject->dttDateAuthorized->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateCaptured)
+				$objObject->dttDateCaptured = $objObject->dttDateCaptured->__toString(QDateTime::FormatSoap);
 			if ($objObject->objPaypalBatch)
 				$objObject->objPaypalBatch = PaypalBatch::GetSoapObjectFromObject($objObject->objPaypalBatch, false);
 			else if (!$blnBindRelatedObjects)
@@ -1755,14 +1698,14 @@
 
 	/**
 	 * @property-read QQNode $Id
-	 * @property-read QQNode $PersonId
-	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $CreditCardStatusTypeId
 	 * @property-read QQNode $CreditCardTypeId
 	 * @property-read QQNode $CreditCardLastFour
 	 * @property-read QQNode $TransactionCode
+	 * @property-read QQNode $AuthorizationCode
 	 * @property-read QQNode $AddressMatchFlag
-	 * @property-read QQNode $DateCharged
+	 * @property-read QQNode $DateAuthorized
+	 * @property-read QQNode $DateCaptured
 	 * @property-read QQNode $AmountCharged
 	 * @property-read QQNode $AmountFee
 	 * @property-read QQNode $AmountCleared
@@ -1779,10 +1722,6 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'PersonId':
-					return new QQNode('person_id', 'PersonId', 'integer', $this);
-				case 'Person':
-					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'CreditCardStatusTypeId':
 					return new QQNode('credit_card_status_type_id', 'CreditCardStatusTypeId', 'integer', $this);
 				case 'CreditCardTypeId':
@@ -1791,10 +1730,14 @@
 					return new QQNode('credit_card_last_four', 'CreditCardLastFour', 'string', $this);
 				case 'TransactionCode':
 					return new QQNode('transaction_code', 'TransactionCode', 'string', $this);
+				case 'AuthorizationCode':
+					return new QQNode('authorization_code', 'AuthorizationCode', 'string', $this);
 				case 'AddressMatchFlag':
 					return new QQNode('address_match_flag', 'AddressMatchFlag', 'boolean', $this);
-				case 'DateCharged':
-					return new QQNode('date_charged', 'DateCharged', 'QDateTime', $this);
+				case 'DateAuthorized':
+					return new QQNode('date_authorized', 'DateAuthorized', 'QDateTime', $this);
+				case 'DateCaptured':
+					return new QQNode('date_captured', 'DateCaptured', 'QDateTime', $this);
 				case 'AmountCharged':
 					return new QQNode('amount_charged', 'AmountCharged', 'double', $this);
 				case 'AmountFee':
@@ -1825,14 +1768,14 @@
 	
 	/**
 	 * @property-read QQNode $Id
-	 * @property-read QQNode $PersonId
-	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $CreditCardStatusTypeId
 	 * @property-read QQNode $CreditCardTypeId
 	 * @property-read QQNode $CreditCardLastFour
 	 * @property-read QQNode $TransactionCode
+	 * @property-read QQNode $AuthorizationCode
 	 * @property-read QQNode $AddressMatchFlag
-	 * @property-read QQNode $DateCharged
+	 * @property-read QQNode $DateAuthorized
+	 * @property-read QQNode $DateCaptured
 	 * @property-read QQNode $AmountCharged
 	 * @property-read QQNode $AmountFee
 	 * @property-read QQNode $AmountCleared
@@ -1850,10 +1793,6 @@
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'PersonId':
-					return new QQNode('person_id', 'PersonId', 'integer', $this);
-				case 'Person':
-					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'CreditCardStatusTypeId':
 					return new QQNode('credit_card_status_type_id', 'CreditCardStatusTypeId', 'integer', $this);
 				case 'CreditCardTypeId':
@@ -1862,10 +1801,14 @@
 					return new QQNode('credit_card_last_four', 'CreditCardLastFour', 'string', $this);
 				case 'TransactionCode':
 					return new QQNode('transaction_code', 'TransactionCode', 'string', $this);
+				case 'AuthorizationCode':
+					return new QQNode('authorization_code', 'AuthorizationCode', 'string', $this);
 				case 'AddressMatchFlag':
 					return new QQNode('address_match_flag', 'AddressMatchFlag', 'boolean', $this);
-				case 'DateCharged':
-					return new QQNode('date_charged', 'DateCharged', 'QDateTime', $this);
+				case 'DateAuthorized':
+					return new QQNode('date_authorized', 'DateAuthorized', 'QDateTime', $this);
+				case 'DateCaptured':
+					return new QQNode('date_captured', 'DateCaptured', 'QDateTime', $this);
 				case 'AmountCharged':
 					return new QQNode('amount_charged', 'AmountCharged', 'double', $this);
 				case 'AmountFee':

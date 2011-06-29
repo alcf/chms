@@ -294,14 +294,14 @@
 					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "credit_card_payment".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::CreditCardPayment()->Id;
-				case 'PersonId': return QQN::CreditCardPayment()->PersonId;
-				case 'Person': return QQN::CreditCardPayment()->Person;
 				case 'CreditCardStatusTypeId': return QQN::CreditCardPayment()->CreditCardStatusTypeId;
 				case 'CreditCardTypeId': return QQN::CreditCardPayment()->CreditCardTypeId;
 				case 'CreditCardLastFour': return QQN::CreditCardPayment()->CreditCardLastFour;
 				case 'TransactionCode': return QQN::CreditCardPayment()->TransactionCode;
+				case 'AuthorizationCode': return QQN::CreditCardPayment()->AuthorizationCode;
 				case 'AddressMatchFlag': return QQN::CreditCardPayment()->AddressMatchFlag;
-				case 'DateCharged': return QQN::CreditCardPayment()->DateCharged;
+				case 'DateAuthorized': return QQN::CreditCardPayment()->DateAuthorized;
+				case 'DateCaptured': return QQN::CreditCardPayment()->DateCaptured;
 				case 'AmountCharged': return QQN::CreditCardPayment()->AmountCharged;
 				case 'AmountFee': return QQN::CreditCardPayment()->AmountFee;
 				case 'AmountCleared': return QQN::CreditCardPayment()->AmountCleared;

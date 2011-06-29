@@ -295,7 +295,8 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::PaypalBatch()->Id;
 				case 'Number': return QQN::PaypalBatch()->Number;
-				case 'DatePosted': return QQN::PaypalBatch()->DatePosted;
+				case 'DateReceived': return QQN::PaypalBatch()->DateReceived;
+				case 'DateReconciled': return QQN::PaypalBatch()->DateReconciled;
 				case 'ReconciledFlag': return QQN::PaypalBatch()->ReconciledFlag;
 				default: throw new QCallerException('Simple Property not found in PaypalBatchDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

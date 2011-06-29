@@ -18,8 +18,6 @@
 	 * property-read CreditCardPayment $CreditCardPayment the actual CreditCardPayment data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
-	 * property QListBox $PersonIdControl
-	 * property-read QLabel $PersonIdLabel
 	 * property QListBox $CreditCardStatusTypeIdControl
 	 * property-read QLabel $CreditCardStatusTypeIdLabel
 	 * property QListBox $CreditCardTypeIdControl
@@ -28,10 +26,14 @@
 	 * property-read QLabel $CreditCardLastFourLabel
 	 * property QTextBox $TransactionCodeControl
 	 * property-read QLabel $TransactionCodeLabel
+	 * property QTextBox $AuthorizationCodeControl
+	 * property-read QLabel $AuthorizationCodeLabel
 	 * property QCheckBox $AddressMatchFlagControl
 	 * property-read QLabel $AddressMatchFlagLabel
-	 * property QDateTimePicker $DateChargedControl
-	 * property-read QLabel $DateChargedLabel
+	 * property QDateTimePicker $DateAuthorizedControl
+	 * property-read QLabel $DateAuthorizedLabel
+	 * property QDateTimePicker $DateCapturedControl
+	 * property-read QLabel $DateCapturedLabel
 	 * property QFloatTextBox $AmountChargedControl
 	 * property-read QLabel $AmountChargedLabel
 	 * property QFloatTextBox $AmountFeeControl
@@ -82,12 +84,6 @@
 		protected $lblId;
 
         /**
-         * @var QListBox lstPerson;
-         * @access protected
-         */
-		protected $lstPerson;
-
-        /**
          * @var QListBox lstCreditCardStatusType;
          * @access protected
          */
@@ -112,16 +108,28 @@
 		protected $txtTransactionCode;
 
         /**
+         * @var QTextBox txtAuthorizationCode;
+         * @access protected
+         */
+		protected $txtAuthorizationCode;
+
+        /**
          * @var QCheckBox chkAddressMatchFlag;
          * @access protected
          */
 		protected $chkAddressMatchFlag;
 
         /**
-         * @var QDateTimePicker calDateCharged;
+         * @var QDateTimePicker calDateAuthorized;
          * @access protected
          */
-		protected $calDateCharged;
+		protected $calDateAuthorized;
+
+        /**
+         * @var QDateTimePicker calDateCaptured;
+         * @access protected
+         */
+		protected $calDateCaptured;
 
         /**
          * @var QFloatTextBox txtAmountCharged;
@@ -150,12 +158,6 @@
 
 		// Controls that allow the viewing of CreditCardPayment's individual data fields
         /**
-         * @var QLabel lblPersonId
-         * @access protected
-         */
-		protected $lblPersonId;
-
-        /**
          * @var QLabel lblCreditCardStatusTypeId
          * @access protected
          */
@@ -180,16 +182,28 @@
 		protected $lblTransactionCode;
 
         /**
+         * @var QLabel lblAuthorizationCode
+         * @access protected
+         */
+		protected $lblAuthorizationCode;
+
+        /**
          * @var QLabel lblAddressMatchFlag
          * @access protected
          */
 		protected $lblAddressMatchFlag;
 
         /**
-         * @var QLabel lblDateCharged
+         * @var QLabel lblDateAuthorized
          * @access protected
          */
-		protected $lblDateCharged;
+		protected $lblDateAuthorized;
+
+        /**
+         * @var QLabel lblDateCaptured
+         * @access protected
+         */
+		protected $lblDateCaptured;
 
         /**
          * @var QLabel lblAmountCharged
@@ -353,49 +367,6 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstPerson
-		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
-		 */
-		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
-			$this->lstPerson->Name = QApplication::Translate('Person');
-			$this->lstPerson->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
-				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
-				if (($this->objCreditCardPayment->Person) && ($this->objCreditCardPayment->Person->Id == $objPerson->Id))
-					$objListItem->Selected = true;
-				$this->lstPerson->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstPerson;
-		}
-
-		/**
-		 * Create and setup QLabel lblPersonId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblPersonId_Create($strControlId = null) {
-			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPersonId->Name = QApplication::Translate('Person');
-			$this->lblPersonId->Text = ($this->objCreditCardPayment->Person) ? $this->objCreditCardPayment->Person->__toString() : null;
-			$this->lblPersonId->Required = true;
-			return $this->lblPersonId;
-		}
-
-		/**
 		 * Create and setup QListBox lstCreditCardStatusType
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
@@ -504,6 +475,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtAuthorizationCode
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtAuthorizationCode_Create($strControlId = null) {
+			$this->txtAuthorizationCode = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtAuthorizationCode->Name = QApplication::Translate('Authorization Code');
+			$this->txtAuthorizationCode->Text = $this->objCreditCardPayment->AuthorizationCode;
+			$this->txtAuthorizationCode->MaxLength = CreditCardPayment::AuthorizationCodeMaxLength;
+			return $this->txtAuthorizationCode;
+		}
+
+		/**
+		 * Create and setup QLabel lblAuthorizationCode
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblAuthorizationCode_Create($strControlId = null) {
+			$this->lblAuthorizationCode = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAuthorizationCode->Name = QApplication::Translate('Authorization Code');
+			$this->lblAuthorizationCode->Text = $this->objCreditCardPayment->AuthorizationCode;
+			return $this->lblAuthorizationCode;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkAddressMatchFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -528,33 +524,62 @@
 		}
 
 		/**
-		 * Create and setup QDateTimePicker calDateCharged
+		 * Create and setup QDateTimePicker calDateAuthorized
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
 		 */
-		public function calDateCharged_Create($strControlId = null) {
-			$this->calDateCharged = new QDateTimePicker($this->objParentObject, $strControlId);
-			$this->calDateCharged->Name = QApplication::Translate('Date Charged');
-			$this->calDateCharged->DateTime = $this->objCreditCardPayment->DateCharged;
-			$this->calDateCharged->DateTimePickerType = QDateTimePickerType::DateTime;
-			return $this->calDateCharged;
+		public function calDateAuthorized_Create($strControlId = null) {
+			$this->calDateAuthorized = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateAuthorized->Name = QApplication::Translate('Date Authorized');
+			$this->calDateAuthorized->DateTime = $this->objCreditCardPayment->DateAuthorized;
+			$this->calDateAuthorized->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDateAuthorized;
 		}
 
 		/**
-		 * Create and setup QLabel lblDateCharged
+		 * Create and setup QLabel lblDateAuthorized
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strDateTimeFormat optional DateTimeFormat to use
 		 * @return QLabel
 		 */
-		public function lblDateCharged_Create($strControlId = null, $strDateTimeFormat = null) {
-			$this->lblDateCharged = new QLabel($this->objParentObject, $strControlId);
-			$this->lblDateCharged->Name = QApplication::Translate('Date Charged');
-			$this->strDateChargedDateTimeFormat = $strDateTimeFormat;
-			$this->lblDateCharged->Text = sprintf($this->objCreditCardPayment->DateCharged) ? $this->objCreditCardPayment->DateCharged->__toString($this->strDateChargedDateTimeFormat) : null;
-			return $this->lblDateCharged;
+		public function lblDateAuthorized_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateAuthorized = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateAuthorized->Name = QApplication::Translate('Date Authorized');
+			$this->strDateAuthorizedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateAuthorized->Text = sprintf($this->objCreditCardPayment->DateAuthorized) ? $this->objCreditCardPayment->DateAuthorized->__toString($this->strDateAuthorizedDateTimeFormat) : null;
+			return $this->lblDateAuthorized;
 		}
 
-		protected $strDateChargedDateTimeFormat;
+		protected $strDateAuthorizedDateTimeFormat;
+
+		/**
+		 * Create and setup QDateTimePicker calDateCaptured
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateCaptured_Create($strControlId = null) {
+			$this->calDateCaptured = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateCaptured->Name = QApplication::Translate('Date Captured');
+			$this->calDateCaptured->DateTime = $this->objCreditCardPayment->DateCaptured;
+			$this->calDateCaptured->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDateCaptured;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateCaptured
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateCaptured_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateCaptured = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateCaptured->Name = QApplication::Translate('Date Captured');
+			$this->strDateCapturedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateCaptured->Text = sprintf($this->objCreditCardPayment->DateCaptured) ? $this->objCreditCardPayment->DateCaptured->__toString($this->strDateCapturedDateTimeFormat) : null;
+			return $this->lblDateCaptured;
+		}
+
+		protected $strDateCapturedDateTimeFormat;
 
 		/**
 		 * Create and setup QFloatTextBox txtAmountCharged
@@ -698,10 +723,6 @@
 				$this->lstOnlineDonation->AddItem($objListItem);
 			}
 
-			// Because OnlineDonation's OnlineDonation is not null, if a value is already selected, it cannot be changed.
-			if ($this->lstOnlineDonation->SelectedValue)
-				$this->lstOnlineDonation->Enabled = false;
-
 			// Return the QListBox
 			return $this->lstOnlineDonation;
 		}
@@ -771,20 +792,6 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objCreditCardPayment->Id;
 
-			if ($this->lstPerson) {
-					$this->lstPerson->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-				$objPersonArray = Person::LoadAll();
-				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
-					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
-					if (($this->objCreditCardPayment->Person) && ($this->objCreditCardPayment->Person->Id == $objPerson->Id))
-						$objListItem->Selected = true;
-					$this->lstPerson->AddItem($objListItem);
-				}
-			}
-			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objCreditCardPayment->Person) ? $this->objCreditCardPayment->Person->__toString() : null;
-
 			if ($this->lstCreditCardStatusType) $this->lstCreditCardStatusType->SelectedValue = $this->objCreditCardPayment->CreditCardStatusTypeId;
 			if ($this->lblCreditCardStatusTypeId) $this->lblCreditCardStatusTypeId->Text = ($this->objCreditCardPayment->CreditCardStatusTypeId) ? CreditCardStatusType::$NameArray[$this->objCreditCardPayment->CreditCardStatusTypeId] : null;
 
@@ -797,11 +804,17 @@
 			if ($this->txtTransactionCode) $this->txtTransactionCode->Text = $this->objCreditCardPayment->TransactionCode;
 			if ($this->lblTransactionCode) $this->lblTransactionCode->Text = $this->objCreditCardPayment->TransactionCode;
 
+			if ($this->txtAuthorizationCode) $this->txtAuthorizationCode->Text = $this->objCreditCardPayment->AuthorizationCode;
+			if ($this->lblAuthorizationCode) $this->lblAuthorizationCode->Text = $this->objCreditCardPayment->AuthorizationCode;
+
 			if ($this->chkAddressMatchFlag) $this->chkAddressMatchFlag->Checked = $this->objCreditCardPayment->AddressMatchFlag;
 			if ($this->lblAddressMatchFlag) $this->lblAddressMatchFlag->Text = ($this->objCreditCardPayment->AddressMatchFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
-			if ($this->calDateCharged) $this->calDateCharged->DateTime = $this->objCreditCardPayment->DateCharged;
-			if ($this->lblDateCharged) $this->lblDateCharged->Text = sprintf($this->objCreditCardPayment->DateCharged) ? $this->objCreditCardPayment->__toString($this->strDateChargedDateTimeFormat) : null;
+			if ($this->calDateAuthorized) $this->calDateAuthorized->DateTime = $this->objCreditCardPayment->DateAuthorized;
+			if ($this->lblDateAuthorized) $this->lblDateAuthorized->Text = sprintf($this->objCreditCardPayment->DateAuthorized) ? $this->objCreditCardPayment->__toString($this->strDateAuthorizedDateTimeFormat) : null;
+
+			if ($this->calDateCaptured) $this->calDateCaptured->DateTime = $this->objCreditCardPayment->DateCaptured;
+			if ($this->lblDateCaptured) $this->lblDateCaptured->Text = sprintf($this->objCreditCardPayment->DateCaptured) ? $this->objCreditCardPayment->__toString($this->strDateCapturedDateTimeFormat) : null;
 
 			if ($this->txtAmountCharged) $this->txtAmountCharged->Text = $this->objCreditCardPayment->AmountCharged;
 			if ($this->lblAmountCharged) $this->lblAmountCharged->Text = $this->objCreditCardPayment->AmountCharged;
@@ -835,11 +848,6 @@
 						$objListItem->Selected = true;
 					$this->lstOnlineDonation->AddItem($objListItem);
 				}
-				// Because OnlineDonation's OnlineDonation is not null, if a value is already selected, it cannot be changed.
-				if ($this->lstOnlineDonation->SelectedValue)
-					$this->lstOnlineDonation->Enabled = false;
-				else
-					$this->lstOnlineDonation->Enabled = true;
 			}
 			if ($this->lblOnlineDonation) $this->lblOnlineDonation->Text = ($this->objCreditCardPayment->OnlineDonation) ? $this->objCreditCardPayment->OnlineDonation->__toString() : null;
 
@@ -879,13 +887,14 @@
 		public function SaveCreditCardPayment() {
 			try {
 				// Update any fields for controls that have been created
-				if ($this->lstPerson) $this->objCreditCardPayment->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->lstCreditCardStatusType) $this->objCreditCardPayment->CreditCardStatusTypeId = $this->lstCreditCardStatusType->SelectedValue;
 				if ($this->lstCreditCardType) $this->objCreditCardPayment->CreditCardTypeId = $this->lstCreditCardType->SelectedValue;
 				if ($this->txtCreditCardLastFour) $this->objCreditCardPayment->CreditCardLastFour = $this->txtCreditCardLastFour->Text;
 				if ($this->txtTransactionCode) $this->objCreditCardPayment->TransactionCode = $this->txtTransactionCode->Text;
+				if ($this->txtAuthorizationCode) $this->objCreditCardPayment->AuthorizationCode = $this->txtAuthorizationCode->Text;
 				if ($this->chkAddressMatchFlag) $this->objCreditCardPayment->AddressMatchFlag = $this->chkAddressMatchFlag->Checked;
-				if ($this->calDateCharged) $this->objCreditCardPayment->DateCharged = $this->calDateCharged->DateTime;
+				if ($this->calDateAuthorized) $this->objCreditCardPayment->DateAuthorized = $this->calDateAuthorized->DateTime;
+				if ($this->calDateCaptured) $this->objCreditCardPayment->DateCaptured = $this->calDateCaptured->DateTime;
 				if ($this->txtAmountCharged) $this->objCreditCardPayment->AmountCharged = $this->txtAmountCharged->Text;
 				if ($this->txtAmountFee) $this->objCreditCardPayment->AmountFee = $this->txtAmountFee->Text;
 				if ($this->txtAmountCleared) $this->objCreditCardPayment->AmountCleared = $this->txtAmountCleared->Text;
@@ -940,12 +949,6 @@
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
-				case 'PersonIdControl':
-					if (!$this->lstPerson) return $this->lstPerson_Create();
-					return $this->lstPerson;
-				case 'PersonIdLabel':
-					if (!$this->lblPersonId) return $this->lblPersonId_Create();
-					return $this->lblPersonId;
 				case 'CreditCardStatusTypeIdControl':
 					if (!$this->lstCreditCardStatusType) return $this->lstCreditCardStatusType_Create();
 					return $this->lstCreditCardStatusType;
@@ -970,18 +973,30 @@
 				case 'TransactionCodeLabel':
 					if (!$this->lblTransactionCode) return $this->lblTransactionCode_Create();
 					return $this->lblTransactionCode;
+				case 'AuthorizationCodeControl':
+					if (!$this->txtAuthorizationCode) return $this->txtAuthorizationCode_Create();
+					return $this->txtAuthorizationCode;
+				case 'AuthorizationCodeLabel':
+					if (!$this->lblAuthorizationCode) return $this->lblAuthorizationCode_Create();
+					return $this->lblAuthorizationCode;
 				case 'AddressMatchFlagControl':
 					if (!$this->chkAddressMatchFlag) return $this->chkAddressMatchFlag_Create();
 					return $this->chkAddressMatchFlag;
 				case 'AddressMatchFlagLabel':
 					if (!$this->lblAddressMatchFlag) return $this->lblAddressMatchFlag_Create();
 					return $this->lblAddressMatchFlag;
-				case 'DateChargedControl':
-					if (!$this->calDateCharged) return $this->calDateCharged_Create();
-					return $this->calDateCharged;
-				case 'DateChargedLabel':
-					if (!$this->lblDateCharged) return $this->lblDateCharged_Create();
-					return $this->lblDateCharged;
+				case 'DateAuthorizedControl':
+					if (!$this->calDateAuthorized) return $this->calDateAuthorized_Create();
+					return $this->calDateAuthorized;
+				case 'DateAuthorizedLabel':
+					if (!$this->lblDateAuthorized) return $this->lblDateAuthorized_Create();
+					return $this->lblDateAuthorized;
+				case 'DateCapturedControl':
+					if (!$this->calDateCaptured) return $this->calDateCaptured_Create();
+					return $this->calDateCaptured;
+				case 'DateCapturedLabel':
+					if (!$this->lblDateCaptured) return $this->lblDateCaptured_Create();
+					return $this->lblDateCaptured;
 				case 'AmountChargedControl':
 					if (!$this->txtAmountCharged) return $this->txtAmountCharged_Create();
 					return $this->txtAmountCharged;
@@ -1042,8 +1057,6 @@
 					// Controls that point to CreditCardPayment fields
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
-					case 'PersonIdControl':
-						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'CreditCardStatusTypeIdControl':
 						return ($this->lstCreditCardStatusType = QType::Cast($mixValue, 'QControl'));
 					case 'CreditCardTypeIdControl':
@@ -1052,10 +1065,14 @@
 						return ($this->txtCreditCardLastFour = QType::Cast($mixValue, 'QControl'));
 					case 'TransactionCodeControl':
 						return ($this->txtTransactionCode = QType::Cast($mixValue, 'QControl'));
+					case 'AuthorizationCodeControl':
+						return ($this->txtAuthorizationCode = QType::Cast($mixValue, 'QControl'));
 					case 'AddressMatchFlagControl':
 						return ($this->chkAddressMatchFlag = QType::Cast($mixValue, 'QControl'));
-					case 'DateChargedControl':
-						return ($this->calDateCharged = QType::Cast($mixValue, 'QControl'));
+					case 'DateAuthorizedControl':
+						return ($this->calDateAuthorized = QType::Cast($mixValue, 'QControl'));
+					case 'DateCapturedControl':
+						return ($this->calDateCaptured = QType::Cast($mixValue, 'QControl'));
 					case 'AmountChargedControl':
 						return ($this->txtAmountCharged = QType::Cast($mixValue, 'QControl'));
 					case 'AmountFeeControl':

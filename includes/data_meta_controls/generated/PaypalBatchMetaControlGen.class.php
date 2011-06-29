@@ -20,8 +20,10 @@
 	 * property-read QLabel $IdLabel
 	 * property QTextBox $NumberControl
 	 * property-read QLabel $NumberLabel
-	 * property QDateTimePicker $DatePostedControl
-	 * property-read QLabel $DatePostedLabel
+	 * property QDateTimePicker $DateReceivedControl
+	 * property-read QLabel $DateReceivedLabel
+	 * property QDateTimePicker $DateReconciledControl
+	 * property-read QLabel $DateReconciledLabel
 	 * property QCheckBox $ReconciledFlagControl
 	 * property-read QLabel $ReconciledFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -68,10 +70,16 @@
 		protected $txtNumber;
 
         /**
-         * @var QDateTimePicker calDatePosted;
+         * @var QDateTimePicker calDateReceived;
          * @access protected
          */
-		protected $calDatePosted;
+		protected $calDateReceived;
+
+        /**
+         * @var QDateTimePicker calDateReconciled;
+         * @access protected
+         */
+		protected $calDateReconciled;
 
         /**
          * @var QCheckBox chkReconciledFlag;
@@ -88,10 +96,16 @@
 		protected $lblNumber;
 
         /**
-         * @var QLabel lblDatePosted
+         * @var QLabel lblDateReceived
          * @access protected
          */
-		protected $lblDatePosted;
+		protected $lblDateReceived;
+
+        /**
+         * @var QLabel lblDateReconciled
+         * @access protected
+         */
+		protected $lblDateReconciled;
 
         /**
          * @var QLabel lblReconciledFlag
@@ -238,33 +252,62 @@
 		}
 
 		/**
-		 * Create and setup QDateTimePicker calDatePosted
+		 * Create and setup QDateTimePicker calDateReceived
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
 		 */
-		public function calDatePosted_Create($strControlId = null) {
-			$this->calDatePosted = new QDateTimePicker($this->objParentObject, $strControlId);
-			$this->calDatePosted->Name = QApplication::Translate('Date Posted');
-			$this->calDatePosted->DateTime = $this->objPaypalBatch->DatePosted;
-			$this->calDatePosted->DateTimePickerType = QDateTimePickerType::DateTime;
-			return $this->calDatePosted;
+		public function calDateReceived_Create($strControlId = null) {
+			$this->calDateReceived = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateReceived->Name = QApplication::Translate('Date Received');
+			$this->calDateReceived->DateTime = $this->objPaypalBatch->DateReceived;
+			$this->calDateReceived->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDateReceived;
 		}
 
 		/**
-		 * Create and setup QLabel lblDatePosted
+		 * Create and setup QLabel lblDateReceived
 		 * @param string $strControlId optional ControlId to use
 		 * @param string $strDateTimeFormat optional DateTimeFormat to use
 		 * @return QLabel
 		 */
-		public function lblDatePosted_Create($strControlId = null, $strDateTimeFormat = null) {
-			$this->lblDatePosted = new QLabel($this->objParentObject, $strControlId);
-			$this->lblDatePosted->Name = QApplication::Translate('Date Posted');
-			$this->strDatePostedDateTimeFormat = $strDateTimeFormat;
-			$this->lblDatePosted->Text = sprintf($this->objPaypalBatch->DatePosted) ? $this->objPaypalBatch->DatePosted->__toString($this->strDatePostedDateTimeFormat) : null;
-			return $this->lblDatePosted;
+		public function lblDateReceived_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateReceived = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateReceived->Name = QApplication::Translate('Date Received');
+			$this->strDateReceivedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateReceived->Text = sprintf($this->objPaypalBatch->DateReceived) ? $this->objPaypalBatch->DateReceived->__toString($this->strDateReceivedDateTimeFormat) : null;
+			return $this->lblDateReceived;
 		}
 
-		protected $strDatePostedDateTimeFormat;
+		protected $strDateReceivedDateTimeFormat;
+
+		/**
+		 * Create and setup QDateTimePicker calDateReconciled
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateReconciled_Create($strControlId = null) {
+			$this->calDateReconciled = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateReconciled->Name = QApplication::Translate('Date Reconciled');
+			$this->calDateReconciled->DateTime = $this->objPaypalBatch->DateReconciled;
+			$this->calDateReconciled->DateTimePickerType = QDateTimePickerType::DateTime;
+			return $this->calDateReconciled;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateReconciled
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateReconciled_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateReconciled = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateReconciled->Name = QApplication::Translate('Date Reconciled');
+			$this->strDateReconciledDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateReconciled->Text = sprintf($this->objPaypalBatch->DateReconciled) ? $this->objPaypalBatch->DateReconciled->__toString($this->strDateReconciledDateTimeFormat) : null;
+			return $this->lblDateReconciled;
+		}
+
+		protected $strDateReconciledDateTimeFormat;
 
 		/**
 		 * Create and setup QCheckBox chkReconciledFlag
@@ -306,8 +349,11 @@
 			if ($this->txtNumber) $this->txtNumber->Text = $this->objPaypalBatch->Number;
 			if ($this->lblNumber) $this->lblNumber->Text = $this->objPaypalBatch->Number;
 
-			if ($this->calDatePosted) $this->calDatePosted->DateTime = $this->objPaypalBatch->DatePosted;
-			if ($this->lblDatePosted) $this->lblDatePosted->Text = sprintf($this->objPaypalBatch->DatePosted) ? $this->objPaypalBatch->__toString($this->strDatePostedDateTimeFormat) : null;
+			if ($this->calDateReceived) $this->calDateReceived->DateTime = $this->objPaypalBatch->DateReceived;
+			if ($this->lblDateReceived) $this->lblDateReceived->Text = sprintf($this->objPaypalBatch->DateReceived) ? $this->objPaypalBatch->__toString($this->strDateReceivedDateTimeFormat) : null;
+
+			if ($this->calDateReconciled) $this->calDateReconciled->DateTime = $this->objPaypalBatch->DateReconciled;
+			if ($this->lblDateReconciled) $this->lblDateReconciled->Text = sprintf($this->objPaypalBatch->DateReconciled) ? $this->objPaypalBatch->__toString($this->strDateReconciledDateTimeFormat) : null;
 
 			if ($this->chkReconciledFlag) $this->chkReconciledFlag->Checked = $this->objPaypalBatch->ReconciledFlag;
 			if ($this->lblReconciledFlag) $this->lblReconciledFlag->Text = ($this->objPaypalBatch->ReconciledFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
@@ -336,7 +382,8 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->txtNumber) $this->objPaypalBatch->Number = $this->txtNumber->Text;
-				if ($this->calDatePosted) $this->objPaypalBatch->DatePosted = $this->calDatePosted->DateTime;
+				if ($this->calDateReceived) $this->objPaypalBatch->DateReceived = $this->calDateReceived->DateTime;
+				if ($this->calDateReconciled) $this->objPaypalBatch->DateReconciled = $this->calDateReconciled->DateTime;
 				if ($this->chkReconciledFlag) $this->objPaypalBatch->ReconciledFlag = $this->chkReconciledFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -392,12 +439,18 @@
 				case 'NumberLabel':
 					if (!$this->lblNumber) return $this->lblNumber_Create();
 					return $this->lblNumber;
-				case 'DatePostedControl':
-					if (!$this->calDatePosted) return $this->calDatePosted_Create();
-					return $this->calDatePosted;
-				case 'DatePostedLabel':
-					if (!$this->lblDatePosted) return $this->lblDatePosted_Create();
-					return $this->lblDatePosted;
+				case 'DateReceivedControl':
+					if (!$this->calDateReceived) return $this->calDateReceived_Create();
+					return $this->calDateReceived;
+				case 'DateReceivedLabel':
+					if (!$this->lblDateReceived) return $this->lblDateReceived_Create();
+					return $this->lblDateReceived;
+				case 'DateReconciledControl':
+					if (!$this->calDateReconciled) return $this->calDateReconciled_Create();
+					return $this->calDateReconciled;
+				case 'DateReconciledLabel':
+					if (!$this->lblDateReconciled) return $this->lblDateReconciled_Create();
+					return $this->lblDateReconciled;
 				case 'ReconciledFlagControl':
 					if (!$this->chkReconciledFlag) return $this->chkReconciledFlag_Create();
 					return $this->chkReconciledFlag;
@@ -430,8 +483,10 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'NumberControl':
 						return ($this->txtNumber = QType::Cast($mixValue, 'QControl'));
-					case 'DatePostedControl':
-						return ($this->calDatePosted = QType::Cast($mixValue, 'QControl'));
+					case 'DateReceivedControl':
+						return ($this->calDateReceived = QType::Cast($mixValue, 'QControl'));
+					case 'DateReconciledControl':
+						return ($this->calDateReconciled = QType::Cast($mixValue, 'QControl'));
 					case 'ReconciledFlagControl':
 						return ($this->chkReconciledFlag = QType::Cast($mixValue, 'QControl'));
 					default:

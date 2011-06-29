@@ -65,8 +65,6 @@
 	 * @property AttributeValue[] $_AttributeValueArray the value for the private _objAttributeValueArray (Read-Only) if set due to an ExpandAsArray on the attribute_value.person_id reverse relationship
 	 * @property Comment $_Comment the value for the private _objComment (Read-Only) if set due to an expansion on the comment.person_id reverse relationship
 	 * @property Comment[] $_CommentArray the value for the private _objCommentArray (Read-Only) if set due to an ExpandAsArray on the comment.person_id reverse relationship
-	 * @property CreditCardPayment $_CreditCardPayment the value for the private _objCreditCardPayment (Read-Only) if set due to an expansion on the credit_card_payment.person_id reverse relationship
-	 * @property CreditCardPayment[] $_CreditCardPaymentArray the value for the private _objCreditCardPaymentArray (Read-Only) if set due to an ExpandAsArray on the credit_card_payment.person_id reverse relationship
 	 * @property Email $_Email the value for the private _objEmail (Read-Only) if set due to an expansion on the email.person_id reverse relationship
 	 * @property Email[] $_EmailArray the value for the private _objEmailArray (Read-Only) if set due to an ExpandAsArray on the email.person_id reverse relationship
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.person_id reverse relationship
@@ -83,6 +81,8 @@
 	 * @property Marriage[] $_MarriageAsMarriedToArray the value for the private _objMarriageAsMarriedToArray (Read-Only) if set due to an ExpandAsArray on the marriage.married_to_person_id reverse relationship
 	 * @property Membership $_Membership the value for the private _objMembership (Read-Only) if set due to an expansion on the membership.person_id reverse relationship
 	 * @property Membership[] $_MembershipArray the value for the private _objMembershipArray (Read-Only) if set due to an ExpandAsArray on the membership.person_id reverse relationship
+	 * @property OnlineDonation $_OnlineDonation the value for the private _objOnlineDonation (Read-Only) if set due to an expansion on the online_donation.person_id reverse relationship
+	 * @property OnlineDonation[] $_OnlineDonationArray the value for the private _objOnlineDonationArray (Read-Only) if set due to an ExpandAsArray on the online_donation.person_id reverse relationship
 	 * @property OtherContactInfo $_OtherContactInfo the value for the private _objOtherContactInfo (Read-Only) if set due to an expansion on the other_contact_info.person_id reverse relationship
 	 * @property OtherContactInfo[] $_OtherContactInfoArray the value for the private _objOtherContactInfoArray (Read-Only) if set due to an ExpandAsArray on the other_contact_info.person_id reverse relationship
 	 * @property Phone $_Phone the value for the private _objPhone (Read-Only) if set due to an expansion on the phone.person_id reverse relationship
@@ -470,22 +470,6 @@
 		private $_objCommentArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single CreditCardPayment object
-		 * (of type CreditCardPayment), if this Person object was restored with
-		 * an expansion on the credit_card_payment association table.
-		 * @var CreditCardPayment _objCreditCardPayment;
-		 */
-		private $_objCreditCardPayment;
-
-		/**
-		 * Private member variable that stores a reference to an array of CreditCardPayment objects
-		 * (of type CreditCardPayment[]), if this Person object was restored with
-		 * an ExpandAsArray on the credit_card_payment association table.
-		 * @var CreditCardPayment[] _objCreditCardPaymentArray;
-		 */
-		private $_objCreditCardPaymentArray = array();
-
-		/**
 		 * Private member variable that stores a reference to a single Email object
 		 * (of type Email), if this Person object was restored with
 		 * an expansion on the email association table.
@@ -612,6 +596,22 @@
 		 * @var Membership[] _objMembershipArray;
 		 */
 		private $_objMembershipArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single OnlineDonation object
+		 * (of type OnlineDonation), if this Person object was restored with
+		 * an expansion on the online_donation association table.
+		 * @var OnlineDonation _objOnlineDonation;
+		 */
+		private $_objOnlineDonation;
+
+		/**
+		 * Private member variable that stores a reference to an array of OnlineDonation objects
+		 * (of type OnlineDonation[]), if this Person object was restored with
+		 * an ExpandAsArray on the online_donation association table.
+		 * @var OnlineDonation[] _objOnlineDonationArray;
+		 */
+		private $_objOnlineDonationArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single OtherContactInfo object
@@ -1344,20 +1344,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				$strAlias = $strAliasPrefix . 'creditcardpayment__id';
-				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objCreditCardPaymentArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objCreditCardPaymentArray[$intPreviousChildItemCount - 1];
-						$objChildItem = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
-						if ($objChildItem)
-							$objPreviousItem->_objCreditCardPaymentArray[] = $objChildItem;
-					} else
-						$objPreviousItem->_objCreditCardPaymentArray[] = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-					$blnExpandedViaArray = true;
-				}
-
 				$strAlias = $strAliasPrefix . 'email__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1467,6 +1453,20 @@
 							$objPreviousItem->_objMembershipArray[] = $objChildItem;
 					} else
 						$objPreviousItem->_objMembershipArray[] = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'onlinedonation__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objOnlineDonationArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objOnlineDonationArray[$intPreviousChildItemCount - 1];
+						$objChildItem = OnlineDonation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonation__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objOnlineDonationArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objOnlineDonationArray[] = OnlineDonation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -1813,16 +1813,6 @@
 					$objToReturn->_objComment = Comment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'comment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-			// Check for CreditCardPayment Virtual Binding
-			$strAlias = $strAliasPrefix . 'creditcardpayment__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objCreditCardPaymentArray[] = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objCreditCardPayment = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
-
 			// Check for Email Virtual Binding
 			$strAlias = $strAliasPrefix . 'email__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1901,6 +1891,16 @@
 					$objToReturn->_objMembershipArray[] = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objMembership = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for OnlineDonation Virtual Binding
+			$strAlias = $strAliasPrefix . 'onlinedonation__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objOnlineDonationArray[] = OnlineDonation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objOnlineDonation = OnlineDonation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for OtherContactInfo Virtual Binding
@@ -3136,18 +3136,6 @@
 					// @return Comment[]
 					return (array) $this->_objCommentArray;
 
-				case '_CreditCardPayment':
-					// Gets the value for the private _objCreditCardPayment (Read-Only)
-					// if set due to an expansion on the credit_card_payment.person_id reverse relationship
-					// @return CreditCardPayment
-					return $this->_objCreditCardPayment;
-
-				case '_CreditCardPaymentArray':
-					// Gets the value for the private _objCreditCardPaymentArray (Read-Only)
-					// if set due to an ExpandAsArray on the credit_card_payment.person_id reverse relationship
-					// @return CreditCardPayment[]
-					return (array) $this->_objCreditCardPaymentArray;
-
 				case '_Email':
 					// Gets the value for the private _objEmail (Read-Only)
 					// if set due to an expansion on the email.person_id reverse relationship
@@ -3243,6 +3231,18 @@
 					// if set due to an ExpandAsArray on the membership.person_id reverse relationship
 					// @return Membership[]
 					return (array) $this->_objMembershipArray;
+
+				case '_OnlineDonation':
+					// Gets the value for the private _objOnlineDonation (Read-Only)
+					// if set due to an expansion on the online_donation.person_id reverse relationship
+					// @return OnlineDonation
+					return $this->_objOnlineDonation;
+
+				case '_OnlineDonationArray':
+					// Gets the value for the private _objOnlineDonationArray (Read-Only)
+					// if set due to an ExpandAsArray on the online_donation.person_id reverse relationship
+					// @return OnlineDonation[]
+					return (array) $this->_objOnlineDonationArray;
 
 				case '_OtherContactInfo':
 					// Gets the value for the private _objOtherContactInfo (Read-Only)
@@ -4522,188 +4522,6 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`comment`
-				WHERE
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-			
-		
-		// Related Objects' Methods for CreditCardPayment
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated CreditCardPayments as an array of CreditCardPayment objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return CreditCardPayment[]
-		*/ 
-		public function GetCreditCardPaymentArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return CreditCardPayment::LoadArrayByPersonId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated CreditCardPayments
-		 * @return int
-		*/ 
-		public function CountCreditCardPayments() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return CreditCardPayment::CountByPersonId($this->intId);
-		}
-
-		/**
-		 * Associates a CreditCardPayment
-		 * @param CreditCardPayment $objCreditCardPayment
-		 * @return void
-		*/ 
-		public function AssociateCreditCardPayment(CreditCardPayment $objCreditCardPayment) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCreditCardPayment on this unsaved Person.');
-			if ((is_null($objCreditCardPayment->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateCreditCardPayment on this Person with an unsaved CreditCardPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`credit_card_payment`
-				SET
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objCreditCardPayment->Id) . '
-			');
-
-			// Journaling (if applicable)
-			if ($objDatabase->JournalingDatabase) {
-				$objCreditCardPayment->PersonId = $this->intId;
-				$objCreditCardPayment->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates a CreditCardPayment
-		 * @param CreditCardPayment $objCreditCardPayment
-		 * @return void
-		*/ 
-		public function UnassociateCreditCardPayment(CreditCardPayment $objCreditCardPayment) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
-			if ((is_null($objCreditCardPayment->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this Person with an unsaved CreditCardPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`credit_card_payment`
-				SET
-					`person_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objCreditCardPayment->Id) . ' AND
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objCreditCardPayment->PersonId = null;
-				$objCreditCardPayment->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates all CreditCardPayments
-		 * @return void
-		*/ 
-		public function UnassociateAllCreditCardPayments() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (CreditCardPayment::LoadArrayByPersonId($this->intId) as $objCreditCardPayment) {
-					$objCreditCardPayment->PersonId = null;
-					$objCreditCardPayment->Journal('UPDATE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`credit_card_payment`
-				SET
-					`person_id` = null
-				WHERE
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated CreditCardPayment
-		 * @param CreditCardPayment $objCreditCardPayment
-		 * @return void
-		*/ 
-		public function DeleteAssociatedCreditCardPayment(CreditCardPayment $objCreditCardPayment) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
-			if ((is_null($objCreditCardPayment->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this Person with an unsaved CreditCardPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`credit_card_payment`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objCreditCardPayment->Id) . ' AND
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objCreditCardPayment->Journal('DELETE');
-			}
-		}
-
-		/**
-		 * Deletes all associated CreditCardPayments
-		 * @return void
-		*/ 
-		public function DeleteAllCreditCardPayments() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateCreditCardPayment on this unsaved Person.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (CreditCardPayment::LoadArrayByPersonId($this->intId) as $objCreditCardPayment) {
-					$objCreditCardPayment->Journal('DELETE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`credit_card_payment`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -6160,6 +5978,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`membership`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for OnlineDonation
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated OnlineDonations as an array of OnlineDonation objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return OnlineDonation[]
+		*/ 
+		public function GetOnlineDonationArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return OnlineDonation::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated OnlineDonations
+		 * @return int
+		*/ 
+		public function CountOnlineDonations() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return OnlineDonation::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a OnlineDonation
+		 * @param OnlineDonation $objOnlineDonation
+		 * @return void
+		*/ 
+		public function AssociateOnlineDonation(OnlineDonation $objOnlineDonation) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateOnlineDonation on this unsaved Person.');
+			if ((is_null($objOnlineDonation->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateOnlineDonation on this Person with an unsaved OnlineDonation.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`online_donation`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objOnlineDonation->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objOnlineDonation->PersonId = $this->intId;
+				$objOnlineDonation->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a OnlineDonation
+		 * @param OnlineDonation $objOnlineDonation
+		 * @return void
+		*/ 
+		public function UnassociateOnlineDonation(OnlineDonation $objOnlineDonation) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateOnlineDonation on this unsaved Person.');
+			if ((is_null($objOnlineDonation->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateOnlineDonation on this Person with an unsaved OnlineDonation.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`online_donation`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objOnlineDonation->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objOnlineDonation->PersonId = null;
+				$objOnlineDonation->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all OnlineDonations
+		 * @return void
+		*/ 
+		public function UnassociateAllOnlineDonations() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateOnlineDonation on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (OnlineDonation::LoadArrayByPersonId($this->intId) as $objOnlineDonation) {
+					$objOnlineDonation->PersonId = null;
+					$objOnlineDonation->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`online_donation`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated OnlineDonation
+		 * @param OnlineDonation $objOnlineDonation
+		 * @return void
+		*/ 
+		public function DeleteAssociatedOnlineDonation(OnlineDonation $objOnlineDonation) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateOnlineDonation on this unsaved Person.');
+			if ((is_null($objOnlineDonation->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateOnlineDonation on this Person with an unsaved OnlineDonation.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`online_donation`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objOnlineDonation->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objOnlineDonation->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated OnlineDonations
+		 * @return void
+		*/ 
+		public function DeleteAllOnlineDonations() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateOnlineDonation on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (OnlineDonation::LoadArrayByPersonId($this->intId) as $objOnlineDonation) {
+					$objOnlineDonation->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`online_donation`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -8864,7 +8864,6 @@
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
 	 * @property-read QQReverseReferenceNodeComment $Comment
-	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
@@ -8874,6 +8873,7 @@
 	 * @property-read QQReverseReferenceNodeMarriage $Marriage
 	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsMarriedTo
 	 * @property-read QQReverseReferenceNodeMembership $Membership
+	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
@@ -8976,8 +8976,6 @@
 					return new QQReverseReferenceNodeAttributeValue($this, 'attributevalue', 'reverse_reference', 'person_id');
 				case 'Comment':
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
-				case 'CreditCardPayment':
-					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
 				case 'EmailMessageRoute':
@@ -8996,6 +8994,8 @@
 					return new QQReverseReferenceNodeMarriage($this, 'marriageasmarriedto', 'reverse_reference', 'married_to_person_id');
 				case 'Membership':
 					return new QQReverseReferenceNodeMembership($this, 'membership', 'reverse_reference', 'person_id');
+				case 'OnlineDonation':
+					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'Phone':
@@ -9075,7 +9075,6 @@
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
 	 * @property-read QQReverseReferenceNodeComment $Comment
-	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
@@ -9085,6 +9084,7 @@
 	 * @property-read QQReverseReferenceNodeMarriage $Marriage
 	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsMarriedTo
 	 * @property-read QQReverseReferenceNodeMembership $Membership
+	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
@@ -9188,8 +9188,6 @@
 					return new QQReverseReferenceNodeAttributeValue($this, 'attributevalue', 'reverse_reference', 'person_id');
 				case 'Comment':
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
-				case 'CreditCardPayment':
-					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'person_id');
 				case 'Email':
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
 				case 'EmailMessageRoute':
@@ -9208,6 +9206,8 @@
 					return new QQReverseReferenceNodeMarriage($this, 'marriageasmarriedto', 'reverse_reference', 'married_to_person_id');
 				case 'Membership':
 					return new QQReverseReferenceNodeMembership($this, 'membership', 'reverse_reference', 'person_id');
+				case 'OnlineDonation':
+					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'Phone':

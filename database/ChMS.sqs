@@ -91,8 +91,8 @@
             <y>1536.000000</y>
         </location>
         <size>
-            <width>352.000000</width>
-            <height>224.000000</height>
+            <width>349.000000</width>
+            <height>220.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -176,7 +176,7 @@
             <y>1728.000000</y>
         </location>
         <size>
-            <width>240.000000</width>
+            <width>243.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -238,8 +238,8 @@
             <y>1872.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
-            <height>144.000000</height>
+            <width>283.000000</width>
+            <height>140.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -365,11 +365,11 @@
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
             <x>3216.000000</x>
-            <y>1808.000000</y>
+            <y>1776.000000</y>
         </location>
         <size>
             <width>320.000000</width>
-            <height>260.000000</height>
+            <height>288.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -380,23 +380,6 @@
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <forcedUnique><![CDATA[1]]></forcedUnique>
             <uid><![CDATA[F020E7A1-E9A0-40D1-A19B-75C31289321E]]></uid>
-            <unsigned><![CDATA[1]]></unsigned>
-        </SQLField>
-        <SQLField>
-            <name><![CDATA[person_id]]></name>
-            <type><![CDATA[INTEGER]]></type>
-            <notNull>1</notNull>
-            <referencesField>id</referencesField>
-            <referencesTable>person</referencesTable>
-            <referencesField><![CDATA[id]]></referencesField>
-            <referencesTable><![CDATA[person]]></referencesTable>
-            <sourceCardinality>4</sourceCardinality>
-            <destinationCardinality>1</destinationCardinality>
-            <referencesFieldUID><![CDATA[C5FA9BB7-E1A4-4050-AD84-B222124D0F6E]]></referencesFieldUID>
-            <referencesTableUID><![CDATA[6E71867A-FAA2-4654-AC6A-A50B14A46CE5]]></referencesTableUID>
-            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
-            <uid><![CDATA[405EFBB7-DBF9-4416-A9D0-60BD84244B73]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
@@ -449,16 +432,28 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <SQLField>
+            <name><![CDATA[authorization_code]]></name>
+            <type><![CDATA[VARCHAR(40)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[AF6D298B-BB0A-48F7-B2A4-B932C14B4145]]></uid>
+        </SQLField>
+        <SQLField>
             <name><![CDATA[address_match_flag]]></name>
             <type><![CDATA[BOOLEAN]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[92C994BA-5636-4182-AD15-21BE6C48AEA4]]></uid>
         </SQLField>
         <SQLField>
-            <name><![CDATA[date_charged]]></name>
+            <name><![CDATA[date_authorized]]></name>
             <type><![CDATA[DATETIME]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[B567EE67-BAF1-4865-AA6C-F8EA00B03014]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[date_captured]]></name>
+            <type><![CDATA[DATETIME]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[0E641DD2-A133-4DA0-B9FB-D2F69C91D958]]></uid>
         </SQLField>
         <SQLField>
             <name><![CDATA[amount_charged]]></name>
@@ -507,7 +502,7 @@
             <y>1840.000000</y>
         </location>
         <size>
-            <width>320.000000</width>
+            <width>314.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -683,12 +678,12 @@
         <schema><![CDATA[]]></schema>
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
-            <x>3328.000000</x>
-            <y>1632.000000</y>
+            <x>3024.000000</x>
+            <y>1600.000000</y>
         </location>
         <size>
             <width>208.000000</width>
-            <height>100.000000</height>
+            <height>128.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -709,7 +704,13 @@
             <unique><![CDATA[1]]></unique>
         </SQLField>
         <SQLField>
-            <name><![CDATA[date_posted]]></name>
+            <name><![CDATA[date_received]]></name>
+            <type><![CDATA[DATETIME]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[23C287F5-996F-4281-8E0D-E489D93C7154]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[date_reconciled]]></name>
             <type><![CDATA[DATETIME]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[3C7C95FC-39C8-4CC4-B0F8-A3731B7C7E96]]></uid>
@@ -734,7 +735,7 @@
             <y>1040.000000</y>
         </location>
         <size>
-            <width>336.000000</width>
+            <width>330.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -796,8 +797,8 @@
             <y>320.000000</y>
         </location>
         <size>
-            <width>256.000000</width>
-            <height>144.000000</height>
+            <width>263.000000</width>
+            <height>140.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -924,7 +925,7 @@
             <y>1328.000000</y>
         </location>
         <size>
-            <width>368.000000</width>
+            <width>375.000000</width>
             <height>340.000000</height>
         </size>
         <SQLField>
@@ -1177,7 +1178,7 @@
             <y>928.000000</y>
         </location>
         <size>
-            <width>432.000000</width>
+            <width>437.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -1375,8 +1376,8 @@
             <y>768.000000</y>
         </location>
         <size>
-            <width>272.000000</width>
-            <height>224.000000</height>
+            <width>264.000000</width>
+            <height>220.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -1503,7 +1504,7 @@
             <y>384.000000</y>
         </location>
         <size>
-            <width>224.000000</width>
+            <width>231.000000</width>
             <height>80.000000</height>
         </size>
         <SQLField>
@@ -1705,8 +1706,8 @@
             <y>160.000000</y>
         </location>
         <size>
-            <width>272.000000</width>
-            <height>128.000000</height>
+            <width>266.000000</width>
+            <height>120.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -1842,7 +1843,7 @@
             <y>0.000000</y>
         </location>
         <size>
-            <width>304.000000</width>
+            <width>311.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -1941,8 +1942,8 @@
             <y>0.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
-            <height>368.000000</height>
+            <width>283.000000</width>
+            <height>360.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -2133,7 +2134,7 @@
             <y>1920.000000</y>
         </location>
         <size>
-            <width>400.000000</width>
+            <width>403.000000</width>
             <height>240.000000</height>
         </size>
         <SQLField>
@@ -2283,8 +2284,8 @@
             <y>1328.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
-            <height>128.000000</height>
+            <width>282.000000</width>
+            <height>120.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -2592,8 +2593,8 @@
             <y>176.000000</y>
         </location>
         <size>
-            <width>416.000000</width>
-            <height>144.000000</height>
+            <width>411.000000</width>
+            <height>140.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -2795,7 +2796,7 @@
             <y>1184.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
+            <width>290.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -2922,8 +2923,8 @@
             <y>192.000000</y>
         </location>
         <size>
-            <width>384.000000</width>
-            <height>128.000000</height>
+            <width>385.000000</width>
+            <height>120.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -3012,7 +3013,7 @@
             <y>512.000000</y>
         </location>
         <size>
-            <width>256.000000</width>
+            <width>257.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -3578,10 +3579,10 @@
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
             <x>3280.000000</x>
-            <y>1520.000000</y>
+            <y>1504.000000</y>
         </location>
         <size>
-            <width>304.000000</width>
+            <width>289.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -3599,15 +3600,28 @@
             <name><![CDATA[person_id]]></name>
             <type><![CDATA[INTEGER]]></type>
             <notNull>1</notNull>
+            <referencesField>id</referencesField>
+            <referencesTable>person</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[person]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>1</destinationCardinality>
+            <referencesFieldUID><![CDATA[C5FA9BB7-E1A4-4050-AD84-B222124D0F6E]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[6E71867A-FAA2-4654-AC6A-A50B14A46CE5]]></referencesTableUID>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <indexed><![CDATA[1]]></indexed>
             <uid><![CDATA[FDC93E50-AE68-4DD9-BEC2-1FCD444AA7D2]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
+            <name><![CDATA[amount]]></name>
+            <type><![CDATA[DECIMAL(10,2)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[4FB3B5E0-EC61-44C0-AFC6-070DB19B2BEF]]></uid>
+        </SQLField>
+        <SQLField>
             <name><![CDATA[credit_card_payment_id]]></name>
             <type><![CDATA[INTEGER]]></type>
-            <notNull>1</notNull>
             <referencesField>id</referencesField>
             <referencesTable>credit_card_payment</referencesTable>
             <referencesField><![CDATA[id]]></referencesField>
@@ -3620,12 +3634,6 @@
             <uid><![CDATA[2B968BC7-46D7-495D-B01F-C560592C0A3B]]></uid>
             <unique><![CDATA[1]]></unique>
             <unsigned><![CDATA[1]]></unsigned>
-        </SQLField>
-        <SQLField>
-            <name><![CDATA[total_amount]]></name>
-            <type><![CDATA[DECIMAL(10,2)]]></type>
-            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <uid><![CDATA[4FB3B5E0-EC61-44C0-AFC6-070DB19B2BEF]]></uid>
         </SQLField>
         <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[7E498C45-7803-4878-8DF2-A528ADABA1B3]]></uid>
@@ -3640,7 +3648,7 @@
             <y>1024.000000</y>
         </location>
         <size>
-            <width>432.000000</width>
+            <width>429.000000</width>
             <height>260.000000</height>
         </size>
         <SQLField>
@@ -3767,8 +3775,8 @@
             <y>1600.000000</y>
         </location>
         <size>
-            <width>464.000000</width>
-            <height>288.000000</height>
+            <width>470.000000</width>
+            <height>280.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -3973,8 +3981,8 @@
             <y>640.000000</y>
         </location>
         <size>
-            <width>368.000000</width>
-            <height>64.000000</height>
+            <width>366.000000</width>
+            <height>60.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[checking_account_lookup_id]]></name>
@@ -4021,7 +4029,7 @@
             <y>0.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
+            <width>280.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -4153,7 +4161,7 @@
             <y>592.000000</y>
         </location>
         <size>
-            <width>480.000000</width>
+            <width>475.000000</width>
             <height>400.000000</height>
         </size>
         <SQLField>
@@ -4357,7 +4365,7 @@
             <y>352.000000</y>
         </location>
         <size>
-            <width>320.000000</width>
+            <width>315.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -4673,8 +4681,8 @@
             <y>2064.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
-            <height>144.000000</height>
+            <width>289.000000</width>
+            <height>140.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -4895,7 +4903,7 @@
             <y>1216.000000</y>
         </location>
         <size>
-            <width>272.000000</width>
+            <width>279.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -4980,7 +4988,7 @@
             <y>1184.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
+            <width>291.000000</width>
             <height>340.000000</height>
         </size>
         <SQLField>
@@ -5258,7 +5266,7 @@
             <y>768.000000</y>
         </location>
         <size>
-            <width>448.000000</width>
+            <width>447.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -5414,7 +5422,7 @@
             <y>1568.000000</y>
         </location>
         <size>
-            <width>240.000000</width>
+            <width>235.000000</width>
             <height>100.000000</height>
         </size>
         <SQLField>
@@ -5794,7 +5802,7 @@
             <y>960.000000</y>
         </location>
         <size>
-            <width>336.000000</width>
+            <width>330.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -6004,7 +6012,7 @@
             <y>608.000000</y>
         </location>
         <size>
-            <width>384.000000</width>
+            <width>389.000000</width>
             <height>260.000000</height>
         </size>
         <SQLField>
@@ -6123,7 +6131,7 @@
             <y>1584.000000</y>
         </location>
         <size>
-            <width>400.000000</width>
+            <width>397.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -6293,8 +6301,8 @@
             <y>1808.000000</y>
         </location>
         <size>
-            <width>304.000000</width>
-            <height>224.000000</height>
+            <width>301.000000</width>
+            <height>220.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -6602,7 +6610,7 @@
             <y>1840.000000</y>
         </location>
         <size>
-            <width>416.000000</width>
+            <width>411.000000</width>
             <height>160.000000</height>
         </size>
         <SQLField>
@@ -7052,7 +7060,7 @@ hpKEmZkHdGFibG9pZIaShJmZC05TUGFwZXJTaXplhpKEnJyEhAx7X05TU2l6ZT1m
 Zn2hgcgEgRgDhoaG
 ]]></encodedPrintInfo>
         <autoSizeTablesOption><![CDATA[1]]></autoSizeTablesOption>
-        <documentScaleFactor><![CDATA[0.55]]></documentScaleFactor>
+        <documentScaleFactor><![CDATA[0.8]]></documentScaleFactor>
         <dropTableOption><![CDATA[0]]></dropTableOption>
         <exportDialect><![CDATA[mysql]]></exportDialect>
         <fileversion><![CDATA[3.1]]></fileversion>
@@ -7061,12 +7069,12 @@ Zn2hgcgEgRgDhoaG
         <pageBoundariesVisible><![CDATA[1]]></pageBoundariesVisible>
         <PageGridVisible><![CDATA[1]]></PageGridVisible>
         <snapToGrid><![CDATA[1]]></snapToGrid>
-        <SourceSplitViewState><![CDATA[2 -378 1787]]></SourceSplitViewState>
+        <SourceSplitViewState><![CDATA[2 -352.617 1667]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
-        <windowHeight><![CDATA[1169.000000]]></windowHeight>
-        <windowLocationX><![CDATA[61.000000]]></windowLocationX>
-        <windowLocationY><![CDATA[9.000000]]></windowLocationY>
-        <windowWidth><![CDATA[1796.000000]]></windowWidth>
+        <windowHeight><![CDATA[1028.000000]]></windowHeight>
+        <windowLocationX><![CDATA[4.000000]]></windowLocationX>
+        <windowLocationY><![CDATA[0.000000]]></windowLocationY>
+        <windowWidth><![CDATA[1676.000000]]></windowWidth>
     </SQLDocumentInfo>
     <AllowsIndexRenamingOnInsert><![CDATA[1]]></AllowsIndexRenamingOnInsert>
     <containerName><![CDATA[model controller orginal container]]></containerName>

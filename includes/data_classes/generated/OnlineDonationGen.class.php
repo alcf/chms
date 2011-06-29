@@ -17,8 +17,9 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
+	 * @property double $Amount the value for fltAmount 
 	 * @property integer $CreditCardPaymentId the value for intCreditCardPaymentId (Unique)
-	 * @property double $TotalAmount the value for fltTotalAmount 
+	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property CreditCardPayment $CreditCardPayment the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
 	 * @property OnlineDonationLineItem $_OnlineDonationLineItem the value for the private _objOnlineDonationLineItem (Read-Only) if set due to an expansion on the online_donation_line_item.online_donation_id reverse relationship
 	 * @property OnlineDonationLineItem[] $_OnlineDonationLineItemArray the value for the private _objOnlineDonationLineItemArray (Read-Only) if set due to an ExpandAsArray on the online_donation_line_item.online_donation_id reverse relationship
@@ -47,19 +48,19 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column online_donation.amount
+		 * @var double fltAmount
+		 */
+		protected $fltAmount;
+		const AmountDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column online_donation.credit_card_payment_id
 		 * @var integer intCreditCardPaymentId
 		 */
 		protected $intCreditCardPaymentId;
 		const CreditCardPaymentIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column online_donation.total_amount
-		 * @var double fltTotalAmount
-		 */
-		protected $fltTotalAmount;
-		const TotalAmountDefault = null;
 
 
 		/**
@@ -99,6 +100,16 @@
 		///////////////////////////////
 		// PROTECTED MEMBER OBJECTS
 		///////////////////////////////
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column online_donation.person_id.
+		 *
+		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Person objPerson
+		 */
+		protected $objPerson;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -422,8 +433,8 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
+			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_payment_id', $strAliasPrefix . 'credit_card_payment_id');
-			$objBuilder->AddSelectItem($strTableName, 'total_amount', $strAliasPrefix . 'total_amount');
 		}
 
 
@@ -491,10 +502,10 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount'] : $strAliasPrefix . 'amount';
+			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_payment_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_payment_id'] : $strAliasPrefix . 'credit_card_payment_id';
 			$objToReturn->intCreditCardPaymentId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'total_amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_amount'] : $strAliasPrefix . 'total_amount';
-			$objToReturn->fltTotalAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -507,6 +518,12 @@
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'online_donation__';
+
+			// Check for Person Early Binding
+			$strAlias = $strAliasPrefix . 'person_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for CreditCardPayment Early Binding
 			$strAlias = $strAliasPrefix . 'credit_card_payment_id__id';
@@ -685,12 +702,12 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `online_donation` (
 							`person_id`,
-							`credit_card_payment_id`,
-							`total_amount`
+							`amount`,
+							`credit_card_payment_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
-							' . $objDatabase->SqlVariable($this->fltTotalAmount) . '
+							' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						)
 					');
 
@@ -711,8 +728,8 @@
 							`online_donation`
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
-							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
-							`total_amount` = ' . $objDatabase->SqlVariable($this->fltTotalAmount) . '
+							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -797,9 +814,9 @@
 			$objReloaded = OnlineDonation::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->intPersonId = $objReloaded->intPersonId;
+			$this->PersonId = $objReloaded->PersonId;
+			$this->fltAmount = $objReloaded->fltAmount;
 			$this->CreditCardPaymentId = $objReloaded->CreditCardPaymentId;
-			$this->fltTotalAmount = $objReloaded->fltTotalAmount;
 		}
 
 		/**
@@ -814,16 +831,16 @@
 				INSERT INTO `online_donation` (
 					`id`,
 					`person_id`,
+					`amount`,
 					`credit_card_payment_id`,
-					`total_amount`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->fltAmount) . ',
 					' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
-					' . $objDatabase->SqlVariable($this->fltTotalAmount) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -884,20 +901,32 @@
 					// @return integer
 					return $this->intPersonId;
 
+				case 'Amount':
+					// Gets the value for fltAmount 
+					// @return double
+					return $this->fltAmount;
+
 				case 'CreditCardPaymentId':
 					// Gets the value for intCreditCardPaymentId (Unique)
 					// @return integer
 					return $this->intCreditCardPaymentId;
 
-				case 'TotalAmount':
-					// Gets the value for fltTotalAmount 
-					// @return double
-					return $this->fltTotalAmount;
-
 
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'Person':
+					// Gets the value for the Person object referenced by intPersonId (Not Null)
+					// @return Person
+					try {
+						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
+							$this->objPerson = Person::Load($this->intPersonId);
+						return $this->objPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CreditCardPayment':
 					// Gets the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
 					// @return CreditCardPayment
@@ -960,7 +989,19 @@
 					// @param integer $mixValue
 					// @return integer
 					try {
+						$this->objPerson = null;
 						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Amount':
+					// Sets the value for fltAmount 
+					// @param double $mixValue
+					// @return double
+					try {
+						return ($this->fltAmount = QType::Cast($mixValue, QType::Float));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -978,21 +1019,40 @@
 						throw $objExc;
 					}
 
-				case 'TotalAmount':
-					// Sets the value for fltTotalAmount 
-					// @param double $mixValue
-					// @return double
-					try {
-						return ($this->fltTotalAmount = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'Person':
+					// Sets the value for the Person object referenced by intPersonId (Not Null)
+					// @param Person $mixValue
+					// @return Person
+					if (is_null($mixValue)) {
+						$this->intPersonId = null;
+						$this->objPerson = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Person object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Person');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Person object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved Person for this OnlineDonation');
+
+						// Update Local Member Variables
+						$this->objPerson = $mixValue;
+						$this->intPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				case 'CreditCardPayment':
 					// Sets the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
 					// @param CreditCardPayment $mixValue
@@ -1243,9 +1303,9 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="OnlineDonation"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
-			$strToReturn .= '<element name="PersonId" type="xsd:int"/>';
+			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
 			$strToReturn .= '<element name="CreditCardPayment" type="xsd1:CreditCardPayment"/>';
-			$strToReturn .= '<element name="TotalAmount" type="xsd:float"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1254,6 +1314,7 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('OnlineDonation', $strComplexTypeArray)) {
 				$strComplexTypeArray['OnlineDonation'] = OnlineDonation::GetSoapComplexTypeXml();
+				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CreditCardPayment::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1271,13 +1332,14 @@
 			$objToReturn = new OnlineDonation();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
-			if (property_exists($objSoapObject, 'PersonId'))
-				$objToReturn->intPersonId = $objSoapObject->PersonId;
+			if ((property_exists($objSoapObject, 'Person')) &&
+				($objSoapObject->Person))
+				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
+			if (property_exists($objSoapObject, 'Amount'))
+				$objToReturn->fltAmount = $objSoapObject->Amount;
 			if ((property_exists($objSoapObject, 'CreditCardPayment')) &&
 				($objSoapObject->CreditCardPayment))
 				$objToReturn->CreditCardPayment = CreditCardPayment::GetObjectFromSoapObject($objSoapObject->CreditCardPayment);
-			if (property_exists($objSoapObject, 'TotalAmount'))
-				$objToReturn->fltTotalAmount = $objSoapObject->TotalAmount;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1296,6 +1358,10 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
+			if ($objObject->objPerson)
+				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intPersonId = null;
 			if ($objObject->objCreditCardPayment)
 				$objObject->objCreditCardPayment = CreditCardPayment::GetSoapObjectFromObject($objObject->objCreditCardPayment, false);
 			else if (!$blnBindRelatedObjects)
@@ -1317,9 +1383,10 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $Amount
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
-	 * @property-read QQNode $TotalAmount
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
 	 */
 	class QQNodeOnlineDonation extends QQNode {
@@ -1332,12 +1399,14 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'PersonId':
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
+				case 'Person':
+					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'Amount':
+					return new QQNode('amount', 'Amount', 'double', $this);
 				case 'CreditCardPaymentId':
 					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
 				case 'CreditCardPayment':
 					return new QQNodeCreditCardPayment('credit_card_payment_id', 'CreditCardPayment', 'integer', $this);
-				case 'TotalAmount':
-					return new QQNode('total_amount', 'TotalAmount', 'double', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'online_donation_id');
 
@@ -1357,9 +1426,10 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $Amount
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
-	 * @property-read QQNode $TotalAmount
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1373,12 +1443,14 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'PersonId':
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
+				case 'Person':
+					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'Amount':
+					return new QQNode('amount', 'Amount', 'double', $this);
 				case 'CreditCardPaymentId':
 					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
 				case 'CreditCardPayment':
 					return new QQNodeCreditCardPayment('credit_card_payment_id', 'CreditCardPayment', 'integer', $this);
-				case 'TotalAmount':
-					return new QQNode('total_amount', 'TotalAmount', 'double', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'online_donation_id');
 

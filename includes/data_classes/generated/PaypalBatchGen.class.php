@@ -17,7 +17,8 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Number the value for strNumber (Unique)
-	 * @property QDateTime $DatePosted the value for dttDatePosted 
+	 * @property QDateTime $DateReceived the value for dttDateReceived 
+	 * @property QDateTime $DateReconciled the value for dttDateReconciled 
 	 * @property boolean $ReconciledFlag the value for blnReconciledFlag (Not Null)
 	 * @property CreditCardPayment $_CreditCardPayment the value for the private _objCreditCardPayment (Read-Only) if set due to an expansion on the credit_card_payment.paypal_batch_id reverse relationship
 	 * @property CreditCardPayment[] $_CreditCardPaymentArray the value for the private _objCreditCardPaymentArray (Read-Only) if set due to an ExpandAsArray on the credit_card_payment.paypal_batch_id reverse relationship
@@ -47,11 +48,19 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column paypal_batch.date_posted
-		 * @var QDateTime dttDatePosted
+		 * Protected member variable that maps to the database column paypal_batch.date_received
+		 * @var QDateTime dttDateReceived
 		 */
-		protected $dttDatePosted;
-		const DatePostedDefault = null;
+		protected $dttDateReceived;
+		const DateReceivedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column paypal_batch.date_reconciled
+		 * @var QDateTime dttDateReconciled
+		 */
+		protected $dttDateReconciled;
+		const DateReconciledDefault = null;
 
 
 		/**
@@ -412,7 +421,8 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'number', $strAliasPrefix . 'number');
-			$objBuilder->AddSelectItem($strTableName, 'date_posted', $strAliasPrefix . 'date_posted');
+			$objBuilder->AddSelectItem($strTableName, 'date_received', $strAliasPrefix . 'date_received');
+			$objBuilder->AddSelectItem($strTableName, 'date_reconciled', $strAliasPrefix . 'date_reconciled');
 			$objBuilder->AddSelectItem($strTableName, 'reconciled_flag', $strAliasPrefix . 'reconciled_flag');
 		}
 
@@ -481,8 +491,10 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'number'] : $strAliasPrefix . 'number';
 			$objToReturn->strNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_posted', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_posted'] : $strAliasPrefix . 'date_posted';
-			$objToReturn->dttDatePosted = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_received', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_received'] : $strAliasPrefix . 'date_received';
+			$objToReturn->dttDateReceived = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_reconciled', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_reconciled'] : $strAliasPrefix . 'date_reconciled';
+			$objToReturn->dttDateReconciled = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'reconciled_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'reconciled_flag'] : $strAliasPrefix . 'reconciled_flag';
 			$objToReturn->blnReconciledFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
@@ -637,11 +649,13 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `paypal_batch` (
 							`number`,
-							`date_posted`,
+							`date_received`,
+							`date_reconciled`,
 							`reconciled_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strNumber) . ',
-							' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+							' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
+							' . $objDatabase->SqlVariable($this->dttDateReconciled) . ',
 							' . $objDatabase->SqlVariable($this->blnReconciledFlag) . '
 						)
 					');
@@ -663,7 +677,8 @@
 							`paypal_batch`
 						SET
 							`number` = ' . $objDatabase->SqlVariable($this->strNumber) . ',
-							`date_posted` = ' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+							`date_received` = ' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
+							`date_reconciled` = ' . $objDatabase->SqlVariable($this->dttDateReconciled) . ',
 							`reconciled_flag` = ' . $objDatabase->SqlVariable($this->blnReconciledFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -750,7 +765,8 @@
 
 			// Update $this's local variables to match
 			$this->strNumber = $objReloaded->strNumber;
-			$this->dttDatePosted = $objReloaded->dttDatePosted;
+			$this->dttDateReceived = $objReloaded->dttDateReceived;
+			$this->dttDateReconciled = $objReloaded->dttDateReconciled;
 			$this->blnReconciledFlag = $objReloaded->blnReconciledFlag;
 		}
 
@@ -766,7 +782,8 @@
 				INSERT INTO `paypal_batch` (
 					`id`,
 					`number`,
-					`date_posted`,
+					`date_received`,
+					`date_reconciled`,
 					`reconciled_flag`,
 					__sys_login_id,
 					__sys_action,
@@ -774,7 +791,8 @@
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->strNumber) . ',
-					' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
+					' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
+					' . $objDatabase->SqlVariable($this->dttDateReconciled) . ',
 					' . $objDatabase->SqlVariable($this->blnReconciledFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -836,10 +854,15 @@
 					// @return string
 					return $this->strNumber;
 
-				case 'DatePosted':
-					// Gets the value for dttDatePosted 
+				case 'DateReceived':
+					// Gets the value for dttDateReceived 
 					// @return QDateTime
-					return $this->dttDatePosted;
+					return $this->dttDateReceived;
+
+				case 'DateReconciled':
+					// Gets the value for dttDateReconciled 
+					// @return QDateTime
+					return $this->dttDateReconciled;
 
 				case 'ReconciledFlag':
 					// Gets the value for blnReconciledFlag (Not Null)
@@ -906,12 +929,23 @@
 						throw $objExc;
 					}
 
-				case 'DatePosted':
-					// Sets the value for dttDatePosted 
+				case 'DateReceived':
+					// Sets the value for dttDateReceived 
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
-						return ($this->dttDatePosted = QType::Cast($mixValue, QType::DateTime));
+						return ($this->dttDateReceived = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateReconciled':
+					// Sets the value for dttDateReconciled 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateReconciled = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1153,7 +1187,8 @@
 			$strToReturn = '<complexType name="PaypalBatch"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Number" type="xsd:string"/>';
-			$strToReturn .= '<element name="DatePosted" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateReceived" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateReconciled" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="ReconciledFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1181,8 +1216,10 @@
 				$objToReturn->intId = $objSoapObject->Id;
 			if (property_exists($objSoapObject, 'Number'))
 				$objToReturn->strNumber = $objSoapObject->Number;
-			if (property_exists($objSoapObject, 'DatePosted'))
-				$objToReturn->dttDatePosted = new QDateTime($objSoapObject->DatePosted);
+			if (property_exists($objSoapObject, 'DateReceived'))
+				$objToReturn->dttDateReceived = new QDateTime($objSoapObject->DateReceived);
+			if (property_exists($objSoapObject, 'DateReconciled'))
+				$objToReturn->dttDateReconciled = new QDateTime($objSoapObject->DateReconciled);
 			if (property_exists($objSoapObject, 'ReconciledFlag'))
 				$objToReturn->blnReconciledFlag = $objSoapObject->ReconciledFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1203,8 +1240,10 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->dttDatePosted)
-				$objObject->dttDatePosted = $objObject->dttDatePosted->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateReceived)
+				$objObject->dttDateReceived = $objObject->dttDateReceived->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateReconciled)
+				$objObject->dttDateReconciled = $objObject->dttDateReconciled->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1222,7 +1261,8 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Number
-	 * @property-read QQNode $DatePosted
+	 * @property-read QQNode $DateReceived
+	 * @property-read QQNode $DateReconciled
 	 * @property-read QQNode $ReconciledFlag
 	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 */
@@ -1236,8 +1276,10 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Number':
 					return new QQNode('number', 'Number', 'string', $this);
-				case 'DatePosted':
-					return new QQNode('date_posted', 'DatePosted', 'QDateTime', $this);
+				case 'DateReceived':
+					return new QQNode('date_received', 'DateReceived', 'QDateTime', $this);
+				case 'DateReconciled':
+					return new QQNode('date_reconciled', 'DateReconciled', 'QDateTime', $this);
 				case 'ReconciledFlag':
 					return new QQNode('reconciled_flag', 'ReconciledFlag', 'boolean', $this);
 				case 'CreditCardPayment':
@@ -1259,7 +1301,8 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Number
-	 * @property-read QQNode $DatePosted
+	 * @property-read QQNode $DateReceived
+	 * @property-read QQNode $DateReconciled
 	 * @property-read QQNode $ReconciledFlag
 	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -1274,8 +1317,10 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Number':
 					return new QQNode('number', 'Number', 'string', $this);
-				case 'DatePosted':
-					return new QQNode('date_posted', 'DatePosted', 'QDateTime', $this);
+				case 'DateReceived':
+					return new QQNode('date_received', 'DateReceived', 'QDateTime', $this);
+				case 'DateReconciled':
+					return new QQNode('date_reconciled', 'DateReconciled', 'QDateTime', $this);
 				case 'ReconciledFlag':
 					return new QQNode('reconciled_flag', 'ReconciledFlag', 'boolean', $this);
 				case 'CreditCardPayment':

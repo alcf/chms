@@ -18,31 +18,27 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class CreditCardTypeGen extends QBaseClass {
-		const AmericanExpress = 1;
-		const Discover = 2;
-		const Mastercard = 3;
-		const Visa = 4;
+		const Discover = 1;
+		const Mastercard = 2;
+		const Visa = 3;
 
-		const MaxId = 4;
+		const MaxId = 3;
 
 		public static $NameArray = array(
-			1 => 'American Express',
-			2 => 'Discover',
-			3 => 'Mastercard',
-			4 => 'Visa');
+			1 => 'Discover',
+			2 => 'Mastercard',
+			3 => 'Visa');
 
 		public static $TokenArray = array(
-			1 => 'AmericanExpress',
-			2 => 'Discover',
-			3 => 'Mastercard',
-			4 => 'Visa');
+			1 => 'Discover',
+			2 => 'Mastercard',
+			3 => 'Visa');
 
 		public static function ToString($intCreditCardTypeId) {
 			switch ($intCreditCardTypeId) {
-				case 1: return 'American Express';
-				case 2: return 'Discover';
-				case 3: return 'Mastercard';
-				case 4: return 'Visa';
+				case 1: return 'Discover';
+				case 2: return 'Mastercard';
+				case 3: return 'Visa';
 				default:
 					throw new QCallerException(sprintf('Invalid intCreditCardTypeId: %s', $intCreditCardTypeId));
 			}
@@ -50,10 +46,9 @@
 
 		public static function ToToken($intCreditCardTypeId) {
 			switch ($intCreditCardTypeId) {
-				case 1: return 'AmericanExpress';
-				case 2: return 'Discover';
-				case 3: return 'Mastercard';
-				case 4: return 'Visa';
+				case 1: return 'Discover';
+				case 2: return 'Mastercard';
+				case 3: return 'Visa';
 				default:
 					throw new QCallerException(sprintf('Invalid intCreditCardTypeId: %s', $intCreditCardTypeId));
 			}

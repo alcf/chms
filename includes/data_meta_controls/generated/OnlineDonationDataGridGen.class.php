@@ -295,9 +295,10 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::OnlineDonation()->Id;
 				case 'PersonId': return QQN::OnlineDonation()->PersonId;
+				case 'Person': return QQN::OnlineDonation()->Person;
+				case 'Amount': return QQN::OnlineDonation()->Amount;
 				case 'CreditCardPaymentId': return QQN::OnlineDonation()->CreditCardPaymentId;
 				case 'CreditCardPayment': return QQN::OnlineDonation()->CreditCardPayment;
-				case 'TotalAmount': return QQN::OnlineDonation()->TotalAmount;
 				default: throw new QCallerException('Simple Property not found in OnlineDonationDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

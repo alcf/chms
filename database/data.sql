@@ -266,10 +266,9 @@ INSERT INTO stewardship_batch_status_type VALUES(3, 'Unposted Changes Exist');
 # Added for Version 003
 #######################
 
-INSERT INTO credit_card_type VALUES(1, 'American Express');
-INSERT INTO credit_card_type VALUES(2, 'Discover');
-INSERT INTO credit_card_type VALUES(3, 'Mastercard');
-INSERT INTO credit_card_type VALUES(4, 'Visa');
+INSERT INTO credit_card_type VALUES(1, 'Discover');
+INSERT INTO credit_card_type VALUES(2, 'Mastercard');
+INSERT INTO credit_card_type VALUES(3, 'Visa');
 
 INSERT INTO credit_card_status_type VALUES(1, 'Authorized');
 INSERT INTO credit_card_status_type VALUES(2, 'Captured');

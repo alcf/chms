@@ -18,12 +18,12 @@
 	 * property-read OnlineDonation $OnlineDonation the actual OnlineDonation data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
-	 * property QIntegerTextBox $PersonIdControl
+	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
+	 * property QFloatTextBox $AmountControl
+	 * property-read QLabel $AmountLabel
 	 * property QListBox $CreditCardPaymentIdControl
 	 * property-read QLabel $CreditCardPaymentIdLabel
-	 * property QFloatTextBox $TotalAmountControl
-	 * property-read QLabel $TotalAmountLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -62,22 +62,22 @@
 		protected $lblId;
 
         /**
-         * @var QIntegerTextBox txtPersonId;
+         * @var QListBox lstPerson;
          * @access protected
          */
-		protected $txtPersonId;
+		protected $lstPerson;
+
+        /**
+         * @var QFloatTextBox txtAmount;
+         * @access protected
+         */
+		protected $txtAmount;
 
         /**
          * @var QListBox lstCreditCardPayment;
          * @access protected
          */
 		protected $lstCreditCardPayment;
-
-        /**
-         * @var QFloatTextBox txtTotalAmount;
-         * @access protected
-         */
-		protected $txtTotalAmount;
 
 
 		// Controls that allow the viewing of OnlineDonation's individual data fields
@@ -88,16 +88,16 @@
 		protected $lblPersonId;
 
         /**
+         * @var QLabel lblAmount
+         * @access protected
+         */
+		protected $lblAmount;
+
+        /**
          * @var QLabel lblCreditCardPaymentId
          * @access protected
          */
 		protected $lblCreditCardPaymentId;
-
-        /**
-         * @var QLabel lblTotalAmount
-         * @access protected
-         */
-		protected $lblTotalAmount;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -213,31 +213,72 @@
 		}
 
 		/**
-		 * Create and setup QIntegerTextBox txtPersonId
+		 * Create and setup QListBox lstPerson
 		 * @param string $strControlId optional ControlId to use
-		 * @return QIntegerTextBox
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
 		 */
-		public function txtPersonId_Create($strControlId = null) {
-			$this->txtPersonId = new QIntegerTextBox($this->objParentObject, $strControlId);
-			$this->txtPersonId->Name = QApplication::Translate('Person Id');
-			$this->txtPersonId->Text = $this->objOnlineDonation->PersonId;
-			$this->txtPersonId->Required = true;
-			return $this->txtPersonId;
+		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPerson->Name = QApplication::Translate('Person');
+			$this->lstPerson->Required = true;
+			if (!$this->blnEditMode)
+				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
+				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+				if (($this->objOnlineDonation->Person) && ($this->objOnlineDonation->Person->Id == $objPerson->Id))
+					$objListItem->Selected = true;
+				$this->lstPerson->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstPerson;
 		}
 
 		/**
 		 * Create and setup QLabel lblPersonId
 		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPersonId_Create($strControlId = null) {
+			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPersonId->Name = QApplication::Translate('Person');
+			$this->lblPersonId->Text = ($this->objOnlineDonation->Person) ? $this->objOnlineDonation->Person->__toString() : null;
+			$this->lblPersonId->Required = true;
+			return $this->lblPersonId;
+		}
+
+		/**
+		 * Create and setup QFloatTextBox txtAmount
+		 * @param string $strControlId optional ControlId to use
+		 * @return QFloatTextBox
+		 */
+		public function txtAmount_Create($strControlId = null) {
+			$this->txtAmount = new QFloatTextBox($this->objParentObject, $strControlId);
+			$this->txtAmount->Name = QApplication::Translate('Amount');
+			$this->txtAmount->Text = $this->objOnlineDonation->Amount;
+			return $this->txtAmount;
+		}
+
+		/**
+		 * Create and setup QLabel lblAmount
+		 * @param string $strControlId optional ControlId to use
 		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblPersonId_Create($strControlId = null, $strFormat = null) {
-			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPersonId->Name = QApplication::Translate('Person Id');
-			$this->lblPersonId->Text = $this->objOnlineDonation->PersonId;
-			$this->lblPersonId->Required = true;
-			$this->lblPersonId->Format = $strFormat;
-			return $this->lblPersonId;
+		public function lblAmount_Create($strControlId = null, $strFormat = null) {
+			$this->lblAmount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAmount->Name = QApplication::Translate('Amount');
+			$this->lblAmount->Text = $this->objOnlineDonation->Amount;
+			$this->lblAmount->Format = $strFormat;
+			return $this->lblAmount;
 		}
 
 		/**
@@ -250,9 +291,7 @@
 		public function lstCreditCardPayment_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstCreditCardPayment = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCreditCardPayment->Name = QApplication::Translate('Credit Card Payment');
-			$this->lstCreditCardPayment->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -279,34 +318,7 @@
 			$this->lblCreditCardPaymentId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblCreditCardPaymentId->Name = QApplication::Translate('Credit Card Payment');
 			$this->lblCreditCardPaymentId->Text = ($this->objOnlineDonation->CreditCardPayment) ? $this->objOnlineDonation->CreditCardPayment->__toString() : null;
-			$this->lblCreditCardPaymentId->Required = true;
 			return $this->lblCreditCardPaymentId;
-		}
-
-		/**
-		 * Create and setup QFloatTextBox txtTotalAmount
-		 * @param string $strControlId optional ControlId to use
-		 * @return QFloatTextBox
-		 */
-		public function txtTotalAmount_Create($strControlId = null) {
-			$this->txtTotalAmount = new QFloatTextBox($this->objParentObject, $strControlId);
-			$this->txtTotalAmount->Name = QApplication::Translate('Total Amount');
-			$this->txtTotalAmount->Text = $this->objOnlineDonation->TotalAmount;
-			return $this->txtTotalAmount;
-		}
-
-		/**
-		 * Create and setup QLabel lblTotalAmount
-		 * @param string $strControlId optional ControlId to use
-		 * @param string $strFormat optional sprintf format to use
-		 * @return QLabel
-		 */
-		public function lblTotalAmount_Create($strControlId = null, $strFormat = null) {
-			$this->lblTotalAmount = new QLabel($this->objParentObject, $strControlId);
-			$this->lblTotalAmount->Name = QApplication::Translate('Total Amount');
-			$this->lblTotalAmount->Text = $this->objOnlineDonation->TotalAmount;
-			$this->lblTotalAmount->Format = $strFormat;
-			return $this->lblTotalAmount;
 		}
 
 
@@ -322,13 +334,26 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objOnlineDonation->Id;
 
-			if ($this->txtPersonId) $this->txtPersonId->Text = $this->objOnlineDonation->PersonId;
-			if ($this->lblPersonId) $this->lblPersonId->Text = $this->objOnlineDonation->PersonId;
+			if ($this->lstPerson) {
+					$this->lstPerson->RemoveAllItems();
+				if (!$this->blnEditMode)
+					$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPersonArray = Person::LoadAll();
+				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
+					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
+					if (($this->objOnlineDonation->Person) && ($this->objOnlineDonation->Person->Id == $objPerson->Id))
+						$objListItem->Selected = true;
+					$this->lstPerson->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objOnlineDonation->Person) ? $this->objOnlineDonation->Person->__toString() : null;
+
+			if ($this->txtAmount) $this->txtAmount->Text = $this->objOnlineDonation->Amount;
+			if ($this->lblAmount) $this->lblAmount->Text = $this->objOnlineDonation->Amount;
 
 			if ($this->lstCreditCardPayment) {
 					$this->lstCreditCardPayment->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
 				$objCreditCardPaymentArray = CreditCardPayment::LoadAll();
 				if ($objCreditCardPaymentArray) foreach ($objCreditCardPaymentArray as $objCreditCardPayment) {
 					$objListItem = new QListItem($objCreditCardPayment->__toString(), $objCreditCardPayment->Id);
@@ -338,9 +363,6 @@
 				}
 			}
 			if ($this->lblCreditCardPaymentId) $this->lblCreditCardPaymentId->Text = ($this->objOnlineDonation->CreditCardPayment) ? $this->objOnlineDonation->CreditCardPayment->__toString() : null;
-
-			if ($this->txtTotalAmount) $this->txtTotalAmount->Text = $this->objOnlineDonation->TotalAmount;
-			if ($this->lblTotalAmount) $this->lblTotalAmount->Text = $this->objOnlineDonation->TotalAmount;
 
 		}
 
@@ -365,9 +387,9 @@
 		public function SaveOnlineDonation() {
 			try {
 				// Update any fields for controls that have been created
-				if ($this->txtPersonId) $this->objOnlineDonation->PersonId = $this->txtPersonId->Text;
+				if ($this->lstPerson) $this->objOnlineDonation->PersonId = $this->lstPerson->SelectedValue;
+				if ($this->txtAmount) $this->objOnlineDonation->Amount = $this->txtAmount->Text;
 				if ($this->lstCreditCardPayment) $this->objOnlineDonation->CreditCardPaymentId = $this->lstCreditCardPayment->SelectedValue;
-				if ($this->txtTotalAmount) $this->objOnlineDonation->TotalAmount = $this->txtTotalAmount->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -417,23 +439,23 @@
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
 				case 'PersonIdControl':
-					if (!$this->txtPersonId) return $this->txtPersonId_Create();
-					return $this->txtPersonId;
+					if (!$this->lstPerson) return $this->lstPerson_Create();
+					return $this->lstPerson;
 				case 'PersonIdLabel':
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
+				case 'AmountControl':
+					if (!$this->txtAmount) return $this->txtAmount_Create();
+					return $this->txtAmount;
+				case 'AmountLabel':
+					if (!$this->lblAmount) return $this->lblAmount_Create();
+					return $this->lblAmount;
 				case 'CreditCardPaymentIdControl':
 					if (!$this->lstCreditCardPayment) return $this->lstCreditCardPayment_Create();
 					return $this->lstCreditCardPayment;
 				case 'CreditCardPaymentIdLabel':
 					if (!$this->lblCreditCardPaymentId) return $this->lblCreditCardPaymentId_Create();
 					return $this->lblCreditCardPaymentId;
-				case 'TotalAmountControl':
-					if (!$this->txtTotalAmount) return $this->txtTotalAmount_Create();
-					return $this->txtTotalAmount;
-				case 'TotalAmountLabel':
-					if (!$this->lblTotalAmount) return $this->lblTotalAmount_Create();
-					return $this->lblTotalAmount;
 				default:
 					try {
 						return parent::__get($strName);
@@ -459,11 +481,11 @@
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
-						return ($this->txtPersonId = QType::Cast($mixValue, 'QControl'));
+						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
+					case 'AmountControl':
+						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
 					case 'CreditCardPaymentIdControl':
 						return ($this->lstCreditCardPayment = QType::Cast($mixValue, 'QControl'));
-					case 'TotalAmountControl':
-						return ($this->txtTotalAmount = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}
