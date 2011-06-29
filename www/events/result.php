@@ -132,7 +132,7 @@
 			$this->dtgPayments = new SignupPaymentDataGrid($this);
 			$this->dtgPayments->MetaAddColumn('TransactionDate', 'Width=160px');
 			$this->dtgPayments->MetaAddTypeColumn('SignupPaymentTypeId', 'SignupPaymentType', 'Name=Type', 'Width=160px');
-			$this->dtgPayments->MetaAddColumn('TransactionCode', 'Width=445px', 'Html=<?= $_FORM->RenderPaymentCode($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgPayments->MetaAddColumn('TransactionDescription', 'Name=Description', 'Width=445px', 'Html=<?= $_FORM->RenderPaymentCode($_ITEM); ?>', 'HtmlEntities=false');
 			$this->dtgPayments->MetaAddColumn('Amount', 'Width=150px', 'Html=<?= $_FORM->RenderPaymentAmount($_ITEM); ?>', 'HtmlEntities=false', 'FontBold=true');
 			$this->dtgPayments->SetDataBinder('dtgPayments_Bind');
 			$this->dtgPayments->SortColumnIndex = 0;
@@ -189,7 +189,7 @@
 
 		public function RenderPaymentCode(SignupPayment $objPayment) {
 			if ($objPayment->Id)
-				return QApplication::HtmlEntities($objPayment->TransactionCode);
+				return QApplication::HtmlEntities($objPayment->TransactionDescription);
 			else
 				return '<strong>BALANCE REMAINING</strong>';
 		}
@@ -419,6 +419,10 @@
 			$this->txtFloat->Required = true;
 			$this->txtFloat->Minimum = 0;
 			$this->txtFloat->Maximum = null;
+			
+			$this->txtTextbox->Enabled = true;
+			$this->txtTextbox->Text = null;
+			$this->txtFloat->Text = null;
 
 			// Setup the appropriate control
 			switch ($this->objPayment->SignupPaymentTypeId) {
@@ -787,7 +791,7 @@
 		 */
 		protected function PerformPaymentSave() {
 			if (!$this->objPayment->TransactionDate) $this->objPayment->TransactionDate = QDateTime::Now();
-			$this->objPayment->TransactionCode = trim($this->txtTextbox->Text);
+			$this->objPayment->TransactionDescription = trim($this->txtTextbox->Text);
 			$this->objPayment->Amount = $this->txtFloat->Text;
 			$this->objPayment->Save();
 			return true;
