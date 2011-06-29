@@ -90,10 +90,12 @@
 			// Figure out which address to use
 			$objAddress = $this->objSignupEntry->RetrieveAnyValidAddressObject();
 			if (!$objAddress) $objAddress = QApplication::$PublicLogin->Person->DeducePrimaryAddress();
-
+			
 			// Create the Payment Panel
-			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, QApplication::$PublicLogin->Person->Name);
+			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, QApplication::$PublicLogin->Person->FirstName, QApplication::$PublicLogin->Person->LastName);
 			$this->pnlPayment->SetButtonText('Submit Payment');
+			
+			$this->RefreshForm();
 		}
 
 		public function Form_Validate() {
@@ -309,7 +311,7 @@
 				$objSignupProduct->Save();
 				$this->objSignupEntry->RefreshAmounts();
 			}
-			$this->dtgProducts->Refresh();
+			$this->RefreshForm();
 		}
 
 		public function lstQuantity_Change($strFormId, $strControlId, $strParameter) {
@@ -328,7 +330,7 @@
 				}
 				$this->objSignupEntry->RefreshAmounts();
 			}
-			$this->dtgProducts->Refresh();
+			$this->RefreshForm();
 		}
 
 		public function lstRequiredWithChoice_Change() {
@@ -342,7 +344,30 @@
 			// Create the new entry
 			$objFormProduct = FormProduct::Load($this->lstRequiredWithChoice->SelectedValue);
 			if ($objFormProduct) $this->objSignupEntry->AddProduct($objFormProduct);
+			$this->RefreshForm();
+		}
+		
+		public function RefreshForm() {
 			$this->dtgProducts->Refresh();
+			$fltDeposit = $this->objSignupEntry->CalculateMinimumDeposit();
+			$fltAmountOwed = -1 * $this->objSignupEntry->AmountBalance;
+			if ($fltAmountOwed <= $fltDeposit) $fltDeposit = null;
+
+			$this->pnlPayment->UpdateAmountsTo($fltAmountOwed, $fltDeposit);
+		}
+		
+		/**
+		 * Called back from PaymentPanel to actually generate a PaymentObject
+		 * or in this case, a SignupPayment entry.
+		 * @return SignupPayment
+		 */
+		public function CreatePaymentObject() {
+			// Create the PaymentObject
+			$objSignupPayment = new SignupPayment();
+			$objSignupPayment->SignupEntry = $this->objSignupEntry;
+			$objSignupPayment->SignupPaymentTypeId = SignupPaymentType::CreditCard;
+			
+			return $objSignupPayment;
 		}
 	}
 

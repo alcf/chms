@@ -111,11 +111,12 @@
 			$strNvpRequestArray['PARTNER'] = PAYPAL_PARTNER;
 			$strNvpRequestArray['USER'] = PAYPAL_USER;
 			$strNvpRequestArray['VENDOR'] = PAYPAL_VENDOR;
-			$strNvpRequestArray['PASSWORD'] = PAYPAL_PASSWORD;
+			$strNvpRequestArray['PWD'] = PAYPAL_PASSWORD;
 
 			$strNvpRequest = self::FormatNvp($strNvpRequestArray);
 
 			// Setting the entire NvpRequest as POST FIELD to curl
+			QLog::Log($strNvpRequest);
 			curl_setopt($objCurl, CURLOPT_POSTFIELDS, $strNvpRequest);
 
 			// Getting response from server
@@ -145,7 +146,7 @@
 				'TENDER' => 'C',
 				'TRXTYPE' => 'A',
 				'ACCT' => $strCcNumber,
-				'EXPDATE' => $dttExpiration->__toString('MMYYYY'),
+				'EXPDATE' => $strCcExpiration,
 				'AMT' => sprintf('%.2f', $fltAmount),
 				'COMMENT1' => $strComment,
 				'INVNUM' => $strInvoiceNumber,

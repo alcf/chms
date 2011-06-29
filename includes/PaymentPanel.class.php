@@ -11,7 +11,8 @@
 		protected $fltDeposit;
 
 		// Form Fields
-		public $txtName;
+		public $txtFirstName;
+		public $txtLastName;
 		public $txtAddress1;
 		public $txtAddress2;
 		public $txtCity;
@@ -26,17 +27,25 @@
 
 		public $btnSubmit;
 		public $dlgDialogBox;
+		
+		public $rblDeposit;
 
-		public function __construct($objParentObject, $strControlId = null, Address $objAddress = null, $strName = null) {
+		public function __construct($objParentObject, $strControlId = null, Address $objAddress = null, $strFirstName = null, $strLastName = null) {
 			parent::__construct($objParentObject, $strControlId);
 			$this->strTemplate = dirname(__FILE__) . '/PaymentPanel.tpl.php';
 
 			if (!$objAddress) $objAddress = new Address();
 
-			$this->txtName = new QTextBox($this);
-			$this->txtName->Name = 'Cardholder Name';
-			$this->txtName->Required = true;
-			$this->txtName->Text = $strName;
+			$this->txtFirstName = new QTextBox($this);
+			$this->txtFirstName->Name = 'Cardholder Name';
+			$this->txtFirstName->Required = true;
+			$this->txtFirstName->Text = $strFirstName;
+			$this->txtFirstName->Width = '120px';
+
+			$this->txtLastName = new QTextBox($this);
+			$this->txtLastName->Required = true;
+			$this->txtLastName->Text = $strLastName;
+			$this->txtLastName->Width = '120px';
 
 			$this->txtAddress1 = new QTextBox($this);
 			$this->txtAddress1->Name = 'Address 1';
@@ -107,6 +116,9 @@
 			$this->dlgDialogBox->Text = '<h4>Please Wait...</h4>We are processing your credit card.  We appreciate your patience!<br/><br/><img src="/assets/images/cc_processing.gif"/>';
 			$this->dlgDialogBox->Display = false;
 
+			$this->rblDeposit = new QRadioButtonList($this);
+			$this->rblDeposit->Name = 'Payment Option';
+
 			$this->btnSubmit = new QButton($this);
 			$this->btnSubmit->CausesValidation = true;
 			$this->btnSubmit->CssClass = 'primary';
@@ -115,8 +127,30 @@
 			$this->btnSubmit->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnSubmit));
 			$this->btnSubmit->AddAction(new QClickEvent(), new QShowDialogBox($this->dlgDialogBox));
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSubmit_Click'));
+			
+			$this->UpdateAmountsTo(false, false);
 		}
-		
+
+		public function UpdateAmountsTo($fltAmount, $fltDeposit) {
+			if (($fltAmount !== $this->fltAmount) ||
+				($fltDeposit !== $this->fltDeposit)) {
+				$this->fltAmount = $fltAmount;
+				$this->fltDeposit = $fltDeposit;
+
+				$intCurrentIndex = $this->rblDeposit->SelectedValue;
+				$this->rblDeposit->RemoveAllItems();
+				if ($this->fltDeposit) {
+					$this->rblDeposit->AddItem(sprintf('Pay in Full ($%.2f)', $this->fltAmount), 1, 1 == $intCurrentIndex);
+					$this->rblDeposit->AddItem(sprintf('Pay Deposit ($%.2f)', $this->fltDeposit), 2, 2 == $intCurrentIndex);
+					$this->rblDeposit->Visible = true;
+					$this->rblDeposit->Required = true;
+				} else {
+					$this->rblDeposit->Visible = false;
+					$this->rblDeposit->Required= false;
+				}
+			}
+		}
+
 		public function btnSubmit_Reset() {
 			$this->btnSubmit->Enabled = true;
 			$this->dlgDialogBox->HideDialogBox();
@@ -132,7 +166,32 @@
 		}
 
 		public function btnSubmit_Click($strFormId, $strControlId, $strParameter) {
+			// Setup the Address Object
+			$objAddress = new Address();
+			$objAddress->Address1 = trim($this->txtAddress1->Text);
+			$objAddress->Address2 = trim($this->txtAddress2->Text);
+			$objAddress->City = trim($this->txtCity->Text);
+			$objAddress->State = trim($this->lstState->SelectedValue);
+			$objAddress->ZipCode = trim($this->txtZipCode->Text);
+
+			// Calculate the Amount
+			if ($this->rblDeposit->SelectedValue == 2)
+				$fltAmountToCharge = $this->fltDeposit;
+			else
+				$fltAmountToCharge = $this->fltAmount;
+
+			// Calculate the Expiration
+			$strCcExpiration = sprintf('%02d%02d', $this->lstCcExpMonth->SelectedValue, substr($this->lstCcExpYear->SelectedValue, 2));
+
+			// Get the Payment Object
+			$objPaymentObject = $this->objForm->CreatePaymentObject();
+
+			$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, $this->txtFirstName->Text, $this->txtLastName->Text, $objAddress,
+				$fltAmountToCharge, $this->txtCcNumber->Text, $strCcExpiration, $this->txtCcCsc->Text);
+
+			// TODO FOR TESTING
 			$this->btnSubmit->Enabled = true;
+			$this->dlgDialogBox->HideDialogBox();
 		}
 	}
 ?>
