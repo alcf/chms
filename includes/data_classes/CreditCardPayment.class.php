@@ -79,7 +79,6 @@
 				$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
 
 				// To REMOVE
-				QLog::Log(var_export($strNvpResponseArray, true));
 				CreditCardPayment::GetDatabase()->TransactionRollBack();
 
 			} catch (Exception $objExc) {
@@ -96,6 +95,9 @@
 		 * @return string[] a structured array based on the NVP Response, or NULL if there was a connection error
 		 */
 		protected static function PaymentGatewaySubmitRequest($strNvpRequestArray) {
+			$strLogFile = 'paypal_' . QDateTime::NowToString('YYYY-MM-DD');
+			$strLogHash = substr(md5(microtime()), 0, 8);
+
 			$objCurl = curl_init();
 			curl_setopt($objCurl, CURLOPT_URL, PAYPAL_ENDPOINT);
 			curl_setopt($objCurl, CURLOPT_VERBOSE, 1);
@@ -116,15 +118,21 @@
 			$strNvpRequest = self::FormatNvp($strNvpRequestArray);
 
 			// Setting the entire NvpRequest as POST FIELD to curl
-			QLog::Log($strNvpRequest);
+			QLog::Log($strLogHash . ' - ' . $strNvpRequest, QLogLevel::Normal, $strLogFile);
 			curl_setopt($objCurl, CURLOPT_POSTFIELDS, $strNvpRequest);
 
 			// Getting response from server
 			$strResponse = @curl_exec($objCurl);
 			curl_close($objCurl);
 
-			if ($strResponse) return self::DeformatNvp($strResponse);
-			return null;
+			if ($strResponse) {
+				$arrToReturn = self::DeformatNvp($strResponse);
+				QLog::Log($strLogHash . ' - ' . var_export($arrToReturn, true), QLogLevel::Normal, $strLogFile);
+				return $arrToReturn;
+			} else {
+				QLog::Log($strLogHash . ' - ' . 'ERROR', QLogLevel::Normal, $strLogFile);
+				return null;
+			}
 		}
 
 		/**
