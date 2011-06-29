@@ -5,6 +5,7 @@
 .DS_Store
 configuration.local
 public_login_salt.local
+paypal.local
 /file_assets/head_shots
 /file_assets/contribution_images
 /file_assets/receipt_pdf
