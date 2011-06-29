@@ -206,13 +206,14 @@ PRIMARY KEY (`id`)
 CREATE TABLE `credit_card_payment`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`person_id` INTEGER UNSIGNED NOT NULL,
 `credit_card_status_type_id` INTEGER UNSIGNED NOT NULL,
 `credit_card_type_id` INTEGER UNSIGNED NOT NULL,
 `credit_card_last_four` VARCHAR(4) NOT NULL,
 `transaction_code` VARCHAR(40) NOT NULL UNIQUE,
+`authorization_code` VARCHAR(40),
 `address_match_flag` BOOLEAN,
-`date_charged` DATETIME,
+`date_authorized` DATETIME,
+`date_captured` DATETIME,
 `amount_charged` DECIMAL(10,2),
 `amount_fee` DECIMAL(10,2),
 `amount_cleared` DECIMAL(10,2),
@@ -224,10 +225,11 @@ CREATE TABLE `online_donation`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `person_id` INTEGER UNSIGNED NOT NULL,
-`credit_card_payment_id` INTEGER UNSIGNED NOT NULL UNIQUE,
-`total_amount` DECIMAL(10,2),
+`amount` DECIMAL(10,2),
+`credit_card_payment_id` INTEGER UNSIGNED UNIQUE,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
 
 CREATE TABLE `online_donation_line_item`
 (
@@ -256,11 +258,11 @@ CREATE TABLE `paypal_batch`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `number` VARCHAR(20) UNIQUE,
-`date_posted` DATETIME,
+`date_received` DATETIME,
+`date_reconciled` DATETIME,
 `reconciled_flag` BOOLEAN NOT NULL,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
 
 
 CREATE INDEX `signup_form_type_id_idx` ON `signup_form`(`signup_form_type_id`);
@@ -327,9 +329,6 @@ CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
 CREATE INDEX `form_product_idx` ON `form_product` (`signup_form_id`,`form_product_type_id`);
 CREATE UNIQUE INDEX `signup_product_idx` ON `signup_product` (`signup_entry_id`,`form_product_id`);
 
-CREATE INDEX `person_id_idx` ON `credit_card_payment`(`person_id`);
-ALTER TABLE `credit_card_payment` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `person` (`id`);
-
 CREATE INDEX `credit_card_status_type_id_idx` ON `credit_card_payment`(`credit_card_status_type_id`);
 ALTER TABLE `credit_card_payment` ADD FOREIGN KEY credit_card_status_type_id_idxfk (`credit_card_status_type_id`) REFERENCES `credit_card_status_type` (`id`);
 
@@ -339,8 +338,6 @@ ALTER TABLE `credit_card_payment` ADD FOREIGN KEY credit_card_type_id_idxfk (`cr
 CREATE INDEX `paypal_batch_id_idx` ON `credit_card_payment`(`paypal_batch_id`);
 ALTER TABLE `credit_card_payment` ADD FOREIGN KEY paypal_batch_id_idxfk (`paypal_batch_id`) REFERENCES `paypal_batch` (`id`);
 
-CREATE INDEX `person_id_idx` ON `online_donation`(`person_id`);
-ALTER TABLE `online_donation` ADD FOREIGN KEY credit_card_payment_id_idxfk (`credit_card_payment_id`) REFERENCES `credit_card_payment` (`id`);
 
 CREATE INDEX `online_donation_id_idx` ON `online_donation_line_item`(`online_donation_id`);
 ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY online_donation_id_idxfk (`online_donation_id`) REFERENCES `online_donation` (`id`);
@@ -355,6 +352,11 @@ ALTER TABLE `signup_payment` ADD FOREIGN KEY credit_card_payment_id_idxfk_1 (`cr
 CREATE INDEX `stewardship_fund_id_idx` ON `form_product`(`stewardship_fund_id`);
 ALTER TABLE `form_product` ADD FOREIGN KEY stewardship_fund_id_idxfk (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
+CREATE INDEX `person_id_idx` ON `online_donation`(`person_id`);
+ALTER TABLE `online_donation` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
+
+ALTER TABLE `online_donation` ADD FOREIGN KEY credit_card_payment_id_idxfk (`credit_card_payment_id`) REFERENCES `credit_card_payment` (`id`);
+
 ######### EXTERNAL FKs
 
 ALTER TABLE `signup_entry` ADD FOREIGN KEY person_id_idxfk_9 (`person_id`) REFERENCES `person` (`id`);
@@ -365,10 +367,9 @@ ALTER TABLE `public_login` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFER
 
 ####### TYPE TABLES
 
-INSERT INTO credit_card_type VALUES(1, 'American Express');
-INSERT INTO credit_card_type VALUES(2, 'Discover');
-INSERT INTO credit_card_type VALUES(3, 'Mastercard');
-INSERT INTO credit_card_type VALUES(4, 'Visa');
+INSERT INTO credit_card_type VALUES(1, 'Discover');
+INSERT INTO credit_card_type VALUES(2, 'Mastercard');
+INSERT INTO credit_card_type VALUES(3, 'Visa');
 
 INSERT INTO credit_card_status_type VALUES(1, 'Authorized');
 INSERT INTO credit_card_status_type VALUES(2, 'Captured');
