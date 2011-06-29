@@ -16,9 +16,9 @@
 
 	<div class="section">
 		<div class="columnSelectorColumn">
-			<div style="font-weight: bold; ">Show Non-Complete Entries?</div>
-			<?php $this->chkShowNonComplete->Render(); ?>
-			<br/>
+			<div style="font-weight: bold; ">Filter by Reg. Status</div>
+			<?php $this->lstStatus->Render(); ?>
+			<br/><br/>
 		
 			<div style="font-weight: bold; ">Select Columns to View</div>
 			<?php $this->cblColumns->Render('CssClass=columnSelector'); ?>
@@ -26,6 +26,7 @@
 			<a href="/events/export_to_excel.php/<?php _p($this->objSignupForm->Id); ?>/<?php _p($this->objSignupForm->CsvFilename); ?>"><img src="/assets/images/icons/page_excel.png"> Download as Excel</a>
 		</div>
 		<div style="float: left; width: 800px; ">
+			<?php $this->lblViewing->Render(); ?>
 			<?php $this->dtgSignupEntries->Render(); ?>
 		</div>
 		<br clear="all"/>

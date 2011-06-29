@@ -123,7 +123,7 @@
 			// For Payment Entries
 			} else if ($objItem instanceof SignupPayment) {
 				return SignupPaymentType::$NameArray[$objItem->SignupPaymentTypeId] . '<br/><span class="na">' .
-					QApplication::HtmlEntities($objItem->TransactionCode) . ' - ' . $objItem->TransactionDate->ToString('MMM D YYYY') . '</span>';
+					QApplication::HtmlEntities($objItem->TransactionDescription) . ' - ' . $objItem->TransactionDate->ToString('MMM D YYYY') . '</span>';
 
 			// For "Required with Choice" Products
 			} else if ($objItem == -1) {

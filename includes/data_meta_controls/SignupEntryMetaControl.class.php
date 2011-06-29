@@ -41,5 +41,9 @@
 				$this->lblInternalNotes->Text = '<span class="na">None</span>';
 			}
 		}
+
+		public function lblSignupEntryStatusTypeId_Refresh() {
+			$this->lblSignupEntryStatusTypeId->Text = ($this->objSignupEntry->SignupEntryStatusTypeId) ? SignupEntryStatusType::$NameArray[$this->objSignupEntry->SignupEntryStatusTypeId] : null;
+		}
 	}
 ?>

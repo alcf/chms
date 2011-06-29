@@ -13,8 +13,10 @@
 
 		protected $dtgSignupEntries;
 		protected $cblColumns;
-		protected $chkShowNonComplete;
+		protected $lstStatus;
 
+		protected $lblViewing;
+		
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
 			if (!$this->objSignupForm) QApplication::Redirect('/events/');
@@ -49,13 +51,18 @@
 			// Setup dtgSignups
 			$this->dtgSignupEntries_SetupColumns();
 			
-			$this->chkShowNonComplete = new QCheckBox($this);
-			$this->chkShowNonComplete->Text = 'Show Incomplete / Test';
-			$this->chkShowNonComplete->Checked = false;
-			$this->chkShowNonComplete->AddAction(new QClickEvent(), new QAjaxAction('chkShowNonComplete_Click'));
+			$this->lstStatus = new QListBox($this);
+			foreach (SignupEntryStatusType::$NameArray as $intId => $strName)
+				$this->lstStatus->AddItem($strName, $intId, $intId == SignupEntryStatusType::Complete);
+			$this->lstStatus->AddAction(new QChangeEvent(), new QAjaxAction('lstStatus_Change'));
+			
+			$this->lblViewing = new QLabel($this);
+			$this->lblViewing->TagName = 'h3';
+			$this->lblViewing->Text = 'Viewing "Complete" Signups';
 		}
 
-		public function chkShowNonComplete_Click() {
+		public function lstStatus_Change() {
+			$this->lblViewing->Text = sprintf('Viewing "%s" Signups', SignupEntryStatusType::$NameArray[$this->lstStatus->SelectedValue]);
 			$this->dtgSignupEntries->Refresh();
 		}
 
@@ -79,7 +86,7 @@
 		public function dtgSignupEntries_SetupColumns() {
 			$this->dtgSignupEntries->RemoveAllColumns();
 			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->Person->LastName, 'Name=Name', 'Html=<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false');
-			$this->dtgSignupEntries->MetaAddTypeColumn('SignupEntryStatusTypeId', 'SignupEntryStatusType', 'Name=Status');
+//			$this->dtgSignupEntries->MetaAddTypeColumn('SignupEntryStatusTypeId', 'SignupEntryStatusType', 'Name=Status');
 
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
 				if ($objFormQuestion->ViewFlag) {
@@ -165,9 +172,7 @@
 		
 		public function dtgSignupEntries_Bind() {
 			$objCondition = QQ::Equal(QQN::SignupEntry()->SignupFormId, $this->objSignupForm->Id);
-			if (!$this->chkShowNonComplete->Checked) {
-				$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, SignupEntryStatusType::Complete));
-			}
+			$objCondition = QQ::AndCondition($objCondition, QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $this->lstStatus->SelectedValue));
 
 			$this->dtgSignupEntries->MetaDataBinder($objCondition);
 		}

@@ -58,6 +58,7 @@
 		const EditTagPayment = 2;
 		const EditTagAnswer = 3;
 		const EditTagProduct = 4;
+		const EditTagStatus = 5;
 		
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
@@ -101,14 +102,12 @@
 			$this->btnEditNote = new QButton($this);
 			$this->btnEditNote->Text = 'Edit Internal Note';
 			$this->btnEditNote->AddAction(new QClickEvent(), new QAjaxAction('btnEditNote_Click'));
-			$this->btnEditNote->CssClass = 'primary';
+			$this->btnEditNote->CssClass = 'alternate';
 
-			$this->btnToggleStatus = new QLinkButton($this);
-			$this->btnToggleStatus->Text = 'Toggle Registration Status';
-			$this->btnToggleStatus->CssClass = 'cancel';
-			$this->btnToggleStatus->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to change this person\'s registration status?'));
+			$this->btnToggleStatus = new QButton($this);
+			$this->btnToggleStatus->Text = 'Change Registration Status';
+			$this->btnToggleStatus->CssClass = 'alternate';
 			$this->btnToggleStatus->AddAction(new QClickEvent(), new QAjaxAction('btnToggleStatus_Click'));
-			$this->btnToggleStatus->AddAction(new QClickEvent(), new QTerminateAction());
 			
 			$this->dtgFormQuestions = new QDataGrid($this);
 			$this->dtgFormQuestions->AddColumn(new QDataGridColumn('Question', '<?= $_ITEM->ShortDescriptionBoldIfRequiredHtml; ?>', 'Width=300px', 'HtmlEntities=false'));
@@ -255,6 +254,7 @@
 		public function ResetDialogControls() {
 			$this->txtTextArea->Required = false;
 			$this->txtTextbox->Required = false;
+			$this->txtTextbox->Enabled = true;
 			$this->lstListbox->Required = false;
 			$this->txtInteger->Required = false;
 			$this->txtFloat->Required = false;
@@ -420,7 +420,6 @@
 			$this->txtFloat->Minimum = 0;
 			$this->txtFloat->Maximum = null;
 			
-			$this->txtTextbox->Enabled = true;
 			$this->txtTextbox->Text = null;
 			$this->txtFloat->Text = null;
 
@@ -691,13 +690,16 @@
 		}
 
 		protected function btnToggleStatus_Click() {
-			$this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId++;
-			if ($this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId > SignupEntryStatusType::MaxId) $this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId = 1;
-			$this->mctSignupEntry->SaveSignupEntry();
-			$this->lblSignupEntryStatusType->Text = SignupEntryStatusType::$NameArray[$this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId];
-			$this->lblSignupEntryStatusType->Blink();
+			$this->ResetDialogControls();
+
+			$this->dlgEdit->ShowDialogBox();
+			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_Status.tpl.php';
+
+			foreach (SignupEntryStatusType::$NameArray as $intId => $strName)
+				$this->lstListbox->AddItem($strName, $intId, $intId == $this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId);
+			$this->intEditTag = self::EditTagStatus;
 		}
-		
+
 		protected function btnEditNote_Click() {
 			$this->ResetDialogControls();
 
@@ -713,6 +715,7 @@
 			
 			switch ($this->intEditTag) {
 				case self::EditTagNote:
+				case self::EditTagStatus:
 					break;
 				case self::EditTagPayment:
 					break;
@@ -741,6 +744,11 @@
 					$this->mctSignupEntry->SignupEntry->InternalNotes = trim($this->txtTextArea->Text);
 					$this->mctSignupEntry->SaveSignupEntry();
 					$this->mctSignupEntry->lblInternalNotes_Refresh();
+					break;
+				case self::EditTagStatus:
+					$this->mctSignupEntry->SignupEntry->SignupEntryStatusTypeId = $this->lstListbox->SelectedValue;
+					$this->mctSignupEntry->SaveSignupEntry();
+					$this->mctSignupEntry->lblSignupEntryStatusTypeId_Refresh();
 					break;
 				case self::EditTagAnswer:
 					if (!$this->PerformFormAnswerSave()) return;
