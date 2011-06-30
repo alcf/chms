@@ -108,6 +108,11 @@
 				$strNvpRequestArray = self::PaymentGatewayGenerateAuthorizationPayload($strFirstName, $strLastName, $objAddress, $fltAmount, $strCcNumber, $strCcExpiration, $strCcCsc, $strComment1, $strComment2, $strInvoiceNumber);
 				$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
 
+				if (!is_array($strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Could Not Connect to Payment Gateway';
+				}
+
 				// Analyze the ResponseArray
 				if (!array_key_exists('RESULT', $strNvpResponseArray)) {
 					CreditCardPayment::GetDatabase()->TransactionRollBack();

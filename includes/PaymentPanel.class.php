@@ -162,12 +162,14 @@
 			$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, $this->txtFirstName->Text, $this->txtLastName->Text, $objAddress,
 				$fltAmountToCharge, $this->txtCcNumber->Text, $strCcExpiration, $this->txtCcCsc->Text, $this->lstCcType->SelectedValue);
 
-			// TODO FOR TESTING
+			// Success?
 			if ($mixReturn instanceof CreditCardPayment) {
 				$this->dlgDialogBox->HideDialogBox();
 				$this->objForm->PaymentPanel_Success();
+
+			// Failed!
 			} else {
-				// Failed!  Report Message
+				// Report Message
 				if (!$mixReturn) $mixReturn = 'Cannot connect to payment gateway.';
 
 				$this->btnDialogBoxOkay->Visible = true;
