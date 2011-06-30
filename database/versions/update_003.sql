@@ -375,6 +375,7 @@ INSERT INTO credit_card_status_type VALUES(1, 'Authorized');
 INSERT INTO credit_card_status_type VALUES(2, 'Captured');
 INSERT INTO credit_card_status_type VALUES(3, 'Reconciled');
 INSERT INTO credit_card_status_type VALUES(4, 'Charged Back');
+INSERT INTO credit_card_status_type VALUES(5, 'Capture Failed');
 
 INSERT INTO form_question_type VALUES(1, 'Spouse Name');
 INSERT INTO form_question_type VALUES(2, 'Address');

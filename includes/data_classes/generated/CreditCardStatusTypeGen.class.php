@@ -22,20 +22,23 @@
 		const Captured = 2;
 		const Reconciled = 3;
 		const ChargedBack = 4;
+		const CaptureFailed = 5;
 
-		const MaxId = 4;
+		const MaxId = 5;
 
 		public static $NameArray = array(
 			1 => 'Authorized',
 			2 => 'Captured',
 			3 => 'Reconciled',
-			4 => 'Charged Back');
+			4 => 'Charged Back',
+			5 => 'Capture Failed');
 
 		public static $TokenArray = array(
 			1 => 'Authorized',
 			2 => 'Captured',
 			3 => 'Reconciled',
-			4 => 'ChargedBack');
+			4 => 'ChargedBack',
+			5 => 'CaptureFailed');
 
 		public static function ToString($intCreditCardStatusTypeId) {
 			switch ($intCreditCardStatusTypeId) {
@@ -43,6 +46,7 @@
 				case 2: return 'Captured';
 				case 3: return 'Reconciled';
 				case 4: return 'Charged Back';
+				case 5: return 'Capture Failed';
 				default:
 					throw new QCallerException(sprintf('Invalid intCreditCardStatusTypeId: %s', $intCreditCardStatusTypeId));
 			}
@@ -54,6 +58,7 @@
 				case 2: return 'Captured';
 				case 3: return 'Reconciled';
 				case 4: return 'ChargedBack';
+				case 5: return 'CaptureFailed';
 				default:
 					throw new QCallerException(sprintf('Invalid intCreditCardStatusTypeId: %s', $intCreditCardStatusTypeId));
 			}
