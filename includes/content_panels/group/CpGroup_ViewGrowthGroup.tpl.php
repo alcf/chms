@@ -14,6 +14,8 @@
 	<?php $_CONTROL->lblEmail->RenderWithName(); ?>
 	
 	<br/>
+	<?php $_CONTROL->lblFacilitator->RenderWithName(); ?>
+	<?php $_CONTROL->lblHost->RenderWithName(); ?>
 	<?php $_CONTROL->lblRegion->RenderWithName(); ?>
 	<?php $_CONTROL->lblMeeting->RenderWithName(); ?>
 	<?php $_CONTROL->lblAddress->RenderWithName(); ?>
