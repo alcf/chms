@@ -28,6 +28,29 @@
 		}
 
 		/**
+		 * If this is a "Authorized" (but not yet captured) transaction, this will go ahead and capture the funds.
+		 * This will THROW if the status is NOT Authorized
+		 */
+		public function CaptureAuthorization() {
+			if ($this->intCreditCardStatusTypeId != CreditCardStatusType::Authorized)
+				throw new QCallerException('Cannot capture a non-authorized transaction: CreditCardPaymentId #' . $this->intId);
+
+			$strNvpRequestArray = $this->PaymentGatewayGenerateCapturePayload();
+			$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
+
+			// Analyze the Response, Ensure we are successful
+			if (array_key_exists('RESULT', $strNvpResponseArray) &&
+				($strNvpResponseArray['RESULT'] == 0)) {
+				$this->intCreditCardStatusTypeId = CreditCardStatusType::Captured;
+				$this->dttDateCaptured = QDateTime::Now();
+				$this->Save();
+			} else {
+				$this->intCreditCardStatusTypeId = CreditCardStatusType::CaptureFailed;
+				$this->Save();
+			}
+		}
+
+		/**
 		 * The following will synchronously perform an "Authorization" for an UNSAVED PaymentObject against
 		 * a given Name, Address, Cc Credentials and Amount.  If the authorization succeeds, a valid
 		 * CreditCardPayment object is returned.  Otherwise, an error message is presented in String form.
@@ -63,12 +86,18 @@
 				$strClassName = get_class($objPaymentObject);
 				switch ($strClassName) {
 					case 'SignupPayment':
-						$strComment = 'Signup Payment #' . $objPaymentObject->Id;
+						$strComment1 = 'Signup Payment ' . $objPaymentObject->Id;
+						$strComment2 =
+							'SE' . $objPaymentObject->SignupEntry->Id . ' - ' .
+							'SF' . $objPaymentObject->SignupEntry->SignupFormId . ' - ' .
+							'P' . $objPaymentObject->SignupEntry->PersonId;
 						$strInvoiceNumber = 'SP' . $objPaymentObject->Id;
 						break;
 
 					case 'OnlineDonation':
-						$strComment = 'Online Donation #' . $objPaymentObject->Id;
+						$strComment1 = 'Online Donation ' . $objPaymentObject->Id;
+						$strComment2 =
+							'P' . $objPaymentObject->PersonId;
 						$strInvoiceNumber = 'OD' . $objPaymentObject->Id;
 						break;
 
@@ -76,7 +105,7 @@
 						throw new Exception('Unsupported: ' . $strClassName);
 				}
 
-				$strNvpRequestArray = self::PaymentGatewayGenerateAuthorizationPayload($strFirstName, $strLastName, $objAddress, $fltAmount, $strCcNumber, $strCcExpiration, $strCcCsc, $strComment, $strInvoiceNumber);
+				$strNvpRequestArray = self::PaymentGatewayGenerateAuthorizationPayload($strFirstName, $strLastName, $objAddress, $fltAmount, $strCcNumber, $strCcExpiration, $strCcCsc, $strComment1, $strComment2, $strInvoiceNumber);
 				$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
 
 				// Analyze the ResponseArray
@@ -111,6 +140,9 @@
 				// If CVV2 Failed, then Report
 				if ($strNvpResponseArray['CVV2MATCH'] == 'N') {
 					CreditCardPayment::GetDatabase()->TransactionRollBack();
+
+					$strNvpRequestArray = self::PaymentGatewayGenerateVoidPayload($strNvpResponseArray['PNREF']);
+					$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
 					return 'The CVV2 code entered is invalid.  Please double check the 3-digit CVV2 code on the back of your card. (' . $strNvpResponseArray['RESULT'] . ')';
 				}
 
@@ -152,14 +184,14 @@
 
 			$objCurl = curl_init();
 			curl_setopt($objCurl, CURLOPT_URL, PAYPAL_ENDPOINT);
-			curl_setopt($objCurl, CURLOPT_VERBOSE, 1);
+			curl_setopt($objCurl, CURLOPT_VERBOSE, false);
 
 			// Turning off the server and peer verification (TrustManager Concept)
-			curl_setopt($objCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
-			curl_setopt($objCurl, CURLOPT_SSL_VERIFYHOST, FALSE);
+			curl_setopt($objCurl, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($objCurl, CURLOPT_SSL_VERIFYHOST, false);
 
-			curl_setopt($objCurl, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($objCurl, CURLOPT_POST, 1);
+			curl_setopt($objCurl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($objCurl, CURLOPT_POST, true);
 
 			// Add Credentials to NVP-based Request for submitting to server
 			$strNvpRequestArray['PARTNER'] = PAYPAL_PARTNER;
@@ -188,6 +220,34 @@
 		}
 
 		/**
+		 * Generates a "Capture" payload for a succcessful authorization of THIS credit card payment
+		 * @return string[]
+		 */
+		protected function PaymentGatewayGenerateCapturePayload() {
+			$strNvpRequestArray = array(
+				'TENDER' => 'C',
+				'TRXTYPE' => 'D',
+				'ORIGID' => $this->strTransactionCode);
+
+			return $strNvpRequestArray;
+		}
+
+		/**
+		 * This will generate a PayPal NVP payload to "Void" a transaction
+		 * Requires the original Transaction ID (known as the PNREF for PayPal)
+		 * @param string $strTransactionId the toriginal transaction id (PNREF) of the transaction to void
+		 * @return string[]
+		 */
+		protected static function PaymentGatewayGenerateVoidPayload($strTransactionId) {
+			$strNvpRequestArray = array(
+				'TENDER' => 'C',
+				'TRXTYPE' => 'V',
+				'ORIGID' => $strTransactionId);
+
+			return $strNvpRequestArray;
+		}
+
+		/**
 		 * Given the data provided, create a AuthorizationPayload for PayPal
 		 * @param string $strFirstName
 		 * @param string $strLastName
@@ -196,19 +256,21 @@
 		 * @param string $strCcNumber
 		 * @param string $strCcExpiration
 		 * @param string $strCcCsc
-		 * @param string $strComment
+		 * @param string $strComment1
+		 * @param string $strComment2
 		 * @param string $strInvoiceNumber
 		 * @return string
 		 */
 		protected static function PaymentGatewayGenerateAuthorizationPayload($strFirstName, $strLastName, Address $objAddress, $fltAmount, $strCcNumber, $strCcExpiration, $strCcCsc,
-			$strComment, $strInvoiceNumber) {
+			$strComment1, $strComment2, $strInvoiceNumber) {
 			$strNvpRequestArray = array(
 				'TENDER' => 'C',
 				'TRXTYPE' => 'A',
 				'ACCT' => $strCcNumber,
 				'EXPDATE' => $strCcExpiration,
 				'AMT' => sprintf('%.2f', $fltAmount),
-				'COMMENT1' => $strComment,
+				'COMMENT1' => $strComment1,
+				'COMMENT2' => $strComment2,
 				'INVNUM' => $strInvoiceNumber,
 				'CVV2' => $strCcCsc,
 				'FIRSTNAME' => $strFirstName,
