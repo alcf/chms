@@ -27,6 +27,18 @@
 			return sprintf('SignupPayment Object %s',  $this->intId);
 		}
 
+		public function RefreshDetailsWithCreditCardPayment($blnSave = true) {
+			if (($this->intSignupPaymentTypeId != SignupPaymentType::CreditCard) ||
+				(!$this->CreditCardPayment)) {
+				throw new Exception('Cannot refresh a non-CC SignupPayment with credit card information');
+			} 
+
+			$this->TransactionDate = new QDateTime($this->CreditCardPayment->DateAuthorized);
+			$this->TransactionDescription = CreditCardType::$NameArray[$this->CreditCardPayment->CreditCardTypeId] . ' x' . $this->CreditCardPayment->CreditCardLastFour;
+			$this->Amount = $this->CreditCardPayment->AmountCharged;
+			if ($blnSave) $this->Save();
+		}
+
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return SignupPaymentType::$NameArray[$this->intSignupPaymentTypeId];

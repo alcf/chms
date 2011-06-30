@@ -27,6 +27,8 @@
 
 		public $btnSubmit;
 		public $dlgDialogBox;
+		public $lblDialogBoxMessage;
+		public $btnDialogBoxOkay;
 		
 		public $rblDeposit;
 
@@ -113,8 +115,18 @@
 			
 			$this->dlgDialogBox = new QDialogBox($this);
 			$this->dlgDialogBox->MatteClickable = false;
-			$this->dlgDialogBox->Text = '<h4>Please Wait...</h4>We are processing your credit card.  We appreciate your patience!<br/><br/><img src="/assets/images/cc_processing.gif"/>';
 			$this->dlgDialogBox->Display = false;
+			$this->dlgDialogBox->Template = dirname(__FILE__) . '/PaymentPanel_DialogBox.tpl.php';
+			
+			$this->btnDialogBoxOkay = new QButton($this->dlgDialogBox);
+			$this->btnDialogBoxOkay->Text = 'Try Again';
+			$this->btnDialogBoxOkay->CssClass = 'primary';
+			$this->btnDialogBoxOkay->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDialogBoxOkay_Click'));
+			$this->btnDialogBoxOkay->Visible = false;
+
+			$this->lblDialogBoxMessage = new QLabel($this->dlgDialogBox);
+			$this->lblDialogBoxMessage->HtmlEntities = false;
+			$this->lblDialogBoxMessage->Text = '<h4>Please Wait...</h4>We are processing your credit card.  We appreciate your patience!<br/><br/><img src="/assets/images/cc_processing.gif"/>';
 
 			$this->rblDeposit = new QRadioButtonList($this);
 			$this->rblDeposit->Name = 'Payment Option';
@@ -187,11 +199,28 @@
 			$objPaymentObject = $this->objForm->CreatePaymentObject();
 
 			$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, $this->txtFirstName->Text, $this->txtLastName->Text, $objAddress,
-				$fltAmountToCharge, $this->txtCcNumber->Text, $strCcExpiration, $this->txtCcCsc->Text);
+				$fltAmountToCharge, $this->txtCcNumber->Text, $strCcExpiration, $this->txtCcCsc->Text, $this->lstCcType->SelectedValue);
 
 			// TODO FOR TESTING
-			$this->btnSubmit->Enabled = true;
+			if ($mixReturn instanceof CreditCardPayment) {
+				// TODO: for testing
+				$this->btnSubmit->Enabled = true;
+				$this->dlgDialogBox->HideDialogBox();
+			} else {
+				// Failed!  Report Message
+				if (!$mixReturn) $mixReturn = 'Cannot connect to payment gateway.';
+
+				$this->btnDialogBoxOkay->Visible = true;
+				$this->lblDialogBoxMessage->Text = '<h4>Credit Card Processing Failed</h4>' . $mixReturn . '<br/><br/>';
+			}
+		}
+
+		public function btnDialogBoxOkay_Click() {
+			$this->lblDialogBoxMessage->Text = '<h4>Please Wait...</h4>We are processing your credit card.  We appreciate your patience!<br/><br/><img src="/assets/images/cc_processing.gif"/>';
+			$this->btnDialogBoxOkay->Visible = false;
 			$this->dlgDialogBox->HideDialogBox();
+
+			$this->btnSubmit->Enabled = true;
 		}
 	}
 ?>

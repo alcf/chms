@@ -42,10 +42,11 @@
 		 * @param string $strCcNumber
 		 * @param string $strCcExpiration four digits, MMYY format
 		 * @param string $strCcCsc
+		 * @param integer $intCreditCardTypeId
 		 * @return mixed a CreditCardPayment object if authorization successful, otherwise a string-based message on why it failed
 		 */
 		public static function PerformAuthorization($objPaymentObject, $strFirstName, $strLastName, Address $objAddress, $fltAmount,
-			$strCcNumber, $strCcExpiration, $strCcCsc) {
+			$strCcNumber, $strCcExpiration, $strCcCsc, $intCreditCardTypeId) {
 			// Ensure a "Valid" PaymentObject
 			if (!($objPaymentObject instanceof SignupPayment) &&
 				!($objPaymentObject instanceof OnlineDonation)) {
@@ -78,15 +79,66 @@
 				$strNvpRequestArray = self::PaymentGatewayGenerateAuthorizationPayload($strFirstName, $strLastName, $objAddress, $fltAmount, $strCcNumber, $strCcExpiration, $strCcCsc, $strComment, $strInvoiceNumber);
 				$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
 
-				// To REMOVE
-				CreditCardPayment::GetDatabase()->TransactionRollBack();
+				// Analyze the ResponseArray
+				if (!array_key_exists('RESULT', $strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Missing Result Code from Payment Gateway';
+				}
 
+				if (!array_key_exists('RESPMSG', $strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Missing Response from Payment Gateway';
+				}
+
+				if (!array_key_exists('PNREF', $strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Missing Reference ID from Payment Gateway';
+				}
+
+				// Fill in the blanks
+				if (!array_key_exists('CVV2MATCH', $strNvpResponseArray)) $strNvpResponseArray['CVV2MATCH'] = '';
+				if (!array_key_exists('AVSADDR', $strNvpResponseArray)) $strNvpResponseArray['AVSADDR'] = '?';
+				if (!array_key_exists('AVSZIP', $strNvpResponseArray)) $strNvpResponseArray['AVSZIP'] = '?';
+				if (!array_key_exists('IAVS', $strNvpResponseArray)) $strNvpResponseArray['IAVS'] = '?';
+				if (!array_key_exists('AUTHCODE', $strNvpResponseArray)) $strNvpResponseArray['AUTHCODE'] = '';
+
+				// If Failure, cleanup and then report
+				if ($strNvpResponseArray['RESULT'] != 0) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return sprintf('%s (%s)', $strNvpResponseArray['RESPMSG'], $strNvpResponseArray['RESULT']);
+				}
+
+				// If CVV2 Failed, then Report
+				if ($strNvpResponseArray['CVV2MATCH'] == 'N') {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'The CVV2 code entered is invalid.  Please double check the 3-digit CVV2 code on the back of your card. (' . $strNvpResponseArray['RESULT'] . ')';
+				}
+
+				// If we are here, we had a successful authorization!
+				$objCreditCardPayment = new CreditCardPayment();
+				$objCreditCardPayment->CreditCardStatusTypeId = CreditCardStatusType::Authorized;
+				$objCreditCardPayment->CreditCardLastFour = substr($strCcNumber, strlen($strCcNumber) - 4);
+				$objCreditCardPayment->CreditCardTypeId = $intCreditCardTypeId;
+				$objCreditCardPayment->TransactionCode = $strNvpResponseArray['PNREF'];
+				$objCreditCardPayment->AuthorizationCode = $strNvpResponseArray['AUTHCODE'];
+				$objCreditCardPayment->AddressMatchCode = $strNvpResponseArray['AVSADDR'] . $strNvpResponseArray['AVSZIP'] . $strNvpResponseArray['IAVS'];
+				$objCreditCardPayment->DateAuthorized = QDateTime::Now();
+				$objCreditCardPayment->AmountCharged = $fltAmount;
+
+				// Save, Commit and Return
+				$objCreditCardPayment->Save();
+				$objPaymentObject->CreditCardPayment = $objCreditCardPayment;
+				$objPaymentObject->Save();
+				CreditCardPayment::GetDatabase()->TransactionCommit();
 			} catch (Exception $objExc) {
 				CreditCardPayment::GetDatabase()->TransactionRollBack();
 				throw $objExc;
 			}
+
+			$objPaymentObject->RefreshDetailsWithCreditCardPayment();
+			return $objCreditCardPayment;
 		}
-		
+
 		/**
 		 * This will submit a NVP Request to paypal and return the repsonse
 		 * or NULL if there was a connection error.
@@ -168,7 +220,8 @@
 				'COUNTRYCODE' => 'US',
 				'ZIP' => $objAddress->ZipCode,
 				'CURRENCYCODE' => 'USD',
-				'SHIPTONAME' => trim($strFirstName . ' ' . $strLastName),
+				'SHIPTOFIRSTNAME' => $strFirstName,
+				'SHIPTOLASTNAME' => $strLastName,
 				'SHIPTOSTREET' => $objAddress->Address1,
 				'SHIPTOSTREET2' => $objAddress->Address2,
 				'SHIPTOCITY' => $objAddress->City,
@@ -199,7 +252,7 @@
 				$keyval=substr($nvpstr,$intial,$keypos);
 				$valval=substr($nvpstr,$keypos+1,$valuepos-$keypos-1);
 				//decoding the respose
-				$nvpArray[urldecode($keyval)] =urldecode( $valval);
+				$nvpArray[urldecode($keyval)] = urldecode( $valval);
 				$nvpstr=substr($nvpstr,$valuepos+1,strlen($nvpstr));
 		    }
 
@@ -214,7 +267,7 @@
 		public static function FormatNvp($objAssociativeArray) {
 			$strNvpArray = array();
 			foreach ($objAssociativeArray as $strName => $strValue) {
-				$strNvpArray[] = $strName . '=' . urlencode($strValue);
+				$strNvpArray[] = $strName . '=' . str_replace('=','-', str_replace('&','+', trim($strValue)));
 			}
 
 			return implode('&', $strNvpArray);

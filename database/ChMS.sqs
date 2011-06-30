@@ -439,7 +439,7 @@
         </SQLField>
         <SQLField>
             <name><![CDATA[address_match_code]]></name>
-            <type><![CDATA[VARCHAR(1)]]></type>
+            <type><![CDATA[VARCHAR(3)]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[92C994BA-5636-4182-AD15-21BE6C48AEA4]]></uid>
         </SQLField>

@@ -211,7 +211,7 @@ CREATE TABLE `credit_card_payment`
 `credit_card_last_four` VARCHAR(4) NOT NULL,
 `transaction_code` VARCHAR(40) NOT NULL UNIQUE,
 `authorization_code` VARCHAR(40),
-`address_match_code` VARCHAR(1),
+`address_match_code` VARCHAR(3),
 `date_authorized` DATETIME,
 `date_captured` DATETIME,
 `amount_charged` DECIMAL(10,2),
