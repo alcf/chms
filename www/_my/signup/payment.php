@@ -371,6 +371,13 @@
 			
 			return $objSignupPayment;
 		}
+		
+		public function PaymentPanel_Success() {
+				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
+				$this->objSignupEntry->Save();
+				$this->objSignupEntry->SendConfirmationEmail();
+				QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
+		}
 	}
 
 	PaymentSignupQForm::Run('PaymentSignupQForm');

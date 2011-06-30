@@ -203,9 +203,8 @@
 
 			// TODO FOR TESTING
 			if ($mixReturn instanceof CreditCardPayment) {
-				// TODO: for testing
-				$this->btnSubmit->Enabled = true;
 				$this->dlgDialogBox->HideDialogBox();
+				$this->objForm->PaymentPanel_Success();
 			} else {
 				// Failed!  Report Message
 				if (!$mixReturn) $mixReturn = 'Cannot connect to payment gateway.';
