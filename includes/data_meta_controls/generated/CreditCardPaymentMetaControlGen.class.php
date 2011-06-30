@@ -28,8 +28,8 @@
 	 * property-read QLabel $TransactionCodeLabel
 	 * property QTextBox $AuthorizationCodeControl
 	 * property-read QLabel $AuthorizationCodeLabel
-	 * property QCheckBox $AddressMatchFlagControl
-	 * property-read QLabel $AddressMatchFlagLabel
+	 * property QTextBox $AddressMatchCodeControl
+	 * property-read QLabel $AddressMatchCodeLabel
 	 * property QDateTimePicker $DateAuthorizedControl
 	 * property-read QLabel $DateAuthorizedLabel
 	 * property QDateTimePicker $DateCapturedControl
@@ -114,10 +114,10 @@
 		protected $txtAuthorizationCode;
 
         /**
-         * @var QCheckBox chkAddressMatchFlag;
+         * @var QTextBox txtAddressMatchCode;
          * @access protected
          */
-		protected $chkAddressMatchFlag;
+		protected $txtAddressMatchCode;
 
         /**
          * @var QDateTimePicker calDateAuthorized;
@@ -188,10 +188,10 @@
 		protected $lblAuthorizationCode;
 
         /**
-         * @var QLabel lblAddressMatchFlag
+         * @var QLabel lblAddressMatchCode
          * @access protected
          */
-		protected $lblAddressMatchFlag;
+		protected $lblAddressMatchCode;
 
         /**
          * @var QLabel lblDateAuthorized
@@ -500,27 +500,28 @@
 		}
 
 		/**
-		 * Create and setup QCheckBox chkAddressMatchFlag
+		 * Create and setup QTextBox txtAddressMatchCode
 		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
+		 * @return QTextBox
 		 */
-		public function chkAddressMatchFlag_Create($strControlId = null) {
-			$this->chkAddressMatchFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkAddressMatchFlag->Name = QApplication::Translate('Address Match Flag');
-			$this->chkAddressMatchFlag->Checked = $this->objCreditCardPayment->AddressMatchFlag;
-			return $this->chkAddressMatchFlag;
+		public function txtAddressMatchCode_Create($strControlId = null) {
+			$this->txtAddressMatchCode = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtAddressMatchCode->Name = QApplication::Translate('Address Match Code');
+			$this->txtAddressMatchCode->Text = $this->objCreditCardPayment->AddressMatchCode;
+			$this->txtAddressMatchCode->MaxLength = CreditCardPayment::AddressMatchCodeMaxLength;
+			return $this->txtAddressMatchCode;
 		}
 
 		/**
-		 * Create and setup QLabel lblAddressMatchFlag
+		 * Create and setup QLabel lblAddressMatchCode
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblAddressMatchFlag_Create($strControlId = null) {
-			$this->lblAddressMatchFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblAddressMatchFlag->Name = QApplication::Translate('Address Match Flag');
-			$this->lblAddressMatchFlag->Text = ($this->objCreditCardPayment->AddressMatchFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblAddressMatchFlag;
+		public function lblAddressMatchCode_Create($strControlId = null) {
+			$this->lblAddressMatchCode = new QLabel($this->objParentObject, $strControlId);
+			$this->lblAddressMatchCode->Name = QApplication::Translate('Address Match Code');
+			$this->lblAddressMatchCode->Text = $this->objCreditCardPayment->AddressMatchCode;
+			return $this->lblAddressMatchCode;
 		}
 
 		/**
@@ -807,8 +808,8 @@
 			if ($this->txtAuthorizationCode) $this->txtAuthorizationCode->Text = $this->objCreditCardPayment->AuthorizationCode;
 			if ($this->lblAuthorizationCode) $this->lblAuthorizationCode->Text = $this->objCreditCardPayment->AuthorizationCode;
 
-			if ($this->chkAddressMatchFlag) $this->chkAddressMatchFlag->Checked = $this->objCreditCardPayment->AddressMatchFlag;
-			if ($this->lblAddressMatchFlag) $this->lblAddressMatchFlag->Text = ($this->objCreditCardPayment->AddressMatchFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			if ($this->txtAddressMatchCode) $this->txtAddressMatchCode->Text = $this->objCreditCardPayment->AddressMatchCode;
+			if ($this->lblAddressMatchCode) $this->lblAddressMatchCode->Text = $this->objCreditCardPayment->AddressMatchCode;
 
 			if ($this->calDateAuthorized) $this->calDateAuthorized->DateTime = $this->objCreditCardPayment->DateAuthorized;
 			if ($this->lblDateAuthorized) $this->lblDateAuthorized->Text = sprintf($this->objCreditCardPayment->DateAuthorized) ? $this->objCreditCardPayment->__toString($this->strDateAuthorizedDateTimeFormat) : null;
@@ -892,7 +893,7 @@
 				if ($this->txtCreditCardLastFour) $this->objCreditCardPayment->CreditCardLastFour = $this->txtCreditCardLastFour->Text;
 				if ($this->txtTransactionCode) $this->objCreditCardPayment->TransactionCode = $this->txtTransactionCode->Text;
 				if ($this->txtAuthorizationCode) $this->objCreditCardPayment->AuthorizationCode = $this->txtAuthorizationCode->Text;
-				if ($this->chkAddressMatchFlag) $this->objCreditCardPayment->AddressMatchFlag = $this->chkAddressMatchFlag->Checked;
+				if ($this->txtAddressMatchCode) $this->objCreditCardPayment->AddressMatchCode = $this->txtAddressMatchCode->Text;
 				if ($this->calDateAuthorized) $this->objCreditCardPayment->DateAuthorized = $this->calDateAuthorized->DateTime;
 				if ($this->calDateCaptured) $this->objCreditCardPayment->DateCaptured = $this->calDateCaptured->DateTime;
 				if ($this->txtAmountCharged) $this->objCreditCardPayment->AmountCharged = $this->txtAmountCharged->Text;
@@ -979,12 +980,12 @@
 				case 'AuthorizationCodeLabel':
 					if (!$this->lblAuthorizationCode) return $this->lblAuthorizationCode_Create();
 					return $this->lblAuthorizationCode;
-				case 'AddressMatchFlagControl':
-					if (!$this->chkAddressMatchFlag) return $this->chkAddressMatchFlag_Create();
-					return $this->chkAddressMatchFlag;
-				case 'AddressMatchFlagLabel':
-					if (!$this->lblAddressMatchFlag) return $this->lblAddressMatchFlag_Create();
-					return $this->lblAddressMatchFlag;
+				case 'AddressMatchCodeControl':
+					if (!$this->txtAddressMatchCode) return $this->txtAddressMatchCode_Create();
+					return $this->txtAddressMatchCode;
+				case 'AddressMatchCodeLabel':
+					if (!$this->lblAddressMatchCode) return $this->lblAddressMatchCode_Create();
+					return $this->lblAddressMatchCode;
 				case 'DateAuthorizedControl':
 					if (!$this->calDateAuthorized) return $this->calDateAuthorized_Create();
 					return $this->calDateAuthorized;
@@ -1067,8 +1068,8 @@
 						return ($this->txtTransactionCode = QType::Cast($mixValue, 'QControl'));
 					case 'AuthorizationCodeControl':
 						return ($this->txtAuthorizationCode = QType::Cast($mixValue, 'QControl'));
-					case 'AddressMatchFlagControl':
-						return ($this->chkAddressMatchFlag = QType::Cast($mixValue, 'QControl'));
+					case 'AddressMatchCodeControl':
+						return ($this->txtAddressMatchCode = QType::Cast($mixValue, 'QControl'));
 					case 'DateAuthorizedControl':
 						return ($this->calDateAuthorized = QType::Cast($mixValue, 'QControl'));
 					case 'DateCapturedControl':

@@ -21,7 +21,7 @@
 	 * @property string $CreditCardLastFour the value for strCreditCardLastFour (Not Null)
 	 * @property string $TransactionCode the value for strTransactionCode (Unique)
 	 * @property string $AuthorizationCode the value for strAuthorizationCode 
-	 * @property boolean $AddressMatchFlag the value for blnAddressMatchFlag 
+	 * @property string $AddressMatchCode the value for strAddressMatchCode 
 	 * @property QDateTime $DateAuthorized the value for dttDateAuthorized 
 	 * @property QDateTime $DateCaptured the value for dttDateCaptured 
 	 * @property double $AmountCharged the value for fltAmountCharged 
@@ -91,11 +91,12 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column credit_card_payment.address_match_flag
-		 * @var boolean blnAddressMatchFlag
+		 * Protected member variable that maps to the database column credit_card_payment.address_match_code
+		 * @var string strAddressMatchCode
 		 */
-		protected $blnAddressMatchFlag;
-		const AddressMatchFlagDefault = null;
+		protected $strAddressMatchCode;
+		const AddressMatchCodeMaxLength = 1;
+		const AddressMatchCodeDefault = null;
 
 
 		/**
@@ -530,7 +531,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_last_four', $strAliasPrefix . 'credit_card_last_four');
 			$objBuilder->AddSelectItem($strTableName, 'transaction_code', $strAliasPrefix . 'transaction_code');
 			$objBuilder->AddSelectItem($strTableName, 'authorization_code', $strAliasPrefix . 'authorization_code');
-			$objBuilder->AddSelectItem($strTableName, 'address_match_flag', $strAliasPrefix . 'address_match_flag');
+			$objBuilder->AddSelectItem($strTableName, 'address_match_code', $strAliasPrefix . 'address_match_code');
 			$objBuilder->AddSelectItem($strTableName, 'date_authorized', $strAliasPrefix . 'date_authorized');
 			$objBuilder->AddSelectItem($strTableName, 'date_captured', $strAliasPrefix . 'date_captured');
 			$objBuilder->AddSelectItem($strTableName, 'amount_charged', $strAliasPrefix . 'amount_charged');
@@ -580,8 +581,8 @@
 			$objToReturn->strTransactionCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'authorization_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'authorization_code'] : $strAliasPrefix . 'authorization_code';
 			$objToReturn->strAuthorizationCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'address_match_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'address_match_flag'] : $strAliasPrefix . 'address_match_flag';
-			$objToReturn->blnAddressMatchFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'address_match_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'address_match_code'] : $strAliasPrefix . 'address_match_code';
+			$objToReturn->strAddressMatchCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_authorized', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_authorized'] : $strAliasPrefix . 'date_authorized';
 			$objToReturn->dttDateAuthorized = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_captured', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_captured'] : $strAliasPrefix . 'date_captured';
@@ -866,7 +867,7 @@
 							`credit_card_last_four`,
 							`transaction_code`,
 							`authorization_code`,
-							`address_match_flag`,
+							`address_match_code`,
 							`date_authorized`,
 							`date_captured`,
 							`amount_charged`,
@@ -879,7 +880,7 @@
 							' . $objDatabase->SqlVariable($this->strCreditCardLastFour) . ',
 							' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
 							' . $objDatabase->SqlVariable($this->strAuthorizationCode) . ',
-							' . $objDatabase->SqlVariable($this->blnAddressMatchFlag) . ',
+							' . $objDatabase->SqlVariable($this->strAddressMatchCode) . ',
 							' . $objDatabase->SqlVariable($this->dttDateAuthorized) . ',
 							' . $objDatabase->SqlVariable($this->dttDateCaptured) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
@@ -910,7 +911,7 @@
 							`credit_card_last_four` = ' . $objDatabase->SqlVariable($this->strCreditCardLastFour) . ',
 							`transaction_code` = ' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
 							`authorization_code` = ' . $objDatabase->SqlVariable($this->strAuthorizationCode) . ',
-							`address_match_flag` = ' . $objDatabase->SqlVariable($this->blnAddressMatchFlag) . ',
+							`address_match_code` = ' . $objDatabase->SqlVariable($this->strAddressMatchCode) . ',
 							`date_authorized` = ' . $objDatabase->SqlVariable($this->dttDateAuthorized) . ',
 							`date_captured` = ' . $objDatabase->SqlVariable($this->dttDateCaptured) . ',
 							`amount_charged` = ' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
@@ -1066,7 +1067,7 @@
 			$this->strCreditCardLastFour = $objReloaded->strCreditCardLastFour;
 			$this->strTransactionCode = $objReloaded->strTransactionCode;
 			$this->strAuthorizationCode = $objReloaded->strAuthorizationCode;
-			$this->blnAddressMatchFlag = $objReloaded->blnAddressMatchFlag;
+			$this->strAddressMatchCode = $objReloaded->strAddressMatchCode;
 			$this->dttDateAuthorized = $objReloaded->dttDateAuthorized;
 			$this->dttDateCaptured = $objReloaded->dttDateCaptured;
 			$this->fltAmountCharged = $objReloaded->fltAmountCharged;
@@ -1091,7 +1092,7 @@
 					`credit_card_last_four`,
 					`transaction_code`,
 					`authorization_code`,
-					`address_match_flag`,
+					`address_match_code`,
 					`date_authorized`,
 					`date_captured`,
 					`amount_charged`,
@@ -1108,7 +1109,7 @@
 					' . $objDatabase->SqlVariable($this->strCreditCardLastFour) . ',
 					' . $objDatabase->SqlVariable($this->strTransactionCode) . ',
 					' . $objDatabase->SqlVariable($this->strAuthorizationCode) . ',
-					' . $objDatabase->SqlVariable($this->blnAddressMatchFlag) . ',
+					' . $objDatabase->SqlVariable($this->strAddressMatchCode) . ',
 					' . $objDatabase->SqlVariable($this->dttDateAuthorized) . ',
 					' . $objDatabase->SqlVariable($this->dttDateCaptured) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
@@ -1195,10 +1196,10 @@
 					// @return string
 					return $this->strAuthorizationCode;
 
-				case 'AddressMatchFlag':
-					// Gets the value for blnAddressMatchFlag 
-					// @return boolean
-					return $this->blnAddressMatchFlag;
+				case 'AddressMatchCode':
+					// Gets the value for strAddressMatchCode 
+					// @return string
+					return $this->strAddressMatchCode;
 
 				case 'DateAuthorized':
 					// Gets the value for dttDateAuthorized 
@@ -1370,12 +1371,12 @@
 						throw $objExc;
 					}
 
-				case 'AddressMatchFlag':
-					// Sets the value for blnAddressMatchFlag 
-					// @param boolean $mixValue
-					// @return boolean
+				case 'AddressMatchCode':
+					// Sets the value for strAddressMatchCode 
+					// @param string $mixValue
+					// @return string
 					try {
-						return ($this->blnAddressMatchFlag = QType::Cast($mixValue, QType::Boolean));
+						return ($this->strAddressMatchCode = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1599,7 +1600,7 @@
 			$strToReturn .= '<element name="CreditCardLastFour" type="xsd:string"/>';
 			$strToReturn .= '<element name="TransactionCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="AuthorizationCode" type="xsd:string"/>';
-			$strToReturn .= '<element name="AddressMatchFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="AddressMatchCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateAuthorized" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateCaptured" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="AmountCharged" type="xsd:float"/>';
@@ -1641,8 +1642,8 @@
 				$objToReturn->strTransactionCode = $objSoapObject->TransactionCode;
 			if (property_exists($objSoapObject, 'AuthorizationCode'))
 				$objToReturn->strAuthorizationCode = $objSoapObject->AuthorizationCode;
-			if (property_exists($objSoapObject, 'AddressMatchFlag'))
-				$objToReturn->blnAddressMatchFlag = $objSoapObject->AddressMatchFlag;
+			if (property_exists($objSoapObject, 'AddressMatchCode'))
+				$objToReturn->strAddressMatchCode = $objSoapObject->AddressMatchCode;
 			if (property_exists($objSoapObject, 'DateAuthorized'))
 				$objToReturn->dttDateAuthorized = new QDateTime($objSoapObject->DateAuthorized);
 			if (property_exists($objSoapObject, 'DateCaptured'))
@@ -1703,7 +1704,7 @@
 	 * @property-read QQNode $CreditCardLastFour
 	 * @property-read QQNode $TransactionCode
 	 * @property-read QQNode $AuthorizationCode
-	 * @property-read QQNode $AddressMatchFlag
+	 * @property-read QQNode $AddressMatchCode
 	 * @property-read QQNode $DateAuthorized
 	 * @property-read QQNode $DateCaptured
 	 * @property-read QQNode $AmountCharged
@@ -1732,8 +1733,8 @@
 					return new QQNode('transaction_code', 'TransactionCode', 'string', $this);
 				case 'AuthorizationCode':
 					return new QQNode('authorization_code', 'AuthorizationCode', 'string', $this);
-				case 'AddressMatchFlag':
-					return new QQNode('address_match_flag', 'AddressMatchFlag', 'boolean', $this);
+				case 'AddressMatchCode':
+					return new QQNode('address_match_code', 'AddressMatchCode', 'string', $this);
 				case 'DateAuthorized':
 					return new QQNode('date_authorized', 'DateAuthorized', 'QDateTime', $this);
 				case 'DateCaptured':
@@ -1773,7 +1774,7 @@
 	 * @property-read QQNode $CreditCardLastFour
 	 * @property-read QQNode $TransactionCode
 	 * @property-read QQNode $AuthorizationCode
-	 * @property-read QQNode $AddressMatchFlag
+	 * @property-read QQNode $AddressMatchCode
 	 * @property-read QQNode $DateAuthorized
 	 * @property-read QQNode $DateCaptured
 	 * @property-read QQNode $AmountCharged
@@ -1803,8 +1804,8 @@
 					return new QQNode('transaction_code', 'TransactionCode', 'string', $this);
 				case 'AuthorizationCode':
 					return new QQNode('authorization_code', 'AuthorizationCode', 'string', $this);
-				case 'AddressMatchFlag':
-					return new QQNode('address_match_flag', 'AddressMatchFlag', 'boolean', $this);
+				case 'AddressMatchCode':
+					return new QQNode('address_match_code', 'AddressMatchCode', 'string', $this);
 				case 'DateAuthorized':
 					return new QQNode('date_authorized', 'DateAuthorized', 'QDateTime', $this);
 				case 'DateCaptured':

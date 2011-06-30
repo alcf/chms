@@ -299,7 +299,7 @@
 				case 'CreditCardLastFour': return QQN::CreditCardPayment()->CreditCardLastFour;
 				case 'TransactionCode': return QQN::CreditCardPayment()->TransactionCode;
 				case 'AuthorizationCode': return QQN::CreditCardPayment()->AuthorizationCode;
-				case 'AddressMatchFlag': return QQN::CreditCardPayment()->AddressMatchFlag;
+				case 'AddressMatchCode': return QQN::CreditCardPayment()->AddressMatchCode;
 				case 'DateAuthorized': return QQN::CreditCardPayment()->DateAuthorized;
 				case 'DateCaptured': return QQN::CreditCardPayment()->DateCaptured;
 				case 'AmountCharged': return QQN::CreditCardPayment()->AmountCharged;

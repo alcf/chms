@@ -368,8 +368,8 @@
             <y>1776.000000</y>
         </location>
         <size>
-            <width>320.000000</width>
-            <height>288.000000</height>
+            <width>323.000000</width>
+            <height>280.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -438,8 +438,8 @@
             <uid><![CDATA[AF6D298B-BB0A-48F7-B2A4-B932C14B4145]]></uid>
         </SQLField>
         <SQLField>
-            <name><![CDATA[address_match_flag]]></name>
-            <type><![CDATA[BOOLEAN]]></type>
+            <name><![CDATA[address_match_code]]></name>
+            <type><![CDATA[VARCHAR(1)]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[92C994BA-5636-4182-AD15-21BE6C48AEA4]]></uid>
         </SQLField>
@@ -7069,7 +7069,7 @@ Zn2hgcgEgRgDhoaG
         <pageBoundariesVisible><![CDATA[1]]></pageBoundariesVisible>
         <PageGridVisible><![CDATA[1]]></PageGridVisible>
         <snapToGrid><![CDATA[1]]></snapToGrid>
-        <SourceSplitViewState><![CDATA[2 -352.617 1667]]></SourceSplitViewState>
+        <SourceSplitViewState><![CDATA[2 -352 1667]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
         <windowHeight><![CDATA[1028.000000]]></windowHeight>
         <windowLocationX><![CDATA[4.000000]]></windowLocationX>
