@@ -19,6 +19,7 @@
 	</div>
 
 	<?php $this->rblDeposit->RenderWithNameSoloSection(); ?>
+	<?php $this->btnRegister->RenderWithHtml('HtmlBefore=<div class="buttonBar">', 'HtmlAfter=</div>'); ?>
 
 	<br/>
 	<?php $this->pnlPayment->Render(); ?>

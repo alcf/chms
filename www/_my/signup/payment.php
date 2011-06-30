@@ -19,7 +19,8 @@
 		protected $dtgProducts;
 		protected $lstRequiredWithChoice;
 
-		public $rblDeposit;
+		protected $rblDeposit;
+		protected $btnRegister;
 
 		/**
 		 * @var PaymentPanel
@@ -94,6 +95,13 @@
 			$this->rblDeposit->Name = 'Payment Option';
 			$this->rblDeposit->AddItem('Pay in Full', 1);
 			$this->rblDeposit->AddItem('Deposit', 2);
+			$this->rblDeposit->AddAction(new QClickEvent(), new QAjaxAction('rblDeposit_Click'));
+			
+			$this->btnRegister = new QButton($this);
+			$this->btnRegister->CssClass = 'primary';
+			$this->btnRegister->Text = 'Submit Registration';
+			$this->btnRegister->AddAction(new QClickEvent(), new QAjaxAction('btnRegister_Click'));
+			$this->btnRegister->CausesValidation = true;
 			
 			// Figure out which address to use
 			$objAddress = $this->objSignupEntry->RetrieveAnyValidAddressObject();
@@ -323,6 +331,22 @@
 			$this->RefreshForm();
 		}
 
+		public function rblDeposit_Click($strFormId, $strControlId, $strParameter) {
+			$this->RefreshForm();
+		}
+
+		public function btnRegister_Click($strFormId, $strControlId, $strParameter) {
+			if ($this->GetAmount() == 0) {
+				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
+				$this->objSignupEntry->Save();
+				$this->objSignupEntry->SendConfirmationEmail();
+				QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
+			} else {
+				QApplication::DisplayAlert('You must enter in payment information.');
+				$this->RefreshForm();
+			}
+		}
+
 		public function lstQuantity_Change($strFormId, $strControlId, $strParameter) {
 			$lstQuantity = $this->GetControl($strControlId);
 			$objFormProduct = FormProduct::Load($strParameter);
@@ -390,8 +414,10 @@
 			// Figure out if we need to display the Payment Panel
 			if ($this->GetAmount()) {
 				if (!$this->pnlPayment->Visible) $this->pnlPayment->Visible = true;
+				if ($this->btnRegister->Visible) $this->btnRegister->Visible = false;
 			} else {
 				if ($this->pnlPayment->Visible) $this->pnlPayment->Visible = false;
+				if (!$this->btnRegister->Visible) $this->btnRegister->Visible = true;
 			}
 		}
 
@@ -436,10 +462,10 @@
 		 * the payment has been submitted successfully.
 		 */
 		public function PaymentPanel_Success() {
-				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
-				$this->objSignupEntry->Save();
-				$this->objSignupEntry->SendConfirmationEmail();
-				QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
+			$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
+			$this->objSignupEntry->Save();
+			$this->objSignupEntry->SendConfirmationEmail();
+			QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
 		}
 	}
 
