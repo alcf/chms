@@ -6,10 +6,6 @@
 		protected $objAddress;
 		protected $strName;
 
-		// Amounts
-		protected $fltAmount;
-		protected $fltDeposit;
-
 		// Form Fields
 		public $txtFirstName;
 		public $txtLastName;
@@ -29,8 +25,6 @@
 		public $dlgDialogBox;
 		public $lblDialogBoxMessage;
 		public $btnDialogBoxOkay;
-		
-		public $rblDeposit;
 
 		public function __construct($objParentObject, $strControlId = null, Address $objAddress = null, $strFirstName = null, $strLastName = null) {
 			parent::__construct($objParentObject, $strControlId);
@@ -128,9 +122,6 @@
 			$this->lblDialogBoxMessage->HtmlEntities = false;
 			$this->lblDialogBoxMessage->Text = '<h4>Please Wait...</h4>We are processing your credit card.  We appreciate your patience!<br/><br/><img src="/assets/images/cc_processing.gif"/>';
 
-			$this->rblDeposit = new QRadioButtonList($this);
-			$this->rblDeposit->Name = 'Payment Option';
-
 			$this->btnSubmit = new QButton($this);
 			$this->btnSubmit->CausesValidation = true;
 			$this->btnSubmit->CssClass = 'primary';
@@ -139,28 +130,6 @@
 			$this->btnSubmit->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnSubmit));
 			$this->btnSubmit->AddAction(new QClickEvent(), new QShowDialogBox($this->dlgDialogBox));
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSubmit_Click'));
-			
-			$this->UpdateAmountsTo(false, false);
-		}
-
-		public function UpdateAmountsTo($fltAmount, $fltDeposit) {
-			if (($fltAmount !== $this->fltAmount) ||
-				($fltDeposit !== $this->fltDeposit)) {
-				$this->fltAmount = $fltAmount;
-				$this->fltDeposit = $fltDeposit;
-
-				$intCurrentIndex = $this->rblDeposit->SelectedValue;
-				$this->rblDeposit->RemoveAllItems();
-				if ($this->fltDeposit) {
-					$this->rblDeposit->AddItem(sprintf('Pay in Full ($%.2f)', $this->fltAmount), 1, 1 == $intCurrentIndex);
-					$this->rblDeposit->AddItem(sprintf('Pay Deposit ($%.2f)', $this->fltDeposit), 2, 2 == $intCurrentIndex);
-					$this->rblDeposit->Visible = true;
-					$this->rblDeposit->Required = true;
-				} else {
-					$this->rblDeposit->Visible = false;
-					$this->rblDeposit->Required= false;
-				}
-			}
 		}
 
 		public function btnSubmit_Reset() {
@@ -170,11 +139,6 @@
 
 		public function SetButtonText($strText) {
 			$this->btnSubmit->Text = $strText;
-		}
-
-		public function SetAmounts($fltAmount, $fltDeposit) {
-			$this->fltAmount = $fltAmount;
-			$this->fltDeposit = $fltDeposit;
 		}
 
 		public function btnSubmit_Click($strFormId, $strControlId, $strParameter) {
@@ -187,10 +151,7 @@
 			$objAddress->ZipCode = trim($this->txtZipCode->Text);
 
 			// Calculate the Amount
-			if ($this->rblDeposit->SelectedValue == 2)
-				$fltAmountToCharge = $this->fltDeposit;
-			else
-				$fltAmountToCharge = $this->fltAmount;
+			$fltAmountToCharge = $this->objForm->GetAmount();
 
 			// Calculate the Expiration
 			$strCcExpiration = sprintf('%02d%02d', $this->lstCcExpMonth->SelectedValue, substr($this->lstCcExpYear->SelectedValue, 2));

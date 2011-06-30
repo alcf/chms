@@ -17,6 +17,9 @@
 	<div class="section">
 		<?php $this->dtgProducts->Render(); ?>
 	</div>
+
+	<?php $this->rblDeposit->RenderWithNameSoloSection(); ?>
+
 	<br/>
 	<?php $this->pnlPayment->Render(); ?>
 	

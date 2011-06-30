@@ -14,7 +14,6 @@
 		<?php $_CONTROL->lstCcExpMonth->HtmlAfter = ' ' . $_CONTROL->lstCcExpYear->RenderWithError(false); ?>
 		<?php $_CONTROL->lstCcExpMonth->RenderWithName(); ?>
 		<?php $_CONTROL->txtCcCsc->RenderWithName(); ?>
-		<?php $_CONTROL->rblDeposit->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">

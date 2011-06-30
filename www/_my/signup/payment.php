@@ -19,6 +19,8 @@
 		protected $dtgProducts;
 		protected $lstRequiredWithChoice;
 
+		public $rblDeposit;
+
 		/**
 		 * @var PaymentPanel
 		 */
@@ -87,6 +89,12 @@
 				}
 			}
 
+			// Deposit vs. Full Amount Choice
+			$this->rblDeposit = new QRadioButtonList($this);
+			$this->rblDeposit->Name = 'Payment Option';
+			$this->rblDeposit->AddItem('Pay in Full', 1);
+			$this->rblDeposit->AddItem('Deposit', 2);
+			
 			// Figure out which address to use
 			$objAddress = $this->objSignupEntry->RetrieveAnyValidAddressObject();
 			if (!$objAddress) $objAddress = QApplication::$PublicLogin->Person->DeducePrimaryAddress();
@@ -95,6 +103,7 @@
 			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, QApplication::$PublicLogin->Person->FirstName, QApplication::$PublicLogin->Person->LastName);
 			$this->pnlPayment->SetButtonText('Submit Payment');
 			
+			$this->objSignupEntry->RefreshAmounts();
 			$this->RefreshForm();
 		}
 
@@ -162,8 +171,6 @@
 				if ($objItem->FormProductTypeId == FormProductType::Required)
 					return '1';
 				else if ($objItem->FormProductTypeId == FormProductType::Optional) {
-					if ($objItem->MinimumQuantity == $objItem->MaximumQuantity) return $objItem->MinimumQuantity;
-
 					$lstQuantity = $this->GetControl('lstQuantity' . $objItem->Id);
 					if (!$lstQuantity) {
 						$lstQuantity = new QListBox($this->dtgProducts, 'lstQuantity' . $objItem->Id);
@@ -348,16 +355,50 @@
 			if ($objFormProduct) $this->objSignupEntry->AddProduct($objFormProduct);
 			$this->RefreshForm();
 		}
-		
+
 		public function RefreshForm() {
+			// Refresh the DataGrid
 			$this->dtgProducts->Refresh();
+
+			// Calculate the Amount(s) based on the data object itself
 			$fltDeposit = $this->objSignupEntry->CalculateMinimumDeposit();
 			$fltAmountOwed = -1 * $this->objSignupEntry->AmountBalance;
 			if ($fltAmountOwed <= $fltDeposit) $fltDeposit = null;
 
-			$this->pnlPayment->UpdateAmountsTo($fltAmountOwed, $fltDeposit);
+			// Refresh RBL Deposit Stuff
+			if (!is_null($fltDeposit)) {
+				$strText = sprintf('Pay in Full ($%.2f)', $fltAmountOwed);
+				if ($this->rblDeposit->GetItem(0)->Name != $strText) {
+					$this->rblDeposit->Refresh();
+					$this->rblDeposit->GetItem(0)->Name = $strText;
+				}
+
+				$strText = sprintf('Deposit ($%.2f)', $fltDeposit);
+				if ($this->rblDeposit->GetItem(1)->Name != $strText) {
+					$this->rblDeposit->Refresh();
+					$this->rblDeposit->GetItem(1)->Name = $strText;
+				}
+
+				if (!$this->rblDeposit->Visible) $this->rblDeposit->Visible = true;
+				if (!$this->rblDeposit->Required) $this->rblDeposit->Required = true;
+			} else {
+				if ($this->rblDeposit->Visible) $this->rblDeposit->Visible = false;
+				if ($this->rblDeposit->Required) $this->rblDeposit->Required = false;
+				if ($this->rblDeposit->SelectedValue) $this->rblDeposit->SelectedValue = null;
+			}
+
+			// Figure out if we need to display the Payment Panel
+			if ($this->GetAmount()) {
+				if (!$this->pnlPayment->Visible) $this->pnlPayment->Visible = true;
+			} else {
+				if ($this->pnlPayment->Visible) $this->pnlPayment->Visible = false;
+			}
 		}
-		
+
+		/////////////////////////
+		// PaymentPanel CallBacks
+		/////////////////////////
+
 		/**
 		 * Called back from PaymentPanel to actually generate a PaymentObject
 		 * or in this case, a SignupPayment entry.
@@ -371,7 +412,29 @@
 			
 			return $objSignupPayment;
 		}
-		
+
+		/**
+		 * Called back from PaymentPanel to figure out how much is actually
+		 * being charged.
+		 * @return float
+		 */
+		public function GetAmount() {
+			$fltDeposit = $this->objSignupEntry->CalculateMinimumDeposit();
+			$fltAmountOwed = -1 * $this->objSignupEntry->AmountBalance;
+			if ($fltAmountOwed <= $fltDeposit) $fltDeposit = null;
+
+			if ($this->rblDeposit->Visible && !is_null($fltDeposit) &&
+				($this->rblDeposit->SelectedValue == 2)) {
+				return $fltDeposit;
+			} else {
+				return $fltAmountOwed;
+			}
+		}
+
+		/**
+		 * Called back from PaymentPanel to perform final tasks after we know
+		 * the payment has been submitted successfully.
+		 */
 		public function PaymentPanel_Success() {
 				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
 				$this->objSignupEntry->Save();
