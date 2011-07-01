@@ -54,6 +54,19 @@
 		}
 
 		/**
+		 * This will "Complete" this signup by specifying the date submitted, setting status to "Complete",
+		 * **AND** sending a confirmation email.
+		 * 
+		 * This will save the record.
+		 */
+		public function Complete() {
+			$this->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
+			$this->DateSubmitted = QDateTime::Now();
+			$this->Save();
+			$this->SendConfirmationEmail();
+		}
+
+		/**
 		 * Queues a "confirmation email" to be sent out to the person signing up
 		 */
 		public function SendConfirmationEmail() {

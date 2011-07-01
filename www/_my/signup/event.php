@@ -464,9 +464,9 @@
 						$lstAnswer->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $lstAnswer;
 						$lstAnswer->AddItem('- Select One -', null);
-						foreach (explode("\n", $objFormQuestion->Options) as $strItem) {
-							$strItem = trim($strItem);
-							$lstAnswer->AddItem($strItem, $strItem, $objFormAnswer && $objFormAnswer->TextValue == $strItem);
+						foreach (explode("\n", trim($objFormQuestion->Options)) as $strItem) {
+							if (strlen($strItem = trim($strItem)))
+								$lstAnswer->AddItem($strItem, $strItem, $objFormAnswer && $objFormAnswer->TextValue == $strItem);
 						}
 						if ($objFormQuestion->AllowOtherFlag) {
 							$lstAnswer->ActionParameter = $strControlId . 'other';
@@ -494,7 +494,7 @@
 					case FormQuestionType::MultipleSelect:
 						$strAnswerArray = array();
 						if ($objFormAnswer) {
-							foreach (explode("\n", $objFormAnswer->TextValue) as $strAnswer) if (strlen($strAnswer = trim($strAnswer))) {
+							foreach (explode("\n", trim($objFormAnswer->TextValue)) as $strAnswer) if (strlen($strAnswer = trim($strAnswer))) {
 								$strAnswerArray[$strAnswer] = $strAnswer;
 							}
 						}
@@ -505,11 +505,12 @@
 						$lstAnswer->Required = $objFormQuestion->RequiredFlag;
 						$lstAnswer->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $lstAnswer;
-						foreach (explode("\n", $objFormQuestion->Options) as $strItem) {
-							$strItem = trim($strItem);
-							$lstAnswer->AddItem($strItem, $strItem, array_key_exists($strItem, $strAnswerArray));
-							$strAnswerArray[$strItem] = null;
-							unset($strAnswerArray[$strItem]);
+						foreach (explode("\n", trim($objFormQuestion->Options)) as $strItem) {
+							if (strlen($strItem = trim($strItem))) {
+								$lstAnswer->AddItem($strItem, $strItem, array_key_exists($strItem, $strAnswerArray));
+								$strAnswerArray[$strItem] = null;
+								unset($strAnswerArray[$strItem]);
+							}
 						}
 
 						foreach ($strAnswerArray as $strAnswer)
@@ -775,9 +776,7 @@
 			if ($this->objSignupForm->CountFormProducts()) {
 				QApplication::Redirect($this->objSignupEntry->PaymentUrl);
 			} else {
-				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
-				$this->objSignupEntry->Save();
-				$this->objSignupEntry->SendConfirmationEmail();
+				$this->objSignupEntry->Complete();
 				QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
 			}
 		}

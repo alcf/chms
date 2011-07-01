@@ -339,9 +339,7 @@
 
 		public function btnRegister_Click($strFormId, $strControlId, $strParameter) {
 			if ($this->GetAmount() == 0) {
-				$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
-				$this->objSignupEntry->Save();
-				$this->objSignupEntry->SendConfirmationEmail();
+				$this->objSignupEntry->Complete();
 				QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
 			} else {
 				QApplication::DisplayAlert('You must enter in payment information.');
@@ -472,9 +470,7 @@
 		 * the payment has been submitted successfully.
 		 */
 		public function PaymentPanel_Success() {
-			$this->objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
-			$this->objSignupEntry->Save();
-			$this->objSignupEntry->SendConfirmationEmail();
+			$this->objSignupEntry->Complete();
 			QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
 		}
 	}
