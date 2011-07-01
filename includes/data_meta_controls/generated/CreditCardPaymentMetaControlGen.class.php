@@ -42,6 +42,8 @@
 	 * property-read QLabel $AmountClearedLabel
 	 * property QListBox $PaypalBatchIdControl
 	 * property-read QLabel $PaypalBatchIdLabel
+	 * property QCheckBox $UnlinkedFlagControl
+	 * property-read QLabel $UnlinkedFlagLabel
 	 * property QListBox $OnlineDonationControl
 	 * property-read QLabel $OnlineDonationLabel
 	 * property QListBox $SignupPaymentControl
@@ -155,6 +157,12 @@
          */
 		protected $lstPaypalBatch;
 
+        /**
+         * @var QCheckBox chkUnlinkedFlag;
+         * @access protected
+         */
+		protected $chkUnlinkedFlag;
+
 
 		// Controls that allow the viewing of CreditCardPayment's individual data fields
         /**
@@ -228,6 +236,12 @@
          * @access protected
          */
 		protected $lblPaypalBatchId;
+
+        /**
+         * @var QLabel lblUnlinkedFlag
+         * @access protected
+         */
+		protected $lblUnlinkedFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -701,6 +715,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkUnlinkedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkUnlinkedFlag_Create($strControlId = null) {
+			$this->chkUnlinkedFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkUnlinkedFlag->Name = QApplication::Translate('Unlinked Flag');
+			$this->chkUnlinkedFlag->Checked = $this->objCreditCardPayment->UnlinkedFlag;
+			return $this->chkUnlinkedFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblUnlinkedFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblUnlinkedFlag_Create($strControlId = null) {
+			$this->lblUnlinkedFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblUnlinkedFlag->Name = QApplication::Translate('Unlinked Flag');
+			$this->lblUnlinkedFlag->Text = ($this->objCreditCardPayment->UnlinkedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblUnlinkedFlag;
+		}
+
+		/**
 		 * Create and setup QListBox lstOnlineDonation
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -839,6 +877,9 @@
 			}
 			if ($this->lblPaypalBatchId) $this->lblPaypalBatchId->Text = ($this->objCreditCardPayment->PaypalBatch) ? $this->objCreditCardPayment->PaypalBatch->__toString() : null;
 
+			if ($this->chkUnlinkedFlag) $this->chkUnlinkedFlag->Checked = $this->objCreditCardPayment->UnlinkedFlag;
+			if ($this->lblUnlinkedFlag) $this->lblUnlinkedFlag->Text = ($this->objCreditCardPayment->UnlinkedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->lstOnlineDonation) {
 				$this->lstOnlineDonation->RemoveAllItems();
 				$this->lstOnlineDonation->AddItem(QApplication::Translate('- Select One -'), null);
@@ -900,6 +941,7 @@
 				if ($this->txtAmountFee) $this->objCreditCardPayment->AmountFee = $this->txtAmountFee->Text;
 				if ($this->txtAmountCleared) $this->objCreditCardPayment->AmountCleared = $this->txtAmountCleared->Text;
 				if ($this->lstPaypalBatch) $this->objCreditCardPayment->PaypalBatchId = $this->lstPaypalBatch->SelectedValue;
+				if ($this->chkUnlinkedFlag) $this->objCreditCardPayment->UnlinkedFlag = $this->chkUnlinkedFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstOnlineDonation) $this->objCreditCardPayment->OnlineDonation = OnlineDonation::Load($this->lstOnlineDonation->SelectedValue);
@@ -1022,6 +1064,12 @@
 				case 'PaypalBatchIdLabel':
 					if (!$this->lblPaypalBatchId) return $this->lblPaypalBatchId_Create();
 					return $this->lblPaypalBatchId;
+				case 'UnlinkedFlagControl':
+					if (!$this->chkUnlinkedFlag) return $this->chkUnlinkedFlag_Create();
+					return $this->chkUnlinkedFlag;
+				case 'UnlinkedFlagLabel':
+					if (!$this->lblUnlinkedFlag) return $this->lblUnlinkedFlag_Create();
+					return $this->lblUnlinkedFlag;
 				case 'OnlineDonationControl':
 					if (!$this->lstOnlineDonation) return $this->lstOnlineDonation_Create();
 					return $this->lstOnlineDonation;
@@ -1082,6 +1130,8 @@
 						return ($this->txtAmountCleared = QType::Cast($mixValue, 'QControl'));
 					case 'PaypalBatchIdControl':
 						return ($this->lstPaypalBatch = QType::Cast($mixValue, 'QControl'));
+					case 'UnlinkedFlagControl':
+						return ($this->chkUnlinkedFlag = QType::Cast($mixValue, 'QControl'));
 					case 'OnlineDonationControl':
 						return ($this->lstOnlineDonation = QType::Cast($mixValue, 'QControl'));
 					case 'SignupPaymentControl':

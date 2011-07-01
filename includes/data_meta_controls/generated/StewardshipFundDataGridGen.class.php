@@ -297,6 +297,7 @@
 				case 'MinistryId': return QQN::StewardshipFund()->MinistryId;
 				case 'Ministry': return QQN::StewardshipFund()->Ministry;
 				case 'Name': return QQN::StewardshipFund()->Name;
+				case 'ExternalName': return QQN::StewardshipFund()->ExternalName;
 				case 'AccountNumber': return QQN::StewardshipFund()->AccountNumber;
 				case 'FundNumber': return QQN::StewardshipFund()->FundNumber;
 				case 'ActiveFlag': return QQN::StewardshipFund()->ActiveFlag;

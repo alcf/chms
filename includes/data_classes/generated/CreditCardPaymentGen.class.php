@@ -28,6 +28,7 @@
 	 * @property double $AmountFee the value for fltAmountFee 
 	 * @property double $AmountCleared the value for fltAmountCleared 
 	 * @property integer $PaypalBatchId the value for intPaypalBatchId 
+	 * @property boolean $UnlinkedFlag the value for blnUnlinkedFlag 
 	 * @property PaypalBatch $PaypalBatch the value for the PaypalBatch object referenced by intPaypalBatchId 
 	 * @property OnlineDonation $OnlineDonation the value for the OnlineDonation object that uniquely references this CreditCardPayment
 	 * @property SignupPayment $SignupPayment the value for the SignupPayment object that uniquely references this CreditCardPayment
@@ -95,7 +96,7 @@
 		 * @var string strAddressMatchCode
 		 */
 		protected $strAddressMatchCode;
-		const AddressMatchCodeMaxLength = 1;
+		const AddressMatchCodeMaxLength = 3;
 		const AddressMatchCodeDefault = null;
 
 
@@ -145,6 +146,14 @@
 		 */
 		protected $intPaypalBatchId;
 		const PaypalBatchIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column credit_card_payment.unlinked_flag
+		 * @var boolean blnUnlinkedFlag
+		 */
+		protected $blnUnlinkedFlag;
+		const UnlinkedFlagDefault = null;
 
 
 		/**
@@ -538,6 +547,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'amount_fee', $strAliasPrefix . 'amount_fee');
 			$objBuilder->AddSelectItem($strTableName, 'amount_cleared', $strAliasPrefix . 'amount_cleared');
 			$objBuilder->AddSelectItem($strTableName, 'paypal_batch_id', $strAliasPrefix . 'paypal_batch_id');
+			$objBuilder->AddSelectItem($strTableName, 'unlinked_flag', $strAliasPrefix . 'unlinked_flag');
 		}
 
 
@@ -595,6 +605,8 @@
 			$objToReturn->fltAmountCleared = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'paypal_batch_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'paypal_batch_id'] : $strAliasPrefix . 'paypal_batch_id';
 			$objToReturn->intPaypalBatchId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'unlinked_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'unlinked_flag'] : $strAliasPrefix . 'unlinked_flag';
+			$objToReturn->blnUnlinkedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -831,6 +843,38 @@
 				QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId)
 			);
 		}
+			
+		/**
+		 * Load an array of CreditCardPayment objects,
+		 * by UnlinkedFlag Index(es)
+		 * @param boolean $blnUnlinkedFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return CreditCardPayment[]
+		*/
+		public static function LoadArrayByUnlinkedFlag($blnUnlinkedFlag, $objOptionalClauses = null) {
+			// Call CreditCardPayment::QueryArray to perform the LoadArrayByUnlinkedFlag query
+			try {
+				return CreditCardPayment::QueryArray(
+					QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count CreditCardPayments
+		 * by UnlinkedFlag Index(es)
+		 * @param boolean $blnUnlinkedFlag
+		 * @return int
+		*/
+		public static function CountByUnlinkedFlag($blnUnlinkedFlag) {
+			// Call CreditCardPayment::QueryCount to perform the CountByUnlinkedFlag query
+			return CreditCardPayment::QueryCount(
+				QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag)
+			);
+		}
 
 
 
@@ -873,7 +917,8 @@
 							`amount_charged`,
 							`amount_fee`,
 							`amount_cleared`,
-							`paypal_batch_id`
+							`paypal_batch_id`,
+							`unlinked_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intCreditCardStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intCreditCardTypeId) . ',
@@ -886,7 +931,8 @@
 							' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
-							' . $objDatabase->SqlVariable($this->intPaypalBatchId) . '
+							' . $objDatabase->SqlVariable($this->intPaypalBatchId) . ',
+							' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . '
 						)
 					');
 
@@ -917,7 +963,8 @@
 							`amount_charged` = ' . $objDatabase->SqlVariable($this->fltAmountCharged) . ',
 							`amount_fee` = ' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 							`amount_cleared` = ' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
-							`paypal_batch_id` = ' . $objDatabase->SqlVariable($this->intPaypalBatchId) . '
+							`paypal_batch_id` = ' . $objDatabase->SqlVariable($this->intPaypalBatchId) . ',
+							`unlinked_flag` = ' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1074,6 +1121,7 @@
 			$this->fltAmountFee = $objReloaded->fltAmountFee;
 			$this->fltAmountCleared = $objReloaded->fltAmountCleared;
 			$this->PaypalBatchId = $objReloaded->PaypalBatchId;
+			$this->blnUnlinkedFlag = $objReloaded->blnUnlinkedFlag;
 		}
 
 		/**
@@ -1099,6 +1147,7 @@
 					`amount_fee`,
 					`amount_cleared`,
 					`paypal_batch_id`,
+					`unlinked_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1116,6 +1165,7 @@
 					' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
 					' . $objDatabase->SqlVariable($this->intPaypalBatchId) . ',
+					' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1230,6 +1280,11 @@
 					// Gets the value for intPaypalBatchId 
 					// @return integer
 					return $this->intPaypalBatchId;
+
+				case 'UnlinkedFlag':
+					// Gets the value for blnUnlinkedFlag 
+					// @return boolean
+					return $this->blnUnlinkedFlag;
 
 
 				///////////////////
@@ -1449,6 +1504,17 @@
 						throw $objExc;
 					}
 
+				case 'UnlinkedFlag':
+					// Sets the value for blnUnlinkedFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnUnlinkedFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1607,6 +1673,7 @@
 			$strToReturn .= '<element name="AmountFee" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountCleared" type="xsd:float"/>';
 			$strToReturn .= '<element name="PaypalBatch" type="xsd1:PaypalBatch"/>';
+			$strToReturn .= '<element name="UnlinkedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1657,6 +1724,8 @@
 			if ((property_exists($objSoapObject, 'PaypalBatch')) &&
 				($objSoapObject->PaypalBatch))
 				$objToReturn->PaypalBatch = PaypalBatch::GetObjectFromSoapObject($objSoapObject->PaypalBatch);
+			if (property_exists($objSoapObject, 'UnlinkedFlag'))
+				$objToReturn->blnUnlinkedFlag = $objSoapObject->UnlinkedFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1712,6 +1781,7 @@
 	 * @property-read QQNode $AmountCleared
 	 * @property-read QQNode $PaypalBatchId
 	 * @property-read QQNodePaypalBatch $PaypalBatch
+	 * @property-read QQNode $UnlinkedFlag
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 */
@@ -1749,6 +1819,8 @@
 					return new QQNode('paypal_batch_id', 'PaypalBatchId', 'integer', $this);
 				case 'PaypalBatch':
 					return new QQNodePaypalBatch('paypal_batch_id', 'PaypalBatch', 'integer', $this);
+				case 'UnlinkedFlag':
+					return new QQNode('unlinked_flag', 'UnlinkedFlag', 'boolean', $this);
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'credit_card_payment_id', 'OnlineDonation');
 				case 'SignupPayment':
@@ -1782,6 +1854,7 @@
 	 * @property-read QQNode $AmountCleared
 	 * @property-read QQNode $PaypalBatchId
 	 * @property-read QQNodePaypalBatch $PaypalBatch
+	 * @property-read QQNode $UnlinkedFlag
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -1820,6 +1893,8 @@
 					return new QQNode('paypal_batch_id', 'PaypalBatchId', 'integer', $this);
 				case 'PaypalBatch':
 					return new QQNodePaypalBatch('paypal_batch_id', 'PaypalBatch', 'integer', $this);
+				case 'UnlinkedFlag':
+					return new QQNode('unlinked_flag', 'UnlinkedFlag', 'boolean', $this);
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'credit_card_payment_id', 'OnlineDonation');
 				case 'SignupPayment':

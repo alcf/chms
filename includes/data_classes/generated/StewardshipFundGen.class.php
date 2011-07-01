@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $MinistryId the value for intMinistryId 
 	 * @property string $Name the value for strName 
+	 * @property string $ExternalName the value for strExternalName 
 	 * @property string $AccountNumber the value for strAccountNumber 
 	 * @property string $FundNumber the value for strFundNumber 
 	 * @property boolean $ActiveFlag the value for blnActiveFlag 
@@ -66,6 +67,15 @@
 		protected $strName;
 		const NameMaxLength = 200;
 		const NameDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column stewardship_fund.external_name
+		 * @var string strExternalName
+		 */
+		protected $strExternalName;
+		const ExternalNameMaxLength = 200;
+		const ExternalNameDefault = null;
 
 
 		/**
@@ -543,6 +553,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'ministry_id', $strAliasPrefix . 'ministry_id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
+			$objBuilder->AddSelectItem($strTableName, 'external_name', $strAliasPrefix . 'external_name');
 			$objBuilder->AddSelectItem($strTableName, 'account_number', $strAliasPrefix . 'account_number');
 			$objBuilder->AddSelectItem($strTableName, 'fund_number', $strAliasPrefix . 'fund_number');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
@@ -686,6 +697,8 @@
 			$objToReturn->intMinistryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'name'] : $strAliasPrefix . 'name';
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'external_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'external_name'] : $strAliasPrefix . 'external_name';
+			$objToReturn->strExternalName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'account_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'account_number'] : $strAliasPrefix . 'account_number';
 			$objToReturn->strAccountNumber = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'fund_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'fund_number'] : $strAliasPrefix . 'fund_number';
@@ -890,6 +903,70 @@
 				QQ::Equal(QQN::StewardshipFund()->MinistryId, $intMinistryId)
 			);
 		}
+			
+		/**
+		 * Load an array of StewardshipFund objects,
+		 * by ActiveFlag Index(es)
+		 * @param boolean $blnActiveFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipFund[]
+		*/
+		public static function LoadArrayByActiveFlag($blnActiveFlag, $objOptionalClauses = null) {
+			// Call StewardshipFund::QueryArray to perform the LoadArrayByActiveFlag query
+			try {
+				return StewardshipFund::QueryArray(
+					QQ::Equal(QQN::StewardshipFund()->ActiveFlag, $blnActiveFlag),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count StewardshipFunds
+		 * by ActiveFlag Index(es)
+		 * @param boolean $blnActiveFlag
+		 * @return int
+		*/
+		public static function CountByActiveFlag($blnActiveFlag) {
+			// Call StewardshipFund::QueryCount to perform the CountByActiveFlag query
+			return StewardshipFund::QueryCount(
+				QQ::Equal(QQN::StewardshipFund()->ActiveFlag, $blnActiveFlag)
+			);
+		}
+			
+		/**
+		 * Load an array of StewardshipFund objects,
+		 * by ExternalFlag Index(es)
+		 * @param boolean $blnExternalFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return StewardshipFund[]
+		*/
+		public static function LoadArrayByExternalFlag($blnExternalFlag, $objOptionalClauses = null) {
+			// Call StewardshipFund::QueryArray to perform the LoadArrayByExternalFlag query
+			try {
+				return StewardshipFund::QueryArray(
+					QQ::Equal(QQN::StewardshipFund()->ExternalFlag, $blnExternalFlag),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count StewardshipFunds
+		 * by ExternalFlag Index(es)
+		 * @param boolean $blnExternalFlag
+		 * @return int
+		*/
+		public static function CountByExternalFlag($blnExternalFlag) {
+			// Call StewardshipFund::QueryCount to perform the CountByExternalFlag query
+			return StewardshipFund::QueryCount(
+				QQ::Equal(QQN::StewardshipFund()->ExternalFlag, $blnExternalFlag)
+			);
+		}
 
 
 
@@ -923,6 +1000,7 @@
 						INSERT INTO `stewardship_fund` (
 							`ministry_id`,
 							`name`,
+							`external_name`,
 							`account_number`,
 							`fund_number`,
 							`active_flag`,
@@ -930,6 +1008,7 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
+							' . $objDatabase->SqlVariable($this->strExternalName) . ',
 							' . $objDatabase->SqlVariable($this->strAccountNumber) . ',
 							' . $objDatabase->SqlVariable($this->strFundNumber) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
@@ -955,6 +1034,7 @@
 						SET
 							`ministry_id` = ' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
+							`external_name` = ' . $objDatabase->SqlVariable($this->strExternalName) . ',
 							`account_number` = ' . $objDatabase->SqlVariable($this->strAccountNumber) . ',
 							`fund_number` = ' . $objDatabase->SqlVariable($this->strFundNumber) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
@@ -1045,6 +1125,7 @@
 			// Update $this's local variables to match
 			$this->MinistryId = $objReloaded->MinistryId;
 			$this->strName = $objReloaded->strName;
+			$this->strExternalName = $objReloaded->strExternalName;
 			$this->strAccountNumber = $objReloaded->strAccountNumber;
 			$this->strFundNumber = $objReloaded->strFundNumber;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
@@ -1064,6 +1145,7 @@
 					`id`,
 					`ministry_id`,
 					`name`,
+					`external_name`,
 					`account_number`,
 					`fund_number`,
 					`active_flag`,
@@ -1075,6 +1157,7 @@
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
+					' . $objDatabase->SqlVariable($this->strExternalName) . ',
 					' . $objDatabase->SqlVariable($this->strAccountNumber) . ',
 					' . $objDatabase->SqlVariable($this->strFundNumber) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
@@ -1143,6 +1226,11 @@
 					// Gets the value for strName 
 					// @return string
 					return $this->strName;
+
+				case 'ExternalName':
+					// Gets the value for strExternalName 
+					// @return string
+					return $this->strExternalName;
 
 				case 'AccountNumber':
 					// Gets the value for strAccountNumber 
@@ -1303,6 +1391,17 @@
 					// @return string
 					try {
 						return ($this->strName = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ExternalName':
+					// Sets the value for strExternalName 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strExternalName = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2518,6 +2617,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Ministry" type="xsd1:Ministry"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
+			$strToReturn .= '<element name="ExternalName" type="xsd:string"/>';
 			$strToReturn .= '<element name="AccountNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="FundNumber" type="xsd:string"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
@@ -2552,6 +2652,8 @@
 				$objToReturn->Ministry = Ministry::GetObjectFromSoapObject($objSoapObject->Ministry);
 			if (property_exists($objSoapObject, 'Name'))
 				$objToReturn->strName = $objSoapObject->Name;
+			if (property_exists($objSoapObject, 'ExternalName'))
+				$objToReturn->strExternalName = $objSoapObject->ExternalName;
 			if (property_exists($objSoapObject, 'AccountNumber'))
 				$objToReturn->strAccountNumber = $objSoapObject->AccountNumber;
 			if (property_exists($objSoapObject, 'FundNumber'))
@@ -2601,6 +2703,7 @@
 	 * @property-read QQNode $MinistryId
 	 * @property-read QQNodeMinistry $Ministry
 	 * @property-read QQNode $Name
+	 * @property-read QQNode $ExternalName
 	 * @property-read QQNode $AccountNumber
 	 * @property-read QQNode $FundNumber
 	 * @property-read QQNode $ActiveFlag
@@ -2626,6 +2729,8 @@
 					return new QQNodeMinistry('ministry_id', 'Ministry', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'ExternalName':
+					return new QQNode('external_name', 'ExternalName', 'string', $this);
 				case 'AccountNumber':
 					return new QQNode('account_number', 'AccountNumber', 'string', $this);
 				case 'FundNumber':
@@ -2665,6 +2770,7 @@
 	 * @property-read QQNode $MinistryId
 	 * @property-read QQNodeMinistry $Ministry
 	 * @property-read QQNode $Name
+	 * @property-read QQNode $ExternalName
 	 * @property-read QQNode $AccountNumber
 	 * @property-read QQNode $FundNumber
 	 * @property-read QQNode $ActiveFlag
@@ -2691,6 +2797,8 @@
 					return new QQNodeMinistry('ministry_id', 'Ministry', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'ExternalName':
+					return new QQNode('external_name', 'ExternalName', 'string', $this);
 				case 'AccountNumber':
 					return new QQNode('account_number', 'AccountNumber', 'string', $this);
 				case 'FundNumber':

@@ -7,8 +7,13 @@ UPDATE _version SET version='003';
 ALTER TABLE ministry ADD COLUMN signup_form_type_bitmap integer(10) unsigned DEFAULT NULL;
 UPDATE ministry SET signup_form_type_bitmap = 1;
 
+ALTER TABLE stewardship_fund ADD COLUMN external_name VARCHAR(200) DEFAULT NULL AFTER name;
 ALTER TABLE stewardship_fund ADD COLUMN external_flag tinyint(1) DEFAULT NULL;
 UPDATE stewardship_fund SET external_flag=active_flag;
+UPDATE stewardship_fund SET external_name=name;
+
+# fixes old data model mistake
+ALTER TABLE group DROP INDEX id_idx;
 
 ######### CREATE
 
@@ -218,6 +223,7 @@ CREATE TABLE `credit_card_payment`
 `amount_fee` DECIMAL(10,2),
 `amount_cleared` DECIMAL(10,2),
 `paypal_batch_id` INTEGER UNSIGNED,
+`unlinked_flag` BOOLEAN,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -329,6 +335,8 @@ CREATE INDEX `address_id_idx` ON `form_answer`(`address_id`);
 CREATE INDEX `form_product_idx` ON `form_product` (`signup_form_id`,`form_product_type_id`);
 CREATE UNIQUE INDEX `signup_product_idx` ON `signup_product` (`signup_entry_id`,`form_product_id`);
 
+CREATE INDEX `unlinked_flag_idx` ON `credit_card_payment`(`unlinked_flag`);
+
 CREATE INDEX `credit_card_status_type_id_idx` ON `credit_card_payment`(`credit_card_status_type_id`);
 ALTER TABLE `credit_card_payment` ADD FOREIGN KEY credit_card_status_type_id_idxfk (`credit_card_status_type_id`) REFERENCES `credit_card_status_type` (`id`);
 
@@ -356,6 +364,9 @@ CREATE INDEX `person_id_idx` ON `online_donation`(`person_id`);
 ALTER TABLE `online_donation` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
 
 ALTER TABLE `online_donation` ADD FOREIGN KEY credit_card_payment_id_idxfk (`credit_card_payment_id`) REFERENCES `credit_card_payment` (`id`);
+
+CREATE INDEX `active_flag_idx` ON `stewardship_fund`(`active_flag`);
+CREATE INDEX `external_flag_idx` ON `stewardship_fund`(`external_flag`);
 
 ######### EXTERNAL FKs
 

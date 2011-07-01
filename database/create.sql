@@ -304,6 +304,7 @@ CREATE TABLE `stewardship_fund`
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `ministry_id` INTEGER UNSIGNED,
 `name` VARCHAR(200),
+`external_name` VARCHAR(200),
 `account_number` VARCHAR(100),
 `fund_number` VARCHAR(100),
 `active_flag` BOOLEAN,
@@ -353,12 +354,13 @@ CREATE TABLE `credit_card_payment`
 `amount_fee` DECIMAL(10,2),
 `amount_cleared` DECIMAL(10,2),
 `paypal_batch_id` INTEGER UNSIGNED,
+`unlinked_flag` BOOLEAN,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `group`
 (
-`id` INTEGER UNSIGNED AUTO_INCREMENT,
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `group_type_id` INTEGER UNSIGNED NOT NULL,
 `ministry_id` INTEGER UNSIGNED NOT NULL,
 `name` VARCHAR(200),
@@ -1066,6 +1068,8 @@ ALTER TABLE `event_signup_form` ADD FOREIGN KEY signup_form_id_idxfk (`signup_fo
 CREATE INDEX `ministry_id_idx` ON `stewardship_fund`(`ministry_id`);
 ALTER TABLE `stewardship_fund` ADD FOREIGN KEY ministry_id_idxfk_1 (`ministry_id`) REFERENCES `ministry` (`id`);
 
+CREATE INDEX `active_flag_idx` ON `stewardship_fund`(`active_flag`);
+CREATE INDEX `external_flag_idx` ON `stewardship_fund`(`external_flag`);
 CREATE INDEX `form_product_idx` ON `form_product` (`signup_form_id`,`form_product_type_id`);
 
 CREATE INDEX `signup_form_id_idx` ON `form_product`(`signup_form_id`);
@@ -1089,7 +1093,7 @@ ALTER TABLE `credit_card_payment` ADD FOREIGN KEY credit_card_type_id_idxfk (`cr
 CREATE INDEX `paypal_batch_id_idx` ON `credit_card_payment`(`paypal_batch_id`);
 ALTER TABLE `credit_card_payment` ADD FOREIGN KEY paypal_batch_id_idxfk (`paypal_batch_id`) REFERENCES `paypal_batch` (`id`);
 
-CREATE INDEX `id_idx` ON `group`(`id`);
+CREATE INDEX `unlinked_flag_idx` ON `credit_card_payment`(`unlinked_flag`);
 CREATE INDEX `group_type_id_idx` ON `group`(`group_type_id`);
 ALTER TABLE `group` ADD FOREIGN KEY group_type_id_idxfk (`group_type_id`) REFERENCES `group_type` (`id`);
 

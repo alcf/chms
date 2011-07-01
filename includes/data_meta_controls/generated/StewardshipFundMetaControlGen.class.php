@@ -22,6 +22,8 @@
 	 * property-read QLabel $MinistryIdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
+	 * property QTextBox $ExternalNameControl
+	 * property-read QLabel $ExternalNameLabel
 	 * property QTextBox $AccountNumberControl
 	 * property-read QLabel $AccountNumberLabel
 	 * property QTextBox $FundNumberControl
@@ -80,6 +82,12 @@
 		protected $txtName;
 
         /**
+         * @var QTextBox txtExternalName;
+         * @access protected
+         */
+		protected $txtExternalName;
+
+        /**
          * @var QTextBox txtAccountNumber;
          * @access protected
          */
@@ -116,6 +124,12 @@
          * @access protected
          */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblExternalName
+         * @access protected
+         */
+		protected $lblExternalName;
 
         /**
          * @var QLabel lblAccountNumber
@@ -320,6 +334,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtExternalName
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtExternalName_Create($strControlId = null) {
+			$this->txtExternalName = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtExternalName->Name = QApplication::Translate('External Name');
+			$this->txtExternalName->Text = $this->objStewardshipFund->ExternalName;
+			$this->txtExternalName->MaxLength = StewardshipFund::ExternalNameMaxLength;
+			return $this->txtExternalName;
+		}
+
+		/**
+		 * Create and setup QLabel lblExternalName
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblExternalName_Create($strControlId = null) {
+			$this->lblExternalName = new QLabel($this->objParentObject, $strControlId);
+			$this->lblExternalName->Name = QApplication::Translate('External Name');
+			$this->lblExternalName->Text = $this->objStewardshipFund->ExternalName;
+			return $this->lblExternalName;
+		}
+
+		/**
 		 * Create and setup QTextBox txtAccountNumber
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -446,6 +485,9 @@
 			if ($this->txtName) $this->txtName->Text = $this->objStewardshipFund->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objStewardshipFund->Name;
 
+			if ($this->txtExternalName) $this->txtExternalName->Text = $this->objStewardshipFund->ExternalName;
+			if ($this->lblExternalName) $this->lblExternalName->Text = $this->objStewardshipFund->ExternalName;
+
 			if ($this->txtAccountNumber) $this->txtAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 			if ($this->lblAccountNumber) $this->lblAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 
@@ -483,6 +525,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstMinistry) $this->objStewardshipFund->MinistryId = $this->lstMinistry->SelectedValue;
 				if ($this->txtName) $this->objStewardshipFund->Name = $this->txtName->Text;
+				if ($this->txtExternalName) $this->objStewardshipFund->ExternalName = $this->txtExternalName->Text;
 				if ($this->txtAccountNumber) $this->objStewardshipFund->AccountNumber = $this->txtAccountNumber->Text;
 				if ($this->txtFundNumber) $this->objStewardshipFund->FundNumber = $this->txtFundNumber->Text;
 				if ($this->chkActiveFlag) $this->objStewardshipFund->ActiveFlag = $this->chkActiveFlag->Checked;
@@ -547,6 +590,12 @@
 				case 'NameLabel':
 					if (!$this->lblName) return $this->lblName_Create();
 					return $this->lblName;
+				case 'ExternalNameControl':
+					if (!$this->txtExternalName) return $this->txtExternalName_Create();
+					return $this->txtExternalName;
+				case 'ExternalNameLabel':
+					if (!$this->lblExternalName) return $this->lblExternalName_Create();
+					return $this->lblExternalName;
 				case 'AccountNumberControl':
 					if (!$this->txtAccountNumber) return $this->txtAccountNumber_Create();
 					return $this->txtAccountNumber;
@@ -599,6 +648,8 @@
 						return ($this->lstMinistry = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
+					case 'ExternalNameControl':
+						return ($this->txtExternalName = QType::Cast($mixValue, 'QControl'));
 					case 'AccountNumberControl':
 						return ($this->txtAccountNumber = QType::Cast($mixValue, 'QControl'));
 					case 'FundNumberControl':
