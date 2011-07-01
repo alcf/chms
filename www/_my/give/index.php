@@ -34,7 +34,8 @@
 			$objAddress = QApplication::$PublicLogin->Person->DeducePrimaryAddress();
 
 			// Any Messaging
-			$this->lblMessage = new QLabel($this);
+			$this->lblMessage = new QPanel($this);
+			$this->lblMessage->CssClass = 'section';
 			$this->lblMessage->Visible = false;
 
 			// Total Label
@@ -50,6 +51,23 @@
 		public function Form_Validate() {
 			$blnToReturn = parent::Form_Validate();
 			$blnFirst = true;
+
+			if (!$this->GetAmount()) {
+				$blnToReturn = false;
+				$this->lblMessage->Text = 'You must enter in an amount.';
+				$this->lblMessage->FontSize = '14px';
+				$this->lblMessage->FontBold = true;
+				$this->lblMessage->ForeColor = '#844';
+				$this->lblMessage->Visible = true;
+				$this->lblMessage->Blink();
+				
+				$this->pnlPayment->btnSubmit_Reset();
+				$this->GetControl('txtAmount0')->Select();
+				$blnFirst = false;
+			} else {
+				if ($this->lblMessage->Visible) $this->lblMessage->Visible = false;
+			}
+			
 			foreach ($this->GetErrorControls() as $objControl) {
 				$objControl->Blink();
 				if ($blnFirst) {

@@ -1,10 +1,10 @@
 <?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
 
 	<h1>Give Online</h1>
-	Thank you for your online contribution!
+	You can use this online form to safely, securely contirbute your financial gift to Abundant Life Christian Fellowship.
+	<br/><br/>
 	
 	<?php $this->lblMessage->Render(); ?>
-	<br/><br/>
 
 	<div class="section">
 		<?php $this->dtgDonationItems->Render(); ?>
