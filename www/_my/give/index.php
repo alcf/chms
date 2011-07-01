@@ -86,17 +86,23 @@
 			}
 
 			$lstFunds = $this->GetControl('lstFunds' . $this->dtgDonationItems->CurrentRowIndex);
+			$txtFund = $this->GetControl('txtFund' . $this->dtgDonationItems->CurrentRowIndex);
+
 			if (!$lstFunds) {
 				$lstFunds = new QListBox($this->dtgDonationItems, 'lstFunds' . $this->dtgDonationItems->CurrentRowIndex);
 				$lstFunds->ActionParameter = $this->dtgDonationItems->CurrentRowIndex;
 				$lstFunds->AddAction(new QChangeEvent(), new QAjaxAction('lstFunds_Change'));
-				
-				
+
+				$txtFund = new QTextBox($this->dtgDonationItems, 'txtFund' . $this->dtgDonationItems->CurrentRowIndex);
+				$txtFund->Visible = false;
+
 				if (!$objItem->StewardshipFundId) $lstFunds->AddItem('- Select One -', null);
 				foreach (StewardshipFund::LoadArrayByExternalFlag(true, QQ::OrderBy(QQN::StewardshipFund()->ExternalName)) as $objFund)
 					$lstFunds->AddItem($objFund->ExternalName, $objFund->Id, $objFund->Id == $objItem->StewardshipFundId);
+				$lstFunds->AddItem('- Other... -', false);
 			}
-			return $lstFunds->RenderWithError(false);
+
+			return $lstFunds->RenderWithError(false) . ' ' . $txtFund->RenderWithError(false);
 		}
 
 		public function RenderAmount(OnlineDonationLineItem $objItem = null) {
@@ -114,7 +120,7 @@
 				$txtAmount->Text = '0.00';
 			}
 			
-			if ($lstFunds->SelectedValue) {
+			if (!is_null($lstFunds->SelectedValue)) {
 				if (!$txtAmount->Enabled) $txtAmount->Enabled = true;
 			} else {
 				$txtAmount->Enabled = false;
@@ -139,15 +145,34 @@
 
 		public function lstFunds_Change($strFormId, $strControlId, $strParameter) {
 			$lstFunds = $this->GetControl($strControlId);
+			$txtFund = $this->GetControl('txtFund' . $strParameter);
 			$txtAmount = $this->GetControl('txtAmount' . $strParameter);
+			
+			// An Actual Fund was selected
 			if ($lstFunds->SelectedValue) {
 				if (!$txtAmount->Enabled) $txtAmount->Enabled = true;
 				$txtAmount->Select();
+				if ($txtFund->Visible) $txtFund->Visible = false;
+				if ($txtFund->Required) $txtFund->Required = false;
+				
+			// An "Other..." Fund was selected
+			} else if ($lstFunds->SelectedValue === false) {
+				if (!$txtAmount->Enabled) $txtAmount->Enabled = true;
+				if (!$txtFund->Visible) {
+					$txtFund->Visible = true;
+					$txtFund->Text = null;
+					$txtFund->Required = true;
+				}
+				$txtFund->Select();
+
+			// No fund was selected
 			} else {
 				$txtAmount->Enabled = false;
 				$txtAmount->Text = '0.00';
+				if ($txtFund->Visible) $txtFund->Visible = false;
+				if ($txtFund->Required) $txtFund->Required = false;
 			}
-			
+
 			// Do we need to add another row?
 			for ($intIndex = 0 ; $intIndex < count($this->objDonationItemArray) ; $intIndex++) {
 				$lstFunds = $this->GetControl('lstFunds' . $intIndex);
@@ -206,11 +231,21 @@
 			for ($intIndex = 0; $intIndex < count($this->objDonationItemArray); $intIndex++) {
 				$lstFunds = $this->GetControl('lstFunds' . $intIndex);
 				$txtAmount = $this->GetControl('txtAmount' . $intIndex);
+				$txtFund = $this->GetControl('txtFund' . $intIndex);
 				$objDonationItem = $this->objDonationItemArray[$intIndex];
-				
-				$objDonationItem->StewardshipFundId = $lstFunds->SelectedValue;
-				
-				if ($objDonationItem->StewardshipFundId) {
+
+				if ($lstFunds->SelectedValue)
+					$objDonationItem->StewardshipFundId = $lstFunds->SelectedValue;
+				else
+					$objDonationItem->StewardshipFundId = null;
+
+				// Add in "Other" if applicable
+				if ($lstFunds->SelectedValue === false)
+					$objDonationItem->Other = trim($txtFund->Text);
+				else
+					$objDonationItem->Other = null;
+
+				if ($objDonationItem->StewardshipFundId || ($lstFunds->SelectedValue === false)) {
 					$objDonationItem->Amount = $txtAmount->Text;
 					$fltTotal += $objDonationItem->Amount;
 				} else {
@@ -218,7 +253,7 @@
 					if ($txtAmount->Enabled) $txtAmount->Enabled = false;
 				}
 			}
-			
+
 			return $fltTotal;
 		}
 
