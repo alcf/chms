@@ -83,7 +83,10 @@
 			$this->lblFormQuestionType = $this->mctQuestion->lblFormQuestionTypeId_Create();
 			$this->txtShortDescription = $this->mctQuestion->txtShortDescription_Create();
 			$this->txtShortDescription->Required = true;
+			$this->txtShortDescription->Instructions = 'This is the label that will show up on reports and forms';
 			$this->txtQuestion = $this->mctQuestion->txtQuestion_Create();
+			$this->txtQuestion->Required = true;
+			$this->txtQuestion->Instructions = 'This is the label that will show up on the signup form online';
 			$this->chkRequiredFlag = $this->mctQuestion->chkRequiredFlag_Create();
 
 			$this->txtOptions = $this->mctQuestion->txtOptions_Create();

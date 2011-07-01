@@ -26,6 +26,15 @@
 		protected $txtSignupMaleLimit;
 		protected $txtSignupFemaleLimit;
 
+		// Child Object for Signup
+		protected $mctSignupChild;
+		// Event-Specific
+		protected $dtxDateStart;
+		protected $calDateStart;
+		protected $dtxDateEnd;
+		protected $calDateEnd;
+		protected $txtLocation;
+
 		protected $btnSave;
 		protected $btnCancel;
 		protected $btnDelete;
@@ -39,6 +48,14 @@
 				if (!$objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) QApplication::Redirect('/events/');
 				$this->strPageTitle .= 'Edit Form';
 				$this->lblHeading->Text = 'Edit ' . $objSignupForm->Type . ' Form';
+				
+				switch ($objSignupForm->SignupFormTypeId) {
+					case SignupFormType::Event:
+						$objChild = $objSignupForm->EventSignupForm;
+						break;
+					default:
+						throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
+				}
 			} else {
 				if (!QApplication::PathInfo(1)) QApplication::Redirect('/events/');
 				$objSignupForm = new SignupForm();
@@ -47,10 +64,26 @@
 				$objSignupForm->ActiveFlag = true;
 				$this->strPageTitle .= 'Create New Form';
 				$this->lblHeading->Text = 'Create New ' . $objSignupForm->Type . ' Form';
+
+				switch ($objSignupForm->SignupFormTypeId) {
+					case SignupFormType::Event:
+						$objChild = new EventSignupForm();
+						break;
+					default:
+						throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
+				}
 			}
 
+			// Setup MCTs for Signup and Child
 			$this->mctSignupForm = new SignupFormMetaControl($this, $objSignupForm);
-			
+			switch ($objSignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					$this->mctSignupChild = new EventSignupFormMetaControl($this, $objChild);
+					break;
+				default:
+					throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
+			}
+
 			$this->txtName = $this->mctSignupForm->txtName_Create();
 			$this->txtName->Select();
 			$this->txtName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
@@ -98,7 +131,20 @@
 			$this->txtSignupMaleLimit->Minimum = 0;
 			$this->txtSignupFemaleLimit = $this->mctSignupForm->txtSignupFemaleLimit_Create();
 			$this->txtSignupFemaleLimit->Minimum = 0;
-			
+
+			// Setup Controls for Child
+			switch ($objSignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					$this->dtxDateStart = $this->mctSignupChild->dtxDateStart_Create();
+					$this->calDateStart = $this->mctSignupChild->calDateStart_Create();
+					$this->dtxDateEnd = $this->mctSignupChild->dtxDateEnd_Create();
+					$this->calDateEnd = $this->mctSignupChild->calDateEnd_Create();
+					$this->txtLocation = $this->mctSignupChild->txtLocation_Create();
+					break;
+				default:
+					throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
+			}
+
 			// Buttons 
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Save';
@@ -147,6 +193,18 @@
 			}
 			
 			$this->mctSignupForm->SaveSignupForm();
+			
+			// Add Child
+			switch ($this->mctSignupForm->SignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					if (!$this->mctSignupChild->EventSignupForm->SignupForm) $this->mctSignupChild->EventSignupForm->SignupForm = $this->mctSignupForm->SignupForm;
+					$this->mctSignupChild->SaveEventSignupForm();
+					break;
+				default:
+					throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
+			}
+
+			// Redirect to View Page
 			QApplication::Redirect('/events/form.php/' . $this->mctSignupForm->SignupForm->Id);
 		}
 
