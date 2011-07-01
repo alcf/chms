@@ -3,9 +3,11 @@
 
 	<div class="section">
 		<?php $this->txtName->RenderWithName(); ?>
+		<?php $this->txtExternalName->RenderWithName('Name=Display Name for my.alcf.net'); ?>
 		<?php $this->txtAccountNumber->RenderWithName(); ?>
 		<?php $this->txtFundNumber->RenderWithName(); ?>
-		<?php $this->chkActiveFlag->RenderWithName(); ?>
+		<?php $this->chkActiveFlag->RenderWithName('Name=Display on NOAH'); ?>
+		<?php $this->chkExternalFlag->RenderWithName('Name=Display on my.alcf.net'); ?>
 	</div>
 
 	<div class="buttonBar">
