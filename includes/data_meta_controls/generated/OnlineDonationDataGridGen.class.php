@@ -296,6 +296,7 @@
 				case 'Id': return QQN::OnlineDonation()->Id;
 				case 'PersonId': return QQN::OnlineDonation()->PersonId;
 				case 'Person': return QQN::OnlineDonation()->Person;
+				case 'ConfirmationEmail': return QQN::OnlineDonation()->ConfirmationEmail;
 				case 'Amount': return QQN::OnlineDonation()->Amount;
 				case 'CreditCardPaymentId': return QQN::OnlineDonation()->CreditCardPaymentId;
 				case 'CreditCardPayment': return QQN::OnlineDonation()->CreditCardPayment;

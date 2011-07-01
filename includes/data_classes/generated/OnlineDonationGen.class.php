@@ -17,6 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Not Null)
+	 * @property string $ConfirmationEmail the value for strConfirmationEmail 
 	 * @property double $Amount the value for fltAmount 
 	 * @property integer $CreditCardPaymentId the value for intCreditCardPaymentId (Unique)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
@@ -45,6 +46,15 @@
 		 */
 		protected $intPersonId;
 		const PersonIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column online_donation.confirmation_email
+		 * @var string strConfirmationEmail
+		 */
+		protected $strConfirmationEmail;
+		const ConfirmationEmailMaxLength = 255;
+		const ConfirmationEmailDefault = null;
 
 
 		/**
@@ -433,6 +443,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
+			$objBuilder->AddSelectItem($strTableName, 'confirmation_email', $strAliasPrefix . 'confirmation_email');
 			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_payment_id', $strAliasPrefix . 'credit_card_payment_id');
 		}
@@ -502,6 +513,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'confirmation_email', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'confirmation_email'] : $strAliasPrefix . 'confirmation_email';
+			$objToReturn->strConfirmationEmail = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount'] : $strAliasPrefix . 'amount';
 			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_payment_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_payment_id'] : $strAliasPrefix . 'credit_card_payment_id';
@@ -702,10 +715,12 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `online_donation` (
 							`person_id`,
+							`confirmation_email`,
 							`amount`,
 							`credit_card_payment_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
+							' . $objDatabase->SqlVariable($this->strConfirmationEmail) . ',
 							' . $objDatabase->SqlVariable($this->fltAmount) . ',
 							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						)
@@ -728,6 +743,7 @@
 							`online_donation`
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
+							`confirmation_email` = ' . $objDatabase->SqlVariable($this->strConfirmationEmail) . ',
 							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
 							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						WHERE
@@ -815,6 +831,7 @@
 
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
+			$this->strConfirmationEmail = $objReloaded->strConfirmationEmail;
 			$this->fltAmount = $objReloaded->fltAmount;
 			$this->CreditCardPaymentId = $objReloaded->CreditCardPaymentId;
 		}
@@ -831,6 +848,7 @@
 				INSERT INTO `online_donation` (
 					`id`,
 					`person_id`,
+					`confirmation_email`,
 					`amount`,
 					`credit_card_payment_id`,
 					__sys_login_id,
@@ -839,6 +857,7 @@
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intPersonId) . ',
+					' . $objDatabase->SqlVariable($this->strConfirmationEmail) . ',
 					' . $objDatabase->SqlVariable($this->fltAmount) . ',
 					' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
@@ -900,6 +919,11 @@
 					// Gets the value for intPersonId (Not Null)
 					// @return integer
 					return $this->intPersonId;
+
+				case 'ConfirmationEmail':
+					// Gets the value for strConfirmationEmail 
+					// @return string
+					return $this->strConfirmationEmail;
 
 				case 'Amount':
 					// Gets the value for fltAmount 
@@ -991,6 +1015,17 @@
 					try {
 						$this->objPerson = null;
 						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ConfirmationEmail':
+					// Sets the value for strConfirmationEmail 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strConfirmationEmail = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1304,6 +1339,7 @@
 			$strToReturn = '<complexType name="OnlineDonation"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
+			$strToReturn .= '<element name="ConfirmationEmail" type="xsd:string"/>';
 			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
 			$strToReturn .= '<element name="CreditCardPayment" type="xsd1:CreditCardPayment"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1335,6 +1371,8 @@
 			if ((property_exists($objSoapObject, 'Person')) &&
 				($objSoapObject->Person))
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
+			if (property_exists($objSoapObject, 'ConfirmationEmail'))
+				$objToReturn->strConfirmationEmail = $objSoapObject->ConfirmationEmail;
 			if (property_exists($objSoapObject, 'Amount'))
 				$objToReturn->fltAmount = $objSoapObject->Amount;
 			if ((property_exists($objSoapObject, 'CreditCardPayment')) &&
@@ -1384,6 +1422,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $ConfirmationEmail
 	 * @property-read QQNode $Amount
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
@@ -1401,6 +1440,8 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'ConfirmationEmail':
+					return new QQNode('confirmation_email', 'ConfirmationEmail', 'string', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
 				case 'CreditCardPaymentId':
@@ -1427,6 +1468,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
+	 * @property-read QQNode $ConfirmationEmail
 	 * @property-read QQNode $Amount
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
@@ -1445,6 +1487,8 @@
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
 				case 'Person':
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
+				case 'ConfirmationEmail':
+					return new QQNode('confirmation_email', 'ConfirmationEmail', 'string', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
 				case 'CreditCardPaymentId':

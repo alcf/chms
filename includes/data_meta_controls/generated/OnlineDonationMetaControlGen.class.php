@@ -20,6 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
+	 * property QTextBox $ConfirmationEmailControl
+	 * property-read QLabel $ConfirmationEmailLabel
 	 * property QFloatTextBox $AmountControl
 	 * property-read QLabel $AmountLabel
 	 * property QListBox $CreditCardPaymentIdControl
@@ -68,6 +70,12 @@
 		protected $lstPerson;
 
         /**
+         * @var QTextBox txtConfirmationEmail;
+         * @access protected
+         */
+		protected $txtConfirmationEmail;
+
+        /**
          * @var QFloatTextBox txtAmount;
          * @access protected
          */
@@ -86,6 +94,12 @@
          * @access protected
          */
 		protected $lblPersonId;
+
+        /**
+         * @var QLabel lblConfirmationEmail
+         * @access protected
+         */
+		protected $lblConfirmationEmail;
 
         /**
          * @var QLabel lblAmount
@@ -256,6 +270,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtConfirmationEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtConfirmationEmail_Create($strControlId = null) {
+			$this->txtConfirmationEmail = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtConfirmationEmail->Name = QApplication::Translate('Confirmation Email');
+			$this->txtConfirmationEmail->Text = $this->objOnlineDonation->ConfirmationEmail;
+			$this->txtConfirmationEmail->MaxLength = OnlineDonation::ConfirmationEmailMaxLength;
+			return $this->txtConfirmationEmail;
+		}
+
+		/**
+		 * Create and setup QLabel lblConfirmationEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblConfirmationEmail_Create($strControlId = null) {
+			$this->lblConfirmationEmail = new QLabel($this->objParentObject, $strControlId);
+			$this->lblConfirmationEmail->Name = QApplication::Translate('Confirmation Email');
+			$this->lblConfirmationEmail->Text = $this->objOnlineDonation->ConfirmationEmail;
+			return $this->lblConfirmationEmail;
+		}
+
+		/**
 		 * Create and setup QFloatTextBox txtAmount
 		 * @param string $strControlId optional ControlId to use
 		 * @return QFloatTextBox
@@ -348,6 +387,9 @@
 			}
 			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objOnlineDonation->Person) ? $this->objOnlineDonation->Person->__toString() : null;
 
+			if ($this->txtConfirmationEmail) $this->txtConfirmationEmail->Text = $this->objOnlineDonation->ConfirmationEmail;
+			if ($this->lblConfirmationEmail) $this->lblConfirmationEmail->Text = $this->objOnlineDonation->ConfirmationEmail;
+
 			if ($this->txtAmount) $this->txtAmount->Text = $this->objOnlineDonation->Amount;
 			if ($this->lblAmount) $this->lblAmount->Text = $this->objOnlineDonation->Amount;
 
@@ -388,6 +430,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objOnlineDonation->PersonId = $this->lstPerson->SelectedValue;
+				if ($this->txtConfirmationEmail) $this->objOnlineDonation->ConfirmationEmail = $this->txtConfirmationEmail->Text;
 				if ($this->txtAmount) $this->objOnlineDonation->Amount = $this->txtAmount->Text;
 				if ($this->lstCreditCardPayment) $this->objOnlineDonation->CreditCardPaymentId = $this->lstCreditCardPayment->SelectedValue;
 
@@ -444,6 +487,12 @@
 				case 'PersonIdLabel':
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
+				case 'ConfirmationEmailControl':
+					if (!$this->txtConfirmationEmail) return $this->txtConfirmationEmail_Create();
+					return $this->txtConfirmationEmail;
+				case 'ConfirmationEmailLabel':
+					if (!$this->lblConfirmationEmail) return $this->lblConfirmationEmail_Create();
+					return $this->lblConfirmationEmail;
 				case 'AmountControl':
 					if (!$this->txtAmount) return $this->txtAmount_Create();
 					return $this->txtAmount;
@@ -482,6 +531,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
+					case 'ConfirmationEmailControl':
+						return ($this->txtConfirmationEmail = QType::Cast($mixValue, 'QControl'));
 					case 'AmountControl':
 						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
 					case 'CreditCardPaymentIdControl':

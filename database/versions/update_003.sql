@@ -231,11 +231,11 @@ CREATE TABLE `online_donation`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `person_id` INTEGER UNSIGNED NOT NULL,
+`confirmation_email` VARCHAR(255),
 `amount` DECIMAL(10,2),
 `credit_card_payment_id` INTEGER UNSIGNED UNIQUE,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
-
 
 CREATE TABLE `online_donation_line_item`
 (
