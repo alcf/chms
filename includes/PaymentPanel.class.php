@@ -159,13 +159,13 @@
 			// Get the Payment Object
 			$objPaymentObject = $this->objForm->CreatePaymentObject();
 
-			$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, $this->txtFirstName->Text, $this->txtLastName->Text, $objAddress,
+			$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, array($this->objForm, 'PaymentObjectSaveChildren'), $this->txtFirstName->Text, $this->txtLastName->Text, $objAddress,
 				$fltAmountToCharge, $this->txtCcNumber->Text, $strCcExpiration, $this->txtCcCsc->Text, $this->lstCcType->SelectedValue);
 
 			// Success?
 			if ($mixReturn instanceof CreditCardPayment) {
 				$this->dlgDialogBox->HideDialogBox();
-				$this->objForm->PaymentPanel_Success();
+				$this->objForm->PaymentPanel_Success($objPaymentObject);
 
 			// Failed!
 			} else {

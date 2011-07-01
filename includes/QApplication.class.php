@@ -355,12 +355,13 @@
 		/**
 		 * Displays a currency value
 		 * @param float $fltAmount
+		 * @param string $strPad amount of padding text between dollar sign and number
 		 */
-		public static function DisplayCurrency($fltAmount) {
+		public static function DisplayCurrency($fltAmount, $strPad = null) {
 			if ($fltAmount < 0)
-				return '-$' . number_format(abs($fltAmount), 2);
+				return '-$' . $strPad . number_format(abs($fltAmount), 2);
 			else
-				return '$' . number_format($fltAmount, 2);
+				return '$' . $strPad . number_format($fltAmount, 2);
 		}
 
 		public static function DisplayCurrencyHtml($fltAmount, $blnAddSpaces = false) {

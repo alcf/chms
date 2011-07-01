@@ -27,6 +27,29 @@
 			return sprintf('OnlineDonation Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Hash': return md5(PUBLIC_LOGIN_SALT . $this->intId);
+				case 'ConfirmationUrl': return MY_ALCF_URL . '/give/confirmation.php/' . $this->intId . '/' . $this->Hash;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
+		public function SendConfirmationEmail() {
+			
+		}
+
+		public function RefreshDetailsWithCreditCardPayment($blnSave = true) {
+			$this->Amount = $this->CreditCardPayment->AmountCharged;
+			if ($blnSave) $this->Save();
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
@@ -102,19 +125,6 @@
 /*
 		protected $strSomeNewProperty;
 
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {

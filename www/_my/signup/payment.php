@@ -318,6 +318,8 @@
 			$txtDonation = $this->GetControl($strControlId);
 			$objFormProduct = FormProduct::Load($strParameter);
 			
+			$txtDonation->Text = str_replace('$', '', $txtDonation->Text);
+			$txtDonation->Text = str_replace('-', '', $txtDonation->Text);
 			$txtDonation->Text = sprintf('%.2f', (float) $txtDonation->Text);
 			
 			$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($this->objSignupEntry->Id, $objFormProduct->Id);
@@ -437,6 +439,14 @@
 			$objSignupPayment->SignupPaymentTypeId = SignupPaymentType::CreditCard;
 			
 			return $objSignupPayment;
+		}
+
+		/**
+		 * Called back from PaymentPanel to perform saves on any children objects
+		 * from PaymentObject, or in this case, nothing.
+		 */
+		public function PaymentObjectSaveChildren(SignupPayment $objPaymentObject) {
+			// NO-OP by design
 		}
 
 		/**

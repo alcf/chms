@@ -13,7 +13,7 @@ UPDATE stewardship_fund SET external_flag=active_flag;
 UPDATE stewardship_fund SET external_name=name;
 
 # fixes old data model mistake
-ALTER TABLE group DROP INDEX id_idx;
+ALTER TABLE `group` DROP INDEX id_idx;
 
 ######### CREATE
 

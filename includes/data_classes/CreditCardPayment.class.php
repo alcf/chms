@@ -57,7 +57,8 @@
 		 * 
 		 * The actual "Capture" will be performed asynchronously by a separate cron-based CLI process.
 		 * 
-		 * @param mixed $objPaymentObject this hsould be either an OnlineDonation or a SignupPayment object
+		 * @param mixed $objPaymentObject this should be either an OnlineDonation or a SignupPayment object
+		 * @param array $arrPaymentObjectSaveChildrenCallback a callback to a method that will perform any children-save to the PaymentObject sent in
 		 * @param string $strFirstName
 		 * @param string $strLastName
 		 * @param Address $objAddress does not have to be linked to an actual db row
@@ -68,7 +69,7 @@
 		 * @param integer $intCreditCardTypeId
 		 * @return mixed a CreditCardPayment object if authorization successful, otherwise a string-based message on why it failed
 		 */
-		public static function PerformAuthorization($objPaymentObject, $strFirstName, $strLastName, Address $objAddress, $fltAmount,
+		public static function PerformAuthorization($objPaymentObject, $arrPaymentObjectSaveChildrenCallback, $strFirstName, $strLastName, Address $objAddress, $fltAmount,
 			$strCcNumber, $strCcExpiration, $strCcCsc, $intCreditCardTypeId) {
 			// Ensure a "Valid" PaymentObject
 			if (!($objPaymentObject instanceof SignupPayment) &&
@@ -81,7 +82,11 @@
 
 			CreditCardPayment::GetDatabase()->TransactionBegin();
 			try {
+				// Save the PaymentObject itself
 				$objPaymentObject->Save();
+
+				// Make a call to save children (if applicable)
+				call_user_func($arrPaymentObjectSaveChildrenCallback, $objPaymentObject);
 
 				$strClassName = get_class($objPaymentObject);
 				switch ($strClassName) {
