@@ -26,6 +26,7 @@
 		<?php $this->lstFormPaymentTypeId->RenderWithName('Required=true'); ?>
 		<?php $this->txtCost->RenderWithName(); ?>
 		<?php $this->txtDeposit->RenderWithName(); ?>
+		<?php $this->lstStewardshipFund->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">
