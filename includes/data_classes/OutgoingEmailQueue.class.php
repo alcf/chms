@@ -28,6 +28,45 @@
 		}
 
 
+		/**
+		 * This will QUEUE a message for delivery.
+		 * @param string $strToAddress
+		 * @param string $strFromAddress if null, it will look up from Registry
+		 * @param string $strSubject
+		 * @param string $strBody
+		 */
+		public static function QueueMessage($strToAddress, $strFromAddress, $strSubject, $strBody) {
+			$objEmailMessage = new OutgoingEmailQueue();
+			$objEmailMessage->ToAddress = $strToAddress;
+			$objEmailMessage->FromAddress = ($strFromAddress) ? $strFromAddress : Registry::GetValue('system_email_address');
+			$objEmailMessage->Subject = $strSubject;
+			$objEmailMessage->Body = $strBody;
+			$objEmailMessage->DateQueued = QDateTime::Now();
+			$objEmailMessage->ErrorFlag = false;
+			$objEmailMessage->Save();
+		}
+
+		public function Send() {
+			if (!$this->blnErrorFlag) {
+				$this->blnErrorFlag = true;
+				$this->Save();
+
+				$objEmailMessage = new QEmailMessage($this->strFromAddress, $this->strToAddress, $this->strSubject, $this->strBody);
+
+				try {
+					QEmailServer::Send($objEmailMessage);
+				} catch (QCallerException $objExc) {
+					QLog::Log('Email Failed to Send #' . $this->intId);
+					QLog::Log($objExc->getMessage());
+					$this->strErrorMessage = $objExc->getMessage();
+					$this->Save();
+				}
+
+				$this->Delete();
+			}
+		}
+
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

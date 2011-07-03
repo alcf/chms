@@ -89,6 +89,9 @@
 				define('PUBLIC_LOGIN_SALT', trim(file_get_contents(dirname(__FILE__) . '/public_login_salt.local')));
 			else
 				define('PUBLIC_LOGIN_SALT', 'salt');
+
+			define('SMTP_SERVER', '127.0.0.1');
+			define('SMTP_TEST_MODE', true);
 			break;
 
 		case 'test':
@@ -141,6 +144,9 @@
 					'profiling' => false,
 					'staticproperty' => 'LoginId')
 			)));
+
+			define('SMTP_SERVER', '10.128.2.37');
+			define('SMTP_TEST_MODE', false);
 			break;
 
 		case 'prod':
@@ -170,6 +176,9 @@
 
 			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
 			define('PUBLIC_LOGIN_SALT', 'PROD_PASSSALT');
+
+			define('SMTP_SERVER', '10.128.2.37');
+			define('SMTP_TEST_MODE', false);
 			break;
 	}
 
@@ -228,9 +237,6 @@
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_1', 'This document is necessary for any available federal income tax deduction for your contribution. Please retain it for your records.');
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_2', 'No goods or services were provided in exchange for the gifts other than intangible religious benefits.');
 
-	define('SMTP_SERVER', '10.128.2.37');
-	define('SMTP_TEST_MODE', false);
-	
 	if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
 		date_default_timezone_set('America/Los_Angeles');
 
