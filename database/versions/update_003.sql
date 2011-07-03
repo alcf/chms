@@ -2,6 +2,9 @@
 UPDATE _version SET version='003';
 ##############################################
 
+######### REGISTRY
+INSERT INTO registry(name, value) VALUES ('system_email_address', 'my.ALCF Website <my@alcf.net>');
+
 ######### ALTER
 
 ALTER TABLE ministry ADD COLUMN signup_form_type_bitmap integer(10) unsigned DEFAULT NULL;
