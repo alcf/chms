@@ -14,6 +14,28 @@
 	 * 
 	 */
 	class PaypalBatch extends PaypalBatchGen {
+		const PayPalTransactionId			= 'Transaction ID';
+		const PayPalOriginalTransactionId	= 'Original Transaction ID';
+		const PayPalBatchId					= 'Batch ID';
+		const PayPalAmount					= 'Amount';
+		const PayPalAuthCode				= 'Authcode';
+		const PayPalAccountNumber			= 'Account Number';
+		const PayPalType					= 'Type';
+		const PayPalTenderType				= 'Tender Type';
+		const PayPalTime					= 'Time';
+
+		public static $RequiredFields = array(
+			self::PayPalTransactionId,
+			self::PayPalOriginalTransactionId,
+			self::PayPalBatchId,
+			self::PayPalAmount,
+			self::PayPalAuthCode,
+			self::PayPalAccountNumber,
+			self::PayPalType,
+			self::PayPalTenderType,
+			self::PayPalTime
+		);
+
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -27,6 +49,99 @@
 			return sprintf('PaypalBatch Object %s',  $this->intId);
 		}
 
+		public static function ProcessReport($strReportText) {
+			// Cleanup Linebreaks
+			$strReportText = str_replace("\r", "\n", $strReportText);
+			while (strpos($strReportText, "\n\n") !== false) $strReportText = str_replace("\n\n", "\n", $strReportText);
+			$strReportText = trim($strReportText);
+
+			// Pull out the First Line (column headers) from the rest of the report
+			$intPosition = strpos($strReportText, "\n");
+			$strFirstLine = substr($strReportText, 0, $intPosition);
+			$strReportText = substr($strReportText, $intPosition + 1);
+
+			// Calculate the tokens
+			$strTokenArray = array();
+			$intColumnIndex = 0;
+			foreach (explode("\t", $strFirstLine) as $strToken) {
+				if (array_key_exists($strToken, $strTokenArray)) throw new QCallerException('Report has a duplicate column: ' . $strToken);
+				$strTokenArray[$strToken] = $intColumnIndex;
+				$intColumnIndex++;
+			}
+
+			// Ensure that the required fields exist
+			foreach (self::$RequiredFields as $strRequiredToken)
+				if (!array_key_exists($strRequiredToken, $strTokenArray)) throw new QCallerException('Repoert is missing required column: ' . $strRequiredToken);
+
+			// Go through each line of the report
+			foreach (explode("\n", $strReportText) as $strLine) {
+				// Break out all cells, and then create a specific Values array that contain only the cells we care about, indexed by name
+				$strCellArray = explode("\t", $strLine);
+				$strValuesArray = array();
+				foreach (self::$RequiredFields as $strRequiredToken) {
+					$strValuesArray[$strRequiredToken] = $strCellArray[$strTokenArray[$strRequiredToken]];
+				}
+
+				// Only process "Delayed Capture"
+				if ($strValuesArray['Type'] == 'Delayed Capture') {
+					$objCreditCardPayment = CreditCardPayment::LoadByTransactionCode($strValuesArray[self::PayPalOriginalTransactionId]);
+					// Can we find the linked CCPayment Record?
+					if (!$objCreditCardPayment) {
+						// No -- let's create this as an UNLINKED one
+						$objCreditCardPayment = new CreditCardPayment();
+						$objCreditCardPayment->TransactionCode = $strValuesArray[self::PayPalOriginalTransactionId];
+						$objCreditCardPayment->CreditCardStatusTypeId = CreditCardStatusType::Captured;
+						$objCreditCardPayment->CreditCardLastFour = substr($strValuesArray[self::PayPalAccountNumber], strlen($strValuesArray[self::PayPalAccountNumber]) - 4);
+						foreach (CreditCardType::$NameArray as $intId => $strName) {
+							if (strtolower($strName) == strtolower($strValuesArray[self::PayPalTenderType]))
+								$objCreditCardPayment->CreditCardTypeId = $intId;
+						}
+						if (!$objCreditCardPayment->CreditCardTypeId) throw new QCallerException('Unlinked transaction contains an unknown credit card type: ' . $strValuesArray[self::PayPalTenderType]);
+						$objCreditCardPayment->UnlinkedFlag = true;
+
+						// Setup Fields
+						$objCreditCardPayment->AuthorizationCode = $strValuesArray[self::PayPalAuthCode];
+						$objCreditCardPayment->AmountCharged = $strValuesArray[self::PayPalAmount];
+					}
+
+					// Link in the Pay Pal Batch Info (if applicable)
+					if ($intBatchNumber = trim($strValuesArray[self::PayPalBatchId])) {
+						$objPayPalBatch = PaypalBatch::LoadByNumber($intBatchNumber);
+						if (!$objPayPalBatch) {
+							$objPayPalBatch = new PaypalBatch();
+							$objPayPalBatch->Number = $intBatchNumber;
+							$objPayPalBatch->DateReceived = QDateTime::Now();
+							$objPayPalBatch->ReconciledFlag = false;
+							$objPayPalBatch->Save();
+						}
+						$objCreditCardPayment->PaypalBatch = $objPayPalBatch;
+					} else {
+						$objCreditCardPayment->PaypalBatch = null;
+					}
+
+
+					// TODO: How do we account fo a "reconciled" PayPal batch that unexpectatly received another transaction not previously accounted for?
+
+					// Check Fields to ensure match
+					if ($objCreditCardPayment->AuthorizationCode != $strValuesArray[self::PayPalAuthCode])
+						throw new QCallerException(sprintf('Mismatch AuthCode for Transaction %s: %s vs. %s',
+							$strValuesArray[self::PayPalOriginalTransactionId],
+							$strValuesArray[self::PayPalAuthCode],
+							$objCreditCardPayment->AuthorizationCode));
+
+					if ($objCreditCardPayment->AmountCharged != $strValuesArray[self::PayPalAmount])
+						throw new QCallerException(sprintf('Mismatch Amount for Transaction %s: %s vs. %s',
+							$strValuesArray[self::PayPalOriginalTransactionId],
+							$strValuesArray[self::PayPalAmount],
+							$objCreditCardPayment->AmountCharged));
+
+					// Update Fields
+					$objCreditCardPayment->DateCaptured = new QDateTime($strValuesArray[self::PayPalTime]);
+
+					$objCreditCardPayment->Save();
+				}
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -166,6 +166,7 @@
 				$objCreditCardPayment->AddressMatchCode = $strNvpResponseArray['AVSADDR'] . $strNvpResponseArray['AVSZIP'] . $strNvpResponseArray['IAVS'];
 				$objCreditCardPayment->DateAuthorized = QDateTime::Now();
 				$objCreditCardPayment->AmountCharged = $fltAmount;
+				$objCreditCardPayment->UnlinkedFlag = false;
 
 				// Save, Commit and Return
 				$objCreditCardPayment->Save();
