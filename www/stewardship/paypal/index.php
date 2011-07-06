@@ -17,8 +17,8 @@
 			$this->dtgBatches->Paginator = new QPaginator($this->dtgBatches);
 			$this->dtgBatches->MetaAddColumn('Number', 'Name=Batch Number', 'Html=<?= $_FORM->RenderBatchLabel($_ITEM); ?>', 'HtmlEntities=false', 'Width=200px');
 			$this->dtgBatches->MetaAddColumn('DateReceived', 'Name=Date Created', 'Width=200px');
-			$this->dtgBatches->MetaAddColumn('DateReconciled', 'Name=Date Reconciled', 'Width=200px');
-			$this->dtgBatches->MetaAddColumn('ReconciledFlag', 'Name=Reconciled?', 'Html=<?= $_ITEM->ReconciledFlag ? "Yes" : "No"; ?>', 'Width=300px');
+			$this->dtgBatches->MetaAddColumn('ReconciledFlag', 'Name=Posted?', 'Html=<?= $_ITEM->ReconciledFlag ? "Yes" : "No"; ?>', 'Width=100px');
+			$this->dtgBatches->MetaAddColumn('DateReconciled', 'Name=Date Posted', 'Width=400px');
 			$this->dtgBatches->SetDataBinder('dtgBatches_Bind');
 
 			$this->dtgBatches->SortColumnIndex = 0;

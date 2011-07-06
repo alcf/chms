@@ -27,14 +27,12 @@
 		protected $btnDialogSave;
 		protected $btnDialogCancel;
 		protected $lstDialogFund;
-		
-		
-		
+
 		protected function btnPost_Click() {
-			
+			$this->objBatch->PostBatch();
+			$this->Transactions_Refresh();
 		}
-		
-		
+
 		protected function pxyEditFundDonationLineItem_Click($strFormid, $strControlId, $strParameter) {
 			$objOnlineDonationLineItem = OnlineDonationLineItem::Load($strParameter);
 			if ($objOnlineDonationLineItem->OnlineDonation->CreditCardPayment->PaypalBatchId == $this->objBatch->Id) {

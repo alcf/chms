@@ -36,6 +36,10 @@
 			self::PayPalTime
 		);
 
+		public function PostBatch() {
+			if ($this->blnReconciledFlag) throw new QCallerException('Cannot post a PayPal Batch that has already been reconciled!');
+		}
+		
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
