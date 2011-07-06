@@ -539,11 +539,11 @@
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
             <x>2784.000000</x>
-            <y>1840.000000</y>
+            <y>1792.000000</y>
         </location>
         <size>
             <width>314.000000</width>
-            <height>160.000000</height>
+            <height>220.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -611,6 +611,34 @@
             <forcedUnique><![CDATA[0]]></forcedUnique>
             <timezone><![CDATA[0]]></timezone>
             <uid><![CDATA[100363:11e2766da55:-7ac0]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[stewardship_fund_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <referencesField>id</referencesField>
+            <referencesTable>stewardship_fund</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[stewardship_fund]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>1</destinationCardinality>
+            <referencesFieldUID><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[C369E9DB-0282-41C4-A049-E5D7573819EC]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[amount_donation]]></name>
+            <type><![CDATA[DECIMAL(10,2)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[0848CAE8-7692-4A26-8CF9-004AD27653A5]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[amount_non_donation]]></name>
+            <type><![CDATA[DECIMAL(10,2)]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[B75BF8BA-BEE6-46C0-8187-4E95CE659F04]]></uid>
         </SQLField>
         <SQLField>
             <name><![CDATA[credit_card_payment_id]]></name>

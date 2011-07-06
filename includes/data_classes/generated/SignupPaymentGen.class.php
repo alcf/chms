@@ -21,8 +21,12 @@
 	 * @property QDateTime $TransactionDate the value for dttTransactionDate 
 	 * @property string $TransactionDescription the value for strTransactionDescription 
 	 * @property double $Amount the value for fltAmount 
+	 * @property integer $StewardshipFundId the value for intStewardshipFundId 
+	 * @property double $AmountDonation the value for fltAmountDonation 
+	 * @property double $AmountNonDonation the value for fltAmountNonDonation 
 	 * @property integer $CreditCardPaymentId the value for intCreditCardPaymentId (Unique)
 	 * @property SignupEntry $SignupEntry the value for the SignupEntry object referenced by intSignupEntryId (Not Null)
+	 * @property StewardshipFund $StewardshipFund the value for the StewardshipFund object referenced by intStewardshipFundId 
 	 * @property CreditCardPayment $CreditCardPayment the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -82,6 +86,30 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column signup_payment.stewardship_fund_id
+		 * @var integer intStewardshipFundId
+		 */
+		protected $intStewardshipFundId;
+		const StewardshipFundIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_payment.amount_donation
+		 * @var double fltAmountDonation
+		 */
+		protected $fltAmountDonation;
+		const AmountDonationDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_payment.amount_non_donation
+		 * @var double fltAmountNonDonation
+		 */
+		protected $fltAmountNonDonation;
+		const AmountNonDonationDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column signup_payment.credit_card_payment_id
 		 * @var integer intCreditCardPaymentId
 		 */
@@ -120,6 +148,16 @@
 		 * @var SignupEntry objSignupEntry
 		 */
 		protected $objSignupEntry;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column signup_payment.stewardship_fund_id.
+		 *
+		 * NOTE: Always use the StewardshipFund property getter to correctly retrieve this StewardshipFund object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var StewardshipFund objStewardshipFund
+		 */
+		protected $objStewardshipFund;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -447,6 +485,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'transaction_date', $strAliasPrefix . 'transaction_date');
 			$objBuilder->AddSelectItem($strTableName, 'transaction_description', $strAliasPrefix . 'transaction_description');
 			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
+			$objBuilder->AddSelectItem($strTableName, 'stewardship_fund_id', $strAliasPrefix . 'stewardship_fund_id');
+			$objBuilder->AddSelectItem($strTableName, 'amount_donation', $strAliasPrefix . 'amount_donation');
+			$objBuilder->AddSelectItem($strTableName, 'amount_non_donation', $strAliasPrefix . 'amount_non_donation');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_payment_id', $strAliasPrefix . 'credit_card_payment_id');
 		}
 
@@ -491,6 +532,12 @@
 			$objToReturn->strTransactionDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount'] : $strAliasPrefix . 'amount';
 			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_fund_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_fund_id'] : $strAliasPrefix . 'stewardship_fund_id';
+			$objToReturn->intStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'amount_donation', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_donation'] : $strAliasPrefix . 'amount_donation';
+			$objToReturn->fltAmountDonation = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'amount_non_donation', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount_non_donation'] : $strAliasPrefix . 'amount_non_donation';
+			$objToReturn->fltAmountNonDonation = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_payment_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_payment_id'] : $strAliasPrefix . 'credit_card_payment_id';
 			$objToReturn->intCreditCardPaymentId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
@@ -511,6 +558,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objSignupEntry = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signup_entry_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for StewardshipFund Early Binding
+			$strAlias = $strAliasPrefix . 'stewardship_fund_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_fund_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for CreditCardPayment Early Binding
 			$strAlias = $strAliasPrefix . 'credit_card_payment_id__id';
@@ -679,6 +732,38 @@
 				QQ::Equal(QQN::SignupPayment()->SignupPaymentTypeId, $intSignupPaymentTypeId)
 			);
 		}
+			
+		/**
+		 * Load an array of SignupPayment objects,
+		 * by StewardshipFundId Index(es)
+		 * @param integer $intStewardshipFundId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupPayment[]
+		*/
+		public static function LoadArrayByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
+			// Call SignupPayment::QueryArray to perform the LoadArrayByStewardshipFundId query
+			try {
+				return SignupPayment::QueryArray(
+					QQ::Equal(QQN::SignupPayment()->StewardshipFundId, $intStewardshipFundId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SignupPayments
+		 * by StewardshipFundId Index(es)
+		 * @param integer $intStewardshipFundId
+		 * @return int
+		*/
+		public static function CountByStewardshipFundId($intStewardshipFundId) {
+			// Call SignupPayment::QueryCount to perform the CountByStewardshipFundId query
+			return SignupPayment::QueryCount(
+				QQ::Equal(QQN::SignupPayment()->StewardshipFundId, $intStewardshipFundId)
+			);
+		}
 
 
 
@@ -715,6 +800,9 @@
 							`transaction_date`,
 							`transaction_description`,
 							`amount`,
+							`stewardship_fund_id`,
+							`amount_donation`,
+							`amount_non_donation`,
 							`credit_card_payment_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupEntryId) . ',
@@ -722,6 +810,9 @@
 							' . $objDatabase->SqlVariable($this->dttTransactionDate) . ',
 							' . $objDatabase->SqlVariable($this->strTransactionDescription) . ',
 							' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+							' . $objDatabase->SqlVariable($this->fltAmountDonation) . ',
+							' . $objDatabase->SqlVariable($this->fltAmountNonDonation) . ',
 							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						)
 					');
@@ -747,6 +838,9 @@
 							`transaction_date` = ' . $objDatabase->SqlVariable($this->dttTransactionDate) . ',
 							`transaction_description` = ' . $objDatabase->SqlVariable($this->strTransactionDescription) . ',
 							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+							`amount_donation` = ' . $objDatabase->SqlVariable($this->fltAmountDonation) . ',
+							`amount_non_donation` = ' . $objDatabase->SqlVariable($this->fltAmountNonDonation) . ',
 							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -837,6 +931,9 @@
 			$this->dttTransactionDate = $objReloaded->dttTransactionDate;
 			$this->strTransactionDescription = $objReloaded->strTransactionDescription;
 			$this->fltAmount = $objReloaded->fltAmount;
+			$this->StewardshipFundId = $objReloaded->StewardshipFundId;
+			$this->fltAmountDonation = $objReloaded->fltAmountDonation;
+			$this->fltAmountNonDonation = $objReloaded->fltAmountNonDonation;
 			$this->CreditCardPaymentId = $objReloaded->CreditCardPaymentId;
 		}
 
@@ -856,6 +953,9 @@
 					`transaction_date`,
 					`transaction_description`,
 					`amount`,
+					`stewardship_fund_id`,
+					`amount_donation`,
+					`amount_non_donation`,
 					`credit_card_payment_id`,
 					__sys_login_id,
 					__sys_action,
@@ -867,6 +967,9 @@
 					' . $objDatabase->SqlVariable($this->dttTransactionDate) . ',
 					' . $objDatabase->SqlVariable($this->strTransactionDescription) . ',
 					' . $objDatabase->SqlVariable($this->fltAmount) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+					' . $objDatabase->SqlVariable($this->fltAmountDonation) . ',
+					' . $objDatabase->SqlVariable($this->fltAmountNonDonation) . ',
 					' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -948,6 +1051,21 @@
 					// @return double
 					return $this->fltAmount;
 
+				case 'StewardshipFundId':
+					// Gets the value for intStewardshipFundId 
+					// @return integer
+					return $this->intStewardshipFundId;
+
+				case 'AmountDonation':
+					// Gets the value for fltAmountDonation 
+					// @return double
+					return $this->fltAmountDonation;
+
+				case 'AmountNonDonation':
+					// Gets the value for fltAmountNonDonation 
+					// @return double
+					return $this->fltAmountNonDonation;
+
 				case 'CreditCardPaymentId':
 					// Gets the value for intCreditCardPaymentId (Unique)
 					// @return integer
@@ -964,6 +1082,18 @@
 						if ((!$this->objSignupEntry) && (!is_null($this->intSignupEntryId)))
 							$this->objSignupEntry = SignupEntry::Load($this->intSignupEntryId);
 						return $this->objSignupEntry;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'StewardshipFund':
+					// Gets the value for the StewardshipFund object referenced by intStewardshipFundId 
+					// @return StewardshipFund
+					try {
+						if ((!$this->objStewardshipFund) && (!is_null($this->intStewardshipFundId)))
+							$this->objStewardshipFund = StewardshipFund::Load($this->intStewardshipFundId);
+						return $this->objStewardshipFund;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1070,6 +1200,40 @@
 						throw $objExc;
 					}
 
+				case 'StewardshipFundId':
+					// Sets the value for intStewardshipFundId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objStewardshipFund = null;
+						return ($this->intStewardshipFundId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'AmountDonation':
+					// Sets the value for fltAmountDonation 
+					// @param double $mixValue
+					// @return double
+					try {
+						return ($this->fltAmountDonation = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'AmountNonDonation':
+					// Sets the value for fltAmountNonDonation 
+					// @param double $mixValue
+					// @return double
+					try {
+						return ($this->fltAmountNonDonation = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CreditCardPaymentId':
 					// Sets the value for intCreditCardPaymentId (Unique)
 					// @param integer $mixValue
@@ -1110,6 +1274,36 @@
 						// Update Local Member Variables
 						$this->objSignupEntry = $mixValue;
 						$this->intSignupEntryId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'StewardshipFund':
+					// Sets the value for the StewardshipFund object referenced by intStewardshipFundId 
+					// @param StewardshipFund $mixValue
+					// @return StewardshipFund
+					if (is_null($mixValue)) {
+						$this->intStewardshipFundId = null;
+						$this->objStewardshipFund = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a StewardshipFund object
+						try {
+							$mixValue = QType::Cast($mixValue, 'StewardshipFund');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED StewardshipFund object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved StewardshipFund for this SignupPayment');
+
+						// Update Local Member Variables
+						$this->objStewardshipFund = $mixValue;
+						$this->intStewardshipFundId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1189,6 +1383,9 @@
 			$strToReturn .= '<element name="TransactionDate" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="TransactionDescription" type="xsd:string"/>';
 			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
+			$strToReturn .= '<element name="StewardshipFund" type="xsd1:StewardshipFund"/>';
+			$strToReturn .= '<element name="AmountDonation" type="xsd:float"/>';
+			$strToReturn .= '<element name="AmountNonDonation" type="xsd:float"/>';
 			$strToReturn .= '<element name="CreditCardPayment" type="xsd1:CreditCardPayment"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1199,6 +1396,7 @@
 			if (!array_key_exists('SignupPayment', $strComplexTypeArray)) {
 				$strComplexTypeArray['SignupPayment'] = SignupPayment::GetSoapComplexTypeXml();
 				SignupEntry::AlterSoapComplexTypeArray($strComplexTypeArray);
+				StewardshipFund::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CreditCardPayment::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1227,6 +1425,13 @@
 				$objToReturn->strTransactionDescription = $objSoapObject->TransactionDescription;
 			if (property_exists($objSoapObject, 'Amount'))
 				$objToReturn->fltAmount = $objSoapObject->Amount;
+			if ((property_exists($objSoapObject, 'StewardshipFund')) &&
+				($objSoapObject->StewardshipFund))
+				$objToReturn->StewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->StewardshipFund);
+			if (property_exists($objSoapObject, 'AmountDonation'))
+				$objToReturn->fltAmountDonation = $objSoapObject->AmountDonation;
+			if (property_exists($objSoapObject, 'AmountNonDonation'))
+				$objToReturn->fltAmountNonDonation = $objSoapObject->AmountNonDonation;
 			if ((property_exists($objSoapObject, 'CreditCardPayment')) &&
 				($objSoapObject->CreditCardPayment))
 				$objToReturn->CreditCardPayment = CreditCardPayment::GetObjectFromSoapObject($objSoapObject->CreditCardPayment);
@@ -1254,6 +1459,10 @@
 				$objObject->intSignupEntryId = null;
 			if ($objObject->dttTransactionDate)
 				$objObject->dttTransactionDate = $objObject->dttTransactionDate->__toString(QDateTime::FormatSoap);
+			if ($objObject->objStewardshipFund)
+				$objObject->objStewardshipFund = StewardshipFund::GetSoapObjectFromObject($objObject->objStewardshipFund, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intStewardshipFundId = null;
 			if ($objObject->objCreditCardPayment)
 				$objObject->objCreditCardPayment = CreditCardPayment::GetSoapObjectFromObject($objObject->objCreditCardPayment, false);
 			else if (!$blnBindRelatedObjects)
@@ -1280,6 +1489,10 @@
 	 * @property-read QQNode $TransactionDate
 	 * @property-read QQNode $TransactionDescription
 	 * @property-read QQNode $Amount
+	 * @property-read QQNode $StewardshipFundId
+	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $AmountDonation
+	 * @property-read QQNode $AmountNonDonation
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
 	 */
@@ -1303,6 +1516,14 @@
 					return new QQNode('transaction_description', 'TransactionDescription', 'string', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'StewardshipFundId':
+					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
+				case 'StewardshipFund':
+					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
+				case 'AmountDonation':
+					return new QQNode('amount_donation', 'AmountDonation', 'double', $this);
+				case 'AmountNonDonation':
+					return new QQNode('amount_non_donation', 'AmountNonDonation', 'double', $this);
 				case 'CreditCardPaymentId':
 					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
 				case 'CreditCardPayment':
@@ -1329,6 +1550,10 @@
 	 * @property-read QQNode $TransactionDate
 	 * @property-read QQNode $TransactionDescription
 	 * @property-read QQNode $Amount
+	 * @property-read QQNode $StewardshipFundId
+	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $AmountDonation
+	 * @property-read QQNode $AmountNonDonation
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -1353,6 +1578,14 @@
 					return new QQNode('transaction_description', 'TransactionDescription', 'string', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'StewardshipFundId':
+					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
+				case 'StewardshipFund':
+					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
+				case 'AmountDonation':
+					return new QQNode('amount_donation', 'AmountDonation', 'double', $this);
+				case 'AmountNonDonation':
+					return new QQNode('amount_non_donation', 'AmountNonDonation', 'double', $this);
 				case 'CreditCardPaymentId':
 					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
 				case 'CreditCardPayment':

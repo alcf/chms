@@ -300,6 +300,10 @@
 				case 'TransactionDate': return QQN::SignupPayment()->TransactionDate;
 				case 'TransactionDescription': return QQN::SignupPayment()->TransactionDescription;
 				case 'Amount': return QQN::SignupPayment()->Amount;
+				case 'StewardshipFundId': return QQN::SignupPayment()->StewardshipFundId;
+				case 'StewardshipFund': return QQN::SignupPayment()->StewardshipFund;
+				case 'AmountDonation': return QQN::SignupPayment()->AmountDonation;
+				case 'AmountNonDonation': return QQN::SignupPayment()->AmountNonDonation;
 				case 'CreditCardPaymentId': return QQN::SignupPayment()->CreditCardPaymentId;
 				case 'CreditCardPayment': return QQN::SignupPayment()->CreditCardPayment;
 				default: throw new QCallerException('Simple Property not found in SignupPaymentDataGrid content: ' . $mixContent);
