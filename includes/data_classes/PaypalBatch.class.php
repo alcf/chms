@@ -49,7 +49,23 @@
 			return sprintf('PaypalBatch Object %s',  $this->intId);
 		}
 
-		public static function ProcessReport($strReportText) {
+		/**
+		 * This will process a report text file as taken from PayPal.  This will create any applicable PaypalBatch entries
+		 * and correlate with existing CreditCardPayment records.  This will *only* process "Delayed Capture" transactions,
+		 * since that's all we actually care about.  This will create "as unlinked" any CreditCardPayment records that had
+		 * to be created because it didn't exist (which means that this is a bad thing -- we should not have any of those).
+		 * 
+		 * If there are any issues with importing, this will throw an error
+		 * 
+		 * @param string $strReportText the text of the report itself from paypal
+		 * @param integer $intEntriesModified return value of the number of entries that were modified
+		 * @param integer $intEntriesAdded return value of the number of entries that were created (hopefully shouuld be zero)
+		 * @throws QCallerException
+		 */
+		public static function ProcessReport($strReportText, &$intEntriesModified, &$intEntriesAdded) {
+			$intEntriesModified = 0;
+			$intEntriesAdded = 0;
+
 			// Cleanup Linebreaks
 			$strReportText = str_replace("\r", "\n", $strReportText);
 			while (strpos($strReportText, "\n\n") !== false) $strReportText = str_replace("\n\n", "\n", $strReportText);
@@ -71,7 +87,7 @@
 
 			// Ensure that the required fields exist
 			foreach (self::$RequiredFields as $strRequiredToken)
-				if (!array_key_exists($strRequiredToken, $strTokenArray)) throw new QCallerException('Repoert is missing required column: ' . $strRequiredToken);
+				if (!array_key_exists($strRequiredToken, $strTokenArray)) throw new QCallerException('Report is missing required column: ' . $strRequiredToken);
 
 			// Go through each line of the report
 			foreach (explode("\n", $strReportText) as $strLine) {
@@ -93,6 +109,7 @@
 
 					if (!$objCreditCardPayment) {
 						// No -- let's create this as an UNLINKED one
+						$intEntriesAdded++;
 						$objCreditCardPayment = new CreditCardPayment();
 						$objCreditCardPayment->TransactionCode = $strValuesArray[self::PayPalOriginalTransactionId];
 						$objCreditCardPayment->CreditCardStatusTypeId = CreditCardStatusType::Captured;
@@ -119,9 +136,16 @@
 							$objPayPalBatch->ReconciledFlag = false;
 							$objPayPalBatch->Save();
 						}
-						$objCreditCardPayment->PaypalBatch = $objPayPalBatch;
+
+						if ($objCreditCardPayment->PaypalBatchId != $objPayPalBatch->Id) {
+							$objCreditCardPayment->PaypalBatch = $objPayPalBatch;
+							if ($objCreditCardPayment->Id) $intEntriesModified++;
+						}
 					} else {
-						$objCreditCardPayment->PaypalBatch = null;
+						if (!is_null($objCreditCardPayment->PaypalBatchId)) {
+							$objCreditCardPayment->PaypalBatch = null;
+							if ($objCreditCardPayment->Id) $intEntriesModified++;
+						}
 					}
 
 

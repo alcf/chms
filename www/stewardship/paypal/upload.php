@@ -29,7 +29,24 @@
 		}
 
 		protected function btnSave_Click() {
-			
+			$strText = file_get_contents($this->flcUpload->FilePath);
+			try {
+				$intEntriesModified = 0;
+				$intEntriesAdded = 0;
+				$intRows = PaypalBatch::ProcessReport($strText, $intEntriesModified, $intEntriesAdded);
+				if (!$intEntriesAdded && !$intEntriesModified) {
+					QApplication::DisplayAlert('No new or modified entries found.  No changes were made.');
+				} else if ($intEntriesAdded) {
+					QApplication::DisplayAlert(sprintf('PayPal import successful.  %s payment entries were updated.  WARNING: %s unlinked credit card payment entries had to be created.', $intEntriesModified, $intEntriesAdded));
+				} else {
+					QApplication::DisplayAlert(sprintf('PayPal import successful.  %s payment entries were updated.', $intEntriesModified));
+				}
+				
+				QApplication::ExecuteJavaScript('document.location = "/stewardship/paypal/";');
+			} catch (QCallerException $objExc) {
+				QApplication::DisplayAlert('There were problems processing the report file: "' . $objExc->getMessage() . '"');
+				return;
+			}
 		}
 
 		protected function btnCancel_Click() {

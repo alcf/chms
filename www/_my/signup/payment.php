@@ -179,15 +179,19 @@
 				if ($objItem->FormProductTypeId == FormProductType::Required)
 					return '1';
 				else if ($objItem->FormProductTypeId == FormProductType::Optional) {
-					$lstQuantity = $this->GetControl('lstQuantity' . $objItem->Id);
-					if (!$lstQuantity) {
-						$lstQuantity = new QListBox($this->dtgProducts, 'lstQuantity' . $objItem->Id);
-						$lstQuantity->ActionParameter = $objItem->Id;
-						$lstQuantity->AddItem(0, 0);
-						for ($intQuantity = $objItem->MinimumQuantity; $intQuantity <= $objItem->MaximumQuantity; $intQuantity++)
-							$lstQuantity->AddItem($intQuantity, $intQuantity);
-						$lstQuantity->SelectedIndex = 0;
-						$lstQuantity->AddAction(new QChangeEvent(), new QAjaxAction('lstQuantity_Change'));
+					if ($objItem->FormPaymentTypeId == FormPaymentType::Donation) {
+						return '1';
+					} else {
+						$lstQuantity = $this->GetControl('lstQuantity' . $objItem->Id);
+						if (!$lstQuantity) {
+							$lstQuantity = new QListBox($this->dtgProducts, 'lstQuantity' . $objItem->Id);
+							$lstQuantity->ActionParameter = $objItem->Id;
+							$lstQuantity->AddItem(0, 0);
+							for ($intQuantity = $objItem->MinimumQuantity; $intQuantity <= $objItem->MaximumQuantity; $intQuantity++)
+								$lstQuantity->AddItem($intQuantity, $intQuantity);
+							$lstQuantity->SelectedIndex = 0;
+							$lstQuantity->AddAction(new QChangeEvent(), new QAjaxAction('lstQuantity_Change'));
+						}
 					}
 					
 					return $lstQuantity->Render(false);
