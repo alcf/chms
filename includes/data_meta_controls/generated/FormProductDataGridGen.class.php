@@ -299,8 +299,6 @@
 				case 'OrderNumber': return QQN::FormProduct()->OrderNumber;
 				case 'FormProductTypeId': return QQN::FormProduct()->FormProductTypeId;
 				case 'FormPaymentTypeId': return QQN::FormProduct()->FormPaymentTypeId;
-				case 'StewardshipFundId': return QQN::FormProduct()->StewardshipFundId;
-				case 'StewardshipFund': return QQN::FormProduct()->StewardshipFund;
 				case 'Name': return QQN::FormProduct()->Name;
 				case 'Description': return QQN::FormProduct()->Description;
 				case 'DateStart': return QQN::FormProduct()->DateStart;

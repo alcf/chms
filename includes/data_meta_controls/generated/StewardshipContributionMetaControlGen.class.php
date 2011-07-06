@@ -50,6 +50,8 @@
 	 * property-read QLabel $CreatedByLoginIdLabel
 	 * property QCheckBox $UnpostedFlagControl
 	 * property-read QLabel $UnpostedFlagLabel
+	 * property QListBox $CreditCardPaymentControl
+	 * property-read QLabel $CreditCardPaymentLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -283,8 +285,20 @@
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstCreditCardPayment
+         * @access protected
+         */
+		protected $lstCreditCardPayment;
+
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblCreditCardPayment
+         * @access protected
+         */
+		protected $lblCreditCardPayment;
+
 
 
 		/**
@@ -895,6 +909,46 @@
 			return $this->lblUnpostedFlag;
 		}
 
+		/**
+		 * Create and setup QListBox lstCreditCardPayment
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstCreditCardPayment_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCreditCardPayment = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCreditCardPayment->Name = QApplication::Translate('Credit Card Payment');
+			$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCreditCardPaymentCursor = CreditCardPayment::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCreditCardPayment = CreditCardPayment::InstantiateCursor($objCreditCardPaymentCursor)) {
+				$objListItem = new QListItem($objCreditCardPayment->__toString(), $objCreditCardPayment->Id);
+				if ($objCreditCardPayment->StewardshipContributionId == $this->objStewardshipContribution->Id)
+					$objListItem->Selected = true;
+				$this->lstCreditCardPayment->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstCreditCardPayment;
+		}
+
+		/**
+		 * Create and setup QLabel lblCreditCardPayment
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCreditCardPayment_Create($strControlId = null) {
+			$this->lblCreditCardPayment = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCreditCardPayment->Name = QApplication::Translate('Credit Card Payment');
+			$this->lblCreditCardPayment->Text = ($this->objStewardshipContribution->CreditCardPayment) ? $this->objStewardshipContribution->CreditCardPayment->__toString() : null;
+			return $this->lblCreditCardPayment;
+		}
+
 
 
 		/**
@@ -1009,6 +1063,19 @@
 			if ($this->chkUnpostedFlag) $this->chkUnpostedFlag->Checked = $this->objStewardshipContribution->UnpostedFlag;
 			if ($this->lblUnpostedFlag) $this->lblUnpostedFlag->Text = ($this->objStewardshipContribution->UnpostedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->lstCreditCardPayment) {
+				$this->lstCreditCardPayment->RemoveAllItems();
+				$this->lstCreditCardPayment->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCreditCardPaymentArray = CreditCardPayment::LoadAll();
+				if ($objCreditCardPaymentArray) foreach ($objCreditCardPaymentArray as $objCreditCardPayment) {
+					$objListItem = new QListItem($objCreditCardPayment->__toString(), $objCreditCardPayment->Id);
+					if ($objCreditCardPayment->StewardshipContributionId == $this->objStewardshipContribution->Id)
+						$objListItem->Selected = true;
+					$this->lstCreditCardPayment->AddItem($objListItem);
+				}
+			}
+			if ($this->lblCreditCardPayment) $this->lblCreditCardPayment->Text = ($this->objStewardshipContribution->CreditCardPayment) ? $this->objStewardshipContribution->CreditCardPayment->__toString() : null;
+
 		}
 
 
@@ -1050,6 +1117,7 @@
 				if ($this->chkUnpostedFlag) $this->objStewardshipContribution->UnpostedFlag = $this->chkUnpostedFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstCreditCardPayment) $this->objStewardshipContribution->CreditCardPayment = CreditCardPayment::Load($this->lstCreditCardPayment->SelectedValue);
 
 				// Save the StewardshipContribution object
 				$this->objStewardshipContribution->Save();
@@ -1192,6 +1260,12 @@
 				case 'UnpostedFlagLabel':
 					if (!$this->lblUnpostedFlag) return $this->lblUnpostedFlag_Create();
 					return $this->lblUnpostedFlag;
+				case 'CreditCardPaymentControl':
+					if (!$this->lstCreditCardPayment) return $this->lstCreditCardPayment_Create();
+					return $this->lstCreditCardPayment;
+				case 'CreditCardPaymentLabel':
+					if (!$this->lblCreditCardPayment) return $this->lblCreditCardPayment_Create();
+					return $this->lblCreditCardPayment;
 				default:
 					try {
 						return parent::__get($strName);
@@ -1248,6 +1322,8 @@
 						return ($this->lstCreatedByLogin = QType::Cast($mixValue, 'QControl'));
 					case 'UnpostedFlagControl':
 						return ($this->chkUnpostedFlag = QType::Cast($mixValue, 'QControl'));
+					case 'CreditCardPaymentControl':
+						return ($this->lstCreditCardPayment = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

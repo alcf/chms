@@ -26,8 +26,6 @@
 	 * property-read QLabel $FormProductTypeIdLabel
 	 * property QListBox $FormPaymentTypeIdControl
 	 * property-read QLabel $FormPaymentTypeIdLabel
-	 * property QListBox $StewardshipFundIdControl
-	 * property-read QLabel $StewardshipFundIdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $DescriptionControl
@@ -108,12 +106,6 @@
 		protected $lstFormPaymentType;
 
         /**
-         * @var QListBox lstStewardshipFund;
-         * @access protected
-         */
-		protected $lstStewardshipFund;
-
-        /**
          * @var QTextBox txtName;
          * @access protected
          */
@@ -192,12 +184,6 @@
          * @access protected
          */
 		protected $lblFormPaymentTypeId;
-
-        /**
-         * @var QLabel lblStewardshipFundId
-         * @access protected
-         */
-		protected $lblStewardshipFundId;
 
         /**
          * @var QLabel lblName
@@ -490,46 +476,6 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstStewardshipFund
-		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
-		 */
-		public function lstStewardshipFund_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstStewardshipFund = new QListBox($this->objParentObject, $strControlId);
-			$this->lstStewardshipFund->Name = QApplication::Translate('Stewardship Fund');
-			$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objStewardshipFundCursor = StewardshipFund::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objStewardshipFund = StewardshipFund::InstantiateCursor($objStewardshipFundCursor)) {
-				$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-				if (($this->objFormProduct->StewardshipFund) && ($this->objFormProduct->StewardshipFund->Id == $objStewardshipFund->Id))
-					$objListItem->Selected = true;
-				$this->lstStewardshipFund->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstStewardshipFund;
-		}
-
-		/**
-		 * Create and setup QLabel lblStewardshipFundId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblStewardshipFundId_Create($strControlId = null) {
-			$this->lblStewardshipFundId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblStewardshipFundId->Name = QApplication::Translate('Stewardship Fund');
-			$this->lblStewardshipFundId->Text = ($this->objFormProduct->StewardshipFund) ? $this->objFormProduct->StewardshipFund->__toString() : null;
-			return $this->lblStewardshipFundId;
-		}
-
-		/**
 		 * Create and setup QTextBox txtName
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -801,19 +747,6 @@
 			if ($this->lstFormPaymentType) $this->lstFormPaymentType->SelectedValue = $this->objFormProduct->FormPaymentTypeId;
 			if ($this->lblFormPaymentTypeId) $this->lblFormPaymentTypeId->Text = ($this->objFormProduct->FormPaymentTypeId) ? FormPaymentType::$NameArray[$this->objFormProduct->FormPaymentTypeId] : null;
 
-			if ($this->lstStewardshipFund) {
-					$this->lstStewardshipFund->RemoveAllItems();
-				$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-				$objStewardshipFundArray = StewardshipFund::LoadAll();
-				if ($objStewardshipFundArray) foreach ($objStewardshipFundArray as $objStewardshipFund) {
-					$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-					if (($this->objFormProduct->StewardshipFund) && ($this->objFormProduct->StewardshipFund->Id == $objStewardshipFund->Id))
-						$objListItem->Selected = true;
-					$this->lstStewardshipFund->AddItem($objListItem);
-				}
-			}
-			if ($this->lblStewardshipFundId) $this->lblStewardshipFundId->Text = ($this->objFormProduct->StewardshipFund) ? $this->objFormProduct->StewardshipFund->__toString() : null;
-
 			if ($this->txtName) $this->txtName->Text = $this->objFormProduct->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objFormProduct->Name;
 
@@ -868,7 +801,6 @@
 				if ($this->txtOrderNumber) $this->objFormProduct->OrderNumber = $this->txtOrderNumber->Text;
 				if ($this->lstFormProductType) $this->objFormProduct->FormProductTypeId = $this->lstFormProductType->SelectedValue;
 				if ($this->lstFormPaymentType) $this->objFormProduct->FormPaymentTypeId = $this->lstFormPaymentType->SelectedValue;
-				if ($this->lstStewardshipFund) $this->objFormProduct->StewardshipFundId = $this->lstStewardshipFund->SelectedValue;
 				if ($this->txtName) $this->objFormProduct->Name = $this->txtName->Text;
 				if ($this->txtDescription) $this->objFormProduct->Description = $this->txtDescription->Text;
 				if ($this->calDateStart) $this->objFormProduct->DateStart = $this->calDateStart->DateTime;
@@ -950,12 +882,6 @@
 				case 'FormPaymentTypeIdLabel':
 					if (!$this->lblFormPaymentTypeId) return $this->lblFormPaymentTypeId_Create();
 					return $this->lblFormPaymentTypeId;
-				case 'StewardshipFundIdControl':
-					if (!$this->lstStewardshipFund) return $this->lstStewardshipFund_Create();
-					return $this->lstStewardshipFund;
-				case 'StewardshipFundIdLabel':
-					if (!$this->lblStewardshipFundId) return $this->lblStewardshipFundId_Create();
-					return $this->lblStewardshipFundId;
 				case 'NameControl':
 					if (!$this->txtName) return $this->txtName_Create();
 					return $this->txtName;
@@ -1042,8 +968,6 @@
 						return ($this->lstFormProductType = QType::Cast($mixValue, 'QControl'));
 					case 'FormPaymentTypeIdControl':
 						return ($this->lstFormPaymentType = QType::Cast($mixValue, 'QControl'));
-					case 'StewardshipFundIdControl':
-						return ($this->lstStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'DescriptionControl':

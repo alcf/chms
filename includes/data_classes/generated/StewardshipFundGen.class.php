@@ -24,10 +24,10 @@
 	 * @property boolean $ActiveFlag the value for blnActiveFlag 
 	 * @property boolean $ExternalFlag the value for blnExternalFlag 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId 
-	 * @property FormProduct $_FormProduct the value for the private _objFormProduct (Read-Only) if set due to an expansion on the form_product.stewardship_fund_id reverse relationship
-	 * @property FormProduct[] $_FormProductArray the value for the private _objFormProductArray (Read-Only) if set due to an ExpandAsArray on the form_product.stewardship_fund_id reverse relationship
 	 * @property OnlineDonationLineItem $_OnlineDonationLineItem the value for the private _objOnlineDonationLineItem (Read-Only) if set due to an expansion on the online_donation_line_item.stewardship_fund_id reverse relationship
 	 * @property OnlineDonationLineItem[] $_OnlineDonationLineItemArray the value for the private _objOnlineDonationLineItemArray (Read-Only) if set due to an ExpandAsArray on the online_donation_line_item.stewardship_fund_id reverse relationship
+	 * @property SignupForm $_SignupForm the value for the private _objSignupForm (Read-Only) if set due to an expansion on the signup_form.stewardship_fund_id reverse relationship
+	 * @property SignupForm[] $_SignupFormArray the value for the private _objSignupFormArray (Read-Only) if set due to an ExpandAsArray on the signup_form.stewardship_fund_id reverse relationship
 	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
 	 * @property StewardshipContributionAmount[] $_StewardshipContributionAmountArray the value for the private _objStewardshipContributionAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
 	 * @property StewardshipPledge $_StewardshipPledge the value for the private _objStewardshipPledge (Read-Only) if set due to an expansion on the stewardship_pledge.stewardship_fund_id reverse relationship
@@ -113,22 +113,6 @@
 
 
 		/**
-		 * Private member variable that stores a reference to a single FormProduct object
-		 * (of type FormProduct), if this StewardshipFund object was restored with
-		 * an expansion on the form_product association table.
-		 * @var FormProduct _objFormProduct;
-		 */
-		private $_objFormProduct;
-
-		/**
-		 * Private member variable that stores a reference to an array of FormProduct objects
-		 * (of type FormProduct[]), if this StewardshipFund object was restored with
-		 * an ExpandAsArray on the form_product association table.
-		 * @var FormProduct[] _objFormProductArray;
-		 */
-		private $_objFormProductArray = array();
-
-		/**
 		 * Private member variable that stores a reference to a single OnlineDonationLineItem object
 		 * (of type OnlineDonationLineItem), if this StewardshipFund object was restored with
 		 * an expansion on the online_donation_line_item association table.
@@ -143,6 +127,22 @@
 		 * @var OnlineDonationLineItem[] _objOnlineDonationLineItemArray;
 		 */
 		private $_objOnlineDonationLineItemArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupForm object
+		 * (of type SignupForm), if this StewardshipFund object was restored with
+		 * an expansion on the signup_form association table.
+		 * @var SignupForm _objSignupForm;
+		 */
+		private $_objSignupForm;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupForm objects
+		 * (of type SignupForm[]), if this StewardshipFund object was restored with
+		 * an ExpandAsArray on the signup_form association table.
+		 * @var SignupForm[] _objSignupFormArray;
+		 */
+		private $_objSignupFormArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipContributionAmount object
@@ -596,20 +596,6 @@
 					$strAliasPrefix = 'stewardship_fund__';
 
 
-				$strAlias = $strAliasPrefix . 'formproduct__id';
-				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objFormProductArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objFormProductArray[$intPreviousChildItemCount - 1];
-						$objChildItem = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
-						if ($objChildItem)
-							$objPreviousItem->_objFormProductArray[] = $objChildItem;
-					} else
-						$objPreviousItem->_objFormProductArray[] = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-					$blnExpandedViaArray = true;
-				}
-
 				$strAlias = $strAliasPrefix . 'onlinedonationlineitem__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -621,6 +607,20 @@
 							$objPreviousItem->_objOnlineDonationLineItemArray[] = $objChildItem;
 					} else
 						$objPreviousItem->_objOnlineDonationLineItemArray[] = OnlineDonationLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonationlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'signupform__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupFormArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupFormArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupFormArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupFormArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -729,16 +729,6 @@
 
 
 
-			// Check for FormProduct Virtual Binding
-			$strAlias = $strAliasPrefix . 'formproduct__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objFormProductArray[] = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objFormProduct = FormProduct::InstantiateDbRow($objDbRow, $strAliasPrefix . 'formproduct__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
-
 			// Check for OnlineDonationLineItem Virtual Binding
 			$strAlias = $strAliasPrefix . 'onlinedonationlineitem__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -747,6 +737,16 @@
 					$objToReturn->_objOnlineDonationLineItemArray[] = OnlineDonationLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonationlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objOnlineDonationLineItem = OnlineDonationLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonationlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupForm Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupform__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupFormArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupForm = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipContributionAmount Virtual Binding
@@ -1274,18 +1274,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_FormProduct':
-					// Gets the value for the private _objFormProduct (Read-Only)
-					// if set due to an expansion on the form_product.stewardship_fund_id reverse relationship
-					// @return FormProduct
-					return $this->_objFormProduct;
-
-				case '_FormProductArray':
-					// Gets the value for the private _objFormProductArray (Read-Only)
-					// if set due to an ExpandAsArray on the form_product.stewardship_fund_id reverse relationship
-					// @return FormProduct[]
-					return (array) $this->_objFormProductArray;
-
 				case '_OnlineDonationLineItem':
 					// Gets the value for the private _objOnlineDonationLineItem (Read-Only)
 					// if set due to an expansion on the online_donation_line_item.stewardship_fund_id reverse relationship
@@ -1297,6 +1285,18 @@
 					// if set due to an ExpandAsArray on the online_donation_line_item.stewardship_fund_id reverse relationship
 					// @return OnlineDonationLineItem[]
 					return (array) $this->_objOnlineDonationLineItemArray;
+
+				case '_SignupForm':
+					// Gets the value for the private _objSignupForm (Read-Only)
+					// if set due to an expansion on the signup_form.stewardship_fund_id reverse relationship
+					// @return SignupForm
+					return $this->_objSignupForm;
+
+				case '_SignupFormArray':
+					// Gets the value for the private _objSignupFormArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_form.stewardship_fund_id reverse relationship
+					// @return SignupForm[]
+					return (array) $this->_objSignupFormArray;
 
 				case '_StewardshipContributionAmount':
 					// Gets the value for the private _objStewardshipContributionAmount (Read-Only)
@@ -1514,188 +1514,6 @@
 
 			
 		
-		// Related Objects' Methods for FormProduct
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FormProducts as an array of FormProduct objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FormProduct[]
-		*/ 
-		public function GetFormProductArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return FormProduct::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FormProducts
-		 * @return int
-		*/ 
-		public function CountFormProducts() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return FormProduct::CountByStewardshipFundId($this->intId);
-		}
-
-		/**
-		 * Associates a FormProduct
-		 * @param FormProduct $objFormProduct
-		 * @return void
-		*/ 
-		public function AssociateFormProduct(FormProduct $objFormProduct) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormProduct on this unsaved StewardshipFund.');
-			if ((is_null($objFormProduct->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFormProduct on this StewardshipFund with an unsaved FormProduct.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`form_product`
-				SET
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objFormProduct->Id) . '
-			');
-
-			// Journaling (if applicable)
-			if ($objDatabase->JournalingDatabase) {
-				$objFormProduct->StewardshipFundId = $this->intId;
-				$objFormProduct->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates a FormProduct
-		 * @param FormProduct $objFormProduct
-		 * @return void
-		*/ 
-		public function UnassociateFormProduct(FormProduct $objFormProduct) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved StewardshipFund.');
-			if ((is_null($objFormProduct->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this StewardshipFund with an unsaved FormProduct.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`form_product`
-				SET
-					`stewardship_fund_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objFormProduct->Id) . ' AND
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objFormProduct->StewardshipFundId = null;
-				$objFormProduct->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates all FormProducts
-		 * @return void
-		*/ 
-		public function UnassociateAllFormProducts() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved StewardshipFund.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (FormProduct::LoadArrayByStewardshipFundId($this->intId) as $objFormProduct) {
-					$objFormProduct->StewardshipFundId = null;
-					$objFormProduct->Journal('UPDATE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`form_product`
-				SET
-					`stewardship_fund_id` = null
-				WHERE
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FormProduct
-		 * @param FormProduct $objFormProduct
-		 * @return void
-		*/ 
-		public function DeleteAssociatedFormProduct(FormProduct $objFormProduct) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved StewardshipFund.');
-			if ((is_null($objFormProduct->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this StewardshipFund with an unsaved FormProduct.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`form_product`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objFormProduct->Id) . ' AND
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objFormProduct->Journal('DELETE');
-			}
-		}
-
-		/**
-		 * Deletes all associated FormProducts
-		 * @return void
-		*/ 
-		public function DeleteAllFormProducts() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFormProduct on this unsaved StewardshipFund.');
-
-			// Get the Database Object for this Class
-			$objDatabase = StewardshipFund::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (FormProduct::LoadArrayByStewardshipFundId($this->intId) as $objFormProduct) {
-					$objFormProduct->Journal('DELETE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`form_product`
-				WHERE
-					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for OnlineDonationLineItem
 		//-------------------------------------------------------------------
 
@@ -1871,6 +1689,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`online_donation_line_item`
+				WHERE
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for SignupForm
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupForms as an array of SignupForm objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupForm[]
+		*/ 
+		public function GetSignupFormArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupForm::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupForms
+		 * @return int
+		*/ 
+		public function CountSignupForms() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupForm::CountByStewardshipFundId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function AssociateSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupForm on this unsaved StewardshipFund.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupForm on this StewardshipFund with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->StewardshipFundId = $this->intId;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function UnassociateSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved StewardshipFund.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this StewardshipFund with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`stewardship_fund_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->StewardshipFundId = null;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupForms
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupForms() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByStewardshipFundId($this->intId) as $objSignupForm) {
+					$objSignupForm->StewardshipFundId = null;
+					$objSignupForm->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`stewardship_fund_id` = null
+				WHERE
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved StewardshipFund.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this StewardshipFund with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupForms
+		 * @return void
+		*/ 
+		public function DeleteAllSignupForms() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByStewardshipFundId($this->intId) as $objSignupForm) {
+					$objSignupForm->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
 				WHERE
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -2708,8 +2708,8 @@
 	 * @property-read QQNode $FundNumber
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNode $ExternalFlag
-	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostAmount $StewardshipPostAmount
@@ -2739,10 +2739,10 @@
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'ExternalFlag':
 					return new QQNode('external_flag', 'ExternalFlag', 'boolean', $this);
-				case 'FormProduct':
-					return new QQReverseReferenceNodeFormProduct($this, 'formproduct', 'reverse_reference', 'stewardship_fund_id');
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'stewardship_fund_id');
+				case 'SignupForm':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'stewardship_fund_id');
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_fund_id');
 				case 'StewardshipPledge':
@@ -2775,8 +2775,8 @@
 	 * @property-read QQNode $FundNumber
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNode $ExternalFlag
-	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostAmount $StewardshipPostAmount
@@ -2807,10 +2807,10 @@
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'ExternalFlag':
 					return new QQNode('external_flag', 'ExternalFlag', 'boolean', $this);
-				case 'FormProduct':
-					return new QQReverseReferenceNodeFormProduct($this, 'formproduct', 'reverse_reference', 'stewardship_fund_id');
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'stewardship_fund_id');
+				case 'SignupForm':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'stewardship_fund_id');
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_fund_id');
 				case 'StewardshipPledge':

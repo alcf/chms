@@ -46,6 +46,8 @@
 	 * property-read QLabel $SignupMaleLimitLabel
 	 * property QIntegerTextBox $SignupFemaleLimitControl
 	 * property-read QLabel $SignupFemaleLimitLabel
+	 * property QListBox $StewardshipFundIdControl
+	 * property-read QLabel $StewardshipFundIdLabel
 	 * property QDateTimePicker $DateCreatedControl
 	 * property-read QLabel $DateCreatedLabel
 	 * property QListBox $EventSignupFormControl
@@ -172,6 +174,12 @@
 		protected $txtSignupFemaleLimit;
 
         /**
+         * @var QListBox lstStewardshipFund;
+         * @access protected
+         */
+		protected $lstStewardshipFund;
+
+        /**
          * @var QDateTimePicker calDateCreated;
          * @access protected
          */
@@ -262,6 +270,12 @@
          * @access protected
          */
 		protected $lblSignupFemaleLimit;
+
+        /**
+         * @var QLabel lblStewardshipFundId
+         * @access protected
+         */
+		protected $lblStewardshipFundId;
 
         /**
          * @var QLabel lblDateCreated
@@ -764,6 +778,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstStewardshipFund
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstStewardshipFund_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstStewardshipFund = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStewardshipFund->Name = QApplication::Translate('Stewardship Fund');
+			$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objStewardshipFundCursor = StewardshipFund::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objStewardshipFund = StewardshipFund::InstantiateCursor($objStewardshipFundCursor)) {
+				$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
+				if (($this->objSignupForm->StewardshipFund) && ($this->objSignupForm->StewardshipFund->Id == $objStewardshipFund->Id))
+					$objListItem->Selected = true;
+				$this->lstStewardshipFund->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstStewardshipFund;
+		}
+
+		/**
+		 * Create and setup QLabel lblStewardshipFundId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblStewardshipFundId_Create($strControlId = null) {
+			$this->lblStewardshipFundId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStewardshipFundId->Name = QApplication::Translate('Stewardship Fund');
+			$this->lblStewardshipFundId->Text = ($this->objSignupForm->StewardshipFund) ? $this->objSignupForm->StewardshipFund->__toString() : null;
+			return $this->lblStewardshipFundId;
+		}
+
+		/**
 		 * Create and setup QDateTimePicker calDateCreated
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -904,6 +958,19 @@
 			if ($this->txtSignupFemaleLimit) $this->txtSignupFemaleLimit->Text = $this->objSignupForm->SignupFemaleLimit;
 			if ($this->lblSignupFemaleLimit) $this->lblSignupFemaleLimit->Text = $this->objSignupForm->SignupFemaleLimit;
 
+			if ($this->lstStewardshipFund) {
+					$this->lstStewardshipFund->RemoveAllItems();
+				$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
+				$objStewardshipFundArray = StewardshipFund::LoadAll();
+				if ($objStewardshipFundArray) foreach ($objStewardshipFundArray as $objStewardshipFund) {
+					$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
+					if (($this->objSignupForm->StewardshipFund) && ($this->objSignupForm->StewardshipFund->Id == $objStewardshipFund->Id))
+						$objListItem->Selected = true;
+					$this->lstStewardshipFund->AddItem($objListItem);
+				}
+			}
+			if ($this->lblStewardshipFundId) $this->lblStewardshipFundId->Text = ($this->objSignupForm->StewardshipFund) ? $this->objSignupForm->StewardshipFund->__toString() : null;
+
 			if ($this->calDateCreated) $this->calDateCreated->DateTime = $this->objSignupForm->DateCreated;
 			if ($this->lblDateCreated) $this->lblDateCreated->Text = sprintf($this->objSignupForm->DateCreated) ? $this->objSignupForm->__toString($this->strDateCreatedDateTimeFormat) : null;
 
@@ -962,6 +1029,7 @@
 				if ($this->txtSignupLimit) $this->objSignupForm->SignupLimit = $this->txtSignupLimit->Text;
 				if ($this->txtSignupMaleLimit) $this->objSignupForm->SignupMaleLimit = $this->txtSignupMaleLimit->Text;
 				if ($this->txtSignupFemaleLimit) $this->objSignupForm->SignupFemaleLimit = $this->txtSignupFemaleLimit->Text;
+				if ($this->lstStewardshipFund) $this->objSignupForm->StewardshipFundId = $this->lstStewardshipFund->SelectedValue;
 				if ($this->calDateCreated) $this->objSignupForm->DateCreated = $this->calDateCreated->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -1096,6 +1164,12 @@
 				case 'SignupFemaleLimitLabel':
 					if (!$this->lblSignupFemaleLimit) return $this->lblSignupFemaleLimit_Create();
 					return $this->lblSignupFemaleLimit;
+				case 'StewardshipFundIdControl':
+					if (!$this->lstStewardshipFund) return $this->lstStewardshipFund_Create();
+					return $this->lstStewardshipFund;
+				case 'StewardshipFundIdLabel':
+					if (!$this->lblStewardshipFundId) return $this->lblStewardshipFundId_Create();
+					return $this->lblStewardshipFundId;
 				case 'DateCreatedControl':
 					if (!$this->calDateCreated) return $this->calDateCreated_Create();
 					return $this->calDateCreated;
@@ -1160,6 +1234,8 @@
 						return ($this->txtSignupMaleLimit = QType::Cast($mixValue, 'QControl'));
 					case 'SignupFemaleLimitControl':
 						return ($this->txtSignupFemaleLimit = QType::Cast($mixValue, 'QControl'));
+					case 'StewardshipFundIdControl':
+						return ($this->lstStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'DateCreatedControl':
 						return ($this->calDateCreated = QType::Cast($mixValue, 'QControl'));
 					case 'EventSignupFormControl':

@@ -26,6 +26,8 @@
 	 * property-read QLabel $DateReconciledLabel
 	 * property QCheckBox $ReconciledFlagControl
 	 * property-read QLabel $ReconciledFlagLabel
+	 * property QListBox $StewardshipBatchIdControl
+	 * property-read QLabel $StewardshipBatchIdLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -87,6 +89,12 @@
          */
 		protected $chkReconciledFlag;
 
+        /**
+         * @var QListBox lstStewardshipBatch;
+         * @access protected
+         */
+		protected $lstStewardshipBatch;
+
 
 		// Controls that allow the viewing of PaypalBatch's individual data fields
         /**
@@ -112,6 +120,12 @@
          * @access protected
          */
 		protected $lblReconciledFlag;
+
+        /**
+         * @var QLabel lblStewardshipBatchId
+         * @access protected
+         */
+		protected $lblStewardshipBatchId;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -333,6 +347,46 @@
 			return $this->lblReconciledFlag;
 		}
 
+		/**
+		 * Create and setup QListBox lstStewardshipBatch
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstStewardshipBatch_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstStewardshipBatch = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStewardshipBatch->Name = QApplication::Translate('Stewardship Batch');
+			$this->lstStewardshipBatch->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objStewardshipBatchCursor = StewardshipBatch::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objStewardshipBatch = StewardshipBatch::InstantiateCursor($objStewardshipBatchCursor)) {
+				$objListItem = new QListItem($objStewardshipBatch->__toString(), $objStewardshipBatch->Id);
+				if (($this->objPaypalBatch->StewardshipBatch) && ($this->objPaypalBatch->StewardshipBatch->Id == $objStewardshipBatch->Id))
+					$objListItem->Selected = true;
+				$this->lstStewardshipBatch->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstStewardshipBatch;
+		}
+
+		/**
+		 * Create and setup QLabel lblStewardshipBatchId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblStewardshipBatchId_Create($strControlId = null) {
+			$this->lblStewardshipBatchId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStewardshipBatchId->Name = QApplication::Translate('Stewardship Batch');
+			$this->lblStewardshipBatchId->Text = ($this->objPaypalBatch->StewardshipBatch) ? $this->objPaypalBatch->StewardshipBatch->__toString() : null;
+			return $this->lblStewardshipBatchId;
+		}
+
 
 
 		/**
@@ -357,6 +411,19 @@
 
 			if ($this->chkReconciledFlag) $this->chkReconciledFlag->Checked = $this->objPaypalBatch->ReconciledFlag;
 			if ($this->lblReconciledFlag) $this->lblReconciledFlag->Text = ($this->objPaypalBatch->ReconciledFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
+			if ($this->lstStewardshipBatch) {
+					$this->lstStewardshipBatch->RemoveAllItems();
+				$this->lstStewardshipBatch->AddItem(QApplication::Translate('- Select One -'), null);
+				$objStewardshipBatchArray = StewardshipBatch::LoadAll();
+				if ($objStewardshipBatchArray) foreach ($objStewardshipBatchArray as $objStewardshipBatch) {
+					$objListItem = new QListItem($objStewardshipBatch->__toString(), $objStewardshipBatch->Id);
+					if (($this->objPaypalBatch->StewardshipBatch) && ($this->objPaypalBatch->StewardshipBatch->Id == $objStewardshipBatch->Id))
+						$objListItem->Selected = true;
+					$this->lstStewardshipBatch->AddItem($objListItem);
+				}
+			}
+			if ($this->lblStewardshipBatchId) $this->lblStewardshipBatchId->Text = ($this->objPaypalBatch->StewardshipBatch) ? $this->objPaypalBatch->StewardshipBatch->__toString() : null;
 
 		}
 
@@ -385,6 +452,7 @@
 				if ($this->calDateReceived) $this->objPaypalBatch->DateReceived = $this->calDateReceived->DateTime;
 				if ($this->calDateReconciled) $this->objPaypalBatch->DateReconciled = $this->calDateReconciled->DateTime;
 				if ($this->chkReconciledFlag) $this->objPaypalBatch->ReconciledFlag = $this->chkReconciledFlag->Checked;
+				if ($this->lstStewardshipBatch) $this->objPaypalBatch->StewardshipBatchId = $this->lstStewardshipBatch->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -457,6 +525,12 @@
 				case 'ReconciledFlagLabel':
 					if (!$this->lblReconciledFlag) return $this->lblReconciledFlag_Create();
 					return $this->lblReconciledFlag;
+				case 'StewardshipBatchIdControl':
+					if (!$this->lstStewardshipBatch) return $this->lstStewardshipBatch_Create();
+					return $this->lstStewardshipBatch;
+				case 'StewardshipBatchIdLabel':
+					if (!$this->lblStewardshipBatchId) return $this->lblStewardshipBatchId_Create();
+					return $this->lblStewardshipBatchId;
 				default:
 					try {
 						return parent::__get($strName);
@@ -489,6 +563,8 @@
 						return ($this->calDateReconciled = QType::Cast($mixValue, 'QControl'));
 					case 'ReconciledFlagControl':
 						return ($this->chkReconciledFlag = QType::Cast($mixValue, 'QControl'));
+					case 'StewardshipBatchIdControl':
+						return ($this->lstStewardshipBatch = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

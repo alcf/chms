@@ -20,6 +20,8 @@
 	 * @property QDateTime $DateReceived the value for dttDateReceived 
 	 * @property QDateTime $DateReconciled the value for dttDateReconciled 
 	 * @property boolean $ReconciledFlag the value for blnReconciledFlag (Not Null)
+	 * @property integer $StewardshipBatchId the value for intStewardshipBatchId (Unique)
+	 * @property StewardshipBatch $StewardshipBatch the value for the StewardshipBatch object referenced by intStewardshipBatchId (Unique)
 	 * @property CreditCardPayment $_CreditCardPayment the value for the private _objCreditCardPayment (Read-Only) if set due to an expansion on the credit_card_payment.paypal_batch_id reverse relationship
 	 * @property CreditCardPayment[] $_CreditCardPaymentArray the value for the private _objCreditCardPaymentArray (Read-Only) if set due to an ExpandAsArray on the credit_card_payment.paypal_batch_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -72,6 +74,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column paypal_batch.stewardship_batch_id
+		 * @var integer intStewardshipBatchId
+		 */
+		protected $intStewardshipBatchId;
+		const StewardshipBatchIdDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single CreditCardPayment object
 		 * (of type CreditCardPayment), if this PaypalBatch object was restored with
 		 * an expansion on the credit_card_payment association table.
@@ -108,6 +118,16 @@
 		///////////////////////////////
 		// PROTECTED MEMBER OBJECTS
 		///////////////////////////////
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column paypal_batch.stewardship_batch_id.
+		 *
+		 * NOTE: Always use the StewardshipBatch property getter to correctly retrieve this StewardshipBatch object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var StewardshipBatch objStewardshipBatch
+		 */
+		protected $objStewardshipBatch;
 
 
 
@@ -424,6 +444,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'date_received', $strAliasPrefix . 'date_received');
 			$objBuilder->AddSelectItem($strTableName, 'date_reconciled', $strAliasPrefix . 'date_reconciled');
 			$objBuilder->AddSelectItem($strTableName, 'reconciled_flag', $strAliasPrefix . 'reconciled_flag');
+			$objBuilder->AddSelectItem($strTableName, 'stewardship_batch_id', $strAliasPrefix . 'stewardship_batch_id');
 		}
 
 
@@ -497,6 +518,8 @@
 			$objToReturn->dttDateReconciled = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'reconciled_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'reconciled_flag'] : $strAliasPrefix . 'reconciled_flag';
 			$objToReturn->blnReconciledFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_batch_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_batch_id'] : $strAliasPrefix . 'stewardship_batch_id';
+			$objToReturn->intStewardshipBatchId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -509,6 +532,12 @@
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'paypal_batch__';
+
+			// Check for StewardshipBatch Early Binding
+			$strAlias = $strAliasPrefix . 'stewardship_batch_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objStewardshipBatch = StewardshipBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_batch_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -617,6 +646,18 @@
 				QQ::Equal(QQN::PaypalBatch()->Number, $strNumber)
 			);
 		}
+			
+		/**
+		 * Load a single PaypalBatch object,
+		 * by StewardshipBatchId Index(es)
+		 * @param integer $intStewardshipBatchId
+		 * @return PaypalBatch
+		*/
+		public static function LoadByStewardshipBatchId($intStewardshipBatchId) {
+			return PaypalBatch::QuerySingle(
+				QQ::Equal(QQN::PaypalBatch()->StewardshipBatchId, $intStewardshipBatchId)
+			);
+		}
 
 
 
@@ -651,12 +692,14 @@
 							`number`,
 							`date_received`,
 							`date_reconciled`,
-							`reconciled_flag`
+							`reconciled_flag`,
+							`stewardship_batch_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strNumber) . ',
 							' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
 							' . $objDatabase->SqlVariable($this->dttDateReconciled) . ',
-							' . $objDatabase->SqlVariable($this->blnReconciledFlag) . '
+							' . $objDatabase->SqlVariable($this->blnReconciledFlag) . ',
+							' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . '
 						)
 					');
 
@@ -679,7 +722,8 @@
 							`number` = ' . $objDatabase->SqlVariable($this->strNumber) . ',
 							`date_received` = ' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
 							`date_reconciled` = ' . $objDatabase->SqlVariable($this->dttDateReconciled) . ',
-							`reconciled_flag` = ' . $objDatabase->SqlVariable($this->blnReconciledFlag) . '
+							`reconciled_flag` = ' . $objDatabase->SqlVariable($this->blnReconciledFlag) . ',
+							`stewardship_batch_id` = ' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -768,6 +812,7 @@
 			$this->dttDateReceived = $objReloaded->dttDateReceived;
 			$this->dttDateReconciled = $objReloaded->dttDateReconciled;
 			$this->blnReconciledFlag = $objReloaded->blnReconciledFlag;
+			$this->StewardshipBatchId = $objReloaded->StewardshipBatchId;
 		}
 
 		/**
@@ -785,6 +830,7 @@
 					`date_received`,
 					`date_reconciled`,
 					`reconciled_flag`,
+					`stewardship_batch_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -794,6 +840,7 @@
 					' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
 					' . $objDatabase->SqlVariable($this->dttDateReconciled) . ',
 					' . $objDatabase->SqlVariable($this->blnReconciledFlag) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipBatchId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -869,10 +916,27 @@
 					// @return boolean
 					return $this->blnReconciledFlag;
 
+				case 'StewardshipBatchId':
+					// Gets the value for intStewardshipBatchId (Unique)
+					// @return integer
+					return $this->intStewardshipBatchId;
+
 
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'StewardshipBatch':
+					// Gets the value for the StewardshipBatch object referenced by intStewardshipBatchId (Unique)
+					// @return StewardshipBatch
+					try {
+						if ((!$this->objStewardshipBatch) && (!is_null($this->intStewardshipBatchId)))
+							$this->objStewardshipBatch = StewardshipBatch::Load($this->intStewardshipBatchId);
+						return $this->objStewardshipBatch;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				////////////////////////////
 				// Virtual Object References (Many to Many and Reverse References)
@@ -962,10 +1026,52 @@
 						throw $objExc;
 					}
 
+				case 'StewardshipBatchId':
+					// Sets the value for intStewardshipBatchId (Unique)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objStewardshipBatch = null;
+						return ($this->intStewardshipBatchId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'StewardshipBatch':
+					// Sets the value for the StewardshipBatch object referenced by intStewardshipBatchId (Unique)
+					// @param StewardshipBatch $mixValue
+					// @return StewardshipBatch
+					if (is_null($mixValue)) {
+						$this->intStewardshipBatchId = null;
+						$this->objStewardshipBatch = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a StewardshipBatch object
+						try {
+							$mixValue = QType::Cast($mixValue, 'StewardshipBatch');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED StewardshipBatch object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved StewardshipBatch for this PaypalBatch');
+
+						// Update Local Member Variables
+						$this->objStewardshipBatch = $mixValue;
+						$this->intStewardshipBatchId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -1190,6 +1296,7 @@
 			$strToReturn .= '<element name="DateReceived" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateReconciled" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="ReconciledFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="StewardshipBatch" type="xsd1:StewardshipBatch"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1198,6 +1305,7 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('PaypalBatch', $strComplexTypeArray)) {
 				$strComplexTypeArray['PaypalBatch'] = PaypalBatch::GetSoapComplexTypeXml();
+				StewardshipBatch::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1222,6 +1330,9 @@
 				$objToReturn->dttDateReconciled = new QDateTime($objSoapObject->DateReconciled);
 			if (property_exists($objSoapObject, 'ReconciledFlag'))
 				$objToReturn->blnReconciledFlag = $objSoapObject->ReconciledFlag;
+			if ((property_exists($objSoapObject, 'StewardshipBatch')) &&
+				($objSoapObject->StewardshipBatch))
+				$objToReturn->StewardshipBatch = StewardshipBatch::GetObjectFromSoapObject($objSoapObject->StewardshipBatch);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1244,6 +1355,10 @@
 				$objObject->dttDateReceived = $objObject->dttDateReceived->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateReconciled)
 				$objObject->dttDateReconciled = $objObject->dttDateReconciled->__toString(QDateTime::FormatSoap);
+			if ($objObject->objStewardshipBatch)
+				$objObject->objStewardshipBatch = StewardshipBatch::GetSoapObjectFromObject($objObject->objStewardshipBatch, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intStewardshipBatchId = null;
 			return $objObject;
 		}
 
@@ -1264,6 +1379,8 @@
 	 * @property-read QQNode $DateReceived
 	 * @property-read QQNode $DateReconciled
 	 * @property-read QQNode $ReconciledFlag
+	 * @property-read QQNode $StewardshipBatchId
+	 * @property-read QQNodeStewardshipBatch $StewardshipBatch
 	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 */
 	class QQNodePaypalBatch extends QQNode {
@@ -1282,6 +1399,10 @@
 					return new QQNode('date_reconciled', 'DateReconciled', 'QDateTime', $this);
 				case 'ReconciledFlag':
 					return new QQNode('reconciled_flag', 'ReconciledFlag', 'boolean', $this);
+				case 'StewardshipBatchId':
+					return new QQNode('stewardship_batch_id', 'StewardshipBatchId', 'integer', $this);
+				case 'StewardshipBatch':
+					return new QQNodeStewardshipBatch('stewardship_batch_id', 'StewardshipBatch', 'integer', $this);
 				case 'CreditCardPayment':
 					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'paypal_batch_id');
 
@@ -1304,6 +1425,8 @@
 	 * @property-read QQNode $DateReceived
 	 * @property-read QQNode $DateReconciled
 	 * @property-read QQNode $ReconciledFlag
+	 * @property-read QQNode $StewardshipBatchId
+	 * @property-read QQNodeStewardshipBatch $StewardshipBatch
 	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1323,6 +1446,10 @@
 					return new QQNode('date_reconciled', 'DateReconciled', 'QDateTime', $this);
 				case 'ReconciledFlag':
 					return new QQNode('reconciled_flag', 'ReconciledFlag', 'boolean', $this);
+				case 'StewardshipBatchId':
+					return new QQNode('stewardship_batch_id', 'StewardshipBatchId', 'integer', $this);
+				case 'StewardshipBatch':
+					return new QQNodeStewardshipBatch('stewardship_batch_id', 'StewardshipBatch', 'integer', $this);
 				case 'CreditCardPayment':
 					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'paypal_batch_id');
 

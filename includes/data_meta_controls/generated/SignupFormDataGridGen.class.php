@@ -309,6 +309,8 @@
 				case 'SignupLimit': return QQN::SignupForm()->SignupLimit;
 				case 'SignupMaleLimit': return QQN::SignupForm()->SignupMaleLimit;
 				case 'SignupFemaleLimit': return QQN::SignupForm()->SignupFemaleLimit;
+				case 'StewardshipFundId': return QQN::SignupForm()->StewardshipFundId;
+				case 'StewardshipFund': return QQN::SignupForm()->StewardshipFund;
 				case 'DateCreated': return QQN::SignupForm()->DateCreated;
 				case 'EventSignupForm': return QQN::SignupForm()->EventSignupForm;
 

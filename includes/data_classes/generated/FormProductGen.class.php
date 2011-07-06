@@ -20,7 +20,6 @@
 	 * @property integer $OrderNumber the value for intOrderNumber 
 	 * @property integer $FormProductTypeId the value for intFormProductTypeId (Not Null)
 	 * @property integer $FormPaymentTypeId the value for intFormPaymentTypeId (Not Null)
-	 * @property integer $StewardshipFundId the value for intStewardshipFundId 
 	 * @property string $Name the value for strName 
 	 * @property string $Description the value for strDescription 
 	 * @property QDateTime $DateStart the value for dttDateStart 
@@ -31,7 +30,6 @@
 	 * @property double $Deposit the value for fltDeposit 
 	 * @property boolean $ViewFlag the value for blnViewFlag 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
-	 * @property StewardshipFund $StewardshipFund the value for the StewardshipFund object referenced by intStewardshipFundId 
 	 * @property SignupProduct $_SignupProduct the value for the private _objSignupProduct (Read-Only) if set due to an expansion on the signup_product.form_product_id reverse relationship
 	 * @property SignupProduct[] $_SignupProductArray the value for the private _objSignupProductArray (Read-Only) if set due to an ExpandAsArray on the signup_product.form_product_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -80,14 +78,6 @@
 		 */
 		protected $intFormPaymentTypeId;
 		const FormPaymentTypeIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column form_product.stewardship_fund_id
-		 * @var integer intStewardshipFundId
-		 */
-		protected $intStewardshipFundId;
-		const StewardshipFundIdDefault = null;
 
 
 		/**
@@ -211,16 +201,6 @@
 		 * @var SignupForm objSignupForm
 		 */
 		protected $objSignupForm;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column form_product.stewardship_fund_id.
-		 *
-		 * NOTE: Always use the StewardshipFund property getter to correctly retrieve this StewardshipFund object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var StewardshipFund objStewardshipFund
-		 */
-		protected $objStewardshipFund;
 
 
 
@@ -537,7 +517,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'order_number', $strAliasPrefix . 'order_number');
 			$objBuilder->AddSelectItem($strTableName, 'form_product_type_id', $strAliasPrefix . 'form_product_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'form_payment_type_id', $strAliasPrefix . 'form_payment_type_id');
-			$objBuilder->AddSelectItem($strTableName, 'stewardship_fund_id', $strAliasPrefix . 'stewardship_fund_id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'date_start', $strAliasPrefix . 'date_start');
@@ -620,8 +599,6 @@
 			$objToReturn->intFormProductTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'form_payment_type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'form_payment_type_id'] : $strAliasPrefix . 'form_payment_type_id';
 			$objToReturn->intFormPaymentTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_fund_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_fund_id'] : $strAliasPrefix . 'stewardship_fund_id';
-			$objToReturn->intStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'name'] : $strAliasPrefix . 'name';
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
@@ -658,12 +635,6 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objSignupForm = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signup_form_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-
-			// Check for StewardshipFund Early Binding
-			$strAlias = $strAliasPrefix . 'stewardship_fund_id__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_fund_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -896,38 +867,6 @@
 				QQ::Equal(QQN::FormProduct()->FormPaymentTypeId, $intFormPaymentTypeId)
 			);
 		}
-			
-		/**
-		 * Load an array of FormProduct objects,
-		 * by StewardshipFundId Index(es)
-		 * @param integer $intStewardshipFundId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FormProduct[]
-		*/
-		public static function LoadArrayByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
-			// Call FormProduct::QueryArray to perform the LoadArrayByStewardshipFundId query
-			try {
-				return FormProduct::QueryArray(
-					QQ::Equal(QQN::FormProduct()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count FormProducts
-		 * by StewardshipFundId Index(es)
-		 * @param integer $intStewardshipFundId
-		 * @return int
-		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
-			// Call FormProduct::QueryCount to perform the CountByStewardshipFundId query
-			return FormProduct::QueryCount(
-				QQ::Equal(QQN::FormProduct()->StewardshipFundId, $intStewardshipFundId)
-			);
-		}
 
 
 
@@ -963,7 +902,6 @@
 							`order_number`,
 							`form_product_type_id`,
 							`form_payment_type_id`,
-							`stewardship_fund_id`,
 							`name`,
 							`description`,
 							`date_start`,
@@ -978,7 +916,6 @@
 							' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							' . $objDatabase->SqlVariable($this->intFormProductTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
-							' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->dttDateStart) . ',
@@ -1011,7 +948,6 @@
 							`order_number` = ' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							`form_product_type_id` = ' . $objDatabase->SqlVariable($this->intFormProductTypeId) . ',
 							`form_payment_type_id` = ' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
-							`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`date_start` = ' . $objDatabase->SqlVariable($this->dttDateStart) . ',
@@ -1109,7 +1045,6 @@
 			$this->intOrderNumber = $objReloaded->intOrderNumber;
 			$this->FormProductTypeId = $objReloaded->FormProductTypeId;
 			$this->FormPaymentTypeId = $objReloaded->FormPaymentTypeId;
-			$this->StewardshipFundId = $objReloaded->StewardshipFundId;
 			$this->strName = $objReloaded->strName;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->dttDateStart = $objReloaded->dttDateStart;
@@ -1136,7 +1071,6 @@
 					`order_number`,
 					`form_product_type_id`,
 					`form_payment_type_id`,
-					`stewardship_fund_id`,
 					`name`,
 					`description`,
 					`date_start`,
@@ -1155,7 +1089,6 @@
 					' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 					' . $objDatabase->SqlVariable($this->intFormProductTypeId) . ',
 					' . $objDatabase->SqlVariable($this->intFormPaymentTypeId) . ',
-					' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
@@ -1240,11 +1173,6 @@
 					// @return integer
 					return $this->intFormPaymentTypeId;
 
-				case 'StewardshipFundId':
-					// Gets the value for intStewardshipFundId 
-					// @return integer
-					return $this->intStewardshipFundId;
-
 				case 'Name':
 					// Gets the value for strName 
 					// @return string
@@ -1301,18 +1229,6 @@
 						if ((!$this->objSignupForm) && (!is_null($this->intSignupFormId)))
 							$this->objSignupForm = SignupForm::Load($this->intSignupFormId);
 						return $this->objSignupForm;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'StewardshipFund':
-					// Gets the value for the StewardshipFund object referenced by intStewardshipFundId 
-					// @return StewardshipFund
-					try {
-						if ((!$this->objStewardshipFund) && (!is_null($this->intStewardshipFundId)))
-							$this->objStewardshipFund = StewardshipFund::Load($this->intStewardshipFundId);
-						return $this->objStewardshipFund;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1403,18 +1319,6 @@
 					// @return integer
 					try {
 						return ($this->intFormPaymentTypeId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'StewardshipFundId':
-					// Sets the value for intStewardshipFundId 
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objStewardshipFund = null;
-						return ($this->intStewardshipFundId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1547,36 +1451,6 @@
 						// Update Local Member Variables
 						$this->objSignupForm = $mixValue;
 						$this->intSignupFormId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'StewardshipFund':
-					// Sets the value for the StewardshipFund object referenced by intStewardshipFundId 
-					// @param StewardshipFund $mixValue
-					// @return StewardshipFund
-					if (is_null($mixValue)) {
-						$this->intStewardshipFundId = null;
-						$this->objStewardshipFund = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a StewardshipFund object
-						try {
-							$mixValue = QType::Cast($mixValue, 'StewardshipFund');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED StewardshipFund object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved StewardshipFund for this FormProduct');
-
-						// Update Local Member Variables
-						$this->objStewardshipFund = $mixValue;
-						$this->intStewardshipFundId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1807,7 +1681,6 @@
 			$strToReturn .= '<element name="OrderNumber" type="xsd:int"/>';
 			$strToReturn .= '<element name="FormProductTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="FormPaymentTypeId" type="xsd:int"/>';
-			$strToReturn .= '<element name="StewardshipFund" type="xsd1:StewardshipFund"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateStart" type="xsd:dateTime"/>';
@@ -1826,7 +1699,6 @@
 			if (!array_key_exists('FormProduct', $strComplexTypeArray)) {
 				$strComplexTypeArray['FormProduct'] = FormProduct::GetSoapComplexTypeXml();
 				SignupForm::AlterSoapComplexTypeArray($strComplexTypeArray);
-				StewardshipFund::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1852,9 +1724,6 @@
 				$objToReturn->intFormProductTypeId = $objSoapObject->FormProductTypeId;
 			if (property_exists($objSoapObject, 'FormPaymentTypeId'))
 				$objToReturn->intFormPaymentTypeId = $objSoapObject->FormPaymentTypeId;
-			if ((property_exists($objSoapObject, 'StewardshipFund')) &&
-				($objSoapObject->StewardshipFund))
-				$objToReturn->StewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->StewardshipFund);
 			if (property_exists($objSoapObject, 'Name'))
 				$objToReturn->strName = $objSoapObject->Name;
 			if (property_exists($objSoapObject, 'Description'))
@@ -1895,10 +1764,6 @@
 				$objObject->objSignupForm = SignupForm::GetSoapObjectFromObject($objObject->objSignupForm, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intSignupFormId = null;
-			if ($objObject->objStewardshipFund)
-				$objObject->objStewardshipFund = StewardshipFund::GetSoapObjectFromObject($objObject->objStewardshipFund, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intStewardshipFundId = null;
 			if ($objObject->dttDateStart)
 				$objObject->dttDateStart = $objObject->dttDateStart->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateEnd)
@@ -1924,8 +1789,6 @@
 	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $FormProductTypeId
 	 * @property-read QQNode $FormPaymentTypeId
-	 * @property-read QQNode $StewardshipFundId
-	 * @property-read QQNodeStewardshipFund $StewardshipFund
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $DateStart
@@ -1955,10 +1818,6 @@
 					return new QQNode('form_product_type_id', 'FormProductTypeId', 'integer', $this);
 				case 'FormPaymentTypeId':
 					return new QQNode('form_payment_type_id', 'FormPaymentTypeId', 'integer', $this);
-				case 'StewardshipFundId':
-					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
-				case 'StewardshipFund':
-					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'Description':
@@ -2000,8 +1859,6 @@
 	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $FormProductTypeId
 	 * @property-read QQNode $FormPaymentTypeId
-	 * @property-read QQNode $StewardshipFundId
-	 * @property-read QQNodeStewardshipFund $StewardshipFund
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $DateStart
@@ -2032,10 +1889,6 @@
 					return new QQNode('form_product_type_id', 'FormProductTypeId', 'integer', $this);
 				case 'FormPaymentTypeId':
 					return new QQNode('form_payment_type_id', 'FormPaymentTypeId', 'integer', $this);
-				case 'StewardshipFundId':
-					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
-				case 'StewardshipFund':
-					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'Description':

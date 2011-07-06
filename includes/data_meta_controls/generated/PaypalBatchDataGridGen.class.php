@@ -298,6 +298,8 @@
 				case 'DateReceived': return QQN::PaypalBatch()->DateReceived;
 				case 'DateReconciled': return QQN::PaypalBatch()->DateReconciled;
 				case 'ReconciledFlag': return QQN::PaypalBatch()->ReconciledFlag;
+				case 'StewardshipBatchId': return QQN::PaypalBatch()->StewardshipBatchId;
+				case 'StewardshipBatch': return QQN::PaypalBatch()->StewardshipBatch;
 				default: throw new QCallerException('Simple Property not found in PaypalBatchDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

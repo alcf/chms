@@ -44,6 +44,8 @@
 	 * property-read QLabel $PaypalBatchIdLabel
 	 * property QCheckBox $UnlinkedFlagControl
 	 * property-read QLabel $UnlinkedFlagLabel
+	 * property QListBox $StewardshipContributionIdControl
+	 * property-read QLabel $StewardshipContributionIdLabel
 	 * property QListBox $OnlineDonationControl
 	 * property-read QLabel $OnlineDonationLabel
 	 * property QListBox $SignupPaymentControl
@@ -163,6 +165,12 @@
          */
 		protected $chkUnlinkedFlag;
 
+        /**
+         * @var QListBox lstStewardshipContribution;
+         * @access protected
+         */
+		protected $lstStewardshipContribution;
+
 
 		// Controls that allow the viewing of CreditCardPayment's individual data fields
         /**
@@ -242,6 +250,12 @@
          * @access protected
          */
 		protected $lblUnlinkedFlag;
+
+        /**
+         * @var QLabel lblStewardshipContributionId
+         * @access protected
+         */
+		protected $lblStewardshipContributionId;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -739,6 +753,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstStewardshipContribution
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstStewardshipContribution_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstStewardshipContribution = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStewardshipContribution->Name = QApplication::Translate('Stewardship Contribution');
+			$this->lstStewardshipContribution->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objStewardshipContributionCursor = StewardshipContribution::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objStewardshipContribution = StewardshipContribution::InstantiateCursor($objStewardshipContributionCursor)) {
+				$objListItem = new QListItem($objStewardshipContribution->__toString(), $objStewardshipContribution->Id);
+				if (($this->objCreditCardPayment->StewardshipContribution) && ($this->objCreditCardPayment->StewardshipContribution->Id == $objStewardshipContribution->Id))
+					$objListItem->Selected = true;
+				$this->lstStewardshipContribution->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstStewardshipContribution;
+		}
+
+		/**
+		 * Create and setup QLabel lblStewardshipContributionId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblStewardshipContributionId_Create($strControlId = null) {
+			$this->lblStewardshipContributionId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStewardshipContributionId->Name = QApplication::Translate('Stewardship Contribution');
+			$this->lblStewardshipContributionId->Text = ($this->objCreditCardPayment->StewardshipContribution) ? $this->objCreditCardPayment->StewardshipContribution->__toString() : null;
+			return $this->lblStewardshipContributionId;
+		}
+
+		/**
 		 * Create and setup QListBox lstOnlineDonation
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -880,6 +934,19 @@
 			if ($this->chkUnlinkedFlag) $this->chkUnlinkedFlag->Checked = $this->objCreditCardPayment->UnlinkedFlag;
 			if ($this->lblUnlinkedFlag) $this->lblUnlinkedFlag->Text = ($this->objCreditCardPayment->UnlinkedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->lstStewardshipContribution) {
+					$this->lstStewardshipContribution->RemoveAllItems();
+				$this->lstStewardshipContribution->AddItem(QApplication::Translate('- Select One -'), null);
+				$objStewardshipContributionArray = StewardshipContribution::LoadAll();
+				if ($objStewardshipContributionArray) foreach ($objStewardshipContributionArray as $objStewardshipContribution) {
+					$objListItem = new QListItem($objStewardshipContribution->__toString(), $objStewardshipContribution->Id);
+					if (($this->objCreditCardPayment->StewardshipContribution) && ($this->objCreditCardPayment->StewardshipContribution->Id == $objStewardshipContribution->Id))
+						$objListItem->Selected = true;
+					$this->lstStewardshipContribution->AddItem($objListItem);
+				}
+			}
+			if ($this->lblStewardshipContributionId) $this->lblStewardshipContributionId->Text = ($this->objCreditCardPayment->StewardshipContribution) ? $this->objCreditCardPayment->StewardshipContribution->__toString() : null;
+
 			if ($this->lstOnlineDonation) {
 				$this->lstOnlineDonation->RemoveAllItems();
 				$this->lstOnlineDonation->AddItem(QApplication::Translate('- Select One -'), null);
@@ -942,6 +1009,7 @@
 				if ($this->txtAmountCleared) $this->objCreditCardPayment->AmountCleared = $this->txtAmountCleared->Text;
 				if ($this->lstPaypalBatch) $this->objCreditCardPayment->PaypalBatchId = $this->lstPaypalBatch->SelectedValue;
 				if ($this->chkUnlinkedFlag) $this->objCreditCardPayment->UnlinkedFlag = $this->chkUnlinkedFlag->Checked;
+				if ($this->lstStewardshipContribution) $this->objCreditCardPayment->StewardshipContributionId = $this->lstStewardshipContribution->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstOnlineDonation) $this->objCreditCardPayment->OnlineDonation = OnlineDonation::Load($this->lstOnlineDonation->SelectedValue);
@@ -1070,6 +1138,12 @@
 				case 'UnlinkedFlagLabel':
 					if (!$this->lblUnlinkedFlag) return $this->lblUnlinkedFlag_Create();
 					return $this->lblUnlinkedFlag;
+				case 'StewardshipContributionIdControl':
+					if (!$this->lstStewardshipContribution) return $this->lstStewardshipContribution_Create();
+					return $this->lstStewardshipContribution;
+				case 'StewardshipContributionIdLabel':
+					if (!$this->lblStewardshipContributionId) return $this->lblStewardshipContributionId_Create();
+					return $this->lblStewardshipContributionId;
 				case 'OnlineDonationControl':
 					if (!$this->lstOnlineDonation) return $this->lstOnlineDonation_Create();
 					return $this->lstOnlineDonation;
@@ -1132,6 +1206,8 @@
 						return ($this->lstPaypalBatch = QType::Cast($mixValue, 'QControl'));
 					case 'UnlinkedFlagControl':
 						return ($this->chkUnlinkedFlag = QType::Cast($mixValue, 'QControl'));
+					case 'StewardshipContributionIdControl':
+						return ($this->lstStewardshipContribution = QType::Cast($mixValue, 'QControl'));
 					case 'OnlineDonationControl':
 						return ($this->lstOnlineDonation = QType::Cast($mixValue, 'QControl'));
 					case 'SignupPaymentControl':

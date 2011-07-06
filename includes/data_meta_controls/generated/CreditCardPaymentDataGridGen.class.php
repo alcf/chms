@@ -308,6 +308,8 @@
 				case 'PaypalBatchId': return QQN::CreditCardPayment()->PaypalBatchId;
 				case 'PaypalBatch': return QQN::CreditCardPayment()->PaypalBatch;
 				case 'UnlinkedFlag': return QQN::CreditCardPayment()->UnlinkedFlag;
+				case 'StewardshipContributionId': return QQN::CreditCardPayment()->StewardshipContributionId;
+				case 'StewardshipContribution': return QQN::CreditCardPayment()->StewardshipContribution;
 				case 'OnlineDonation': return QQN::CreditCardPayment()->OnlineDonation;
 
 				case 'SignupPayment': return QQN::CreditCardPayment()->SignupPayment;

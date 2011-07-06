@@ -29,7 +29,9 @@
 	 * @property double $AmountCleared the value for fltAmountCleared 
 	 * @property integer $PaypalBatchId the value for intPaypalBatchId 
 	 * @property boolean $UnlinkedFlag the value for blnUnlinkedFlag 
+	 * @property integer $StewardshipContributionId the value for intStewardshipContributionId (Unique)
 	 * @property PaypalBatch $PaypalBatch the value for the PaypalBatch object referenced by intPaypalBatchId 
+	 * @property StewardshipContribution $StewardshipContribution the value for the StewardshipContribution object referenced by intStewardshipContributionId (Unique)
 	 * @property OnlineDonation $OnlineDonation the value for the OnlineDonation object that uniquely references this CreditCardPayment
 	 * @property SignupPayment $SignupPayment the value for the SignupPayment object that uniquely references this CreditCardPayment
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -157,6 +159,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column credit_card_payment.stewardship_contribution_id
+		 * @var integer intStewardshipContributionId
+		 */
+		protected $intStewardshipContributionId;
+		const StewardshipContributionIdDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -187,6 +197,16 @@
 		 * @var PaypalBatch objPaypalBatch
 		 */
 		protected $objPaypalBatch;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column credit_card_payment.stewardship_contribution_id.
+		 *
+		 * NOTE: Always use the StewardshipContribution property getter to correctly retrieve this StewardshipContribution object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var StewardshipContribution objStewardshipContribution
+		 */
+		protected $objStewardshipContribution;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -548,6 +568,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'amount_cleared', $strAliasPrefix . 'amount_cleared');
 			$objBuilder->AddSelectItem($strTableName, 'paypal_batch_id', $strAliasPrefix . 'paypal_batch_id');
 			$objBuilder->AddSelectItem($strTableName, 'unlinked_flag', $strAliasPrefix . 'unlinked_flag');
+			$objBuilder->AddSelectItem($strTableName, 'stewardship_contribution_id', $strAliasPrefix . 'stewardship_contribution_id');
 		}
 
 
@@ -607,6 +628,8 @@
 			$objToReturn->intPaypalBatchId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'unlinked_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'unlinked_flag'] : $strAliasPrefix . 'unlinked_flag';
 			$objToReturn->blnUnlinkedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_contribution_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_contribution_id'] : $strAliasPrefix . 'stewardship_contribution_id';
+			$objToReturn->intStewardshipContributionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -625,6 +648,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objPaypalBatch = PaypalBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'paypal_batch_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for StewardshipContribution Early Binding
+			$strAlias = $strAliasPrefix . 'stewardship_contribution_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objStewardshipContribution = StewardshipContribution::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_contribution_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 			// Check for OnlineDonation Unique ReverseReference Binding
@@ -745,6 +774,58 @@
 		public static function LoadByTransactionCode($strTransactionCode) {
 			return CreditCardPayment::QuerySingle(
 				QQ::Equal(QQN::CreditCardPayment()->TransactionCode, $strTransactionCode)
+			);
+		}
+			
+		/**
+		 * Load a single CreditCardPayment object,
+		 * by StewardshipContributionId Index(es)
+		 * @param integer $intStewardshipContributionId
+		 * @return CreditCardPayment
+		*/
+		public static function LoadByStewardshipContributionId($intStewardshipContributionId) {
+			return CreditCardPayment::QuerySingle(
+				QQ::Equal(QQN::CreditCardPayment()->StewardshipContributionId, $intStewardshipContributionId)
+			);
+		}
+			
+		/**
+		 * Load an array of CreditCardPayment objects,
+		 * by PaypalBatchId, UnlinkedFlag Index(es)
+		 * @param integer $intPaypalBatchId
+		 * @param boolean $blnUnlinkedFlag
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return CreditCardPayment[]
+		*/
+		public static function LoadArrayByPaypalBatchIdUnlinkedFlag($intPaypalBatchId, $blnUnlinkedFlag, $objOptionalClauses = null) {
+			// Call CreditCardPayment::QueryArray to perform the LoadArrayByPaypalBatchIdUnlinkedFlag query
+			try {
+				return CreditCardPayment::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId),
+					QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count CreditCardPayments
+		 * by PaypalBatchId, UnlinkedFlag Index(es)
+		 * @param integer $intPaypalBatchId
+		 * @param boolean $blnUnlinkedFlag
+		 * @return int
+		*/
+		public static function CountByPaypalBatchIdUnlinkedFlag($intPaypalBatchId, $blnUnlinkedFlag) {
+			// Call CreditCardPayment::QueryCount to perform the CountByPaypalBatchIdUnlinkedFlag query
+			return CreditCardPayment::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId),
+				QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag)
+				)
 			);
 		}
 			
@@ -918,7 +999,8 @@
 							`amount_fee`,
 							`amount_cleared`,
 							`paypal_batch_id`,
-							`unlinked_flag`
+							`unlinked_flag`,
+							`stewardship_contribution_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intCreditCardStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intCreditCardTypeId) . ',
@@ -932,7 +1014,8 @@
 							' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
 							' . $objDatabase->SqlVariable($this->intPaypalBatchId) . ',
-							' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . '
+							' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . ',
+							' . $objDatabase->SqlVariable($this->intStewardshipContributionId) . '
 						)
 					');
 
@@ -964,7 +1047,8 @@
 							`amount_fee` = ' . $objDatabase->SqlVariable($this->fltAmountFee) . ',
 							`amount_cleared` = ' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
 							`paypal_batch_id` = ' . $objDatabase->SqlVariable($this->intPaypalBatchId) . ',
-							`unlinked_flag` = ' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . '
+							`unlinked_flag` = ' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . ',
+							`stewardship_contribution_id` = ' . $objDatabase->SqlVariable($this->intStewardshipContributionId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1122,6 +1206,7 @@
 			$this->fltAmountCleared = $objReloaded->fltAmountCleared;
 			$this->PaypalBatchId = $objReloaded->PaypalBatchId;
 			$this->blnUnlinkedFlag = $objReloaded->blnUnlinkedFlag;
+			$this->StewardshipContributionId = $objReloaded->StewardshipContributionId;
 		}
 
 		/**
@@ -1148,6 +1233,7 @@
 					`amount_cleared`,
 					`paypal_batch_id`,
 					`unlinked_flag`,
+					`stewardship_contribution_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1166,6 +1252,7 @@
 					' . $objDatabase->SqlVariable($this->fltAmountCleared) . ',
 					' . $objDatabase->SqlVariable($this->intPaypalBatchId) . ',
 					' . $objDatabase->SqlVariable($this->blnUnlinkedFlag) . ',
+					' . $objDatabase->SqlVariable($this->intStewardshipContributionId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1286,6 +1373,11 @@
 					// @return boolean
 					return $this->blnUnlinkedFlag;
 
+				case 'StewardshipContributionId':
+					// Gets the value for intStewardshipContributionId (Unique)
+					// @return integer
+					return $this->intStewardshipContributionId;
+
 
 				///////////////////
 				// Member Objects
@@ -1297,6 +1389,18 @@
 						if ((!$this->objPaypalBatch) && (!is_null($this->intPaypalBatchId)))
 							$this->objPaypalBatch = PaypalBatch::Load($this->intPaypalBatchId);
 						return $this->objPaypalBatch;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'StewardshipContribution':
+					// Gets the value for the StewardshipContribution object referenced by intStewardshipContributionId (Unique)
+					// @return StewardshipContribution
+					try {
+						if ((!$this->objStewardshipContribution) && (!is_null($this->intStewardshipContributionId)))
+							$this->objStewardshipContribution = StewardshipContribution::Load($this->intStewardshipContributionId);
+						return $this->objStewardshipContribution;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1515,6 +1619,18 @@
 						throw $objExc;
 					}
 
+				case 'StewardshipContributionId':
+					// Sets the value for intStewardshipContributionId (Unique)
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objStewardshipContribution = null;
+						return ($this->intStewardshipContributionId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1543,6 +1659,36 @@
 						// Update Local Member Variables
 						$this->objPaypalBatch = $mixValue;
 						$this->intPaypalBatchId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'StewardshipContribution':
+					// Sets the value for the StewardshipContribution object referenced by intStewardshipContributionId (Unique)
+					// @param StewardshipContribution $mixValue
+					// @return StewardshipContribution
+					if (is_null($mixValue)) {
+						$this->intStewardshipContributionId = null;
+						$this->objStewardshipContribution = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a StewardshipContribution object
+						try {
+							$mixValue = QType::Cast($mixValue, 'StewardshipContribution');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED StewardshipContribution object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved StewardshipContribution for this CreditCardPayment');
+
+						// Update Local Member Variables
+						$this->objStewardshipContribution = $mixValue;
+						$this->intStewardshipContributionId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1674,6 +1820,7 @@
 			$strToReturn .= '<element name="AmountCleared" type="xsd:float"/>';
 			$strToReturn .= '<element name="PaypalBatch" type="xsd1:PaypalBatch"/>';
 			$strToReturn .= '<element name="UnlinkedFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="StewardshipContribution" type="xsd1:StewardshipContribution"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1683,6 +1830,7 @@
 			if (!array_key_exists('CreditCardPayment', $strComplexTypeArray)) {
 				$strComplexTypeArray['CreditCardPayment'] = CreditCardPayment::GetSoapComplexTypeXml();
 				PaypalBatch::AlterSoapComplexTypeArray($strComplexTypeArray);
+				StewardshipContribution::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1726,6 +1874,9 @@
 				$objToReturn->PaypalBatch = PaypalBatch::GetObjectFromSoapObject($objSoapObject->PaypalBatch);
 			if (property_exists($objSoapObject, 'UnlinkedFlag'))
 				$objToReturn->blnUnlinkedFlag = $objSoapObject->UnlinkedFlag;
+			if ((property_exists($objSoapObject, 'StewardshipContribution')) &&
+				($objSoapObject->StewardshipContribution))
+				$objToReturn->StewardshipContribution = StewardshipContribution::GetObjectFromSoapObject($objSoapObject->StewardshipContribution);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1752,6 +1903,10 @@
 				$objObject->objPaypalBatch = PaypalBatch::GetSoapObjectFromObject($objObject->objPaypalBatch, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intPaypalBatchId = null;
+			if ($objObject->objStewardshipContribution)
+				$objObject->objStewardshipContribution = StewardshipContribution::GetSoapObjectFromObject($objObject->objStewardshipContribution, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intStewardshipContributionId = null;
 			return $objObject;
 		}
 
@@ -1782,6 +1937,8 @@
 	 * @property-read QQNode $PaypalBatchId
 	 * @property-read QQNodePaypalBatch $PaypalBatch
 	 * @property-read QQNode $UnlinkedFlag
+	 * @property-read QQNode $StewardshipContributionId
+	 * @property-read QQNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 */
@@ -1821,6 +1978,10 @@
 					return new QQNodePaypalBatch('paypal_batch_id', 'PaypalBatch', 'integer', $this);
 				case 'UnlinkedFlag':
 					return new QQNode('unlinked_flag', 'UnlinkedFlag', 'boolean', $this);
+				case 'StewardshipContributionId':
+					return new QQNode('stewardship_contribution_id', 'StewardshipContributionId', 'integer', $this);
+				case 'StewardshipContribution':
+					return new QQNodeStewardshipContribution('stewardship_contribution_id', 'StewardshipContribution', 'integer', $this);
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'credit_card_payment_id', 'OnlineDonation');
 				case 'SignupPayment':
@@ -1855,6 +2016,8 @@
 	 * @property-read QQNode $PaypalBatchId
 	 * @property-read QQNodePaypalBatch $PaypalBatch
 	 * @property-read QQNode $UnlinkedFlag
+	 * @property-read QQNode $StewardshipContributionId
+	 * @property-read QQNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -1895,6 +2058,10 @@
 					return new QQNodePaypalBatch('paypal_batch_id', 'PaypalBatch', 'integer', $this);
 				case 'UnlinkedFlag':
 					return new QQNode('unlinked_flag', 'UnlinkedFlag', 'boolean', $this);
+				case 'StewardshipContributionId':
+					return new QQNode('stewardship_contribution_id', 'StewardshipContributionId', 'integer', $this);
+				case 'StewardshipContribution':
+					return new QQNodeStewardshipContribution('stewardship_contribution_id', 'StewardshipContribution', 'integer', $this);
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'credit_card_payment_id', 'OnlineDonation');
 				case 'SignupPayment':
