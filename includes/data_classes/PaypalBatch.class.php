@@ -84,8 +84,13 @@
 
 				// Only process "Delayed Capture"
 				if ($strValuesArray['Type'] == 'Delayed Capture') {
-					$objCreditCardPayment = CreditCardPayment::LoadByTransactionCode($strValuesArray[self::PayPalOriginalTransactionId]);
+					if (strlen(trim($strValuesArray[self::PayPalOriginalTransactionId])) == 0) {
+						throw new QCallerException('Transaction ' . $strValuesArray[self::PayPalTransactionId] . ' does not have an Original Transaction Id');
+					}
+
 					// Can we find the linked CCPayment Record?
+					$objCreditCardPayment = CreditCardPayment::LoadByTransactionCode($strValuesArray[self::PayPalOriginalTransactionId]);
+
 					if (!$objCreditCardPayment) {
 						// No -- let's create this as an UNLINKED one
 						$objCreditCardPayment = new CreditCardPayment();
