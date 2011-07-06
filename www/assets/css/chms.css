@@ -232,6 +232,7 @@
 	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
 
 	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; }
+	span.detail { color: #888; font-size: 10px; }
 	span.sublinks { color: #ccc; font-size: 10px; }
 	/** see bottom of page for sublinks a override in datagrid **/
 

@@ -139,7 +139,7 @@
 			$this->lstAddPayment = new QListBox($this);
 			$this->lstAddPayment->AddItem('- Add Payment -');
 			foreach (SignupPaymentType::$NameArray as $intId => $strName) {
-				$this->lstAddPayment->AddItem($strName, $intId);
+				if ($intId != SignupPaymentType::CreditCard) $this->lstAddPayment->AddItem($strName, $intId);
 			}
 			$this->lstAddPayment->AddAction(new QChangeEvent(), new QAjaxAction('lstAddPayment_Change'));
 
@@ -187,9 +187,19 @@
 		}
 
 		public function RenderPaymentCode(SignupPayment $objPayment) {
-			if ($objPayment->Id)
-				return QApplication::HtmlEntities($objPayment->TransactionDescription);
-			else
+			if ($objPayment->Id) {
+				if ($objPayment->SignupPaymentTypeId == SignupPaymentType::CreditCard) {
+					$strToReturn = QApplication::HtmlEntities($objPayment->TransactionDescription);
+					$strToReturn .= '<br/><span class="detail">';
+					$strToReturn .= sprintf('Funds <strong>%s</strong>', QApplication::HtmlEntities($objPayment->StewardshipFund->Name));
+					if ($objPayment->AmountDonation) $strToReturn .= sprintf('<br/> &nbsp; &nbsp; &bull; Amount of Donation: <strong>%s</strong>', QApplication::DisplayCurrency($objPayment->AmountDonation));
+					if ($objPayment->AmountNonDonation) $strToReturn .= sprintf('<br/> &nbsp; &nbsp; &bull; Amount of Non-Donation: <strong>%s</strong>', QApplication::DisplayCurrency($objPayment->AmountNonDonation));
+					$strToReturn .= '</span>';
+					return $strToReturn;
+				} else {
+					return QApplication::HtmlEntities($objPayment->TransactionDescription);
+				}
+			} else
 				return '<strong>BALANCE REMAINING</strong>';
 		}
 
