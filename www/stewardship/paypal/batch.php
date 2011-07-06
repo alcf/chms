@@ -36,7 +36,10 @@
 			
 			$this->dtgFunding = new QDataGrid($this);
 			$this->dtgFunding->SetDataBinder('dtgFunding_Bind');
-
+			$this->dtgFunding->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM[0]; ?>', 'Width=340px'));
+			$this->dtgFunding->AddColumn(new QDataGridColumn('Account Number', '<?= $_ITEM[1]; ?>', 'Width=200px'));
+			$this->dtgFunding->AddColumn(new QDataGridColumn('Amount', '<?= $_ITEM[2]; ?>', 'HtmlEntities=false', 'Width=380px'));
+			
 			$this->dtgUnaccounted = new CreditCardPaymentDataGrid($this);
 			$this->dtgUnaccounted->MetaAddColumn('DateCaptured', 'Width=200px');
 			$this->dtgUnaccounted->MetaAddColumn('AmountCharged', 'Html=<?= QApplication::DisplayCurrency($_ITEM->AmountCharged); ?>', 'Width=150px');
@@ -59,7 +62,7 @@
 		}
 
 		public function dtgTransactions_Bind() {
-			$objDataSource = null;
+			$objDataSource = array();
 			foreach ($this->objPaymentArray as $objPayment) {
 				if ($objPayment->OnlineDonation) {
 					$strLineItemNameArray = array();
@@ -104,7 +107,7 @@
 						implode('<br/>', $strLineItemNameArray),
 						implode('<br/>', $strLineItemAmountArray)
 					);
-					
+
 				} else throw new Exception('Cannot figure out linked record to this credit card payment entry: ' . $objPayment->Id);
 			}
 			
@@ -112,7 +115,33 @@
 		}
 		
 		public function dtgFunding_Bind() {
-			
+			$objDataSource = array();
+			foreach ($this->objPaymentArray as $objPayment) {
+				if ($objPayment->OnlineDonation) {
+					foreach ($objPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objLineItem) {
+						if ($objLineItem->StewardshipFundId) {
+							if (!array_key_exists($objLineItem->StewardshipFundId, $objDataSource)) {
+								$objDataSource[$objLineItem->StewardshipFundId] = array($objLineItem->StewardshipFund->Name, $objLineItem->StewardshipFund->AccountNumber, 0);
+							}
+							$objDataSource[$objLineItem->StewardshipFundId][2] += $objLineItem->Amount;
+						} else {
+							if (!array_key_exists(0, $objDataSource)) {
+								$objDataSource[0] = array('(Not Yet Specified)', '---', 0);
+							}
+							$objDataSource[0][2] += $objLineItem->Amount;
+						}
+					}
+				} else if ($objPayment->SignupPayment) {
+					if (!array_key_exists($objPayment->SignupPayment->StewardshipFundId, $objDataSource)) {
+						$objDataSource[$objPayment->SignupPayment->StewardshipFundId] = array($objPayment->SignupPayment->StewardshipFund->Name, $objPayment->SignupPayment->StewardshipFund->AccountNumber, 0);
+					}
+					$objDataSource[$objPayment->SignupPayment->StewardshipFundId][2] += $objPayment->SignupPayment->Amount;
+				} else throw new Exception('Cannot figure out linked record to this credit card payment entry: ' . $objPayment->Id);
+			}
+			foreach ($objDataSource as $intId => $arrArray) {
+				$objDataSource[$intId][2] = QApplication::DisplayCurrency($objDataSource[$intId][2]);
+			}
+			$this->dtgFunding->DataSource = $objDataSource;
 		}
 		
 		public function dtgUnaccounted_Bind() {
