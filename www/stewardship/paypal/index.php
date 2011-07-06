@@ -22,11 +22,11 @@
 			$this->dtgBatches->SetDataBinder('dtgBatches_Bind');
 
 			$this->dtgBatches->SortColumnIndex = 0;
-			$this->dtgBatches->SortDirection = -1;
+			$this->dtgBatches->SortDirection = 1;
 		}
 
 		public function RenderBatchLabel(PaypalBatch $objBatch) {
-			return sprintf('<a href="/stewardship/paypal/batch.php/%s#1" style="font-weight: bold;">%s</a> ',
+			return sprintf('<a href="/stewardship/paypal/batch.php/%s" style="font-weight: bold;">%s</a> ',
 				$objBatch->Id, $objBatch->Number);
 //			return sprintf('<div style="width: 90px; float: left;"><a href="/stewardship/batch.php/%s#1">%s</a></div>'.
 //				'<div style="float: left; font-size:11px; font-weight: bold;">' . 
