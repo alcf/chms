@@ -302,6 +302,8 @@
 				case 'Amount': return QQN::SignupPayment()->Amount;
 				case 'StewardshipFundId': return QQN::SignupPayment()->StewardshipFundId;
 				case 'StewardshipFund': return QQN::SignupPayment()->StewardshipFund;
+				case 'DonationStewardshipFundId': return QQN::SignupPayment()->DonationStewardshipFundId;
+				case 'DonationStewardshipFund': return QQN::SignupPayment()->DonationStewardshipFund;
 				case 'AmountDonation': return QQN::SignupPayment()->AmountDonation;
 				case 'AmountNonDonation': return QQN::SignupPayment()->AmountNonDonation;
 				case 'CreditCardPaymentId': return QQN::SignupPayment()->CreditCardPaymentId;

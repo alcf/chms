@@ -103,17 +103,17 @@
 					$strLineItemNameArray = array();
 					$strLineItemAmountArray = array();
 
-					// Display the Donation amount (if applicable)
-					if ($fltAmount = $objPayment->SignupPayment->AmountDonation) {
-						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name);
-						$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents($objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a>';
-						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
-					}
-
 					// Display the Non-Donation amount (if applicable)
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
 						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name);
 						$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents($objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a> (Non-Donation)';
+						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
+					}
+
+					// Display the Donation amount (if applicable)
+					if ($fltAmount = $objPayment->SignupPayment->AmountDonation) {
+						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->DonationStewardshipFund->Name);
+						$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents($objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a>';
 						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
 					}
 

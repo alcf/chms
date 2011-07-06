@@ -35,7 +35,8 @@
 		protected $lblLimitInfo;
 		protected $lblDateCreated;
 		protected $lblStewardshipFund;
-
+		protected $lblDonationStewardshipFund;
+		
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
 			if (!$this->objSignupForm) QApplication::Redirect('/events/');
@@ -142,6 +143,9 @@
 			$this->lblDateCreated = $this->mctSignupForm->lblDateCreated_Create();
 			$this->lblStewardshipFund = $this->mctSignupForm->lblStewardshipFundId_Create();
 			if (!$this->lblStewardshipFund->Text) $this->lblStewardshipFund->Visible = false;
+			
+			$this->lblDonationStewardshipFund = $this->mctSignupForm->lblDonationStewardshipFundId_Create();
+			if (!$this->lblDonationStewardshipFund->Text) $this->lblDonationStewardshipFund->Visible = false;
 			
 			$this->lblLimitInfo = new QLabel($this);
 			$this->lblLimitInfo->Name = 'Registration Capacity';

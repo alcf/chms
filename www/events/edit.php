@@ -23,7 +23,8 @@
 		protected $chkAllowMultipleFlag;
 
 		protected $lstStewardshipFund;
-
+		protected $lstDonationStewardshipFund;
+		
 		protected $txtSignupLimit;
 		protected $txtSignupMaleLimit;
 		protected $txtSignupFemaleLimit;
@@ -117,6 +118,10 @@
 			$this->lstStewardshipFund = $this->mctSignupForm->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
 			$this->lstStewardshipFund->Name = 'Funding Account';
 			if ($this->mctSignupForm->SignupForm->CountFormProducts()) $this->lstStewardshipFund->Required = true;
+			
+			$this->lstDonationStewardshipFund = $this->mctSignupForm->lstDonationStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
+			$this->lstDonationStewardshipFund->Name = 'Funding Account for Donations';
+			if ($this->mctSignupForm->SignupForm->IsDonationAccepted()) $this->lstDonationStewardshipFund->Required = true;
 
 			// Setup Ministry with Rules			
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {

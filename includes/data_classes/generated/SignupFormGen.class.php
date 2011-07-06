@@ -31,9 +31,11 @@
 	 * @property integer $SignupMaleLimit the value for intSignupMaleLimit 
 	 * @property integer $SignupFemaleLimit the value for intSignupFemaleLimit 
 	 * @property integer $StewardshipFundId the value for intStewardshipFundId 
+	 * @property integer $DonationStewardshipFundId the value for intDonationStewardshipFundId 
 	 * @property QDateTime $DateCreated the value for dttDateCreated (Not Null)
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property StewardshipFund $StewardshipFund the value for the StewardshipFund object referenced by intStewardshipFundId 
+	 * @property StewardshipFund $DonationStewardshipFund the value for the StewardshipFund object referenced by intDonationStewardshipFundId 
 	 * @property EventSignupForm $EventSignupForm the value for the EventSignupForm object that uniquely references this SignupForm
 	 * @property FormProduct $_FormProduct the value for the private _objFormProduct (Read-Only) if set due to an expansion on the form_product.signup_form_id reverse relationship
 	 * @property FormProduct[] $_FormProductArray the value for the private _objFormProductArray (Read-Only) if set due to an ExpandAsArray on the form_product.signup_form_id reverse relationship
@@ -181,6 +183,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column signup_form.donation_stewardship_fund_id
+		 * @var integer intDonationStewardshipFundId
+		 */
+		protected $intDonationStewardshipFundId;
+		const DonationStewardshipFundIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column signup_form.date_created
 		 * @var QDateTime dttDateCreated
 		 */
@@ -277,6 +287,16 @@
 		 * @var StewardshipFund objStewardshipFund
 		 */
 		protected $objStewardshipFund;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column signup_form.donation_stewardship_fund_id.
+		 *
+		 * NOTE: Always use the DonationStewardshipFund property getter to correctly retrieve this StewardshipFund object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var StewardshipFund objDonationStewardshipFund
+		 */
+		protected $objDonationStewardshipFund;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -622,6 +642,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'signup_male_limit', $strAliasPrefix . 'signup_male_limit');
 			$objBuilder->AddSelectItem($strTableName, 'signup_female_limit', $strAliasPrefix . 'signup_female_limit');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_fund_id', $strAliasPrefix . 'stewardship_fund_id');
+			$objBuilder->AddSelectItem($strTableName, 'donation_stewardship_fund_id', $strAliasPrefix . 'donation_stewardship_fund_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_created', $strAliasPrefix . 'date_created');
 		}
 
@@ -746,6 +767,8 @@
 			$objToReturn->intSignupFemaleLimit = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_fund_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_fund_id'] : $strAliasPrefix . 'stewardship_fund_id';
 			$objToReturn->intStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'donation_stewardship_fund_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'donation_stewardship_fund_id'] : $strAliasPrefix . 'donation_stewardship_fund_id';
+			$objToReturn->intDonationStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_created'] : $strAliasPrefix . 'date_created';
 			$objToReturn->dttDateCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
@@ -772,6 +795,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'stewardship_fund_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for DonationStewardshipFund Early Binding
+			$strAlias = $strAliasPrefix . 'donation_stewardship_fund_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objDonationStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'donation_stewardship_fund_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 			// Check for EventSignupForm Unique ReverseReference Binding
@@ -1008,6 +1037,38 @@
 				QQ::Equal(QQN::SignupForm()->StewardshipFundId, $intStewardshipFundId)
 			);
 		}
+			
+		/**
+		 * Load an array of SignupForm objects,
+		 * by DonationStewardshipFundId Index(es)
+		 * @param integer $intDonationStewardshipFundId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupForm[]
+		*/
+		public static function LoadArrayByDonationStewardshipFundId($intDonationStewardshipFundId, $objOptionalClauses = null) {
+			// Call SignupForm::QueryArray to perform the LoadArrayByDonationStewardshipFundId query
+			try {
+				return SignupForm::QueryArray(
+					QQ::Equal(QQN::SignupForm()->DonationStewardshipFundId, $intDonationStewardshipFundId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SignupForms
+		 * by DonationStewardshipFundId Index(es)
+		 * @param integer $intDonationStewardshipFundId
+		 * @return int
+		*/
+		public static function CountByDonationStewardshipFundId($intDonationStewardshipFundId) {
+			// Call SignupForm::QueryCount to perform the CountByDonationStewardshipFundId query
+			return SignupForm::QueryCount(
+				QQ::Equal(QQN::SignupForm()->DonationStewardshipFundId, $intDonationStewardshipFundId)
+			);
+		}
 
 
 
@@ -1054,6 +1115,7 @@
 							`signup_male_limit`,
 							`signup_female_limit`,
 							`stewardship_fund_id`,
+							`donation_stewardship_fund_id`,
 							`date_created`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupFormTypeId) . ',
@@ -1071,6 +1133,7 @@
 							' . $objDatabase->SqlVariable($this->intSignupMaleLimit) . ',
 							' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+							' . $objDatabase->SqlVariable($this->intDonationStewardshipFundId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateCreated) . '
 						)
 					');
@@ -1106,6 +1169,7 @@
 							`signup_male_limit` = ' . $objDatabase->SqlVariable($this->intSignupMaleLimit) . ',
 							`signup_female_limit` = ' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
 							`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+							`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intDonationStewardshipFundId) . ',
 							`date_created` = ' . $objDatabase->SqlVariable($this->dttDateCreated) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -1235,6 +1299,7 @@
 			$this->intSignupMaleLimit = $objReloaded->intSignupMaleLimit;
 			$this->intSignupFemaleLimit = $objReloaded->intSignupFemaleLimit;
 			$this->StewardshipFundId = $objReloaded->StewardshipFundId;
+			$this->DonationStewardshipFundId = $objReloaded->DonationStewardshipFundId;
 			$this->dttDateCreated = $objReloaded->dttDateCreated;
 		}
 
@@ -1264,6 +1329,7 @@
 					`signup_male_limit`,
 					`signup_female_limit`,
 					`stewardship_fund_id`,
+					`donation_stewardship_fund_id`,
 					`date_created`,
 					__sys_login_id,
 					__sys_action,
@@ -1285,6 +1351,7 @@
 					' . $objDatabase->SqlVariable($this->intSignupMaleLimit) . ',
 					' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
 					' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
+					' . $objDatabase->SqlVariable($this->intDonationStewardshipFundId) . ',
 					' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1416,6 +1483,11 @@
 					// @return integer
 					return $this->intStewardshipFundId;
 
+				case 'DonationStewardshipFundId':
+					// Gets the value for intDonationStewardshipFundId 
+					// @return integer
+					return $this->intDonationStewardshipFundId;
+
 				case 'DateCreated':
 					// Gets the value for dttDateCreated (Not Null)
 					// @return QDateTime
@@ -1444,6 +1516,18 @@
 						if ((!$this->objStewardshipFund) && (!is_null($this->intStewardshipFundId)))
 							$this->objStewardshipFund = StewardshipFund::Load($this->intStewardshipFundId);
 						return $this->objStewardshipFund;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DonationStewardshipFund':
+					// Gets the value for the StewardshipFund object referenced by intDonationStewardshipFundId 
+					// @return StewardshipFund
+					try {
+						if ((!$this->objDonationStewardshipFund) && (!is_null($this->intDonationStewardshipFundId)))
+							$this->objDonationStewardshipFund = StewardshipFund::Load($this->intDonationStewardshipFundId);
+						return $this->objDonationStewardshipFund;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1703,6 +1787,18 @@
 						throw $objExc;
 					}
 
+				case 'DonationStewardshipFundId':
+					// Sets the value for intDonationStewardshipFundId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objDonationStewardshipFund = null;
+						return ($this->intDonationStewardshipFundId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'DateCreated':
 					// Sets the value for dttDateCreated (Not Null)
 					// @param QDateTime $mixValue
@@ -1772,6 +1868,36 @@
 						// Update Local Member Variables
 						$this->objStewardshipFund = $mixValue;
 						$this->intStewardshipFundId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'DonationStewardshipFund':
+					// Sets the value for the StewardshipFund object referenced by intDonationStewardshipFundId 
+					// @param StewardshipFund $mixValue
+					// @return StewardshipFund
+					if (is_null($mixValue)) {
+						$this->intDonationStewardshipFundId = null;
+						$this->objDonationStewardshipFund = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a StewardshipFund object
+						try {
+							$mixValue = QType::Cast($mixValue, 'StewardshipFund');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED StewardshipFund object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved DonationStewardshipFund for this SignupForm');
+
+						// Update Local Member Variables
+						$this->objDonationStewardshipFund = $mixValue;
+						$this->intDonationStewardshipFundId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -2414,6 +2540,7 @@
 			$strToReturn .= '<element name="SignupMaleLimit" type="xsd:int"/>';
 			$strToReturn .= '<element name="SignupFemaleLimit" type="xsd:int"/>';
 			$strToReturn .= '<element name="StewardshipFund" type="xsd1:StewardshipFund"/>';
+			$strToReturn .= '<element name="DonationStewardshipFund" type="xsd1:StewardshipFund"/>';
 			$strToReturn .= '<element name="DateCreated" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2424,6 +2551,7 @@
 			if (!array_key_exists('SignupForm', $strComplexTypeArray)) {
 				$strComplexTypeArray['SignupForm'] = SignupForm::GetSoapComplexTypeXml();
 				Ministry::AlterSoapComplexTypeArray($strComplexTypeArray);
+				StewardshipFund::AlterSoapComplexTypeArray($strComplexTypeArray);
 				StewardshipFund::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -2473,6 +2601,9 @@
 			if ((property_exists($objSoapObject, 'StewardshipFund')) &&
 				($objSoapObject->StewardshipFund))
 				$objToReturn->StewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->StewardshipFund);
+			if ((property_exists($objSoapObject, 'DonationStewardshipFund')) &&
+				($objSoapObject->DonationStewardshipFund))
+				$objToReturn->DonationStewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->DonationStewardshipFund);
 			if (property_exists($objSoapObject, 'DateCreated'))
 				$objToReturn->dttDateCreated = new QDateTime($objSoapObject->DateCreated);
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2501,6 +2632,10 @@
 				$objObject->objStewardshipFund = StewardshipFund::GetSoapObjectFromObject($objObject->objStewardshipFund, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intStewardshipFundId = null;
+			if ($objObject->objDonationStewardshipFund)
+				$objObject->objDonationStewardshipFund = StewardshipFund::GetSoapObjectFromObject($objObject->objDonationStewardshipFund, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intDonationStewardshipFundId = null;
 			if ($objObject->dttDateCreated)
 				$objObject->dttDateCreated = $objObject->dttDateCreated->__toString(QDateTime::FormatSoap);
 			return $objObject;
@@ -2536,6 +2671,8 @@
 	 * @property-read QQNode $SignupFemaleLimit
 	 * @property-read QQNode $StewardshipFundId
 	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $DonationStewardshipFundId
+	 * @property-read QQNodeStewardshipFund $DonationStewardshipFund
 	 * @property-read QQNode $DateCreated
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
 	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
@@ -2584,6 +2721,10 @@
 					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
 				case 'StewardshipFund':
 					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
+				case 'DonationStewardshipFundId':
+					return new QQNode('donation_stewardship_fund_id', 'DonationStewardshipFundId', 'integer', $this);
+				case 'DonationStewardshipFund':
+					return new QQNodeStewardshipFund('donation_stewardship_fund_id', 'DonationStewardshipFund', 'integer', $this);
 				case 'DateCreated':
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
 				case 'EventSignupForm':
@@ -2627,6 +2768,8 @@
 	 * @property-read QQNode $SignupFemaleLimit
 	 * @property-read QQNode $StewardshipFundId
 	 * @property-read QQNodeStewardshipFund $StewardshipFund
+	 * @property-read QQNode $DonationStewardshipFundId
+	 * @property-read QQNodeStewardshipFund $DonationStewardshipFund
 	 * @property-read QQNode $DateCreated
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
 	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
@@ -2676,6 +2819,10 @@
 					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
 				case 'StewardshipFund':
 					return new QQNodeStewardshipFund('stewardship_fund_id', 'StewardshipFund', 'integer', $this);
+				case 'DonationStewardshipFundId':
+					return new QQNode('donation_stewardship_fund_id', 'DonationStewardshipFundId', 'integer', $this);
+				case 'DonationStewardshipFund':
+					return new QQNodeStewardshipFund('donation_stewardship_fund_id', 'DonationStewardshipFund', 'integer', $this);
 				case 'DateCreated':
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
 				case 'EventSignupForm':

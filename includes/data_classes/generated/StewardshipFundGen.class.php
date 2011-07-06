@@ -26,10 +26,14 @@
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId 
 	 * @property OnlineDonationLineItem $_OnlineDonationLineItem the value for the private _objOnlineDonationLineItem (Read-Only) if set due to an expansion on the online_donation_line_item.stewardship_fund_id reverse relationship
 	 * @property OnlineDonationLineItem[] $_OnlineDonationLineItemArray the value for the private _objOnlineDonationLineItemArray (Read-Only) if set due to an ExpandAsArray on the online_donation_line_item.stewardship_fund_id reverse relationship
+	 * @property SignupForm $_SignupFormAsDonation the value for the private _objSignupFormAsDonation (Read-Only) if set due to an expansion on the signup_form.donation_stewardship_fund_id reverse relationship
+	 * @property SignupForm[] $_SignupFormAsDonationArray the value for the private _objSignupFormAsDonationArray (Read-Only) if set due to an ExpandAsArray on the signup_form.donation_stewardship_fund_id reverse relationship
 	 * @property SignupForm $_SignupForm the value for the private _objSignupForm (Read-Only) if set due to an expansion on the signup_form.stewardship_fund_id reverse relationship
 	 * @property SignupForm[] $_SignupFormArray the value for the private _objSignupFormArray (Read-Only) if set due to an ExpandAsArray on the signup_form.stewardship_fund_id reverse relationship
 	 * @property SignupPayment $_SignupPayment the value for the private _objSignupPayment (Read-Only) if set due to an expansion on the signup_payment.stewardship_fund_id reverse relationship
 	 * @property SignupPayment[] $_SignupPaymentArray the value for the private _objSignupPaymentArray (Read-Only) if set due to an ExpandAsArray on the signup_payment.stewardship_fund_id reverse relationship
+	 * @property SignupPayment $_SignupPaymentAsDonation the value for the private _objSignupPaymentAsDonation (Read-Only) if set due to an expansion on the signup_payment.donation_stewardship_fund_id reverse relationship
+	 * @property SignupPayment[] $_SignupPaymentAsDonationArray the value for the private _objSignupPaymentAsDonationArray (Read-Only) if set due to an ExpandAsArray on the signup_payment.donation_stewardship_fund_id reverse relationship
 	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
 	 * @property StewardshipContributionAmount[] $_StewardshipContributionAmountArray the value for the private _objStewardshipContributionAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_fund_id reverse relationship
 	 * @property StewardshipPledge $_StewardshipPledge the value for the private _objStewardshipPledge (Read-Only) if set due to an expansion on the stewardship_pledge.stewardship_fund_id reverse relationship
@@ -131,6 +135,22 @@
 		private $_objOnlineDonationLineItemArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single SignupFormAsDonation object
+		 * (of type SignupForm), if this StewardshipFund object was restored with
+		 * an expansion on the signup_form association table.
+		 * @var SignupForm _objSignupFormAsDonation;
+		 */
+		private $_objSignupFormAsDonation;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupFormAsDonation objects
+		 * (of type SignupForm[]), if this StewardshipFund object was restored with
+		 * an ExpandAsArray on the signup_form association table.
+		 * @var SignupForm[] _objSignupFormAsDonationArray;
+		 */
+		private $_objSignupFormAsDonationArray = array();
+
+		/**
 		 * Private member variable that stores a reference to a single SignupForm object
 		 * (of type SignupForm), if this StewardshipFund object was restored with
 		 * an expansion on the signup_form association table.
@@ -161,6 +181,22 @@
 		 * @var SignupPayment[] _objSignupPaymentArray;
 		 */
 		private $_objSignupPaymentArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupPaymentAsDonation object
+		 * (of type SignupPayment), if this StewardshipFund object was restored with
+		 * an expansion on the signup_payment association table.
+		 * @var SignupPayment _objSignupPaymentAsDonation;
+		 */
+		private $_objSignupPaymentAsDonation;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupPaymentAsDonation objects
+		 * (of type SignupPayment[]), if this StewardshipFund object was restored with
+		 * an ExpandAsArray on the signup_payment association table.
+		 * @var SignupPayment[] _objSignupPaymentAsDonationArray;
+		 */
+		private $_objSignupPaymentAsDonationArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipContributionAmount object
@@ -628,6 +664,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'signupformasdonation__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupFormAsDonationArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupFormAsDonationArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupformasdonation__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupFormAsDonationArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupFormAsDonationArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupformasdonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'signupform__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -653,6 +703,20 @@
 							$objPreviousItem->_objSignupPaymentArray[] = $objChildItem;
 					} else
 						$objPreviousItem->_objSignupPaymentArray[] = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
+				$strAlias = $strAliasPrefix . 'signuppaymentasdonation__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupPaymentAsDonationArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupPaymentAsDonationArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppaymentasdonation__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupPaymentAsDonationArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupPaymentAsDonationArray[] = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppaymentasdonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -771,6 +835,16 @@
 					$objToReturn->_objOnlineDonationLineItem = OnlineDonationLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonationlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+			// Check for SignupFormAsDonation Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupformasdonation__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupFormAsDonationArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupformasdonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupFormAsDonation = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupformasdonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
 			// Check for SignupForm Virtual Binding
 			$strAlias = $strAliasPrefix . 'signupform__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -789,6 +863,16 @@
 					$objToReturn->_objSignupPaymentArray[] = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objSignupPayment = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupPaymentAsDonation Virtual Binding
+			$strAlias = $strAliasPrefix . 'signuppaymentasdonation__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupPaymentAsDonationArray[] = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppaymentasdonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupPaymentAsDonation = SignupPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signuppaymentasdonation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipContributionAmount Virtual Binding
@@ -1328,6 +1412,18 @@
 					// @return OnlineDonationLineItem[]
 					return (array) $this->_objOnlineDonationLineItemArray;
 
+				case '_SignupFormAsDonation':
+					// Gets the value for the private _objSignupFormAsDonation (Read-Only)
+					// if set due to an expansion on the signup_form.donation_stewardship_fund_id reverse relationship
+					// @return SignupForm
+					return $this->_objSignupFormAsDonation;
+
+				case '_SignupFormAsDonationArray':
+					// Gets the value for the private _objSignupFormAsDonationArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_form.donation_stewardship_fund_id reverse relationship
+					// @return SignupForm[]
+					return (array) $this->_objSignupFormAsDonationArray;
+
 				case '_SignupForm':
 					// Gets the value for the private _objSignupForm (Read-Only)
 					// if set due to an expansion on the signup_form.stewardship_fund_id reverse relationship
@@ -1351,6 +1447,18 @@
 					// if set due to an ExpandAsArray on the signup_payment.stewardship_fund_id reverse relationship
 					// @return SignupPayment[]
 					return (array) $this->_objSignupPaymentArray;
+
+				case '_SignupPaymentAsDonation':
+					// Gets the value for the private _objSignupPaymentAsDonation (Read-Only)
+					// if set due to an expansion on the signup_payment.donation_stewardship_fund_id reverse relationship
+					// @return SignupPayment
+					return $this->_objSignupPaymentAsDonation;
+
+				case '_SignupPaymentAsDonationArray':
+					// Gets the value for the private _objSignupPaymentAsDonationArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_payment.donation_stewardship_fund_id reverse relationship
+					// @return SignupPayment[]
+					return (array) $this->_objSignupPaymentAsDonationArray;
 
 				case '_StewardshipContributionAmount':
 					// Gets the value for the private _objStewardshipContributionAmount (Read-Only)
@@ -1750,6 +1858,188 @@
 
 			
 		
+		// Related Objects' Methods for SignupFormAsDonation
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupFormsAsDonation as an array of SignupForm objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupForm[]
+		*/ 
+		public function GetSignupFormAsDonationArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupForm::LoadArrayByDonationStewardshipFundId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupFormsAsDonation
+		 * @return int
+		*/ 
+		public function CountSignupFormsAsDonation() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupForm::CountByDonationStewardshipFundId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupFormAsDonation
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function AssociateSignupFormAsDonation(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupFormAsDonation on this unsaved StewardshipFund.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupFormAsDonation on this StewardshipFund with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->DonationStewardshipFundId = $this->intId;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupFormAsDonation
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function UnassociateSignupFormAsDonation(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupFormAsDonation on this unsaved StewardshipFund.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupFormAsDonation on this StewardshipFund with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`donation_stewardship_fund_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->DonationStewardshipFundId = null;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupFormsAsDonation
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupFormsAsDonation() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupFormAsDonation on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByDonationStewardshipFundId($this->intId) as $objSignupForm) {
+					$objSignupForm->DonationStewardshipFundId = null;
+					$objSignupForm->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`donation_stewardship_fund_id` = null
+				WHERE
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupFormAsDonation
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupFormAsDonation(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupFormAsDonation on this unsaved StewardshipFund.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupFormAsDonation on this StewardshipFund with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupFormsAsDonation
+		 * @return void
+		*/ 
+		public function DeleteAllSignupFormsAsDonation() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupFormAsDonation on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByDonationStewardshipFundId($this->intId) as $objSignupForm) {
+					$objSignupForm->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for SignupForm
 		//-------------------------------------------------------------------
 
@@ -2109,6 +2399,188 @@
 					`signup_payment`
 				WHERE
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for SignupPaymentAsDonation
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupPaymentsAsDonation as an array of SignupPayment objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupPayment[]
+		*/ 
+		public function GetSignupPaymentAsDonationArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupPayment::LoadArrayByDonationStewardshipFundId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupPaymentsAsDonation
+		 * @return int
+		*/ 
+		public function CountSignupPaymentsAsDonation() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupPayment::CountByDonationStewardshipFundId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupPaymentAsDonation
+		 * @param SignupPayment $objSignupPayment
+		 * @return void
+		*/ 
+		public function AssociateSignupPaymentAsDonation(SignupPayment $objSignupPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupPaymentAsDonation on this unsaved StewardshipFund.');
+			if ((is_null($objSignupPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupPaymentAsDonation on this StewardshipFund with an unsaved SignupPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_payment`
+				SET
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupPayment->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupPayment->DonationStewardshipFundId = $this->intId;
+				$objSignupPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupPaymentAsDonation
+		 * @param SignupPayment $objSignupPayment
+		 * @return void
+		*/ 
+		public function UnassociateSignupPaymentAsDonation(SignupPayment $objSignupPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPaymentAsDonation on this unsaved StewardshipFund.');
+			if ((is_null($objSignupPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPaymentAsDonation on this StewardshipFund with an unsaved SignupPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_payment`
+				SET
+					`donation_stewardship_fund_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupPayment->Id) . ' AND
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupPayment->DonationStewardshipFundId = null;
+				$objSignupPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupPaymentsAsDonation
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupPaymentsAsDonation() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPaymentAsDonation on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupPayment::LoadArrayByDonationStewardshipFundId($this->intId) as $objSignupPayment) {
+					$objSignupPayment->DonationStewardshipFundId = null;
+					$objSignupPayment->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_payment`
+				SET
+					`donation_stewardship_fund_id` = null
+				WHERE
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupPaymentAsDonation
+		 * @param SignupPayment $objSignupPayment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupPaymentAsDonation(SignupPayment $objSignupPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPaymentAsDonation on this unsaved StewardshipFund.');
+			if ((is_null($objSignupPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPaymentAsDonation on this StewardshipFund with an unsaved SignupPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_payment`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupPayment->Id) . ' AND
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupPayment->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupPaymentsAsDonation
+		 * @return void
+		*/ 
+		public function DeleteAllSignupPaymentsAsDonation() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupPaymentAsDonation on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupPayment::LoadArrayByDonationStewardshipFundId($this->intId) as $objSignupPayment) {
+					$objSignupPayment->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_payment`
+				WHERE
+					`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -2945,8 +3417,10 @@
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNode $ExternalFlag
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupFormAsDonation
 	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
+	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPaymentAsDonation
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostAmount $StewardshipPostAmount
@@ -2978,10 +3452,14 @@
 					return new QQNode('external_flag', 'ExternalFlag', 'boolean', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'stewardship_fund_id');
+				case 'SignupFormAsDonation':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupformasdonation', 'reverse_reference', 'donation_stewardship_fund_id');
 				case 'SignupForm':
 					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'stewardship_fund_id');
 				case 'SignupPayment':
 					return new QQReverseReferenceNodeSignupPayment($this, 'signuppayment', 'reverse_reference', 'stewardship_fund_id');
+				case 'SignupPaymentAsDonation':
+					return new QQReverseReferenceNodeSignupPayment($this, 'signuppaymentasdonation', 'reverse_reference', 'donation_stewardship_fund_id');
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_fund_id');
 				case 'StewardshipPledge':
@@ -3015,8 +3493,10 @@
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNode $ExternalFlag
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupFormAsDonation
 	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
+	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPaymentAsDonation
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPledge $StewardshipPledge
 	 * @property-read QQReverseReferenceNodeStewardshipPostAmount $StewardshipPostAmount
@@ -3049,10 +3529,14 @@
 					return new QQNode('external_flag', 'ExternalFlag', 'boolean', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'stewardship_fund_id');
+				case 'SignupFormAsDonation':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupformasdonation', 'reverse_reference', 'donation_stewardship_fund_id');
 				case 'SignupForm':
 					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'stewardship_fund_id');
 				case 'SignupPayment':
 					return new QQReverseReferenceNodeSignupPayment($this, 'signuppayment', 'reverse_reference', 'stewardship_fund_id');
+				case 'SignupPaymentAsDonation':
+					return new QQReverseReferenceNodeSignupPayment($this, 'signuppaymentasdonation', 'reverse_reference', 'donation_stewardship_fund_id');
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_fund_id');
 				case 'StewardshipPledge':

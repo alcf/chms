@@ -68,10 +68,19 @@
 		 * @return boolean
 		 */
 		public function IsStewardshipFundMissing() {
-			if (!$this->StewardshipFund && $this->CountFormProducts()) return true;
-			return false;
+			$blnToReturn = false;
+			
+			if ($this->CountFormProducts()) {
+				if (!$this->StewardshipFund) $blnToReturn = true;
+			}
+			
+			if ($this->IsDonationAccepted()) {
+				if (!$this->DonationStewardshipFund) $blnToReturn = true;
+			}
+			
+			return $blnToReturn;
 		}
-		
+
 		/**
 		 * Returns a boolean on whether or not the person has been registered on this form
 		 * @param Person $objPerson
@@ -82,6 +91,21 @@
 				return true;
 			else
 				return false;
+		}
+		
+		/**
+		 * Returns whether or not a Doantion is being accepted on this form
+		 * @return boolean
+		 */
+		public function IsDonationAccepted() {
+			if (FormProduct::QueryCount(QQ::AndCondition(
+				QQ::Equal(QQN::FormProduct()->SignupFormId, $this->intId),
+				QQ::Equal(QQN::FormProduct()->FormPaymentTypeId, FormPaymentType::Donation)
+			))) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		public function IsLoginCanView(Login $objLogin) {

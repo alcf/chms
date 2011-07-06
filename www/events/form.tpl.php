@@ -34,6 +34,7 @@
 		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
 		<?php $this->lblStewardshipFund->RenderWithName('Name=Funding Account'); ?>
+		<?php $this->lblDonationStewardshipFund->RenderWithName('Name=Funding Account for Donations'); ?>
 	</div>
 	
 	<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
