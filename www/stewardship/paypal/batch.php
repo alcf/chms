@@ -84,7 +84,19 @@
 				} else if ($objPayment->SignupPayment) {
 					$strLineItemNameArray = array();
 					$strLineItemAmountArray = array();
-					
+
+					// Display the Donation amount (if applicable)
+					if ($fltAmount = $objPayment->SignupPayment->GetDonationAmount()) {
+						$strLineItemNameArray[] = $objPayment->SignupPayment->SignupEntry->SignupForm->StewardshipFund->Name;
+						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
+					}
+
+					// Display the Non-Donation amount (if applicable)
+					if ($fltAmount = $objPayment->SignupPayment->GetNonDonationAmount()) {
+						$strLineItemNameArray[] = $objPayment->SignupPayment->SignupEntry->SignupForm->StewardshipFund->Name . ' (Non-Donation)';
+						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
+					}
+
 					$objDataSource[] = array(
 						$objPayment->DateCaptured->ToString('MMM D YYYY h:mm z'),
 						QApplication::DisplayCurrency($objPayment->AmountCharged),

@@ -116,6 +116,7 @@
 
 			$this->lstStewardshipFund = $this->mctSignupForm->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
 			$this->lstStewardshipFund->Name = 'Funding Account';
+			if ($this->mctSignupForm->SignupForm->CountFormProducts()) $this->lstStewardshipFund->Required = true;
 
 			// Setup Ministry with Rules			
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {

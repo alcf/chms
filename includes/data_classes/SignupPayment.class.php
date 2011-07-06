@@ -39,6 +39,28 @@
 			if ($blnSave) $this->Save();
 		}
 
+		/**
+		 * Given the total number of donation entries for the connected signup, this will return the total donation amount portion for this transaction
+		 * @return float
+		 */
+		public function GetDonationAmount() {
+			$fltTotalDonation = 0;
+			foreach ($this->SignupEntry->GetSignupProductArray() as $objSignupProduct) {
+				if ($objSignupProduct->FormProduct->FormPaymentTypeId == FormPaymentType::Donation) $fltTotalDonation += $objSignupProduct->Amount;
+			}
+			return min($this->fltAmount, $fltTotalDonation);
+		}
+
+		/**
+		 * Given the amount of this transaction, this will calculate what portion of it (if any) is non-donation
+		 * @return float
+		 */
+		public function GetNonDonationAmount() {
+			$fltTotalDonation = $this->GetDonationAmount();
+			if ($this->fltAmount > $fltTotalDonation) return $this->fltAmount - $fltTotalDonation;
+			return 0;
+		}
+
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return SignupPaymentType::$NameArray[$this->intSignupPaymentTypeId];
