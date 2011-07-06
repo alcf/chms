@@ -113,6 +113,7 @@
 			$this->txtDeposit->HtmlBefore = '<span>$ </span>';
 			$this->txtDeposit->Minimum = 0;
 			$this->lstStewardshipFund = $this->mctProduct->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
+			$this->lstStewardshipFund->Required = true;
 
 			$this->lstFormPaymentTypeId_Refresh(null, null, null);
 
@@ -150,14 +151,12 @@
 				case FormPaymentType::DepositRequired:
 					$this->txtCost->Visible = true;
 					$this->txtDeposit->Visible = true;
-					$this->lstStewardshipFund->Visible = false;
 					$this->lstStewardshipFund->SelectedValue = null;
 					break;
 				case FormPaymentType::PayInFull:
 					$this->txtDeposit->Text = null;
 					$this->txtCost->Visible = true;
 					$this->txtDeposit->Visible = false;
-					$this->lstStewardshipFund->Visible = false;
 					$this->lstStewardshipFund->SelectedValue = null;
 					break;
 				case FormPaymentType::Donation:
@@ -165,7 +164,6 @@
 					$this->txtDeposit->Text = null;
 					$this->txtCost->Visible = false;
 					$this->txtDeposit->Visible = false;
-					$this->lstStewardshipFund->Visible = true;
 					break;
 				default:
 					throw new Exception('Unhandled FormPaymentTypeId: ' . $this->lstFormPaymentTypeId->SelectedValue);
@@ -173,7 +171,6 @@
 			
 			$this->txtCost->Required = $this->txtCost->Visible;
 			$this->txtDeposit->Required = $this->txtDeposit->Visible;
-			$this->lstStewardshipFund->Required = $this->lstStewardshipFund->Visible;
 		}
 
 		public function Form_Validate() {

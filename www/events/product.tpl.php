@@ -7,6 +7,7 @@
 		<?php $this->lblFormProductType->RenderWithName(); ?>
 		<?php $this->txtName->RenderWithName(); ?>
 		<?php $this->txtDescription->RenderWithName(); ?>
+		<?php $this->lstStewardshipFund->RenderWithName(); ?>
 		<br/>
 
 <?php
@@ -26,7 +27,6 @@
 		<?php $this->lstFormPaymentTypeId->RenderWithName('Required=true'); ?>
 		<?php $this->txtCost->RenderWithName(); ?>
 		<?php $this->txtDeposit->RenderWithName(); ?>
-		<?php $this->lstStewardshipFund->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">

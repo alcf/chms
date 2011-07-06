@@ -209,7 +209,11 @@
 		}
 
 		public function RenderName(FormProduct $objProduct) {
-			return sprintf('<a href="/events/product.php/%s/%s">%s</a>', $this->objSignupForm->Id, $objProduct->Id, QApplication::HtmlEntities($objProduct->Name));
+			if ($objProduct->StewardshipFund)
+				return sprintf('<a href="/events/product.php/%s/%s">%s</a><br/><span class="na">Funds: %s</span>',
+					$this->objSignupForm->Id, $objProduct->Id, QApplication::HtmlEntities($objProduct->Name), QApplication::HtmlEntities($objProduct->StewardshipFund->Name));
+			else 
+				return sprintf('<a href="/events/product.php/%s/%s">%s</a>', $this->objSignupForm->Id, $objProduct->Id, QApplication::HtmlEntities($objProduct->Name));
 		}
 
 		public function pxyMoveDownQuestion_Click($strFormId, $strControlId, $strParameter) {
