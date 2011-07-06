@@ -19,6 +19,26 @@
 		protected $pxyEditFundDonationLineItem;
 		protected $pxyEditFundSignupPayment;
 
+		protected $lblInstructionHtml;
+		protected $btnPost;
+
+		protected $dlgEditFund;
+		protected $btnDialogSave;
+		protected $btnDialogCancel;
+		protected $lstDialogFund;
+		
+		protected function pxyEditFundDonationLineItem_Click($strFormid, $strControlId, $strParameter) {
+			
+		}
+
+		protected function pxyEditFundSignupPayment_Click($strFormid, $strControlId, $strParameter) {
+			
+		}
+
+		protected function dlgEditFund_Show() {
+			
+		}
+
 		/**
 		 * Stores the LINKED CC Paymente records for this batch
 		 * @var CreditCardPayment[]
@@ -52,8 +72,6 @@
 			$this->dtgUnaccounted->SetDataBinder('dtgUnaccounted_Bind');
 			$this->dtgUnaccounted->NoDataHtml = 'Good!  There are no unaccounted-for credit card transaction entries in this PayPal batch.';
 			
-			$this->Transactions_Refresh();
-			
 			$this->pxyEditFundDonationLineItem = new QControlProxy($this);
 			$this->pxyEditFundDonationLineItem->AddAction(new QClickEvent(), new QAjaxAction('pxyEditFundDonationLineItem_Click'));
 			$this->pxyEditFundDonationLineItem->AddAction(new QClickEvent(), new QTerminateAction());
@@ -61,16 +79,72 @@
 			$this->pxyEditFundSignupPayment = new QControlProxy($this);
 			$this->pxyEditFundSignupPayment->AddAction(new QClickEvent(), new QAjaxAction('pxyEditFundSignupPayment_Click'));
 			$this->pxyEditFundSignupPayment->AddAction(new QClickEvent(), new QTerminateAction());
+			
+			$this->lblInstructionHtml = new QLabel($this);
+			$this->lblInstructionHtml->TagName = 'p';
+			$this->lblInstructionHtml->HtmlEntities = false;
+			
+			$this->btnPost = new QButton($this);
+			$this->btnPost->Name = 'Post to NOAH';
+			$this->btnPost->CssClass = 'primary';
+
+			$this->dlgEditFund = new QDialogBox($this);
+			$this->dlgEditFund->MatteClickable = false;
+			$this->dlgEditFund->HideDialogBox();
+			$this->dlgEditFund->Template = dirname(__FILE__) . '/dlgEditFund.tpl.php';
+
+			$this->lstDialogFund = new QListBox($this->dlgEditFund);
+			$this->lstDialogFund->Name = 'Stewardship Fund';
+			$this->lstDialogFund->AddItem('- Select One -', null);
+			$this->lstDialogFund->Required = true;
+			foreach (StewardshipFund::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::StewardshipFund()->Name)) as $objFund)
+				$this->lstDialogFund->AddItem($objFund->Name, $objFund->Id);
+
+			$this->btnDialogSave = new QButton($this->dlgEditFund);
+			$this->btnDialogSave->CssClass = 'primary';
+			$this->btnDialogSave->Text = 'Update';
+			$this->btnDialogSave->CausesValidation = $this->lstDialogFund;
+			$this->btnDialogSave->AddAction(new QClickEvent(), new QAjaxAction('btnDialogSave_Click'));
+
+			$this->btnDialogCancel = new QLinkButton($this->dlgEditFund);
+			$this->btnDialogCancel->CssClass = 'cancel';
+			$this->btnDialogCancel->Text = 'Cancel';
+			$this->btnDialogCancel->AddAction(new QClickEvent(), new QAjaxAction('btnDialogCancel_Click'));
+			$this->btnDialogCancel->AddAction(new QClickEvent(), new QTerminateAction());
+			
+			$this->Transactions_Refresh();
 		}
 		
 		protected function Transactions_Refresh() {
-			// TODO: Replace with Indexed-Codegen version!
-			$objCondition = QQ::AndCondition(
-				QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, false),
-				QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $this->objBatch->Id)
-			);
+			// Cache the Payment Array for actual trackable payments
+			$this->objPaymentArray = CreditCardPayment::LoadArrayByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, false, 
+				QQ::OrderBy(QQN::CreditCardPayment()->DateCaptured));
+			
+			if ($this->objBatch->ReconciledFlag) {
+				$this->lblInstructionHtml->Text = sprintf('This PayPal Batch was posted to NOAH on <strong>%s</strong>.  No changes can be made to this PayPal Batch.<br/><br/>' . 
+					'Click on any Credit Card Transaction with a Donation Record to view the linked Stewardship Entry for each line item.', $this->objBatch->DateReconciled->ToString('MMMM D YYYY'));
+				$this->btnPost->Visible = false;
+			} else if ($this->objBatch->IsUncategorizedPaymentsExist()) {
+				$this->lblInstructionHtml->Text = 'There are currently unspecified funding accounts for one more more credit card payment line item.  Please ensure all items are accounted for before posting to NOAH.';
+				$this->btnPost->Visible = false;
+				
+				if (CreditCardPayment::CountByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, true)) {
+					$this->lblInstructionHtml->Text .= '<br/><br/><strong>WARNING!</strong>  There are unaccountable Credit Card Payment records in this batch!';
+				}
+			} else {
+				$this->lblInstructionHtml->Text = 'This PayPal Batch has not yet been posted to NOAH.  Click on <strong>Post to NOAH</strong> when you are sure that there are no more changes or additions left for this batch.';
+				$this->btnPost->Visible = true;
+				$this->btnPost->RemoveAllActions();
 
-			$this->objPaymentArray = CreditCardPayment::QueryArray($objCondition, QQ::OrderBy(QQN::CreditCardPayment()->DateCaptured));
+				if (CreditCardPayment::CountByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, true)) {
+					$this->lblInstructionHtml->Text .= '<br/><br/><strong>WARNING!</strong>  There are unaccountable Credit Card Payment records in this batch!';
+					$this->btnPost->AddAction(new QClickEvent(), new QConfirmAction('NOTE!  There are unaccountable Credit Card Payment records in this batch!  You are about to PERMANENTLY post this batch to NOAH.  No changes can be made after this point.  Are you SURE you want to proceed?'));
+					$this->btnPost->AddAction(new QClickEvent(), new QAjaxAction('btnPost_Click'));
+				} else {
+					$this->btnPost->AddAction(new QClickEvent(), new QConfirmAction('You are about to PERMANENTLY post this batch to NOAH.  No changes can be made after this point.  Are you SURE you want to proceed?'));
+					$this->btnPost->AddAction(new QClickEvent(), new QAjaxAction('btnPost_Click'));
+				}
+			}
 		}
 
 		public function dtgTransactions_Bind() {
@@ -150,10 +224,18 @@
 						}
 					}
 				} else if ($objPayment->SignupPayment) {
-					if (!array_key_exists($objPayment->SignupPayment->StewardshipFundId, $objDataSource)) {
-						$objDataSource[$objPayment->SignupPayment->StewardshipFundId] = array(QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name), $objPayment->SignupPayment->StewardshipFund->AccountNumber, 0);
+					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
+						if (!array_key_exists($objPayment->SignupPayment->StewardshipFundId, $objDataSource)) {
+							$objDataSource[$objPayment->SignupPayment->StewardshipFundId] = array(QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name), $objPayment->SignupPayment->StewardshipFund->AccountNumber, 0);
+						}
+						$objDataSource[$objPayment->SignupPayment->StewardshipFundId][2] += $fltAmount;
 					}
-					$objDataSource[$objPayment->SignupPayment->StewardshipFundId][2] += $objPayment->SignupPayment->Amount;
+					if ($fltAmount = $objPayment->SignupPayment->AmountDonation) {
+						if (!array_key_exists($objPayment->SignupPayment->DonationStewardshipFundId, $objDataSource)) {
+							$objDataSource[$objPayment->SignupPayment->DonationStewardshipFundId] = array(QApplication::HtmlEntities($objPayment->SignupPayment->DonationStewardshipFund->Name), $objPayment->SignupPayment->DonationStewardshipFund->AccountNumber, 0);
+						}
+						$objDataSource[$objPayment->SignupPayment->DonationStewardshipFundId][2] += $fltAmount;
+					}
 				} else throw new Exception('Cannot figure out linked record to this credit card payment entry: ' . $objPayment->Id);
 			}
 
@@ -171,7 +253,6 @@
 		}
 		
 		public function dtgUnaccounted_Bind() {
-			// TODO: Replace with Indexed-Codegen version!
 			$objCondition = QQ::AndCondition(
 				QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, true),
 				QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $this->objBatch->Id)

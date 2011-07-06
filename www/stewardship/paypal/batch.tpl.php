@@ -3,6 +3,10 @@
 		<button class="primary" onclick="document.location='/stewardship/paypal/'; return false;">View All Batches</button>
 	</h1>	
 
+	<div class="section">
+		<?php $this->lblInstructionHtml->Render(); ?>
+	</div>
+	
 	<h3>Credit Card Transactions</h3>
 	<div class="section">
 		<?php $this->dtgTransactions->Render(); ?>

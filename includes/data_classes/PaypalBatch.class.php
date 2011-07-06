@@ -127,6 +127,7 @@
 					}
 
 					// Link in the Pay Pal Batch Info (if applicable)
+					if (SERVER_INSTANCE == 'dev') $strValuesArray[self::PayPalBatchId] = 789;
 					if ($intBatchNumber = trim($strValuesArray[self::PayPalBatchId])) {
 						$objPayPalBatch = PaypalBatch::LoadByNumber($intBatchNumber);
 						if (!$objPayPalBatch) {
@@ -170,6 +171,24 @@
 					$objCreditCardPayment->Save();
 				}
 			}
+		}
+
+
+		/**
+		 * Returns whether or not Unspecified / Uncategorized Payment transactions still exist
+		 * @return boolean
+		 */
+		public function IsUncategorizedPaymentsExist() {
+			// Go through all the donations
+			foreach ($this->GetCreditCardPaymentArray() as $objPayment) {
+				if ($objPayment->OnlineDonation) {
+					foreach ($objPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objLineItem) {
+						if (!$objLineItem->StewardshipFundId) return true;
+					}
+				}
+			}
+			
+			return false;
 		}
 
 		// Override or Create New Load/Count methods
