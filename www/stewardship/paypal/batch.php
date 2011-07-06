@@ -16,6 +16,7 @@
 		protected $objBatch;
 
 		protected $objEditing;
+		protected $strEditingCode;
 		protected $pxyEditFundDonationLineItem;
 		protected $pxyEditFundSignupPayment;
 
@@ -27,18 +28,55 @@
 		protected $btnDialogCancel;
 		protected $lstDialogFund;
 		
-		protected function pxyEditFundDonationLineItem_Click($strFormid, $strControlId, $strParameter) {
+		
+		
+		protected function btnPost_Click() {
 			
+		}
+		
+		
+		protected function pxyEditFundDonationLineItem_Click($strFormid, $strControlId, $strParameter) {
+			$objOnlineDonationLineItem = OnlineDonationLineItem::Load($strParameter);
+			if ($objOnlineDonationLineItem->OnlineDonation->CreditCardPayment->PaypalBatchId == $this->objBatch->Id) {
+				$this->objEditing = $objOnlineDonationLineItem;
+				$this->lstDialogFund->SelectedValue = $objOnlineDonationLineItem->StewardshipFundId;
+				$this->dlgEditFund->ShowDialogBox();
+			}
 		}
 
 		protected function pxyEditFundSignupPayment_Click($strFormid, $strControlId, $strParameter) {
-			
+			$this->strEditingCode = substr($strParameter, 0, 1);
+			$objSignupPayment = SignupPayment::Load(substr($strParameter, 1));
+			if (($objSignupPayment->CreditCardPayment->PaypalBatchId == $this->objBatch->Id)) {
+				$this->objEditing = $objSignupPayment;
+				if ($this->strEditingCode == 'd')
+					$this->lstDialogFund->SelectedValue = $objSignupPayment->DonationStewardshipFundId;
+				else
+					$this->lstDialogFund->SelectedValue = $objSignupPayment->StewardshipFundId;
+				$this->dlgEditFund->ShowDialogBox();
+			}
+		}
+		
+		protected function btnDialogSave_Click() {
+			if ($this->objEditing instanceof OnlineDonationLineItem) {
+				$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
+				$this->objEditing->Save();
+			} else if ($this->strEditingCode == 'd') {
+				$this->objEditing->DonationStewardshipFundId = $this->lstDialogFund->SelectedValue;
+				$this->objEditing->Save();
+			} else {
+				$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
+				$this->objEditing->Save();
+			}
+
+			$this->dlgEditFund->HideDialogBox();
+			$this->Transactions_Refresh();
 		}
 
-		protected function dlgEditFund_Show() {
-			
+		protected function btnDialogCancel_Click() {
+			$this->dlgEditFund->HideDialogBox();
 		}
-
+		
 		/**
 		 * Stores the LINKED CC Paymente records for this batch
 		 * @var CreditCardPayment[]
@@ -85,7 +123,7 @@
 			$this->lblInstructionHtml->HtmlEntities = false;
 			
 			$this->btnPost = new QButton($this);
-			$this->btnPost->Name = 'Post to NOAH';
+			$this->btnPost->Text = 'Post to NOAH';
 			$this->btnPost->CssClass = 'primary';
 
 			$this->dlgEditFund = new QDialogBox($this);
@@ -134,7 +172,7 @@
 			} else {
 				$this->lblInstructionHtml->Text = 'This PayPal Batch has not yet been posted to NOAH.  Click on <strong>Post to NOAH</strong> when you are sure that there are no more changes or additions left for this batch.';
 				$this->btnPost->Visible = true;
-				$this->btnPost->RemoveAllActions();
+				$this->btnPost->RemoveAllActions(QClickEvent::EventName);
 
 				if (CreditCardPayment::CountByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, true)) {
 					$this->lblInstructionHtml->Text .= '<br/><br/><strong>WARNING!</strong>  There are unaccountable Credit Card Payment records in this batch!';
@@ -145,11 +183,19 @@
 					$this->btnPost->AddAction(new QClickEvent(), new QAjaxAction('btnPost_Click'));
 				}
 			}
+			
+			$this->dtgTransactions->Refresh();
+			$this->dtgFunding->Refresh();
 		}
 
 		public function dtgTransactions_Bind() {
 			$objDataSource = array();
 			foreach ($this->objPaymentArray as $objPayment) {
+				$strDateCapturedHtml = $objPayment->DateCaptured->ToString('MMM D YYYY h:mm z');
+				if ($this->objBatch->ReconciledFlag && $objPayment->StewardshipContribution) {
+					$strDateCapturedHtml = '<a href="#">' . $strDateCapturedHtml . '</a>';
+				}
+
 				if ($objPayment->OnlineDonation) {
 					$strLineItemNameArray = array();
 					$strLineItemAmountArray = array();
@@ -163,11 +209,14 @@
 							$strNameHtml = '<strong>OTHER</strong> - ' . QApplication::HtmlEntities($strDescription);
 						}
 						
-						$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundDonationLineItem->RenderAsEvents($objLineItem->Id, false) . '>' . $strNameHtml . '</a>';
+						if ($this->objBatch->ReconciledFlag)
+							$strLineItemNameArray[] = $strNameHtml;
+						else
+							$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundDonationLineItem->RenderAsEvents($objLineItem->Id, false) . '>' . $strNameHtml . '</a>';
 					}
 
 					$objDataSource[] = array(
-						$objPayment->DateCaptured->ToString('MMM D YYYY h:mm z'),
+						$strDateCapturedHtml,
 						QApplication::DisplayCurrency($objPayment->AmountCharged),
 						$objPayment->TransactionCode,
 						implode('<br/>', $strLineItemNameArray),
@@ -180,19 +229,25 @@
 					// Display the Non-Donation amount (if applicable)
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
 						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name);
-						$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents($objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a> (Non-Donation)';
+						if ($this->objBatch->ReconciledFlag)
+							$strLineItemNameArray[] = $strNameHtml;
+						else
+							$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents('n' . $objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a> (Non-Donation)';
 						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
 					}
 
 					// Display the Donation amount (if applicable)
 					if ($fltAmount = $objPayment->SignupPayment->AmountDonation) {
 						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->DonationStewardshipFund->Name);
-						$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents($objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a>';
+						if ($this->objBatch->ReconciledFlag)
+							$strLineItemNameArray[] = $strNameHtml;
+						else
+							$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents('d' . $objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a>';
 						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
 					}
 
 					$objDataSource[] = array(
-						$objPayment->DateCaptured->ToString('MMM D YYYY h:mm z'),
+						$strDateCapturedHtml,
 						QApplication::DisplayCurrency($objPayment->AmountCharged),
 						$objPayment->TransactionCode,
 						implode('<br/>', $strLineItemNameArray),

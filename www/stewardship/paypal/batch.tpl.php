@@ -5,6 +5,7 @@
 
 	<div class="section">
 		<?php $this->lblInstructionHtml->Render(); ?>
+		<?php $this->btnPost->Render(); ?>
 	</div>
 	
 	<h3>Credit Card Transactions</h3>
@@ -21,5 +22,7 @@
 	<div class="section">
 		<?php $this->dtgUnaccounted->Render(); ?>
 	</div>
+	
+	<?php $this->dlgEditFund->Render(); ?>
 
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
