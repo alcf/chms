@@ -542,8 +542,8 @@
             <y>1792.000000</y>
         </location>
         <size>
-            <width>314.000000</width>
-            <height>220.000000</height>
+            <width>326.000000</width>
+            <height>240.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -620,12 +620,28 @@
             <referencesField><![CDATA[id]]></referencesField>
             <referencesTable><![CDATA[stewardship_fund]]></referencesTable>
             <sourceCardinality>4</sourceCardinality>
-            <destinationCardinality>1</destinationCardinality>
+            <destinationCardinality>2</destinationCardinality>
             <referencesFieldUID><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></referencesFieldUID>
             <referencesTableUID><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></referencesTableUID>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <indexed><![CDATA[1]]></indexed>
             <uid><![CDATA[C369E9DB-0282-41C4-A049-E5D7573819EC]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[donation_stewardship_fund_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <referencesField>id</referencesField>
+            <referencesTable>stewardship_fund</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[stewardship_fund]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>2</destinationCardinality>
+            <referencesFieldUID><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[DCBBE977-8583-4565-A0F9-6250058A81B8]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
@@ -5063,8 +5079,8 @@
             <y>1152.000000</y>
         </location>
         <size>
-            <width>288.000000</width>
-            <height>368.000000</height>
+            <width>326.000000</width>
+            <height>380.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -5200,6 +5216,22 @@
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <indexed><![CDATA[1]]></indexed>
             <uid><![CDATA[7E9C5D8C-B303-4923-86DE-F540C5DAE67E]]></uid>
+            <unsigned><![CDATA[1]]></unsigned>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[donation_stewardship_fund_id]]></name>
+            <type><![CDATA[INTEGER]]></type>
+            <referencesField>id</referencesField>
+            <referencesTable>stewardship_fund</referencesTable>
+            <referencesField><![CDATA[id]]></referencesField>
+            <referencesTable><![CDATA[stewardship_fund]]></referencesTable>
+            <sourceCardinality>4</sourceCardinality>
+            <destinationCardinality>2</destinationCardinality>
+            <referencesFieldUID><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></referencesFieldUID>
+            <referencesTableUID><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></referencesTableUID>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[A2D5F0CE-60AA-4691-8E0B-1F2F4AB4471E]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
