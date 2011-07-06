@@ -9,6 +9,7 @@
 		<br/>
 		<?php $this->txtToken->RenderWithName(); ?>
 		<?php $this->txtInformationUrl->RenderWithName(); ?>
+		<?php $this->lstStewardshipFund->RenderWithName(); ?>
 		<br/>
 		<?php $this->chkActiveFlag->RenderWithName(); ?>
 		<?php $this->chkConfidentialFlag->RenderWithName(); ?>

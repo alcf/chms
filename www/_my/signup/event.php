@@ -41,6 +41,12 @@
 				return;
 			}
 
+			// Ensure that the funding stuff is a-okay
+			if ($this->objSignupForm->IsStewardshipFundMissing()) {
+				$this->strHtmlIncludeFilePath = '_notactive.tpl.php';
+				return;
+			}
+
 			// Ensure we are not double registering where not allowed
 			if (!$this->objSignupForm->AllowMultipleFlag &&
 				count(SignupEntry::LoadArrayBySignupFormIdPersonIdSignupEntryStatusTypeId($this->objSignupForm->Id, QApplication::$PublicLogin->PersonId, SignupEntryStatusType::Complete))) {

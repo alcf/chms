@@ -14,6 +14,14 @@
 		<button class="primary" onclick="document.location=&quot;/events/#<?php _p($this->objSignupForm->MinistryId); ?>&quot;; return false;">Back to All Events</button>
 	</h3>
 
+<?php if ($this->mctSignupForm->SignupForm->IsStewardshipFundMissing()) { ?>
+	<div class="section">
+		<p><strong>WARNING!</strong>  You have defined products that require payment, but you have <strong>NOT</strong> yet specified a Funding Account.<br/><br/>
+
+		You will need to hit the <strong>EDIT</strong> button below to specify a Funding Account before this form will be available to the public.
+		</p>
+	</div>
+<?php } ?>
 	<div class="section">
 		<?php $this->lblName->RenderWithName(); ?>
 		<?php $this->lblActive->RenderWithName(); ?>
@@ -25,6 +33,7 @@
 		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations'); ?>
 		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
+		<?php $this->lblStewardshipFund->RenderWithName('Name=Funding Account'); ?>
 	</div>
 	
 	<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>

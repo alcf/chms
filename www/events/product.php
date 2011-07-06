@@ -21,7 +21,6 @@
 		protected $lstFormPaymentTypeId;
 		protected $txtCost;
 		protected $txtDeposit;
-		protected $lstStewardshipFund;
 
 		protected $dtxDateStart;
 		protected $calDateStart;
@@ -112,8 +111,6 @@
 			$this->txtDeposit = $this->mctProduct->txtDeposit_Create();
 			$this->txtDeposit->HtmlBefore = '<span>$ </span>';
 			$this->txtDeposit->Minimum = 0;
-			$this->lstStewardshipFund = $this->mctProduct->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
-			$this->lstStewardshipFund->Required = true;
 
 			$this->lstFormPaymentTypeId_Refresh(null, null, null);
 
@@ -151,13 +148,11 @@
 				case FormPaymentType::DepositRequired:
 					$this->txtCost->Visible = true;
 					$this->txtDeposit->Visible = true;
-					$this->lstStewardshipFund->SelectedValue = null;
 					break;
 				case FormPaymentType::PayInFull:
 					$this->txtDeposit->Text = null;
 					$this->txtCost->Visible = true;
 					$this->txtDeposit->Visible = false;
-					$this->lstStewardshipFund->SelectedValue = null;
 					break;
 				case FormPaymentType::Donation:
 					$this->txtCost->Text = null;

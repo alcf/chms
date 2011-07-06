@@ -7,7 +7,6 @@
 		<?php $this->lblFormProductType->RenderWithName(); ?>
 		<?php $this->txtName->RenderWithName(); ?>
 		<?php $this->txtDescription->RenderWithName(); ?>
-		<?php $this->lstStewardshipFund->RenderWithName(); ?>
 		<br/>
 
 <?php

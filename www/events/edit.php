@@ -22,6 +22,8 @@
 		protected $chkAllowOtherFlag;
 		protected $chkAllowMultipleFlag;
 
+		protected $lstStewardshipFund;
+
 		protected $txtSignupLimit;
 		protected $txtSignupMaleLimit;
 		protected $txtSignupFemaleLimit;
@@ -111,6 +113,9 @@
 			$this->chkConfidentialFlag = $this->mctSignupForm->chkConfidentialFlag_Create();
 			$this->chkConfidentialFlag->Name = 'Confidential?';
 			$this->chkConfidentialFlag->Text = 'Check if this form is considered a "Confidential" form.';
+
+			$this->lstStewardshipFund = $this->mctSignupForm->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
+			$this->lstStewardshipFund->Name = 'Funding Account';
 
 			// Setup Ministry with Rules			
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {

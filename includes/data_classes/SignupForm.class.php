@@ -64,6 +64,15 @@
 		}
 		
 		/**
+		 * If there are products *AND* there is no stewardship fund defined, this will return TRUE.
+		 * @return boolean
+		 */
+		public function IsStewardshipFundMissing() {
+			if (!$this->StewardshipFund && $this->CountFormProducts()) return true;
+			return false;
+		}
+		
+		/**
 		 * Returns a boolean on whether or not the person has been registered on this form
 		 * @param Person $objPerson
 		 * @return boolean
