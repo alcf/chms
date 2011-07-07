@@ -1,6 +1,6 @@
 <?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
 
-	<h1>ALCF ChMS System</h1>
+	<h1>Welcome to my.alcf</h1>
 	<h2><?php $this->lblMessage->Render(); ?></h2>
 	<br/>
 

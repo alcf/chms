@@ -6,9 +6,11 @@
 <div id="footerPane" class="footerPane"><div class="footerPaneBackground">&nbsp;</div></div>
 <div class="footer">
 	Developed and Maintained by the <a href="http://www.alcf.net/it/" class="footerLink" target="_blank">ALCF Web Development Team</a><br/>
-	<a href="http://www.alcf.net/" class="footerLink" target="_blank">Abundant Life Christian Fellowship</a>, 2581 Leghorn Street, Mountain View, CA 94043
+	
+	Copyright &copy; 2010 - <?php _p(date('Y')); ?>, <a href="http://www.alcf.net/" class="footerLink" target="_blank">Abundant Life Christian Fellowship</a>,
+	2581 Leghorn Street, Mountain View, CA 94043
 	<br/>
-	Copyright &copy; 2010 - <?php _p(date('Y')); ?>, <a href="http://www.biblegateway.com/passage/?search=Romans%2012:1-8&version=31" target="_blank">Soli Deo Gloria</a>
+	<a href="http://www.biblegateway.com/passage/?search=Romans%2012:1-8&version=31" target="_blank">Soli Deo Gloria</a>
 </div>
 
 <?php $this->RenderEnd(); ?>
