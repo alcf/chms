@@ -27,7 +27,21 @@
 			return sprintf('ProvisionalPublicLogin Object %s',  $this->intPublicLoginId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'AwaitingConfirmationUrl':
+					return sprintf('/registration/awaiting.php/%s/%s', $this->intPublicLoginId, $this->strUrlHash);
 
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

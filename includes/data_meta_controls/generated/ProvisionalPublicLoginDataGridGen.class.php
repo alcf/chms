@@ -298,7 +298,8 @@
 				case 'FirstName': return QQN::ProvisionalPublicLogin()->FirstName;
 				case 'LastName': return QQN::ProvisionalPublicLogin()->LastName;
 				case 'EmailAddress': return QQN::ProvisionalPublicLogin()->EmailAddress;
-				case 'Hash': return QQN::ProvisionalPublicLogin()->Hash;
+				case 'UrlHash': return QQN::ProvisionalPublicLogin()->UrlHash;
+				case 'ConfirmationCode': return QQN::ProvisionalPublicLogin()->ConfirmationCode;
 				default: throw new QCallerException('Simple Property not found in ProvisionalPublicLoginDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

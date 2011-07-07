@@ -19,7 +19,8 @@
 	 * @property string $FirstName the value for strFirstName 
 	 * @property string $LastName the value for strLastName 
 	 * @property string $EmailAddress the value for strEmailAddress 
-	 * @property string $Hash the value for strHash 
+	 * @property string $UrlHash the value for strUrlHash 
+	 * @property string $ConfirmationCode the value for strConfirmationCode 
 	 * @property PublicLogin $PublicLogin the value for the PublicLogin object referenced by intPublicLoginId (PK)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -72,12 +73,21 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column provisional_public_login.hash
-		 * @var string strHash
+		 * Protected member variable that maps to the database column provisional_public_login.url_hash
+		 * @var string strUrlHash
 		 */
-		protected $strHash;
-		const HashMaxLength = 8;
-		const HashDefault = null;
+		protected $strUrlHash;
+		const UrlHashMaxLength = 32;
+		const UrlHashDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column provisional_public_login.confirmation_code
+		 * @var string strConfirmationCode
+		 */
+		protected $strConfirmationCode;
+		const ConfirmationCodeMaxLength = 8;
+		const ConfirmationCodeDefault = null;
 
 
 		/**
@@ -426,7 +436,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'first_name', $strAliasPrefix . 'first_name');
 			$objBuilder->AddSelectItem($strTableName, 'last_name', $strAliasPrefix . 'last_name');
 			$objBuilder->AddSelectItem($strTableName, 'email_address', $strAliasPrefix . 'email_address');
-			$objBuilder->AddSelectItem($strTableName, 'hash', $strAliasPrefix . 'hash');
+			$objBuilder->AddSelectItem($strTableName, 'url_hash', $strAliasPrefix . 'url_hash');
+			$objBuilder->AddSelectItem($strTableName, 'confirmation_code', $strAliasPrefix . 'confirmation_code');
 		}
 
 
@@ -467,8 +478,10 @@
 			$objToReturn->strLastName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'email_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email_address'] : $strAliasPrefix . 'email_address';
 			$objToReturn->strEmailAddress = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'hash', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'hash'] : $strAliasPrefix . 'hash';
-			$objToReturn->strHash = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'url_hash', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'url_hash'] : $strAliasPrefix . 'url_hash';
+			$objToReturn->strUrlHash = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'confirmation_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'confirmation_code'] : $strAliasPrefix . 'confirmation_code';
+			$objToReturn->strConfirmationCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -608,13 +621,15 @@
 							`first_name`,
 							`last_name`,
 							`email_address`,
-							`hash`
+							`url_hash`,
+							`confirmation_code`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPublicLoginId) . ',
 							' . $objDatabase->SqlVariable($this->strFirstName) . ',
 							' . $objDatabase->SqlVariable($this->strLastName) . ',
 							' . $objDatabase->SqlVariable($this->strEmailAddress) . ',
-							' . $objDatabase->SqlVariable($this->strHash) . '
+							' . $objDatabase->SqlVariable($this->strUrlHash) . ',
+							' . $objDatabase->SqlVariable($this->strConfirmationCode) . '
 						)
 					');
 
@@ -637,7 +652,8 @@
 							`first_name` = ' . $objDatabase->SqlVariable($this->strFirstName) . ',
 							`last_name` = ' . $objDatabase->SqlVariable($this->strLastName) . ',
 							`email_address` = ' . $objDatabase->SqlVariable($this->strEmailAddress) . ',
-							`hash` = ' . $objDatabase->SqlVariable($this->strHash) . '
+							`url_hash` = ' . $objDatabase->SqlVariable($this->strUrlHash) . ',
+							`confirmation_code` = ' . $objDatabase->SqlVariable($this->strConfirmationCode) . '
 						WHERE
 							`public_login_id` = ' . $objDatabase->SqlVariable($this->__intPublicLoginId) . '
 					');
@@ -728,7 +744,8 @@
 			$this->strFirstName = $objReloaded->strFirstName;
 			$this->strLastName = $objReloaded->strLastName;
 			$this->strEmailAddress = $objReloaded->strEmailAddress;
-			$this->strHash = $objReloaded->strHash;
+			$this->strUrlHash = $objReloaded->strUrlHash;
+			$this->strConfirmationCode = $objReloaded->strConfirmationCode;
 		}
 
 		/**
@@ -745,7 +762,8 @@
 					`first_name`,
 					`last_name`,
 					`email_address`,
-					`hash`,
+					`url_hash`,
+					`confirmation_code`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -754,7 +772,8 @@
 					' . $objDatabase->SqlVariable($this->strFirstName) . ',
 					' . $objDatabase->SqlVariable($this->strLastName) . ',
 					' . $objDatabase->SqlVariable($this->strEmailAddress) . ',
-					' . $objDatabase->SqlVariable($this->strHash) . ',
+					' . $objDatabase->SqlVariable($this->strUrlHash) . ',
+					' . $objDatabase->SqlVariable($this->strConfirmationCode) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -825,10 +844,15 @@
 					// @return string
 					return $this->strEmailAddress;
 
-				case 'Hash':
-					// Gets the value for strHash 
+				case 'UrlHash':
+					// Gets the value for strUrlHash 
 					// @return string
-					return $this->strHash;
+					return $this->strUrlHash;
+
+				case 'ConfirmationCode':
+					// Gets the value for strConfirmationCode 
+					// @return string
+					return $this->strConfirmationCode;
 
 
 				///////////////////
@@ -924,12 +948,23 @@
 						throw $objExc;
 					}
 
-				case 'Hash':
-					// Sets the value for strHash 
+				case 'UrlHash':
+					// Sets the value for strUrlHash 
 					// @param string $mixValue
 					// @return string
 					try {
-						return ($this->strHash = QType::Cast($mixValue, QType::String));
+						return ($this->strUrlHash = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ConfirmationCode':
+					// Sets the value for strConfirmationCode 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strConfirmationCode = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1010,7 +1045,8 @@
 			$strToReturn .= '<element name="FirstName" type="xsd:string"/>';
 			$strToReturn .= '<element name="LastName" type="xsd:string"/>';
 			$strToReturn .= '<element name="EmailAddress" type="xsd:string"/>';
-			$strToReturn .= '<element name="Hash" type="xsd:string"/>';
+			$strToReturn .= '<element name="UrlHash" type="xsd:string"/>';
+			$strToReturn .= '<element name="ConfirmationCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1043,8 +1079,10 @@
 				$objToReturn->strLastName = $objSoapObject->LastName;
 			if (property_exists($objSoapObject, 'EmailAddress'))
 				$objToReturn->strEmailAddress = $objSoapObject->EmailAddress;
-			if (property_exists($objSoapObject, 'Hash'))
-				$objToReturn->strHash = $objSoapObject->Hash;
+			if (property_exists($objSoapObject, 'UrlHash'))
+				$objToReturn->strUrlHash = $objSoapObject->UrlHash;
+			if (property_exists($objSoapObject, 'ConfirmationCode'))
+				$objToReturn->strConfirmationCode = $objSoapObject->ConfirmationCode;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1087,7 +1125,8 @@
 	 * @property-read QQNode $FirstName
 	 * @property-read QQNode $LastName
 	 * @property-read QQNode $EmailAddress
-	 * @property-read QQNode $Hash
+	 * @property-read QQNode $UrlHash
+	 * @property-read QQNode $ConfirmationCode
 	 */
 	class QQNodeProvisionalPublicLogin extends QQNode {
 		protected $strTableName = 'provisional_public_login';
@@ -1105,8 +1144,10 @@
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'EmailAddress':
 					return new QQNode('email_address', 'EmailAddress', 'string', $this);
-				case 'Hash':
-					return new QQNode('hash', 'Hash', 'string', $this);
+				case 'UrlHash':
+					return new QQNode('url_hash', 'UrlHash', 'string', $this);
+				case 'ConfirmationCode':
+					return new QQNode('confirmation_code', 'ConfirmationCode', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodePublicLogin('public_login_id', 'PublicLoginId', 'integer', $this);
@@ -1127,7 +1168,8 @@
 	 * @property-read QQNode $FirstName
 	 * @property-read QQNode $LastName
 	 * @property-read QQNode $EmailAddress
-	 * @property-read QQNode $Hash
+	 * @property-read QQNode $UrlHash
+	 * @property-read QQNode $ConfirmationCode
 	 * @property-read QQNodePublicLogin $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeProvisionalPublicLogin extends QQReverseReferenceNode {
@@ -1146,8 +1188,10 @@
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'EmailAddress':
 					return new QQNode('email_address', 'EmailAddress', 'string', $this);
-				case 'Hash':
-					return new QQNode('hash', 'Hash', 'string', $this);
+				case 'UrlHash':
+					return new QQNode('url_hash', 'UrlHash', 'string', $this);
+				case 'ConfirmationCode':
+					return new QQNode('confirmation_code', 'ConfirmationCode', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodePublicLogin('public_login_id', 'PublicLoginId', 'integer', $this);

@@ -24,8 +24,10 @@
 	 * property-read QLabel $LastNameLabel
 	 * property QTextBox $EmailAddressControl
 	 * property-read QLabel $EmailAddressLabel
-	 * property QTextBox $HashControl
-	 * property-read QLabel $HashLabel
+	 * property QTextBox $UrlHashControl
+	 * property-read QLabel $UrlHashLabel
+	 * property QTextBox $ConfirmationCodeControl
+	 * property-read QLabel $ConfirmationCodeLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -82,10 +84,16 @@
 		protected $txtEmailAddress;
 
         /**
-         * @var QTextBox txtHash;
+         * @var QTextBox txtUrlHash;
          * @access protected
          */
-		protected $txtHash;
+		protected $txtUrlHash;
+
+        /**
+         * @var QTextBox txtConfirmationCode;
+         * @access protected
+         */
+		protected $txtConfirmationCode;
 
 
 		// Controls that allow the viewing of ProvisionalPublicLogin's individual data fields
@@ -114,10 +122,16 @@
 		protected $lblEmailAddress;
 
         /**
-         * @var QLabel lblHash
+         * @var QLabel lblUrlHash
          * @access protected
          */
-		protected $lblHash;
+		protected $lblUrlHash;
+
+        /**
+         * @var QLabel lblConfirmationCode
+         * @access protected
+         */
+		protected $lblConfirmationCode;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -336,28 +350,53 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtHash
+		 * Create and setup QTextBox txtUrlHash
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtHash_Create($strControlId = null) {
-			$this->txtHash = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtHash->Name = QApplication::Translate('Hash');
-			$this->txtHash->Text = $this->objProvisionalPublicLogin->Hash;
-			$this->txtHash->MaxLength = ProvisionalPublicLogin::HashMaxLength;
-			return $this->txtHash;
+		public function txtUrlHash_Create($strControlId = null) {
+			$this->txtUrlHash = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtUrlHash->Name = QApplication::Translate('Url Hash');
+			$this->txtUrlHash->Text = $this->objProvisionalPublicLogin->UrlHash;
+			$this->txtUrlHash->MaxLength = ProvisionalPublicLogin::UrlHashMaxLength;
+			return $this->txtUrlHash;
 		}
 
 		/**
-		 * Create and setup QLabel lblHash
+		 * Create and setup QLabel lblUrlHash
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblHash_Create($strControlId = null) {
-			$this->lblHash = new QLabel($this->objParentObject, $strControlId);
-			$this->lblHash->Name = QApplication::Translate('Hash');
-			$this->lblHash->Text = $this->objProvisionalPublicLogin->Hash;
-			return $this->lblHash;
+		public function lblUrlHash_Create($strControlId = null) {
+			$this->lblUrlHash = new QLabel($this->objParentObject, $strControlId);
+			$this->lblUrlHash->Name = QApplication::Translate('Url Hash');
+			$this->lblUrlHash->Text = $this->objProvisionalPublicLogin->UrlHash;
+			return $this->lblUrlHash;
+		}
+
+		/**
+		 * Create and setup QTextBox txtConfirmationCode
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtConfirmationCode_Create($strControlId = null) {
+			$this->txtConfirmationCode = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtConfirmationCode->Name = QApplication::Translate('Confirmation Code');
+			$this->txtConfirmationCode->Text = $this->objProvisionalPublicLogin->ConfirmationCode;
+			$this->txtConfirmationCode->MaxLength = ProvisionalPublicLogin::ConfirmationCodeMaxLength;
+			return $this->txtConfirmationCode;
+		}
+
+		/**
+		 * Create and setup QLabel lblConfirmationCode
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblConfirmationCode_Create($strControlId = null) {
+			$this->lblConfirmationCode = new QLabel($this->objParentObject, $strControlId);
+			$this->lblConfirmationCode->Name = QApplication::Translate('Confirmation Code');
+			$this->lblConfirmationCode->Text = $this->objProvisionalPublicLogin->ConfirmationCode;
+			return $this->lblConfirmationCode;
 		}
 
 
@@ -394,8 +433,11 @@
 			if ($this->txtEmailAddress) $this->txtEmailAddress->Text = $this->objProvisionalPublicLogin->EmailAddress;
 			if ($this->lblEmailAddress) $this->lblEmailAddress->Text = $this->objProvisionalPublicLogin->EmailAddress;
 
-			if ($this->txtHash) $this->txtHash->Text = $this->objProvisionalPublicLogin->Hash;
-			if ($this->lblHash) $this->lblHash->Text = $this->objProvisionalPublicLogin->Hash;
+			if ($this->txtUrlHash) $this->txtUrlHash->Text = $this->objProvisionalPublicLogin->UrlHash;
+			if ($this->lblUrlHash) $this->lblUrlHash->Text = $this->objProvisionalPublicLogin->UrlHash;
+
+			if ($this->txtConfirmationCode) $this->txtConfirmationCode->Text = $this->objProvisionalPublicLogin->ConfirmationCode;
+			if ($this->lblConfirmationCode) $this->lblConfirmationCode->Text = $this->objProvisionalPublicLogin->ConfirmationCode;
 
 		}
 
@@ -424,7 +466,8 @@
 				if ($this->txtFirstName) $this->objProvisionalPublicLogin->FirstName = $this->txtFirstName->Text;
 				if ($this->txtLastName) $this->objProvisionalPublicLogin->LastName = $this->txtLastName->Text;
 				if ($this->txtEmailAddress) $this->objProvisionalPublicLogin->EmailAddress = $this->txtEmailAddress->Text;
-				if ($this->txtHash) $this->objProvisionalPublicLogin->Hash = $this->txtHash->Text;
+				if ($this->txtUrlHash) $this->objProvisionalPublicLogin->UrlHash = $this->txtUrlHash->Text;
+				if ($this->txtConfirmationCode) $this->objProvisionalPublicLogin->ConfirmationCode = $this->txtConfirmationCode->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -491,12 +534,18 @@
 				case 'EmailAddressLabel':
 					if (!$this->lblEmailAddress) return $this->lblEmailAddress_Create();
 					return $this->lblEmailAddress;
-				case 'HashControl':
-					if (!$this->txtHash) return $this->txtHash_Create();
-					return $this->txtHash;
-				case 'HashLabel':
-					if (!$this->lblHash) return $this->lblHash_Create();
-					return $this->lblHash;
+				case 'UrlHashControl':
+					if (!$this->txtUrlHash) return $this->txtUrlHash_Create();
+					return $this->txtUrlHash;
+				case 'UrlHashLabel':
+					if (!$this->lblUrlHash) return $this->lblUrlHash_Create();
+					return $this->lblUrlHash;
+				case 'ConfirmationCodeControl':
+					if (!$this->txtConfirmationCode) return $this->txtConfirmationCode_Create();
+					return $this->txtConfirmationCode;
+				case 'ConfirmationCodeLabel':
+					if (!$this->lblConfirmationCode) return $this->lblConfirmationCode_Create();
+					return $this->lblConfirmationCode;
 				default:
 					try {
 						return parent::__get($strName);
@@ -527,8 +576,10 @@
 						return ($this->txtLastName = QType::Cast($mixValue, 'QControl'));
 					case 'EmailAddressControl':
 						return ($this->txtEmailAddress = QType::Cast($mixValue, 'QControl'));
-					case 'HashControl':
-						return ($this->txtHash = QType::Cast($mixValue, 'QControl'));
+					case 'UrlHashControl':
+						return ($this->txtUrlHash = QType::Cast($mixValue, 'QControl'));
+					case 'ConfirmationCodeControl':
+						return ($this->txtConfirmationCode = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

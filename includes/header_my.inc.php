@@ -27,7 +27,7 @@
 			<li><a href="/give/" title="Give Online">Give Online</a></li>
 			<li><a href="/logout/" title="Logout">Logout</a></li>
 <?php } else { ?>
-			<li><a href="#" title="Register">Register</a></li>
+			<li><a href="/register/" title="Register">Register</a></li>
 <?php } ?>
 		</ul>
 	</div>

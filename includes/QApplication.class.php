@@ -266,12 +266,11 @@
 		 * This will "tokenize" an email token (for groups and comm lists) to all lower case
 		 * alphanumeric/underscore characters.
 		 * 
-		 * TODO need to implement logic
-		 * 
 		 * @param string $strString
+		 * @param bool $blnUnderscoreOkay optional, specifies whether or not underscores are to be included (default is true)
 		 * @return string
 		 */
-		public static function Tokenize($strString) {
+		public static function Tokenize($strString, $blnUnderscoreOkay = true) {
 			$strString = trim(strtolower($strString));
 			$strToReturn = null;
 			while (strlen($strString)) {
@@ -288,12 +287,16 @@
 				$strString = substr($strString, 1);
 			}
 
-			// Cleanup Doubles
-			while (strpos($strToReturn, '__') !== false) $strToReturn = str_replace('__', '_', $strToReturn);
+			if ($blnUnderscoreOkay) {
+				// Cleanup Doubles
+				while (strpos($strToReturn, '__') !== false) $strToReturn = str_replace('__', '_', $strToReturn);
 
-			// Perform a "trim"
-			if (QString::FirstCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 1);
-			if (QString::LastCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 0, strlen($strToReturn) - 1);
+				// Perform a "trim"
+				if (QString::FirstCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 1);
+				if (QString::LastCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 0, strlen($strToReturn) - 1);
+			} else {
+				$strToReturn = str_replace('_', null, $strToReturn);
+			}
 
 			return $strToReturn;
 		}
