@@ -84,6 +84,19 @@
 							return sprintf('%s', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
 					}
 
+				case 'TransactionShort':
+					// Special display specifically for paypal-entered transactions
+					if ($this->StewardshipContributionTypeId == StewardshipContributionType::CreditCard &&
+						$this->strAuthorizationNumber && $this->strAlternateSource &&
+						($this->strAuthorizationNumber != $this->strAlternateSource)) {
+						return sprintf('%s (%s)', $this->strAlternateSource, substr($this->strAuthorizationNumber, strlen($this->strAuthorizationNumber) - 4));
+					} else {
+						if ($strSource = $this->Source)
+							return sprintf('%s (%s)', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId], $strSource);
+						else
+							return sprintf('%s', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
+					}
+
 				case 'PossiblePeopleArray':
 					return $this->objPossiblePeopleArray;
 
@@ -97,7 +110,8 @@
 						StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
 
 				case 'PostLineItemDescription':
-					return trim(sprintf('%s %s', StewardshipContributionType::$NameArray[$this->intStewardshipContributionTypeId], $this->Source));
+					return $this->Transaction;
+//					return trim(sprintf('%s %s', StewardshipContributionType::$NameArray[$this->intStewardshipContributionTypeId], $this->Source));
 
 				default:
 					try {
@@ -675,8 +689,10 @@
 				$objPage->drawText($objAmount->StewardshipContribution->DateCredited->ToString('MMM D YYYY'),	$intXArray[0], $intY, 'UTF-8');
 				$objPage->drawText($objAmount->StewardshipContribution->Person->Name, 							$intXArray[1], $intY, 'UTF-8');
 				$objPage->drawText($objAmount->StewardshipFund->Name, 											$intXArray[2], $intY, 'UTF-8');
-				$objPage->drawText($objAmount->StewardshipContribution->Transaction, 							$intXArray[3], $intY, 'UTF-8');
-
+				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 7.5);
+				$objPage->drawText($objAmount->StewardshipContribution->TransactionShort, 						$intXArray[3], $intY, 'UTF-8');
+				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 9);
+				
 				$strAmount = QApplication::DisplayCurrency($objAmount->Amount);
 				if ($objAmount->StewardshipContribution->NonDeductibleFlag) $strAmount = '(*) ' . $strAmount;
 				self::DrawTextRight($objPage, 																	$intXArray[4], $intY, $strAmount);
