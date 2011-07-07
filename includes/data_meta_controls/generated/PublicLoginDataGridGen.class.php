@@ -297,6 +297,7 @@
 				case 'PersonId': return QQN::PublicLogin()->PersonId;
 				case 'Person': return QQN::PublicLogin()->Person;
 				case 'ActiveFlag': return QQN::PublicLogin()->ActiveFlag;
+				case 'NewPersonFlag': return QQN::PublicLogin()->NewPersonFlag;
 				case 'Username': return QQN::PublicLogin()->Username;
 				case 'Password': return QQN::PublicLogin()->Password;
 				case 'LostPasswordQuestion': return QQN::PublicLogin()->LostPasswordQuestion;

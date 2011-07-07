@@ -1474,7 +1474,7 @@
         </location>
         <size>
             <width>264.000000</width>
-            <height>220.000000</height>
+            <height>240.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -1508,6 +1508,13 @@
             <type><![CDATA[BOOLEAN]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[792823C3-84B8-4D5D-A513-4F56562E343C]]></uid>
+        </SQLField>
+        <SQLField>
+            <name><![CDATA[new_person_flag]]></name>
+            <type><![CDATA[BOOLEAN]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <indexed><![CDATA[1]]></indexed>
+            <uid><![CDATA[7B0A2173-944F-4EFB-82CF-DA99AB91F3A1]]></uid>
         </SQLField>
         <SQLField>
             <name><![CDATA[username]]></name>
@@ -7226,8 +7233,8 @@ Zn2hgcgEgRgDhoaG
         <SourceSplitViewState><![CDATA[2 -352 1667]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
         <windowHeight><![CDATA[1028.000000]]></windowHeight>
-        <windowLocationX><![CDATA[4.000000]]></windowLocationX>
-        <windowLocationY><![CDATA[0.000000]]></windowLocationY>
+        <windowLocationX><![CDATA[176.000000]]></windowLocationX>
+        <windowLocationY><![CDATA[31.000000]]></windowLocationY>
         <windowWidth><![CDATA[1676.000000]]></windowWidth>
     </SQLDocumentInfo>
     <AllowsIndexRenamingOnInsert><![CDATA[1]]></AllowsIndexRenamingOnInsert>
