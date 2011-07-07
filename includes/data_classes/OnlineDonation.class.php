@@ -43,7 +43,49 @@
 		}
 
 		public function SendConfirmationEmail() {
+			// Template
+			$strTemplateName = 'online_donation';
+
+			// Calculate Email Address - THIS WILL RETURN if none is found
+			$strFromAddress = 'ALCF Online Donation <do_not_reply@alcf.net>';
+			$strToAddress = $this->CalculateConfirmationEmailAddress();
+			if (!$strToAddress) return;
+			$strSubject = 'Your Online Donation';
+
+			// Setup the SubstitutionArray
+			$strArray = array();
+
+			// Setup Always-Used Fields
+			$strArray['PERSON_NAME'] = $this->Person->Name;
+			$strArray['ONLINE_DONATION_ID'] = sprintf('%05s', $this->Id);
 			
+			// Add Payment Info
+			$strArray['AMOUNT'] = QApplication::DisplayCurrency($this->Amount);
+			$strArray['CREDIT_CARD'] = $this->CreditCardPayment->CreditCardDescription;
+			
+			$strProductArray = array();
+			foreach ($this->GetOnlineDonationLineItemArray() as $objLineItem) {
+				$strProductArray[] = sprintf('%s  -  %s',
+					($objLineItem->StewardshipFund) ? $objLineItem->StewardshipFund->ExternalName : $objLineItem->Other,
+					QApplication::DisplayCurrency($objLineItem->Amount));
+			}
+			$strArray['PAYMENT_ITEMS'] = implode("\r\n", $strProductArray);
+
+			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
+		}
+
+		/**
+		 * Given various properties of the signup itself, the person who is registered, and the one who is registering "on behalf of",
+		 * this will calculate the correct email address to send out to
+		 * @return string a string containing the email address to send out to
+		 */
+		public function CalculateConfirmationEmailAddress() {
+			// If we are here, then we need to check against the person
+			if ($this->Person->PrimaryEmail) return $this->Person->PrimaryEmail->Address;
+			if (count($objArray = $this->Person->GetEmailArray())) return $objArray[0]->Address;
+
+			// If we are here, then we couldn't flat out find any email addresses -- so return null;
+			return null;
 		}
 
 		public function RefreshDetailsWithCreditCardPayment($blnSave = true) {
