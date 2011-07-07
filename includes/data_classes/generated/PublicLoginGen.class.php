@@ -25,8 +25,9 @@
 	 * @property string $LostPasswordAnswer the value for strLostPasswordAnswer 
 	 * @property boolean $TemporaryPasswordFlag the value for blnTemporaryPasswordFlag 
 	 * @property QDateTime $DateRegistered the value for dttDateRegistered (Not Null)
-	 * @property QDateTime $DateLastLogin the value for dttDateLastLogin (Not Null)
+	 * @property QDateTime $DateLastLogin the value for dttDateLastLogin 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Unique)
+	 * @property ProvisionalPublicLogin $ProvisionalPublicLogin the value for the ProvisionalPublicLogin object that uniquely references this PublicLogin
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class PublicLoginGen extends QBaseClass {
@@ -158,6 +159,24 @@
 		 * @var Person objPerson
 		 */
 		protected $objPerson;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column provisional_public_login.public_login_id.
+		 *
+		 * NOTE: Always use the ProvisionalPublicLogin property getter to correctly retrieve this ProvisionalPublicLogin object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var ProvisionalPublicLogin objProvisionalPublicLogin
+		 */
+		protected $objProvisionalPublicLogin;
+		
+		/**
+		 * Used internally to manage whether the adjoined ProvisionalPublicLogin object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyProvisionalPublicLogin;
 
 
 
@@ -553,6 +572,18 @@
 				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
+			// Check for ProvisionalPublicLogin Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'provisionalpubliclogin__public_login_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objProvisionalPublicLogin = ProvisionalPublicLogin::InstantiateDbRow($objDbRow, $strAliasPrefix . 'provisionalpubliclogin__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objProvisionalPublicLogin = false;
+			}
+
 
 
 			return $objToReturn;
@@ -640,18 +671,6 @@
 			
 		/**
 		 * Load a single PublicLogin object,
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
-		 * @return PublicLogin
-		*/
-		public static function LoadByPersonId($intPersonId) {
-			return PublicLogin::QuerySingle(
-				QQ::Equal(QQN::PublicLogin()->PersonId, $intPersonId)
-			);
-		}
-			
-		/**
-		 * Load a single PublicLogin object,
 		 * by Username Index(es)
 		 * @param string $strUsername
 		 * @return PublicLogin
@@ -659,6 +678,18 @@
 		public static function LoadByUsername($strUsername) {
 			return PublicLogin::QuerySingle(
 				QQ::Equal(QQN::PublicLogin()->Username, $strUsername)
+			);
+		}
+			
+		/**
+		 * Load a single PublicLogin object,
+		 * by PersonId Index(es)
+		 * @param integer $intPersonId
+		 * @return PublicLogin
+		*/
+		public static function LoadByPersonId($intPersonId) {
+			return PublicLogin::QuerySingle(
+				QQ::Equal(QQN::PublicLogin()->PersonId, $intPersonId)
 			);
 		}
 			
@@ -782,6 +813,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined ProvisionalPublicLogin object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyProvisionalPublicLogin) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = ProvisionalPublicLogin::LoadByPublicLoginId($this->intId)) {
+						$objAssociated->PublicLoginId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objProvisionalPublicLogin) {
+						$this->objProvisionalPublicLogin->PublicLoginId = $this->intId;
+						$this->objProvisionalPublicLogin->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyProvisionalPublicLogin = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -806,6 +857,15 @@
 			// Get the Database Object for this Class
 			$objDatabase = PublicLogin::GetDatabase();
 
+			
+			
+			// Update the adjoined ProvisionalPublicLogin object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = ProvisionalPublicLogin::LoadByPublicLoginId($this->intId)) {
+				$objAssociated->Delete();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1007,7 +1067,7 @@
 					return $this->dttDateRegistered;
 
 				case 'DateLastLogin':
-					// Gets the value for dttDateLastLogin (Not Null)
+					// Gets the value for dttDateLastLogin 
 					// @return QDateTime
 					return $this->dttDateLastLogin;
 
@@ -1022,6 +1082,24 @@
 						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
 							$this->objPerson = Person::Load($this->intPersonId);
 						return $this->objPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'ProvisionalPublicLogin':
+					// Gets the value for the ProvisionalPublicLogin object that uniquely references this PublicLogin
+					// by objProvisionalPublicLogin (Unique)
+					// @return ProvisionalPublicLogin
+					try {
+						if ($this->objProvisionalPublicLogin === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objProvisionalPublicLogin)
+							$this->objProvisionalPublicLogin = ProvisionalPublicLogin::LoadByPublicLoginId($this->intId);
+						return $this->objProvisionalPublicLogin;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1161,7 +1239,7 @@
 					}
 
 				case 'DateLastLogin':
-					// Sets the value for dttDateLastLogin (Not Null)
+					// Sets the value for dttDateLastLogin 
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
@@ -1199,6 +1277,43 @@
 						// Update Local Member Variables
 						$this->objPerson = $mixValue;
 						$this->intPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'ProvisionalPublicLogin':
+					// Sets the value for the ProvisionalPublicLogin object referenced by objProvisionalPublicLogin (Unique)
+					// @param ProvisionalPublicLogin $mixValue
+					// @return ProvisionalPublicLogin
+					if (is_null($mixValue)) {
+						$this->objProvisionalPublicLogin = null;
+
+						// Make sure we update the adjoined ProvisionalPublicLogin object the next time we call Save()
+						$this->blnDirtyProvisionalPublicLogin = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a ProvisionalPublicLogin object
+						try {
+							$mixValue = QType::Cast($mixValue, 'ProvisionalPublicLogin');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objProvisionalPublicLogin to a DIFFERENT $mixValue?
+						if ((!$this->ProvisionalPublicLogin) || ($this->ProvisionalPublicLogin->PublicLoginId != $mixValue->PublicLoginId)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined ProvisionalPublicLogin object the next time we call Save()
+							$this->blnDirtyProvisionalPublicLogin = true;
+
+							// Update Local Member Variable
+							$this->objProvisionalPublicLogin = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -1352,6 +1467,7 @@
 	 * @property-read QQNode $TemporaryPasswordFlag
 	 * @property-read QQNode $DateRegistered
 	 * @property-read QQNode $DateLastLogin
+	 * @property-read QQReverseReferenceNodeProvisionalPublicLogin $ProvisionalPublicLogin
 	 */
 	class QQNodePublicLogin extends QQNode {
 		protected $strTableName = 'public_login';
@@ -1383,6 +1499,8 @@
 					return new QQNode('date_registered', 'DateRegistered', 'QDateTime', $this);
 				case 'DateLastLogin':
 					return new QQNode('date_last_login', 'DateLastLogin', 'QDateTime', $this);
+				case 'ProvisionalPublicLogin':
+					return new QQReverseReferenceNodeProvisionalPublicLogin($this, 'provisionalpubliclogin', 'reverse_reference', 'public_login_id', 'ProvisionalPublicLogin');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1410,6 +1528,7 @@
 	 * @property-read QQNode $TemporaryPasswordFlag
 	 * @property-read QQNode $DateRegistered
 	 * @property-read QQNode $DateLastLogin
+	 * @property-read QQReverseReferenceNodeProvisionalPublicLogin $ProvisionalPublicLogin
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodePublicLogin extends QQReverseReferenceNode {
@@ -1442,6 +1561,8 @@
 					return new QQNode('date_registered', 'DateRegistered', 'QDateTime', $this);
 				case 'DateLastLogin':
 					return new QQNode('date_last_login', 'DateLastLogin', 'QDateTime', $this);
+				case 'ProvisionalPublicLogin':
+					return new QQReverseReferenceNodeProvisionalPublicLogin($this, 'provisionalpubliclogin', 'reverse_reference', 'public_login_id', 'ProvisionalPublicLogin');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

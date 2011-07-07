@@ -265,6 +265,12 @@
 			return new QQNodePhone('phone', null, null);
 		}
 		/**
+		 * @return QQNodeProvisionalPublicLogin
+		 */
+		static public function ProvisionalPublicLogin() {
+			return new QQNodeProvisionalPublicLogin('provisional_public_login', null, null);
+		}
+		/**
 		 * @return QQNodePublicLogin
 		 */
 		static public function PublicLogin() {

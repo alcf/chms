@@ -2586,12 +2586,13 @@
 			}
 			
 			
-			// Update the adjoined PublicLogin object (if applicable) and perform a delete
+			// Update the adjoined PublicLogin object (if applicable) and perform the unassociation
 
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
 			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
 			if ($objAssociated = PublicLogin::LoadByPersonId($this->intId)) {
-				$objAssociated->Delete();
+				$objAssociated->PersonId = null;
+				$objAssociated->Save();
 			}
 
 			// Perform the SQL Query

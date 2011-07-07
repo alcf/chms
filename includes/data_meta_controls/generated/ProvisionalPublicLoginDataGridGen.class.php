@@ -1,9 +1,9 @@
 <?php
 	/**
 	 * This is the "Meta" DataGrid class for the List functionality
-	 * of the PublicLogin class.  This code-generated class
+	 * of the ProvisionalPublicLogin class.  This code-generated class
 	 * contains a QDataGrid class which can be used by any QForm or QPanel,
-	 * listing a collection of PublicLogin objects.  It includes
+	 * listing a collection of ProvisionalPublicLogin objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
@@ -16,7 +16,7 @@
 	 * @subpackage MetaControls
 	 * 
 	 */
-	class PublicLoginDataGridGen extends QDataGrid {
+	class ProvisionalPublicLoginDataGridGen extends QDataGrid {
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own BindAllRows method (which can obviousy be switched to something else).
@@ -35,9 +35,9 @@
 
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
-		 * way of adding a column to this PublicLogin datagrid.  The description of a column's
+		 * way of adding a column to this ProvisionalPublicLogin datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
-		 * in the PublicLogin object, or it can be any QQNode extending from QQN::PublicLogin().
+		 * in the ProvisionalPublicLogin object, or it can be any QQNode extending from QQN::ProvisionalPublicLogin().
 		 * 
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
@@ -45,7 +45,7 @@
 		 * Any of these things can be overridden with OverrideParameters.
 		 * 
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
-		 * sorting using two fields from the PublicLogin object.
+		 * sorting using two fields from the ProvisionalPublicLogin object.
 		 *
 		 * @param mixed $mixContents
 		 * @param string $objOverrideParameters[]
@@ -127,7 +127,7 @@
 		 * 
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
-		 * @param mixed $mixContent string or QQNode from PublicLogin
+		 * @param mixed $mixContent string or QQNode from ProvisionalPublicLogin
 		 * @param string $strTypeClassName the name of the TypeClass to use $NameArray against
 		 * @param mixed $objOverrideParameters
 		 */
@@ -187,10 +187,10 @@
 		public function MetaAddEditLinkColumn($strLinkUrl, $strLinkHtml = 'Edit', $strColumnTitle = 'Edit', $intArgumentType = QMetaControlArgumentType::PathInfo) {
 			switch ($intArgumentType) {
 				case QMetaControlArgumentType::QueryString:
-					$strLinkUrl .= '?intId=<?=urlencode($_ITEM->Id)?>';
+					$strLinkUrl .= '?intPublicLoginId=<?=urlencode($_ITEM->PublicLoginId)?>';
 					break;
 				case QMetaControlArgumentType::PathInfo:
-					$strLinkUrl .= '/<?=str_replace("+","%20",urlencode($_ITEM->Id))?>';
+					$strLinkUrl .= '/<?=str_replace("+","%20",urlencode($_ITEM->PublicLoginId))?>';
 					break;
 				default:
 					throw new QCallerException('Unable to pass arguments with this intArgumentType: ' . $intArgumentType);
@@ -212,7 +212,7 @@
 		 * @param string $strColumnTitle the HTML of the link text
 		 */
 		public function MetaAddEditProxyColumn(QControlProxy $pxyControl, $strLinkHtml = 'Edit', $strColumnTitle = 'Edit') {
-			$strHtml = '<a href="#" <?= $_FORM->GetControl("' . $pxyControl->ControlId . '")->RenderAsEvents($_ITEM->Id, false); ?>>' . QApplication::Translate($strLinkHtml) . '</a>';
+			$strHtml = '<a href="#" <?= $_FORM->GetControl("' . $pxyControl->ControlId . '")->RenderAsEvents($_ITEM->PublicLoginId, false); ?>>' . QApplication::Translate($strLinkHtml) . '</a>';
 			$colEditColumn = new QDataGridColumn(QApplication::Translate($strColumnTitle), $strHtml, 'HtmlEntities=False');
 			$this->AddColumn($colEditColumn);
 			return $colEditColumn;
@@ -251,7 +251,7 @@
 			$objClauses = ($objOptionalClauses) ? $objOptionalClauses : array();
 
 			// We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-			if ($this->Paginator) $this->TotalItemCount = PublicLogin::QueryCount($objCondition, $objClauses);
+			if ($this->Paginator) $this->TotalItemCount = ProvisionalPublicLogin::QueryCount($objCondition, $objClauses);
 
 			// If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
 			// the OrderByClause to the $objClauses array
@@ -260,8 +260,8 @@
 			// Add the LimitClause information, as well
 			if ($objClause = $this->LimitClause) array_push($objClauses, $objClause);
 
-			// Set the DataSource to be a Query result from PublicLogin, given the clauses above
-			$this->DataSource = PublicLogin::QueryArray($objCondition, $objClauses);
+			// Set the DataSource to be a Query result from ProvisionalPublicLogin, given the clauses above
+			$this->DataSource = ProvisionalPublicLogin::QueryArray($objCondition, $objClauses);
 		}
 
 
@@ -269,8 +269,8 @@
 		/**
 		 * Used internally by the Meta-based Add Column tools.
 		 *
-		 * Given a QQNode or a Text String, this will return a PublicLogin-based QQNode.
-		 * It will also verify that it is a proper PublicLogin-based QQNode, and will throw an exception otherwise.
+		 * Given a QQNode or a Text String, this will return a ProvisionalPublicLogin-based QQNode.
+		 * It will also verify that it is a proper ProvisionalPublicLogin-based QQNode, and will throw an exception otherwise.
 		 *
 		 * @param mixed $mixContent
 		 * @return QQNode
@@ -279,7 +279,7 @@
 			if ($mixContent instanceof QQNode) {
 				if (!$mixContent->_ParentNode)
 					throw new QCallerException('Content QQNode cannot be a Top Level Node');
-				if ($mixContent->_RootTableName == 'public_login') {
+				if ($mixContent->_RootTableName == 'provisional_public_login') {
 					if (($mixContent instanceof QQReverseReferenceNode) && !($mixContent->_PropertyName))
 						throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 					$objCurrentNode = $mixContent;
@@ -291,23 +291,15 @@
 					}
 					return $mixContent;
 				} else
-					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "public_login".');
+					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "provisional_public_login".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
-				case 'Id': return QQN::PublicLogin()->Id;
-				case 'PersonId': return QQN::PublicLogin()->PersonId;
-				case 'Person': return QQN::PublicLogin()->Person;
-				case 'ActiveFlag': return QQN::PublicLogin()->ActiveFlag;
-				case 'NewPersonFlag': return QQN::PublicLogin()->NewPersonFlag;
-				case 'Username': return QQN::PublicLogin()->Username;
-				case 'Password': return QQN::PublicLogin()->Password;
-				case 'LostPasswordQuestion': return QQN::PublicLogin()->LostPasswordQuestion;
-				case 'LostPasswordAnswer': return QQN::PublicLogin()->LostPasswordAnswer;
-				case 'TemporaryPasswordFlag': return QQN::PublicLogin()->TemporaryPasswordFlag;
-				case 'DateRegistered': return QQN::PublicLogin()->DateRegistered;
-				case 'DateLastLogin': return QQN::PublicLogin()->DateLastLogin;
-				case 'ProvisionalPublicLogin': return QQN::PublicLogin()->ProvisionalPublicLogin;
-
-				default: throw new QCallerException('Simple Property not found in PublicLoginDataGrid content: ' . $mixContent);
+				case 'PublicLoginId': return QQN::ProvisionalPublicLogin()->PublicLoginId;
+				case 'PublicLogin': return QQN::ProvisionalPublicLogin()->PublicLogin;
+				case 'FirstName': return QQN::ProvisionalPublicLogin()->FirstName;
+				case 'LastName': return QQN::ProvisionalPublicLogin()->LastName;
+				case 'EmailAddress': return QQN::ProvisionalPublicLogin()->EmailAddress;
+				case 'Hash': return QQN::ProvisionalPublicLogin()->Hash;
+				default: throw new QCallerException('Simple Property not found in ProvisionalPublicLoginDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 			else

@@ -38,6 +38,8 @@
 	 * property-read QLabel $DateRegisteredLabel
 	 * property QDateTimePicker $DateLastLoginControl
 	 * property-read QLabel $DateLastLoginLabel
+	 * property QListBox $ProvisionalPublicLoginControl
+	 * property-read QLabel $ProvisionalPublicLoginLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -199,8 +201,20 @@
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstProvisionalPublicLogin
+         * @access protected
+         */
+		protected $lstProvisionalPublicLogin;
+
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblProvisionalPublicLogin
+         * @access protected
+         */
+		protected $lblProvisionalPublicLogin;
+
 
 
 		/**
@@ -320,9 +334,7 @@
 		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
-			$this->lstPerson->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -349,7 +361,6 @@
 			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblPersonId->Name = QApplication::Translate('Person');
 			$this->lblPersonId->Text = ($this->objPublicLogin->Person) ? $this->objPublicLogin->Person->__toString() : null;
-			$this->lblPersonId->Required = true;
 			return $this->lblPersonId;
 		}
 
@@ -568,7 +579,6 @@
 			$this->calDateLastLogin->Name = QApplication::Translate('Date Last Login');
 			$this->calDateLastLogin->DateTime = $this->objPublicLogin->DateLastLogin;
 			$this->calDateLastLogin->DateTimePickerType = QDateTimePickerType::DateTime;
-			$this->calDateLastLogin->Required = true;
 			return $this->calDateLastLogin;
 		}
 
@@ -583,11 +593,54 @@
 			$this->lblDateLastLogin->Name = QApplication::Translate('Date Last Login');
 			$this->strDateLastLoginDateTimeFormat = $strDateTimeFormat;
 			$this->lblDateLastLogin->Text = sprintf($this->objPublicLogin->DateLastLogin) ? $this->objPublicLogin->DateLastLogin->__toString($this->strDateLastLoginDateTimeFormat) : null;
-			$this->lblDateLastLogin->Required = true;
 			return $this->lblDateLastLogin;
 		}
 
 		protected $strDateLastLoginDateTimeFormat;
+
+		/**
+		 * Create and setup QListBox lstProvisionalPublicLogin
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstProvisionalPublicLogin_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstProvisionalPublicLogin = new QListBox($this->objParentObject, $strControlId);
+			$this->lstProvisionalPublicLogin->Name = QApplication::Translate('Provisional Public Login');
+			$this->lstProvisionalPublicLogin->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objProvisionalPublicLoginCursor = ProvisionalPublicLogin::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objProvisionalPublicLogin = ProvisionalPublicLogin::InstantiateCursor($objProvisionalPublicLoginCursor)) {
+				$objListItem = new QListItem($objProvisionalPublicLogin->__toString(), $objProvisionalPublicLogin->PublicLoginId);
+				if ($objProvisionalPublicLogin->PublicLoginId == $this->objPublicLogin->Id)
+					$objListItem->Selected = true;
+				$this->lstProvisionalPublicLogin->AddItem($objListItem);
+			}
+
+			// Because ProvisionalPublicLogin's ProvisionalPublicLogin is not null, if a value is already selected, it cannot be changed.
+			if ($this->lstProvisionalPublicLogin->SelectedValue)
+				$this->lstProvisionalPublicLogin->Enabled = false;
+
+			// Return the QListBox
+			return $this->lstProvisionalPublicLogin;
+		}
+
+		/**
+		 * Create and setup QLabel lblProvisionalPublicLogin
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblProvisionalPublicLogin_Create($strControlId = null) {
+			$this->lblProvisionalPublicLogin = new QLabel($this->objParentObject, $strControlId);
+			$this->lblProvisionalPublicLogin->Name = QApplication::Translate('Provisional Public Login');
+			$this->lblProvisionalPublicLogin->Text = ($this->objPublicLogin->ProvisionalPublicLogin) ? $this->objPublicLogin->ProvisionalPublicLogin->__toString() : null;
+			return $this->lblProvisionalPublicLogin;
+		}
 
 
 
@@ -604,8 +657,7 @@
 
 			if ($this->lstPerson) {
 					$this->lstPerson->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
 				$objPersonArray = Person::LoadAll();
 				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
 					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
@@ -643,6 +695,24 @@
 			if ($this->calDateLastLogin) $this->calDateLastLogin->DateTime = $this->objPublicLogin->DateLastLogin;
 			if ($this->lblDateLastLogin) $this->lblDateLastLogin->Text = sprintf($this->objPublicLogin->DateLastLogin) ? $this->objPublicLogin->__toString($this->strDateLastLoginDateTimeFormat) : null;
 
+			if ($this->lstProvisionalPublicLogin) {
+				$this->lstProvisionalPublicLogin->RemoveAllItems();
+				$this->lstProvisionalPublicLogin->AddItem(QApplication::Translate('- Select One -'), null);
+				$objProvisionalPublicLoginArray = ProvisionalPublicLogin::LoadAll();
+				if ($objProvisionalPublicLoginArray) foreach ($objProvisionalPublicLoginArray as $objProvisionalPublicLogin) {
+					$objListItem = new QListItem($objProvisionalPublicLogin->__toString(), $objProvisionalPublicLogin->PublicLoginId);
+					if ($objProvisionalPublicLogin->PublicLoginId == $this->objPublicLogin->Id)
+						$objListItem->Selected = true;
+					$this->lstProvisionalPublicLogin->AddItem($objListItem);
+				}
+				// Because ProvisionalPublicLogin's ProvisionalPublicLogin is not null, if a value is already selected, it cannot be changed.
+				if ($this->lstProvisionalPublicLogin->SelectedValue)
+					$this->lstProvisionalPublicLogin->Enabled = false;
+				else
+					$this->lstProvisionalPublicLogin->Enabled = true;
+			}
+			if ($this->lblProvisionalPublicLogin) $this->lblProvisionalPublicLogin->Text = ($this->objPublicLogin->ProvisionalPublicLogin) ? $this->objPublicLogin->ProvisionalPublicLogin->__toString() : null;
+
 		}
 
 
@@ -678,6 +748,7 @@
 				if ($this->calDateLastLogin) $this->objPublicLogin->DateLastLogin = $this->calDateLastLogin->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstProvisionalPublicLogin) $this->objPublicLogin->ProvisionalPublicLogin = ProvisionalPublicLogin::Load($this->lstProvisionalPublicLogin->SelectedValue);
 
 				// Save the PublicLogin object
 				$this->objPublicLogin->Save();
@@ -784,6 +855,12 @@
 				case 'DateLastLoginLabel':
 					if (!$this->lblDateLastLogin) return $this->lblDateLastLogin_Create();
 					return $this->lblDateLastLogin;
+				case 'ProvisionalPublicLoginControl':
+					if (!$this->lstProvisionalPublicLogin) return $this->lstProvisionalPublicLogin_Create();
+					return $this->lstProvisionalPublicLogin;
+				case 'ProvisionalPublicLoginLabel':
+					if (!$this->lblProvisionalPublicLogin) return $this->lblProvisionalPublicLogin_Create();
+					return $this->lblProvisionalPublicLogin;
 				default:
 					try {
 						return parent::__get($strName);
@@ -828,6 +905,8 @@
 						return ($this->calDateRegistered = QType::Cast($mixValue, 'QControl'));
 					case 'DateLastLoginControl':
 						return ($this->calDateLastLogin = QType::Cast($mixValue, 'QControl'));
+					case 'ProvisionalPublicLoginControl':
+						return ($this->lstProvisionalPublicLogin = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

@@ -590,7 +590,7 @@ PRIMARY KEY (`id`)
 CREATE TABLE `public_login`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`person_id` INTEGER UNSIGNED NOT NULL UNIQUE,
+`person_id` INTEGER UNSIGNED UNIQUE,
 `active_flag` BOOLEAN,
 `new_person_flag` BOOLEAN,
 `username` VARCHAR(20) NOT NULL UNIQUE,
@@ -599,7 +599,7 @@ CREATE TABLE `public_login`
 `lost_password_answer` VARCHAR(255),
 `temporary_password_flag` BOOLEAN,
 `date_registered` DATETIME NOT NULL,
-`date_last_login` DATETIME NOT NULL,
+`date_last_login` DATETIME,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -1051,6 +1051,16 @@ CREATE TABLE `permission_type`
 `id` INTEGER UNSIGNED NOT NULL,
 `name` VARCHAR(40) NOT NULL UNIQUE,
 PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `provisional_public_login`
+(
+`public_login_id` INTEGER UNSIGNED NOT NULL,
+`first_name` VARCHAR(100),
+`last_name` VARCHAR(100),
+`email_address` VARCHAR(100),
+`hash` VARCHAR(8),
+PRIMARY KEY (`public_login_id`)
 ) ENGINE=InnoDB;
 
 CREATE INDEX `error_flag_idx` ON `outgoing_email_queue`(`error_flag`);
@@ -1526,3 +1536,4 @@ ALTER TABLE `group_participation` ADD FOREIGN KEY group_role_id_idxfk (`group_ro
 
 CREATE INDEX `date_start_idx` ON `group_participation`(`date_start`);
 CREATE INDEX `date_end_idx` ON `group_participation`(`date_end`);
+ALTER TABLE `provisional_public_login` ADD FOREIGN KEY public_login_id_idxfk (`public_login_id`) REFERENCES `public_login` (`id`);

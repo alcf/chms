@@ -1536,10 +1536,6 @@
 				$this->lstPublicLogin->AddItem($objListItem);
 			}
 
-			// Because PublicLogin's PublicLogin is not null, if a value is already selected, it cannot be changed.
-			if ($this->lstPublicLogin->SelectedValue)
-				$this->lstPublicLogin->Enabled = false;
-
 			// Return the QListBox
 			return $this->lstPublicLogin;
 		}
@@ -1890,11 +1886,6 @@
 						$objListItem->Selected = true;
 					$this->lstPublicLogin->AddItem($objListItem);
 				}
-				// Because PublicLogin's PublicLogin is not null, if a value is already selected, it cannot be changed.
-				if ($this->lstPublicLogin->SelectedValue)
-					$this->lstPublicLogin->Enabled = false;
-				else
-					$this->lstPublicLogin->Enabled = true;
 			}
 			if ($this->lblPublicLogin) $this->lblPublicLogin->Text = ($this->objPerson->PublicLogin) ? $this->objPerson->PublicLogin->__toString() : null;
 
