@@ -58,29 +58,94 @@
 		 * **AND** sending a confirmation email.
 		 * 
 		 * This will save the record.
+		 * @param SignupPayment $objSignupPayment an OPTIONAL SignupPayment for the payment that was "just submitted" and to be incorporated into the email message
 		 */
-		public function Complete() {
+		public function Complete(SignupPayment $objSignupPayment = null) {
 			$this->SignupEntryStatusTypeId = SignupEntryStatusType::Complete;
 			$this->DateSubmitted = QDateTime::Now();
 			$this->Save();
-			$this->SendConfirmationEmail();
+			$this->SendConfirmationEmail($objSignupPayment);
 		}
 
 		/**
 		 * Queues a "confirmation email" to be sent out to the person signing up
+		 * @param SignupPayment $objSignupPayment an OPTIONAL SignupPayment for the payment that was "just submitted" and to be incorporated into the email message
 		 */
-		public function SendConfirmationEmail() {
-			// TODO
+		public function SendConfirmationEmail(SignupPayment $objSignupPayment = null) {
+			// Setup the SubstitutionArray
+			$strArray = array();
+
+			// Setup Always-Used Fields
+			$strArray['PERSON_NAME'] = $this->Person->Name;
+			$strArray['SIGNUP_FORM_NAME'] = $this->SignupForm->Name;
+			$strArray['SIGNUP_ENTRY_ID'] = sprintf('%05s', $this->Id);
+			$strArray['SUPPORT_EMAIL'] = $this->SignupForm->SupportEmail;
+			
+			// Add a Description
+			$strArray['SIGNUP_DESCRIPTION'] = null;
+			if ($strDescription = trim($this->SignupForm->Description))
+				$strArray['SIGNUP_DESCRIPTION'] = $strDescription;
+			else switch ($this->SignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					if ($strDescription = $this->SignupForm->EventSignupForm->GeneratedDescription)
+						$strArray['SIGNUP_DESCRIPTION'] = 'Event ' . trim(substr($strDescription, 1)) . '.';
+					break;
+			}
+
+			// Add URL to the Description (if applicable)
+			if ($strUrl = trim($this->SignupForm->InformationUrl))
+				$strArray['SIGNUP_DESCRIPTION'] = trim($strArray['SIGNUP_DESCRIPTION'] . '  For more information, please go to ' . $strUrl);
+
+			// Add Payment Info (if applicable)
+			if ($objSignupPayment) {
+				$strArray['AMOUNT'] = QApplication::DisplayCurrency($objSignupPayment->Amount);
+				$strArray['CREDIT_CARD'] = $objSignupPayment->TransactionDescription;
+				
+				$strProductArray = array();
+				foreach ($this->GetSignupProductArray(QQ::OrderBy(QQN::SignupProduct()->FormProduct->FormProductTypeId, QQN::SignupProduct()->FormProduct->OrderNumber)) as $objSignupProduct) {
+					$strProductArray[] = sprintf('%s  -  Qty %s  -  %s',
+						$objSignupProduct->FormProduct->Name,
+						$objSignupProduct->Quantity,
+						QApplication::DisplayCurrency($objSignupProduct->Quantity * $objSignupProduct->Amount));
+				}
+				$strArray['PAYMENT_ITEMS'] = implode("\r\n", $strProductArray);
+				$strTemplateName = 'signup_entry_paid';
+			} else {
+				$strTemplateName = 'signup_entry_unpaid';
+			}
+
+			// Calculate Email Address
+			$strFromAddress = 'ALCF Signup System <do_not_reply@alcf.net>';
+			if (!($strToAddress = $this->CalculateConfirmationEmailAddress())) $strToAddress = $strFromAddress;
+			$strBccAddress = trim($this->SignupForm->EmailNotification);
+			$strSubject = 'Your Signup for ' . $this->SignupForm->Name;
+			
+			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject, null, $strBccAddress);
 		}
-		
+
 		/**
 		 * Given various properties of the signup itself, the person who is registered, and the one who is registering "on behalf of",
 		 * this will calculate the correct email address to send out to
 		 * @return string a string containing the email address to send out to
 		 */
 		public function CalculateConfirmationEmailAddress() {
-			// TODO
-			return 'todo@email.com';
+			// First, deduce from the form (if applicable)
+			foreach ($this->GetFormAnswerArray() as $objFormAnswer) {
+				if ($objFormAnswer->FormQuestion->FormQuestionTypeId == FormQuestionType::Email) {
+					if ($objFormAnswer->TextValue) return $objFormAnswer->TextValue;
+				}
+			}
+
+			// If we are here, then we need to check against the person
+			if ($this->Person->PrimaryEmail) return $this->Person->PrimaryEmail->Address;
+			if (count($objArray = $this->Person->GetEmailArray())) return $objArray[0]->Address;
+			
+			// If we are here, then let's do a final check against the signup person
+			if ($this->SignupByPerson->PrimaryEmail) return $this->SignupByPerson->PrimaryEmail->Address;
+			if (count($objArray = $this->SignupByPerson->GetEmailArray())) return $objArray[0]->Address;
+
+			// If we are here, then we couldn't flat out find any email addresses -- so return null;
+			return null;
 		}
 
 		/**

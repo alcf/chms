@@ -296,6 +296,8 @@
 				case 'Id': return QQN::OutgoingEmailQueue()->Id;
 				case 'ToAddress': return QQN::OutgoingEmailQueue()->ToAddress;
 				case 'FromAddress': return QQN::OutgoingEmailQueue()->FromAddress;
+				case 'CcAddress': return QQN::OutgoingEmailQueue()->CcAddress;
+				case 'BccAddress': return QQN::OutgoingEmailQueue()->BccAddress;
 				case 'Subject': return QQN::OutgoingEmailQueue()->Subject;
 				case 'Body': return QQN::OutgoingEmailQueue()->Body;
 				case 'DateQueued': return QQN::OutgoingEmailQueue()->DateQueued;

@@ -34,6 +34,8 @@
 	 * property-read QLabel $DescriptionLabel
 	 * property QTextBox $InformationUrlControl
 	 * property-read QLabel $InformationUrlLabel
+	 * property QTextBox $SupportEmailControl
+	 * property-read QLabel $SupportEmailLabel
 	 * property QTextBox $EmailNotificationControl
 	 * property-read QLabel $EmailNotificationLabel
 	 * property QCheckBox $AllowOtherFlagControl
@@ -140,6 +142,12 @@
 		protected $txtInformationUrl;
 
         /**
+         * @var QTextBox txtSupportEmail;
+         * @access protected
+         */
+		protected $txtSupportEmail;
+
+        /**
          * @var QTextBox txtEmailNotification;
          * @access protected
          */
@@ -242,6 +250,12 @@
          * @access protected
          */
 		protected $lblInformationUrl;
+
+        /**
+         * @var QLabel lblSupportEmail
+         * @access protected
+         */
+		protected $lblSupportEmail;
 
         /**
          * @var QLabel lblEmailNotification
@@ -641,6 +655,33 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtSupportEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtSupportEmail_Create($strControlId = null) {
+			$this->txtSupportEmail = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtSupportEmail->Name = QApplication::Translate('Support Email');
+			$this->txtSupportEmail->Text = $this->objSignupForm->SupportEmail;
+			$this->txtSupportEmail->Required = true;
+			$this->txtSupportEmail->MaxLength = SignupForm::SupportEmailMaxLength;
+			return $this->txtSupportEmail;
+		}
+
+		/**
+		 * Create and setup QLabel lblSupportEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblSupportEmail_Create($strControlId = null) {
+			$this->lblSupportEmail = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSupportEmail->Name = QApplication::Translate('Support Email');
+			$this->lblSupportEmail->Text = $this->objSignupForm->SupportEmail;
+			$this->lblSupportEmail->Required = true;
+			return $this->lblSupportEmail;
+		}
+
+		/**
 		 * Create and setup QTextBox txtEmailNotification
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -994,6 +1035,9 @@
 			if ($this->txtInformationUrl) $this->txtInformationUrl->Text = $this->objSignupForm->InformationUrl;
 			if ($this->lblInformationUrl) $this->lblInformationUrl->Text = $this->objSignupForm->InformationUrl;
 
+			if ($this->txtSupportEmail) $this->txtSupportEmail->Text = $this->objSignupForm->SupportEmail;
+			if ($this->lblSupportEmail) $this->lblSupportEmail->Text = $this->objSignupForm->SupportEmail;
+
 			if ($this->txtEmailNotification) $this->txtEmailNotification->Text = $this->objSignupForm->EmailNotification;
 			if ($this->lblEmailNotification) $this->lblEmailNotification->Text = $this->objSignupForm->EmailNotification;
 
@@ -1090,6 +1134,7 @@
 				if ($this->chkConfidentialFlag) $this->objSignupForm->ConfidentialFlag = $this->chkConfidentialFlag->Checked;
 				if ($this->txtDescription) $this->objSignupForm->Description = $this->txtDescription->Text;
 				if ($this->txtInformationUrl) $this->objSignupForm->InformationUrl = $this->txtInformationUrl->Text;
+				if ($this->txtSupportEmail) $this->objSignupForm->SupportEmail = $this->txtSupportEmail->Text;
 				if ($this->txtEmailNotification) $this->objSignupForm->EmailNotification = $this->txtEmailNotification->Text;
 				if ($this->chkAllowOtherFlag) $this->objSignupForm->AllowOtherFlag = $this->chkAllowOtherFlag->Checked;
 				if ($this->chkAllowMultipleFlag) $this->objSignupForm->AllowMultipleFlag = $this->chkAllowMultipleFlag->Checked;
@@ -1196,6 +1241,12 @@
 				case 'InformationUrlLabel':
 					if (!$this->lblInformationUrl) return $this->lblInformationUrl_Create();
 					return $this->lblInformationUrl;
+				case 'SupportEmailControl':
+					if (!$this->txtSupportEmail) return $this->txtSupportEmail_Create();
+					return $this->txtSupportEmail;
+				case 'SupportEmailLabel':
+					if (!$this->lblSupportEmail) return $this->lblSupportEmail_Create();
+					return $this->lblSupportEmail;
 				case 'EmailNotificationControl':
 					if (!$this->txtEmailNotification) return $this->txtEmailNotification_Create();
 					return $this->txtEmailNotification;
@@ -1296,6 +1347,8 @@
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'InformationUrlControl':
 						return ($this->txtInformationUrl = QType::Cast($mixValue, 'QControl'));
+					case 'SupportEmailControl':
+						return ($this->txtSupportEmail = QType::Cast($mixValue, 'QControl'));
 					case 'EmailNotificationControl':
 						return ($this->txtEmailNotification = QType::Cast($mixValue, 'QControl'));
 					case 'AllowOtherFlagControl':

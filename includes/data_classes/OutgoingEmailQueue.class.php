@@ -27,6 +27,24 @@
 			return sprintf('OutgoingEmailQueue Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will queue a message for delivery, with the message being genearted by the Template and Substitution Array.
+		 * @param string $strTemplateName
+		 * @param string[] $strSubstitutionArray
+		 * @param string  $strToAddress
+		 * @param string $strFromAddress
+		 * @param string $strSubject
+		 * @param string $strCc optional
+		 * @param string $strBcc optional
+		 */
+		public static function QueueFromTemplate($strTemplateName, $strSubstitutionArray, $strToAddress, $strFromAddress, $strSubject, $strCc = null, $strBcc = null) {
+			$strTemplate = file_get_contents(__INCLUDES__ . '/email_templates/' . $strTemplateName . '.txt');
+			foreach ($strSubstitutionArray as $strKey => $strValue) {
+				$strTemplate = str_replace('%' . $strKey . '%', $strValue, $strTemplate);
+			}
+			
+			self::QueueMessage($strToAddress, $strFromAddress, $strSubject, $strTemplate, $strCc, $strBcc);
+		}
 
 		/**
 		 * This will QUEUE a message for delivery.
@@ -34,11 +52,15 @@
 		 * @param string $strFromAddress if null, it will look up from Registry
 		 * @param string $strSubject
 		 * @param string $strBody
+		 * @param string $strCc
+		 * @param string $strBcc
 		 */
-		public static function QueueMessage($strToAddress, $strFromAddress, $strSubject, $strBody) {
+		public static function QueueMessage($strToAddress, $strFromAddress, $strSubject, $strBody, $strCc = null, $strBcc = null) {
 			$objEmailMessage = new OutgoingEmailQueue();
 			$objEmailMessage->ToAddress = $strToAddress;
 			$objEmailMessage->FromAddress = ($strFromAddress) ? $strFromAddress : Registry::GetValue('system_email_address');
+			$objEmailMessage->CcAddress = $strCc;
+			$objEmailMessage->BccAddress = $strBcc;
 			$objEmailMessage->Subject = $strSubject;
 			$objEmailMessage->Body = $strBody;
 			$objEmailMessage->DateQueued = QDateTime::Now();
@@ -52,6 +74,8 @@
 				$this->Save();
 
 				$objEmailMessage = new QEmailMessage($this->strFromAddress, $this->strToAddress, $this->strSubject, $this->strBody);
+				$objEmailMessage->Cc = $this->strCcAddress;
+				$objEmailMessage->Bcc = $this->strBccAddress;
 
 				try {
 					QEmailServer::Send($objEmailMessage);

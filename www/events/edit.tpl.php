@@ -18,6 +18,12 @@
 		<?php $this->chkAllowOtherFlag->RenderWithName(); ?>
 	</div>
 
+	<h3>Email Communication</h3>
+	<div class="section">
+		<?php $this->txtSupportEmail->RenderWithName('Name=Support Email Address'); ?>
+		<?php $this->txtEmailNotification->RenderWithName('Name=BCC Confirmation Emails'); ?>
+	</div>
+	
 	<h3>Registration Capacity and Limits (Optional)</h3>
 	<div class="section">
 		<?php $this->txtSignupLimit->RenderWithName('Name=Overall Capacity Limit'); ?>
@@ -25,7 +31,7 @@
 		<?php $this->txtSignupFemaleLimit->RenderWithName('Name=Capacity Limit for Females'); ?>
 	</div>
 	
-<?php if ($this->dtxDateStart) { ?>
+		<?php if ($this->dtxDateStart) { ?>
 	<h3>Event Information (Optional)</h3>
 	<div class="section">
 		<?php $this->dtxDateStart->HtmlAfter = '&nbsp;' . $this->calDateStart->Render(false); ?>

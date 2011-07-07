@@ -18,6 +18,8 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $ToAddress the value for strToAddress 
 	 * @property string $FromAddress the value for strFromAddress 
+	 * @property string $CcAddress the value for strCcAddress 
+	 * @property string $BccAddress the value for strBccAddress 
 	 * @property string $Subject the value for strSubject 
 	 * @property string $Body the value for strBody 
 	 * @property QDateTime $DateQueued the value for dttDateQueued 
@@ -53,6 +55,22 @@
 		 */
 		protected $strFromAddress;
 		const FromAddressDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column outgoing_email_queue.cc_address
+		 * @var string strCcAddress
+		 */
+		protected $strCcAddress;
+		const CcAddressDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column outgoing_email_queue.bcc_address
+		 * @var string strBccAddress
+		 */
+		protected $strBccAddress;
+		const BccAddressDefault = null;
 
 
 		/**
@@ -431,6 +449,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'to_address', $strAliasPrefix . 'to_address');
 			$objBuilder->AddSelectItem($strTableName, 'from_address', $strAliasPrefix . 'from_address');
+			$objBuilder->AddSelectItem($strTableName, 'cc_address', $strAliasPrefix . 'cc_address');
+			$objBuilder->AddSelectItem($strTableName, 'bcc_address', $strAliasPrefix . 'bcc_address');
 			$objBuilder->AddSelectItem($strTableName, 'subject', $strAliasPrefix . 'subject');
 			$objBuilder->AddSelectItem($strTableName, 'body', $strAliasPrefix . 'body');
 			$objBuilder->AddSelectItem($strTableName, 'date_queued', $strAliasPrefix . 'date_queued');
@@ -473,6 +493,10 @@
 			$objToReturn->strToAddress = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'from_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'from_address'] : $strAliasPrefix . 'from_address';
 			$objToReturn->strFromAddress = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'cc_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'cc_address'] : $strAliasPrefix . 'cc_address';
+			$objToReturn->strCcAddress = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'bcc_address', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'bcc_address'] : $strAliasPrefix . 'bcc_address';
+			$objToReturn->strBccAddress = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'subject', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subject'] : $strAliasPrefix . 'subject';
 			$objToReturn->strSubject = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'body', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'body'] : $strAliasPrefix . 'body';
@@ -646,6 +670,8 @@
 						INSERT INTO `outgoing_email_queue` (
 							`to_address`,
 							`from_address`,
+							`cc_address`,
+							`bcc_address`,
 							`subject`,
 							`body`,
 							`date_queued`,
@@ -654,6 +680,8 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strToAddress) . ',
 							' . $objDatabase->SqlVariable($this->strFromAddress) . ',
+							' . $objDatabase->SqlVariable($this->strCcAddress) . ',
+							' . $objDatabase->SqlVariable($this->strBccAddress) . ',
 							' . $objDatabase->SqlVariable($this->strSubject) . ',
 							' . $objDatabase->SqlVariable($this->strBody) . ',
 							' . $objDatabase->SqlVariable($this->dttDateQueued) . ',
@@ -680,6 +708,8 @@
 						SET
 							`to_address` = ' . $objDatabase->SqlVariable($this->strToAddress) . ',
 							`from_address` = ' . $objDatabase->SqlVariable($this->strFromAddress) . ',
+							`cc_address` = ' . $objDatabase->SqlVariable($this->strCcAddress) . ',
+							`bcc_address` = ' . $objDatabase->SqlVariable($this->strBccAddress) . ',
 							`subject` = ' . $objDatabase->SqlVariable($this->strSubject) . ',
 							`body` = ' . $objDatabase->SqlVariable($this->strBody) . ',
 							`date_queued` = ' . $objDatabase->SqlVariable($this->dttDateQueued) . ',
@@ -771,6 +801,8 @@
 			// Update $this's local variables to match
 			$this->strToAddress = $objReloaded->strToAddress;
 			$this->strFromAddress = $objReloaded->strFromAddress;
+			$this->strCcAddress = $objReloaded->strCcAddress;
+			$this->strBccAddress = $objReloaded->strBccAddress;
 			$this->strSubject = $objReloaded->strSubject;
 			$this->strBody = $objReloaded->strBody;
 			$this->dttDateQueued = $objReloaded->dttDateQueued;
@@ -791,6 +823,8 @@
 					`id`,
 					`to_address`,
 					`from_address`,
+					`cc_address`,
+					`bcc_address`,
 					`subject`,
 					`body`,
 					`date_queued`,
@@ -803,6 +837,8 @@
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->strToAddress) . ',
 					' . $objDatabase->SqlVariable($this->strFromAddress) . ',
+					' . $objDatabase->SqlVariable($this->strCcAddress) . ',
+					' . $objDatabase->SqlVariable($this->strBccAddress) . ',
 					' . $objDatabase->SqlVariable($this->strSubject) . ',
 					' . $objDatabase->SqlVariable($this->strBody) . ',
 					' . $objDatabase->SqlVariable($this->dttDateQueued) . ',
@@ -872,6 +908,16 @@
 					// Gets the value for strFromAddress 
 					// @return string
 					return $this->strFromAddress;
+
+				case 'CcAddress':
+					// Gets the value for strCcAddress 
+					// @return string
+					return $this->strCcAddress;
+
+				case 'BccAddress':
+					// Gets the value for strBccAddress 
+					// @return string
+					return $this->strBccAddress;
 
 				case 'Subject':
 					// Gets the value for strSubject 
@@ -952,6 +998,28 @@
 					// @return string
 					try {
 						return ($this->strFromAddress = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CcAddress':
+					// Sets the value for strCcAddress 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strCcAddress = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'BccAddress':
+					// Sets the value for strBccAddress 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strBccAddress = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1056,6 +1124,8 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="ToAddress" type="xsd:string"/>';
 			$strToReturn .= '<element name="FromAddress" type="xsd:string"/>';
+			$strToReturn .= '<element name="CcAddress" type="xsd:string"/>';
+			$strToReturn .= '<element name="BccAddress" type="xsd:string"/>';
 			$strToReturn .= '<element name="Subject" type="xsd:string"/>';
 			$strToReturn .= '<element name="Body" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateQueued" type="xsd:dateTime"/>';
@@ -1089,6 +1159,10 @@
 				$objToReturn->strToAddress = $objSoapObject->ToAddress;
 			if (property_exists($objSoapObject, 'FromAddress'))
 				$objToReturn->strFromAddress = $objSoapObject->FromAddress;
+			if (property_exists($objSoapObject, 'CcAddress'))
+				$objToReturn->strCcAddress = $objSoapObject->CcAddress;
+			if (property_exists($objSoapObject, 'BccAddress'))
+				$objToReturn->strBccAddress = $objSoapObject->BccAddress;
 			if (property_exists($objSoapObject, 'Subject'))
 				$objToReturn->strSubject = $objSoapObject->Subject;
 			if (property_exists($objSoapObject, 'Body'))
@@ -1137,6 +1211,8 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $ToAddress
 	 * @property-read QQNode $FromAddress
+	 * @property-read QQNode $CcAddress
+	 * @property-read QQNode $BccAddress
 	 * @property-read QQNode $Subject
 	 * @property-read QQNode $Body
 	 * @property-read QQNode $DateQueued
@@ -1155,6 +1231,10 @@
 					return new QQNode('to_address', 'ToAddress', 'string', $this);
 				case 'FromAddress':
 					return new QQNode('from_address', 'FromAddress', 'string', $this);
+				case 'CcAddress':
+					return new QQNode('cc_address', 'CcAddress', 'string', $this);
+				case 'BccAddress':
+					return new QQNode('bcc_address', 'BccAddress', 'string', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
 				case 'Body':
@@ -1183,6 +1263,8 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $ToAddress
 	 * @property-read QQNode $FromAddress
+	 * @property-read QQNode $CcAddress
+	 * @property-read QQNode $BccAddress
 	 * @property-read QQNode $Subject
 	 * @property-read QQNode $Body
 	 * @property-read QQNode $DateQueued
@@ -1202,6 +1284,10 @@
 					return new QQNode('to_address', 'ToAddress', 'string', $this);
 				case 'FromAddress':
 					return new QQNode('from_address', 'FromAddress', 'string', $this);
+				case 'CcAddress':
+					return new QQNode('cc_address', 'CcAddress', 'string', $this);
+				case 'BccAddress':
+					return new QQNode('bcc_address', 'BccAddress', 'string', $this);
 				case 'Subject':
 					return new QQNode('subject', 'Subject', 'string', $this);
 				case 'Body':

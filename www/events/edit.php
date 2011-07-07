@@ -29,6 +29,9 @@
 		protected $txtSignupMaleLimit;
 		protected $txtSignupFemaleLimit;
 
+		protected $txtSupportEmail;
+		protected $txtEmailNotification;
+
 		// Child Object for Signup
 		protected $mctSignupChild;
 		// Event-Specific
@@ -134,6 +137,10 @@
 			}
 
 			if ($this->mctSignupForm->EditMode) $this->lstMinistry->Enabled = false;
+
+			// Communciation
+			$this->txtSupportEmail = $this->mctSignupForm->txtSupportEmail_Create();
+			$this->txtEmailNotification = $this->mctSignupForm->txtEmailNotification_Create();
 
 			// Setup Limit
 			$this->txtSignupLimit = $this->mctSignupForm->txtSignupLimit_Create();

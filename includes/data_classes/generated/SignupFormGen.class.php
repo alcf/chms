@@ -24,6 +24,7 @@
 	 * @property boolean $ConfidentialFlag the value for blnConfidentialFlag 
 	 * @property string $Description the value for strDescription 
 	 * @property string $InformationUrl the value for strInformationUrl 
+	 * @property string $SupportEmail the value for strSupportEmail (Not Null)
 	 * @property string $EmailNotification the value for strEmailNotification 
 	 * @property boolean $AllowOtherFlag the value for blnAllowOtherFlag 
 	 * @property boolean $AllowMultipleFlag the value for blnAllowMultipleFlag 
@@ -124,6 +125,15 @@
 		protected $strInformationUrl;
 		const InformationUrlMaxLength = 200;
 		const InformationUrlDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_form.support_email
+		 * @var string strSupportEmail
+		 */
+		protected $strSupportEmail;
+		const SupportEmailMaxLength = 255;
+		const SupportEmailDefault = null;
 
 
 		/**
@@ -635,6 +645,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'confidential_flag', $strAliasPrefix . 'confidential_flag');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'information_url', $strAliasPrefix . 'information_url');
+			$objBuilder->AddSelectItem($strTableName, 'support_email', $strAliasPrefix . 'support_email');
 			$objBuilder->AddSelectItem($strTableName, 'email_notification', $strAliasPrefix . 'email_notification');
 			$objBuilder->AddSelectItem($strTableName, 'allow_other_flag', $strAliasPrefix . 'allow_other_flag');
 			$objBuilder->AddSelectItem($strTableName, 'allow_multiple_flag', $strAliasPrefix . 'allow_multiple_flag');
@@ -753,6 +764,8 @@
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'information_url', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'information_url'] : $strAliasPrefix . 'information_url';
 			$objToReturn->strInformationUrl = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'support_email', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'support_email'] : $strAliasPrefix . 'support_email';
+			$objToReturn->strSupportEmail = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'email_notification', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email_notification'] : $strAliasPrefix . 'email_notification';
 			$objToReturn->strEmailNotification = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'allow_other_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'allow_other_flag'] : $strAliasPrefix . 'allow_other_flag';
@@ -1108,6 +1121,7 @@
 							`confidential_flag`,
 							`description`,
 							`information_url`,
+							`support_email`,
 							`email_notification`,
 							`allow_other_flag`,
 							`allow_multiple_flag`,
@@ -1126,6 +1140,7 @@
 							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
+							' . $objDatabase->SqlVariable($this->strSupportEmail) . ',
 							' . $objDatabase->SqlVariable($this->strEmailNotification) . ',
 							' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnAllowMultipleFlag) . ',
@@ -1162,6 +1177,7 @@
 							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`information_url` = ' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
+							`support_email` = ' . $objDatabase->SqlVariable($this->strSupportEmail) . ',
 							`email_notification` = ' . $objDatabase->SqlVariable($this->strEmailNotification) . ',
 							`allow_other_flag` = ' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							`allow_multiple_flag` = ' . $objDatabase->SqlVariable($this->blnAllowMultipleFlag) . ',
@@ -1292,6 +1308,7 @@
 			$this->blnConfidentialFlag = $objReloaded->blnConfidentialFlag;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->strInformationUrl = $objReloaded->strInformationUrl;
+			$this->strSupportEmail = $objReloaded->strSupportEmail;
 			$this->strEmailNotification = $objReloaded->strEmailNotification;
 			$this->blnAllowOtherFlag = $objReloaded->blnAllowOtherFlag;
 			$this->blnAllowMultipleFlag = $objReloaded->blnAllowMultipleFlag;
@@ -1322,6 +1339,7 @@
 					`confidential_flag`,
 					`description`,
 					`information_url`,
+					`support_email`,
 					`email_notification`,
 					`allow_other_flag`,
 					`allow_multiple_flag`,
@@ -1344,6 +1362,7 @@
 					' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->strInformationUrl) . ',
+					' . $objDatabase->SqlVariable($this->strSupportEmail) . ',
 					' . $objDatabase->SqlVariable($this->strEmailNotification) . ',
 					' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 					' . $objDatabase->SqlVariable($this->blnAllowMultipleFlag) . ',
@@ -1447,6 +1466,11 @@
 					// Gets the value for strInformationUrl 
 					// @return string
 					return $this->strInformationUrl;
+
+				case 'SupportEmail':
+					// Gets the value for strSupportEmail (Not Null)
+					// @return string
+					return $this->strSupportEmail;
 
 				case 'EmailNotification':
 					// Gets the value for strEmailNotification 
@@ -1704,6 +1728,17 @@
 					// @return string
 					try {
 						return ($this->strInformationUrl = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SupportEmail':
+					// Sets the value for strSupportEmail (Not Null)
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strSupportEmail = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2533,6 +2568,7 @@
 			$strToReturn .= '<element name="ConfidentialFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="InformationUrl" type="xsd:string"/>';
+			$strToReturn .= '<element name="SupportEmail" type="xsd:string"/>';
 			$strToReturn .= '<element name="EmailNotification" type="xsd:string"/>';
 			$strToReturn .= '<element name="AllowOtherFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="AllowMultipleFlag" type="xsd:boolean"/>';
@@ -2586,6 +2622,8 @@
 				$objToReturn->strDescription = $objSoapObject->Description;
 			if (property_exists($objSoapObject, 'InformationUrl'))
 				$objToReturn->strInformationUrl = $objSoapObject->InformationUrl;
+			if (property_exists($objSoapObject, 'SupportEmail'))
+				$objToReturn->strSupportEmail = $objSoapObject->SupportEmail;
 			if (property_exists($objSoapObject, 'EmailNotification'))
 				$objToReturn->strEmailNotification = $objSoapObject->EmailNotification;
 			if (property_exists($objSoapObject, 'AllowOtherFlag'))
@@ -2663,6 +2701,7 @@
 	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $InformationUrl
+	 * @property-read QQNode $SupportEmail
 	 * @property-read QQNode $EmailNotification
 	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $AllowMultipleFlag
@@ -2705,6 +2744,8 @@
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'InformationUrl':
 					return new QQNode('information_url', 'InformationUrl', 'string', $this);
+				case 'SupportEmail':
+					return new QQNode('support_email', 'SupportEmail', 'string', $this);
 				case 'EmailNotification':
 					return new QQNode('email_notification', 'EmailNotification', 'string', $this);
 				case 'AllowOtherFlag':
@@ -2760,6 +2801,7 @@
 	 * @property-read QQNode $ConfidentialFlag
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $InformationUrl
+	 * @property-read QQNode $SupportEmail
 	 * @property-read QQNode $EmailNotification
 	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $AllowMultipleFlag
@@ -2803,6 +2845,8 @@
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'InformationUrl':
 					return new QQNode('information_url', 'InformationUrl', 'string', $this);
+				case 'SupportEmail':
+					return new QQNode('support_email', 'SupportEmail', 'string', $this);
 				case 'EmailNotification':
 					return new QQNode('email_notification', 'EmailNotification', 'string', $this);
 				case 'AllowOtherFlag':

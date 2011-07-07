@@ -22,6 +22,10 @@
 	 * property-read QLabel $ToAddressLabel
 	 * property QTextBox $FromAddressControl
 	 * property-read QLabel $FromAddressLabel
+	 * property QTextBox $CcAddressControl
+	 * property-read QLabel $CcAddressLabel
+	 * property QTextBox $BccAddressControl
+	 * property-read QLabel $BccAddressLabel
 	 * property QTextBox $SubjectControl
 	 * property-read QLabel $SubjectLabel
 	 * property QTextBox $BodyControl
@@ -82,6 +86,18 @@
 		protected $txtFromAddress;
 
         /**
+         * @var QTextBox txtCcAddress;
+         * @access protected
+         */
+		protected $txtCcAddress;
+
+        /**
+         * @var QTextBox txtBccAddress;
+         * @access protected
+         */
+		protected $txtBccAddress;
+
+        /**
          * @var QTextBox txtSubject;
          * @access protected
          */
@@ -124,6 +140,18 @@
          * @access protected
          */
 		protected $lblFromAddress;
+
+        /**
+         * @var QLabel lblCcAddress
+         * @access protected
+         */
+		protected $lblCcAddress;
+
+        /**
+         * @var QLabel lblBccAddress
+         * @access protected
+         */
+		protected $lblBccAddress;
 
         /**
          * @var QLabel lblSubject
@@ -319,6 +347,56 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtCcAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtCcAddress_Create($strControlId = null) {
+			$this->txtCcAddress = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtCcAddress->Name = QApplication::Translate('Cc Address');
+			$this->txtCcAddress->Text = $this->objOutgoingEmailQueue->CcAddress;
+			$this->txtCcAddress->TextMode = QTextMode::MultiLine;
+			return $this->txtCcAddress;
+		}
+
+		/**
+		 * Create and setup QLabel lblCcAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCcAddress_Create($strControlId = null) {
+			$this->lblCcAddress = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCcAddress->Name = QApplication::Translate('Cc Address');
+			$this->lblCcAddress->Text = $this->objOutgoingEmailQueue->CcAddress;
+			return $this->lblCcAddress;
+		}
+
+		/**
+		 * Create and setup QTextBox txtBccAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtBccAddress_Create($strControlId = null) {
+			$this->txtBccAddress = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtBccAddress->Name = QApplication::Translate('Bcc Address');
+			$this->txtBccAddress->Text = $this->objOutgoingEmailQueue->BccAddress;
+			$this->txtBccAddress->TextMode = QTextMode::MultiLine;
+			return $this->txtBccAddress;
+		}
+
+		/**
+		 * Create and setup QLabel lblBccAddress
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblBccAddress_Create($strControlId = null) {
+			$this->lblBccAddress = new QLabel($this->objParentObject, $strControlId);
+			$this->lblBccAddress->Name = QApplication::Translate('Bcc Address');
+			$this->lblBccAddress->Text = $this->objOutgoingEmailQueue->BccAddress;
+			return $this->lblBccAddress;
+		}
+
+		/**
 		 * Create and setup QTextBox txtSubject
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -465,6 +543,12 @@
 			if ($this->txtFromAddress) $this->txtFromAddress->Text = $this->objOutgoingEmailQueue->FromAddress;
 			if ($this->lblFromAddress) $this->lblFromAddress->Text = $this->objOutgoingEmailQueue->FromAddress;
 
+			if ($this->txtCcAddress) $this->txtCcAddress->Text = $this->objOutgoingEmailQueue->CcAddress;
+			if ($this->lblCcAddress) $this->lblCcAddress->Text = $this->objOutgoingEmailQueue->CcAddress;
+
+			if ($this->txtBccAddress) $this->txtBccAddress->Text = $this->objOutgoingEmailQueue->BccAddress;
+			if ($this->lblBccAddress) $this->lblBccAddress->Text = $this->objOutgoingEmailQueue->BccAddress;
+
 			if ($this->txtSubject) $this->txtSubject->Text = $this->objOutgoingEmailQueue->Subject;
 			if ($this->lblSubject) $this->lblSubject->Text = $this->objOutgoingEmailQueue->Subject;
 
@@ -505,6 +589,8 @@
 				// Update any fields for controls that have been created
 				if ($this->txtToAddress) $this->objOutgoingEmailQueue->ToAddress = $this->txtToAddress->Text;
 				if ($this->txtFromAddress) $this->objOutgoingEmailQueue->FromAddress = $this->txtFromAddress->Text;
+				if ($this->txtCcAddress) $this->objOutgoingEmailQueue->CcAddress = $this->txtCcAddress->Text;
+				if ($this->txtBccAddress) $this->objOutgoingEmailQueue->BccAddress = $this->txtBccAddress->Text;
 				if ($this->txtSubject) $this->objOutgoingEmailQueue->Subject = $this->txtSubject->Text;
 				if ($this->txtBody) $this->objOutgoingEmailQueue->Body = $this->txtBody->Text;
 				if ($this->calDateQueued) $this->objOutgoingEmailQueue->DateQueued = $this->calDateQueued->DateTime;
@@ -570,6 +656,18 @@
 				case 'FromAddressLabel':
 					if (!$this->lblFromAddress) return $this->lblFromAddress_Create();
 					return $this->lblFromAddress;
+				case 'CcAddressControl':
+					if (!$this->txtCcAddress) return $this->txtCcAddress_Create();
+					return $this->txtCcAddress;
+				case 'CcAddressLabel':
+					if (!$this->lblCcAddress) return $this->lblCcAddress_Create();
+					return $this->lblCcAddress;
+				case 'BccAddressControl':
+					if (!$this->txtBccAddress) return $this->txtBccAddress_Create();
+					return $this->txtBccAddress;
+				case 'BccAddressLabel':
+					if (!$this->lblBccAddress) return $this->lblBccAddress_Create();
+					return $this->lblBccAddress;
 				case 'SubjectControl':
 					if (!$this->txtSubject) return $this->txtSubject_Create();
 					return $this->txtSubject;
@@ -628,6 +726,10 @@
 						return ($this->txtToAddress = QType::Cast($mixValue, 'QControl'));
 					case 'FromAddressControl':
 						return ($this->txtFromAddress = QType::Cast($mixValue, 'QControl'));
+					case 'CcAddressControl':
+						return ($this->txtCcAddress = QType::Cast($mixValue, 'QControl'));
+					case 'BccAddressControl':
+						return ($this->txtBccAddress = QType::Cast($mixValue, 'QControl'));
 					case 'SubjectControl':
 						return ($this->txtSubject = QType::Cast($mixValue, 'QControl'));
 					case 'BodyControl':

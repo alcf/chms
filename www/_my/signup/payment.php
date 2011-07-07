@@ -475,8 +475,8 @@
 		 * Called back from PaymentPanel to perform final tasks after we know
 		 * the payment has been submitted successfully.
 		 */
-		public function PaymentPanel_Success() {
-			$this->objSignupEntry->Complete();
+		public function PaymentPanel_Success(SignupPayment $objPaymentObject) {
+			$this->objSignupEntry->Complete($objPaymentObject);
 			QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
 		}
 	}

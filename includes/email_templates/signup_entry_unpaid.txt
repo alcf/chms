@@ -1,0 +1,15 @@
+======= DO NOT REPLY =======
+
+Dear %PERSON_NAME%,
+
+Thank you for your registration on the my.alcf.net website for "%SIGNUP_FORM_NAME%".  Your confirmation number is %SIGNUP_ENTRY_ID%.  You may want to print this page for your records.
+
+%SIGNUP_DESCRIPTION%
+
+If you have any questions, please don't hesitate to email %SUPPORT_EMAIL% or call the ALCF Office at 650-625-1500.
+
+Thanks for your continued support of the ministry at Abundant Life Christian Fellowship!
+
+============================
+
+P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.

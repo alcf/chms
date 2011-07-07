@@ -303,6 +303,7 @@
 				case 'ConfidentialFlag': return QQN::SignupForm()->ConfidentialFlag;
 				case 'Description': return QQN::SignupForm()->Description;
 				case 'InformationUrl': return QQN::SignupForm()->InformationUrl;
+				case 'SupportEmail': return QQN::SignupForm()->SupportEmail;
 				case 'EmailNotification': return QQN::SignupForm()->EmailNotification;
 				case 'AllowOtherFlag': return QQN::SignupForm()->AllowOtherFlag;
 				case 'AllowMultipleFlag': return QQN::SignupForm()->AllowMultipleFlag;
