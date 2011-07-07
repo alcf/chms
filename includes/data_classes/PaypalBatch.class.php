@@ -36,10 +36,88 @@
 			self::PayPalTime
 		);
 
-		public function PostBatch() {
+		public function PostBatch(Login $objLogin, QDateTime $dttDateCredited) {
 			if ($this->blnReconciledFlag) throw new QCallerException('Cannot post a PayPal Batch that has already been reconciled!');
+			
+			// First, create the stewardship stacks into arrays of 100
+			$objToBecomeStacksArray = array();
+			$fltStackTotalsArray = array();
+			$fltRunningTotal = 0;
+			$objCurrentStack = array();
+			foreach ($this->GetCreditCardPaymentArray(QQ::OrderBy(QQN::CreditCardPayment()->DateCaptured)) as $objCreditCardPayment) {
+				if ($objCreditCardPayment->OnlineDonation || $objCreditCardPayment->SignupPayment->AmountDonation) {
+					if (count($objCurrentStack) >= 100) {
+						$objToBecomeStacksArray[] = $objCurrentStack;
+						$fltStackTotalsArray[] = $fltRunningTotal;
+						$objCurrentStack = array();
+						$fltRunningTotal = 0;
+					}
+					$objCurrentStack[] = $objCreditCardPayment;
+					if ($objCreditCardPayment->OnlineDonation)
+						$fltRunningTotal += $objCreditCardPayment->OnlineDonation->Amount;
+					else
+						$fltRunningTotal += $objCreditCardPayment->SignupPayment->AmountDonation;
+				}
+			}
+			if (count($objCurrentStack)) {
+				$objToBecomeStacksArray[] = $objCurrentStack;
+				$fltStackTotalsArray[] = $fltRunningTotal;
+			}
+
+			// Start a Transaction
+			PaypalBatch::GetDatabase()->TransactionBegin();
+
+			try {
+				// Create the Batch
+				$objBatch = StewardshipBatch::Create($objLogin, $fltStackTotalsArray, 'Stewardship Entries for PayPal Batch #' . $this->Number, QDateTime::Now(), $dttDateCredited);
+
+				$objStackArray = $objBatch->GetStewardshipStackArray(QQ::OrderBy(QQN::StewardshipStack()->StackNumber));
+				if (count($objStackArray) != count($objToBecomeStacksArray)) throw new Exception('Mismatch of Created Stacks vs. Calculated Stacks');
+
+				// Create Each Stack
+				for ($intStackIndex = 0; $intStackIndex < count($objStackArray); $intStackIndex++) {
+					$objStack = $objStackArray[$intStackIndex];
+					$objPaymentArray = $objToBecomeStacksArray[$intStackIndex];
+
+					foreach ($objPaymentArray as $objPayment) {
+						// Create a StewardshipContribution for each OnlineDonation entry
+						if ($objPayment->OnlineDonation) {
+							$objContribution = StewardshipContribution::Create(
+								$objLogin,
+								$objPayment->OnlineDonation->Person,
+								$objStack,
+								StewardshipContributionType::CreditCard,
+								$objPayment->TransactionCode,
+								$objPayment->OnlineDonation->GetAmountArray(),
+								QDateTime::Now(),
+								$dttDateCredited,
+								null,
+								null,
+								true
+							);
+							$objContribution->AlternateSource = $objPayment->CreditCardDescription;
+							$objContribution->Save();
+
+						// Create a StewardshipContribution for the donation in a SignupPayment
+						} else {
+							
+						}
+					}
+				}
+				// Cleanup this object
+//				$this->blnReconciledFlag = true;
+//				$this->dttDateReconciled = QDateTime::Now();
+//				$this->StewardshipBatch = $objBatch;
+//				$this->Save();
+
+			} catch (Exception $objExc) {
+				PaypalBatch::GetDatabase()->TransactionRollBack();
+				throw $objExc;
+			}
+
+			PaypalBatch::GetDatabase()->TransactionCommit();
 		}
-		
+
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default

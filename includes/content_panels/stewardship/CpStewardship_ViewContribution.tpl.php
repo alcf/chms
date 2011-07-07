@@ -59,6 +59,14 @@
 				</div>
 <?php				
 			}
+			if ($_CONTROL->objContribution->AlternateSource) {
+?>
+				<div class="lvp">
+					<div class="left">CC Info</div>
+					<div class="right"><?php _p($_CONTROL->objContribution->AlternateSource); ?></div>
+				</div>
+<?php				
+			}
 			break;
 
 		case StewardshipContributionType::Cash:

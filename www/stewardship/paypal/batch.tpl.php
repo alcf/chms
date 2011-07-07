@@ -5,6 +5,7 @@
 
 	<div class="section">
 		<?php $this->lblInstructionHtml->Render(); ?>
+		<?php $this->dtxDateCredited->RenderWithName(); ?><br/>
 		<?php $this->btnPost->Render(); ?>
 	</div>
 	

@@ -72,10 +72,17 @@
 					}
 
 				case 'Transaction':
-					if ($strSource = $this->Source)
-						return sprintf('%s (%s)', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId], $strSource);
-					else
-						return sprintf('%s', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
+					// Special display specifically for paypal-entered transactions
+					if ($this->StewardshipContributionTypeId == StewardshipContributionType::CreditCard &&
+						$this->strAuthorizationNumber && $this->strAlternateSource &&
+						($this->strAuthorizationNumber != $this->strAlternateSource)) {
+						return sprintf('%s (%s)', $this->strAlternateSource, $this->strAuthorizationNumber);
+					} else {
+						if ($strSource = $this->Source)
+							return sprintf('%s (%s)', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId], $strSource);
+						else
+							return sprintf('%s', StewardshipContributionType::$NameArray[$this->StewardshipContributionTypeId]);
+					}
 
 				case 'PossiblePeopleArray':
 					return $this->objPossiblePeopleArray;

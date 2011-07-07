@@ -27,6 +27,20 @@
 			return sprintf('CreditCardPayment Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'CreditCardDescription': return CreditCardType::$NameArray[$this->intCreditCardTypeId] . ' x' . $this->strCreditCardLastFour;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		/**
 		 * If this is a "Authorized" (but not yet captured) transaction, this will go ahead and capture the funds.
 		 * This will THROW if the status is NOT Authorized

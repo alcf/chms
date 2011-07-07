@@ -22,6 +22,7 @@
 
 		protected $lblInstructionHtml;
 		protected $btnPost;
+		protected $dtxDateCredited;
 
 		protected $dlgEditFund;
 		protected $btnDialogSave;
@@ -29,7 +30,8 @@
 		protected $lstDialogFund;
 
 		protected function btnPost_Click() {
-			$this->objBatch->PostBatch();
+			if (!$this->dtxDateCredited->DateTime) $this->dtxDateCredited->Warning = 'Invalid Date';
+			$this->objBatch->PostBatch(QApplication::$Login, $this->dtxDateCredited->DateTime);
 			$this->Transactions_Refresh();
 		}
 
@@ -120,9 +122,15 @@
 			$this->lblInstructionHtml->TagName = 'p';
 			$this->lblInstructionHtml->HtmlEntities = false;
 			
+			$this->dtxDateCredited = new QDateTimeTextBox($this);
+			$this->dtxDateCredited->Name = 'Date to Credit Stewardship Contributions';
+			$this->dtxDateCredited->Text = QDateTime::NowToString('MMMM D YYYY');
+			$this->dtxDateCredited->Required = true;
+			
 			$this->btnPost = new QButton($this);
 			$this->btnPost->Text = 'Post to NOAH';
 			$this->btnPost->CssClass = 'primary';
+			$this->btnPost->CausesValidation = $this->dtxDateCredited;
 
 			$this->dlgEditFund = new QDialogBox($this);
 			$this->dlgEditFund->MatteClickable = false;
@@ -160,9 +168,11 @@
 				$this->lblInstructionHtml->Text = sprintf('This PayPal Batch was posted to NOAH on <strong>%s</strong>.  No changes can be made to this PayPal Batch.<br/><br/>' . 
 					'Click on any Credit Card Transaction with a Donation Record to view the linked Stewardship Entry for each line item.', $this->objBatch->DateReconciled->ToString('MMMM D YYYY'));
 				$this->btnPost->Visible = false;
+				$this->dtxDateCredited->Visible = false;
 			} else if ($this->objBatch->IsUncategorizedPaymentsExist()) {
 				$this->lblInstructionHtml->Text = 'There are currently unspecified funding accounts for one more more credit card payment line item.  Please ensure all items are accounted for before posting to NOAH.';
 				$this->btnPost->Visible = false;
+				$this->dtxDateCredited->Visible = false;
 				
 				if (CreditCardPayment::CountByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, true)) {
 					$this->lblInstructionHtml->Text .= '<br/><br/><strong>WARNING!</strong>  There are unaccountable Credit Card Payment records in this batch!';
@@ -170,6 +180,7 @@
 			} else {
 				$this->lblInstructionHtml->Text = 'This PayPal Batch has not yet been posted to NOAH.  Click on <strong>Post to NOAH</strong> when you are sure that there are no more changes or additions left for this batch.';
 				$this->btnPost->Visible = true;
+				$this->dtxDateCredited->Visible = true;
 				$this->btnPost->RemoveAllActions(QClickEvent::EventName);
 
 				if (CreditCardPayment::CountByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, true)) {
