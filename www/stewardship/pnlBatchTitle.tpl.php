@@ -7,6 +7,10 @@
 		<div class="cleaner"></div>
 		<div class="batchLabel">Created By</div><div class="batchValue"><?php _p($this->objBatch->CreatedByLogin->Name); ?></div>
 		<div class="cleaner"></div>
+<?php if ($this->objBatch->PaypalBatch) { ?>
+		<div class="batchLabel">Linked To</div><div class="batchValue"><a href="/stewardship/paypal/batch.php/<?php _p($this->objBatch->PaypalBatch->Id); ?>">PayPal Batch #<?php _p($this->objBatch->PaypalBatch->Number); ?></a></div>
+		<div class="cleaner"></div>
+<?php } ?>
 	</div>
 	<div class="batchInfoRight">
 		<div class="batchLabel">Item Count</div><div class="batchValue"><?php _p($this->objBatch->ItemCount); ?></div>

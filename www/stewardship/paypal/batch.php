@@ -165,8 +165,10 @@
 				QQ::OrderBy(QQN::CreditCardPayment()->DateCaptured));
 			
 			if ($this->objBatch->ReconciledFlag) {
-				$this->lblInstructionHtml->Text = sprintf('This PayPal Batch was posted to NOAH on <strong>%s</strong>.  No changes can be made to this PayPal Batch.<br/><br/>' . 
-					'Click on any Credit Card Transaction with a Donation Record to view the linked Stewardship Entry for each line item.', $this->objBatch->DateReconciled->ToString('MMMM D YYYY'));
+				$this->lblInstructionHtml->Text = sprintf('This PayPal Batch was posted to NOAH on <strong>%s</strong>.<br/><strong>No more changes can be made to this PayPal Batch.</strong><br/><br/>' . 
+					'Click the following to view the linked <strong><a href="/stewardship/batch.php/%s#1">Stewardship Batch</a></strong>.<br/>' . 
+					'Click on any <strong>Date Captured</strong> below on a credit card transaction with a donation record to view its linked Stewardship Entry.', 
+					$this->objBatch->DateReconciled->ToString('MMMM D YYYY at h:mm z'), $this->objBatch->StewardshipBatchId);
 				$this->btnPost->Visible = false;
 				$this->dtxDateCredited->Visible = false;
 			} else if ($this->objBatch->IsUncategorizedPaymentsExist()) {
@@ -202,7 +204,11 @@
 			foreach ($this->objPaymentArray as $objPayment) {
 				$strDateCapturedHtml = $objPayment->DateCaptured->ToString('MMM D YYYY h:mm z');
 				if ($this->objBatch->ReconciledFlag && $objPayment->StewardshipContribution) {
-					$strDateCapturedHtml = '<a href="#">' . $strDateCapturedHtml . '</a>';
+					$strDateCapturedHtml = sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
+						$this->objBatch->StewardshipBatchId,
+						$objPayment->StewardshipContribution->StewardshipStack->StackNumber,
+						$objPayment->StewardshipContributionId,
+						$strDateCapturedHtml);
 				}
 
 				if ($objPayment->OnlineDonation) {
@@ -239,7 +245,7 @@
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
 						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name);
 						if ($this->objBatch->ReconciledFlag)
-							$strLineItemNameArray[] = $strNameHtml;
+							$strLineItemNameArray[] = $strNameHtml . ' (Non-Donation)';
 						else
 							$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents('n' . $objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a> (Non-Donation)';
 						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
