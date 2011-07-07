@@ -271,7 +271,8 @@
 		
 		public function dtgFunding_Bind() {
 			$objDataSource = array();
-			$fltTotal = null;
+			$fltTotalDonation = 0;
+			$fltTotalNonDonation = 0;
 			foreach ($this->objPaymentArray as $objPayment) {
 				if ($objPayment->OnlineDonation) {
 					foreach ($objPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objLineItem) {
@@ -287,33 +288,41 @@
 							$objDataSource[0][2] += $objLineItem->Amount;
 						}
 					}
+					$fltTotalDonation += $objPayment->OnlineDonation->Amount;
+
 				} else if ($objPayment->SignupPayment) {
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
 						if (!array_key_exists($objPayment->SignupPayment->StewardshipFundId, $objDataSource)) {
 							$objDataSource[$objPayment->SignupPayment->StewardshipFundId] = array(QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name), $objPayment->SignupPayment->StewardshipFund->AccountNumber, 0);
 						}
 						$objDataSource[$objPayment->SignupPayment->StewardshipFundId][2] += $fltAmount;
+						$fltTotalNonDonation += $fltAmount;
 					}
 					if ($fltAmount = $objPayment->SignupPayment->AmountDonation) {
 						if (!array_key_exists($objPayment->SignupPayment->DonationStewardshipFundId, $objDataSource)) {
 							$objDataSource[$objPayment->SignupPayment->DonationStewardshipFundId] = array(QApplication::HtmlEntities($objPayment->SignupPayment->DonationStewardshipFund->Name), $objPayment->SignupPayment->DonationStewardshipFund->AccountNumber, 0);
 						}
 						$objDataSource[$objPayment->SignupPayment->DonationStewardshipFundId][2] += $fltAmount;
+						$fltTotalDonation += $fltAmount;
 					}
 				} else throw new Exception('Cannot figure out linked record to this credit card payment entry: ' . $objPayment->Id);
 			}
 
-			// Make sure the amount shown is displayed as currency for each row
-			// Calculate the Total
-			$fltTotal = 0;
+			// Make sure the amount shown is displayed as "currency" for each row
 			foreach ($objDataSource as $intId => $arrArray) {
-				$fltTotal += $objDataSource[$intId][2];
 				$objDataSource[$intId][2] = QApplication::DisplayCurrency($objDataSource[$intId][2]);
 				if ($intId == 0) $objDataSource[$intId][2] = '<span style="color: #888;">' . $objDataSource[$intId][2] . '</span>';
 			}
 
-			$objDataSource[99999] = array('<strong>TOTAL AMOUNT</strong>', null, '<strong>' . QApplication::DisplayCurrency($fltTotal) . '</strong>');
+			usort($objDataSource, array($this, 'dtgFunding_Sort'));
+			$objDataSource[99997] = array('<strong style="color: #888;">TOTAL in DONATIONS</strong>', null, '<strong style="color: #888;">' . QApplication::DisplayCurrency($fltTotalDonation) . '</strong>');
+			$objDataSource[99998] = array('<strong style="color: #888;">TOTAL in NON-DONATIONS</strong>', null, '<strong style="color: #888;">' . QApplication::DisplayCurrency($fltTotalNonDonation) . '</strong>');
+			$objDataSource[99999] = array('<strong>GRAND TOTAL AMOUNT</strong>', null, '<strong>' . QApplication::DisplayCurrency($fltTotalDonation + $fltTotalNonDonation) . '</strong>');
 			$this->dtgFunding->DataSource = $objDataSource;
+		}
+		
+		public function dtgFunding_Sort($arrItem1, $arrItem2) {
+			return $arrItem1[0] > $arrItem2[0];
 		}
 		
 		public function dtgUnaccounted_Bind() {

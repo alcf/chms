@@ -45,7 +45,7 @@
 			$fltRunningTotal = 0;
 			$objCurrentStack = array();
 			foreach ($this->GetCreditCardPaymentArray(QQ::OrderBy(QQN::CreditCardPayment()->DateCaptured)) as $objCreditCardPayment) {
-				if ($objCreditCardPayment->OnlineDonation || $objCreditCardPayment->SignupPayment->AmountDonation) {
+				if ($objCreditCardPayment->OnlineDonation || ($objCreditCardPayment->SignupPayment && $objCreditCardPayment->SignupPayment->AmountDonation)) {
 					if (count($objCurrentStack) >= 100) {
 						$objToBecomeStacksArray[] = $objCurrentStack;
 						$fltStackTotalsArray[] = $fltRunningTotal;
@@ -89,33 +89,63 @@
 								StewardshipContributionType::CreditCard,
 								$objPayment->TransactionCode,
 								$objPayment->OnlineDonation->GetAmountArray(),
-								QDateTime::Now(),
-								$dttDateCredited,
+								null,
+								null,
 								null,
 								null,
 								true
 							);
-							$objContribution->AlternateSource = $objPayment->CreditCardDescription;
-							$objContribution->Save();
 
 						// Create a StewardshipContribution for the donation in a SignupPayment
 						} else {
-							
+							$objContribution = StewardshipContribution::Create(
+								$objLogin,
+								$objPayment->SignupPayment->SignupEntry->SignupByPerson,
+								$objStack,
+								StewardshipContributionType::CreditCard,
+								$objPayment->TransactionCode,
+								array(array($objPayment->SignupPayment->DonationStewardshipFundId, $objPayment->SignupPayment->AmountDonation)),
+								null,
+								null,
+								null,
+								null,
+								true
+							);
 						}
-					}
-				}
-				// Cleanup this object
-//				$this->blnReconciledFlag = true;
-//				$this->dttDateReconciled = QDateTime::Now();
-//				$this->StewardshipBatch = $objBatch;
-//				$this->Save();
 
+						// Fixup on the Contribution Object
+						$objContribution->AlternateSource = $objPayment->CreditCardDescription;
+						$objContribution->DateCredited = $dttDateCredited;
+						$objContribution->Save();
+
+						// Fixup on the CCPayment Object to link back to the contribution object
+						$objPayment->StewardshipContribution = $objContribution;
+						$objPayment->Save();
+					}
+					
+				}
+
+				// Cleanup each Payment object
+				foreach ($this->GetCreditCardPaymentArray() as $objCreditCardPayment) {
+					$objCreditCardPayment->CreditCardStatusTypeId = CreditCardStatusType::Reconciled;
+					$objCreditCardPayment->Save();
+				}
+
+				// Cleanup this object
+				$this->blnReconciledFlag = true;
+				$this->dttDateReconciled = QDateTime::Now();
+				$this->StewardshipBatch = $objBatch;
+				$this->Save();
+
+				// Finally, Post the StewardshipBatch
+				$objBatch->PostBalance($objLogin);
+
+				// If we are here, then it was a success!  Commit the Transaction!
+				PaypalBatch::GetDatabase()->TransactionCommit();
 			} catch (Exception $objExc) {
 				PaypalBatch::GetDatabase()->TransactionRollBack();
 				throw $objExc;
 			}
-
-			PaypalBatch::GetDatabase()->TransactionCommit();
 		}
 
 		/**
