@@ -91,6 +91,8 @@
 		 */
 		public function IsAllowedToUseChms() {
 			if (!$this->ActiveFlag) return false;
+			if (!$this->Person) return false;
+			if ($this->ProvisionalPublicLogin) return false;
 			return true;
 		}
 
