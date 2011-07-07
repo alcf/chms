@@ -151,13 +151,16 @@
 				}
 				$objProvisionalPublicLogin->Save();
 				PublicLogin::GetDatabase()->TransactionCommit();
+				
+				$objProvisionalPublicLogin->SendConfirmationEmail();
+
 				return $objProvisionalPublicLogin;
 			} catch (Exception $objExc) {
 				PublicLogin::GetDatabase()->TransactionRollBack();
 				throw $objExc;
 			}
 		}
-
+		
 		/**
 		 * Will check to see if a given username is creatable for a provisional account.  If it is already
 		 * taken by a non-provisional account, this will return false.  Otherwise, if it doesn't exist

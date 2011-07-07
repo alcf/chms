@@ -30,7 +30,10 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'AwaitingConfirmationUrl':
-					return sprintf('/registration/awaiting.php/%s/%s', $this->intPublicLoginId, $this->strUrlHash);
+					return sprintf('/register/awaiting.php/%s/%s', $this->intPublicLoginId, $this->strUrlHash);
+
+				case 'ConfirmationUrl':
+					return sprintf('%s/confirm.php/%s', MY_ALCF_URL, $this->PublicLogin->Username);
 
 				default:
 					try {
@@ -41,7 +44,34 @@
 					}
 			}
 		}
-		
+
+		/**
+		 * This queues up and sends an email requesting the registrant to confirm
+		 * the registration.
+		 */
+		public function SendConfirmationEmail() {
+			// Template
+			$strTemplateName = 'registration';
+
+			// Calculate Email Address - THIS WILL RETURN if none is found
+			$strFromAddress = 'ALCF my.alcf Registration <do_not_reply@alcf.net>';
+			$strToAddress = $this->strEmailAddress;
+			$strSubject = 'Your Online Registration';
+
+			// Setup the SubstitutionArray
+			$strArray = array();
+
+			// Setup Always-Used Fields
+			$strArray['PERSON_NAME'] = $this->strFirstName . ' ' . $this->strLastName;
+
+			// Add Payment Info
+			$strArray['URL'] = $this->ConfirmationUrl;
+			$strArray['CODE'] = $this->strConfirmationCode;
+			$strArray['USERNAME'] = $this->PublicLogin->Username;
+			
+			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
