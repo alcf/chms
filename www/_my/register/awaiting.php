@@ -7,7 +7,12 @@
 		protected $objProvisionalPublicLogin;
 
 		protected function Form_Run() {
-			if (QApplication::$PublicLogin) QApplication::Redirect('/main/');
+			if (QApplication::$PublicLogin) {
+				if (QApplication::$PublicLogin->Person)
+					QApplication::Redirect('/main/');
+				else
+					QApplication::Redirect('/register/details.php');
+			}
 		}
 
 		protected function Form_Create() {

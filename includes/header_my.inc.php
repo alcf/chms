@@ -20,14 +20,19 @@
 	</div>
 
 	<div class="navbar" style="height: 55px;">
+<?php if (QApplication::$PublicLogin && QApplication::$PublicLogin->ProvisionalPublicLogin) { ?>
+		<ul>
+		</ul>
+<?php } else { ?>
 		<ul>
 			<li class="first"><a href="http://www.alcf.net/" title="Back to ALCF.net">Back to ALCF.net</a></li>
-<?php if (QApplication::$PublicLogin) { ?>
+	<?php if (QApplication::$PublicLogin) { ?>
 			<li><a href="#" onclick="alert('TO DO'); return false;" title="My Profile">My Profile</a></li>
 			<li><a href="/give/" title="Give Online">Give Online</a></li>
 			<li><a href="/logout/" title="Logout">Logout</a></li>
-<?php } else { ?>
+	<?php } else { ?>
 			<li><a href="/register/" title="Register">Register</a></li>
+	<?php } ?>
 <?php } ?>
 		</ul>
 	</div>

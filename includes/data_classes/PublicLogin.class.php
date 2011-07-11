@@ -130,6 +130,8 @@
 				if ($objPublicLogin) {
 					if ($objPublicLogin->ProvisionalPublicLogin->EmailAddress == $strEmailAddress) $blnChangeHash = false;
 					$objProvisionalPublicLogin = $objPublicLogin->ProvisionalPublicLogin;
+					$objPublicLogin->DateRegistered = QDateTime::Now();
+					$objPublicLogin->Save();
 				} else {
 					$objPublicLogin = new PublicLogin();
 					$objPublicLogin->ActiveFlag = true;

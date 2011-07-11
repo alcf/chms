@@ -1,26 +1,22 @@
 <?php
-	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
+	require(dirname(__FILE__) . '/../../../includes/prepend.inc.php');
+	QApplication::AuthenticatePublic(true);
 
 	class PublicLoginForm extends ChmsForm {
-		protected $strPageTitle = 'Registration Confirmation';
+		protected $strPageTitle = 'Registration Details';
 		protected $txtUsername;
 		protected $txtCode;
 		protected $btnConfirm;
 
 		protected function Form_Run() {
-			if (QApplication::$PublicLogin) {
-				if (QApplication::$PublicLogin->Person)
-					QApplication::Redirect('/main/');
-				else
-					QApplication::Redirect('/register/details.php');
-			}
+			if (QApplication::$PublicLogin->Person) QApplication::Redirect('/main/');
 		}
 
 		protected function Form_Create() {
 			$this->txtUsername = new QTextBox($this);
 			$this->txtUsername->Name = 'Username';
 			$this->txtUsername->Required = true;
-			$this->txtUsername->Text = QApplication::PathInfo(0);
+			$this->txtUsername->Text = QApplication::$PublicLogin->Username;
 
 			$this->txtCode = new QTextBox($this);
 			$this->txtCode->Name = 'Confirmation Code';

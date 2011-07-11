@@ -106,25 +106,26 @@
 				if (!QApplication::$Login) {
 					$_SESSION['intLoginId'] = null;
 					unset($_SESSION['intLoginId']);
-					return;
-				}
 
-				// Make sure this Login is allowed to use Chms
-				if (!QApplication::$Login->IsAllowedToUseChms()) {
-					$_SESSION['intLoginId'] = null;
-					unset($_SESSION['intLoginId']);
-					QApplication::$Login = null;
+				// Otherwise, process
 				} else {
-					QApplication::$LoginId = QApplication::$Login->Id;
-				}
+					// Make sure this Login is allowed to use Chms
+					if (!QApplication::$Login->IsAllowedToUseChms()) {
+						$_SESSION['intLoginId'] = null;
+						unset($_SESSION['intLoginId']);
+						QApplication::$Login = null;
+					} else {
+						QApplication::$LoginId = QApplication::$Login->Id;
+					}
 
-				// Update the NavBar based on Login
-				if (QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator) {
-					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
-				}
+					// Update the NavBar based on Login
+					if (QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator) {
+						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
+					}
 
-				if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
-					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
+					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
+						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
+					}
 				}
 			}
 
@@ -135,14 +136,8 @@
 				if (!QApplication::$PublicLogin) {
 					$_SESSION['intPublicLoginId'] = null;
 					unset($_SESSION['intPublicLoginId']);
-					return;
-				}
 
-				// Make sure this Login is allowed to use Chms
-				if (!QApplication::$PublicLogin->IsAllowedToUseChms()) {
-					$_SESSION['intPublicLoginId'] = null;
-					unset($_SESSION['intPublicLoginId']);
-					QApplication::$PublicLogin = null;
+				// Otherwise, process it
 				} else {
 					QApplication::$PublicLoginId = QApplication::$PublicLogin->Id;
 				}
@@ -183,12 +178,26 @@
 
 		/**
 		 * Verifies that the user is logged in, and if not, will redirect user to the public login page
+		 * @param boolean $blnProvisionalOkay whether or not provisional accounts are okay at this point
 		 * @return void
 		 */
-		public static function AuthenticatePublic() {
+		public static function AuthenticatePublic($blnProvisionalOkay = false) {
 			if (!QApplication::$PublicLogin) QApplication::RedirectToLogin(2);
 
-			// If we're here, then we're good
+			// If we're here, then double check validity
+			if (!QApplication::$PublicLogin->ActiveFlag) {
+				self::PublicLogout();
+				QApplication::RedirectToLogin(2);
+			}
+
+			// Check for provisional (if applicable)
+			if ($blnProvisionalOkay) return;
+			if (!QApplication::$PublicLogin->Person) {
+				self::PublicLogout();
+				QApplication::RedirectToLogin(2);
+			}
+
+			// If we are here,  then we're good to go!
 			return;
 		}
 
