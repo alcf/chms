@@ -186,14 +186,14 @@
 
 			// If we're here, then double check validity
 			if (!QApplication::$PublicLogin->ActiveFlag) {
-				self::PublicLogout();
+				self::PublicLogout(false);
 				QApplication::RedirectToLogin(2);
 			}
 
 			// Check for provisional (if applicable)
 			if ($blnProvisionalOkay) return;
 			if (!QApplication::$PublicLogin->Person) {
-				self::PublicLogout();
+				self::PublicLogout(false);
 				QApplication::RedirectToLogin(2);
 			}
 
@@ -263,12 +263,12 @@
 		 * Logs the PUBLIC user out (if applicable) and will redirect user to the public login page
 		 * @return void
 		 */
-		public static function PublicLogout() {
+		public static function PublicLogout($blnRedirectFlag = true) {
 			$_SESSION['intPublicLoginId'] = null;
 			unset($_SESSION['intPublicLoginId']);
 			QApplication::$PublicLogin = null;
 			QApplication::$PublicLoginId = null;
-			QApplication::Redirect('/index.php/1');
+			if ($blnRedirectFlag) QApplication::Redirect('/index.php/1');
 		}
 
 		/**

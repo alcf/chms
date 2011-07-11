@@ -4,55 +4,43 @@
 
 	class PublicLoginForm extends ChmsForm {
 		protected $strPageTitle = 'Registration Details';
-		protected $txtUsername;
-		protected $txtCode;
-		protected $btnConfirm;
+		protected $lblUsername;
+		protected $lblName;
+		protected $lblEmail;
 
+		protected $btnConfirm;
+		protected $btnCancel;
+		
 		protected function Form_Run() {
 			if (QApplication::$PublicLogin->Person) QApplication::Redirect('/main/');
 		}
 
 		protected function Form_Create() {
-			$this->txtUsername = new QTextBox($this);
-			$this->txtUsername->Name = 'Username';
-			$this->txtUsername->Required = true;
-			$this->txtUsername->Text = QApplication::$PublicLogin->Username;
+			$this->lblUsername = new QLabel($this);
+			$this->lblUsername->Name = 'Username';
+			$this->lblUsername->Text = QApplication::$PublicLogin->Username;
 
-			$this->txtCode = new QTextBox($this);
-			$this->txtCode->Name = 'Confirmation Code';
-			$this->txtCode->Required = true;
-			$this->txtCode->CausesValidation = true;
+			$this->lblName = new QLabel($this);
+			$this->lblName->Name = 'Name';
+			$this->lblName->Text = QApplication::$PublicLogin->ProvisionalPublicLogin->FirstName . ' ' . QApplication::$PublicLogin->ProvisionalPublicLogin->LastName;
+
+			$this->lblEmail = new QLabel($this);
+			$this->lblEmail->Name = 'Email Address';
+			$this->lblEmail->Text = QApplication::$PublicLogin->ProvisionalPublicLogin->EmailAddress;
 
 			$this->btnConfirm = new QButton($this);
-			$this->btnConfirm->Text = 'Confirm My Email';
+			$this->btnConfirm->Text = 'Confirm Registration';
 			$this->btnConfirm->CausesValidation = true;
-
-			$this->txtUsername->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtCode));
-			$this->txtUsername->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-			$this->txtCode->AddAction(new QEnterKeyEvent(), new QAjaxAction('btnConfirm_Click'));
-			$this->txtCode->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->btnConfirm->AddAction(new QClickEvent(), new QAjaxAction('btnConfirm_Click'));
-			
-			if (!$this->txtUsername->Text)
-				$this->txtUsername->Focus();
-			else
-				$this->txtCode->Focus();
+
+			$this->btnCancel = new QLinkButton($this);
+			$this->btnCancel->Text = 'Cancel';
+			$this->btnCancel->AddAction(new QClickEvent(), new QAjaxAction('btnCancel_Click'));
+			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 		}
 
 		protected function Form_Validate() {
 			$blnToReturn = true;
-
-			$objPublicLogin = PublicLogin::LoadByUsername($this->txtUsername->Text);
-			if (!$objPublicLogin ||
-				(!$objPublicLogin->ActiveFlag) ||
-				($objPublicLogin->Person) ||
-				(!$objPublicLogin->ProvisionalPublicLogin)) {
-				$blnToReturn = false;
-				$this->txtUsername->Warning = 'Username and/or code is invalid';
-			} else if ($objPublicLogin->ProvisionalPublicLogin->ConfirmationCode != strtolower(trim($this->txtCode->Text))) {
-				$blnToReturn = false;
-				$this->txtUsername->Warning = 'Username and/or code is invalid';
-			}
 
 			$blnFirst = true;
 			foreach ($this->GetErrorControls() as $objControl) {
@@ -67,9 +55,11 @@
 		}
 
 		protected function btnConfirm_Click($strFormId, $strControlId, $strParameter) {
-			$objPublicLogin = PublicLogin::LoadByUsername($this->txtUsername->Text);
-			QApplication::PublicLogin($objPublicLogin);
-			QApplication::Redirect('/register/details.php');
+		}
+
+		protected function btnCancel_Click($strFormId, $strControlId, $strParameter) {
+			QApplication::PublicLogout(false);
+			QApplication::Redirect('/register/');
 		}
 	}
 
