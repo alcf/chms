@@ -42,6 +42,7 @@
 
 		protected $dtxDateOfBirth;
 		protected $calDateOfBirth;
+		protected $rblGender;
 
 		protected $btnConfirm;
 		protected $btnCancel;
@@ -169,7 +170,13 @@
 			$this->dtxDateOfBirth->Name = 'Date of Birth';
 			$this->calDateOfBirth = new QCalendar($this->dtxDateOfBirth, $this->dtxDateOfBirth);
 			$this->dtxDateOfBirth->RemoveAllActions(QClickEvent::EventName);
-			
+
+			$this->rblGender = new QRadioButtonList($this->pnlDetailsMain);
+			$this->rblGender->AddItem('Male', 'M');
+			$this->rblGender->AddItem('Female', 'F');
+			$this->rblGender->Name = 'Gender';
+			$this->rblGender->RepeatColumns = 2;
+
 			$this->txtHomePhone = new PhoneTextBox($this->pnlDetailsMain);
 			$this->txtHomePhone->Name = 'Home Phone';
 
@@ -300,7 +307,8 @@
 				trim($this->txtMobilePhone->Text),
 				$objHomeAddress,
 				$objMailingAddress,
-				$dttDateOfBirth);
+				$dttDateOfBirth,
+				$this->rblGender->SelectedValue);
 //			QApplication::Redirect('/register/thankyou.php');
 		}
 

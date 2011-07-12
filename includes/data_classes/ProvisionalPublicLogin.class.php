@@ -76,6 +76,24 @@
 		 * Given data points supplied this will attempt to reconcile this PublicLogin record to an actual person... or if not possible,
 		 * it will create a new person record.
 		 * 
+		 * There are several stesp to this process.
+		 * First, do a Search of All People for the given Email
+		 * 		- if 1 and only 1 person was found:
+		 * 			+ Check the personal details of that persons record
+		 * 				- If matched against First/Last or Nickname/Last, setup the match
+		 * 				- If matched against DOB and/or Gender and/or Mobile, setup the match and update the name
+		 * 				- If not matched, create as new
+		 * 		- if no people were found
+		 * 			+ in all the DB, do a search to find matches against First/Last or Nickname/Last AND any address
+		 * 				- if exactly one is found, setup the match
+		 * 				- if non were found, create as new
+		 * 				- if multiple were found, find the first one that also match DOB and/or Gender and/or Mobile (or if none just find the first one) and setup the match
+		 * 		- if multiple people were found
+		 * 			+ WITHIN the set of found people, do a search to find matches against First/Last or Nickname/Last AND any address
+		 * 				- if exactly one is found, setup the match
+		 * 				- if non were found, create as new
+		 * 				- if multiple were found, find the first one that also match DOB and/or Gender and/or Mobile (or if none just find the first one) and setup the match
+		 * 
 		 * It will then update all data accordingly.
 		 * @param string $strPassword
 		 * @param string $strQuestion
@@ -85,10 +103,18 @@
 		 * @param Address $objHomeAddress
 		 * @param Address $objMailingAddress optional
 		 * @param QDateTime $dttDateOfBirth optional
+		 * @param string $strGenderFlag optional
 		 * @return void
 		 */
-		public function Reconcile($strPassword, $strQuestion, $strAnswer, $strHomePhone, $strMobilePhone, Address $objHomeAddress, Address $objMailingAddress = null, QDateTime $dttDateOfBirth = null) {
-			QApplication::DisplayAlert('Hello');
+		public function Reconcile($strPassword, $strQuestion, $strAnswer, $strHomePhone, $strMobilePhone, Address $objHomeAddress, Address $objMailingAddress = null, QDateTime $dttDateOfBirth = null, $strGenderFlag = null) {
+			// Try and Find a Person based on Email
+			$objPersonArray = array();
+
+			foreach (Email::LoadArrayByAddress($this->strEmailAddress) as $objEmail) {
+				$objPersonArray[] = $objEmail->Person;
+			}
+
+			QLog::LogObject($objPersonArray);
 		}
 
 		// Override or Create New Load/Count methods

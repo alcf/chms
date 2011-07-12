@@ -44,6 +44,7 @@
 	<div class="section">
 		<?php if (!$_FORM->dtxDateOfBirth->HtmlAfter) $_FORM->dtxDateOfBirth->HtmlAfter = ' ' . $_FORM->calDateOfBirth->Render(false); ?>
 		<?php $_FORM->dtxDateOfBirth->RenderWithName(); ?>
+		<?php $_FORM->rblGender->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">
