@@ -990,11 +990,11 @@
 			if ($objHousehold) {
 				if (!HouseholdParticipation::LoadByPersonIdHouseholdId($this->intId, $objHousehold->Id))
 					throw new QCallerException('Person does not exist in this household');
-				if ($objAddress = $objHousehold->GetCurrentAddress()) $objToReturn[] = $objAddress;
+				foreach ($objHousehold->GetAddressArray() as $objAddress) $objToReturn[] = $objAddress;
 
 			// Add addresses from all households
 			} else foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
-				if ($objAddress = $objHouseholdParticipation->Household->GetCurrentAddress()) $objToReturn[] = $objAddress;
+				foreach ($objHouseholdParticipation->Household->GetAddressArray() as $objAddress) $objToReturn[] = $objAddress;
 			}
 
 			// Now add personal addresses

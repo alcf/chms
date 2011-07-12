@@ -290,7 +290,7 @@
 			if (count($objHouseholdParticipationArray) == 1) {
 				$objHousehold = $objHouseholdParticipationArray[0]->Household;
 				$objAddress = $objHousehold->GetCurrentAddress();
-				if ($objAddress->IsEqualTo($objHomeAddress)) {
+				if ($objAddress && $objAddress->IsEqualTo($objHomeAddress)) {
 					$objHomeAddress = $objAddress;
 				} else {
 					$objHomeAddress->AddressTypeId = AddressType::Home;
@@ -298,13 +298,15 @@
 					$objHomeAddress->CurrentFlag = true;
 					$objHomeAddress->Save();
 
-					$objAddress->CurrentFlag = false;
-					$objAddress->Save();
+					if ($objAddress) {
+						$objAddress->CurrentFlag = false;
+						$objAddress->Save();
+					}
 				}
 
 				if ($strHomePhone) {
 					$blnFound = false;
-					foreach ($objHomeAddress->GetPhoneArray as $objPhone) {
+					foreach ($objHomeAddress->GetPhoneArray() as $objPhone) {
 						if ($objPhone->Number == $strHomePhone) {
 							$blnFound = true;
 							$objPhone->SetAsPrimary($objHomeAddress);
@@ -319,6 +321,22 @@
 						$objPhone->Save();
 						$objPhone->SetAsPrimary($objHomeAddress);
 					}
+				}
+			} else if (count($objHouseholdParticipationArray) == 0) {
+				$objHousehold = Household::CreateHousehold($objPerson);
+				$objHomeAddress->AddressTypeId = AddressType::Home;
+				$objHomeAddress->Household = $objHousehold;
+				$objHomeAddress->CurrentFlag = true;
+				$objHomeAddress->Save();
+
+				$objHousehold->SetAsCurrentAddress($objHomeAddress);
+				if ($strHomePhone) {
+					$objPhone = new Phone();
+					$objPhone->PhoneTypeId = PhoneType::Home;
+					$objPhone->Number = $strHomePhone;
+					$objPhone->Address = $objHomeAddress;
+					$objPhone->Save();
+					$objPhone->SetAsPrimary($objHomeAddress);
 				}
 			}
 
