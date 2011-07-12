@@ -78,7 +78,10 @@
 		}
 
 		public function RenderEmailAddress(Email $objEmail) {
-			return sprintf('<a href="#contact/edit_email/%s">%s</a>', $objEmail->Id, QApplication::HtmlEntities($objEmail->Address));
+			if ($this->objPerson->IsLoginCanEditEmailAddress(QApplication::$Login))
+				return sprintf('<a href="#contact/edit_email/%s">%s</a>', $objEmail->Id, QApplication::HtmlEntities($objEmail->Address));
+			else
+				return QApplication::HtmlEntities($objEmail->Address);
 		}
 
 		public function RenderOtherType(OtherContactInfo $objOther) {

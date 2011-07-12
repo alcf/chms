@@ -1328,6 +1328,19 @@
 			Person::GetDatabase()->TransactionCommit();
 		}
 
+		/**
+		 * Specifies whether the Login can edit this person's email address information.
+		 * If the person has a linked PublicLogin record, then only CHMS Administrators can edit the email address info.
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanEditEmailAddress(Login $objLogin) {
+			if (!$objLogin->IsPermissionAllowed(PermissionType::EditData)) return false;
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+			if ($this->PublicLogin) return false;
+			return true;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

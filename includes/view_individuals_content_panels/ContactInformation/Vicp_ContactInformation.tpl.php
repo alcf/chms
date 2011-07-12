@@ -62,8 +62,18 @@
 </div>
 
 <div class="sectionSubnavRight">
-	<h3>Email Addresses<button class="primary" onclick="document.location='#contact/edit_email'; return false;">Add Email</button></h3>
-	<div class="section"><?php $_CONTROL->dtgEmails->Render(); ?></div>	
+	<h3>Email Addresses
+		<?php if ($this->objPerson->IsLoginCanEditEmailAddress(QApplication::$Login)) {?>
+			<button class="primary" onclick="document.location='#contact/edit_email'; return false;">Add Email</button>
+		<?php } ?>
+	</h3>
+	<div class="section">
+		<?php $_CONTROL->dtgEmails->Render(); ?>
+		<?php if (!$this->objPerson->IsLoginCanEditEmailAddress(QApplication::$Login)) {?>
+			<p style="font-size: 11px; padding: 0; ">Because this person now has a <strong>my.alcf</strong> account,
+				changes to this person's email address is now only allowed on <strong>my.alcf</strong> for this person.</p>
+		<?php } ?>
+	</div>	
 </div>
 <div class="cleaner">&nbsp;</div>
 <br/>
