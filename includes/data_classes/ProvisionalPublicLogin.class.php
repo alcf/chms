@@ -72,6 +72,25 @@
 			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
 		}
 
+		/**
+		 * Given data points supplied this will attempt to reconcile this PublicLogin record to an actual person... or if not possible,
+		 * it will create a new person record.
+		 * 
+		 * It will then update all data accordingly.
+		 * @param string $strPassword
+		 * @param string $strQuestion
+		 * @param string $strAnswer
+		 * @param string $strHomePhone
+		 * @param string $strMobilePhone
+		 * @param Address $objHomeAddress
+		 * @param Address $objMailingAddress optional
+		 * @param QDateTime $dttDateOfBirth optional
+		 * @return void
+		 */
+		public function Reconcile($strPassword, $strQuestion, $strAnswer, $strHomePhone, $strMobilePhone, Address $objHomeAddress, Address $objMailingAddress = null, QDateTime $dttDateOfBirth = null) {
+			QApplication::DisplayAlert('Hello');
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

@@ -278,9 +278,32 @@
 		}
 
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			$this->pnlDetailsAddress->Refresh();
+			// Create address record(s)
+			$objHomeAddress = $this->objHomeAddressValidator->CreateAddressRecord();
+			if ($this->objMailingAddressValidator) {
+				$objMailingAddress = $this->objMailingAddressValidator->CreateAddressRecord();
+			} else {
+				$objMailingAddress = null;
+			}
+
+			if (trim($this->dtxDateOfBirth->Text)) {
+				$dttDateOfBirth = $this->dtxDateOfBirth->DateTime;
+			} else {
+				$dttDateOfBirth = null;
+			}
+			
+			QApplication::$PublicLogin->ProvisionalPublicLogin->Reconcile(
+				trim(strtolower($this->txtPassword->Text)),
+				($this->lstQuestion->SelectedValue) ? $this->lstQuestion->SelectedValue : trim($this->txtQuestion->Text),
+				trim(strtolower($this->txtAnswer->Text)),
+				trim($this->txtHomePhone->Text),
+				trim($this->txtMobilePhone->Text),
+				$objHomeAddress,
+				$objMailingAddress,
+				$dttDateOfBirth);
+//			QApplication::Redirect('/register/thankyou.php');
 		}
-	
+
 		protected function btnGoBack_Click($strFormId, $strControlId, $strParameter) {
 			$this->pnlDetailsMain->Visible = true;
 			$this->pnlDetailsAddress->Visible = false;

@@ -9,6 +9,24 @@
 		protected $blnAddressValidFlag;
 		protected $blnSecondaryValidFlag;
 		
+		/**
+		 * This will create an UNLINKED address record based on the data in the object.
+		 * This will include setting InvalidFlag to true/false based on the validity
+		 * @return Address
+		 */
+		public function CreateAddressRecord() {
+			$objAddress = new Address();
+			$objAddress->Address1 = $this->strPrimaryAddressLine;
+			$objAddress->Address2 = $this->strSecondaryAddressLine;
+			$objAddress->City = $this->strCity;
+			$objAddress->State = $this->strState;
+			$objAddress->ZipCode = $this->strZipCode;
+			
+			$objAddress->InvalidFlag = !$this->blnAddressValidFlag;
+			
+			return $objAddress;
+		}
+
 		public function __construct($strPrimaryAddressLine, $strSecondaryAddressLine, $strCity, $strState, $strZipCode) {
 			$this->strPrimaryAddressLine = $strPrimaryAddressLine;
 			$this->strSecondaryAddressLine = $strSecondaryAddressLine;
