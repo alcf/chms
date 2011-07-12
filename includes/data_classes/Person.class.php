@@ -498,7 +498,7 @@
 		 */
 		public function IsNameAndAddressMatch($strFirstName, $strLastName, Address $objHomeAddress, Address $objMailingAddress = null) {
 			// Check Names, and return FALSE if does not match
-			if (!$this->CheckName($strFirstName, $strLastName)) return false;
+			if (!$this->IsNameMatch($strFirstName, $strLastName)) return false;
 
 			// If we are here, the the name matched.
 			// Now let's match home and possibly mailing against any of the addresses that belong to this person

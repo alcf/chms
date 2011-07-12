@@ -134,7 +134,7 @@
 				// Go through each of them and find a name-match and address-match
 				$objMatchedPersonArray = array();
 				foreach ($objPersonArray as $objPerson) {
-					if ($objPerson->IsNameAndAddressMatch($strFirstName, $strLastName, $objHomeAddress, $objMailingAddress))
+					if ($objPerson->IsNameAndAddressMatch($this->FirstName, $this->LastName, $objHomeAddress, $objMailingAddress))
 						$objMatchedPersonArray[] = $objPerson;
 				}
 
@@ -157,12 +157,12 @@
 			// NO ONE was found with the email
 			} else {
 				// First pull the ones with Name Matched
-				$objPersonArray = Person::LoadArrayByNameMatch($strFirstName, $strLastName);
+				$objPersonArray = Person::LoadArrayByNameMatch($this->FirstName, $this->LastName);
 				
 				// Go through each of those and find address-match records
 				$objMatchedPersonArray = array();
 				foreach ($objPersonArray as $objPerson) {
-					if ($objPerson->IsNameAndAddressMatch($strFirstName, $strLastName, $objHomeAddress, $objMailingAddress))
+					if ($objPerson->IsNameAndAddressMatch($this->FirstName, $this->LastName, $objHomeAddress, $objMailingAddress))
 						$objMatchedPersonArray[] = $objPerson;
 				}
 

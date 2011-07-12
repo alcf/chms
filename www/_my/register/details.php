@@ -101,11 +101,11 @@
 			$this->lstQuestion = new QListBox($this->pnlDetailsMain);
 			$this->lstQuestion->Name = '"Forgot Password" Question';
 			$this->lstQuestion->AddItem('- Select One -', null);
-			$this->lstQuestion->AddItem('What city were you born in?');
-			$this->lstQuestion->AddItem('What is the name of your elementary school?');
-			$this->lstQuestion->AddItem('What street did you grow up on?');
-			$this->lstQuestion->AddItem('What is the name of your pet?');
-			$this->lstQuestion->AddItem('What was the make and model of your first car?');
+			$this->lstQuestion->AddItem('What city were you born in?', 'What city were you born in?');
+			$this->lstQuestion->AddItem('What is the name of your elementary school?', 'What is the name of your elementary school?');
+			$this->lstQuestion->AddItem('What street did you grow up on?', 'What street did you grow up on?');
+			$this->lstQuestion->AddItem('What is the name of your pet?', 'What is the name of your pet?');
+			$this->lstQuestion->AddItem('What was the make and model of your first car?', 'What was the make and model of your first car?');
 			$this->lstQuestion->AddItem('- Other... -', false);
 			$this->lstQuestion->Required = true;
 			$this->lstQuestion->AddAction(new QChangeEvent(), new QAjaxAction('lstQuestion_Refresh'));

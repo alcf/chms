@@ -152,6 +152,7 @@
 					$objProvisionalPublicLogin->ConfirmationCode = md5(microtime());
 					$objProvisionalPublicLogin->ConfirmationCode = str_replace('0', '', $objProvisionalPublicLogin->ConfirmationCode);
 					$objProvisionalPublicLogin->ConfirmationCode = str_replace('1', '', $objProvisionalPublicLogin->ConfirmationCode);
+					$objProvisionalPublicLogin->ConfirmationCode = substr($objProvisionalPublicLogin->ConfirmationCode, 0, 8);
 				}
 				$objProvisionalPublicLogin->Save();
 				PublicLogin::GetDatabase()->TransactionCommit();
