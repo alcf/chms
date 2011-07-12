@@ -299,7 +299,7 @@
 				$dttDateOfBirth = null;
 			}
 			
-			QApplication::$PublicLogin->ProvisionalPublicLogin->Reconcile(
+			$objPerson = QApplication::$PublicLogin->ProvisionalPublicLogin->Reconcile(
 				trim(strtolower($this->txtPassword->Text)),
 				($this->lstQuestion->SelectedValue) ? $this->lstQuestion->SelectedValue : trim($this->txtQuestion->Text),
 				trim(strtolower($this->txtAnswer->Text)),
@@ -309,7 +309,15 @@
 				$objMailingAddress,
 				$dttDateOfBirth,
 				$this->rblGender->SelectedValue);
-//			QApplication::Redirect('/register/thankyou.php');
+
+			if ($objPerson->PublicLogin->Id != QApplication::$PublicLogin->Id) {
+				QLog::Log(sprintf('Provisioned PublicLogin::Reconcile() matched against a Person with an existing PublicLogin: PublicLogin(%s) and Person(%s)',
+					QApplication::$PublicLogin->Id,
+					$objPerson->Id));
+				QApplication::DisplayAlert('We have encountered a data issue.  Please contact ALCF Online Member Support at 650-625-1500 for more information.  Please reference PLID ' . QApplication::$PublicLogin->Id . ' when calling.');
+			} else {
+				QApplication::Redirect('/register/thankyou.php');
+			}
 		}
 
 		protected function btnGoBack_Click($strFormId, $strControlId, $strParameter) {

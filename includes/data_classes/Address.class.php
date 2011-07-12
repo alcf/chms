@@ -89,6 +89,22 @@
 			}
 		}
 
+		public function IsEqualTo(Address $objAddress) {
+			$blnCheckAddress2 = (strlen($objAddress->Address2) || strlen($this->Address2)) ? true : false;
+
+			if (
+				(trim(strtolower($objAddress->Address1)) == trim(strtolower($this->Address1))) &&
+				(!$blnCheckAddress2 || (trim(strtolower($objAddress->Address2)) == trim(strtolower($this->Address2)))) &&
+				(trim(strtolower($objAddress->City)) == trim(strtolower($this->City))) &&
+				($objAddress->State == $this->State) &&
+				((substr(trim($objAddress->ZipCode), 0, 5)) == (substr(trim($this->ZipCode), 0, 5)))
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			try {
 				parent::Save($blnForceInsert, $blnForceUpdate);

@@ -94,7 +94,10 @@
 		 * 				- if non were found, create as new
 		 * 				- if multiple were found, find the first one that also match DOB and/or Gender and/or Mobile (or if none just find the first one) and setup the match
 		 * 
-		 * It will then update all data accordingly.
+		 * It will then check and see if the Person found (if any) already has a login object... if so, it will return that found Person record and do nothing further.
+		 * 
+		 * Otherwise, it will then update all data accordingly (including creating a new Person record, if needed) and return the Person that was created.
+		 * 
 		 * @param string $strPassword
 		 * @param string $strQuestion
 		 * @param string $strAnswer
@@ -104,7 +107,7 @@
 		 * @param Address $objMailingAddress optional
 		 * @param QDateTime $dttDateOfBirth optional
 		 * @param string $strGenderFlag optional
-		 * @return void
+		 * @return Person the person that was matched
 		 */
 		public function Reconcile($strPassword, $strQuestion, $strAnswer, $strHomePhone, $strMobilePhone, Address $objHomeAddress, Address $objMailingAddress = null, QDateTime $dttDateOfBirth = null, $strGenderFlag = null) {
 			// Try and Find a Person based on Email
@@ -114,7 +117,230 @@
 				$objPersonArray[] = $objEmail->Person;
 			}
 
-			QLog::LogObject($objPersonArray);
+			// Let's try and find a single Person object to reconcile for
+
+			// 1 and only 1 person was found with the email
+			if (count($objPersonArray) == 1) {
+				if ($objPersonArray[0]->IsNameMatch($this->FirstName, $this->LastName)) {
+					$objPerson = $objPersonArray[0];
+				} else if ($objPersonArray[0]->ScoreDobGenderMobileMatch($dttDateOfBirth, $strGenderFlag, $strMobilePhone) > 0) {
+					$objPerson = $objPersonArray[0];
+				} else {
+					$objPerson = null;
+				}
+
+			// MORE than one person was found with the email
+			} else if (count($objPersonArray)) {
+				// Go through each of them and find a name-match and address-match
+				$objMatchedPersonArray = array();
+				foreach ($objPersonArray as $objPerson) {
+					if ($objPerson->IsNameAndAddressMatch($strFirstName, $strLastName, $objHomeAddress, $objMailingAddress))
+						$objMatchedPersonArray[] = $objPerson;
+				}
+
+				if (count($objMatchedPersonArray) == 1) {
+					$objPerson = $objMatchedPersonArray[0];
+				} else if (!count($objMatchedPersonArray)) {
+					$objPerson = null;
+				} else {
+					$objPerson = $objMatchedPersonArray[0];
+					$intCurrentScore = 0;
+					foreach ($objMatchedPersonArray as $objMatchedPerson) {
+						$intScore = $objMatchedPerson->ScoreDobGenderMobileMatch($dttDateOfBirth, $strGenderFlag, $strMobilePhone);
+						if ($intScore > $intCurrentScore) {
+							$intCurrentScore = $intScore;
+							$objPerson = $objMatchedPerson;
+						}
+					}
+				}
+
+			// NO ONE was found with the email
+			} else {
+				// First pull the ones with Name Matched
+				$objPersonArray = Person::LoadArrayByNameMatch($strFirstName, $strLastName);
+				
+				// Go through each of those and find address-match records
+				$objMatchedPersonArray = array();
+				foreach ($objPersonArray as $objPerson) {
+					if ($objPerson->IsNameAndAddressMatch($strFirstName, $strLastName, $objHomeAddress, $objMailingAddress))
+						$objMatchedPersonArray[] = $objPerson;
+				}
+
+				if (count($objMatchedPersonArray) == 1) {
+					$objPerson = $objMatchedPersonArray[0];
+				} else if (!count($objMatchedPersonArray)) {
+					$objPerson = null;
+				} else {
+					$objPerson = $objMatchedPersonArray[0];
+					$intCurrentScore = 0;
+					foreach ($objMatchedPersonArray as $objMatchedPerson) {
+						$intScore = $objMatchedPerson->ScoreDobGenderMobileMatch($dttDateOfBirth, $strGenderFlag, $strMobilePhone);
+						if ($intScore > $intCurrentScore) {
+							$intCurrentScore = $intScore;
+							$objPerson = $objMatchedPerson;
+						}
+					}
+				}
+			}
+
+
+			
+			// If we have a person, make sure it's not already linked
+			if ($objPerson) {
+				if ($objPerson->PublicLogin) return $objPerson;
+			}
+
+
+
+			// We now have either a unlinked Person record or no person record
+			// Let's make all the DB updates we need to
+			Person::GetDatabase()->TransactionBegin();
+
+			// Do we have a single Person object?
+			// If not, let's create it
+			if (!$objPerson) {
+				$this->PublicLogin->NewPersonFlag = true;
+				$blnMaleFlag = null;
+				if ($strGenderFlag = trim(strtoupper($strGenderFlag))) {
+					$blnMaleFlag = ($strGenderFlag == 'M');
+				}
+
+				$intPhoneTypeId = $strMobilePhone ? PhoneType::Mobile : null;
+				$objPerson = Person::CreatePerson($this->FirstName, null, $this->LastName, $blnMaleFlag, $this->EmailAddress,
+					$strMobilePhone, $intPhoneTypeId);
+				$objPerson->DateOfBirth = $dttDateOfBirth;
+				$objPerson->Save();
+			}
+
+			//////////////////////////////////
+			// Let's update the information
+			//////////////////////////////////
+
+			// Email Address
+			$blnFound  = false;
+			foreach ($objPerson->GetEmailArray() as $objEmail) {
+				if ($objEmail->Address = $this->EmailAddress) {
+					$objPerson->PrimaryEmail = $objEmail;
+					$blnFound = true;
+				}
+			}
+			if (!$blnFound) {
+				$objEmail = new Email();
+				$objEmail->Address = $this->EmailAddress;
+				$objEmail->Person = $objPerson;
+				$objEmail->Save();
+				$objPerson->PrimaryEmail = $objEmail;
+			}
+
+			// Gender and DOB
+			if ($strGenderFlag = trim(strtoupper($strGenderFlag))) $objPerson->Gender = $strGenderFlag;
+			if ($dttDateOfBirth) {
+				$objPerson->DateOfBirth = $dttDateOfBirth;
+				$objPerson->DobGuessedFlag = false;
+				$objPerson->DobYearApproximateFlag = false;
+			}
+
+			// Mobile Phone
+			if ($strMobilePhone) {
+				$blnFound = false;
+				foreach ($objPerson->GetAllAssociatedPhoneArray() as $objPhone) {
+					if ($objPhone->Number == $strMobilePhone) {
+						$objPhone->PhoneTypeId = PhoneType::Mobile;
+						$objPhone->Save();
+						$blnFound = true;
+					}
+				}
+				
+				if (!$blnFound) {
+					$objPhone = new Phone();
+					$objPhone->Number = $strMobilePhone;
+					$objPhone->PhoneTypeId = PhoneType::Mobile;
+					$objPhone->Save();
+					$objPerson->PrimaryPhone = $objPhone;
+				}
+			}
+
+			// Mailing Address
+			if ($objMailingAddress) {
+				$blnFound = false;
+				foreach ($objPerson->GetAllAssociatedAddressArray() as $objAddress) {
+					if ($objAddress->IsEqualTo($objMailingAddress)) {
+						$blnFound = true;
+						$objAddress->CurrentFlag = true;
+						$objAddress->AddressTypeId = AddressType::Other;
+						$objAddress->Save();
+						$objPerson->MailingAddress = $objAddress;
+						$objPerson->StewardshipAddress = $objAddress;
+					}
+				}
+
+				if (!$blnFound) {
+					$objMailingAddress->Person = $objPerson;
+					$objMailingAddress->CurrentFlag = true;
+					$objMailingAddress->AddressTypeId = AddressType::Other;
+					$objMailingAddress->Save();
+
+					$objPerson->MailingAddress = $objMailingAddress;
+					$objPerson->StewardshipAddress = $objMailingAddress;
+				}
+			}
+
+			// Home Address and Phone
+			$objHouseholdParticipationArray = $objPerson->GetHouseholdParticipationArray();
+			if (count($objHouseholdParticipationArray) == 1) {
+				$objHousehold = $objHouseholdParticipationArray[0]->Household;
+				$objAddress = $objHousehold->GetCurrentAddress();
+				if ($objAddress->IsEqualTo($objHomeAddress)) {
+					$objHomeAddress = $objAddress;
+				} else {
+					$objHomeAddress->AddressTypeId = AddressType::Home;
+					$objHomeAddress->Household = $objHousehold;
+					$objHomeAddress->CurrentFlag = true;
+					$objHomeAddress->Save();
+
+					$objAddress->CurrentFlag = false;
+					$objAddress->Save();
+				}
+
+				if ($strHomePhone) {
+					$blnFound = false;
+					foreach ($objHomeAddress->GetPhoneArray as $objPhone) {
+						if ($objPhone->Number == $strHomePhone) {
+							$blnFound = true;
+							$objPhone->SetAsPrimary($objHomeAddress);
+						}
+					}
+					
+					if (!$blnFound) {
+						$objPhone = new Phone();
+						$objPhone->PhoneTypeId = PhoneType::Home;
+						$objPhone->Number = $strHomePhone;
+						$objPhone->Address = $objHomeAddress;
+						$objPhone->Save();
+						$objPhone->SetAsPrimary($objHomeAddress);
+					}
+				}
+			}
+
+			// Wire to PublicLogin
+			$this->PublicLogin->Person = $objPerson;
+			$this->PublicLogin->SetPassword($strPassword);
+			$this->PublicLogin->LostPasswordQuestion = trim($strQuestion);
+			$this->PublicLogin->LostPasswordAnswer = trim(strtolower($strAnswer));
+			$this->PublicLogin->DateLastLogin = QDateTime::Now();
+			$this->PublicLogin->Save();
+
+			// Save the person and delete the provision
+			$objPerson->RefreshPrimaryContactInfo();
+			$objPerson->RefreshAge(false);
+			$objPerson->RefreshNameItemAssociations(true);
+			$this->Delete();
+
+			// Commit to DB
+			Person::GetDatabase()->TransactionCommit();
+
+			// Return the now-linked person!
+			return $objPerson;
 		}
 
 		// Override or Create New Load/Count methods

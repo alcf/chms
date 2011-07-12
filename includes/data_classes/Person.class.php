@@ -353,7 +353,164 @@
 
 			return ($this->Age < 18);
 		}
+
+		/**
+		 * This will check and provide a "score" on a match against DOB, Gender and Mobile Phone Number.
+		 * The score returned will be anything from -2 to 3.
+		 * 
+		 * A point is given for any item that is positively matched.
+		 * The score is negative if there is any item that does NOT match.
+		 * 
+		 * In order for a match or non-match to take place, the data item needs to be defined on BOTH this person and in the data being passed in.
+		 * 
+		 * @param QDateTime $dttDateOfBirth optional
+		 * @param string $strGender optional
+		 * @param string $strMobilePhone optional
+		 * @return integer
+		 */
+		public function ScoreDobGenderMobileMatch(QDateTime $dttDateOfBirth = null, $strGender = null, $strMobilePhone = null) {
+			$intScore = 0;
+			$blnNegativeFlag = false;
+
+			if ($dttDateOfBirth && $this->DateOfBirth && !$this->DobGuessedFlag && !$this->DobYearApproximateFlag) {
+				if ($dttDateOfBirth->IsEqualTo($this->DateOfBirth))
+					$intScore++;
+				else
+					$blnNegativeFlag = true;
+			}
+
+			if ($strGender && $this->Gender) {
+				if (trim(strtoupper($strGender) == $this->Gender))
+					$intScore++;
+				else
+					$blnNegativeFlag = true;
+			}
+
+			if ($strMobilePhone && $this->CountPhones()) {
+				$blnFound = false;
+				foreach ($this->GetPhoneArray() as $objPhone) {
+					if ($objPhone->PhoneTypeId != PhoneType::Home) {
+						if ($strMobilePhone == $objPhone->Number) $blnFound = true;
+					}
+				}
+				
+				if ($blnFound)
+					$intScore++;
+				else
+					$blnNegativeFlag = true;
+			}
+			
+			return ($blnNegativeFlag) ? (-1 * $intScore) : $intScore;
+		}
+
+
+		/**
+		 * This is a bit similar to a db-load based version of Person::IsNameMatch().
+		 * It will utilize querying to find any and all Person objects that do a normalized name match based on the name item objects.
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @return Person[]
+		 */
+		public static function LoadArrayByNameMatch($strFirstName, $strLastName) {
+			// Calculate the normalized name items were are using
+			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strFirstName . ' ' . $strLastName);
+			
+			// Create an Integer[] of NameItem IDs
+			$intNameItemIdArray = array();
+			foreach ($strNameItemArray as $strNameItem) {
+				$objNameItem = NameItem::LoadByName($strNameItem);
+				if (!$objNameItem) return array();
+				$intNameItemIdArray[] = $objNameItem->Id;
+			}
+
+			// Iterate to setup the Condition and Clauses
+			$objCondition = QQ::All();
+			$objClauses = array();
+			$intIndex = 0;
+
+			foreach ($intNameItemIdArray as $intNameItemId) {
+				$intIndex++;
+				$strAlias = 'assn_' . $intIndex;
+
+				if ($intIndex == 2) $objClauses[] = QQ::Distinct();
+
+				$objClauses[] = QQ::CustomFrom('person_nameitem_assn', $strAlias);
+				$objCondition = QQ::AndCondition(
+					$objCondition,
+					QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), QQN::Person()->Id),
+					QQ::Equal(QQ::CustomNode($strAlias . '.name_item_id'), $intNameItemId)
+				);
+			}
+
+			return Person::QueryArray($objCondition, $objClauses);
+		}
+
+		/**
+		 * This will check to see if this person has a near-match on the first and last name provided.
+		 * It will check first name against nicknames, it will check last name against prior last names
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @return boolean whether or not there was a match
+		 */
+		public function IsNameMatch($strFirstName, $strLastName) {
+			$strFirstName = NameItem::NormalizeNameItem($strFirstName);
+			$strLastName = NameItem::NormalizeNameItem($strLastName);
+
+			// Check First Name
+			if ($strFirstName != NameItem::NormalizeNameItem($this->FirstName)) {
+				// If we are here, then we should try and match against the nickname
+				$blnFound = false;
+
+				foreach (explode(',', $this->Nickname) as $strName) {
+					if (strlen(trim($strName)) && ($strFirstName == NameItem::NormalizeNameItem($strName)))
+						$blnFound = true;
+				}
+
+				if (!$blnFound) return false;
+			}
+
+			// So far, so good!  If we are here, then the first name is valid
+			// Now, let's check the last name
+			if ($strLastName != NameItem::NormalizeNameItem($this->LastName)) {
+				// If we are here, then we should try and match against the nickname
+				$blnFound = false;
+
+				foreach (explode(',', $this->PriorLastNames) as $strName) {
+					if (strlen(trim($strName)) && ($strLastName == NameItem::NormalizeNameItem($strName)))
+						$blnFound = true;
+				}
+
+				if (!$blnFound) return false;
+			}
+
+			// If we are here, then we've succeeded!
+			return true;
+		}
 		
+		/**
+		 * This will use CheckName to determine a name match and do a match on either the home or mailing address... will return true
+		 * if the names match AND at least one of the addresses match
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @param Address $objHomeAddress required
+		 * @param Address $objMailingAddress optional
+		 * @return boolean whether or not there was a match
+		 */
+		public function IsNameAndAddressMatch($strFirstName, $strLastName, Address $objHomeAddress, Address $objMailingAddress = null) {
+			// Check Names, and return FALSE if does not match
+			if (!$this->CheckName($strFirstName, $strLastName)) return false;
+
+			// If we are here, the the name matched.
+			// Now let's match home and possibly mailing against any of the addresses that belong to this person
+			foreach ($this->GetAllAssociatedAddressArray() as $objAddress) {
+				if ($objHomeAddress->IsEqualTo($objAddress)) return true;
+				if ($objMailingAddress && $objMailingAddress->IsEqualTo($objAddress)) return true;
+			}
+
+			// If we are here, we did not find an address match
+			return false;
+		}
+
 		/**
 		 * Returns true if this person is an individual (has no household participation records and is not the head of any household)
 		 * @return boolean
@@ -813,6 +970,38 @@
 				$objToReturn[] = $objPhone;
 			}
 			
+			return $objToReturn;
+		}
+		
+		/**
+		 * Similar to the codegenned GetAddressArray -- however this will retrieve ALL current and associated
+		 * Addresss.  Not just personal addresses, but addresses attributed to the current home
+		 * of a given household.  You must specify the household as well.  If the household is invalid (e.g.
+		 * the participation doesn't exist), then this will throw.
+		 * 
+		 * If NO household is passed in (or NULL), then this will return values for ALL associated households.
+		 * 
+		 * @return Address[]
+		 */
+		public function GetAllAssociatedAddressArray(Household $objHousehold = null) {
+			$objToReturn = array();
+
+			// Add Address from a specific household
+			if ($objHousehold) {
+				if (!HouseholdParticipation::LoadByPersonIdHouseholdId($this->intId, $objHousehold->Id))
+					throw new QCallerException('Person does not exist in this household');
+				if ($objAddress = $objHousehold->GetCurrentAddress()) $objToReturn[] = $objAddress;
+
+			// Add addresses from all households
+			} else foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+				if ($objAddress = $objHouseholdParticipation->Household->GetCurrentAddress()) $objToReturn[] = $objAddress;
+			}
+
+			// Now add personal addresses
+			foreach ($this->GetAddressArray(QQ::OrderBy(QQN::Address()->Id)) as $objAddress) {
+				if ($objAddress->CurrentFlag) $objToReturn[] = $objAddress;
+			}
+
 			return $objToReturn;
 		}
 
