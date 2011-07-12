@@ -162,6 +162,8 @@
 		color: #00679c;
 		text-shadow: 1px 1px #abc; 
 	}
+	
+	ul.subnavSide li a.disabled { background-color: #666; color: #999; text-shadow: none; }
 
 	ul.subnavSideStewardship li a { padding: 2px 10px; }
 	ul.subnavSideStewardship li a div.info div.left { float : left; font-size: 10px; position:relative; top: 2px; font-weight: normal; }
