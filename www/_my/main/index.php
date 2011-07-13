@@ -39,6 +39,10 @@
 		protected $btnSecurityUpdate;
 		protected $btnSecurityCancel;
 
+		// Contact Information
+		protected $txtEmail;
+		protected $txtMobilePhone;
+
 		// Personal Information
 		protected $mctPerson;
 		protected $calDateOfBirth;
@@ -238,6 +242,21 @@
 		protected function btnContact_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgContact->ShowDialogBox();
 			$this->dlgContact->Template = dirname(__FILE__) . '/dlgContact.inc.php';
+
+			if (!$this->txtEmail) {
+				$this->txtEmail = new QEmailTextBox($this->dlgContact);
+				$this->txtEmail->Name = 'Email Address';
+				$this->txtEmail->Required = true;
+
+				$this->txtMobilePhone = new PhoneTextBox($this->dlgContact);
+				$this->txtMobilePhone->Name = 'Mobile Phone';
+			}
+			
+			$this->txtEmail->Text = QApplication::$PublicLogin->Person->PrimaryEmail->Address;
+			if ($objPhone = QApplication::$PublicLogin->Person->DeduceMobilePhone())
+				$this->txtMobilePhone->Text = $objPhone->Number;
+			else
+				$this->txtMobilePhone->Text = null;
 		}
 		
 		protected function btnPersonal_Click($strFormId, $strControlId, $strParameter) {
@@ -293,8 +312,20 @@
 		
 		protected function btnUpdate_Contact_Click() {
 			$this->btnCancel_Contact_Click();
+
+			QApplication::$PublicLogin->Person->ChangePrimaryEmailTo($this->txtEmail->Text);
+			$strMobilePhone = trim($this->txtMobilePhone->Text);
+			if (strlen($strMobilePhone)) {
+				QApplication::$PublicLogin->Person->CreateOrUpdateMobilePhone($strMobilePhone);
+			} else if ($objPhone = QApplication::$PublicLogin->Person->DeduceMobilePhone()) {
+				$objPhone->Delete();
+			}
+			QApplication::$PublicLogin->Save();
+
+			QApplication::PublicLoginRefresh();
+			$this->Refresh();
 		}
-			
+
 		protected function btnUpdate_Personal_Click() {
 			$this->btnCancel_Personal_Click();
 

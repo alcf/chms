@@ -1355,6 +1355,89 @@
 			return true;
 		}
 
+		/**
+		 * Given a string-based email address, this will see if this email is already associated with this person
+		 * and if so, it will upgrade that email record to be "Primary".  If not, it will delete the current primary (if applicable)
+		 * and create a new record for the passed-in string.
+		 * @param string $strEmailAddress
+		 */
+		public function ChangePrimaryEmailTo($strEmailAddress) {
+			$strEmailAddress = trim(strtolower($strEmailAddress));
+			
+			// If what was passed in is already primary, then do nothing
+			if ($this->PrimaryEmail && ($this->PrimaryEmail->Address == $strEmailAddress))
+				return;
+
+			// If what was passed in already exists as non-primary, upgrade it to primary and downgrade current primary to not so (if applicable)
+			foreach ($this->GetEmailArray() as $objEmail) {
+				if ($objEmail->Address == $strEmailAddress) {
+					$this->PrimaryEmail = $objEmail;
+					$this->Save();
+					return;
+				}
+			}
+
+			// If we are here, then we *know* we need to create a new email address
+
+			// first, delete the current primary, if applicable
+			if ($this->PrimaryEmail) {
+				$this->PrimaryEmail->Delete();
+				$this->PrimaryEmail = null;
+			}
+
+			$objEmail = new Email();
+			$objEmail->Address = $strEmailAddress;
+			$objEmail->Person = $this;
+			$objEmail->Save();
+			
+			$this->PrimaryEmail = $objEmail;
+			$this->Save();
+		}
+
+		/**
+		 * If a mobile phone record already exists, update it with the following.
+		 * 
+		 * If one does NOT already exist, create it as a new one.
+		 * 
+		 * Finally, if there is no primary phone defined on this user, set the mobile phone to be primary
+		 * @param string $strMobilePhone
+		 */
+		public function CreateOrUpdateMobilePhone($strMobilePhone) {
+			// If what was passed in is already the deducedmobilephone record, then do nothing
+			$objPhone = $this->DeduceMobilePhone();
+			if ($objPhone && ($objPhone->Number == $strMobilePhone)) return;
+			
+			// Go through all mobile phones to see if this already exists
+			// If it does, simply upgrade that to be "primary"
+			foreach ($this->GetPhoneArray() as $objPhone) {
+				if ($objPhone->Number == $strMobilePhone) {
+					$objPhone->PhoneTypeId = PhoneType::Mobile;
+					$objPhone->Save();
+					
+					$this->PrimaryPhone = $objPhone;
+					$this->RefreshPrimaryContactInfo();
+					return;
+				}
+			}
+
+			// If we are here, then it's clearly a number that does not yet exist
+			// Let's use DeduecedMobilePhone record or create new one if there are none
+			$objPhone = $this->DeduceMobilePhone();
+			if (!$objPhone) {
+				$objPhone = new Phone();
+				$objPhone->PhoneTypeId = PhoneType::Mobile;
+				$objPhone->Person = $this;
+			}
+			$objPhone->Number = $strMobilePhone;
+			$objPhone->Save();
+
+			// Finally, if there is no primary phone, make this primary as well
+			if (!$this->PrimaryPhone) {
+				$this->PrimaryPhone = $objPhone;
+				$this->RefreshPrimaryContactInfo();
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
