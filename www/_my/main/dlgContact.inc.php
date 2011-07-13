@@ -2,6 +2,8 @@
 <br/>
 
 <?php $_FORM->txtEmail->RenderWithName(); ?>
+<?php $_FORM->chkBulkEmail->RenderWithName(); ?>
+<br/>
 <?php $_FORM->txtMobilePhone->RenderWithName(); ?>
 
 <div class="buttonBar">

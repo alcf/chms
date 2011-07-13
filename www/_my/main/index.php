@@ -9,6 +9,7 @@
 		protected $lblMailingAddress;
 
 		protected $lblEmailAddress;
+		protected $lblBulkEmail;
 		protected $lblMobilePhone;
 		protected $lblDateOfBirth;
 		protected $lblGender;
@@ -60,6 +61,7 @@
 		
 		// Contact Information
 		protected $txtEmail;
+		protected $chkBulkEmail;
 		protected $txtMobilePhone;
 
 		// Personal Information
@@ -86,6 +88,8 @@
 			
 			$this->lblEmailAddress = new QLabel($this);
 			$this->lblEmailAddress->Name = 'Email Address';
+			$this->lblBulkEmail = new QLabel($this);
+			$this->lblBulkEmail->Name = 'ALCF Email Announcements';
 			$this->lblMobilePhone = new QLabel($this);
 			$this->lblMobilePhone->Name = 'Mobile Phone';
 			
@@ -240,11 +244,15 @@
 			if (QApplication::$PublicLogin->Person->PrimaryEmail) {
 				$this->lblEmailAddress->Text = QApplication::$PublicLogin->Person->PrimaryEmail->Address;
 				$this->lblEmailAddress->CssClass = null;
+				$this->lblBulkEmail->Visible = true;
+				$this->lblBulkEmail->Text = QApplication::$PublicLogin->Person->CanEmailFlag ? 'Feel free to email me any general ALCF or church-wide announcements' :
+					'Please do NOT email me any general ALCF or church-wide announcements';
 			} else {
 				$this->lblEmailAddress->CssClass = 'gray';
 				$this->lblEmailAddress->Text = 'Not Specified';
+				$this->lblBulkEmail->Visible = false;
 			}
-
+			
 			// Phone
 			if ($objPhone = QApplication::$PublicLogin->Person->DeduceMobilePhone()) {
 				$this->lblMobilePhone->Text = $objPhone->Number;
@@ -407,11 +415,17 @@
 				$this->txtEmail->Name = 'Email Address';
 				$this->txtEmail->Required = true;
 
+				$this->chkBulkEmail = new QCheckBox($this->dlgContact);
+				$this->chkBulkEmail->Name = 'ALCF Email Announcements';
+				$this->chkBulkEmail->Text = 'Check to be included on any general<br/>ALCF or church-wide email announcements';
+				$this->chkBulkEmail->HtmlEntities = false;
+
 				$this->txtMobilePhone = new PhoneTextBox($this->dlgContact);
 				$this->txtMobilePhone->Name = 'Mobile Phone';
 			}
 			
 			$this->txtEmail->Text = QApplication::$PublicLogin->Person->PrimaryEmail->Address;
+			$this->chkBulkEmail->Checked = QApplication::$PublicLogin->Person->CanEmailFlag;
 			if ($objPhone = QApplication::$PublicLogin->Person->DeduceMobilePhone())
 				$this->txtMobilePhone->Text = $objPhone->Number;
 			else
@@ -497,6 +511,9 @@
 			$this->btnCancel_Contact_Click();
 
 			QApplication::$PublicLogin->Person->ChangePrimaryEmailTo($this->txtEmail->Text);
+			QApplication::$PublicLogin->Person->CanEmailFlag = $this->chkBulkEmail->Checked;
+			QApplication::$PublicLogin->Person->Save();
+			
 			$strMobilePhone = trim($this->txtMobilePhone->Text);
 			if (strlen($strMobilePhone)) {
 				QApplication::$PublicLogin->Person->CreateOrUpdateMobilePhone($strMobilePhone);

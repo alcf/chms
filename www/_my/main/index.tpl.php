@@ -17,6 +17,7 @@
 			<?php $this->btnContact->Render(); ?>
 		</div>
 		<?php $this->lblEmailAddress->RenderWithName(); ?>
+		<?php $this->lblBulkEmail->RenderWithName(); ?>
 		<?php $this->lblMobilePhone->RenderWithName(); ?>
 	</div><br/>
 
