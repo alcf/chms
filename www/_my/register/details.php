@@ -43,6 +43,8 @@
 		protected $dtxDateOfBirth;
 		protected $calDateOfBirth;
 		protected $rblGender;
+		
+		protected $chkBulkEmail;
 
 		protected $btnConfirm;
 		protected $btnCancel;
@@ -176,6 +178,12 @@
 			$this->rblGender->AddItem('Female', 'F');
 			$this->rblGender->Name = 'Gender';
 			$this->rblGender->RepeatColumns = 2;
+
+			$this->chkBulkEmail = new QCheckBox($this->pnlDetailsMain);
+			$this->chkBulkEmail->Name = 'ALCF Email Announcements';
+			$this->chkBulkEmail->Text = 'Check to be included on any general ALCF or church-wide email announcements';
+			$this->chkBulkEmail->HtmlEntities = false;
+			$this->chkBulkEmail->Checked = true;
 
 			$this->txtHomePhone = new PhoneTextBox($this->pnlDetailsMain);
 			$this->txtHomePhone->Name = 'Home Phone';
@@ -316,6 +324,12 @@
 					$objPerson->Id));
 				QApplication::DisplayAlert('We have encountered a data issue.  Please contact ALCF Online Member Support at 650-625-1500 for more information.  Please reference PLID ' . QApplication::$PublicLogin->Id . ' when calling.');
 			} else {
+				// OptOut Email Flag
+				if (!$this->chkBulkEmail->Checked) {
+					$objPerson->CanEmailFlag = false;
+					$objPerson->Save();
+				}
+
 				QApplication::Redirect('/register/thankyou.php');
 			}
 		}
