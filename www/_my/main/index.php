@@ -5,6 +5,7 @@
 	class PublicMainForm extends ChmsForm {
 		protected $strPageTitle = 'Account Profile';
 		
+		
 		protected $lblHomeAddress;
 		protected $lblMailingAddress;
 
@@ -23,9 +24,24 @@
 		protected $btnPersonal;
 		protected $btnSecurity;
 		
-		protected $dlgEdit;
-		protected $btnUpdate;
-		protected $btnCancel;
+		protected $dlgAddress;
+		protected $dlgContact;
+		protected $dlgPersonal;
+		protected $dlgSecurity;
+
+		protected $btnAddressUpdate;
+		protected $btnAddressCancel;
+		protected $btnContactUpdate;
+		protected $btnContactCancel;
+		protected $btnPersonalUpdate;
+		protected $btnPersonalCancel;
+		protected $btnSecurityUpdate;
+		protected $btnSecurityCancel;
+
+		protected $mctPerson;
+		protected $calDateOfBirth;
+		protected $dtxDateOfBirth;
+		protected $lstGender;
 
 		protected function Form_Create() {
 			$this->lblHomeAddress = new QLabel($this);
@@ -79,25 +95,59 @@
 			$this->btnSecurity->CssClass = 'primary';
 			$this->btnSecurity->Text = 'Edit Login Information';
 			$this->btnSecurity->AddAction(new QClickEvent(), new QAjaxAction('btnSecurity_Click'));
-			
-			$this->dlgEdit = new QDialogBox($this);
-			$this->dlgEdit->MatteClickable = false;
-			$this->dlgEdit->HideDialogBox();
-			
-			$this->btnUpdate = new QButton($this->dlgEdit);
-			$this->btnUpdate->CssClass = 'primary';
-			$this->btnUpdate->Text = 'Update';
-			$this->btnUpdate->CausesValidation = QCausesValidation::SiblingsAndChildren;
-						
-			$this->btnCancel = new QLinkButton($this->dlgEdit);
-			$this->btnCancel->CssClass = 'cancel';
-			$this->btnCancel->Text = 'Cancel';
-			$this->btnCancel->AddAction(new QClickEvent(), new QHideDialogBox($this->dlgEdit));
-			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
-			
+
+			$this->dlgEdit_Setup('Address');
+			$this->dlgEdit_Setup('Contact');
+			$this->dlgEdit_Setup('Personal');
+			$this->dlgEdit_Setup('Security');
+
+			$this->mctPerson = new PersonMetaControl($this->dlgPersonal, QApplication::$PublicLogin->Person);
+			$this->dtxDateOfBirth = $this->mctPerson->dtxDateOfBirth_Create();
+			$this->calDateOfBirth = $this->mctPerson->calDateOfBirth_Create();
+			$this->lstGender = $this->mctPerson->lstGender_Create();
+			$this->lstGender->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->dtxDateOfBirth->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+
 			$this->Refresh();
 		}
-		
+
+		protected function dlgEdit_Setup($strType) {
+			$strDialog = 'dlg' . $strType;
+			$strUpdate = 'btn' . $strType . 'Update';
+			$strCancel = 'btn' . $strType . 'Cancel';
+
+			$this->$strDialog = new QDialogBox($this);
+			$this->$strDialog->MatteClickable = false;
+			$this->$strDialog->HideDialogBox();
+
+			$this->$strUpdate = new QButton($this->$strDialog);
+			$this->$strUpdate->CssClass = 'primary';
+			$this->$strUpdate->Text = 'Update';
+			$this->$strUpdate->CausesValidation = QCausesValidation::SiblingsAndChildren;
+			$this->$strUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_' . $strType . '_Click'));
+
+			$this->$strCancel = new QLinkButton($this->$strDialog);
+			$this->$strCancel->CssClass = 'cancel';
+			$this->$strCancel->Text = 'Cancel';
+			$this->$strCancel->AddAction(new QClickEvent(), new QHideDialogBox($this->$strDialog));
+			$this->$strCancel->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+
+		protected function Form_Validate() {
+			$blnToReturn = true;
+
+			$blnFirst = true;
+			foreach ($this->GetErrorControls() as $objErrorControl) {
+				$objErrorControl->Blink();
+				if ($blnFirst) {
+					$blnFirst = false;
+					$objErrorControl->Focus();
+				}
+			}
+
+			return $blnToReturn;
+		}
+
 		protected function Refresh() {
 			$objHouseholdArray = array();
 			foreach (QApplication::$PublicLogin->Person->GetHouseholdParticipationArray() as $objHouseholdParticipation)
@@ -171,47 +221,63 @@
 		}
 
 		protected function btnAddress_Click($strFormId, $strControlId, $strParameter) {
-			$this->dlgEdit->ShowDialogBox();
-			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEdit_Address.inc.php';
-			$this->btnUpdate->RemoveAllActions(QClickEvent::EventName);
-			$this->btnUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_Address_Click'));
+			$this->dlgAddress->ShowDialogBox();
+			$this->dlgAddress->Template = dirname(__FILE__) . '/dlgAddress.inc.php';
 		}
 		
 		protected function btnContact_Click($strFormId, $strControlId, $strParameter) {
-			$this->dlgEdit->ShowDialogBox();
-			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEdit_Contact.inc.php';
-			$this->btnUpdate->RemoveAllActions(QClickEvent::EventName);
-			$this->btnUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_Contact_Click'));
+			$this->dlgContact->ShowDialogBox();
+			$this->dlgContact->Template = dirname(__FILE__) . '/dlgContact.inc.php';
 		}
 		
 		protected function btnPersonal_Click($strFormId, $strControlId, $strParameter) {
-			$this->dlgEdit->ShowDialogBox();
-			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEdit_Personal.inc.php';
-			$this->btnUpdate->RemoveAllActions(QClickEvent::EventName);
-			$this->btnUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_Personal_Click'));
+			$this->dlgPersonal->ShowDialogBox();
+			$this->dlgPersonal->Template = dirname(__FILE__) . '/dlgPersonal.inc.php';
 		}
-		
+
 		protected function btnSecurity_Click($strFormId, $strControlId, $strParameter) {
-			$this->dlgEdit->ShowDialogBox();
-			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEdit_Security.inc.php';
-			$this->btnUpdate->RemoveAllActions(QClickEvent::EventName);
-			$this->btnUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_Security_Click'));
+			$this->dlgSecurity->ShowDialogBox();
+			$this->dlgSecurity->Template = dirname(__FILE__) . '/dlgSecurity.inc.php';
 		}
 
 		protected function btnUpdate_Address_Click() {
-			$this->dlgEdit->HideDialogBox();
+			$this->btnCancel_Address_Click();
 		}
 		
 		protected function btnUpdate_Contact_Click() {
-			$this->dlgEdit->HideDialogBox();
+			$this->btnCancel_Contact_Click();
 		}
 			
 		protected function btnUpdate_Personal_Click() {
-			$this->dlgEdit->HideDialogBox();
+			$this->btnCancel_Personal_Click();
+
+			$this->mctPerson->SavePerson();
+			QApplication::PublicLoginRefresh();
+			$this->Refresh();
 		}
 			
 		protected function btnUpdate_Security_Click() {
-			$this->dlgEdit->HideDialogBox();
+			$this->btnCancel_Security_Click();
+		}
+
+		protected function btnCancel_Address_Click() {
+			$this->dlgAddress->Template = null;
+			$this->dlgAddress->HideDialogBox();
+		}
+		
+		protected function btnCancel_Contact_Click() {
+			$this->dlgContact->Template = null;
+			$this->dlgContact->HideDialogBox();
+		}
+			
+		protected function btnCancel_Personal_Click() {
+			$this->dlgPersonal->Template = null;
+			$this->dlgPersonal->HideDialogBox();
+		}
+			
+		protected function btnCancel_Security_Click() {
+			$this->dlgSecurity->Template = null;
+			$this->dlgSecurity->HideDialogBox();
 		}
 	}
 

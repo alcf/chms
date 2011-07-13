@@ -167,6 +167,10 @@
 			QApplication::$PublicLogin->RefreshDateLastLogin();
 			$_SESSION['intPublicLoginId'] = $objPublicLogin->Id;
 		}
+		
+		public static function PublicLoginRefresh() {
+			QApplication::$PublicLogin = PublicLogin::Load(QApplication::$PublicLogin->Id);
+		}
 
 		public static function RedirectToLogin($intMessageId) {
 			print '<script type="text/javascript" src="' . __JS_ASSETS__ . '/urlencode.js"></script>';

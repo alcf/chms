@@ -40,5 +40,9 @@
 		<?php $this->lblAnswer->RenderWithName(); ?>
 	</div>
 
-<?php $this->dlgEdit->Render(); ?>
+<?php if (!$this->dtxDateOfBirth->HtmlAfter) $this->dtxDateOfBirth->HtmlAfter = ' ' . $this->calDateOfBirth->Render(false); ?>
+<?php $this->dlgAddress->Render(); ?>
+<?php $this->dlgContact->Render(); ?>
+<?php $this->dlgPersonal->Render(); ?>
+<?php $this->dlgSecurity->Render(); ?>
 <?php require(__INCLUDES__ . '/footer_my.inc.php'); ?>
