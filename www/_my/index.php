@@ -10,7 +10,10 @@
 		protected $strPageTitle = 'Log In';
 
 		protected function Form_Run() {
-			if (QApplication::$PublicLogin) QApplication::Redirect('/main/');
+			if (QApplication::$PublicLogin && QApplication::$PublicLogin->Person) {
+				QApplication::Redirect('/main/');
+			}
+			QApplication::PublicLogout(false);
 		}
 
 		protected function Form_Create() {

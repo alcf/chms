@@ -42,6 +42,49 @@
 		}
 
 		/**
+		 * This will email the Username information (or Usernames) for a given Email address,
+		 * if any is found.  If none is found, this will do nothing.
+		 * @param string $strEmailAddress
+		 */
+		public static function RetrieveUsernameForEmail($strEmailAddress) {
+			// Look for associated accounts
+			$objPublicLoginArray = PublicLogin::QueryArray(
+				QQ::Equal(QQN::PublicLogin()->Person->PrimaryEmail->Address, $strEmailAddress),
+				QQ::Expand(QQN::PublicLogin()->Person)
+			);
+
+			// If none found, return
+			if (!count($objPublicLoginArray)) return;
+
+			// Setup email info
+			$strFromAddress = 'ALCF my.alcf Account Support <do_not_reply@alcf.net>';
+			$strToAddress = trim(strtolower($strEmailAddress));
+			$strSubject = 'Account Support: Retreive Your Username';
+
+			// Setup the SubstitutionArray
+			$strArray = array();
+
+			// Setup Always-Used Fields
+			$strArray['PERSON_NAME'] = $objPublicLoginArray[0]->Person->Name;
+
+			if (count($objPublicLoginArray) == 1) {
+				// Template
+				$strTemplateName = 'retrieve_username_single';
+				$strArray['USERNAME'] = $objPublicLoginArray[0]->Username;
+			} else {
+				// Template
+				$strTemplateName = 'retrieve_username_multiple';
+				$strUsernameList = array();
+				foreach ($objPublicLoginArray as $objPublicLogin) {
+					$strUsernameList[] = 'Username:  ' . $objPublicLogin->Username;
+				}
+				$strArray['USERNAMES'] = implode("\r\n", $strUsernameList);
+			}
+
+			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
+		}
+
+		/**
 		 * Sets the password as the password hash for this user.  Does NOT save the object.
 		 * @param string $strPassword
 		 * @return void
