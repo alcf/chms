@@ -162,6 +162,24 @@
 
 				case 'ShortName':
 					return $this->Address1;
+					
+				case 'DisplayHtml':
+					if ($this->Address3)
+						$strToReturn = QApplication::HtmlEntities($this->Address3) . '<br/>';
+					else
+						$strToReturn = null;
+
+					$strToReturn .= QApplication::HtmlEntities($this->Address1) . '<br/>';
+
+					if ($this->Address2)
+						$strToReturn .= QApplication::HtmlEntities($this->Address2) . '<br/>';
+
+					$strToReturn .= QApplication::HtmlEntities($this->City . ', ' . $this->State . '  ' . $this->ZipCode);
+					
+					foreach ($this->GetPhoneArray() as $objPhone)
+						$strToReturn .= '<br/>' . $objPhone->Number;
+
+					return $strToReturn;
 
 				case 'AddressShortLine':
 					$strToReturn = null;

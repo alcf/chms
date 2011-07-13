@@ -54,13 +54,13 @@
 	}
 	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
 
-	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
+	input.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	input.textbox:disabled { background-color: #e0e0e0; color: #999; }
-	textarea.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
+	textarea.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
 	textarea.textbox:focus { background-color: #fff; }
 	textarea.textbox:disabled { background-color: #e0e0e0; color: #999; }
-	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 2px; }
+	select.listbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 2px; }
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
 	select.listbox:disabled { background-color: #e0e0e0; color: #999; }
@@ -150,8 +150,8 @@
 
 	div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
 	div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #5a768e; font-size: 12px; font-style: italic; font-family: trebuchet ms; position: relative; top: 2px; }
-	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; }
+	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #513d6d; font-size: 12px; font-family: trebuchet ms; position: relative; top: 2px; }
+	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; color: #412d5d; }
 /*	div.renderWithName div.required:after {content: " *"; } */ 
 	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
@@ -159,6 +159,7 @@
 	div.renderWithName div.right label { font-size: 12px; position: relative; top: 2px; left: 2px; color: #333;}
 	div.renderWithName div.right span { font-size: 14px; color: #444; }
 	div.renderWithName div.right span.detail { font-size: 11px; color: #888; }
+	div.renderWithName div.right span.gray { color: #999; font-style: italic; }
 
 	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
 

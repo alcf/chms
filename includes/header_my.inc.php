@@ -27,7 +27,7 @@
 		<ul>
 			<li class="first"><a href="http://www.alcf.net/" title="Back to ALCF.net">Back to ALCF.net</a></li>
 	<?php if (QApplication::$PublicLogin) { ?>
-			<li><a href="#" onclick="alert('TO DO'); return false;" title="My Profile">My Profile</a></li>
+			<li><a href="/main/" title="My Profile">My Profile</a></li>
 			<li><a href="/give/" title="Give Online">Give Online</a></li>
 			<li><a href="/logout/" title="Logout">Logout</a></li>
 	<?php } else { ?>

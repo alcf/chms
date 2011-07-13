@@ -974,6 +974,20 @@
 		}
 		
 		/**
+		 * For the my.alcf site this will return the MobilePhone record, if any is found
+		 * @return Phone or null
+		 */
+		public function DeduceMobilePhone() {
+			if ($this->PrimaryPhone &&
+				($this->PrimaryPhone->PhoneTypeId == PhoneType::Mobile)) return $this->PrimaryPhone;
+
+			foreach ($this->GetPhoneArray() as $objPhone)
+				if ($objPhone->PhoneTypeId == PhoneType::Mobile) return $objPhone;
+
+			return null;
+		}
+
+		/**
 		 * Similar to the codegenned GetAddressArray -- however this will retrieve ALL current and associated
 		 * Addresss.  Not just personal addresses, but addresses attributed to the current home
 		 * of a given household.  You must specify the household as well.  If the household is invalid (e.g.
