@@ -157,11 +157,17 @@
 			$this->$strUpdate->CssClass = 'primary';
 			$this->$strUpdate->Text = 'Update';
 			$this->$strUpdate->CausesValidation = QCausesValidation::SiblingsAndChildren;
-			$this->$strUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_' . $strType . '_Click'));
 
 			$this->$strCancel = new QLinkButton($this->$strDialog);
 			$this->$strCancel->CssClass = 'cancel';
 			$this->$strCancel->Text = 'Cancel';
+
+			$this->$strUpdate->AddAction(new QClickEvent(), new QToggleEnableAction($this->$strUpdate));
+			$this->$strUpdate->AddAction(new QClickEvent(), new QToggleEnableAction($this->$strCancel));
+			$this->$strUpdate->AddAction(new QClickEvent(), new QAjaxAction('btnUpdate_' . $strType . '_Click'));
+
+			$this->$strCancel->AddAction(new QClickEvent(), new QToggleEnableAction($this->$strUpdate));
+			$this->$strCancel->AddAction(new QClickEvent(), new QToggleEnableAction($this->$strCancel));
 			$this->$strCancel->AddAction(new QClickEvent(), new QAjaxAction('btnCancel_' . $strType . '_Click'));
 			$this->$strCancel->AddAction(new QClickEvent(), new QTerminateAction());
 		}
@@ -179,6 +185,20 @@
 			}
 
 			return $blnToReturn;
+		}
+		
+		protected function Form_PreRender() {
+			$this->btnAddressUpdate->Enabled = true;
+			$this->btnAddressCancel->Enabled = false;
+
+			$this->btnContactUpdate->Enabled = true;
+			$this->btnContactCancel->Enabled = true;
+
+			$this->btnPersonalUpdate->Enabled = true;
+			$this->btnPersonalCancel->Enabled = true;
+
+			$this->btnSecurityUpdate->Enabled = true;
+			$this->btnSecurityCancel->Enabled = true;
 		}
 
 		protected function Refresh() {
