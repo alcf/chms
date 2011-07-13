@@ -41,7 +41,7 @@
 	</div>
 
 <?php if (!$this->dtxDateOfBirth->HtmlAfter) $this->dtxDateOfBirth->HtmlAfter = ' ' . $this->calDateOfBirth->Render(false); ?>
-<?php $this->dlgAddress->Render(); ?>
+<?php $this->dlgAddress->Render('Width=740px'); ?>
 <?php $this->dlgContact->Render(); ?>
 <?php $this->dlgPersonal->Render(); ?>
 <?php $this->dlgSecurity->Render(); ?>

@@ -39,6 +39,23 @@
 		protected $btnSecurityUpdate;
 		protected $btnSecurityCancel;
 
+		// Address Information
+		protected $txtHomeAddress1;
+		protected $txtHomeAddress2;
+		protected $txtHomeCity;
+		protected $lstHomeState;
+		protected $txtHomeZipCode;
+		protected $txtHomePhone;
+
+		protected $rblMailingAddress;
+
+		protected $txtMailingAddress1;
+		protected $txtMailingAddress2;
+		protected $txtMailingCity;
+		protected $lstMailingState;
+		protected $txtMailingZipCode;
+
+
 		// Contact Information
 		protected $txtEmail;
 		protected $txtMobilePhone;
@@ -235,10 +252,124 @@
 		}
 
 		protected function btnAddress_Click($strFormId, $strControlId, $strParameter) {
+			if (!$this->txtHomeAddress1) {
+				$this->txtHomeAddress1 = new QTextBox($this->dlgAddress);
+				$this->txtHomeAddress1->Name = 'Home Address 1';
+				$this->txtHomeAddress1->Required = true;
+	
+				$this->txtHomeAddress2 = new QTextBox($this->dlgAddress);
+				$this->txtHomeAddress2->Name = 'Home Address 2';
+	
+				$this->txtHomeCity = new QTextBox($this->dlgAddress);
+				$this->txtHomeCity->Name = 'Home City, State, Zip';
+				$this->txtHomeCity->Required = true;
+	
+				$this->lstHomeState = new QListBox($this->dlgAddress);
+				$this->lstHomeState->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstHomeState->Required = true;
+				foreach (UsState::LoadAll(QQ::OrderBy(QQN::UsState()->Name)) as $objUsState) {
+					$this->lstHomeState->AddItem($objUsState->Name, $objUsState->Abbreviation);
+				}
+	
+				$this->txtHomeZipCode = new QTextBox($this->dlgAddress);
+				$this->txtHomeZipCode->Required = true;
+
+				$this->txtHomePhone = new PhoneTextBox($this->dlgAddress);
+				$this->txtHomePhone->Name = 'Home Phone';
+
+				$this->rblMailingAddress = new QRadioButtonList($this->dlgAddress);
+				$this->rblMailingAddress->Name = 'Separate Mailing Address?';
+				$this->rblMailingAddress->AddItem('Yes, please use my separate mailing address', true);
+				$this->rblMailingAddress->AddItem('No, I do not use a separate mailing address', false);
+				$this->rblMailingAddress->AddAction(new QClickEvent(), new QAjaxAction('rblMailingAddress_Refresh'));
+
+				$this->txtMailingAddress1 = new QTextBox($this->dlgAddress);
+				$this->txtMailingAddress1->Name = 'Mailing Address 1';
+				$this->txtMailingAddress1->Required = true;
+	
+				$this->txtMailingAddress2 = new QTextBox($this->dlgAddress);
+				$this->txtMailingAddress2->Name = 'Mailing Address 2';
+	
+				$this->txtMailingCity = new QTextBox($this->dlgAddress);
+				$this->txtMailingCity->Name = 'Mailing City, State, Zip';
+				$this->txtMailingCity->Required = true;
+	
+				$this->lstMailingState = new QListBox($this->dlgAddress);
+				$this->lstMailingState->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstMailingState->Required = true;
+				foreach (UsState::LoadAll(QQ::OrderBy(QQN::UsState()->Name)) as $objUsState) {
+					$this->lstMailingState->AddItem($objUsState->Name, $objUsState->Abbreviation);
+				}
+	
+				$this->txtMailingZipCode = new QTextBox($this->dlgAddress);
+				$this->txtMailingZipCode->Required = true;
+			}
+
+			$objHouseholdArray = array();
+			foreach (QApplication::$PublicLogin->Person->GetHouseholdParticipationArray() as $objParticipation) {
+				$objHouseholdArray[] = $objParticipation->Household;
+			}
+
+			if (count($objHouseholdArray) > 1) return;
+			if (count($objHouseholdArray) == 1) {
+				$objAddress = $objHouseholdArray[0]->GetCurrentAddress();
+				if (!$objAddress) $objAddress = new Address();
+				$this->txtHomeAddress1->Text = $objAddress->Address1;
+				$this->txtHomeAddress2->Text = $objAddress->Address2;
+				$this->txtHomeCity->Text = $objAddress->City;
+				$this->lstHomeState->SelectedValue = $objAddress->State;
+				$this->txtHomeZipCode->Text = $objAddress->ZipCode;
+				
+				if (count($objPhoneArray = $objAddress->GetPhoneArray()))
+					$this->txtHomePhone->Text = $objPhoneArray[0]->Number;
+			}
+
+			if (QApplication::$PublicLogin->Person->MailingAddress && !QApplication::$PublicLogin->Person->MailingAddress->Household) {
+				$this->rblMailingAddress->SelectedValue = true;
+				$objAddress = QApplication::$PublicLogin->Person->MailingAddress;
+				$this->txtMailingAddress1->Text = $objAddress->Address1;
+				$this->txtMailingAddress2->Text = $objAddress->Address2;
+				$this->txtMailingCity->Text = $objAddress->City;
+				$this->lstMailingState->SelectedValue = $objAddress->State;
+				$this->txtMailingZipCode->Text = $objAddress->ZipCode;
+			} else {
+				$this->rblMailingAddress->SelectedValue = false;
+			}
+
 			$this->dlgAddress->ShowDialogBox();
 			$this->dlgAddress->Template = dirname(__FILE__) . '/dlgAddress.inc.php';
+			$this->rblMailingAddress_Refresh();
 		}
-		
+
+		public function rblMailingAddress_Refresh() {
+			if ($this->rblMailingAddress->SelectedValue) {
+				$this->txtMailingAddress1->Visible = true;
+				$this->txtMailingAddress2->Visible = true;
+				$this->txtMailingCity->Visible = true;
+				$this->lstMailingState->Visible = true;
+				$this->txtMailingZipCode->Visible = true;
+				$this->txtMailingAddress1->Required = true;
+				$this->txtMailingCity->Required = true;
+				$this->lstMailingState->Required = true;
+				$this->txtMailingZipCode->Required = true;
+			} else {
+				$this->txtMailingAddress1->Visible = false;
+				$this->txtMailingAddress2->Visible = false;
+				$this->txtMailingCity->Visible = false;
+				$this->lstMailingState->Visible = false;
+				$this->txtMailingZipCode->Visible = false;
+				$this->txtMailingAddress1->Required = false;
+				$this->txtMailingCity->Required = false;
+				$this->lstMailingState->Required = false;
+				$this->txtMailingZipCode->Required = false;
+				$this->txtMailingAddress1->Text = '';
+				$this->txtMailingAddress2->Text = '';
+				$this->txtMailingCity->Text = '';
+				$this->lstMailingState->SelectedValue = null;
+				$this->txtMailingZipCode->Text = '';
+			}
+		}
+
 		protected function btnContact_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgContact->ShowDialogBox();
 			$this->dlgContact->Template = dirname(__FILE__) . '/dlgContact.inc.php';
