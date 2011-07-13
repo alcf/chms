@@ -117,6 +117,7 @@
 		 * @return ProvisionalPublicLogin
 		 */
 		public static function CreateProvisional($strUsername, $strEmailAddress, $strFirstName, $strLastName) {
+			$strEmailAddress = trim(strtolower($strEmailAddress));
 			$strUsername = QApplication::Tokenize($strUsername, false);
 			if (strlen($strUsername) < 4) throw new QCallerException('Username is too short: ' . $strUsername);
 			if (!self::IsProvisionalCreatableForUsername($strUsername)) throw new QCallerException('Username is already taken: ' . $strUsername);
@@ -125,6 +126,16 @@
 			try {
 				PublicLogin::GetDatabase()->TransactionBegin();
 				
+				// Delete any other provisional login using this email address with a different username
+				foreach (ProvisionalPublicLogin::QueryArray(QQ::Equal(QQN::ProvisionalPublicLogin()->EmailAddress, $strEmailAddress)) as $objProvisionalPublicLogin) {
+					if ($objProvisionalPublicLogin->PublicLogin->Username != $strUsername) {
+						$objPublicLogin = $objProvisionalPublicLogin->PublicLogin;
+						$objProvisionalPublicLogin->Delete();
+						$objPublicLogin->Delete();
+					}
+				}
+
+				// Be sure to reuse the username record if applicable
 				$objPublicLogin = PublicLogin::LoadByUsername($strUsername);
 				$blnChangeHash = true;
 				if ($objPublicLogin) {

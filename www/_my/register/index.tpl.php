@@ -6,7 +6,10 @@
 	signup for events and Classes@ALCF, make online contributions, and download stewardship receipts.<br/><br/>
 	It's safe and secure, and the entire process will only take a minute.  So feel free and sign up today!</p>
 	
-	<p style="font-size: 10px;">Are you already registered?  <a href="/">Click here</a> to go to the login screen.</p>
+	<p style="font-size: 10px;">
+		<strong>Are you already registered?</strong>  <a href="/">Click here</a> to go to the login screen.<br/><br/>
+		<strong>Forgot your username or password?</strong>  Let us help you <a href="/forgot_username.php">retrieve your username</a> or <a href="/forgot_password.php">reset your password</a>.
+	</p>
 	<br/>
 
 	<div class="section">

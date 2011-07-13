@@ -75,6 +75,16 @@
 				$blnToReturn = false;
 			}
 
+			if (!PublicLogin::IsProvisionalCreatableForUsername($strUsernameCandidate)) {
+				$this->txtUsername->Warning = 'Username already in use by another account';
+				$blnToReturn = false;
+			}
+			
+			if (!Email::IsAvailableForPublicRegistration($this->txtEmail->Text)) {
+				$this->txtEmail->Warning = 'Email already in use by another account';
+				$blnToReturn = false;
+			}
+
 			$blnFirst = true;
 			foreach ($this->GetErrorControls() as $objControl) {
 				if ($blnFirst) {
@@ -89,10 +99,6 @@
 
 		protected function btnRegister_Click($strFormId, $strControlId, $strParameter) {
 			$strUsernameCandidate = QApplication::Tokenize($this->txtUsername->Text, false);
-			if (!PublicLogin::IsProvisionalCreatableForUsername($strUsernameCandidate)) {
-				QApplication::DisplayAlert('Username already taken!');
-				return;
-			}
 
 			$objProvisionalPublicLogin = PublicLogin::CreateProvisional($strUsernameCandidate, $this->txtEmail->Text, $this->txtFirstName->Text, $this->txtLastName->Text);
 			QApplication::Redirect($objProvisionalPublicLogin->AwaitingConfirmationUrl);

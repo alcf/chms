@@ -44,7 +44,19 @@
 					}
 			}
 		}
-		
+
+		public static function IsAvailableForPublicRegistration($strAddress) {
+			$strAddress = trim(strtolower($strAddress));
+
+			// Go through all potential active registrations
+			foreach (Email::LoadArrayByAddress($strAddress) as $objEmail) {
+				if ($objEmail->Person->PublicLogin) return false;
+			}
+
+			// If we are here, then there are no emails associated with publiclogin-linked people
+			return true;
+		}
+
 		public function Delete() {
 			try {
 				$objPerson = $this->PersonAsPrimary;
