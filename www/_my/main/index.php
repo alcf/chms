@@ -55,7 +55,9 @@
 		protected $lstMailingState;
 		protected $txtMailingZipCode;
 
-
+		protected $objHomeAddressValidator;
+		protected $objMailingAddressValidator;
+		
 		// Contact Information
 		protected $txtEmail;
 		protected $txtMobilePhone;
@@ -160,7 +162,7 @@
 			$this->$strCancel = new QLinkButton($this->$strDialog);
 			$this->$strCancel->CssClass = 'cancel';
 			$this->$strCancel->Text = 'Cancel';
-			$this->$strCancel->AddAction(new QClickEvent(), new QHideDialogBox($this->$strDialog));
+			$this->$strCancel->AddAction(new QClickEvent(), new QAjaxAction('btnCancel_' . $strType . '_Click'));
 			$this->$strCancel->AddAction(new QClickEvent(), new QTerminateAction());
 		}
 
@@ -183,6 +185,9 @@
 			$objHouseholdArray = array();
 			foreach (QApplication::$PublicLogin->Person->GetHouseholdParticipationArray() as $objHouseholdParticipation)
 				$objHouseholdArray[] = $objHouseholdParticipation->Household;
+
+			// Editing of Address Info
+			$this->btnAddress->Visible = (count($objHouseholdArray) < 2);
 
 			// Address Info
 			if (count($objHouseholdArray) > 1) {
@@ -336,6 +341,9 @@
 				$this->rblMailingAddress->SelectedValue = false;
 			}
 
+			$this->btnAddressUpdate->ActionParameter = 1;
+			$this->btnAddressCancel->ActionParameter = 1;
+			
 			$this->dlgAddress->ShowDialogBox();
 			$this->dlgAddress->Template = dirname(__FILE__) . '/dlgAddress.inc.php';
 			$this->rblMailingAddress_Refresh();
@@ -437,10 +445,34 @@
 			$this->txtConfirmPassword->Text = null;
 		}
 
-		protected function btnUpdate_Address_Click() {
-			$this->btnCancel_Address_Click();
+		protected function btnUpdate_Address_Click($strFormId, $strControlId, $strParameter) {
+			switch ($strParameter) {
+				case 1:
+					$this->objHomeAddressValidator = new AddressValidator($this->txtHomeAddress1->Text, $this->txtHomeAddress2->Text, $this->txtHomeCity->Text, $this->lstHomeState->SelectedValue, $this->txtHomeZipCode->Text);
+					$this->objHomeAddressValidator->ValidateAddress();
+
+					if ($this->rblMailingAddress->SelectedValue) {
+						$this->objMailingAddressValidator = new AddressValidator($this->txtMailingAddress1->Text, $this->txtMailingAddress2->Text, $this->txtMailingCity->Text, $this->lstMailingState->SelectedValue, $this->txtMailingZipCode->Text);
+						$this->objMailingAddressValidator->ValidateAddress();
+						$this->btnAddressUpdate->Text = 'Confirm Addresses';
+					} else {
+						$this->objMailingAddressValidator = null;
+						$this->btnAddressUpdate->Text = 'Confirm Address';
+					}
+					$this->btnAddressUpdate->ActionParameter = 2;
+					$this->btnAddressCancel->ActionParameter = 2;
+					$this->btnAddressCancel->Text = 'Go Back and Edit';
+					$this->dlgAddress->Template = 'dlgAddress_Confirm.inc.php';
+					break;
+
+				case 2:
+					QApplication::$PublicLogin->Person->UpdateAddressInformation($this->objHomeAddressValidator, $this->objMailingAddressValidator, trim($this->txtHomePhone->Text));
+					$this->Refresh();
+					$this->btnCancel_Address_Click(null, null, 1);
+					break;
+			}
 		}
-		
+
 		protected function btnUpdate_Contact_Click() {
 			$this->btnCancel_Contact_Click();
 
@@ -532,11 +564,23 @@
 			$this->btnCancel_Security_Click();
 		}
 
-		protected function btnCancel_Address_Click() {
-			$this->dlgAddress->Template = null;
-			$this->dlgAddress->HideDialogBox();
+		protected function btnCancel_Address_Click($strFormId, $strControlId, $strParameter) {
+			switch ($strParameter) {
+				case 1:
+					$this->dlgAddress->Template = null;
+					$this->dlgAddress->HideDialogBox();
+					break;
+				case 2:
+					$this->dlgAddress->Template = dirname(__FILE__) . '/dlgAddress.inc.php';
+					break;
+			}
+
+			$this->btnAddressCancel->ActionParameter = 1;
+			$this->btnAddressUpdate->ActionParameter = 1;
+			$this->btnAddressUpdate->Text = 'Update';
+			$this->btnAddressCancel->Text = 'Cancel';
 		}
-		
+
 		protected function btnCancel_Contact_Click() {
 			$this->dlgContact->Template = null;
 			$this->dlgContact->HideDialogBox();

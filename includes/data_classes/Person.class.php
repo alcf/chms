@@ -1438,6 +1438,122 @@
 			}
 		}
 
+		/**
+		 * Given a home (and optional mailing) address validator (which is unlinked from any db entry), go ahead and make updates
+		 * to this person record accordingly.
+		 * 
+		 * If this person is part of multiple households, it will throw an error.
+		 * 
+		 * If this person is part of one household, it will update the information for the household.
+		 * 
+		 * If this person is not part of any houseold, it will create one for him/her.
+		 * 
+		 * @param AddressValidator $objHomeAddressValidator
+		 * @param AddressValidator $objMailingAddressValidator optional
+		 * @param string $strHomePhone optional
+		 */
+		public function UpdateAddressInformation(AddressValidator $objHomeAddressValidator, AddressValidator $objMailingAddressValidator = null, $strHomePhone = null) {
+			$objHouseholdArray = array();
+			foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) $objHouseholdArray[] = $objHouseholdParticipation->Household;
+
+			// Figure Out Household Information
+			if (count($objHouseholdArray) > 1) throw new QCallerException('Cannot call UpdateAddressInformation on a person who is part of multiple households: ' . $this->intId);
+			if (count($objHouseholdArray)) {
+				$objHousehold = $objHouseholdArray[0];
+			} else {
+				$objHousehold = Household::CreateHousehold($this);
+			}
+
+			// Home Address
+			$objHomeAddress = $objHousehold->GetCurrentAddress();
+			$objAddress = $objHomeAddressValidator->CreateAddressRecord();
+			
+			// Are we using the existing Household CurrentAddress record?
+			if ($objHomeAddress && $objHomeAddress->IsEqualTo($objAddress)) {
+				// Yes -- so all we're handling is the phones
+				$objHomePhoneArray = $objHomeAddress->GetPhoneArray();
+
+				// Are we setting a home phone?
+				if ($strHomePhone) {
+					// Try and find the phone within the array
+					foreach ($objHomePhoneArray as $objPhone) {
+						$blnFound = false;
+						if ($objPhone->Number == $strHomePhone) {
+							$objPhone->SetAsPrimary(null, $objHomeAddress);
+							$blnFound = true;
+						}
+					}
+					
+					// If we didn't find an existing home phone, we will update the current primary (if applicable)
+					// Or create a new one as primary
+					if (!$blnFound) {
+						if (count($objHomePhoneArray)) {
+							$objHomePhoneArray[0]->Number = $strHomePhone;
+							$objHomePhoneArray[0]->Save();
+						} else {
+							$objPhone = new Phone();
+							$objPhone->Number = $strHomePhone;
+							$objPhone->Address = $objHomeAddress;
+							$objPhone->PhoneTypeId = PhoneType::Home;
+							$objPhone->Save();
+							$objPhone->SetAsPrimary(null, $objHomeAddress);
+						}
+					}
+
+				// Nope - we are deleting the home phone
+				} else {
+					foreach ($objHomePhoneArray as $objPhone) {
+						$objPhone->Delete();
+					}
+				}
+
+			// Not an existing Household CurrentAddress record that matches -- so we are creating a new one
+			} else {
+				$objAddress->Household = $objHousehold;
+				$objAddress->CurrentFlag = true;
+				$objAddress->AddressTypeId = AddressType::Home;
+				$objAddress->Save();
+
+				$objHousehold->SetAsCurrentAddress($objAddress);
+
+				// Add the phone if applicable
+				if ($strHomePhone) {
+					$objPhone = new Phone();
+					$objPhone->Number = $strHomePhone;
+					$objPhone->Address = $objAddress;
+					$objPhone->PhoneTypeId = PhoneType::Home;
+					$objPhone->Save();
+					$objPhone->SetAsPrimary(null, $objAddress);
+				}
+			}
+
+			// Mailing Address?
+			if ($objMailingAddressValidator) {
+				$objAddress = $objMailingAddressValidator->CreateAddressRecord();
+
+				$blnFound = false;
+				foreach ($this->GetAllAssociatedAddressArray($objHousehold) as $objExistingAddress) {
+					if ($objExistingAddress->IsEqualTo($objAddress)) {
+						$this->MailingAddress = $objExistingAddress;
+						$this->RefreshPrimaryContactInfo();
+						$blnFound = true;
+					}
+				}
+
+				if (!$blnFound) {
+					$objAddress->AddressTypeId = AddressType::Other;
+					$objAddress->Person = $this;
+					$objAddress->CurrentFlag = true;
+					$objAddress->Save();
+					$this->MailingAddress = $objAddress;
+					$this->RefreshPrimaryContactInfo();
+				}
+			} else if ($this->MailingAddress) {
+				$this->MailingAddress = null;
+				$this->RefreshPrimaryContactInfo();
+			}
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

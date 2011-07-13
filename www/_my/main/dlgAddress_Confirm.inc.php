@@ -1,7 +1,6 @@
-	<p style="font-size: 14px;">
-		Last step!  We need to double check the address<?php if ($_FORM->objMailingAddressValidator) _p('es'); ?> that you entered.
-	</p>
-	<br/>
+<h4>Address Information</h4>
+We need to double check the address<?php if ($_FORM->objMailingAddressValidator) _p('es'); ?> that you entered.<br/>
+<br/>
 
 <?php if ($_FORM->objHomeAddressValidator) { ?>
 	<h4>Home Address</h4>
@@ -32,9 +31,8 @@
 		<?php } else { ?>
 			<div class="renderWithName">
 				<div class="left">No Match Found</div>
-				<div class="right" style="width: 680px; font-size: 14px;">
-					<strong>We were not able to find your address in the US Postal Service database.</strong><br/><br/>
-
+				<div class="right" style="width: 520px; font-size: 12px;">
+					<strong style="font-size: 12px;">We were not able to find your address in the US Postal Service database.</strong><br/><br/>
 					If you made a mistake,
 					<strong>Go Back and Edit</strong> the address and make changes.<br/>Otherwise, if it is correct,
 					click on <strong>Confirm Address</strong> below and we can still proceed.
@@ -74,8 +72,7 @@
 			<div class="renderWithName">
 				<div class="left">No Match Found</div>
 				<div class="right" style="width: 680px; font-size: 14px;">
-					<strong>We were not able to find your address in the US Postal Service database.</strong><br/><br/>
-
+					<strong style="font-size: 12px;">We were not able to find your address in the US Postal Service database.</strong><br/><br/>
 					If you made a mistake,
 					<strong>Go Back and Edit</strong> the address and make changes.<br/>Otherwise, if it is correct,
 					click on <strong>Confirm Address</strong> below and we can still proceed.
@@ -85,8 +82,8 @@
 	</div>
 <?php } ?>
 
-	<div class="buttonBar">
-		<?php $_FORM->btnSave->Render('CssClass=primary'); ?>
-		&nbsp;or&nbsp;
-		<?php $_FORM->btnGoBack->Render('CssClass=cancel'); ?>
-	</div>
+<div class="buttonBar">
+	<?php $_FORM->btnAddressUpdate->Render(); ?>
+	&nbsp;or&nbsp;
+	<?php $_FORM->btnAddressCancel->Render(); ?>
+</div>
