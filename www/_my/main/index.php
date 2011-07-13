@@ -4,8 +4,7 @@
 
 	class PublicMainForm extends ChmsForm {
 		protected $strPageTitle = 'Account Profile';
-		
-		
+
 		protected $lblHomeAddress;
 		protected $lblMailingAddress;
 
@@ -18,12 +17,14 @@
 		protected $lblQuestion;
 		protected $lblAnswer;
 		protected $lblPassword;
-		
+
+		// Dialog Box Stuff
+
 		protected $btnAddress;
 		protected $btnContact;
 		protected $btnPersonal;
 		protected $btnSecurity;
-		
+
 		protected $dlgAddress;
 		protected $dlgContact;
 		protected $dlgPersonal;
@@ -38,10 +39,19 @@
 		protected $btnSecurityUpdate;
 		protected $btnSecurityCancel;
 
+		// Personal Information
 		protected $mctPerson;
 		protected $calDateOfBirth;
 		protected $dtxDateOfBirth;
 		protected $lstGender;
+
+		// Security / Login Information
+		protected $txtUsername;
+		protected $txtOldPassword;
+		protected $txtNewPassword;
+		protected $txtConfirmPassword;
+		protected $txtQuestion;
+		protected $txtAnswer;
 
 		protected function Form_Create() {
 			$this->lblHomeAddress = new QLabel($this);
@@ -238,6 +248,43 @@
 		protected function btnSecurity_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgSecurity->ShowDialogBox();
 			$this->dlgSecurity->Template = dirname(__FILE__) . '/dlgSecurity.inc.php';
+
+			if (!$this->txtUsername) {
+				$this->txtUsername = new QTextBox($this->dlgSecurity);
+				$this->txtUsername->Name = 'Username';
+				$this->txtUsername->MaxLength = PublicLogin::UsernameMaxLength;
+				$this->txtUsername->Required = true;
+				$this->txtUsername->Text = QApplication::$PublicLogin->Username;
+
+				$this->txtOldPassword = new QTextBox($this->dlgSecurity);
+				$this->txtOldPassword->Name = 'Current Password';
+				$this->txtOldPassword->TextMode = QTextMode::Password;
+
+				$this->txtNewPassword = new QTextBox($this->dlgSecurity);
+				$this->txtNewPassword->Name = 'New Password';
+				$this->txtNewPassword->TextMode = QTextMode::Password;
+
+				$this->txtConfirmPassword = new QTextBox($this->dlgSecurity);
+				$this->txtConfirmPassword->Name = 'Confirm Password';
+				$this->txtConfirmPassword->TextMode = QTextMode::Password;
+
+				$this->txtQuestion = new QTextBox($this->dlgSecurity);
+				$this->txtQuestion->Name = '"Lost Password" Question';
+				$this->txtQuestion->Required = true;
+				$this->txtQuestion->Text = QApplication::$PublicLogin->LostPasswordQuestion;
+				
+				$this->txtAnswer = new QTextBox($this->dlgSecurity);
+				$this->txtAnswer->Name = 'Your Answer';
+				$this->txtAnswer->Required = true;
+				$this->txtAnswer->Text = QApplication::$PublicLogin->LostPasswordAnswer;
+			}
+
+			$this->txtUsername->Text = QApplication::$PublicLogin->Username;
+			$this->txtQuestion->Text = QApplication::$PublicLogin->LostPasswordQuestion;
+			$this->txtAnswer->Text = QApplication::$PublicLogin->LostPasswordAnswer;
+			$this->txtOldPassword->Text = null;
+			$this->txtNewPassword->Text = null;
+			$this->txtConfirmPassword->Text = null;
 		}
 
 		protected function btnUpdate_Address_Click() {
@@ -257,6 +304,69 @@
 		}
 			
 		protected function btnUpdate_Security_Click() {
+			// Validate Security Stuff
+			$blnProceed = true;
+
+			$strUsernameCandidate = null;
+			if ($this->txtUsername->Text != QApplication::$PublicLogin->Username) {
+				$strUsernameCandidate = QApplication::Tokenize($this->txtUsername->Text, false);
+
+				if ($strUsernameCandidate != trim(strtolower($this->txtUsername->Text))) {
+					$this->txtUsername->Warning = 'Must only contain letters and numbers';
+					$blnProceed = false;
+				}
+
+				if (strlen($strUsernameCandidate) < 4) {
+					$this->txtUsername->Warning = 'Must have at least 4 characters';
+					$blnProceed = false;
+				}
+
+				if (PublicLogin::LoadByUsername($strUsernameCandidate)) {
+					$this->txtUsername->Warning = 'Username is taken';
+					$blnProceed = false;
+				}
+			}
+
+			if ($this->txtOldPassword->Text || $this->txtNewPassword->Text || $this->txtConfirmPassword->Text) {
+				if (!QApplication::$PublicLogin->IsPasswordValid($this->txtOldPassword->Text)) {
+					$this->txtOldPassword->Warning = 'Password is incorrect';
+					$blnProceed = false;
+				}
+
+				if (strlen(trim($this->txtNewPassword->Text)) < 6) {
+					$blnProceed = false;
+					$this->txtNewPassword->Warning = 'Must have at least 6 characters';
+				}
+
+				if ($this->txtNewPassword->Text != $this->txtConfirmPassword->Text) {
+					$this->txtConfirmPassword->Warning = 'Does not match above';
+					$blnProceed = false;
+				}
+			}
+
+			if (!$blnProceed) {
+				$blnFirst = true;
+				foreach ($this->GetErrorControls() as $objErrorControl) {
+					$objErrorControl->Blink();
+					if ($blnFirst) {
+						$blnFirst = false;
+						$objErrorControl->Focus();
+					}
+				}
+				return;
+			}
+
+			// Update Stuff
+			if ($strUsernameCandidate) QApplication::$PublicLogin->Username = $strUsernameCandidate;
+			QApplication::$PublicLogin->LostPasswordQuestion = trim($this->txtQuestion->Text);
+			QApplication::$PublicLogin->LostPasswordAnswer = strtolower(trim($this->txtAnswer->Text));
+			if ($this->txtNewPassword->Text) QApplication::$PublicLogin->SetPassword($this->txtNewPassword->Text);
+			QApplication::$PublicLogin->Save();
+
+			// Refresh Stuff
+			$this->Refresh();
+
+			// Cleanup Stuff
 			$this->btnCancel_Security_Click();
 		}
 

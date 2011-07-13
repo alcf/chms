@@ -71,7 +71,7 @@
 			}
 
 			if (strlen($strUsernameCandidate) < 4) {
-				$this->txtUsername->Warning = 'Must have be at least 4 characters';
+				$this->txtUsername->Warning = 'Must have at least 4 characters';
 				$blnToReturn = false;
 			}
 
