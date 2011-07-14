@@ -6,7 +6,7 @@
 		protected $lblMessage;
 		protected $btnSubmit;
 		protected $btnBack;
-		protected $strPageTitle = 'Account Troubleshooting - Retreive My Username';
+		protected $strPageTitle = 'Account Support - Retreive My Username';
 
 		protected function Form_Run() {
 			if (QApplication::$PublicLogin && QApplication::$PublicLogin->Person) {
@@ -20,9 +20,9 @@
 			$this->txtEmail->Name = 'Email';
 			$this->txtEmail->CausesValidation = true;
 			$this->txtEmail->Required = true;
-			
+
 			$this->btnSubmit = new QButton($this);
-			$this->btnSubmit->Text = 'Login';
+			$this->btnSubmit->Text = 'Retrieve My Username';
 			$this->btnSubmit->CausesValidation = true;
 
 			$this->txtEmail->Focus();
@@ -38,6 +38,7 @@
 			$this->btnBack = new QButton($this);
 			$this->btnBack->Text = 'Back to Login Screen';
 			$this->btnBack->AddAction(new QClickEvent(), new QAjaxAction('btnBack_Click'));
+			$this->btnBack->Visible = false;
 		}
 
 		protected function Form_Validate() {

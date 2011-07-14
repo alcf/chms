@@ -85,6 +85,34 @@
 		}
 
 		/**
+		 * This will reset this publiclogin's password and will email the new password to the email account on file.
+		 * If no primary email address this will throw an exception.
+		 */
+		public function ResetPassword() {
+			if (!$this->Person->PrimaryEmail->Address) throw new QCallerException('ResetPassword for a PublicLogin record with no attached primary email: ' . $this->Id);
+			$strTemporaryPassword = str_replace('0', '', str_replace('1', '', md5(microtime())));
+			$strTemporaryPassword = substr($strTemporaryPassword, 0, 6);
+
+			$this->SetPassword($strTemporaryPassword);
+			$this->TemporaryPasswordFlag = true;
+			$this->Save();
+
+			// Setup email info
+			$strFromAddress = 'ALCF my.alcf Account Support <do_not_reply@alcf.net>';
+			$strToAddress = $this->Person->PrimaryEmail->Address;
+			$strSubject = 'Account Support: Your Temporary Password';
+
+			// Setup the SubstitutionArray
+			$strArray = array();
+
+			// Setup Always-Used Fields
+			$strArray['PERSON_NAME'] = $this->Person->Name;
+			$strArray['PASSWORD'] = $strTemporaryPassword;
+
+			OutgoingEmailQueue::QueueFromTemplate('reset_password', $strArray, $strToAddress, $strFromAddress, $strSubject);
+		}
+
+		/**
 		 * Sets the password as the password hash for this user.  Does NOT save the object.
 		 * @param string $strPassword
 		 * @return void
