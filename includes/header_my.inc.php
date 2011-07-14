@@ -25,7 +25,7 @@
 		</ul>
 <?php } else { ?>
 		<ul>
-			<li class="first"><a href="http://www.alcf.net/" title="Back to ALCF.net">ALCF.net Home</a></li>
+			<li class="first"><a href="http://stage.alcf.net/" title="Back to ALCF.net">ALCF.net Home</a></li>
 	<?php if (QApplication::$PublicLogin) { ?>
 			<li><a href="/main/" title="My Profile">My Profile</a></li>
 			<li><a href="/give/" title="Give Online">Give Online</a></li>
