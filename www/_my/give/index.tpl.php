@@ -17,6 +17,16 @@
 		<?php $this->dtgDonationItems->Render(); ?>
 	</div>
 
+	<?php if (!QApplication::$PublicLogin) { ?>
+		<br/>
+		<h4>Email Confirmation</h4>
+		<div class="section">
+			<p style="padding-top: 0; margin-top: 0; ">If you would like to receive an email confirmation with your receipt, please enter in your email address below.</p>
+			
+			<?php $this->txtEmail->RenderWithName(); ?>
+		</div>
+	<?php } ?>
+
 	<br/>
 	<?php $this->pnlPayment->Render(); ?>
 	

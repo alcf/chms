@@ -8,11 +8,17 @@
 		protected $dtgDonationItems;
 		protected $lblTotal;
 		protected $lblMessage;
+		
+		protected $txtEmail;
 
 		/**
 		 * @var PaymentPanel
 		 */
 		protected $pnlPayment;
+
+		protected function Form_Run() {
+			if (QApplication::$PublicLogin && !QApplication::$PublicLogin->Person) QApplication::PublicLogout(false);
+		}
 
 		protected function Form_Create() {
 			$this->objDonationItemArray = array();
@@ -45,6 +51,10 @@
 			$this->lblTotal = new QLabel($this->dtgDonationItems);
 			$this->lblTotal->FontBold = true;
 			$this->lblTotal->Text = '$ 0.00';
+
+			// Create the Email
+			$this->txtEmail = new QEmailTextBox($this);
+			$this->txtEmail->Name = 'Email Address';
 
 			// Create the Payment Panel
 			$strFirstName = (QApplication::$PublicLogin) ? QApplication::$PublicLogin->Person->FirstName : null;
@@ -284,6 +294,8 @@
 		 * the payment has been submitted successfully.
 		 */
 		public function PaymentPanel_Success(OnlineDonation $objPaymentObject) {
+			$strEmailAddress = trim(strtolower($this->txtEmail->Text));
+
 			// If there is a "address in waiting" for this OnlineDonation
 			// Then it was a newly-created Person object
 			// Let's create the household for this person
@@ -298,12 +310,25 @@
 				$objAddress->Save();
 
 				$objHousehold->SetAsCurrentAddress($objAddress);
+				
+				// Add Email Address
+				if ($strEmailAddress) {
+					$objEmail = new Email();
+					$objEmail->Address = $strEmailAddress;
+					$objEmail->Person = $objPerson;
+					$objEmail->Save();
+					$objEmail->SetAsPrimary();
+				}
 			}
 
 			if (QApplication::$PublicLogin) {
 				$objPaymentObject->SendConfirmationEmail();
+			} else if ($strEmailAddress) {
+				$objPaymentObject->SendConfirmationEmail($strEmailAddress);
+				$_SESSION['onlineDonationEmailAddress'] = $strEmailAddress;
 			} else {
-//				$objPaymentObject->SendConfirmationEmail(trim(strtolower($this->txtEmail->Text)));
+				$_SESSION['onlineDonationEmailAddress'] = null;
+				unset($_SESSION['onlineDonationEmailAddress']);
 			}
 
 			QApplication::Redirect($objPaymentObject->ConfirmationUrl);
