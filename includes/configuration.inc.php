@@ -84,83 +84,65 @@
 					'staticproperty' => 'LoginId')
 			)));
 
-			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xQP_ZWxLT5ZChSi7vNzFF8-f25brRRAhJaO78n_nmvIL1CP64_e6YEcnQ');
+
 			if (file_exists(dirname(__FILE__) . '/public_login_salt.local'))
 				define('PUBLIC_LOGIN_SALT', trim(file_get_contents(dirname(__FILE__) . '/public_login_salt.local')));
 			else
 				define('PUBLIC_LOGIN_SALT', 'salt');
-
+			if (file_exists(dirname(__FILE__) . '/chms_login_salt.local'))
+				define('PUBLIC_LOGIN_SALT', trim(file_get_contents(dirname(__FILE__) . '/chms_login_salt.local')));
+			else
+				define('PUBLIC_LOGIN_SALT', 'salt');
+				
 			define('SMTP_SERVER', '127.0.0.1');
 			define('SMTP_TEST_MODE', true);
 			break;
 
-		case 'test':
-			define ('__DOCROOT__', '/var/www/chms.alcf.test/www');
-			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
-			define ('__MICRIMAGE_DROP_FOLDER__', __DOCROOT__ . '/../micrimage');
-			define ('MICRIMAGE_IP', '10.128.2.88');
-
-			define('DB_CONNECTION_1', serialize(array(
-				'adapter' => 'MySqli5',
-				'server' => 'localhost',
-				'port' => null,
-				'database' => 'alcf_chms_test',
-				'username' => 'root',
-				'password' => '',
-				'profiling' => false,
-				'journaling' => array(
-					'adapter' => 'MySqli5',
-					'server' => 'localhost',
-					'port' => null,
-					'database' => 'alcf_chms_test_log',
-					'username' => 'root',
-					'password' => '',
-					'profiling' => false,
-					'staticproperty' => 'LoginId')
-			)));
-			break;
-
 		case 'stage':
-			define ('__DOCROOT__', '/var/www/stage.chms.alcf.net/www');
+			define ('__DOCROOT__', 'STAGE_DOCROOT');
 			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
 			define ('__MICRIMAGE_DROP_FOLDER__', '/home/magtek');
-			define ('MICRIMAGE_IP', '10.128.2.88');
+			define ('MICRIMAGE_IP', 'STAGE_IP_MICR');
+
+			define ('MY_ALCF_URL', 'http://my.alcf.net');
 
 			define('DB_CONNECTION_1', serialize(array(
 				'adapter' => 'MySqli5',
-				'server' => 'localhost',
+				'server' => 'STAGE_DBHOST',
 				'port' => null,
 				'database' => 'alcf_chms_stage',
-				'username' => 'root',
-				'password' => '',
+				'username' => 'STAGE_DBUSER',
+				'password' => 'STAGE_DBPASS',
 				'profiling' => false,
 				'journaling' => array(
 					'adapter' => 'MySqli5',
-					'server' => 'localhost',
+					'server' => 'STAGE_DBHOST',
 					'port' => null,
 					'database' => 'alcf_chms_stage_log',
-					'username' => 'root',
-					'password' => '',
+					'username' => 'STAGE_DBUSER',
+					'password' => 'STAGE_DBPASS',
 					'profiling' => false,
 					'staticproperty' => 'LoginId')
 			)));
 
-			define('SMTP_SERVER', '10.128.2.37');
-			define('SMTP_TEST_MODE', false);
+			define('PUBLIC_LOGIN_SALT', 'STAGE_PASSSALT');
+			define('CHMS_LOGIN_SALT', 'STAGE_LDAPSALT');
+			define('SMTP_SERVER', 'STAGE_IP_SMTP');
+			define('SMTP_TEST_MODE', true);
 			break;
 
 		case 'prod':
 			define ('__DOCROOT__', 'PROD_DOCROOT');
 			define ('__MICRIMAGE_TEMP_FOLDER__', '/tmp');
 			define ('__MICRIMAGE_DROP_FOLDER__', '/home/magtek');
-			define ('MICRIMAGE_IP', '10.128.2.88');
+			define ('MICRIMAGE_IP', 'PROD_IP_MICR');
 
 			define('DB_CONNECTION_1', serialize(array(
 				'adapter' => 'MySqli5',
 				'server' => 'PROD_DBHOST',
 				'port' => null,
 				'database' => 'alcf_chms_prod',
-				'username' => 'PROD_DBROOT',
+				'username' => 'PROD_DBUSER',
 				'password' => 'PROD_DBPASS',
 				'profiling' => false,
 				'journaling' => array(
@@ -168,16 +150,15 @@
 					'server' => 'PROD_DBHOST',
 					'port' => null,
 					'database' => 'alcf_chms_prod_log',
-					'username' => 'PROD_DBROOT',
+					'username' => 'PROD_DBUSER',
 					'password' => 'PROD_DBPASS',
 					'profiling' => false,
 					'staticproperty' => 'LoginId')
 			)));
 
-			define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
 			define('PUBLIC_LOGIN_SALT', 'PROD_PASSSALT');
-
-			define('SMTP_SERVER', '10.128.2.37');
+			define('CHMS_LOGIN_SALT', 'PROD_LDAPSALT');
+			define('SMTP_SERVER', 'PROD_IP_SMTP');
 			define('SMTP_TEST_MODE', false);
 			break;
 	}
@@ -247,5 +228,8 @@
 	define('QCODO_LOG_LEVEL', 6);
 
 	// Add PayPal Constants
-	require(__INCLUDES__ . '/paypal.local');
+	require(__INCLUDES__ . '/../paypal.local');
+
+	// GMAP (Google Map API)
+	define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
 ?>

@@ -129,7 +129,7 @@
 		 * @return boolean
 		 */
 		public function IsPasswordValidAgainstCache($strPassword) {
-			return (md5($strPassword . 'chms-SALT4alcf!') == $this->strPasswordCache);
+			return (md5($strPassword . CHMS_LOGIN_SALT) == $this->strPasswordCache);
 		}
 
 		// Override or Create New Load/Count methods
