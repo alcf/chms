@@ -90,9 +90,9 @@
 			else
 				define('PUBLIC_LOGIN_SALT', 'salt');
 			if (file_exists(dirname(__FILE__) . '/chms_login_salt.local'))
-				define('PUBLIC_LOGIN_SALT', trim(file_get_contents(dirname(__FILE__) . '/chms_login_salt.local')));
+				define('CHMS_LOGIN_SALT', trim(file_get_contents(dirname(__FILE__) . '/chms_login_salt.local')));
 			else
-				define('PUBLIC_LOGIN_SALT', 'salt');
+				define('CHMS_LOGIN_SALT', 'salt');
 				
 			define('SMTP_SERVER', '127.0.0.1');
 			define('SMTP_TEST_MODE', true);
