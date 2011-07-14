@@ -15,6 +15,12 @@
 	 */
 	class OnlineDonation extends OnlineDonationGen {
 		/**
+		 * Is only used when we are attaching a New Person to this record and need to (eventually) save the household information
+		 * @var Address
+		 */
+		protected $objAddress;
+
+		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
 		 * way this object would be outputted.
@@ -31,6 +37,7 @@
 			switch ($strName) {
 				case 'Hash': return md5(PUBLIC_LOGIN_SALT . $this->intId);
 				case 'ConfirmationUrl': return MY_ALCF_URL . '/give/confirmation.php/' . $this->intId . '/' . $this->Hash;
+				case 'Address': return $this->objAddress;
 
 				default:
 					try {
@@ -42,13 +49,65 @@
 			}
 		}
 
-		public function SendConfirmationEmail() {
+		/**
+		 * This will attempt to attach a person given the following information.
+		 * It will match only on exact Address (must be current home or current mailing) and First/Last matches.
+		 * 
+		 * This is typically used when the payment is being submitted without a login.
+		 * 
+		 * If no match is found, then it will create a new, unsaved person record and link it in.
+		 * NOTE: If it's a new person, they will be a standalone individual with OUT a household yet.  Household
+		 * should be saved later on after the transaction succeeds.
+		 * 
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @param Address $objAddress assumes the Address record has already gone through the validator
+		 */
+		public function AttachPersonWithInformation($strFirstName, $strLastName, Address $objAddress) {
+			// Get possible First/Last matches
+			$objPersonArray = Person::LoadArrayByNameMatch($strFirstName, $strLastName);
+			$objPerson = null;
+
+			// Go through all the candidates and see if we have an exact match on CURRENT household home or mailing address
+			foreach ($objPersonArray as $objPersonCandidate) {
+				foreach ($objPersonCandidate->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+					if (!$objPerson &&
+						($objHomeAddress = $objHouseholdParticipation->Household->GetCurrentAddress()) &&
+						$objHomeAddress->IsEqualTo($objAddress)) {
+						// We found an exact match on the current home address
+						$objPerson = $objPersonCandidate;
+					}
+				}
+
+				// Check against mailing address
+				if (!$objPerson && $objPersonCandidate->MailingAddress &&
+					$objPersonCandidate->MailingAddress->IsEqualTo($objAddress)) {
+					// We found an exact match on the current Mailing address
+					$objPerson = $objPersonCandidate;
+				}
+			}
+
+			// Attach a matched person
+			if ($objPerson) {
+				$this->Person = $objPerson;
+			} else {
+				// Create as a new person
+				$this->Person = Person::CreatePerson($strFirstName, null, $strLastName, null);
+				$this->objAddress = $objAddress;
+			}
+		}
+
+		/**
+		 * This will send a confirmation email for the OnlineDonation item
+		 * @param string $strToAddress an explicitly set EmailAddress to send, or if null, it will try and deduce it from the attached person record
+		 */
+		public function SendConfirmationEmail($strToAddress = null) {
 			// Template
 			$strTemplateName = 'online_donation';
 
 			// Calculate Email Address - THIS WILL RETURN if none is found
 			$strFromAddress = 'ALCF Online Donation <do_not_reply@alcf.net>';
-			$strToAddress = $this->CalculateConfirmationEmailAddress();
+			if (!$strToAddress) $strToAddress = $this->CalculateConfirmationEmailAddress();
 			if (!$strToAddress) return;
 			$strSubject = 'Your Online Donation';
 

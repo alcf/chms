@@ -174,6 +174,7 @@
 
 				$this->btnDialogBoxOkay->Visible = true;
 				$this->lblDialogBoxMessage->Text = '<h4>Credit Card Processing Failed</h4>' . $mixReturn . '<br/><br/>';
+				$this->objForm->PaymentPanel_Failed($objPaymentObject);
 			}
 		}
 

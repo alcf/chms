@@ -48,6 +48,7 @@
 				$this->DeleteAllEmails();
 				$this->DeleteAllOtherContactInfos();
 				$this->DeleteAllPhones();
+				$this->UnassociateAllNameItems();
 
 				foreach ($this->GetHeadShotArray() as $objHeadShot) {
 					$objHeadShot->Delete();

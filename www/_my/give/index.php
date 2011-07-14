@@ -1,6 +1,5 @@
 <?php
 	require(dirname(__FILE__) . '/../../../includes/prepend.inc.php');
-	QApplication::AuthenticatePublic();
 
 	class PaymentSignupQForm extends ChmsForm {
 		protected $strPageTitle = 'Give Online';
@@ -31,7 +30,11 @@
 			$this->dtgDonationItems->SetDataBinder('dtgDonationItems_Bind');
 
 			// Figure out which address to use
-			$objAddress = QApplication::$PublicLogin->Person->DeducePrimaryAddress();
+			if (QApplication::$PublicLogin) {
+				$objAddress = QApplication::$PublicLogin->Person->DeducePrimaryAddress();
+			} else {
+				$objAddress = new Address();
+			}
 
 			// Any Messaging
 			$this->lblMessage = new QPanel($this);
@@ -44,7 +47,9 @@
 			$this->lblTotal->Text = '$ 0.00';
 
 			// Create the Payment Panel
-			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, QApplication::$PublicLogin->Person->FirstName, QApplication::$PublicLogin->Person->LastName);
+			$strFirstName = (QApplication::$PublicLogin) ? QApplication::$PublicLogin->Person->FirstName : null;
+			$strLastName = (QApplication::$PublicLogin) ? QApplication::$PublicLogin->Person->LastName : null;
+			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, $strFirstName, $strLastName);
 			$this->pnlPayment->SetButtonText('Submit Donation');
 		}
 
@@ -197,13 +202,30 @@
 		/**
 		 * Called back from PaymentPanel to actually generate a PaymentObject
 		 * or in this case, a OnlineDonation entry.
-		 * @return SignupPayment
+		 * @return OnlineDonation
 		 */
 		public function CreatePaymentObject() {
 			// Create the PaymentObject
 			$objPaymentObject = new OnlineDonation();
-			$objPaymentObject->Person = QApplication::$PublicLogin->Person;
 			
+			// Person we attach is either the Login Record
+			if (QApplication::$PublicLogin)
+				$objPaymentObject->Person = QApplication::$PublicLogin->Person;
+				
+			// Or needs to be deduced from all the fields in the PaymentPanel
+			else {
+				$objAddressValidator = new AddressValidator(
+					$this->pnlPayment->txtAddress1->Text,
+					$this->pnlPayment->txtAddress2->Text,
+					$this->pnlPayment->txtCity->Text,
+					$this->pnlPayment->lstState->SelectedValue,
+					$this->pnlPayment->txtZipCode->Text);
+				$objAddressValidator->ValidateAddress();
+				$objAddress = $objAddressValidator->CreateAddressRecord();
+
+				$objPaymentObject->AttachPersonWithInformation($this->pnlPayment->txtFirstName->Text, $this->pnlPayment->txtLastName->Text, $objAddress);
+			}
+
 			return $objPaymentObject;
 		}
 
@@ -262,8 +284,42 @@
 		 * the payment has been submitted successfully.
 		 */
 		public function PaymentPanel_Success(OnlineDonation $objPaymentObject) {
-			$objPaymentObject->SendConfirmationEmail();
+			// If there is a "address in waiting" for this OnlineDonation
+			// Then it was a newly-created Person object
+			// Let's create the household for this person
+			if ($objPaymentObject->Address) {
+				$objPerson = $objPaymentObject->Person;
+				$objHousehold = Household::CreateHousehold($objPerson);
+				$objAddress = $objPaymentObject->Address;
+				
+				$objAddress->AddressTypeId = AddressType::Home;
+				$objAddress->CurrentFlag = true;
+				$objAddress->Household = $objHousehold;
+				$objAddress->Save();
+
+				$objHousehold->SetAsCurrentAddress($objAddress);
+			}
+
+			if (QApplication::$PublicLogin) {
+				$objPaymentObject->SendConfirmationEmail();
+			} else {
+//				$objPaymentObject->SendConfirmationEmail(trim(strtolower($this->txtEmail->Text)));
+			}
+
 			QApplication::Redirect($objPaymentObject->ConfirmationUrl);
+		}
+
+		/**
+		 * Called back from PaymentPanel to perform cleanup tasks after we know
+		 * the payment has failed.
+		 */
+		public function PaymentPanel_Failed(OnlineDonation $objPaymentObject) {
+			// If there is a "address in waiting" for this OnlineDonation
+			// Then it was a newly-created Person object
+			// Let's delete it to make sure we clean up after ourselves
+			if ($objPaymentObject->Address) {
+				$objPaymentObject->Person->Delete();
+			}
 		}
 	}
 

@@ -2,6 +2,7 @@
 	<p style="margin-top: 0;">(*) Fields in <strong>BOLD</strong> are required</p>
 
 	<div class="section">
+		<div class="securePayment"><div class="securePaymentInside" onclick="window.open('http://en.wikipedia.org/wiki/OpenSSL');" title="Secure SSL Using 2048-bit RSA Triple-DES Encryption">&nbsp;</div></div>
 		<?php $_CONTROL->txtFirstName->HtmlAfter = ' ' . $_CONTROL->txtLastName->RenderWithError(false); ?>
 		<?php $_CONTROL->txtFirstName->RenderWithName(); ?>
 		<?php $_CONTROL->txtAddress1->RenderWithName(); ?>

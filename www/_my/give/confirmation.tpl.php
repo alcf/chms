@@ -7,7 +7,7 @@
 	<p style="font-size: 14px;">We have successfully received your contribution of <strong><?php _p(QApplication::DisplayCurrency($this->objOnlineDonation->Amount)); ?></strong>.
 	Your confirmation number is <strong><?php _p(sprintf('%05s', $this->objOnlineDonation->Id)); ?></strong>.<br/>
 
-	<?php if ($strEmail = $this->objOnlineDonation->CalculateConfirmationEmailAddress()) { ?>
+	<?php if (QApplication::$PublicLogin && ($strEmail = $this->objOnlineDonation->CalculateConfirmationEmailAddress())) { ?>
 		<br/>A confirmation email has been sent out to <strong><?php _p($strEmail); ?></strong>.
 	<?php } ?>
 

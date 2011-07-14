@@ -27,6 +27,14 @@
 			return $objAddress;
 		}
 
+		/**
+		 * Creates a new instance from a Address object.
+		 * @param Address $objAddress
+		 */
+		public static function CreateFromAddress(Address $objAddress) {
+			return new AddressValidator($objAddress->Address1, $objAddress->Address2, $objAddress->City, $objAddress->State, $objAddress->ZipCode);
+		}
+
 		public function __construct($strPrimaryAddressLine, $strSecondaryAddressLine, $strCity, $strState, $strZipCode) {
 			$this->strPrimaryAddressLine = $strPrimaryAddressLine;
 			$this->strSecondaryAddressLine = $strSecondaryAddressLine;

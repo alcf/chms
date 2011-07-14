@@ -479,6 +479,14 @@
 			$this->objSignupEntry->Complete($objPaymentObject);
 			QApplication::Redirect($this->objSignupEntry->ConfirmationUrl);
 		}
+
+		/**
+		 * Called back from PaymentPanel to perform cleanup tasks after we know
+		 * the payment has failed.
+		 */
+		public function PaymentPanel_Failed(SignupPayment $objPaymentObject) {
+			// we do not need to do anything
+		}
 	}
 
 	PaymentSignupQForm::Run('PaymentSignupQForm');

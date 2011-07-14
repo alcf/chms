@@ -113,8 +113,8 @@
 	/*** PAGE STRUCTURE ***/
 
 	div.navbar ul { background-color: red; list-style-type: none; margin: 0; padding: 0;  }
-	div.navbar li { margin: 0; padding: 0 25px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #fff; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
-		div.navbar li.first { padding-left: 15px; }
+	div.navbar li { margin: 0; padding: 0 30px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #fff; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
+		div.navbar li.first { padding-left: 23px; }
 		div.navbar li a { color: #fff; text-decoration: none; }
 		div.navbar li a:hover { text-decoration: underline; }
 
@@ -168,6 +168,9 @@
 	span.sublinks { color: #ccc; font-size: 10px; }
 
 	/*** OTHER ***/
+	
+	div.securePayment {width: 1px; height: 1px; overflow: display; }
+	div.securePaymentInside { width: 150px; height:166px; border: 1px solid #888; background: url(/assets/images/secure.png); border-radius: 8px; position: relative; left: 740px; cursor: pointer; }
 
 	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
