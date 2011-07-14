@@ -309,7 +309,7 @@
 					foreach ($objHomeAddress->GetPhoneArray() as $objPhone) {
 						if ($objPhone->Number == $strHomePhone) {
 							$blnFound = true;
-							$objPhone->SetAsPrimary($objHomeAddress);
+							$objPhone->SetAsPrimary(null, $objHomeAddress);
 						}
 					}
 					
@@ -319,7 +319,7 @@
 						$objPhone->Number = $strHomePhone;
 						$objPhone->Address = $objHomeAddress;
 						$objPhone->Save();
-						$objPhone->SetAsPrimary($objHomeAddress);
+						$objPhone->SetAsPrimary(null, $objHomeAddress);
 					}
 				}
 			} else if (count($objHouseholdParticipationArray) == 0) {
@@ -336,7 +336,7 @@
 					$objPhone->Number = $strHomePhone;
 					$objPhone->Address = $objHomeAddress;
 					$objPhone->Save();
-					$objPhone->SetAsPrimary($objHomeAddress);
+					$objPhone->SetAsPrimary(null, $objHomeAddress);
 				}
 			}
 
