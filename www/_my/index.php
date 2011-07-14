@@ -50,9 +50,9 @@
 
 			$this->txtUsername->AddAction(new QEnterKeyEvent(), new QFocusControlAction($this->txtPassword));
 			$this->txtUsername->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-			$this->txtPassword->AddAction(new QEnterKeyEvent(), new QAjaxAction('btnLogin_Click'));
+			$this->txtPassword->AddAction(new QEnterKeyEvent(), new QServerAction('btnLogin_Click'));
 			$this->txtPassword->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-			$this->btnLogin->AddAction(new QClickEvent(), new QAjaxAction('btnLogin_Click'));
+			$this->btnLogin->AddAction(new QClickEvent(), new QServerAction('btnLogin_Click'));
 
 			// Final Setup based on whether or not we are "remembering" the username
 			if (array_key_exists('username', $_COOKIE)) {
@@ -65,6 +65,21 @@
 			
 		}
 
+		protected function Form_Validate() {
+			$blnToReturn = true;
+
+			$blnFirst = true;
+			foreach ($this->GetErrorControls() as $objControl) {
+				if ($blnFirst) {
+					$blnFirst = false;
+					$objControl->Focus();
+				}
+				$objControl->Blink();
+			}
+
+			return $blnToReturn;
+		}
+		
 		protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
 			$objLogin = PublicLogin::LoadByUsernamePassword(trim(strtolower($this->txtUsername->Text)), $this->txtPassword->Text);
 
@@ -83,7 +98,10 @@
 			}
 
 			QApplication::PublicLogin($objLogin);
-			if (array_key_exists('r', $_GET) && $_GET['r'])
+			
+			if ($objLogin->TemporaryPasswordFlag) {
+				QApplication::Redirect('/update_password.php');
+			} else if (array_key_exists('r', $_GET) && $_GET['r'])
 				QApplication::Redirect($_GET['r']);
 			else
 				QApplication::Redirect('/main/');

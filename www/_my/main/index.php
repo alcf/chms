@@ -591,7 +591,10 @@
 			if ($strUsernameCandidate) QApplication::$PublicLogin->Username = $strUsernameCandidate;
 			QApplication::$PublicLogin->LostPasswordQuestion = trim($this->txtQuestion->Text);
 			QApplication::$PublicLogin->LostPasswordAnswer = strtolower(trim($this->txtAnswer->Text));
-			if ($this->txtNewPassword->Text) QApplication::$PublicLogin->SetPassword($this->txtNewPassword->Text);
+			if ($this->txtNewPassword->Text) {
+				QApplication::$PublicLogin->SetPassword($this->txtNewPassword->Text);
+				QApplication::$PublicLogin->TemporaryPasswordFlag = false;
+			}
 			QApplication::$PublicLogin->Save();
 
 			// Refresh Stuff
