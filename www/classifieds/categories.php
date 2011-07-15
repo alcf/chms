@@ -1,6 +1,6 @@
 <?php
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
-	QApplication::Authenticate(array(RoleType::ChMSAdministrator));
+	QApplication::Authenticate(null, array(PermissionType::ManageClassifieds));
 
 	class AdminMainForm extends ChmsForm {
 		protected $strPageTitle = 'Classified Acts - Posting Categories';
@@ -26,7 +26,7 @@
 		}
 
 		public function RenderName(ClassifiedCategory $objCategory) {
-			return sprintf('<a href="/admin/comment_categories/edit.php/%s">%s</a><br/><span class="na">%s</span>', $objCategory->Id,
+			return sprintf('<a href="/classifieds/category.php/%s">%s</a><br/><span class="na">%s</span>', $objCategory->Id,
 				QApplication::HtmlEntities($objCategory->Name), QApplication::HtmlEntities($objCategory->Description));
 		}
 		
