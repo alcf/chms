@@ -20,6 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QListBox $ClassifiedCategoryIdControl
 	 * property-read QLabel $ClassifiedCategoryIdLabel
+	 * property QCheckBox $ApprovalFlagControl
+	 * property-read QLabel $ApprovalFlagLabel
 	 * property QTextBox $TitleControl
 	 * property-read QLabel $TitleLabel
 	 * property QTextBox $ContentControl
@@ -78,6 +80,12 @@
 		protected $lstClassifiedCategory;
 
         /**
+         * @var QCheckBox chkApprovalFlag;
+         * @access protected
+         */
+		protected $chkApprovalFlag;
+
+        /**
          * @var QTextBox txtTitle;
          * @access protected
          */
@@ -126,6 +134,12 @@
          * @access protected
          */
 		protected $lblClassifiedCategoryId;
+
+        /**
+         * @var QLabel lblApprovalFlag
+         * @access protected
+         */
+		protected $lblApprovalFlag;
 
         /**
          * @var QLabel lblTitle
@@ -323,6 +337,30 @@
 			$this->lblClassifiedCategoryId->Text = ($this->objClassifiedPost->ClassifiedCategory) ? $this->objClassifiedPost->ClassifiedCategory->__toString() : null;
 			$this->lblClassifiedCategoryId->Required = true;
 			return $this->lblClassifiedCategoryId;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkApprovalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkApprovalFlag_Create($strControlId = null) {
+			$this->chkApprovalFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkApprovalFlag->Name = QApplication::Translate('Approval Flag');
+			$this->chkApprovalFlag->Checked = $this->objClassifiedPost->ApprovalFlag;
+			return $this->chkApprovalFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblApprovalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblApprovalFlag_Create($strControlId = null) {
+			$this->lblApprovalFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblApprovalFlag->Name = QApplication::Translate('Approval Flag');
+			$this->lblApprovalFlag->Text = ($this->objClassifiedPost->ApprovalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblApprovalFlag;
 		}
 
 		/**
@@ -537,6 +575,9 @@
 			}
 			if ($this->lblClassifiedCategoryId) $this->lblClassifiedCategoryId->Text = ($this->objClassifiedPost->ClassifiedCategory) ? $this->objClassifiedPost->ClassifiedCategory->__toString() : null;
 
+			if ($this->chkApprovalFlag) $this->chkApprovalFlag->Checked = $this->objClassifiedPost->ApprovalFlag;
+			if ($this->lblApprovalFlag) $this->lblApprovalFlag->Text = ($this->objClassifiedPost->ApprovalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->txtTitle) $this->txtTitle->Text = $this->objClassifiedPost->Title;
 			if ($this->lblTitle) $this->lblTitle->Text = $this->objClassifiedPost->Title;
 
@@ -582,6 +623,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstClassifiedCategory) $this->objClassifiedPost->ClassifiedCategoryId = $this->lstClassifiedCategory->SelectedValue;
+				if ($this->chkApprovalFlag) $this->objClassifiedPost->ApprovalFlag = $this->chkApprovalFlag->Checked;
 				if ($this->txtTitle) $this->objClassifiedPost->Title = $this->txtTitle->Text;
 				if ($this->txtContent) $this->objClassifiedPost->Content = $this->txtContent->Text;
 				if ($this->calDatePosted) $this->objClassifiedPost->DatePosted = $this->calDatePosted->DateTime;
@@ -643,6 +685,12 @@
 				case 'ClassifiedCategoryIdLabel':
 					if (!$this->lblClassifiedCategoryId) return $this->lblClassifiedCategoryId_Create();
 					return $this->lblClassifiedCategoryId;
+				case 'ApprovalFlagControl':
+					if (!$this->chkApprovalFlag) return $this->chkApprovalFlag_Create();
+					return $this->chkApprovalFlag;
+				case 'ApprovalFlagLabel':
+					if (!$this->lblApprovalFlag) return $this->lblApprovalFlag_Create();
+					return $this->lblApprovalFlag;
 				case 'TitleControl':
 					if (!$this->txtTitle) return $this->txtTitle_Create();
 					return $this->txtTitle;
@@ -711,6 +759,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'ClassifiedCategoryIdControl':
 						return ($this->lstClassifiedCategory = QType::Cast($mixValue, 'QControl'));
+					case 'ApprovalFlagControl':
+						return ($this->chkApprovalFlag = QType::Cast($mixValue, 'QControl'));
 					case 'TitleControl':
 						return ($this->txtTitle = QType::Cast($mixValue, 'QControl'));
 					case 'ContentControl':

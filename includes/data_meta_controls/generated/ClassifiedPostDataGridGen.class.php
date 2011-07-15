@@ -296,6 +296,7 @@
 				case 'Id': return QQN::ClassifiedPost()->Id;
 				case 'ClassifiedCategoryId': return QQN::ClassifiedPost()->ClassifiedCategoryId;
 				case 'ClassifiedCategory': return QQN::ClassifiedPost()->ClassifiedCategory;
+				case 'ApprovalFlag': return QQN::ClassifiedPost()->ApprovalFlag;
 				case 'Title': return QQN::ClassifiedPost()->Title;
 				case 'Content': return QQN::ClassifiedPost()->Content;
 				case 'DatePosted': return QQN::ClassifiedPost()->DatePosted;

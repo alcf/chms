@@ -6186,12 +6186,12 @@
         <schema><![CDATA[]]></schema>
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
-            <x>1280.000000</x>
-            <y>1984.000000</y>
+            <x>1344.000000</x>
+            <y>2048.000000</y>
         </location>
         <size>
             <width>192.000000</width>
-            <height>140.000000</height>
+            <height>144.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -7370,8 +7370,8 @@
             <y>1968.000000</y>
         </location>
         <size>
-            <width>374.000000</width>
-            <height>220.000000</height>
+            <width>452.000000</width>
+            <height>240.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -7401,6 +7401,13 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
+            <name><![CDATA[approval_flag]]></name>
+            <type><![CDATA[BOOLEAN]]></type>
+            <notNull>1</notNull>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[44EC4064-F73A-4615-84FC-8801BA4961AD]]></uid>
+        </SQLField>
+        <SQLField>
             <name><![CDATA[title]]></name>
             <type><![CDATA[VARCHAR(255)]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
@@ -7423,7 +7430,7 @@
             <type><![CDATA[DATE]]></type>
             <notNull>1</notNull>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[4609751F-291A-403B-8EB3-CC699CBEA348]]></uid>
         </SQLField>
         <SQLField>
@@ -7447,11 +7454,17 @@
         <SQLIndex>
             <name><![CDATA[classified_post_idx]]></name>
             <fieldName><![CDATA[classified_category_id]]></fieldName>
+            <fieldName><![CDATA[approval_flag]]></fieldName>
             <fieldName><![CDATA[date_expired]]></fieldName>
             <SQLIndexEntry>
                 <name><![CDATA[classified_category_id]]></name>
                 <prefixSize><![CDATA[]]></prefixSize>
                 <fieldUid><![CDATA[8A69A296-E60C-470C-B23D-7EDF742EAA28]]></fieldUid>
+            </SQLIndexEntry>
+            <SQLIndexEntry>
+                <name><![CDATA[approval_flag]]></name>
+                <prefixSize><![CDATA[]]></prefixSize>
+                <fieldUid><![CDATA[44EC4064-F73A-4615-84FC-8801BA4961AD]]></fieldUid>
             </SQLIndexEntry>
             <SQLIndexEntry>
                 <name><![CDATA[date_expired]]></name>

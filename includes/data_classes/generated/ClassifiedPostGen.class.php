@@ -17,6 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $ClassifiedCategoryId the value for intClassifiedCategoryId (Not Null)
+	 * @property boolean $ApprovalFlag the value for blnApprovalFlag (Not Null)
 	 * @property string $Title the value for strTitle 
 	 * @property string $Content the value for strContent 
 	 * @property QDateTime $DatePosted the value for dttDatePosted 
@@ -47,6 +48,14 @@
 		 */
 		protected $intClassifiedCategoryId;
 		const ClassifiedCategoryIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column classified_post.approval_flag
+		 * @var boolean blnApprovalFlag
+		 */
+		protected $blnApprovalFlag;
+		const ApprovalFlagDefault = null;
 
 
 		/**
@@ -453,6 +462,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'classified_category_id', $strAliasPrefix . 'classified_category_id');
+			$objBuilder->AddSelectItem($strTableName, 'approval_flag', $strAliasPrefix . 'approval_flag');
 			$objBuilder->AddSelectItem($strTableName, 'title', $strAliasPrefix . 'title');
 			$objBuilder->AddSelectItem($strTableName, 'content', $strAliasPrefix . 'content');
 			$objBuilder->AddSelectItem($strTableName, 'date_posted', $strAliasPrefix . 'date_posted');
@@ -495,6 +505,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'classified_category_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'classified_category_id'] : $strAliasPrefix . 'classified_category_id';
 			$objToReturn->intClassifiedCategoryId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'approval_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'approval_flag'] : $strAliasPrefix . 'approval_flag';
+			$objToReturn->blnApprovalFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'title', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'title'] : $strAliasPrefix . 'title';
 			$objToReturn->strTitle = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'content', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'content'] : $strAliasPrefix . 'content';
@@ -616,18 +628,20 @@
 			
 		/**
 		 * Load an array of ClassifiedPost objects,
-		 * by ClassifiedCategoryId, DateExpired Index(es)
+		 * by ClassifiedCategoryId, ApprovalFlag, DateExpired Index(es)
 		 * @param integer $intClassifiedCategoryId
+		 * @param boolean $blnApprovalFlag
 		 * @param QDateTime $dttDateExpired
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return ClassifiedPost[]
 		*/
-		public static function LoadArrayByClassifiedCategoryIdDateExpired($intClassifiedCategoryId, $dttDateExpired, $objOptionalClauses = null) {
-			// Call ClassifiedPost::QueryArray to perform the LoadArrayByClassifiedCategoryIdDateExpired query
+		public static function LoadArrayByClassifiedCategoryIdApprovalFlagDateExpired($intClassifiedCategoryId, $blnApprovalFlag, $dttDateExpired, $objOptionalClauses = null) {
+			// Call ClassifiedPost::QueryArray to perform the LoadArrayByClassifiedCategoryIdApprovalFlagDateExpired query
 			try {
 				return ClassifiedPost::QueryArray(
 					QQ::AndCondition(
 					QQ::Equal(QQN::ClassifiedPost()->ClassifiedCategoryId, $intClassifiedCategoryId),
+					QQ::Equal(QQN::ClassifiedPost()->ApprovalFlag, $blnApprovalFlag),
 					QQ::Equal(QQN::ClassifiedPost()->DateExpired, $dttDateExpired)
 					),
 					$objOptionalClauses);
@@ -639,16 +653,18 @@
 
 		/**
 		 * Count ClassifiedPosts
-		 * by ClassifiedCategoryId, DateExpired Index(es)
+		 * by ClassifiedCategoryId, ApprovalFlag, DateExpired Index(es)
 		 * @param integer $intClassifiedCategoryId
+		 * @param boolean $blnApprovalFlag
 		 * @param QDateTime $dttDateExpired
 		 * @return int
 		*/
-		public static function CountByClassifiedCategoryIdDateExpired($intClassifiedCategoryId, $dttDateExpired) {
-			// Call ClassifiedPost::QueryCount to perform the CountByClassifiedCategoryIdDateExpired query
+		public static function CountByClassifiedCategoryIdApprovalFlagDateExpired($intClassifiedCategoryId, $blnApprovalFlag, $dttDateExpired) {
+			// Call ClassifiedPost::QueryCount to perform the CountByClassifiedCategoryIdApprovalFlagDateExpired query
 			return ClassifiedPost::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::ClassifiedPost()->ClassifiedCategoryId, $intClassifiedCategoryId),
+				QQ::Equal(QQN::ClassifiedPost()->ApprovalFlag, $blnApprovalFlag),
 				QQ::Equal(QQN::ClassifiedPost()->DateExpired, $dttDateExpired)
 				)
 			);
@@ -685,38 +701,6 @@
 				QQ::Equal(QQN::ClassifiedPost()->ClassifiedCategoryId, $intClassifiedCategoryId)
 			);
 		}
-			
-		/**
-		 * Load an array of ClassifiedPost objects,
-		 * by DateExpired Index(es)
-		 * @param QDateTime $dttDateExpired
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return ClassifiedPost[]
-		*/
-		public static function LoadArrayByDateExpired($dttDateExpired, $objOptionalClauses = null) {
-			// Call ClassifiedPost::QueryArray to perform the LoadArrayByDateExpired query
-			try {
-				return ClassifiedPost::QueryArray(
-					QQ::Equal(QQN::ClassifiedPost()->DateExpired, $dttDateExpired),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count ClassifiedPosts
-		 * by DateExpired Index(es)
-		 * @param QDateTime $dttDateExpired
-		 * @return int
-		*/
-		public static function CountByDateExpired($dttDateExpired) {
-			// Call ClassifiedPost::QueryCount to perform the CountByDateExpired query
-			return ClassifiedPost::QueryCount(
-				QQ::Equal(QQN::ClassifiedPost()->DateExpired, $dttDateExpired)
-			);
-		}
 
 
 
@@ -749,6 +733,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `classified_post` (
 							`classified_category_id`,
+							`approval_flag`,
 							`title`,
 							`content`,
 							`date_posted`,
@@ -758,6 +743,7 @@
 							`email`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intClassifiedCategoryId) . ',
+							' . $objDatabase->SqlVariable($this->blnApprovalFlag) . ',
 							' . $objDatabase->SqlVariable($this->strTitle) . ',
 							' . $objDatabase->SqlVariable($this->strContent) . ',
 							' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
@@ -785,6 +771,7 @@
 							`classified_post`
 						SET
 							`classified_category_id` = ' . $objDatabase->SqlVariable($this->intClassifiedCategoryId) . ',
+							`approval_flag` = ' . $objDatabase->SqlVariable($this->blnApprovalFlag) . ',
 							`title` = ' . $objDatabase->SqlVariable($this->strTitle) . ',
 							`content` = ' . $objDatabase->SqlVariable($this->strContent) . ',
 							`date_posted` = ' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
@@ -877,6 +864,7 @@
 
 			// Update $this's local variables to match
 			$this->ClassifiedCategoryId = $objReloaded->ClassifiedCategoryId;
+			$this->blnApprovalFlag = $objReloaded->blnApprovalFlag;
 			$this->strTitle = $objReloaded->strTitle;
 			$this->strContent = $objReloaded->strContent;
 			$this->dttDatePosted = $objReloaded->dttDatePosted;
@@ -898,6 +886,7 @@
 				INSERT INTO `classified_post` (
 					`id`,
 					`classified_category_id`,
+					`approval_flag`,
 					`title`,
 					`content`,
 					`date_posted`,
@@ -911,6 +900,7 @@
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intClassifiedCategoryId) . ',
+					' . $objDatabase->SqlVariable($this->blnApprovalFlag) . ',
 					' . $objDatabase->SqlVariable($this->strTitle) . ',
 					' . $objDatabase->SqlVariable($this->strContent) . ',
 					' . $objDatabase->SqlVariable($this->dttDatePosted) . ',
@@ -977,6 +967,11 @@
 					// Gets the value for intClassifiedCategoryId (Not Null)
 					// @return integer
 					return $this->intClassifiedCategoryId;
+
+				case 'ApprovalFlag':
+					// Gets the value for blnApprovalFlag (Not Null)
+					// @return boolean
+					return $this->blnApprovalFlag;
 
 				case 'Title':
 					// Gets the value for strTitle 
@@ -1069,6 +1064,17 @@
 					try {
 						$this->objClassifiedCategory = null;
 						return ($this->intClassifiedCategoryId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ApprovalFlag':
+					// Sets the value for blnApprovalFlag (Not Null)
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnApprovalFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1224,6 +1230,7 @@
 			$strToReturn = '<complexType name="ClassifiedPost"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="ClassifiedCategory" type="xsd1:ClassifiedCategory"/>';
+			$strToReturn .= '<element name="ApprovalFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Title" type="xsd:string"/>';
 			$strToReturn .= '<element name="Content" type="xsd:string"/>';
 			$strToReturn .= '<element name="DatePosted" type="xsd:dateTime"/>';
@@ -1259,6 +1266,8 @@
 			if ((property_exists($objSoapObject, 'ClassifiedCategory')) &&
 				($objSoapObject->ClassifiedCategory))
 				$objToReturn->ClassifiedCategory = ClassifiedCategory::GetObjectFromSoapObject($objSoapObject->ClassifiedCategory);
+			if (property_exists($objSoapObject, 'ApprovalFlag'))
+				$objToReturn->blnApprovalFlag = $objSoapObject->ApprovalFlag;
 			if (property_exists($objSoapObject, 'Title'))
 				$objToReturn->strTitle = $objSoapObject->Title;
 			if (property_exists($objSoapObject, 'Content'))
@@ -1317,6 +1326,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $ClassifiedCategoryId
 	 * @property-read QQNodeClassifiedCategory $ClassifiedCategory
+	 * @property-read QQNode $ApprovalFlag
 	 * @property-read QQNode $Title
 	 * @property-read QQNode $Content
 	 * @property-read QQNode $DatePosted
@@ -1337,6 +1347,8 @@
 					return new QQNode('classified_category_id', 'ClassifiedCategoryId', 'integer', $this);
 				case 'ClassifiedCategory':
 					return new QQNodeClassifiedCategory('classified_category_id', 'ClassifiedCategory', 'integer', $this);
+				case 'ApprovalFlag':
+					return new QQNode('approval_flag', 'ApprovalFlag', 'boolean', $this);
 				case 'Title':
 					return new QQNode('title', 'Title', 'string', $this);
 				case 'Content':
@@ -1369,6 +1381,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $ClassifiedCategoryId
 	 * @property-read QQNodeClassifiedCategory $ClassifiedCategory
+	 * @property-read QQNode $ApprovalFlag
 	 * @property-read QQNode $Title
 	 * @property-read QQNode $Content
 	 * @property-read QQNode $DatePosted
@@ -1390,6 +1403,8 @@
 					return new QQNode('classified_category_id', 'ClassifiedCategoryId', 'integer', $this);
 				case 'ClassifiedCategory':
 					return new QQNodeClassifiedCategory('classified_category_id', 'ClassifiedCategory', 'integer', $this);
+				case 'ApprovalFlag':
+					return new QQNode('approval_flag', 'ApprovalFlag', 'boolean', $this);
 				case 'Title':
 					return new QQNode('title', 'Title', 'string', $this);
 				case 'Content':
