@@ -274,6 +274,7 @@
 			$this->txtToken = new QTextBox($this->objParentObject, $strControlId);
 			$this->txtToken->Name = QApplication::Translate('Token');
 			$this->txtToken->Text = $this->objClassifiedCategory->Token;
+			$this->txtToken->Required = true;
 			$this->txtToken->MaxLength = ClassifiedCategory::TokenMaxLength;
 			return $this->txtToken;
 		}
@@ -287,6 +288,7 @@
 			$this->lblToken = new QLabel($this->objParentObject, $strControlId);
 			$this->lblToken->Name = QApplication::Translate('Token');
 			$this->lblToken->Text = $this->objClassifiedCategory->Token;
+			$this->lblToken->Required = true;
 			return $this->lblToken;
 		}
 

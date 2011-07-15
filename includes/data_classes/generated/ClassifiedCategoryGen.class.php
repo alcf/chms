@@ -17,7 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Name the value for strName 
-	 * @property string $Token the value for strToken 
+	 * @property string $Token the value for strToken (Unique)
 	 * @property integer $OrderNumber the value for intOrderNumber 
 	 * @property string $Description the value for strDescription 
 	 * @property string $Instructions the value for strInstructions 
@@ -618,6 +618,18 @@
 				QQ::Equal(QQN::ClassifiedCategory()->Id, $intId)
 			);
 		}
+			
+		/**
+		 * Load a single ClassifiedCategory object,
+		 * by Token Index(es)
+		 * @param string $strToken
+		 * @return ClassifiedCategory
+		*/
+		public static function LoadByToken($strToken) {
+			return ClassifiedCategory::QuerySingle(
+				QQ::Equal(QQN::ClassifiedCategory()->Token, $strToken)
+			);
+		}
 
 
 
@@ -862,7 +874,7 @@
 					return $this->strName;
 
 				case 'Token':
-					// Gets the value for strToken 
+					// Gets the value for strToken (Unique)
 					// @return string
 					return $this->strToken;
 
@@ -942,7 +954,7 @@
 					}
 
 				case 'Token':
-					// Sets the value for strToken 
+					// Sets the value for strToken (Unique)
 					// @param string $mixValue
 					// @return string
 					try {
