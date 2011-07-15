@@ -296,6 +296,7 @@
 				case 'Id': return QQN::ClassifiedCategory()->Id;
 				case 'Name': return QQN::ClassifiedCategory()->Name;
 				case 'Token': return QQN::ClassifiedCategory()->Token;
+				case 'OrderNumber': return QQN::ClassifiedCategory()->OrderNumber;
 				case 'Description': return QQN::ClassifiedCategory()->Description;
 				case 'Instructions': return QQN::ClassifiedCategory()->Instructions;
 				default: throw new QCallerException('Simple Property not found in ClassifiedCategoryDataGrid content: ' . $mixContent);

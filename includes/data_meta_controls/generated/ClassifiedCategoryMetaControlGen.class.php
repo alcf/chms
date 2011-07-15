@@ -22,6 +22,8 @@
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $TokenControl
 	 * property-read QLabel $TokenLabel
+	 * property QIntegerTextBox $OrderNumberControl
+	 * property-read QLabel $OrderNumberLabel
 	 * property QTextBox $DescriptionControl
 	 * property-read QLabel $DescriptionLabel
 	 * property QTextBox $InstructionsControl
@@ -76,6 +78,12 @@
 		protected $txtToken;
 
         /**
+         * @var QIntegerTextBox txtOrderNumber;
+         * @access protected
+         */
+		protected $txtOrderNumber;
+
+        /**
          * @var QTextBox txtDescription;
          * @access protected
          */
@@ -100,6 +108,12 @@
          * @access protected
          */
 		protected $lblToken;
+
+        /**
+         * @var QLabel lblOrderNumber
+         * @access protected
+         */
+		protected $lblOrderNumber;
 
         /**
          * @var QLabel lblDescription
@@ -277,6 +291,32 @@
 		}
 
 		/**
+		 * Create and setup QIntegerTextBox txtOrderNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtOrderNumber_Create($strControlId = null) {
+			$this->txtOrderNumber = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtOrderNumber->Name = QApplication::Translate('Order Number');
+			$this->txtOrderNumber->Text = $this->objClassifiedCategory->OrderNumber;
+			return $this->txtOrderNumber;
+		}
+
+		/**
+		 * Create and setup QLabel lblOrderNumber
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblOrderNumber_Create($strControlId = null, $strFormat = null) {
+			$this->lblOrderNumber = new QLabel($this->objParentObject, $strControlId);
+			$this->lblOrderNumber->Name = QApplication::Translate('Order Number');
+			$this->lblOrderNumber->Text = $this->objClassifiedCategory->OrderNumber;
+			$this->lblOrderNumber->Format = $strFormat;
+			return $this->lblOrderNumber;
+		}
+
+		/**
 		 * Create and setup QTextBox txtDescription
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -345,6 +385,9 @@
 			if ($this->txtToken) $this->txtToken->Text = $this->objClassifiedCategory->Token;
 			if ($this->lblToken) $this->lblToken->Text = $this->objClassifiedCategory->Token;
 
+			if ($this->txtOrderNumber) $this->txtOrderNumber->Text = $this->objClassifiedCategory->OrderNumber;
+			if ($this->lblOrderNumber) $this->lblOrderNumber->Text = $this->objClassifiedCategory->OrderNumber;
+
 			if ($this->txtDescription) $this->txtDescription->Text = $this->objClassifiedCategory->Description;
 			if ($this->lblDescription) $this->lblDescription->Text = $this->objClassifiedCategory->Description;
 
@@ -376,6 +419,7 @@
 				// Update any fields for controls that have been created
 				if ($this->txtName) $this->objClassifiedCategory->Name = $this->txtName->Text;
 				if ($this->txtToken) $this->objClassifiedCategory->Token = $this->txtToken->Text;
+				if ($this->txtOrderNumber) $this->objClassifiedCategory->OrderNumber = $this->txtOrderNumber->Text;
 				if ($this->txtDescription) $this->objClassifiedCategory->Description = $this->txtDescription->Text;
 				if ($this->txtInstructions) $this->objClassifiedCategory->Instructions = $this->txtInstructions->Text;
 
@@ -438,6 +482,12 @@
 				case 'TokenLabel':
 					if (!$this->lblToken) return $this->lblToken_Create();
 					return $this->lblToken;
+				case 'OrderNumberControl':
+					if (!$this->txtOrderNumber) return $this->txtOrderNumber_Create();
+					return $this->txtOrderNumber;
+				case 'OrderNumberLabel':
+					if (!$this->lblOrderNumber) return $this->lblOrderNumber_Create();
+					return $this->lblOrderNumber;
 				case 'DescriptionControl':
 					if (!$this->txtDescription) return $this->txtDescription_Create();
 					return $this->txtDescription;
@@ -478,6 +528,8 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
+					case 'OrderNumberControl':
+						return ($this->txtOrderNumber = QType::Cast($mixValue, 'QControl'));
 					case 'DescriptionControl':
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'InstructionsControl':

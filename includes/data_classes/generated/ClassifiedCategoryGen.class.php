@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Name the value for strName 
 	 * @property string $Token the value for strToken 
+	 * @property integer $OrderNumber the value for intOrderNumber 
 	 * @property string $Description the value for strDescription 
 	 * @property string $Instructions the value for strInstructions 
 	 * @property ClassifiedPost $_ClassifiedPost the value for the private _objClassifiedPost (Read-Only) if set due to an expansion on the classified_post.classified_category_id reverse relationship
@@ -54,6 +55,14 @@
 		protected $strToken;
 		const TokenMaxLength = 30;
 		const TokenDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column classified_category.order_number
+		 * @var integer intOrderNumber
+		 */
+		protected $intOrderNumber;
+		const OrderNumberDefault = null;
 
 
 		/**
@@ -423,6 +432,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
+			$objBuilder->AddSelectItem($strTableName, 'order_number', $strAliasPrefix . 'order_number');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'instructions', $strAliasPrefix . 'instructions');
 		}
@@ -494,6 +504,8 @@
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'token', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'token'] : $strAliasPrefix . 'token';
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'order_number', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'order_number'] : $strAliasPrefix . 'order_number';
+			$objToReturn->intOrderNumber = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'instructions', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'instructions'] : $strAliasPrefix . 'instructions';
@@ -639,11 +651,13 @@
 						INSERT INTO `classified_category` (
 							`name`,
 							`token`,
+							`order_number`,
 							`description`,
 							`instructions`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strToken) . ',
+							' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
 							' . $objDatabase->SqlVariable($this->strInstructions) . '
 						)
@@ -667,6 +681,7 @@
 						SET
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
+							`order_number` = ' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
 							`instructions` = ' . $objDatabase->SqlVariable($this->strInstructions) . '
 						WHERE
@@ -755,6 +770,7 @@
 			// Update $this's local variables to match
 			$this->strName = $objReloaded->strName;
 			$this->strToken = $objReloaded->strToken;
+			$this->intOrderNumber = $objReloaded->intOrderNumber;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->strInstructions = $objReloaded->strInstructions;
 		}
@@ -772,6 +788,7 @@
 					`id`,
 					`name`,
 					`token`,
+					`order_number`,
 					`description`,
 					`instructions`,
 					__sys_login_id,
@@ -781,6 +798,7 @@
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->strToken) . ',
+					' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->strInstructions) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
@@ -847,6 +865,11 @@
 					// Gets the value for strToken 
 					// @return string
 					return $this->strToken;
+
+				case 'OrderNumber':
+					// Gets the value for intOrderNumber 
+					// @return integer
+					return $this->intOrderNumber;
 
 				case 'Description':
 					// Gets the value for strDescription 
@@ -924,6 +947,17 @@
 					// @return string
 					try {
 						return ($this->strToken = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'OrderNumber':
+					// Sets the value for intOrderNumber 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intOrderNumber = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1177,6 +1211,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
+			$strToReturn .= '<element name="OrderNumber" type="xsd:int"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="Instructions" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1207,6 +1242,8 @@
 				$objToReturn->strName = $objSoapObject->Name;
 			if (property_exists($objSoapObject, 'Token'))
 				$objToReturn->strToken = $objSoapObject->Token;
+			if (property_exists($objSoapObject, 'OrderNumber'))
+				$objToReturn->intOrderNumber = $objSoapObject->OrderNumber;
 			if (property_exists($objSoapObject, 'Description'))
 				$objToReturn->strDescription = $objSoapObject->Description;
 			if (property_exists($objSoapObject, 'Instructions'))
@@ -1247,6 +1284,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Token
+	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $Instructions
 	 * @property-read QQReverseReferenceNodeClassifiedPost $ClassifiedPost
@@ -1263,6 +1301,8 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'OrderNumber':
+					return new QQNode('order_number', 'OrderNumber', 'integer', $this);
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'Instructions':
@@ -1287,6 +1327,7 @@
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Token
+	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $Instructions
 	 * @property-read QQReverseReferenceNodeClassifiedPost $ClassifiedPost
@@ -1304,6 +1345,8 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'OrderNumber':
+					return new QQNode('order_number', 'OrderNumber', 'integer', $this);
 				case 'Description':
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'Instructions':
