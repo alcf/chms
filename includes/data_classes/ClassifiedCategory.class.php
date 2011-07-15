@@ -24,7 +24,7 @@
 		 * @return string a nicely formatted string representation of this object
 		 */
 		public function __toString() {
-			return sprintf('ClassifiedCategory Object %s',  $this->intId);
+			return $this->strName;
 		}
 
 		public function __get($strName) {

@@ -103,7 +103,7 @@
 		}
 		
 		public function RenderApproved(ClassifiedPost $objPost) {
-			return ($objPost->ApprovalFlag) ? null : 'No';
+			return ($objPost->ApprovalFlag) ? 'YES' : 'no';
 		}
 
 		public function RenderTitle(ClassifiedPost $objPost) {
