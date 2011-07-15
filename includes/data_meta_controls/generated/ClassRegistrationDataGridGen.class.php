@@ -1,9 +1,9 @@
 <?php
 	/**
 	 * This is the "Meta" DataGrid class for the List functionality
-	 * of the SignupForm class.  This code-generated class
+	 * of the ClassRegistration class.  This code-generated class
 	 * contains a QDataGrid class which can be used by any QForm or QPanel,
-	 * listing a collection of SignupForm objects.  It includes
+	 * listing a collection of ClassRegistration objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
@@ -16,7 +16,7 @@
 	 * @subpackage MetaControls
 	 * 
 	 */
-	class SignupFormDataGridGen extends QDataGrid {
+	class ClassRegistrationDataGridGen extends QDataGrid {
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own BindAllRows method (which can obviousy be switched to something else).
@@ -35,9 +35,9 @@
 
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
-		 * way of adding a column to this SignupForm datagrid.  The description of a column's
+		 * way of adding a column to this ClassRegistration datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
-		 * in the SignupForm object, or it can be any QQNode extending from QQN::SignupForm().
+		 * in the ClassRegistration object, or it can be any QQNode extending from QQN::ClassRegistration().
 		 * 
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
@@ -45,7 +45,7 @@
 		 * Any of these things can be overridden with OverrideParameters.
 		 * 
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
-		 * sorting using two fields from the SignupForm object.
+		 * sorting using two fields from the ClassRegistration object.
 		 *
 		 * @param mixed $mixContents
 		 * @param string $objOverrideParameters[]
@@ -127,7 +127,7 @@
 		 * 
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
-		 * @param mixed $mixContent string or QQNode from SignupForm
+		 * @param mixed $mixContent string or QQNode from ClassRegistration
 		 * @param string $strTypeClassName the name of the TypeClass to use $NameArray against
 		 * @param mixed $objOverrideParameters
 		 */
@@ -187,10 +187,10 @@
 		public function MetaAddEditLinkColumn($strLinkUrl, $strLinkHtml = 'Edit', $strColumnTitle = 'Edit', $intArgumentType = QMetaControlArgumentType::PathInfo) {
 			switch ($intArgumentType) {
 				case QMetaControlArgumentType::QueryString:
-					$strLinkUrl .= '?intId=<?=urlencode($_ITEM->Id)?>';
+					$strLinkUrl .= '?intSignupEntryId=<?=urlencode($_ITEM->SignupEntryId)?>';
 					break;
 				case QMetaControlArgumentType::PathInfo:
-					$strLinkUrl .= '/<?=str_replace("+","%20",urlencode($_ITEM->Id))?>';
+					$strLinkUrl .= '/<?=str_replace("+","%20",urlencode($_ITEM->SignupEntryId))?>';
 					break;
 				default:
 					throw new QCallerException('Unable to pass arguments with this intArgumentType: ' . $intArgumentType);
@@ -212,7 +212,7 @@
 		 * @param string $strColumnTitle the HTML of the link text
 		 */
 		public function MetaAddEditProxyColumn(QControlProxy $pxyControl, $strLinkHtml = 'Edit', $strColumnTitle = 'Edit') {
-			$strHtml = '<a href="#" <?= $_FORM->GetControl("' . $pxyControl->ControlId . '")->RenderAsEvents($_ITEM->Id, false); ?>>' . QApplication::Translate($strLinkHtml) . '</a>';
+			$strHtml = '<a href="#" <?= $_FORM->GetControl("' . $pxyControl->ControlId . '")->RenderAsEvents($_ITEM->SignupEntryId, false); ?>>' . QApplication::Translate($strLinkHtml) . '</a>';
 			$colEditColumn = new QDataGridColumn(QApplication::Translate($strColumnTitle), $strHtml, 'HtmlEntities=False');
 			$this->AddColumn($colEditColumn);
 			return $colEditColumn;
@@ -251,7 +251,7 @@
 			$objClauses = ($objOptionalClauses) ? $objOptionalClauses : array();
 
 			// We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-			if ($this->Paginator) $this->TotalItemCount = SignupForm::QueryCount($objCondition, $objClauses);
+			if ($this->Paginator) $this->TotalItemCount = ClassRegistration::QueryCount($objCondition, $objClauses);
 
 			// If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
 			// the OrderByClause to the $objClauses array
@@ -260,8 +260,8 @@
 			// Add the LimitClause information, as well
 			if ($objClause = $this->LimitClause) array_push($objClauses, $objClause);
 
-			// Set the DataSource to be a Query result from SignupForm, given the clauses above
-			$this->DataSource = SignupForm::QueryArray($objCondition, $objClauses);
+			// Set the DataSource to be a Query result from ClassRegistration, given the clauses above
+			$this->DataSource = ClassRegistration::QueryArray($objCondition, $objClauses);
 		}
 
 
@@ -269,8 +269,8 @@
 		/**
 		 * Used internally by the Meta-based Add Column tools.
 		 *
-		 * Given a QQNode or a Text String, this will return a SignupForm-based QQNode.
-		 * It will also verify that it is a proper SignupForm-based QQNode, and will throw an exception otherwise.
+		 * Given a QQNode or a Text String, this will return a ClassRegistration-based QQNode.
+		 * It will also verify that it is a proper ClassRegistration-based QQNode, and will throw an exception otherwise.
 		 *
 		 * @param mixed $mixContent
 		 * @return QQNode
@@ -279,7 +279,7 @@
 			if ($mixContent instanceof QQNode) {
 				if (!$mixContent->_ParentNode)
 					throw new QCallerException('Content QQNode cannot be a Top Level Node');
-				if ($mixContent->_RootTableName == 'signup_form') {
+				if ($mixContent->_RootTableName == 'class_registration') {
 					if (($mixContent instanceof QQReverseReferenceNode) && !($mixContent->_PropertyName))
 						throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 					$objCurrentNode = $mixContent;
@@ -291,35 +291,18 @@
 					}
 					return $mixContent;
 				} else
-					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "signup_form".');
+					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "class_registration".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
-				case 'Id': return QQN::SignupForm()->Id;
-				case 'SignupFormTypeId': return QQN::SignupForm()->SignupFormTypeId;
-				case 'MinistryId': return QQN::SignupForm()->MinistryId;
-				case 'Ministry': return QQN::SignupForm()->Ministry;
-				case 'Name': return QQN::SignupForm()->Name;
-				case 'Token': return QQN::SignupForm()->Token;
-				case 'ActiveFlag': return QQN::SignupForm()->ActiveFlag;
-				case 'ConfidentialFlag': return QQN::SignupForm()->ConfidentialFlag;
-				case 'Description': return QQN::SignupForm()->Description;
-				case 'InformationUrl': return QQN::SignupForm()->InformationUrl;
-				case 'SupportEmail': return QQN::SignupForm()->SupportEmail;
-				case 'EmailNotification': return QQN::SignupForm()->EmailNotification;
-				case 'AllowOtherFlag': return QQN::SignupForm()->AllowOtherFlag;
-				case 'AllowMultipleFlag': return QQN::SignupForm()->AllowMultipleFlag;
-				case 'SignupLimit': return QQN::SignupForm()->SignupLimit;
-				case 'SignupMaleLimit': return QQN::SignupForm()->SignupMaleLimit;
-				case 'SignupFemaleLimit': return QQN::SignupForm()->SignupFemaleLimit;
-				case 'StewardshipFundId': return QQN::SignupForm()->StewardshipFundId;
-				case 'StewardshipFund': return QQN::SignupForm()->StewardshipFund;
-				case 'DonationStewardshipFundId': return QQN::SignupForm()->DonationStewardshipFundId;
-				case 'DonationStewardshipFund': return QQN::SignupForm()->DonationStewardshipFund;
-				case 'DateCreated': return QQN::SignupForm()->DateCreated;
-				case 'ClassMeeting': return QQN::SignupForm()->ClassMeeting;
-
-				case 'EventSignupForm': return QQN::SignupForm()->EventSignupForm;
-
-				default: throw new QCallerException('Simple Property not found in SignupFormDataGrid content: ' . $mixContent);
+				case 'SignupEntryId': return QQN::ClassRegistration()->SignupEntryId;
+				case 'SignupEntry': return QQN::ClassRegistration()->SignupEntry;
+				case 'ClassMeetingId': return QQN::ClassRegistration()->ClassMeetingId;
+				case 'ClassMeeting': return QQN::ClassRegistration()->ClassMeeting;
+				case 'PersonId': return QQN::ClassRegistration()->PersonId;
+				case 'Person': return QQN::ClassRegistration()->Person;
+				case 'ClassGradeId': return QQN::ClassRegistration()->ClassGradeId;
+				case 'ClassGrade': return QQN::ClassRegistration()->ClassGrade;
+				case 'ChildcareNotes': return QQN::ClassRegistration()->ChildcareNotes;
+				default: throw new QCallerException('Simple Property not found in ClassRegistrationDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 			else

@@ -31,6 +31,60 @@
 			return new QQNodeCheckingAccountLookup('checking_account_lookup', null, null);
 		}
 		/**
+		 * @return QQNodeClassAttendence
+		 */
+		static public function ClassAttendence() {
+			return new QQNodeClassAttendence('class_attendence', null, null);
+		}
+		/**
+		 * @return QQNodeClassCourse
+		 */
+		static public function ClassCourse() {
+			return new QQNodeClassCourse('class_course', null, null);
+		}
+		/**
+		 * @return QQNodeClassGrade
+		 */
+		static public function ClassGrade() {
+			return new QQNodeClassGrade('class_grade', null, null);
+		}
+		/**
+		 * @return QQNodeClassInstructor
+		 */
+		static public function ClassInstructor() {
+			return new QQNodeClassInstructor('class_instructor', null, null);
+		}
+		/**
+		 * @return QQNodeClassMeeting
+		 */
+		static public function ClassMeeting() {
+			return new QQNodeClassMeeting('class_meeting', null, null);
+		}
+		/**
+		 * @return QQNodeClassRegistration
+		 */
+		static public function ClassRegistration() {
+			return new QQNodeClassRegistration('class_registration', null, null);
+		}
+		/**
+		 * @return QQNodeClassTerm
+		 */
+		static public function ClassTerm() {
+			return new QQNodeClassTerm('class_term', null, null);
+		}
+		/**
+		 * @return QQNodeClassifiedCategory
+		 */
+		static public function ClassifiedCategory() {
+			return new QQNodeClassifiedCategory('classified_category', null, null);
+		}
+		/**
+		 * @return QQNodeClassifiedPost
+		 */
+		static public function ClassifiedPost() {
+			return new QQNodeClassifiedPost('classified_post', null, null);
+		}
+		/**
 		 * @return QQNodeComment
 		 */
 		static public function Comment() {

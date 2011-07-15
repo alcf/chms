@@ -19,18 +19,22 @@
 	 */
 	abstract class SignupFormTypeGen extends QBaseClass {
 		const Event = 1;
+		const Course = 2;
 
-		const MaxId = 1;
+		const MaxId = 2;
 
 		public static $NameArray = array(
-			1 => 'Event');
+			1 => 'Event',
+			2 => 'Course');
 
 		public static $TokenArray = array(
-			1 => 'Event');
+			1 => 'Event',
+			2 => 'Course');
 
 		public static function ToString($intSignupFormTypeId) {
 			switch ($intSignupFormTypeId) {
 				case 1: return 'Event';
+				case 2: return 'Course';
 				default:
 					throw new QCallerException(sprintf('Invalid intSignupFormTypeId: %s', $intSignupFormTypeId));
 			}
@@ -39,6 +43,7 @@
 		public static function ToToken($intSignupFormTypeId) {
 			switch ($intSignupFormTypeId) {
 				case 1: return 'Event';
+				case 2: return 'Course';
 				default:
 					throw new QCallerException(sprintf('Invalid intSignupFormTypeId: %s', $intSignupFormTypeId));
 			}

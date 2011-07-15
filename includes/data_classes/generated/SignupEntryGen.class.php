@@ -29,6 +29,7 @@
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId (Not Null)
+	 * @property ClassRegistration $ClassRegistration the value for the ClassRegistration object that uniquely references this SignupEntry
 	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.signup_entry_id reverse relationship
 	 * @property FormAnswer[] $_FormAnswerArray the value for the private _objFormAnswerArray (Read-Only) if set due to an ExpandAsArray on the form_answer.signup_entry_id reverse relationship
 	 * @property SignupPayment $_SignupPayment the value for the private _objSignupPayment (Read-Only) if set due to an expansion on the signup_payment.signup_entry_id reverse relationship
@@ -230,6 +231,24 @@
 		 * @var Person objSignupByPerson
 		 */
 		protected $objSignupByPerson;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column class_registration.signup_entry_id.
+		 *
+		 * NOTE: Always use the ClassRegistration property getter to correctly retrieve this ClassRegistration object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var ClassRegistration objClassRegistration
+		 */
+		protected $objClassRegistration;
+		
+		/**
+		 * Used internally to manage whether the adjoined ClassRegistration object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyClassRegistration;
 
 
 
@@ -697,6 +716,18 @@
 				$objToReturn->objSignupByPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signup_by_person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
+			// Check for ClassRegistration Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'classregistration__signup_entry_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objClassRegistration = ClassRegistration::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classregistration__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objClassRegistration = false;
+			}
+
 
 
 			// Check for FormAnswer Virtual Binding
@@ -1112,6 +1143,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined ClassRegistration object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyClassRegistration) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = ClassRegistration::LoadBySignupEntryId($this->intId)) {
+						$objAssociated->SignupEntryId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objClassRegistration) {
+						$this->objClassRegistration->SignupEntryId = $this->intId;
+						$this->objClassRegistration->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyClassRegistration = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1136,6 +1187,15 @@
 			// Get the Database Object for this Class
 			$objDatabase = SignupEntry::GetDatabase();
 
+			
+			
+			// Update the adjoined ClassRegistration object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = ClassRegistration::LoadBySignupEntryId($this->intId)) {
+				$objAssociated->Delete();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1376,6 +1436,24 @@
 						if ((!$this->objSignupByPerson) && (!is_null($this->intSignupByPersonId)))
 							$this->objSignupByPerson = Person::Load($this->intSignupByPersonId);
 						return $this->objSignupByPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'ClassRegistration':
+					// Gets the value for the ClassRegistration object that uniquely references this SignupEntry
+					// by objClassRegistration (Unique)
+					// @return ClassRegistration
+					try {
+						if ($this->objClassRegistration === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objClassRegistration)
+							$this->objClassRegistration = ClassRegistration::LoadBySignupEntryId($this->intId);
+						return $this->objClassRegistration;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1651,6 +1729,43 @@
 						// Update Local Member Variables
 						$this->objSignupByPerson = $mixValue;
 						$this->intSignupByPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'ClassRegistration':
+					// Sets the value for the ClassRegistration object referenced by objClassRegistration (Unique)
+					// @param ClassRegistration $mixValue
+					// @return ClassRegistration
+					if (is_null($mixValue)) {
+						$this->objClassRegistration = null;
+
+						// Make sure we update the adjoined ClassRegistration object the next time we call Save()
+						$this->blnDirtyClassRegistration = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a ClassRegistration object
+						try {
+							$mixValue = QType::Cast($mixValue, 'ClassRegistration');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objClassRegistration to a DIFFERENT $mixValue?
+						if ((!$this->ClassRegistration) || ($this->ClassRegistration->SignupEntryId != $mixValue->SignupEntryId)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined ClassRegistration object the next time we call Save()
+							$this->blnDirtyClassRegistration = true;
+
+							// Update Local Member Variable
+							$this->objClassRegistration = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -2364,6 +2479,7 @@
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
 	 * @property-read QQNode $InternalNotes
+	 * @property-read QQReverseReferenceNodeClassRegistration $ClassRegistration
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
@@ -2402,6 +2518,8 @@
 					return new QQNode('amount_balance', 'AmountBalance', 'double', $this);
 				case 'InternalNotes':
 					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
+				case 'ClassRegistration':
+					return new QQReverseReferenceNodeClassRegistration($this, 'classregistration', 'reverse_reference', 'signup_entry_id', 'ClassRegistration');
 				case 'FormAnswer':
 					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'signup_entry_id');
 				case 'SignupPayment':
@@ -2437,6 +2555,7 @@
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
 	 * @property-read QQNode $InternalNotes
+	 * @property-read QQReverseReferenceNodeClassRegistration $ClassRegistration
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 * @property-read QQReverseReferenceNodeSignupProduct $SignupProduct
@@ -2476,6 +2595,8 @@
 					return new QQNode('amount_balance', 'AmountBalance', 'double', $this);
 				case 'InternalNotes':
 					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
+				case 'ClassRegistration':
+					return new QQReverseReferenceNodeClassRegistration($this, 'classregistration', 'reverse_reference', 'signup_entry_id', 'ClassRegistration');
 				case 'FormAnswer':
 					return new QQReverseReferenceNodeFormAnswer($this, 'formanswer', 'reverse_reference', 'signup_entry_id');
 				case 'SignupPayment':

@@ -34,6 +34,69 @@
 		QApplicationBase::$ClassFile['checkingaccountlookupmetacontrol'] = __DATA_META_CONTROLS__ . '/CheckingAccountLookupMetaControl.class.php';
 		QApplicationBase::$ClassFile['checkingaccountlookupdatagrid'] = __DATA_META_CONTROLS__ . '/CheckingAccountLookupDataGrid.class.php';
 
+	// ClassPaths for the ClassAttendence class
+		QApplicationBase::$ClassFile['classattendence'] = __DATA_CLASSES__ . '/ClassAttendence.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassattendence'] = __DATA_CLASSES__ . '/ClassAttendence.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassattendence'] = __DATA_CLASSES__ . '/ClassAttendence.class.php';
+		QApplicationBase::$ClassFile['classattendencemetacontrol'] = __DATA_META_CONTROLS__ . '/ClassAttendenceMetaControl.class.php';
+		QApplicationBase::$ClassFile['classattendencedatagrid'] = __DATA_META_CONTROLS__ . '/ClassAttendenceDataGrid.class.php';
+
+	// ClassPaths for the ClassCourse class
+		QApplicationBase::$ClassFile['classcourse'] = __DATA_CLASSES__ . '/ClassCourse.class.php';
+		QApplicationBase::$ClassFile['qqnodeclasscourse'] = __DATA_CLASSES__ . '/ClassCourse.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclasscourse'] = __DATA_CLASSES__ . '/ClassCourse.class.php';
+		QApplicationBase::$ClassFile['classcoursemetacontrol'] = __DATA_META_CONTROLS__ . '/ClassCourseMetaControl.class.php';
+		QApplicationBase::$ClassFile['classcoursedatagrid'] = __DATA_META_CONTROLS__ . '/ClassCourseDataGrid.class.php';
+
+	// ClassPaths for the ClassGrade class
+		QApplicationBase::$ClassFile['classgrade'] = __DATA_CLASSES__ . '/ClassGrade.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassgrade'] = __DATA_CLASSES__ . '/ClassGrade.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassgrade'] = __DATA_CLASSES__ . '/ClassGrade.class.php';
+		QApplicationBase::$ClassFile['classgrademetacontrol'] = __DATA_META_CONTROLS__ . '/ClassGradeMetaControl.class.php';
+		QApplicationBase::$ClassFile['classgradedatagrid'] = __DATA_META_CONTROLS__ . '/ClassGradeDataGrid.class.php';
+
+	// ClassPaths for the ClassInstructor class
+		QApplicationBase::$ClassFile['classinstructor'] = __DATA_CLASSES__ . '/ClassInstructor.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassinstructor'] = __DATA_CLASSES__ . '/ClassInstructor.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassinstructor'] = __DATA_CLASSES__ . '/ClassInstructor.class.php';
+		QApplicationBase::$ClassFile['classinstructormetacontrol'] = __DATA_META_CONTROLS__ . '/ClassInstructorMetaControl.class.php';
+		QApplicationBase::$ClassFile['classinstructordatagrid'] = __DATA_META_CONTROLS__ . '/ClassInstructorDataGrid.class.php';
+
+	// ClassPaths for the ClassMeeting class
+		QApplicationBase::$ClassFile['classmeeting'] = __DATA_CLASSES__ . '/ClassMeeting.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassmeeting'] = __DATA_CLASSES__ . '/ClassMeeting.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassmeeting'] = __DATA_CLASSES__ . '/ClassMeeting.class.php';
+		QApplicationBase::$ClassFile['classmeetingmetacontrol'] = __DATA_META_CONTROLS__ . '/ClassMeetingMetaControl.class.php';
+		QApplicationBase::$ClassFile['classmeetingdatagrid'] = __DATA_META_CONTROLS__ . '/ClassMeetingDataGrid.class.php';
+
+	// ClassPaths for the ClassRegistration class
+		QApplicationBase::$ClassFile['classregistration'] = __DATA_CLASSES__ . '/ClassRegistration.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassregistration'] = __DATA_CLASSES__ . '/ClassRegistration.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassregistration'] = __DATA_CLASSES__ . '/ClassRegistration.class.php';
+		QApplicationBase::$ClassFile['classregistrationmetacontrol'] = __DATA_META_CONTROLS__ . '/ClassRegistrationMetaControl.class.php';
+		QApplicationBase::$ClassFile['classregistrationdatagrid'] = __DATA_META_CONTROLS__ . '/ClassRegistrationDataGrid.class.php';
+
+	// ClassPaths for the ClassTerm class
+		QApplicationBase::$ClassFile['classterm'] = __DATA_CLASSES__ . '/ClassTerm.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassterm'] = __DATA_CLASSES__ . '/ClassTerm.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassterm'] = __DATA_CLASSES__ . '/ClassTerm.class.php';
+		QApplicationBase::$ClassFile['classtermmetacontrol'] = __DATA_META_CONTROLS__ . '/ClassTermMetaControl.class.php';
+		QApplicationBase::$ClassFile['classtermdatagrid'] = __DATA_META_CONTROLS__ . '/ClassTermDataGrid.class.php';
+
+	// ClassPaths for the ClassifiedCategory class
+		QApplicationBase::$ClassFile['classifiedcategory'] = __DATA_CLASSES__ . '/ClassifiedCategory.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassifiedcategory'] = __DATA_CLASSES__ . '/ClassifiedCategory.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassifiedcategory'] = __DATA_CLASSES__ . '/ClassifiedCategory.class.php';
+		QApplicationBase::$ClassFile['classifiedcategorymetacontrol'] = __DATA_META_CONTROLS__ . '/ClassifiedCategoryMetaControl.class.php';
+		QApplicationBase::$ClassFile['classifiedcategorydatagrid'] = __DATA_META_CONTROLS__ . '/ClassifiedCategoryDataGrid.class.php';
+
+	// ClassPaths for the ClassifiedPost class
+		QApplicationBase::$ClassFile['classifiedpost'] = __DATA_CLASSES__ . '/ClassifiedPost.class.php';
+		QApplicationBase::$ClassFile['qqnodeclassifiedpost'] = __DATA_CLASSES__ . '/ClassifiedPost.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeclassifiedpost'] = __DATA_CLASSES__ . '/ClassifiedPost.class.php';
+		QApplicationBase::$ClassFile['classifiedpostmetacontrol'] = __DATA_META_CONTROLS__ . '/ClassifiedPostMetaControl.class.php';
+		QApplicationBase::$ClassFile['classifiedpostdatagrid'] = __DATA_META_CONTROLS__ . '/ClassifiedPostDataGrid.class.php';
+
 	// ClassPaths for the Comment class
 		QApplicationBase::$ClassFile['comment'] = __DATA_CLASSES__ . '/Comment.class.php';
 		QApplicationBase::$ClassFile['qqnodecomment'] = __DATA_CLASSES__ . '/Comment.class.php';

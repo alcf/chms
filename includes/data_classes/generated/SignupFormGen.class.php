@@ -37,6 +37,7 @@
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property StewardshipFund $StewardshipFund the value for the StewardshipFund object referenced by intStewardshipFundId 
 	 * @property StewardshipFund $DonationStewardshipFund the value for the StewardshipFund object referenced by intDonationStewardshipFundId 
+	 * @property ClassMeeting $ClassMeeting the value for the ClassMeeting object that uniquely references this SignupForm
 	 * @property EventSignupForm $EventSignupForm the value for the EventSignupForm object that uniquely references this SignupForm
 	 * @property FormProduct $_FormProduct the value for the private _objFormProduct (Read-Only) if set due to an expansion on the form_product.signup_form_id reverse relationship
 	 * @property FormProduct[] $_FormProductArray the value for the private _objFormProductArray (Read-Only) if set due to an ExpandAsArray on the form_product.signup_form_id reverse relationship
@@ -307,6 +308,24 @@
 		 * @var StewardshipFund objDonationStewardshipFund
 		 */
 		protected $objDonationStewardshipFund;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column class_meeting.signup_form_id.
+		 *
+		 * NOTE: Always use the ClassMeeting property getter to correctly retrieve this ClassMeeting object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var ClassMeeting objClassMeeting
+		 */
+		protected $objClassMeeting;
+		
+		/**
+		 * Used internally to manage whether the adjoined ClassMeeting object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyClassMeeting;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -816,6 +835,18 @@
 				$objToReturn->objDonationStewardshipFund = StewardshipFund::InstantiateDbRow($objDbRow, $strAliasPrefix . 'donation_stewardship_fund_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
+			// Check for ClassMeeting Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'classmeeting__signup_form_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objClassMeeting = ClassMeeting::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classmeeting__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objClassMeeting = false;
+			}
+
 			// Check for EventSignupForm Unique ReverseReference Binding
 			$strAlias = $strAliasPrefix . 'eventsignupform__signup_form_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1197,6 +1228,26 @@
 
 		
 		
+				// Update the adjoined ClassMeeting object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyClassMeeting) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = ClassMeeting::LoadBySignupFormId($this->intId)) {
+						$objAssociated->SignupFormId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objClassMeeting) {
+						$this->objClassMeeting->SignupFormId = $this->intId;
+						$this->objClassMeeting->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyClassMeeting = false;
+				}
+		
+		
 				// Update the adjoined EventSignupForm object (if applicable)
 				// TODO: Make this into hard-coded SQL queries
 				if ($this->blnDirtyEventSignupForm) {
@@ -1239,6 +1290,15 @@
 			// Get the Database Object for this Class
 			$objDatabase = SignupForm::GetDatabase();
 
+			
+			
+			// Update the adjoined ClassMeeting object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = ClassMeeting::LoadBySignupFormId($this->intId)) {
+				$objAssociated->Delete();
+			}
 			
 			
 			// Update the adjoined EventSignupForm object (if applicable) and perform a delete
@@ -1552,6 +1612,24 @@
 						if ((!$this->objDonationStewardshipFund) && (!is_null($this->intDonationStewardshipFundId)))
 							$this->objDonationStewardshipFund = StewardshipFund::Load($this->intDonationStewardshipFundId);
 						return $this->objDonationStewardshipFund;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'ClassMeeting':
+					// Gets the value for the ClassMeeting object that uniquely references this SignupForm
+					// by objClassMeeting (Unique)
+					// @return ClassMeeting
+					try {
+						if ($this->objClassMeeting === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objClassMeeting)
+							$this->objClassMeeting = ClassMeeting::LoadBySignupFormId($this->intId);
+						return $this->objClassMeeting;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1933,6 +2011,43 @@
 						// Update Local Member Variables
 						$this->objDonationStewardshipFund = $mixValue;
 						$this->intDonationStewardshipFundId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'ClassMeeting':
+					// Sets the value for the ClassMeeting object referenced by objClassMeeting (Unique)
+					// @param ClassMeeting $mixValue
+					// @return ClassMeeting
+					if (is_null($mixValue)) {
+						$this->objClassMeeting = null;
+
+						// Make sure we update the adjoined ClassMeeting object the next time we call Save()
+						$this->blnDirtyClassMeeting = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a ClassMeeting object
+						try {
+							$mixValue = QType::Cast($mixValue, 'ClassMeeting');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objClassMeeting to a DIFFERENT $mixValue?
+						if ((!$this->ClassMeeting) || ($this->ClassMeeting->SignupFormId != $mixValue->SignupFormId)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined ClassMeeting object the next time we call Save()
+							$this->blnDirtyClassMeeting = true;
+
+							// Update Local Member Variable
+							$this->objClassMeeting = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -2713,6 +2828,7 @@
 	 * @property-read QQNode $DonationStewardshipFundId
 	 * @property-read QQNodeStewardshipFund $DonationStewardshipFund
 	 * @property-read QQNode $DateCreated
+	 * @property-read QQReverseReferenceNodeClassMeeting $ClassMeeting
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
 	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
 	 * @property-read QQReverseReferenceNodeFormQuestion $FormQuestion
@@ -2768,6 +2884,8 @@
 					return new QQNodeStewardshipFund('donation_stewardship_fund_id', 'DonationStewardshipFund', 'integer', $this);
 				case 'DateCreated':
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
+				case 'ClassMeeting':
+					return new QQReverseReferenceNodeClassMeeting($this, 'classmeeting', 'reverse_reference', 'signup_form_id', 'ClassMeeting');
 				case 'EventSignupForm':
 					return new QQReverseReferenceNodeEventSignupForm($this, 'eventsignupform', 'reverse_reference', 'signup_form_id', 'EventSignupForm');
 				case 'FormProduct':
@@ -2813,6 +2931,7 @@
 	 * @property-read QQNode $DonationStewardshipFundId
 	 * @property-read QQNodeStewardshipFund $DonationStewardshipFund
 	 * @property-read QQNode $DateCreated
+	 * @property-read QQReverseReferenceNodeClassMeeting $ClassMeeting
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
 	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
 	 * @property-read QQReverseReferenceNodeFormQuestion $FormQuestion
@@ -2869,6 +2988,8 @@
 					return new QQNodeStewardshipFund('donation_stewardship_fund_id', 'DonationStewardshipFund', 'integer', $this);
 				case 'DateCreated':
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
+				case 'ClassMeeting':
+					return new QQReverseReferenceNodeClassMeeting($this, 'classmeeting', 'reverse_reference', 'signup_form_id', 'ClassMeeting');
 				case 'EventSignupForm':
 					return new QQReverseReferenceNodeEventSignupForm($this, 'eventsignupform', 'reverse_reference', 'signup_form_id', 'EventSignupForm');
 				case 'FormProduct':

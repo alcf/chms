@@ -54,6 +54,8 @@
 	 * property-read QLabel $DonationStewardshipFundIdLabel
 	 * property QDateTimePicker $DateCreatedControl
 	 * property-read QLabel $DateCreatedLabel
+	 * property QListBox $ClassMeetingControl
+	 * property-read QLabel $ClassMeetingLabel
 	 * property QListBox $EventSignupFormControl
 	 * property-read QLabel $EventSignupFormLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -314,6 +316,12 @@
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
         /**
+         * @var QListBox lstClassMeeting
+         * @access protected
+         */
+		protected $lstClassMeeting;
+
+        /**
          * @var QListBox lstEventSignupForm
          * @access protected
          */
@@ -321,6 +329,12 @@
 
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblClassMeeting
+         * @access protected
+         */
+		protected $lblClassMeeting;
+
         /**
          * @var QLabel lblEventSignupForm
          * @access protected
@@ -944,6 +958,50 @@
 		protected $strDateCreatedDateTimeFormat;
 
 		/**
+		 * Create and setup QListBox lstClassMeeting
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstClassMeeting_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstClassMeeting = new QListBox($this->objParentObject, $strControlId);
+			$this->lstClassMeeting->Name = QApplication::Translate('Class Meeting');
+			$this->lstClassMeeting->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objClassMeetingCursor = ClassMeeting::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objClassMeeting = ClassMeeting::InstantiateCursor($objClassMeetingCursor)) {
+				$objListItem = new QListItem($objClassMeeting->__toString(), $objClassMeeting->SignupFormId);
+				if ($objClassMeeting->SignupFormId == $this->objSignupForm->Id)
+					$objListItem->Selected = true;
+				$this->lstClassMeeting->AddItem($objListItem);
+			}
+
+			// Because ClassMeeting's ClassMeeting is not null, if a value is already selected, it cannot be changed.
+			if ($this->lstClassMeeting->SelectedValue)
+				$this->lstClassMeeting->Enabled = false;
+
+			// Return the QListBox
+			return $this->lstClassMeeting;
+		}
+
+		/**
+		 * Create and setup QLabel lblClassMeeting
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblClassMeeting_Create($strControlId = null) {
+			$this->lblClassMeeting = new QLabel($this->objParentObject, $strControlId);
+			$this->lblClassMeeting->Name = QApplication::Translate('Class Meeting');
+			$this->lblClassMeeting->Text = ($this->objSignupForm->ClassMeeting) ? $this->objSignupForm->ClassMeeting->__toString() : null;
+			return $this->lblClassMeeting;
+		}
+
+		/**
 		 * Create and setup QListBox lstEventSignupForm
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -1085,6 +1143,24 @@
 			if ($this->calDateCreated) $this->calDateCreated->DateTime = $this->objSignupForm->DateCreated;
 			if ($this->lblDateCreated) $this->lblDateCreated->Text = sprintf($this->objSignupForm->DateCreated) ? $this->objSignupForm->__toString($this->strDateCreatedDateTimeFormat) : null;
 
+			if ($this->lstClassMeeting) {
+				$this->lstClassMeeting->RemoveAllItems();
+				$this->lstClassMeeting->AddItem(QApplication::Translate('- Select One -'), null);
+				$objClassMeetingArray = ClassMeeting::LoadAll();
+				if ($objClassMeetingArray) foreach ($objClassMeetingArray as $objClassMeeting) {
+					$objListItem = new QListItem($objClassMeeting->__toString(), $objClassMeeting->SignupFormId);
+					if ($objClassMeeting->SignupFormId == $this->objSignupForm->Id)
+						$objListItem->Selected = true;
+					$this->lstClassMeeting->AddItem($objListItem);
+				}
+				// Because ClassMeeting's ClassMeeting is not null, if a value is already selected, it cannot be changed.
+				if ($this->lstClassMeeting->SelectedValue)
+					$this->lstClassMeeting->Enabled = false;
+				else
+					$this->lstClassMeeting->Enabled = true;
+			}
+			if ($this->lblClassMeeting) $this->lblClassMeeting->Text = ($this->objSignupForm->ClassMeeting) ? $this->objSignupForm->ClassMeeting->__toString() : null;
+
 			if ($this->lstEventSignupForm) {
 				$this->lstEventSignupForm->RemoveAllItems();
 				$this->lstEventSignupForm->AddItem(QApplication::Translate('- Select One -'), null);
@@ -1146,6 +1222,7 @@
 				if ($this->calDateCreated) $this->objSignupForm->DateCreated = $this->calDateCreated->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstClassMeeting) $this->objSignupForm->ClassMeeting = ClassMeeting::Load($this->lstClassMeeting->SelectedValue);
 				if ($this->lstEventSignupForm) $this->objSignupForm->EventSignupForm = EventSignupForm::Load($this->lstEventSignupForm->SelectedValue);
 
 				// Save the SignupForm object
@@ -1301,6 +1378,12 @@
 				case 'DateCreatedLabel':
 					if (!$this->lblDateCreated) return $this->lblDateCreated_Create();
 					return $this->lblDateCreated;
+				case 'ClassMeetingControl':
+					if (!$this->lstClassMeeting) return $this->lstClassMeeting_Create();
+					return $this->lstClassMeeting;
+				case 'ClassMeetingLabel':
+					if (!$this->lblClassMeeting) return $this->lblClassMeeting_Create();
+					return $this->lblClassMeeting;
 				case 'EventSignupFormControl':
 					if (!$this->lstEventSignupForm) return $this->lstEventSignupForm_Create();
 					return $this->lstEventSignupForm;
@@ -1367,6 +1450,8 @@
 						return ($this->lstDonationStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'DateCreatedControl':
 						return ($this->calDateCreated = QType::Cast($mixValue, 'QControl'));
+					case 'ClassMeetingControl':
+						return ($this->lstClassMeeting = QType::Cast($mixValue, 'QControl'));
 					case 'EventSignupFormControl':
 						return ($this->lstEventSignupForm = QType::Cast($mixValue, 'QControl'));
 					default:

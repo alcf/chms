@@ -63,6 +63,8 @@
 	 * @property Address[] $_AddressArray the value for the private _objAddressArray (Read-Only) if set due to an ExpandAsArray on the address.person_id reverse relationship
 	 * @property AttributeValue $_AttributeValue the value for the private _objAttributeValue (Read-Only) if set due to an expansion on the attribute_value.person_id reverse relationship
 	 * @property AttributeValue[] $_AttributeValueArray the value for the private _objAttributeValueArray (Read-Only) if set due to an ExpandAsArray on the attribute_value.person_id reverse relationship
+	 * @property ClassRegistration $_ClassRegistration the value for the private _objClassRegistration (Read-Only) if set due to an expansion on the class_registration.person_id reverse relationship
+	 * @property ClassRegistration[] $_ClassRegistrationArray the value for the private _objClassRegistrationArray (Read-Only) if set due to an ExpandAsArray on the class_registration.person_id reverse relationship
 	 * @property Comment $_Comment the value for the private _objComment (Read-Only) if set due to an expansion on the comment.person_id reverse relationship
 	 * @property Comment[] $_CommentArray the value for the private _objCommentArray (Read-Only) if set due to an ExpandAsArray on the comment.person_id reverse relationship
 	 * @property Email $_Email the value for the private _objEmail (Read-Only) if set due to an expansion on the email.person_id reverse relationship
@@ -452,6 +454,22 @@
 		 * @var AttributeValue[] _objAttributeValueArray;
 		 */
 		private $_objAttributeValueArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single ClassRegistration object
+		 * (of type ClassRegistration), if this Person object was restored with
+		 * an expansion on the class_registration association table.
+		 * @var ClassRegistration _objClassRegistration;
+		 */
+		private $_objClassRegistration;
+
+		/**
+		 * Private member variable that stores a reference to an array of ClassRegistration objects
+		 * (of type ClassRegistration[]), if this Person object was restored with
+		 * an ExpandAsArray on the class_registration association table.
+		 * @var ClassRegistration[] _objClassRegistrationArray;
+		 */
+		private $_objClassRegistrationArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single Comment object
@@ -1330,6 +1348,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'classregistration__signup_entry_id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objClassRegistrationArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objClassRegistrationArray[$intPreviousChildItemCount - 1];
+						$objChildItem = ClassRegistration::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classregistration__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objClassRegistrationArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objClassRegistrationArray[] = ClassRegistration::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classregistration__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'comment__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1801,6 +1833,16 @@
 					$objToReturn->_objAttributeValueArray[] = AttributeValue::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributevalue__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objAttributeValue = AttributeValue::InstantiateDbRow($objDbRow, $strAliasPrefix . 'attributevalue__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for ClassRegistration Virtual Binding
+			$strAlias = $strAliasPrefix . 'classregistration__signup_entry_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objClassRegistrationArray[] = ClassRegistration::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classregistration__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objClassRegistration = ClassRegistration::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classregistration__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for Comment Virtual Binding
@@ -3125,6 +3167,18 @@
 					// @return AttributeValue[]
 					return (array) $this->_objAttributeValueArray;
 
+				case '_ClassRegistration':
+					// Gets the value for the private _objClassRegistration (Read-Only)
+					// if set due to an expansion on the class_registration.person_id reverse relationship
+					// @return ClassRegistration
+					return $this->_objClassRegistration;
+
+				case '_ClassRegistrationArray':
+					// Gets the value for the private _objClassRegistrationArray (Read-Only)
+					// if set due to an ExpandAsArray on the class_registration.person_id reverse relationship
+					// @return ClassRegistration[]
+					return (array) $this->_objClassRegistrationArray;
+
 				case '_Comment':
 					// Gets the value for the private _objComment (Read-Only)
 					// if set due to an expansion on the comment.person_id reverse relationship
@@ -4341,6 +4395,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`attribute_value`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for ClassRegistration
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated ClassRegistrations as an array of ClassRegistration objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ClassRegistration[]
+		*/ 
+		public function GetClassRegistrationArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return ClassRegistration::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated ClassRegistrations
+		 * @return int
+		*/ 
+		public function CountClassRegistrations() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return ClassRegistration::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a ClassRegistration
+		 * @param ClassRegistration $objClassRegistration
+		 * @return void
+		*/ 
+		public function AssociateClassRegistration(ClassRegistration $objClassRegistration) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateClassRegistration on this unsaved Person.');
+			if ((is_null($objClassRegistration->SignupEntryId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateClassRegistration on this Person with an unsaved ClassRegistration.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`class_registration`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($objClassRegistration->SignupEntryId) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objClassRegistration->PersonId = $this->intId;
+				$objClassRegistration->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a ClassRegistration
+		 * @param ClassRegistration $objClassRegistration
+		 * @return void
+		*/ 
+		public function UnassociateClassRegistration(ClassRegistration $objClassRegistration) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateClassRegistration on this unsaved Person.');
+			if ((is_null($objClassRegistration->SignupEntryId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateClassRegistration on this Person with an unsaved ClassRegistration.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`class_registration`
+				SET
+					`person_id` = null
+				WHERE
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($objClassRegistration->SignupEntryId) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objClassRegistration->PersonId = null;
+				$objClassRegistration->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all ClassRegistrations
+		 * @return void
+		*/ 
+		public function UnassociateAllClassRegistrations() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateClassRegistration on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (ClassRegistration::LoadArrayByPersonId($this->intId) as $objClassRegistration) {
+					$objClassRegistration->PersonId = null;
+					$objClassRegistration->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`class_registration`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated ClassRegistration
+		 * @param ClassRegistration $objClassRegistration
+		 * @return void
+		*/ 
+		public function DeleteAssociatedClassRegistration(ClassRegistration $objClassRegistration) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateClassRegistration on this unsaved Person.');
+			if ((is_null($objClassRegistration->SignupEntryId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateClassRegistration on this Person with an unsaved ClassRegistration.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`class_registration`
+				WHERE
+					`signup_entry_id` = ' . $objDatabase->SqlVariable($objClassRegistration->SignupEntryId) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objClassRegistration->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated ClassRegistrations
+		 * @return void
+		*/ 
+		public function DeleteAllClassRegistrations() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateClassRegistration on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (ClassRegistration::LoadArrayByPersonId($this->intId) as $objClassRegistration) {
+					$objClassRegistration->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`class_registration`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -8864,6 +9100,7 @@
 	 * @property-read QQNodePersonNameItem $NameItem
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
+	 * @property-read QQReverseReferenceNodeClassRegistration $ClassRegistration
 	 * @property-read QQReverseReferenceNodeComment $Comment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
@@ -8975,6 +9212,8 @@
 					return new QQReverseReferenceNodeAddress($this, 'address', 'reverse_reference', 'person_id');
 				case 'AttributeValue':
 					return new QQReverseReferenceNodeAttributeValue($this, 'attributevalue', 'reverse_reference', 'person_id');
+				case 'ClassRegistration':
+					return new QQReverseReferenceNodeClassRegistration($this, 'classregistration', 'reverse_reference', 'person_id');
 				case 'Comment':
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':
@@ -9075,6 +9314,7 @@
 	 * @property-read QQNodePersonNameItem $NameItem
 	 * @property-read QQReverseReferenceNodeAddress $Address
 	 * @property-read QQReverseReferenceNodeAttributeValue $AttributeValue
+	 * @property-read QQReverseReferenceNodeClassRegistration $ClassRegistration
 	 * @property-read QQReverseReferenceNodeComment $Comment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
@@ -9187,6 +9427,8 @@
 					return new QQReverseReferenceNodeAddress($this, 'address', 'reverse_reference', 'person_id');
 				case 'AttributeValue':
 					return new QQReverseReferenceNodeAttributeValue($this, 'attributevalue', 'reverse_reference', 'person_id');
+				case 'ClassRegistration':
+					return new QQReverseReferenceNodeClassRegistration($this, 'classregistration', 'reverse_reference', 'person_id');
 				case 'Comment':
 					return new QQReverseReferenceNodeComment($this, 'comment', 'reverse_reference', 'person_id');
 				case 'Email':

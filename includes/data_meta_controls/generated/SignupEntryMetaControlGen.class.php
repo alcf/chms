@@ -38,6 +38,8 @@
 	 * property-read QLabel $AmountBalanceLabel
 	 * property QTextBox $InternalNotesControl
 	 * property-read QLabel $InternalNotesLabel
+	 * property QListBox $ClassRegistrationControl
+	 * property-read QLabel $ClassRegistrationLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -199,8 +201,20 @@
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstClassRegistration
+         * @access protected
+         */
+		protected $lstClassRegistration;
+
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblClassRegistration
+         * @access protected
+         */
+		protected $lblClassRegistration;
+
 
 
 		/**
@@ -629,6 +643,50 @@
 			return $this->lblInternalNotes;
 		}
 
+		/**
+		 * Create and setup QListBox lstClassRegistration
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstClassRegistration_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstClassRegistration = new QListBox($this->objParentObject, $strControlId);
+			$this->lstClassRegistration->Name = QApplication::Translate('Class Registration');
+			$this->lstClassRegistration->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objClassRegistrationCursor = ClassRegistration::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objClassRegistration = ClassRegistration::InstantiateCursor($objClassRegistrationCursor)) {
+				$objListItem = new QListItem($objClassRegistration->__toString(), $objClassRegistration->SignupEntryId);
+				if ($objClassRegistration->SignupEntryId == $this->objSignupEntry->Id)
+					$objListItem->Selected = true;
+				$this->lstClassRegistration->AddItem($objListItem);
+			}
+
+			// Because ClassRegistration's ClassRegistration is not null, if a value is already selected, it cannot be changed.
+			if ($this->lstClassRegistration->SelectedValue)
+				$this->lstClassRegistration->Enabled = false;
+
+			// Return the QListBox
+			return $this->lstClassRegistration;
+		}
+
+		/**
+		 * Create and setup QLabel lblClassRegistration
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblClassRegistration_Create($strControlId = null) {
+			$this->lblClassRegistration = new QLabel($this->objParentObject, $strControlId);
+			$this->lblClassRegistration->Name = QApplication::Translate('Class Registration');
+			$this->lblClassRegistration->Text = ($this->objSignupEntry->ClassRegistration) ? $this->objSignupEntry->ClassRegistration->__toString() : null;
+			return $this->lblClassRegistration;
+		}
+
 
 
 		/**
@@ -705,6 +763,24 @@
 			if ($this->txtInternalNotes) $this->txtInternalNotes->Text = $this->objSignupEntry->InternalNotes;
 			if ($this->lblInternalNotes) $this->lblInternalNotes->Text = $this->objSignupEntry->InternalNotes;
 
+			if ($this->lstClassRegistration) {
+				$this->lstClassRegistration->RemoveAllItems();
+				$this->lstClassRegistration->AddItem(QApplication::Translate('- Select One -'), null);
+				$objClassRegistrationArray = ClassRegistration::LoadAll();
+				if ($objClassRegistrationArray) foreach ($objClassRegistrationArray as $objClassRegistration) {
+					$objListItem = new QListItem($objClassRegistration->__toString(), $objClassRegistration->SignupEntryId);
+					if ($objClassRegistration->SignupEntryId == $this->objSignupEntry->Id)
+						$objListItem->Selected = true;
+					$this->lstClassRegistration->AddItem($objListItem);
+				}
+				// Because ClassRegistration's ClassRegistration is not null, if a value is already selected, it cannot be changed.
+				if ($this->lstClassRegistration->SelectedValue)
+					$this->lstClassRegistration->Enabled = false;
+				else
+					$this->lstClassRegistration->Enabled = true;
+			}
+			if ($this->lblClassRegistration) $this->lblClassRegistration->Text = ($this->objSignupEntry->ClassRegistration) ? $this->objSignupEntry->ClassRegistration->__toString() : null;
+
 		}
 
 
@@ -740,6 +816,7 @@
 				if ($this->txtInternalNotes) $this->objSignupEntry->InternalNotes = $this->txtInternalNotes->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstClassRegistration) $this->objSignupEntry->ClassRegistration = ClassRegistration::Load($this->lstClassRegistration->SelectedValue);
 
 				// Save the SignupEntry object
 				$this->objSignupEntry->Save();
@@ -846,6 +923,12 @@
 				case 'InternalNotesLabel':
 					if (!$this->lblInternalNotes) return $this->lblInternalNotes_Create();
 					return $this->lblInternalNotes;
+				case 'ClassRegistrationControl':
+					if (!$this->lstClassRegistration) return $this->lstClassRegistration_Create();
+					return $this->lstClassRegistration;
+				case 'ClassRegistrationLabel':
+					if (!$this->lblClassRegistration) return $this->lblClassRegistration_Create();
+					return $this->lblClassRegistration;
 				default:
 					try {
 						return parent::__get($strName);
@@ -890,6 +973,8 @@
 						return ($this->txtAmountBalance = QType::Cast($mixValue, 'QControl'));
 					case 'InternalNotesControl':
 						return ($this->txtInternalNotes = QType::Cast($mixValue, 'QControl'));
+					case 'ClassRegistrationControl':
+						return ($this->lstClassRegistration = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}
