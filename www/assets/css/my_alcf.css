@@ -112,11 +112,28 @@
 
 	/*** PAGE STRUCTURE ***/
 
-	div.navbar ul { background-color: red; list-style-type: none; margin: 0; padding: 0;  }
-	div.navbar li { margin: 0; padding: 0 30px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #fff; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
-		div.navbar li.first { padding-left: 23px; }
-		div.navbar li a { color: #fff; text-decoration: none; }
-		div.navbar li a:hover { text-decoration: underline; }
+	div.page { width: 960px; margin: 0 auto; }
+	div#masthead { }
+		div#masthead div.utilityBar { height: 1px; overflow: visible; }
+		div#masthead div.utilityBar div.item { float: right; padding: 8px 12px; background-color: #507888; color: #fff; font-size: 10px; border-bottom: 4px solid #206070; }
+			div#masthead div.utilityBar div.item a { color: #fff; text-decoration: none; }
+			div#masthead div.utilityBar div.item a:hover { text-decoration: underline; }
+			div#masthead div.utilityBar div.itemPad { float: right; width: 0px; }
+
+		div#masthead div.topPad { height: 16px; font-size: 1px; }
+
+		div#masthead div.logo { height: 93px; background: url('/assets/images/my_logo.png') no-repeat; }
+
+		div#masthead div.navbar ul { list-style-type: none; margin: 0; padding: 0; height: 55px; }
+		div#masthead div.navbar li { margin: 0; padding: 0 30px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #fff; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
+			div#masthead div.navbar li.first { padding-left: 23px; }
+			div#masthead div.navbar li a { color: #fff; text-decoration: none; }
+			div#masthead div.navbar li a:hover { text-decoration: underline; }
+
+		div#masthead div.bottomPad { height: 20px; font-size: 1px; }
+
+	div#mainContent { padding: 20px; background-color: #f6f0f6; -moz-border-radius: 5px; border-radius: 5px; }
+	
 
 	div.footerPane { height: 1px; overflow: visible; }
 
@@ -169,7 +186,7 @@
 
 	/*** OTHER ***/
 	
-	div.securePayment {width: 1px; height: 1px; overflow: display; }
+	div.securePayment {width: 1px; height: 1px; overflow: visible; }
 	div.securePaymentInside { width: 150px; height:166px; border: 1px solid #888; background: url(/assets/images/secure.png); border-radius: 8px; position: relative; left: 740px; cursor: pointer; }
 
 	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; border-width: 1px; border-style: solid; border-color: #ccc; }

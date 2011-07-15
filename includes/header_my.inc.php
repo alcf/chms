@@ -9,37 +9,52 @@
 </head><body>
 <?php $this->RenderBegin(); ?>
 
-<div style="width: 960px; margin: 0 auto;">
-	<div style="height: 17px; font-size: 1px;">&nbsp;</div>
-	<div style="height: 93px; background: url('/assets/images/my_logo.png') no-repeat;">
-	<?php if (SERVER_INSTANCE != 'prod') { ?>
-		<div style="font-weight: bold; color: black; font-size: 18px; text-align: right;">
-			You are on the <?php _p(strtoupper(SERVER_INSTANCE)); ?> instance.
+<div class="page">
+	<div id="masthead">
+		<div class="utilityBar">
+			<div class="itemPad">&nbsp;</div>
+			<div class="item"><a href="http://stage.alcf.net/pages/page.asp?page_id=145670">Calendar</a></div>
+			<div class="item"><a href="http://stage.alcf.net/pages/page.asp?page_id=145672">Contact Us</a></div>
+		<?php if (!QApplication::$PublicLogin) { ?>
+			<div class="item"><a href="/register/">Register</a></div>
+			<div class="item"><a href="/">Log In</a></div>
+		<?php } else { ?>
+			<div class="item"><a href="/main/">My Profile</a></div>
+			<div class="item"><a href="/logout/">Log Out</a></div>
+		<?php } ?>
 		</div>
-	<?php } ?>	
-	</div>
+		
+		<div class="topPad">&nbsp;</div>
+		<div class="logo">
+		<?php if (SERVER_INSTANCE != 'prod') { ?>
+			<div style="font-weight: bold; color: #333; font-size: 18px; text-align: right; "><br/><br/>
+				You are on the <?php _p(strtoupper(SERVER_INSTANCE)); ?> instance.
+			</div>
+		<?php } ?>	
+		</div>
 
-	<div class="navbar" style="height: 55px;">
+		<div class="navbar">
 <?php if (QApplication::$PublicLogin && QApplication::$PublicLogin->ProvisionalPublicLogin) { ?>
-		<ul>
-		</ul>
+			<ul>
+			</ul>
 <?php } else { ?>
-		<ul>
-			<li class="first"><a href="http://stage.alcf.net/" title="Back to ALCF.net">ALCF.net Home</a></li>
-	<?php if (QApplication::$PublicLogin) { ?>
-			<li><a href="/main/" title="My Profile">My Profile</a></li>
-			<li><a href="/give/" title="Give Online">Give Online</a></li>
-			<li><a href="/stewardship/" title="View Receipt">Giving Receipt</a></li>
-			<li><a href="/logout/" title="Logout">Logout</a></li>
-	<?php } else { ?>
-			<li><a href="/" title="Log In">Log In</a></li>
-			<li><a href="/register/" title="Register">Register</a></li>
-			<li><a href="/give/" title="Give Online">Give Online</a></li>
-	<?php } ?>
+			<ul>
+				<li class="first"><a href="http://stage.alcf.net/" title="Back to ALCF.net">ALCF.net Home</a></li>
+		<?php if (QApplication::$PublicLogin) { ?>
+				<li><a href="/main/" title="My Profile">Profile</a></li>
+				<li><a href="/give/" title="Give Online">Give Online</a></li>
+				<li><a href="/stewardship/" title="View Receipt">Giving Receipt</a></li>
+				<li><a href="/classifieds/" title="Classified ACTS">Classified ACTS</a></li>
+		<?php } else { ?>
+				<li><a href="/register/" title="Register">Register</a></li>
+				<li><a href="/give/" title="Give Online">Give Online</a></li>
+				<li><a href="/classifieds/" title="Classified ACTS">Classified ACTS</a></li>
+		<?php } ?>
 <?php } ?>
-		</ul>
+			</ul>
+		</div>
+
+		<div class="bottomPad">&nbsp;</div>
 	</div>
 
-	<div style="height: 20px; font-size: 1px;">&nbsp;</div>
-
-	<div id="mainContent" style="padding: 20px; background-color: #f6f0f6; -moz-border-radius: 5px; border-radius: 5px; ">	
+	<div id="mainContent">	
