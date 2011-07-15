@@ -404,8 +404,9 @@
 				$this->GetHeaderValue('cc');
 
 			$strArrayToReturn = array();
+			$strArrayToCheck = QEmailServer::GetEmailAddresses($strTo);
 
-			foreach (QEmailServer::GetEmailAddresses($strTo) as $strEmailAddress) {
+			if ($strArrayToCheck) foreach ($strArrayToCheck as $strEmailAddress) {
 				$strEmailAddress = strtolower($strEmailAddress);
 				if (strpos($strEmailAddress, '@groups.alcf.net')) $strArrayToReturn[$strEmailAddress] = $strEmailAddress;
 			}
