@@ -17,7 +17,9 @@
 			PermissionType::MergeIndividuals => 'group_go.png',
 			PermissionType::AddNewIndividual => 'user_add.png',
 			PermissionType::EditMembershipStatus => 'vcard_edit.png',
-			PermissionType::DeleteIndividual => 'user_delete.png'
+			PermissionType::DeleteIndividual => 'user_delete.png',
+			PermissionType::ManageClasses => 'book_open.png',
+			PermissionType::ManageClassifieds => 'house.png'
 		);
 
 		protected function Form_Create() {

@@ -27,6 +27,20 @@
 			return sprintf('ClassifiedCategory Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'DescriptionHtml': return nl2br($this->strDescription, true);
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
@@ -101,20 +115,6 @@
 		// of the data generated properties, please feel free to uncomment them.
 /*
 		protected $strSomeNewProperty;
-
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
 
 		public function __set($strName, $mixValue) {
 			switch ($strName) {

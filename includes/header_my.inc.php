@@ -44,11 +44,11 @@
 				<li><a href="/main/" title="My Profile">Profile</a></li>
 				<li><a href="/give/" title="Give Online">Give Online</a></li>
 				<li><a href="/stewardship/" title="View Receipt">Giving Receipt</a></li>
-				<li><a href="/classifieds/" title="Classified ACTS">Classified ACTS</a></li>
+				<li><a href="/classifieds/" title="Classified Acts">Classified Acts</a></li>
 		<?php } else { ?>
 				<li><a href="/register/" title="Register">Register</a></li>
 				<li><a href="/give/" title="Give Online">Give Online</a></li>
-				<li><a href="/classifieds/" title="Classified ACTS">Classified ACTS</a></li>
+				<li><a href="/classifieds/" title="Classified Acts">Classified Acts</a></li>
 		<?php } ?>
 <?php } ?>
 			</ul>

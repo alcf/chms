@@ -126,6 +126,14 @@
 					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
 						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
 					}
+					
+					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageClassifieds)) {
+						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionClassifieds]);
+					}
+					
+					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageClasses)) {
+						ChmsForm::$NavSectionArray[ChmsForm::NavSectionEvents][0] = 'Events';
+					}
 				}
 			}
 

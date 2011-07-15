@@ -1,1 +1,1 @@
-mysql -uroot mysql -e "DROP DATABASE alcf_chms; CREATE DATABASE alcf_chms" ; mysql -uroot alcf_chms < ~/Downloads/alcf_noah_middev_2011-07-14.sql
+mysql -uroot mysql -e "DROP DATABASE alcf_chms; CREATE DATABASE alcf_chms" ; mysql -uroot alcf_chms < ~/Downloads/alcf_noah_middev_2011-07-15.sql
