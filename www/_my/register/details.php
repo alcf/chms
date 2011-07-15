@@ -322,7 +322,7 @@
 				QLog::Log(sprintf('Provisioned PublicLogin::Reconcile() matched against a Person with an existing PublicLogin: PublicLogin(%s) and Person(%s)',
 					QApplication::$PublicLogin->Id,
 					$objPerson->Id));
-				QApplication::DisplayAlert('We have encountered a data issue.  Please contact ALCF Online Member Support at 650-625-1500 for more information.  Please reference PLID ' . QApplication::$PublicLogin->Id . ' when calling.');
+				QApplication::DisplayAlert('It appears that another registration exists with the same name and home address.  Before we can proceed, please contact ALCF Online Member Support at 650-625-1500 or records@alcf.net for more information.  Please reference PLID ' . QApplication::$PublicLogin->Id . ' when calling.');
 			} else {
 				// OptOut Email Flag
 				if (!$this->chkBulkEmail->Checked) {

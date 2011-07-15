@@ -55,6 +55,7 @@
 			// Create the Email
 			$this->txtEmail = new QEmailTextBox($this);
 			$this->txtEmail->Name = 'Email Address';
+			$this->txtEmail->Required = true;
 
 			// Create the Payment Panel
 			$strFirstName = (QApplication::$PublicLogin) ? QApplication::$PublicLogin->Person->FirstName : null;

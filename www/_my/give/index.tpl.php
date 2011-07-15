@@ -21,7 +21,7 @@
 		<br/>
 		<h4>Email Confirmation</h4>
 		<div class="section">
-			<p style="padding-top: 0; margin-top: 0; ">If you would like to receive an email confirmation with your receipt, please enter in your email address below.</p>
+			<p style="padding-top: 0; margin-top: 0; ">An email confirmation with your receipt will be sent to the email address below.</p>
 			
 			<?php $this->txtEmail->RenderWithName(); ?>
 		</div>
