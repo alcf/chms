@@ -419,6 +419,7 @@ INSERT INTO signup_entry_status_type VALUES(3, 'Cancelled');
 INSERT INTO signup_entry_status_type VALUES(4, 'Test');
 
 INSERT INTO signup_form_type VALUES(1, 'Event');
+INSERT INTO signup_form_type VALUES(2, 'Course');
 
 INSERT INTO signup_payment_type(id, name) VALUES (1, 'Cash');
 INSERT INTO signup_payment_type(id, name) VALUES (2, 'Check');
@@ -428,3 +429,6 @@ INSERT INTO signup_payment_type(id, name) VALUES (5, 'Credit Card');
 INSERT INTO signup_payment_type(id, name) VALUES (6, 'Refund');
 INSERT INTO signup_payment_type(id, name) VALUES (7, 'Transfer');
 INSERT INTO signup_payment_type(id, name) VALUES (8, 'Other');
+
+INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
+INSERT INTO permission_type VALUES(256, 'Manage Classes');
