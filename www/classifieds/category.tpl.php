@@ -4,6 +4,7 @@
 		<?php $this->txtName->RenderWithName(); ?>
 		<?php $this->txtToken->RenderWithName(); ?>
 		<?php $this->txtDescription->RenderWithName('Width=700px', 'Height=200px'); ?>
+		<?php $this->txtDisclaimer->RenderWithName('Width=700px', 'Height=200px'); ?>
 		<?php $this->txtInstructions->RenderWithName('Width=700px', 'Height=200px'); ?>
 	</div>
 	<div class="buttonBar">

@@ -21,6 +21,7 @@
 	 * @property integer $OrderNumber the value for intOrderNumber 
 	 * @property string $Description the value for strDescription 
 	 * @property string $Instructions the value for strInstructions 
+	 * @property string $Disclaimer the value for strDisclaimer 
 	 * @property ClassifiedPost $_ClassifiedPost the value for the private _objClassifiedPost (Read-Only) if set due to an expansion on the classified_post.classified_category_id reverse relationship
 	 * @property ClassifiedPost[] $_ClassifiedPostArray the value for the private _objClassifiedPostArray (Read-Only) if set due to an ExpandAsArray on the classified_post.classified_category_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -79,6 +80,14 @@
 		 */
 		protected $strInstructions;
 		const InstructionsDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column classified_category.disclaimer
+		 * @var string strDisclaimer
+		 */
+		protected $strDisclaimer;
+		const DisclaimerDefault = null;
 
 
 		/**
@@ -435,6 +444,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'order_number', $strAliasPrefix . 'order_number');
 			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 			$objBuilder->AddSelectItem($strTableName, 'instructions', $strAliasPrefix . 'instructions');
+			$objBuilder->AddSelectItem($strTableName, 'disclaimer', $strAliasPrefix . 'disclaimer');
 		}
 
 
@@ -510,6 +520,8 @@
 			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'instructions', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'instructions'] : $strAliasPrefix . 'instructions';
 			$objToReturn->strInstructions = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'disclaimer', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'disclaimer'] : $strAliasPrefix . 'disclaimer';
+			$objToReturn->strDisclaimer = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -665,13 +677,15 @@
 							`token`,
 							`order_number`,
 							`description`,
-							`instructions`
+							`instructions`,
+							`disclaimer`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->strToken) . ',
 							' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							' . $objDatabase->SqlVariable($this->strDescription) . ',
-							' . $objDatabase->SqlVariable($this->strInstructions) . '
+							' . $objDatabase->SqlVariable($this->strInstructions) . ',
+							' . $objDatabase->SqlVariable($this->strDisclaimer) . '
 						)
 					');
 
@@ -695,7 +709,8 @@
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
 							`order_number` = ' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
-							`instructions` = ' . $objDatabase->SqlVariable($this->strInstructions) . '
+							`instructions` = ' . $objDatabase->SqlVariable($this->strInstructions) . ',
+							`disclaimer` = ' . $objDatabase->SqlVariable($this->strDisclaimer) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -785,6 +800,7 @@
 			$this->intOrderNumber = $objReloaded->intOrderNumber;
 			$this->strDescription = $objReloaded->strDescription;
 			$this->strInstructions = $objReloaded->strInstructions;
+			$this->strDisclaimer = $objReloaded->strDisclaimer;
 		}
 
 		/**
@@ -803,6 +819,7 @@
 					`order_number`,
 					`description`,
 					`instructions`,
+					`disclaimer`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -813,6 +830,7 @@
 					' . $objDatabase->SqlVariable($this->intOrderNumber) . ',
 					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . $objDatabase->SqlVariable($this->strInstructions) . ',
+					' . $objDatabase->SqlVariable($this->strDisclaimer) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -892,6 +910,11 @@
 					// Gets the value for strInstructions 
 					// @return string
 					return $this->strInstructions;
+
+				case 'Disclaimer':
+					// Gets the value for strDisclaimer 
+					// @return string
+					return $this->strDisclaimer;
 
 
 				///////////////////
@@ -992,6 +1015,17 @@
 					// @return string
 					try {
 						return ($this->strInstructions = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Disclaimer':
+					// Sets the value for strDisclaimer 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strDisclaimer = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1226,6 +1260,7 @@
 			$strToReturn .= '<element name="OrderNumber" type="xsd:int"/>';
 			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="Instructions" type="xsd:string"/>';
+			$strToReturn .= '<element name="Disclaimer" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1260,6 +1295,8 @@
 				$objToReturn->strDescription = $objSoapObject->Description;
 			if (property_exists($objSoapObject, 'Instructions'))
 				$objToReturn->strInstructions = $objSoapObject->Instructions;
+			if (property_exists($objSoapObject, 'Disclaimer'))
+				$objToReturn->strDisclaimer = $objSoapObject->Disclaimer;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1299,6 +1336,7 @@
 	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $Instructions
+	 * @property-read QQNode $Disclaimer
 	 * @property-read QQReverseReferenceNodeClassifiedPost $ClassifiedPost
 	 */
 	class QQNodeClassifiedCategory extends QQNode {
@@ -1319,6 +1357,8 @@
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'Instructions':
 					return new QQNode('instructions', 'Instructions', 'string', $this);
+				case 'Disclaimer':
+					return new QQNode('disclaimer', 'Disclaimer', 'string', $this);
 				case 'ClassifiedPost':
 					return new QQReverseReferenceNodeClassifiedPost($this, 'classifiedpost', 'reverse_reference', 'classified_category_id');
 
@@ -1342,6 +1382,7 @@
 	 * @property-read QQNode $OrderNumber
 	 * @property-read QQNode $Description
 	 * @property-read QQNode $Instructions
+	 * @property-read QQNode $Disclaimer
 	 * @property-read QQReverseReferenceNodeClassifiedPost $ClassifiedPost
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1363,6 +1404,8 @@
 					return new QQNode('description', 'Description', 'string', $this);
 				case 'Instructions':
 					return new QQNode('instructions', 'Instructions', 'string', $this);
+				case 'Disclaimer':
+					return new QQNode('disclaimer', 'Disclaimer', 'string', $this);
 				case 'ClassifiedPost':
 					return new QQReverseReferenceNodeClassifiedPost($this, 'classifiedpost', 'reverse_reference', 'classified_category_id');
 

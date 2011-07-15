@@ -6,7 +6,7 @@
 
 <div class="section">
 	<h4><a href="/classifieds/list.php/<?php _p($_ITEM->Token); ?>"><?php _p($_ITEM->Name); ?></a></h4>
-	<?php _p($_ITEM->DescriptionHtml); ?><br/><br/>
+	<?php _p($_ITEM->DescriptionHtml, false); ?><br/><br/>
 	<strong>
 	<a href="/classifieds/list.php/<?php _p($_ITEM->Token); ?>">View Listings</a>
 	</strong>

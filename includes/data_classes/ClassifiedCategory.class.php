@@ -30,7 +30,8 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'DescriptionHtml': return nl2br($this->strDescription, true);
-
+				case 'DisclaimerHtml': return nl2br($this->strDisclaimer, true);
+				
 				default:
 					try {
 						return parent::__get($strName);

@@ -28,6 +28,8 @@
 	 * property-read QLabel $DescriptionLabel
 	 * property QTextBox $InstructionsControl
 	 * property-read QLabel $InstructionsLabel
+	 * property QTextBox $DisclaimerControl
+	 * property-read QLabel $DisclaimerLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -95,6 +97,12 @@
          */
 		protected $txtInstructions;
 
+        /**
+         * @var QTextBox txtDisclaimer;
+         * @access protected
+         */
+		protected $txtDisclaimer;
+
 
 		// Controls that allow the viewing of ClassifiedCategory's individual data fields
         /**
@@ -126,6 +134,12 @@
          * @access protected
          */
 		protected $lblInstructions;
+
+        /**
+         * @var QLabel lblDisclaimer
+         * @access protected
+         */
+		protected $lblDisclaimer;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -368,6 +382,31 @@
 			return $this->lblInstructions;
 		}
 
+		/**
+		 * Create and setup QTextBox txtDisclaimer
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtDisclaimer_Create($strControlId = null) {
+			$this->txtDisclaimer = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtDisclaimer->Name = QApplication::Translate('Disclaimer');
+			$this->txtDisclaimer->Text = $this->objClassifiedCategory->Disclaimer;
+			$this->txtDisclaimer->TextMode = QTextMode::MultiLine;
+			return $this->txtDisclaimer;
+		}
+
+		/**
+		 * Create and setup QLabel lblDisclaimer
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDisclaimer_Create($strControlId = null) {
+			$this->lblDisclaimer = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDisclaimer->Name = QApplication::Translate('Disclaimer');
+			$this->lblDisclaimer->Text = $this->objClassifiedCategory->Disclaimer;
+			return $this->lblDisclaimer;
+		}
+
 
 
 		/**
@@ -395,6 +434,9 @@
 
 			if ($this->txtInstructions) $this->txtInstructions->Text = $this->objClassifiedCategory->Instructions;
 			if ($this->lblInstructions) $this->lblInstructions->Text = $this->objClassifiedCategory->Instructions;
+
+			if ($this->txtDisclaimer) $this->txtDisclaimer->Text = $this->objClassifiedCategory->Disclaimer;
+			if ($this->lblDisclaimer) $this->lblDisclaimer->Text = $this->objClassifiedCategory->Disclaimer;
 
 		}
 
@@ -424,6 +466,7 @@
 				if ($this->txtOrderNumber) $this->objClassifiedCategory->OrderNumber = $this->txtOrderNumber->Text;
 				if ($this->txtDescription) $this->objClassifiedCategory->Description = $this->txtDescription->Text;
 				if ($this->txtInstructions) $this->objClassifiedCategory->Instructions = $this->txtInstructions->Text;
+				if ($this->txtDisclaimer) $this->objClassifiedCategory->Disclaimer = $this->txtDisclaimer->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -502,6 +545,12 @@
 				case 'InstructionsLabel':
 					if (!$this->lblInstructions) return $this->lblInstructions_Create();
 					return $this->lblInstructions;
+				case 'DisclaimerControl':
+					if (!$this->txtDisclaimer) return $this->txtDisclaimer_Create();
+					return $this->txtDisclaimer;
+				case 'DisclaimerLabel':
+					if (!$this->lblDisclaimer) return $this->lblDisclaimer_Create();
+					return $this->lblDisclaimer;
 				default:
 					try {
 						return parent::__get($strName);
@@ -536,6 +585,8 @@
 						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'InstructionsControl':
 						return ($this->txtInstructions = QType::Cast($mixValue, 'QControl'));
+					case 'DisclaimerControl':
+						return ($this->txtDisclaimer = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

@@ -19,5 +19,30 @@
 	 * @subpackage MetaControls
 	 */
 	class ClassifiedPostMetaControl extends ClassifiedPostMetaControlGen {
+		/**
+		 * Create and setup QTextBox txtEmail
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtEmail_Create($strControlId = null) {
+			$this->txtEmail = new QEmailTextBox($this->objParentObject, $strControlId);
+			$this->txtEmail->Name = QApplication::Translate('Email');
+			$this->txtEmail->Text = $this->objClassifiedPost->Email;
+			$this->txtEmail->MaxLength = ClassifiedPost::EmailMaxLength;
+			return $this->txtEmail;
+		}
+		
+		/**
+		 * Create and setup QTextBox txtPhone
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtPhone_Create($strControlId = null) {
+			$this->txtPhone = new PhoneTextBox($this->objParentObject, $strControlId);
+			$this->txtPhone->Name = QApplication::Translate('Phone Number');
+			$this->txtPhone->Text = $this->objClassifiedPost->Phone;
+			$this->txtPhone->MaxLength = ClassifiedPost::PhoneMaxLength;
+			return $this->txtPhone;
+		}
 	}
 ?>

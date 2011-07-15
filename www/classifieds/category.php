@@ -10,8 +10,9 @@
 		protected $txtName;
 		protected $txtToken;
 		protected $txtDescription;
+		protected $txtDisclaimer;
 		protected $txtInstructions;
-
+		
 		protected $btnSave;
 		protected $btnCancel;
 		protected $btnDelete;
@@ -32,10 +33,14 @@
 			$this->txtDescription->Required = true;
 			$this->txtDescription->Instructions = 'HTML of Description Text for this Posting Category';
 			
+			$this->txtDisclaimer = $this->mctClassifiedCategory->txtDisclaimer_Create();
+			$this->txtDisclaimer->Required = true;
+			$this->txtDisclaimer->Instructions = 'HTML of the ALCF Disclaimer to be placed at the top of the Submission Request screen';
+						
 			$this->txtInstructions = $this->mctClassifiedCategory->txtInstructions_Create();
 			$this->txtInstructions->Required = true;
 			$this->txtInstructions->Instructions = 'Bullet points of what needs to be included in every post (one per line)';
-
+			
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = ($this->mctClassifiedCategory->EditMode ? 'Update' : 'Create');
 			$this->btnSave->CssClass = 'primary';
@@ -61,6 +66,7 @@
 			$this->txtName->Text = trim($this->txtName->Text);
 			$this->txtToken->Text = QApplication::Tokenize($this->txtToken->Text);
 			$this->txtDescription->Text = trim($this->txtDescription->Text);
+			$this->txtDisclaimer->Text = trim($this->txtDisclaimer->Text);
 			$this->txtInstructions->Text = trim($this->txtInstructions->Text);
 
 			// Check Token for Unique
