@@ -9,8 +9,8 @@
 
 	<?php if (QApplication::$PublicLogin && ($strEmail = $this->objOnlineDonation->CalculateConfirmationEmailAddress())) { ?>
 		<br/>A confirmation email has been sent out to <strong><?php _p($strEmail); ?></strong>.
-	<?php } else if (array_key_exists('onlineDonationEmailAddress', $_SESSION)) { ?>
-		<br/>A confirmation email has been sent out to <strong><?php _p($_SESSION['onlineDonationEmailAddress']); ?></strong>.
+	<?php } else if (array_key_exists('onlineDonationEmailAddress' . $this->objOnlineDonation->Id, $_SESSION)) { ?>
+		<br/>A confirmation email has been sent out to <strong><?php _p($_SESSION['onlineDonationEmailAddress' . $this->objOnlineDonation->Id]); ?></strong>.
 	<?php } ?>
 	</p><br/>
 

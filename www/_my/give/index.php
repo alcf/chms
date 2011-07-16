@@ -326,10 +326,10 @@
 				$objPaymentObject->SendConfirmationEmail();
 			} else if ($strEmailAddress) {
 				$objPaymentObject->SendConfirmationEmail($strEmailAddress);
-				$_SESSION['onlineDonationEmailAddress'] = $strEmailAddress;
+				$_SESSION['onlineDonationEmailAddress' . $objPaymentObject->Id] = $strEmailAddress;
 			} else {
-				$_SESSION['onlineDonationEmailAddress'] = null;
-				unset($_SESSION['onlineDonationEmailAddress']);
+				$_SESSION['onlineDonationEmailAddress' . $objPaymentObject->Id] = null;
+				unset($_SESSION['onlineDonationEmailAddress' . $objPaymentObject->Id]);
 			}
 
 			QApplication::Redirect($objPaymentObject->ConfirmationUrl);
