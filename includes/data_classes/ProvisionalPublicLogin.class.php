@@ -65,7 +65,7 @@
 			$strArray['PERSON_NAME'] = $this->strFirstName . ' ' . $this->strLastName;
 
 			// Add Payment Info
-			$strArray['URL'] = $this->ConfirmationUrl;
+			$strArray['URL'] = $this->ConfirmationUrl . '/' . $this->strConfirmationCode;
 			$strArray['CODE'] = $this->strConfirmationCode;
 			$strArray['USERNAME'] = $this->PublicLogin->Username;
 			

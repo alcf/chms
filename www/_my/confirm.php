@@ -26,7 +26,8 @@
 			$this->txtCode->Name = 'Confirmation Code';
 			$this->txtCode->Required = true;
 			$this->txtCode->CausesValidation = true;
-
+			$this->txtCode->Text = QApplication::PathInfo(1);
+			
 			$this->btnConfirm = new QButton($this);
 			$this->btnConfirm->Text = 'Confirm My Email';
 			$this->btnConfirm->CausesValidation = true;

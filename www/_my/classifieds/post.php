@@ -61,6 +61,12 @@
 			$this->txtEmail = $this->mctPost->txtEmail_Create();
 			$this->txtEmail->Required = true;
 
+			if (QApplication::$PublicLogin && ($objPerson = QApplication::$PublicLogin->Person)) {
+				$this->txtName->Text = $objPerson->Name;
+				if ($objPerson->PrimaryEmail) $this->txtEmail->Text = $objPerson->PrimaryEmail->Address;
+				if ($objPerson->PrimaryPhone) $this->txtPhone->Text = $objPerson->PrimaryPhone->Number;
+			}
+			
 			$this->btnSubmit = new QButton($this);
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
 			$this->btnSubmit->CssClass = 'primary';
