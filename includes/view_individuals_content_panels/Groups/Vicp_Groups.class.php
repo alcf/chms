@@ -87,7 +87,7 @@
 			$strToReturn = sprintf('<a href="/events/result.php/%s/%s">%s</a>', $objSignupEntry->SignupFormId, $objSignupEntry->Id, QApplication::HtmlEntities($objSignupEntry->SignupForm->Name));
 						
 			if ($objSignupEntry->SignupForm->ConfidentialFlag)
-				$strToReturn .= ' <img src="/assets/images/confidential.png" title="Confidential Group" style="width: 89px; height: 13px; position: relative; top: 2px;"/>';
+				$strToReturn .= ' <img src="/assets/images/confidential.png" title="Confidential Event" style="width: 89px; height: 13px; position: relative; top: 2px;"/>';
 
 			return $strToReturn;
 		}
