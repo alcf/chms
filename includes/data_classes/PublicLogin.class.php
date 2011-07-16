@@ -177,6 +177,36 @@
 		}
 
 		/**
+		 * This will create a permanent (non-provisional) public login record for a specific person.
+		 * If the person already has a public login record, this will likely throw a database error.
+		 * If the username is already taken, this will likely throw a database error.
+		 * @param Person $objPerson
+		 * @param string $strUsername
+		 * @param string $strPassword
+		 * @param string $strLostPasswordQuestion
+		 * @param string $strLostPasswordAnswer
+		 * @return PublicLogin
+		 */
+		public static function CreateForPerson(Person $objPerson, $strUsername, $strPassword, $strLostPasswordQuestion, $strLostPasswordAnswer) {
+			$strUsername = QApplication::Tokenize($strUsername, false);
+			if (strlen($strUsername) < 4) throw new QCallerException('Username is too short: ' . $strUsername);
+			if (!self::IsProvisionalCreatableForUsername($strUsername)) throw new QCallerException('Username is already taken: ' . $strUsername);
+			
+			$objPublicLogin = new PublicLogin();
+			$objPublicLogin->ActiveFlag = true;
+			$objPublicLogin->Person = $objPerson;
+			$objPublicLogin->Username = $strUsername;
+			$objPublicLogin->SetPassword($strPassword);
+			$objPublicLogin->LostPasswordQuestion = trim($strLostPasswordQuestion);
+			$objPublicLogin->LostPasswordAnswer = trim($strLostPasswordAnswer);
+			$objPublicLogin->TemporaryPasswordFlag = false;
+			$objPublicLogin->DateRegistered = QDateTime::Now();
+			$objPublicLogin->Save();
+
+			return $objPublicLogin;
+		}
+
+		/**
 		 * This will create a provisional PublicLogin record, including setting up the hash.
 		 * NOTE: If the PublicLogin record already exists AND it is a non-provisional one, then this will throw an error
 		 * Otherwise, if the PublicLogin exists as a provisional one, it will simply overwrite the provisioned info.

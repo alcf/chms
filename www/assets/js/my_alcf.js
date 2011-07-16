@@ -13,6 +13,18 @@
 			if (intPaddingHeight < 20) intPaddingHeight = 20;
 
 			document.getElementById("bottomPad").style.height = (intPaddingHeight) + "px";
+		},
+
+		toggleShortCircuitReg: function(blnDisplay) {
+			if (blnDisplay) {
+				document.getElementById("regShortCircuit").style.display = "block";
+				document.getElementById("secondChance").style.display = "none";
+				myAlcf.bottomPad();
+			} else {
+				document.getElementById("regShortCircuit").style.display = "none";
+				document.getElementById("secondChance").style.display = "block";
+				myAlcf.bottomPad();
+			};
 		}
 	};
 

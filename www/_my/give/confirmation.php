@@ -64,11 +64,12 @@
 				$this->btnRegister->Text = 'Register';
 				$this->btnRegister->CssClass = 'primary';
 				$this->btnRegister->CausesValidation = true;
+				$this->btnRegister->AddAction(new QClickEvent(), new QAjaxAction('btnRegister_Click'));
 				
 				$this->btnCancel = new QLinkButton($this);
 				$this->btnCancel->Text = 'No Thanks';
 				$this->btnCancel->CssClass = 'cancel';
-				$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction('document.getElementById(\'regShortCircuit\').style.display = \'none\'; document.getElementById(\'secondChance\').style.display = \'block\'; myAlcf.bottomPad();'));
+				$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction('myAlcf.toggleShortCircuitReg(false);'));
 				$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 			}
 		}
@@ -104,11 +105,17 @@
 				$blnToReturn = false;
 			}
 			
-			if (!Email::IsAvailableForPublicRegistration($this->txtEmail->Text)) {
-				$this->txtEmail->Warning = 'Email already in use by another account';
+			// Test Password
+			if (strlen(trim($this->txtPassword->Text)) < 6) {
+				$blnToReturn = false;
+				$this->txtPassword->Warning = 'Your password is too short';
+			}
+			
+			if ($this->txtPassword->Text != $this->txtConfirmPassword->Text) {
+				$this->txtConfirmPassword->Warning = 'Does not match above';
 				$blnToReturn = false;
 			}
-
+			
 			$blnFirst = true;
 			foreach ($this->GetErrorControls() as $objControl) {
 				if ($blnFirst) {
@@ -119,6 +126,20 @@
 			}
 
 			return $blnToReturn;
+		}
+
+		protected function btnRegister_Click() {
+			$strUsernameCandidate = QApplication::Tokenize($this->txtUsername->Text, false);
+
+			$objPublicLogin = PublicLogin::CreateForPerson(
+				$this->objOnlineDonation->Person,
+				$this->txtUsername->Text,
+				$this->txtPassword->Text,
+				($this->lstQuestion->SelectedValue) ? $this->lstQuestion->SelectedValue : $this->txtQuestion->Text,
+				$this->txtAnswer->Text);
+
+			QApplication::PublicLogin($objPublicLogin);
+			QApplication::Redirect('/register/thankyou.php');
 		}
 	}
 

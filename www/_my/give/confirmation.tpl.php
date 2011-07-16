@@ -15,14 +15,17 @@
 
 	<a href="#" onclick="window.print(); return false;">Print</a> this page for your records.	
 
+
+
 <?php if ($this->txtUsername) { ?>
+	<div style="border-top: 1px solid #999; margin: 20px 0;">&nbsp;</div>
+	Since you do not have a <strong>my.alcf</strong> account associated with your recent online gift, would you like to take a
+	second to register?  By registering, it will speed up the giving process for any future gifts.  You will also be able to download your
+	up-to-date giving receipt at any time.<br/><br/>
+
 	<div id="regShortCircuit">
-		<br/><br/><br/><br/>
 		<h4>Registration</h4>
 		<div class="section">
-			Since you do not have a <strong>my.alcf</strong> account associated with your recent online gift, would you like to take a
-			second to register?  By registering, it will speed up the giving process for any future gifts.  You will also be able to download your
-			up-to-date giving receipt at any time.<br/><br/>
 			<?php $this->txtUsername->RenderWithName(); ?>
 			
 			<br/>
@@ -39,6 +42,6 @@
 			<?php $this->btnCancel->Render(); ?>
 		</div>
 	</div>
-	<div id="secondChance" class="buttonBar" style="display: none;"><a href="#" class="cancel" onclick="document.getElementById('regShortCircuit').style.display = 'block'; document.getElementById('secondChance').style.display = 'none'; myAlcf.bottomPad(); return false;">I'd Like to Register for <strong>my.alcf</strong></a></div>
+	<div id="secondChance" class="buttonBar" style="display: none;"><a href="#" class="cancel" onclick="myAlcf.toggleShortCircuitReg(true); return false;">I'd Like to Register for a <strong>my.alcf</strong> account</a></div>
 <?php } ?>	
 <?php require(__INCLUDES__ . '/footer_my.inc.php'); ?>
