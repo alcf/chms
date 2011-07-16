@@ -47,6 +47,9 @@
 	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
 	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #666; color: #999; }
 
+	h1 button.primary, h3 button.primary, h4 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
+	h1 input.primary, h3 input.primary, h4 input.primary { *margin-top: -15px; margin-left: 10px; float: right; }
+
 	input.alternate, button.alternate {
 		background-image: url(/assets/images/button_alternate.png); border: 1px solid #859da9; height: 24px; -moz-border-radius: 5px; 
 		font-size: 11px; font-family: arial; color: #ddd;

@@ -42,7 +42,7 @@
 			$objPost->ClassifiedCategory = $this->objCategory;
 			$objPost->DatePosted = QDateTime::Now();
 			$objPost->DateExpired = QDateTime::Now();
-			$objPost->DateExpired->Day += 30;
+			$objPost->DateExpired->Day += 90;
 			$objPost->ApprovalFlag = false;
 
 			$this->mctPost = new ClassifiedPostMetaControl($this, $objPost);
