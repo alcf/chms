@@ -31,6 +31,12 @@
 		</div>
 		<br clear="all"/>
 	</div>
-	
-	<br clear="all"/>
+
+<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
+	<div class="buttonBar">
+		<input type="button" class="primary" value="Create New Signup" onclick="document.location='/events/new_signup.php/<?php _p($this->objSignupForm->Id); ?>';">
+	</div>
+<?php } ?>
+
+<br clear="all"/>
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
