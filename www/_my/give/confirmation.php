@@ -11,7 +11,10 @@
 		protected $lstQuestion;
 		protected $txtQuestion;
 		protected $txtAnswer;
-		
+	
+		protected $btnRegister;
+		protected $btnCancel;
+
 		protected function Form_Create() {
 			$this->objOnlineDonation = OnlineDonation::Load(QApplication::PathInfo(0));
 			if (!$this->objOnlineDonation) QApplication::Redirect('/give/');
@@ -22,18 +25,23 @@
 			// we still have the email-to-send in Session
 			if (array_key_exists('onlineDonationEmailAddress' . $this->objOnlineDonation->Id, $_SESSION) &&
 				!$this->objOnlineDonation->Person->PublicLogin) {
+				$this->txtUsername = new QTextBox($this);
+				$this->txtUsername->Name = 'Username';
+				$this->txtUsername->Required = true;
+				$this->txtUsername->MaxLength = PublicLogin::UsernameMaxLength;
+
 				$this->txtPassword = new QTextBox($this);
 				$this->txtPassword->Name = 'Select a Password';
 				$this->txtPassword->Required = true;
 				$this->txtPassword->TextMode = QTextMode::Password;
 				$this->txtPassword->Instructions = 'At least 6 characters long';
-				
+
 				$this->txtConfirmPassword = new QTextBox($this);
 				$this->txtConfirmPassword->Name = 'Confirm Password';
 				$this->txtConfirmPassword->Instructions = 'Must match above';
 				$this->txtConfirmPassword->Required = true;
 				$this->txtConfirmPassword->TextMode = QTextMode::Password;
-	
+
 				$this->lstQuestion = new QListBox($this);
 				$this->lstQuestion->Name = '"Forgot Password" Question';
 				$this->lstQuestion->AddItem('- Select One -', null);
@@ -45,12 +53,23 @@
 				$this->lstQuestion->AddItem('- Other... -', false);
 				$this->lstQuestion->Required = true;
 				$this->lstQuestion->AddAction(new QChangeEvent(), new QAjaxAction('lstQuestion_Refresh'));
-	
+
 				$this->txtQuestion = new QTextBox($this);
 				$this->txtAnswer = new QTextBox($this);
 				$this->txtAnswer->Name = 'Your Answer';
 				$this->txtAnswer->Required = true;
 				$this->lstQuestion_Refresh();
+				
+				$this->btnRegister = new QButton($this);
+				$this->btnRegister->Text = 'Register';
+				$this->btnRegister->CssClass = 'primary';
+				$this->btnRegister->CausesValidation = true;
+				
+				$this->btnCancel = new QLinkButton($this);
+				$this->btnCancel->Text = 'No Thanks';
+				$this->btnCancel->CssClass = 'cancel';
+				$this->btnCancel->AddAction(new QClickEvent(), new QJavaScriptAction('document.getElementById(\'regShortCircuit\').style.display = \'none\'; document.getElementById(\'secondChance\').style.display = \'block\'; myAlcf.bottomPad();'));
+				$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 			}
 		}
 
@@ -63,6 +82,43 @@
 				$this->txtQuestion->Required = false;
 				$this->txtQuestion->Text = null;
 			}
+		}
+		
+
+		protected function Form_Validate() {
+			$blnToReturn = true;
+
+			$strUsernameCandidate = QApplication::Tokenize($this->txtUsername->Text, false);
+			if ($strUsernameCandidate != trim(strtolower($this->txtUsername->Text))) {
+				$this->txtUsername->Warning = 'Must only contain letters and numbers';
+				$blnToReturn = false;
+			}
+
+			if (strlen($strUsernameCandidate) < 4) {
+				$this->txtUsername->Warning = 'Must have at least 4 characters';
+				$blnToReturn = false;
+			}
+
+			if (!PublicLogin::IsProvisionalCreatableForUsername($strUsernameCandidate)) {
+				$this->txtUsername->Warning = 'Username already in use by another account';
+				$blnToReturn = false;
+			}
+			
+			if (!Email::IsAvailableForPublicRegistration($this->txtEmail->Text)) {
+				$this->txtEmail->Warning = 'Email already in use by another account';
+				$blnToReturn = false;
+			}
+
+			$blnFirst = true;
+			foreach ($this->GetErrorControls() as $objControl) {
+				if ($blnFirst) {
+					$blnFirst = false;
+					$objControl->Focus();
+				}
+				$objControl->Blink();
+			}
+
+			return $blnToReturn;
 		}
 	}
 
