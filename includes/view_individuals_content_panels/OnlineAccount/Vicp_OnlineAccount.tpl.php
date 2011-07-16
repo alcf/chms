@@ -26,7 +26,7 @@
 		<div class="lvp">
 			<div class="left">Date of Last Login</div>
 			<div class="right">
-				<?php _p($this->objPerson->PublicLogin->DateLastLogin->ToString('MMMM D YYYY @ h:mm z')); ?>
+				<?php _p(($this->objPerson->PublicLogin->DateLastLogin) ? $this->objPerson->PublicLogin->DateLastLogin->ToString('MMMM D YYYY @ h:mm z') : 'n/a'); ?>
 			</div>
 			<div class="cleaner">&nbsp;</div>
 		</div>

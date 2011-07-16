@@ -131,6 +131,7 @@
 		protected function btnRegister_Click() {
 			$strUsernameCandidate = QApplication::Tokenize($this->txtUsername->Text, false);
 
+			// Create the Public Login record
 			$objPublicLogin = PublicLogin::CreateForPerson(
 				$this->objOnlineDonation->Person,
 				$this->txtUsername->Text,
@@ -138,6 +139,10 @@
 				($this->lstQuestion->SelectedValue) ? $this->lstQuestion->SelectedValue : $this->txtQuestion->Text,
 				$this->txtAnswer->Text);
 
+			// Set the Primary Email Address
+			$objPublicLogin->Person->ChangePrimaryEmailTo($_SESSION['onlineDonationEmailAddress' . $this->objOnlineDonation->Id], false);
+
+			// Login and Redirect
 			QApplication::PublicLogin($objPublicLogin);
 			QApplication::Redirect('/register/thankyou.php');
 		}

@@ -1361,8 +1361,9 @@
 		 * and if so, it will upgrade that email record to be "Primary".  If not, it will delete the current primary (if applicable)
 		 * and create a new record for the passed-in string.
 		 * @param string $strEmailAddress
+		 * @param boolean $blnDeleteCurrentPrimary (default is true) whether or not to delete the current primary
 		 */
-		public function ChangePrimaryEmailTo($strEmailAddress) {
+		public function ChangePrimaryEmailTo($strEmailAddress, $blnDeleteCurrentPrimary = true) {
 			$strEmailAddress = trim(strtolower($strEmailAddress));
 			
 			// If what was passed in is already primary, then do nothing
@@ -1381,7 +1382,7 @@
 			// If we are here, then we *know* we need to create a new email address
 
 			// first, delete the current primary, if applicable
-			if ($this->PrimaryEmail) {
+			if ($this->PrimaryEmail && $blnDeleteCurrentPrimary) {
 				$this->PrimaryEmail->Delete();
 				$this->PrimaryEmail = null;
 			}
