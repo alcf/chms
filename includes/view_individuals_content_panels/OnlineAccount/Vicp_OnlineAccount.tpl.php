@@ -35,3 +35,9 @@
 		<p>This person has not yet registered for a <strong>my.alcf</strong> account.
 	<?php } ?>
 </div>
+
+<?php if ($_CONTROL->btnRemove) { ?>
+	<div class="buttonBar">
+		<?php $_CONTROL->btnRemove->Render(); ?>
+	</div>
+<?php } ?>
