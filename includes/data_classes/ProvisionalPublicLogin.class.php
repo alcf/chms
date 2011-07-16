@@ -217,20 +217,7 @@
 			//////////////////////////////////
 
 			// Email Address
-			$blnFound  = false;
-			foreach ($objPerson->GetEmailArray() as $objEmail) {
-				if ($objEmail->Address = $this->EmailAddress) {
-					$objPerson->PrimaryEmail = $objEmail;
-					$blnFound = true;
-				}
-			}
-			if (!$blnFound) {
-				$objEmail = new Email();
-				$objEmail->Address = $this->EmailAddress;
-				$objEmail->Person = $objPerson;
-				$objEmail->Save();
-				$objPerson->PrimaryEmail = $objEmail;
-			}
+			$objPerson->ChangePrimaryEmailTo($this->EmailAddress, false);
 
 			// Gender and DOB
 			if ($strGenderFlag = trim(strtoupper($strGenderFlag))) $objPerson->Gender = $strGenderFlag;
