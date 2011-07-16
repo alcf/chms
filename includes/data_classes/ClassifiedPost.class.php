@@ -27,6 +27,15 @@
 			return sprintf('ClassifiedPost Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will specifiy viewability based on (a) approval and (b) ensuring it's not yet expired
+		 * @return boolean
+		 */
+		public function IsViewable() {
+			if (!$this->blnApprovalFlag) return false;
+			if ($this->dttDateExpired->IsEarlierThan(QDateTime::Now())) return false;
+			return true;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
