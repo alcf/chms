@@ -9,6 +9,7 @@ INSERT INTO registry(name, value) VALUES ('system_email_address', 'my.ALCF Websi
 
 ALTER TABLE ministry ADD COLUMN signup_form_type_bitmap integer(10) unsigned DEFAULT NULL;
 UPDATE ministry SET signup_form_type_bitmap = 1;
+UPDATE ministry SET signup_form_type_bitmap = 3 WHERE id=11;
 
 ALTER TABLE stewardship_fund ADD COLUMN external_name VARCHAR(200) DEFAULT NULL AFTER name;
 ALTER TABLE stewardship_fund ADD COLUMN external_flag tinyint(1) DEFAULT NULL;
