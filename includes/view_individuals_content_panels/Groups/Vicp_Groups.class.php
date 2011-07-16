@@ -1,6 +1,7 @@
 <?php
 	class Vicp_Groups extends Vicp_Base {
 		public $dtgGroups;
+		public $dtgEvents;
 		public $dtgCommunicationLists;
 		public $pxyUnsubscribe;
 
@@ -12,6 +13,15 @@
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=125px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=155px'));
 
+			$this->dtgEvents = new SignupEntryDataGrid($this);
+			$this->dtgEvents->MetaAddColumn(QQN::SignupEntry()->SignupForm->Ministry->Name, 'Width=150px', 'Name=Ministry');
+			$this->dtgEvents->MetaAddColumn(QQN::SignupEntry()->SignupForm->Name, 'Width=320px', 'Name=Event Name', 'Html=<?= $_CONTROL->ParentControl->RenderEventName($_ITEM); ?>', 'HtmlEntities=false');
+			$this->dtgEvents->MetaAddColumn('DateSubmitted', 'Width=150px');
+			$this->dtgEvents->MetaAddTypeColumn('SignupEntryStatusTypeId', 'SignupEntryStatusType', 'Name=Status', 'Width=100px');
+			$this->dtgEvents->SetDataBinder('dtgEvents_Bind', $this);
+			$this->dtgEvents->SortColumnIndex = 2;
+			$this->dtgEvents->SortDirection = 1;
+
 			$this->dtgCommunicationLists = new CommunicationListDataGrid($this);
 			$this->dtgCommunicationLists->AddColumn(new QDataGridColumn('Unsubscribe', '<?= $_CONTROL->ParentControl->RenderUnsubscribe($_ITEM); ?>', 'HtmlEntities=false', 'Width=120px'));
 			$this->dtgCommunicationLists->MetaAddColumn('Name', 'Width=250px');
@@ -19,12 +29,30 @@
 			$this->dtgCommunicationLists->SetDataBinder('dtgCommunicationLists_Bind', $this);
 
 			$this->dtgGroups->NoDataHtml = 'Not in any groups';
+			$this->dtgEvents->NoDataHtml = 'Have not registered for any events';
 			$this->dtgCommunicationLists->NoDataHtml = 'Not in any communication lists';
 			
 			$this->pxyUnsubscribe = new QControlProxy($this);
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to unsubscribe ' . $this->objPerson->Name . ' from this list?'));
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxyUnsubscribe_Click'));
 			$this->pxyUnsubscribe->AddAction(new QClickEvent(), new QTerminateAction());
+		}
+		
+		public function dtgEvents_Bind() {
+			$objCondition = QQ::AndCondition(
+				QQ::Equal(QQN::SignupEntry()->PersonId, $this->objPerson->Id),
+				QQ::In(QQN::SignupEntry()->SignupEntryStatusTypeId, array(SignupEntryStatusType::Complete, SignupEntryStatusType::Cancelled))
+			);
+			
+			$this->dtgEvents->MetaDataBinder($objCondition);
+
+			// Filter out any we are not allowed to see
+			$objDataSource = array();
+			foreach ($this->dtgEvents->DataSource as $objSignupEntry) {
+				if ($objSignupEntry->SignupForm->IsLoginCanView(QApplication::$Login)) $objDataSource[] = $objSignupEntry;
+			}
+			
+			$this->dtgEvents->DataSource = $objDataSource;
 		}
 
 		public function dtgGroups_Bind() {
@@ -54,6 +82,15 @@
 		}
 
 		protected $objParticipationArray;
+
+		public function RenderEventName(SignupEntry $objSignupEntry) {
+			$strToReturn = sprintf('<a href="/events/result.php/%s/%s">%s</a>', $objSignupEntry->SignupFormId, $objSignupEntry->Id, QApplication::HtmlEntities($objSignupEntry->SignupForm->Name));
+						
+			if ($objSignupEntry->SignupForm->ConfidentialFlag)
+				$strToReturn .= ' <img src="/assets/images/confidential.png" title="Confidential Group" style="width: 89px; height: 13px; position: relative; top: 2px;"/>';
+
+			return $strToReturn;
+		}
 
 		public function RenderGroupName(Group $objGroup) {
 			$intGroupId = $objGroup->Id;

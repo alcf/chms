@@ -7,6 +7,13 @@
 </div>
 <br/>
 
+<h3>Events</h3>
+<div class="section">
+	<p>The following are Event Signups that this person has completed <strong>OR</strong> cancelled a registration for.</p>
+<?php $_CONTROL->dtgEvents->Render(); ?>
+</div>
+<br/>
+
 <h3>Communication Lists
 	<button class="primary" onclick="document.location='#groups/add_list'; return false;">Add</button></h3>
 <div class="section">
