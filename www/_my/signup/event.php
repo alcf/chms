@@ -53,6 +53,12 @@
 				$this->strHtmlIncludeFilePath = '_registered.tpl.php';
 				return;
 			}
+			
+			// Ensure capacity limits
+			if (!$this->objSignupForm->IsWithinCapacity()) {
+				$this->strHtmlIncludeFilePath = '_capacity.tpl.php';
+				return;
+			}
 
 			$this->objEvent = $this->objSignupForm->EventSignupForm;
 			$objSignupEntryArray = SignupEntry::LoadArrayBySignupFormIdPersonIdSignupEntryStatusTypeId($this->objSignupForm->Id, QApplication::$PublicLogin->PersonId, SignupEntryStatusType::Incomplete);

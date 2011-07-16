@@ -108,6 +108,16 @@
 			}
 		}
 
+		/**
+		 * Specifies whether or not this is signup is still within the capacity limits
+		 * (or if no capacity is specified, we always return true)
+		 * @return boolean
+		 */
+		public function IsWithinCapacity() {
+			if (!$this->intSignupLimit) return true;
+			return (SignupEntry::CountBySignupFormIdSignupEntryStatusTypeId($this->intId, SignupEntryStatusType::Complete) < $this->intSignupLimit);
+		}
+
 		public function IsLoginCanView(Login $objLogin) {
 			if (!$this->ConfidentialFlag) return true;
 			if ($this->Ministry->IsLoginCanAdminMinistry($objLogin)) return true;

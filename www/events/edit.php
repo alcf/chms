@@ -145,11 +145,15 @@
 			// Setup Limit
 			$this->txtSignupLimit = $this->mctSignupForm->txtSignupLimit_Create();
 			$this->txtSignupLimit->Minimum = 0;
+			
+			// TODO: Implement Gender-Specific Limits
 			$this->txtSignupMaleLimit = $this->mctSignupForm->txtSignupMaleLimit_Create();
+			$this->txtSignupMaleLimit->Visible = false;
 			$this->txtSignupMaleLimit->Minimum = 0;
 			$this->txtSignupFemaleLimit = $this->mctSignupForm->txtSignupFemaleLimit_Create();
 			$this->txtSignupFemaleLimit->Minimum = 0;
-
+			$this->txtSignupFemaleLimit->Visible = false;
+			
 			// Setup Controls for Child
 			switch ($objSignupForm->SignupFormTypeId) {
 				case SignupFormType::Event:
