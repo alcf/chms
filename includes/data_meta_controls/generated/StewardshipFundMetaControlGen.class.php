@@ -22,12 +22,16 @@
 	 * property-read QLabel $MinistryIdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
+	 * property QTextBox $ExternalNameControl
+	 * property-read QLabel $ExternalNameLabel
 	 * property QTextBox $AccountNumberControl
 	 * property-read QLabel $AccountNumberLabel
 	 * property QTextBox $FundNumberControl
 	 * property-read QLabel $FundNumberLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
+	 * property QCheckBox $ExternalFlagControl
+	 * property-read QLabel $ExternalFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -78,6 +82,12 @@
 		protected $txtName;
 
         /**
+         * @var QTextBox txtExternalName;
+         * @access protected
+         */
+		protected $txtExternalName;
+
+        /**
          * @var QTextBox txtAccountNumber;
          * @access protected
          */
@@ -95,6 +105,12 @@
          */
 		protected $chkActiveFlag;
 
+        /**
+         * @var QCheckBox chkExternalFlag;
+         * @access protected
+         */
+		protected $chkExternalFlag;
+
 
 		// Controls that allow the viewing of StewardshipFund's individual data fields
         /**
@@ -108,6 +124,12 @@
          * @access protected
          */
 		protected $lblName;
+
+        /**
+         * @var QLabel lblExternalName
+         * @access protected
+         */
+		protected $lblExternalName;
 
         /**
          * @var QLabel lblAccountNumber
@@ -126,6 +148,12 @@
          * @access protected
          */
 		protected $lblActiveFlag;
+
+        /**
+         * @var QLabel lblExternalFlag
+         * @access protected
+         */
+		protected $lblExternalFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -306,6 +334,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtExternalName
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtExternalName_Create($strControlId = null) {
+			$this->txtExternalName = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtExternalName->Name = QApplication::Translate('External Name');
+			$this->txtExternalName->Text = $this->objStewardshipFund->ExternalName;
+			$this->txtExternalName->MaxLength = StewardshipFund::ExternalNameMaxLength;
+			return $this->txtExternalName;
+		}
+
+		/**
+		 * Create and setup QLabel lblExternalName
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblExternalName_Create($strControlId = null) {
+			$this->lblExternalName = new QLabel($this->objParentObject, $strControlId);
+			$this->lblExternalName->Name = QApplication::Translate('External Name');
+			$this->lblExternalName->Text = $this->objStewardshipFund->ExternalName;
+			return $this->lblExternalName;
+		}
+
+		/**
 		 * Create and setup QTextBox txtAccountNumber
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -379,6 +432,30 @@
 			return $this->lblActiveFlag;
 		}
 
+		/**
+		 * Create and setup QCheckBox chkExternalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkExternalFlag_Create($strControlId = null) {
+			$this->chkExternalFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkExternalFlag->Name = QApplication::Translate('External Flag');
+			$this->chkExternalFlag->Checked = $this->objStewardshipFund->ExternalFlag;
+			return $this->chkExternalFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblExternalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblExternalFlag_Create($strControlId = null) {
+			$this->lblExternalFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblExternalFlag->Name = QApplication::Translate('External Flag');
+			$this->lblExternalFlag->Text = ($this->objStewardshipFund->ExternalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblExternalFlag;
+		}
+
 
 
 		/**
@@ -408,6 +485,9 @@
 			if ($this->txtName) $this->txtName->Text = $this->objStewardshipFund->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objStewardshipFund->Name;
 
+			if ($this->txtExternalName) $this->txtExternalName->Text = $this->objStewardshipFund->ExternalName;
+			if ($this->lblExternalName) $this->lblExternalName->Text = $this->objStewardshipFund->ExternalName;
+
 			if ($this->txtAccountNumber) $this->txtAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 			if ($this->lblAccountNumber) $this->lblAccountNumber->Text = $this->objStewardshipFund->AccountNumber;
 
@@ -416,6 +496,9 @@
 
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objStewardshipFund->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objStewardshipFund->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
+			if ($this->chkExternalFlag) $this->chkExternalFlag->Checked = $this->objStewardshipFund->ExternalFlag;
+			if ($this->lblExternalFlag) $this->lblExternalFlag->Text = ($this->objStewardshipFund->ExternalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
 		}
 
@@ -442,9 +525,11 @@
 				// Update any fields for controls that have been created
 				if ($this->lstMinistry) $this->objStewardshipFund->MinistryId = $this->lstMinistry->SelectedValue;
 				if ($this->txtName) $this->objStewardshipFund->Name = $this->txtName->Text;
+				if ($this->txtExternalName) $this->objStewardshipFund->ExternalName = $this->txtExternalName->Text;
 				if ($this->txtAccountNumber) $this->objStewardshipFund->AccountNumber = $this->txtAccountNumber->Text;
 				if ($this->txtFundNumber) $this->objStewardshipFund->FundNumber = $this->txtFundNumber->Text;
 				if ($this->chkActiveFlag) $this->objStewardshipFund->ActiveFlag = $this->chkActiveFlag->Checked;
+				if ($this->chkExternalFlag) $this->objStewardshipFund->ExternalFlag = $this->chkExternalFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -505,6 +590,12 @@
 				case 'NameLabel':
 					if (!$this->lblName) return $this->lblName_Create();
 					return $this->lblName;
+				case 'ExternalNameControl':
+					if (!$this->txtExternalName) return $this->txtExternalName_Create();
+					return $this->txtExternalName;
+				case 'ExternalNameLabel':
+					if (!$this->lblExternalName) return $this->lblExternalName_Create();
+					return $this->lblExternalName;
 				case 'AccountNumberControl':
 					if (!$this->txtAccountNumber) return $this->txtAccountNumber_Create();
 					return $this->txtAccountNumber;
@@ -523,6 +614,12 @@
 				case 'ActiveFlagLabel':
 					if (!$this->lblActiveFlag) return $this->lblActiveFlag_Create();
 					return $this->lblActiveFlag;
+				case 'ExternalFlagControl':
+					if (!$this->chkExternalFlag) return $this->chkExternalFlag_Create();
+					return $this->chkExternalFlag;
+				case 'ExternalFlagLabel':
+					if (!$this->lblExternalFlag) return $this->lblExternalFlag_Create();
+					return $this->lblExternalFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -551,12 +648,16 @@
 						return ($this->lstMinistry = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
+					case 'ExternalNameControl':
+						return ($this->txtExternalName = QType::Cast($mixValue, 'QControl'));
 					case 'AccountNumberControl':
 						return ($this->txtAccountNumber = QType::Cast($mixValue, 'QControl'));
 					case 'FundNumberControl':
 						return ($this->txtFundNumber = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
+					case 'ExternalFlagControl':
+						return ($this->chkExternalFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

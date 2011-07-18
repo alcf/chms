@@ -262,29 +262,61 @@ INSERT INTO stewardship_batch_status_type VALUES(1, 'New Batch');
 INSERT INTO stewardship_batch_status_type VALUES(2, 'Posted In Full');
 INSERT INTO stewardship_batch_status_type VALUES(3, 'Unposted Changes Exist');
 
+#######################
+# Added for Version 003
+#######################
 
+INSERT INTO credit_card_type VALUES(1, 'Discover');
+INSERT INTO credit_card_type VALUES(2, 'Mastercard');
+INSERT INTO credit_card_type VALUES(3, 'Visa');
 
-INSERT INTO form_question_type VALUES(1, 'Name');
+INSERT INTO credit_card_status_type VALUES(1, 'Authorized');
+INSERT INTO credit_card_status_type VALUES(2, 'Captured');
+INSERT INTO credit_card_status_type VALUES(3, 'Reconciled');
+INSERT INTO credit_card_status_type VALUES(4, 'Charged Back');
+INSERT INTO credit_card_status_type VALUES(5, 'Capture Failed');
+
+INSERT INTO form_question_type VALUES(1, 'Spouse Name');
 INSERT INTO form_question_type VALUES(2, 'Address');
 INSERT INTO form_question_type VALUES(3, 'Age');
 INSERT INTO form_question_type VALUES(4, 'Date of Birth');
-INSERT INTO form_question_type VALUES(5, 'Phone');
-INSERT INTO form_question_type VALUES(6, 'Email');
-INSERT INTO form_question_type VALUES(7, 'Short Text');
-INSERT INTO form_question_type VALUES(8, 'Long Text');
-INSERT INTO form_question_type VALUES(9, 'Number');
-INSERT INTO form_question_type VALUES(10, 'Yes No');
-INSERT INTO form_question_type VALUES(11, 'Single Select');
-INSERT INTO form_question_type VALUES(12, 'Multiple Select');
+INSERT INTO form_question_type VALUES(5, 'Gender');
+INSERT INTO form_question_type VALUES(6, 'Phone');
+INSERT INTO form_question_type VALUES(7, 'Email');
+INSERT INTO form_question_type VALUES(8, 'Short Text');
+INSERT INTO form_question_type VALUES(9, 'Long Text');
+INSERT INTO form_question_type VALUES(10, 'Number');
+INSERT INTO form_question_type VALUES(11, 'Yes No');
+INSERT INTO form_question_type VALUES(12, 'Single Select');
+INSERT INTO form_question_type VALUES(13, 'Multiple Select');
+
+INSERT INTO form_payment_type VALUES(1, 'Pay In Full');
+INSERT INTO form_payment_type VALUES(2, 'Deposit Required');
+INSERT INTO form_payment_type VALUES(3, 'Donation');
+
+INSERT INTO form_product_type VALUES(1, 'Required');
+INSERT INTO form_product_type VALUES(2, 'Required With Choice');
+INSERT INTO form_product_type VALUES(3, 'Optional');
+
+INSERT INTO signup_entry_status_type VALUES(1, 'Incomplete');
+INSERT INTO signup_entry_status_type VALUES(2, 'Complete');
+INSERT INTO signup_entry_status_type VALUES(3, 'Cancelled');
+INSERT INTO signup_entry_status_type VALUES(4, 'Test');
 
 INSERT INTO signup_form_type VALUES(1, 'Event');
+INSERT INTO signup_form_type VALUES(2, 'Course');
 
-INSERT INTO form_payment_type VALUES(1, 'No Payment');
-INSERT INTO form_payment_type VALUES(2, 'Pay In Full');
-INSERT INTO form_payment_type VALUES(3, 'Deposit Required');
-INSERT INTO form_payment_type VALUES(4, 'Variable Payment');
+INSERT INTO signup_payment_type(id, name) VALUES (1, 'Cash');
+INSERT INTO signup_payment_type(id, name) VALUES (2, 'Check');
+INSERT INTO signup_payment_type(id, name) VALUES (3, 'Scholarship');
+INSERT INTO signup_payment_type(id, name) VALUES (4, 'Discount');
+INSERT INTO signup_payment_type(id, name) VALUES (5, 'Credit Card');
+INSERT INTO signup_payment_type(id, name) VALUES (6, 'Refund');
+INSERT INTO signup_payment_type(id, name) VALUES (7, 'Transfer');
+INSERT INTO signup_payment_type(id, name) VALUES (8, 'Other');
 
-
+INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
+INSERT INTO permission_type VALUES(256, 'Manage Classes');
 
 ##############
 # Starter Data
@@ -364,8 +396,8 @@ INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',   1, 'Gro
 ####
 
 
-INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', null, null, true);
-INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', null, null, true);
-INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', null, null, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Tithes and Offering', 'Tithes and Offering', null, null, true, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Buildling Fund', 'Buildling Fund', null, null, true, true);
+INSERT INTO stewardship_fund VALUES(null, null, 'Imagine Campaign', 'Imagine Campaign', null, null, true, true);
 
 INSERT INTO login VALUES(null, 3, 65535, 'admin', '25498b022880496af16a162ca4edfc52', NULL, NULL, true, true, 'admin@alcf.net', 'Admin', null, 'User');

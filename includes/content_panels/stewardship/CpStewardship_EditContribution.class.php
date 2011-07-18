@@ -398,6 +398,8 @@
 					case StewardshipContributionType::CreditCard:
 					case StewardshipContributionType::CreditCardRecurring:
 						$this->txtAuthorization->Visible = true;
+						$this->txtAlternateSource->Visible = true;
+						$this->txtAlternateSource->Name = 'CC Info';
 						break;
 	
 					case StewardshipContributionType::Cash:
@@ -406,6 +408,7 @@
 					case StewardshipContributionType::Automobile:
 					case StewardshipContributionType::Other:
 						$this->txtAlternateSource->Visible = true;
+						$this->txtAlternateSource->Name = 'Trans. Info';
 						break;
 	
 					default:

@@ -306,6 +306,8 @@
 				case 'FirstName': return QQN::Login()->FirstName;
 				case 'MiddleInitial': return QQN::Login()->MiddleInitial;
 				case 'LastName': return QQN::Login()->LastName;
+				case 'ClassInstructor': return QQN::Login()->ClassInstructor;
+
 				default: throw new QCallerException('Simple Property not found in LoginDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

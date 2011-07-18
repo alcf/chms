@@ -26,6 +26,8 @@
 	 * property-read QLabel $ParentMinistryIdLabel
 	 * property QIntegerTextBox $GroupTypeBitmapControl
 	 * property-read QLabel $GroupTypeBitmapLabel
+	 * property QIntegerTextBox $SignupFormTypeBitmapControl
+	 * property-read QLabel $SignupFormTypeBitmapLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
 	 * property QListBox $LoginControl
@@ -92,6 +94,12 @@
 		protected $txtGroupTypeBitmap;
 
         /**
+         * @var QIntegerTextBox txtSignupFormTypeBitmap;
+         * @access protected
+         */
+		protected $txtSignupFormTypeBitmap;
+
+        /**
          * @var QCheckBox chkActiveFlag;
          * @access protected
          */
@@ -122,6 +130,12 @@
          * @access protected
          */
 		protected $lblGroupTypeBitmap;
+
+        /**
+         * @var QLabel lblSignupFormTypeBitmap
+         * @access protected
+         */
+		protected $lblSignupFormTypeBitmap;
 
         /**
          * @var QLabel lblActiveFlag
@@ -365,6 +379,32 @@
 		}
 
 		/**
+		 * Create and setup QIntegerTextBox txtSignupFormTypeBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtSignupFormTypeBitmap_Create($strControlId = null) {
+			$this->txtSignupFormTypeBitmap = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtSignupFormTypeBitmap->Name = QApplication::Translate('Signup Form Type Bitmap');
+			$this->txtSignupFormTypeBitmap->Text = $this->objMinistry->SignupFormTypeBitmap;
+			return $this->txtSignupFormTypeBitmap;
+		}
+
+		/**
+		 * Create and setup QLabel lblSignupFormTypeBitmap
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblSignupFormTypeBitmap_Create($strControlId = null, $strFormat = null) {
+			$this->lblSignupFormTypeBitmap = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSignupFormTypeBitmap->Name = QApplication::Translate('Signup Form Type Bitmap');
+			$this->lblSignupFormTypeBitmap->Text = $this->objMinistry->SignupFormTypeBitmap;
+			$this->lblSignupFormTypeBitmap->Format = $strFormat;
+			return $this->lblSignupFormTypeBitmap;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkActiveFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -474,6 +514,9 @@
 			if ($this->txtGroupTypeBitmap) $this->txtGroupTypeBitmap->Text = $this->objMinistry->GroupTypeBitmap;
 			if ($this->lblGroupTypeBitmap) $this->lblGroupTypeBitmap->Text = $this->objMinistry->GroupTypeBitmap;
 
+			if ($this->txtSignupFormTypeBitmap) $this->txtSignupFormTypeBitmap->Text = $this->objMinistry->SignupFormTypeBitmap;
+			if ($this->lblSignupFormTypeBitmap) $this->lblSignupFormTypeBitmap->Text = $this->objMinistry->SignupFormTypeBitmap;
+
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objMinistry->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objMinistry->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -535,6 +578,7 @@
 				if ($this->txtName) $this->objMinistry->Name = $this->txtName->Text;
 				if ($this->lstParentMinistry) $this->objMinistry->ParentMinistryId = $this->lstParentMinistry->SelectedValue;
 				if ($this->txtGroupTypeBitmap) $this->objMinistry->GroupTypeBitmap = $this->txtGroupTypeBitmap->Text;
+				if ($this->txtSignupFormTypeBitmap) $this->objMinistry->SignupFormTypeBitmap = $this->txtSignupFormTypeBitmap->Text;
 				if ($this->chkActiveFlag) $this->objMinistry->ActiveFlag = $this->chkActiveFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -610,6 +654,12 @@
 				case 'GroupTypeBitmapLabel':
 					if (!$this->lblGroupTypeBitmap) return $this->lblGroupTypeBitmap_Create();
 					return $this->lblGroupTypeBitmap;
+				case 'SignupFormTypeBitmapControl':
+					if (!$this->txtSignupFormTypeBitmap) return $this->txtSignupFormTypeBitmap_Create();
+					return $this->txtSignupFormTypeBitmap;
+				case 'SignupFormTypeBitmapLabel':
+					if (!$this->lblSignupFormTypeBitmap) return $this->lblSignupFormTypeBitmap_Create();
+					return $this->lblSignupFormTypeBitmap;
 				case 'ActiveFlagControl':
 					if (!$this->chkActiveFlag) return $this->chkActiveFlag_Create();
 					return $this->chkActiveFlag;
@@ -654,6 +704,8 @@
 						return ($this->lstParentMinistry = QType::Cast($mixValue, 'QControl'));
 					case 'GroupTypeBitmapControl':
 						return ($this->txtGroupTypeBitmap = QType::Cast($mixValue, 'QControl'));
+					case 'SignupFormTypeBitmapControl':
+						return ($this->txtSignupFormTypeBitmap = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
 					case 'LoginControl':

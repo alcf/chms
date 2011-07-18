@@ -45,6 +45,9 @@
 	input.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	input.textbox:disabled { background-color: #bbb; color: #999; }
+	textarea.textbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
+	textarea.textbox:focus { background-color: #fff; }
+	textarea.textbox:disabled { background-color: #bbb; color: #999; }
 	select.listbox { border: 1px solid #b0bbd0; background-color: #f3f3f3; font-family: arial; font-size: 13px; }
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
@@ -159,6 +162,8 @@
 		color: #00679c;
 		text-shadow: 1px 1px #abc; 
 	}
+	
+	ul.subnavSide li a.disabled { background-color: #666; color: #999; text-shadow: none; }
 
 	ul.subnavSideStewardship li a { padding: 2px 10px; }
 	ul.subnavSideStewardship li a div.info div.left { float : left; font-size: 10px; position:relative; top: 2px; font-weight: normal; }
@@ -168,10 +173,18 @@
 	ul.subnavSideStewardship li a.selected div.info { font-style: normal; color: #555; text-shadow: none; }
 
 	ul.subnavSide li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; text-shadow: 1px 1px #9ab; }
+	
 
 	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; }
 	ul.subnavSide li.last a { -moz-border-radius: 0 0 0 5px; }
 
+		/** Alterations for "SwitchStyle" **/
+		ul#switchStyle { float: none; display: inline; }
+		ui#switchStyle li { }
+		ul#switchStyle li a { width: 100px; float: left; text-align: center; border-width: 1px 0; border-style: solid; border-color: #998877;}
+
+		ul#switchStyle li.first a { -moz-border-radius: 5px 0 0 5px; border-left-width: 1px; }
+		ul#switchStyle li.last a { -moz-border-radius:  0 5px 5px 0; border-right-width: 1px; }
 
 	/*** SUBNAV-SIDE CONTENT ***/
 
@@ -221,9 +234,13 @@
 	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
 
 	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; }
+	span.detail { color: #888; font-size: 10px; }
+	span.sublinks { color: #ccc; font-size: 10px; }
+	/** see bottom of page for sublinks a override in datagrid **/
 
 	/*** OTHER ***/
 
+	div.line { height: 1px; border-top: 1px dashed #636; font-size: 1px; color: #636; margin: 18px 0; }
 	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
@@ -320,6 +337,13 @@ div.shopInfo div.shopLeft { float: left; }
 	div#selectPersonPanel_ctl div.right { height: 200px; overflow: auto; }
 	div.createPersonPanel { border: 1px solid #ccc; background-color: #eee; padding: 5px; width: 650px; }
 	
+	div.columnSelectorColumn { float: left; font-family: arial; font-size: 11px; width: 150px; margin-right: 5px; }
+	div.columnSelectorColumn a { text-decoration: none; }
+	div.columnSelectorColumn a:hover { text-decoration: underline; }
+	div.columnSelectorColumn table.columnSelector { background-color: #ccc; width: 150px; font-size: 10px; }
+	
+	
+	
 	/* QDataGrid */
 	p.datagrid { font-style: italic; }
 	table.datagrid { font-family: verdana, arial, helvetica; font-size: 12px; }
@@ -349,7 +373,7 @@ div.shopInfo div.shopLeft { float: left; }
 		table.datagrid tr.previous td a:hover { color: #666; }
 		
 		table.datagrid td a.set { color: #888; font-size: 10px; text-transform: uppercase;}
-
+		table.datagrid td span.sublinks a { color: #888; font-size: 10px; }
 		
 		
 

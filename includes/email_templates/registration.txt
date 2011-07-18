@@ -1,0 +1,20 @@
+======= DO NOT REPLY =======
+
+Dear %PERSON_NAME%,
+
+Thank you for opening up a registration at the my.alcf website for Abundant Life Christian Fellowship.  The first thing we need to do is for you to confirm your email address.
+
+You can do this by going to %URL% by using your web browser and then entering in your username and the following confirmation code:
+
+Username:  %USERNAME%
+Confirmation Code:  %CODE%
+
+The web site will then take things from there.
+
+If you did *NOT* request a registration on th my.alcf website, or if you have any questions, please feel free and contact Melissa Look at melissa.look@alcf.net or call 650-625-1500.
+
+Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!
+
+============================
+
+P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.

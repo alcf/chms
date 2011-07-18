@@ -20,6 +20,7 @@
 	 * @property string $Name the value for strName 
 	 * @property integer $ParentMinistryId the value for intParentMinistryId 
 	 * @property integer $GroupTypeBitmap the value for intGroupTypeBitmap 
+	 * @property integer $SignupFormTypeBitmap the value for intSignupFormTypeBitmap 
 	 * @property boolean $ActiveFlag the value for blnActiveFlag (Not Null)
 	 * @property Ministry $ParentMinistry the value for the Ministry object referenced by intParentMinistryId 
 	 * @property Login $_Login the value for the private _objLogin (Read-Only) if set due to an expansion on the ministry_login_assn association table
@@ -32,6 +33,8 @@
 	 * @property GroupRole[] $_GroupRoleArray the value for the private _objGroupRoleArray (Read-Only) if set due to an ExpandAsArray on the group_role.ministry_id reverse relationship
 	 * @property Ministry $_ChildMinistry the value for the private _objChildMinistry (Read-Only) if set due to an expansion on the ministry.parent_ministry_id reverse relationship
 	 * @property Ministry[] $_ChildMinistryArray the value for the private _objChildMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry.parent_ministry_id reverse relationship
+	 * @property SignupForm $_SignupForm the value for the private _objSignupForm (Read-Only) if set due to an expansion on the signup_form.ministry_id reverse relationship
+	 * @property SignupForm[] $_SignupFormArray the value for the private _objSignupFormArray (Read-Only) if set due to an ExpandAsArray on the signup_form.ministry_id reverse relationship
 	 * @property StewardshipFund $_StewardshipFund the value for the private _objStewardshipFund (Read-Only) if set due to an expansion on the stewardship_fund.ministry_id reverse relationship
 	 * @property StewardshipFund[] $_StewardshipFundArray the value for the private _objStewardshipFundArray (Read-Only) if set due to an ExpandAsArray on the stewardship_fund.ministry_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -82,6 +85,14 @@
 		 */
 		protected $intGroupTypeBitmap;
 		const GroupTypeBitmapDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column ministry.signup_form_type_bitmap
+		 * @var integer intSignupFormTypeBitmap
+		 */
+		protected $intSignupFormTypeBitmap;
+		const SignupFormTypeBitmapDefault = null;
 
 
 		/**
@@ -171,6 +182,22 @@
 		 * @var Ministry[] _objChildMinistryArray;
 		 */
 		private $_objChildMinistryArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupForm object
+		 * (of type SignupForm), if this Ministry object was restored with
+		 * an expansion on the signup_form association table.
+		 * @var SignupForm _objSignupForm;
+		 */
+		private $_objSignupForm;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupForm objects
+		 * (of type SignupForm[]), if this Ministry object was restored with
+		 * an ExpandAsArray on the signup_form association table.
+		 * @var SignupForm[] _objSignupFormArray;
+		 */
+		private $_objSignupFormArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipFund object
@@ -535,6 +562,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'parent_ministry_id', $strAliasPrefix . 'parent_ministry_id');
 			$objBuilder->AddSelectItem($strTableName, 'group_type_bitmap', $strAliasPrefix . 'group_type_bitmap');
+			$objBuilder->AddSelectItem($strTableName, 'signup_form_type_bitmap', $strAliasPrefix . 'signup_form_type_bitmap');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
 		}
 
@@ -644,6 +672,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'signupform__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupFormArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupFormArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupFormArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupFormArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'stewardshipfund__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -679,6 +721,8 @@
 			$objToReturn->intParentMinistryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'group_type_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_type_bitmap'] : $strAliasPrefix . 'group_type_bitmap';
 			$objToReturn->intGroupTypeBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'signup_form_type_bitmap', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'signup_form_type_bitmap'] : $strAliasPrefix . 'signup_form_type_bitmap';
+			$objToReturn->intSignupFormTypeBitmap = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
@@ -751,6 +795,16 @@
 					$objToReturn->_objChildMinistryArray[] = Ministry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childministry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objChildMinistry = Ministry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childministry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupForm Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupform__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupFormArray[] = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupForm = SignupForm::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupform__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipFund Virtual Binding
@@ -987,12 +1041,14 @@
 							`name`,
 							`parent_ministry_id`,
 							`group_type_bitmap`,
+							`signup_form_type_bitmap`,
 							`active_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strToken) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
 							' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
+							' . $objDatabase->SqlVariable($this->intSignupFormTypeBitmap) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						)
 					');
@@ -1017,6 +1073,7 @@
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
 							`parent_ministry_id` = ' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
 							`group_type_bitmap` = ' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
+							`signup_form_type_bitmap` = ' . $objDatabase->SqlVariable($this->intSignupFormTypeBitmap) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
@@ -1106,6 +1163,7 @@
 			$this->strName = $objReloaded->strName;
 			$this->ParentMinistryId = $objReloaded->ParentMinistryId;
 			$this->intGroupTypeBitmap = $objReloaded->intGroupTypeBitmap;
+			$this->intSignupFormTypeBitmap = $objReloaded->intSignupFormTypeBitmap;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
 		}
 
@@ -1124,6 +1182,7 @@
 					`name`,
 					`parent_ministry_id`,
 					`group_type_bitmap`,
+					`signup_form_type_bitmap`,
 					`active_flag`,
 					__sys_login_id,
 					__sys_action,
@@ -1134,6 +1193,7 @@
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->intParentMinistryId) . ',
 					' . $objDatabase->SqlVariable($this->intGroupTypeBitmap) . ',
+					' . $objDatabase->SqlVariable($this->intSignupFormTypeBitmap) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
@@ -1209,6 +1269,11 @@
 					// Gets the value for intGroupTypeBitmap 
 					// @return integer
 					return $this->intGroupTypeBitmap;
+
+				case 'SignupFormTypeBitmap':
+					// Gets the value for intSignupFormTypeBitmap 
+					// @return integer
+					return $this->intSignupFormTypeBitmap;
 
 				case 'ActiveFlag':
 					// Gets the value for blnActiveFlag (Not Null)
@@ -1297,6 +1362,18 @@
 					// @return Ministry[]
 					return (array) $this->_objChildMinistryArray;
 
+				case '_SignupForm':
+					// Gets the value for the private _objSignupForm (Read-Only)
+					// if set due to an expansion on the signup_form.ministry_id reverse relationship
+					// @return SignupForm
+					return $this->_objSignupForm;
+
+				case '_SignupFormArray':
+					// Gets the value for the private _objSignupFormArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_form.ministry_id reverse relationship
+					// @return SignupForm[]
+					return (array) $this->_objSignupFormArray;
+
 				case '_StewardshipFund':
 					// Gets the value for the private _objStewardshipFund (Read-Only)
 					// if set due to an expansion on the stewardship_fund.ministry_id reverse relationship
@@ -1376,6 +1453,17 @@
 					// @return integer
 					try {
 						return ($this->intGroupTypeBitmap = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SignupFormTypeBitmap':
+					// Sets the value for intSignupFormTypeBitmap 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intSignupFormTypeBitmap = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2183,6 +2271,188 @@
 
 			
 		
+		// Related Objects' Methods for SignupForm
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupForms as an array of SignupForm objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupForm[]
+		*/ 
+		public function GetSignupFormArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupForm::LoadArrayByMinistryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupForms
+		 * @return int
+		*/ 
+		public function CountSignupForms() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupForm::CountByMinistryId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function AssociateSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupForm on this unsaved Ministry.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupForm on this Ministry with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->MinistryId = $this->intId;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function UnassociateSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this Ministry with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`ministry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->MinistryId = null;
+				$objSignupForm->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupForms
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupForms() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByMinistryId($this->intId) as $objSignupForm) {
+					$objSignupForm->MinistryId = null;
+					$objSignupForm->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_form`
+				SET
+					`ministry_id` = null
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupForm
+		 * @param SignupForm $objSignupForm
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupForm(SignupForm $objSignupForm) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+			if ((is_null($objSignupForm->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this Ministry with an unsaved SignupForm.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupForm->Id) . ' AND
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupForm->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupForms
+		 * @return void
+		*/ 
+		public function DeleteAllSignupForms() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupForm on this unsaved Ministry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Ministry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupForm::LoadArrayByMinistryId($this->intId) as $objSignupForm) {
+					$objSignupForm->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_form`
+				WHERE
+					`ministry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for StewardshipFund
 		//-------------------------------------------------------------------
 
@@ -2561,6 +2831,7 @@
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="ParentMinistry" type="xsd1:Ministry"/>';
 			$strToReturn .= '<element name="GroupTypeBitmap" type="xsd:int"/>';
+			$strToReturn .= '<element name="SignupFormTypeBitmap" type="xsd:int"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2596,6 +2867,8 @@
 				$objToReturn->ParentMinistry = Ministry::GetObjectFromSoapObject($objSoapObject->ParentMinistry);
 			if (property_exists($objSoapObject, 'GroupTypeBitmap'))
 				$objToReturn->intGroupTypeBitmap = $objSoapObject->GroupTypeBitmap;
+			if (property_exists($objSoapObject, 'SignupFormTypeBitmap'))
+				$objToReturn->intSignupFormTypeBitmap = $objSoapObject->SignupFormTypeBitmap;
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2673,12 +2946,14 @@
 	 * @property-read QQNode $ParentMinistryId
 	 * @property-read QQNodeMinistry $ParentMinistry
 	 * @property-read QQNode $GroupTypeBitmap
+	 * @property-read QQNode $SignupFormTypeBitmap
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNodeMinistryLogin $Login
 	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
 	 * @property-read QQReverseReferenceNodeGroup $Group
 	 * @property-read QQReverseReferenceNodeGroupRole $GroupRole
 	 * @property-read QQReverseReferenceNodeMinistry $ChildMinistry
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeStewardshipFund $StewardshipFund
 	 */
 	class QQNodeMinistry extends QQNode {
@@ -2699,6 +2974,8 @@
 					return new QQNodeMinistry('parent_ministry_id', 'ParentMinistry', 'integer', $this);
 				case 'GroupTypeBitmap':
 					return new QQNode('group_type_bitmap', 'GroupTypeBitmap', 'integer', $this);
+				case 'SignupFormTypeBitmap':
+					return new QQNode('signup_form_type_bitmap', 'SignupFormTypeBitmap', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'Login':
@@ -2711,6 +2988,8 @@
 					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
+				case 'SignupForm':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'ministry_id');
 				case 'StewardshipFund':
 					return new QQReverseReferenceNodeStewardshipFund($this, 'stewardshipfund', 'reverse_reference', 'ministry_id');
 
@@ -2734,12 +3013,14 @@
 	 * @property-read QQNode $ParentMinistryId
 	 * @property-read QQNodeMinistry $ParentMinistry
 	 * @property-read QQNode $GroupTypeBitmap
+	 * @property-read QQNode $SignupFormTypeBitmap
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNodeMinistryLogin $Login
 	 * @property-read QQReverseReferenceNodeCommunicationList $CommunicationList
 	 * @property-read QQReverseReferenceNodeGroup $Group
 	 * @property-read QQReverseReferenceNodeGroupRole $GroupRole
 	 * @property-read QQReverseReferenceNodeMinistry $ChildMinistry
+	 * @property-read QQReverseReferenceNodeSignupForm $SignupForm
 	 * @property-read QQReverseReferenceNodeStewardshipFund $StewardshipFund
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -2761,6 +3042,8 @@
 					return new QQNodeMinistry('parent_ministry_id', 'ParentMinistry', 'integer', $this);
 				case 'GroupTypeBitmap':
 					return new QQNode('group_type_bitmap', 'GroupTypeBitmap', 'integer', $this);
+				case 'SignupFormTypeBitmap':
+					return new QQNode('signup_form_type_bitmap', 'SignupFormTypeBitmap', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
 				case 'Login':
@@ -2773,6 +3056,8 @@
 					return new QQReverseReferenceNodeGroupRole($this, 'grouprole', 'reverse_reference', 'ministry_id');
 				case 'ChildMinistry':
 					return new QQReverseReferenceNodeMinistry($this, 'childministry', 'reverse_reference', 'parent_ministry_id');
+				case 'SignupForm':
+					return new QQReverseReferenceNodeSignupForm($this, 'signupform', 'reverse_reference', 'ministry_id');
 				case 'StewardshipFund':
 					return new QQReverseReferenceNodeStewardshipFund($this, 'stewardshipfund', 'reverse_reference', 'ministry_id');
 

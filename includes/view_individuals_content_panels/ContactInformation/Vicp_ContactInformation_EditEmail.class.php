@@ -6,6 +6,11 @@
 		public $txtAddress;
 
 		protected function SetupPanel() {
+			// Ensure Permission
+			if (!$this->objPerson->IsLoginCanEditEmailAddress(QApplication::$Login)) {
+				return $this->ReturnTo('#contact');
+			}
+
 			// Get and Validate the Email Object
 			$this->mctEmail = EmailMetaControl::Create($this, $this->strUrlHashArgument, QMetaControlCreateType::CreateOnRecordNotFound);
 

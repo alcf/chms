@@ -28,6 +28,7 @@
 	 * @property string $FirstName the value for strFirstName 
 	 * @property string $MiddleInitial the value for strMiddleInitial 
 	 * @property string $LastName the value for strLastName 
+	 * @property ClassInstructor $ClassInstructor the value for the ClassInstructor object that uniquely references this Login
 	 * @property Ministry $_Ministry the value for the private _objMinistry (Read-Only) if set due to an expansion on the ministry_login_assn association table
 	 * @property Ministry[] $_MinistryArray the value for the private _objMinistryArray (Read-Only) if set due to an ExpandAsArray on the ministry_login_assn association table
 	 * @property Comment $_CommentAsPostedBy the value for the private _objCommentAsPostedBy (Read-Only) if set due to an expansion on the comment.posted_by_login_id reverse relationship
@@ -276,6 +277,24 @@
 		///////////////////////////////
 		// PROTECTED MEMBER OBJECTS
 		///////////////////////////////
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column class_instructor.login_id.
+		 *
+		 * NOTE: Always use the ClassInstructor property getter to correctly retrieve this ClassInstructor object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var ClassInstructor objClassInstructor
+		 */
+		protected $objClassInstructor;
+		
+		/**
+		 * Used internally to manage whether the adjoined ClassInstructor object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyClassInstructor;
 
 
 
@@ -773,6 +792,18 @@
 				$strAliasPrefix = 'login__';
 
 
+			// Check for ClassInstructor Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'classinstructor__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objClassInstructor = ClassInstructor::InstantiateDbRow($objDbRow, $strAliasPrefix . 'classinstructor__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objClassInstructor = false;
+			}
+
 
 			// Check for Ministry Virtual Binding
 			$strAlias = $strAliasPrefix . 'ministry__ministry_id__id';
@@ -1099,6 +1130,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined ClassInstructor object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyClassInstructor) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = ClassInstructor::LoadByLoginId($this->intId)) {
+						$objAssociated->LoginId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objClassInstructor) {
+						$this->objClassInstructor->LoginId = $this->intId;
+						$this->objClassInstructor->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyClassInstructor = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1123,6 +1174,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = Login::GetDatabase();
 
+			
+			
+			// Update the adjoined ClassInstructor object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = ClassInstructor::LoadByLoginId($this->intId)) {
+				$objAssociated->LoginId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1348,6 +1409,24 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+		
+		
+				case 'ClassInstructor':
+					// Gets the value for the ClassInstructor object that uniquely references this Login
+					// by objClassInstructor (Unique)
+					// @return ClassInstructor
+					try {
+						if ($this->objClassInstructor === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objClassInstructor)
+							$this->objClassInstructor = ClassInstructor::LoadByLoginId($this->intId);
+						return $this->objClassInstructor;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				////////////////////////////
 				// Virtual Object References (Many to Many and Reverse References)
@@ -1589,6 +1668,43 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'ClassInstructor':
+					// Sets the value for the ClassInstructor object referenced by objClassInstructor (Unique)
+					// @param ClassInstructor $mixValue
+					// @return ClassInstructor
+					if (is_null($mixValue)) {
+						$this->objClassInstructor = null;
+
+						// Make sure we update the adjoined ClassInstructor object the next time we call Save()
+						$this->blnDirtyClassInstructor = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a ClassInstructor object
+						try {
+							$mixValue = QType::Cast($mixValue, 'ClassInstructor');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objClassInstructor to a DIFFERENT $mixValue?
+						if ((!$this->ClassInstructor) || ($this->ClassInstructor->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined ClassInstructor object the next time we call Save()
+							$this->blnDirtyClassInstructor = true;
+
+							// Update Local Member Variable
+							$this->objClassInstructor = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -2861,6 +2977,7 @@
 	 * @property-read QQNode $MiddleInitial
 	 * @property-read QQNode $LastName
 	 * @property-read QQNodeLoginMinistry $Ministry
+	 * @property-read QQReverseReferenceNodeClassInstructor $ClassInstructor
 	 * @property-read QQReverseReferenceNodeComment $CommentAsPostedBy
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeStewardshipBatch $StewardshipBatchAsCreatedBy
@@ -2901,6 +3018,8 @@
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'Ministry':
 					return new QQNodeLoginMinistry($this);
+				case 'ClassInstructor':
+					return new QQReverseReferenceNodeClassInstructor($this, 'classinstructor', 'reverse_reference', 'login_id', 'ClassInstructor');
 				case 'CommentAsPostedBy':
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
 				case 'EmailMessageRoute':
@@ -2940,6 +3059,7 @@
 	 * @property-read QQNode $MiddleInitial
 	 * @property-read QQNode $LastName
 	 * @property-read QQNodeLoginMinistry $Ministry
+	 * @property-read QQReverseReferenceNodeClassInstructor $ClassInstructor
 	 * @property-read QQReverseReferenceNodeComment $CommentAsPostedBy
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeStewardshipBatch $StewardshipBatchAsCreatedBy
@@ -2981,6 +3101,8 @@
 					return new QQNode('last_name', 'LastName', 'string', $this);
 				case 'Ministry':
 					return new QQNodeLoginMinistry($this);
+				case 'ClassInstructor':
+					return new QQReverseReferenceNodeClassInstructor($this, 'classinstructor', 'reverse_reference', 'login_id', 'ClassInstructor');
 				case 'CommentAsPostedBy':
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
 				case 'EmailMessageRoute':

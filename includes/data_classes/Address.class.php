@@ -26,6 +26,35 @@
 		public function __toString() {
 			return sprintf('Address Object %s',  $this->intId);
 		}
+		
+		/**
+		 * Given a "AddressFullLine" string, this will try and create an Address object (NOT from the DB or linked to a DB id)
+		 * given the parts of the FullLine.
+		 * 
+		 * This will return NULL if an address could not be deduced.
+		 * @param string $strAddressFullLine
+		 * @return Address
+		 */
+		public static function DeduceAddressFromFullLine($strAddressFullLine) {
+			$strParts = explode(', ', $strAddressFullLine);
+			if ((count($strParts) == 3) && (($intPosition = strpos($strParts[2], ' ')) == 2)) {
+				$objAddress = new Address();
+				$objAddress->Address1 = trim($strParts[0]);
+				$objAddress->City = trim($strParts[1]);
+				$objAddress->State = substr($strParts[2], 0, 2);
+				$objAddress->ZipCode = substr($strParts[2], 3);
+				return $objAddress;
+			} else if ((count($strParts) == 4) && (($intPosition = strpos($strParts[3], ' ')) == 2)) {
+				$objAddress = new Address();
+				$objAddress->Address1 = trim($strParts[0]);
+				$objAddress->Address2 = trim($strParts[1]);
+				$objAddress->City = trim($strParts[2]);
+				$objAddress->State = substr($strParts[3], 0, 2);
+				$objAddress->ZipCode = substr($strParts[3], 3);
+				return $objAddress;
+			}
+			return null;
+		}
 
 		public function Delete() {
 			try {
@@ -57,6 +86,22 @@
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
+			}
+		}
+
+		public function IsEqualTo(Address $objAddress) {
+			$blnCheckAddress2 = (strlen($objAddress->Address2) || strlen($this->Address2)) ? true : false;
+
+			if (
+				(trim(strtolower($objAddress->Address1)) == trim(strtolower($this->Address1))) &&
+				(!$blnCheckAddress2 || (trim(strtolower($objAddress->Address2)) == trim(strtolower($this->Address2)))) &&
+				(trim(strtolower($objAddress->City)) == trim(strtolower($this->City))) &&
+				($objAddress->State == $this->State) &&
+				((substr(trim($objAddress->ZipCode), 0, 5)) == (substr(trim($this->ZipCode), 0, 5)))
+			) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 
@@ -117,6 +162,24 @@
 
 				case 'ShortName':
 					return $this->Address1;
+					
+				case 'DisplayHtml':
+					if ($this->Address3)
+						$strToReturn = QApplication::HtmlEntities($this->Address3) . '<br/>';
+					else
+						$strToReturn = null;
+
+					$strToReturn .= QApplication::HtmlEntities($this->Address1) . '<br/>';
+
+					if ($this->Address2)
+						$strToReturn .= QApplication::HtmlEntities($this->Address2) . '<br/>';
+
+					$strToReturn .= QApplication::HtmlEntities($this->City . ', ' . $this->State . '  ' . $this->ZipCode);
+					
+					foreach ($this->GetPhoneArray() as $objPhone)
+						$strToReturn .= '<br/>' . $objPhone->Number;
+
+					return $strToReturn;
 
 				case 'AddressShortLine':
 					$strToReturn = null;
@@ -128,6 +191,19 @@
 					if ($this->strCity) {
 						if ($strToReturn) $strToReturn .= ', ';
 						$strToReturn .= $this->strCity;
+					}
+					return $strToReturn;
+
+				case 'AddressFullLine':
+					$strToReturn = null;
+					if ($this->Address1) {
+						$strToReturn .= $this->strAddress1;
+						if ($this->strAddress2)
+							$strToReturn .= ', ' . $this->strAddress2;
+					}
+					if ($this->strCity) {
+						if ($strToReturn) $strToReturn .= ', ';
+						$strToReturn .= sprintf('%s, %s %s', $this->strCity, $this->strState, $this->strZipCode);
 					}
 					return $strToReturn;
 

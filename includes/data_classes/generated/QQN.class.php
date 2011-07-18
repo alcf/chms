@@ -31,6 +31,60 @@
 			return new QQNodeCheckingAccountLookup('checking_account_lookup', null, null);
 		}
 		/**
+		 * @return QQNodeClassAttendence
+		 */
+		static public function ClassAttendence() {
+			return new QQNodeClassAttendence('class_attendence', null, null);
+		}
+		/**
+		 * @return QQNodeClassCourse
+		 */
+		static public function ClassCourse() {
+			return new QQNodeClassCourse('class_course', null, null);
+		}
+		/**
+		 * @return QQNodeClassGrade
+		 */
+		static public function ClassGrade() {
+			return new QQNodeClassGrade('class_grade', null, null);
+		}
+		/**
+		 * @return QQNodeClassInstructor
+		 */
+		static public function ClassInstructor() {
+			return new QQNodeClassInstructor('class_instructor', null, null);
+		}
+		/**
+		 * @return QQNodeClassMeeting
+		 */
+		static public function ClassMeeting() {
+			return new QQNodeClassMeeting('class_meeting', null, null);
+		}
+		/**
+		 * @return QQNodeClassRegistration
+		 */
+		static public function ClassRegistration() {
+			return new QQNodeClassRegistration('class_registration', null, null);
+		}
+		/**
+		 * @return QQNodeClassTerm
+		 */
+		static public function ClassTerm() {
+			return new QQNodeClassTerm('class_term', null, null);
+		}
+		/**
+		 * @return QQNodeClassifiedCategory
+		 */
+		static public function ClassifiedCategory() {
+			return new QQNodeClassifiedCategory('classified_category', null, null);
+		}
+		/**
+		 * @return QQNodeClassifiedPost
+		 */
+		static public function ClassifiedPost() {
+			return new QQNodeClassifiedPost('classified_post', null, null);
+		}
+		/**
 		 * @return QQNodeComment
 		 */
 		static public function Comment() {
@@ -61,6 +115,12 @@
 			return new QQNodeCountry('country', null, null);
 		}
 		/**
+		 * @return QQNodeCreditCardPayment
+		 */
+		static public function CreditCardPayment() {
+			return new QQNodeCreditCardPayment('credit_card_payment', null, null);
+		}
+		/**
 		 * @return QQNodeEmail
 		 */
 		static public function Email() {
@@ -83,6 +143,30 @@
 		 */
 		static public function EmailOutgoingQueue() {
 			return new QQNodeEmailOutgoingQueue('email_outgoing_queue', null, null);
+		}
+		/**
+		 * @return QQNodeEventSignupForm
+		 */
+		static public function EventSignupForm() {
+			return new QQNodeEventSignupForm('event_signup_form', null, null);
+		}
+		/**
+		 * @return QQNodeFormAnswer
+		 */
+		static public function FormAnswer() {
+			return new QQNodeFormAnswer('form_answer', null, null);
+		}
+		/**
+		 * @return QQNodeFormProduct
+		 */
+		static public function FormProduct() {
+			return new QQNodeFormProduct('form_product', null, null);
+		}
+		/**
+		 * @return QQNodeFormQuestion
+		 */
+		static public function FormQuestion() {
+			return new QQNodeFormQuestion('form_question', null, null);
 		}
 		/**
 		 * @return QQNodeGroup
@@ -187,6 +271,18 @@
 			return new QQNodeNameItem('name_item', null, null);
 		}
 		/**
+		 * @return QQNodeOnlineDonation
+		 */
+		static public function OnlineDonation() {
+			return new QQNodeOnlineDonation('online_donation', null, null);
+		}
+		/**
+		 * @return QQNodeOnlineDonationLineItem
+		 */
+		static public function OnlineDonationLineItem() {
+			return new QQNodeOnlineDonationLineItem('online_donation_line_item', null, null);
+		}
+		/**
 		 * @return QQNodeOtherContactInfo
 		 */
 		static public function OtherContactInfo() {
@@ -199,6 +295,18 @@
 			return new QQNodeOtherContactMethod('other_contact_method', null, null);
 		}
 		/**
+		 * @return QQNodeOutgoingEmailQueue
+		 */
+		static public function OutgoingEmailQueue() {
+			return new QQNodeOutgoingEmailQueue('outgoing_email_queue', null, null);
+		}
+		/**
+		 * @return QQNodePaypalBatch
+		 */
+		static public function PaypalBatch() {
+			return new QQNodePaypalBatch('paypal_batch', null, null);
+		}
+		/**
 		 * @return QQNodePerson
 		 */
 		static public function Person() {
@@ -209,6 +317,18 @@
 		 */
 		static public function Phone() {
 			return new QQNodePhone('phone', null, null);
+		}
+		/**
+		 * @return QQNodeProvisionalPublicLogin
+		 */
+		static public function ProvisionalPublicLogin() {
+			return new QQNodeProvisionalPublicLogin('provisional_public_login', null, null);
+		}
+		/**
+		 * @return QQNodePublicLogin
+		 */
+		static public function PublicLogin() {
+			return new QQNodePublicLogin('public_login', null, null);
 		}
 		/**
 		 * @return QQNodeQueryCondition
@@ -245,6 +365,30 @@
 		 */
 		static public function SearchQuery() {
 			return new QQNodeSearchQuery('search_query', null, null);
+		}
+		/**
+		 * @return QQNodeSignupEntry
+		 */
+		static public function SignupEntry() {
+			return new QQNodeSignupEntry('signup_entry', null, null);
+		}
+		/**
+		 * @return QQNodeSignupForm
+		 */
+		static public function SignupForm() {
+			return new QQNodeSignupForm('signup_form', null, null);
+		}
+		/**
+		 * @return QQNodeSignupPayment
+		 */
+		static public function SignupPayment() {
+			return new QQNodeSignupPayment('signup_payment', null, null);
+		}
+		/**
+		 * @return QQNodeSignupProduct
+		 */
+		static public function SignupProduct() {
+			return new QQNodeSignupProduct('signup_product', null, null);
 		}
 		/**
 		 * @return QQNodeSmartGroup

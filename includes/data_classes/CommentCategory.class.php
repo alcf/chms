@@ -27,7 +27,52 @@
 			return $this->strName;
 		}
 
+		public static function RefreshOrderNumber() {
+			$intOrderNumber = 1;
+			foreach (CommentCategory::LoadAll(QQ::OrderBy(QQN::CommentCategory()->OrderNumber)) as $objObject) {
+				$objObject->OrderNumber = $intOrderNumber;
+				$objObject->Save();
+				$intOrderNumber++;
+			}
+		}
 
+		public function MoveUp() {
+			$objToSwapWith = null;
+			foreach (CommentCategory::LoadAll(QQ::OrderBy(QQN::CommentCategory()->OrderNumber)) as $objObject) {
+				if ($objObject->Id == $this->Id)
+					break;
+				$objToSwapWith = $objObject;
+			}
+
+			$this->OrderNumber--;
+			$this->Save();
+
+			if ($objToSwapWith) {
+				$objToSwapWith->OrderNumber++;
+				$objToSwapWith->Save();
+			}
+
+			self::RefreshOrderNumber();
+		}
+		
+		public function MoveDown() {
+			$blnFound = false;
+			foreach (CommentCategory::LoadAll(QQ::OrderBy(QQN::CommentCategory()->OrderNumber)) as $objObject) {
+				if ($blnFound) break;
+				if ($objObject->Id == $this->Id) $blnFound = true;
+			}
+
+			$this->OrderNumber++;
+			$this->Save();
+
+			if ($objObject) {
+				$objObject->OrderNumber--;
+				$objObject->Save();
+			}
+
+			self::RefreshOrderNumber();
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

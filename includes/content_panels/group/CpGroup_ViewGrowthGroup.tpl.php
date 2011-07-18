@@ -14,6 +14,8 @@
 	<?php $_CONTROL->lblEmail->RenderWithName(); ?>
 	
 	<br/>
+	<?php $_CONTROL->lblFacilitator->RenderWithName(); ?>
+	<?php $_CONTROL->lblHost->RenderWithName(); ?>
 	<?php $_CONTROL->lblRegion->RenderWithName(); ?>
 	<?php $_CONTROL->lblMeeting->RenderWithName(); ?>
 	<?php $_CONTROL->lblAddress->RenderWithName(); ?>
@@ -23,6 +25,7 @@
 
 <h3>
 	Group Participants
+	<span class="subhead"><a target="_blank" href="/groups/export_to_excel.php/<?php _p($_CONTROL->objGroup->Id); ?>/<?php _p($_CONTROL->objGroup->CsvFilename); ?>"/>Export to Excel</a></span>
 	<?php if ($_CONTROL->objGroup->IsLoginCanEdit(QApplication::$Login)) {?>
 		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/add_participation'; return false;">Add Participant</button>
 	<?php } ?>

@@ -331,6 +331,8 @@
 				case 'PrimaryPhoneText': return QQN::Person()->PrimaryPhoneText;
 				case 'HouseholdAsHead': return QQN::Person()->HouseholdAsHead;
 
+				case 'PublicLogin': return QQN::Person()->PublicLogin;
+
 				default: throw new QCallerException('Simple Property not found in PersonDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

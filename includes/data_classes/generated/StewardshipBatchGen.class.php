@@ -27,6 +27,7 @@
 	 * @property double $PostedTotalAmount the value for fltPostedTotalAmount 
 	 * @property integer $CreatedByLoginId the value for intCreatedByLoginId (Not Null)
 	 * @property Login $CreatedByLogin the value for the Login object referenced by intCreatedByLoginId (Not Null)
+	 * @property PaypalBatch $PaypalBatch the value for the PaypalBatch object that uniquely references this StewardshipBatch
 	 * @property StewardshipContribution $_StewardshipContribution the value for the private _objStewardshipContribution (Read-Only) if set due to an expansion on the stewardship_contribution.stewardship_batch_id reverse relationship
 	 * @property StewardshipContribution[] $_StewardshipContributionArray the value for the private _objStewardshipContributionArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution.stewardship_batch_id reverse relationship
 	 * @property StewardshipPost $_StewardshipPost the value for the private _objStewardshipPost (Read-Only) if set due to an expansion on the stewardship_post.stewardship_batch_id reverse relationship
@@ -210,6 +211,24 @@
 		 * @var Login objCreatedByLogin
 		 */
 		protected $objCreatedByLogin;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column paypal_batch.stewardship_batch_id.
+		 *
+		 * NOTE: Always use the PaypalBatch property getter to correctly retrieve this PaypalBatch object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var PaypalBatch objPaypalBatch
+		 */
+		protected $objPaypalBatch;
+		
+		/**
+		 * Used internally to manage whether the adjoined PaypalBatch object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyPaypalBatch;
 
 
 
@@ -665,6 +684,18 @@
 				$objToReturn->objCreatedByLogin = Login::InstantiateDbRow($objDbRow, $strAliasPrefix . 'created_by_login_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
+			// Check for PaypalBatch Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'paypalbatch__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objPaypalBatch = PaypalBatch::InstantiateDbRow($objDbRow, $strAliasPrefix . 'paypalbatch__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objPaypalBatch = false;
+			}
+
 
 
 			// Check for StewardshipContribution Virtual Binding
@@ -948,6 +979,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined PaypalBatch object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyPaypalBatch) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = PaypalBatch::LoadByStewardshipBatchId($this->intId)) {
+						$objAssociated->StewardshipBatchId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objPaypalBatch) {
+						$this->objPaypalBatch->StewardshipBatchId = $this->intId;
+						$this->objPaypalBatch->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyPaypalBatch = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -972,6 +1023,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipBatch::GetDatabase();
 
+			
+			
+			// Update the adjoined PaypalBatch object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = PaypalBatch::LoadByStewardshipBatchId($this->intId)) {
+				$objAssociated->StewardshipBatchId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1193,6 +1254,24 @@
 						throw $objExc;
 					}
 
+		
+		
+				case 'PaypalBatch':
+					// Gets the value for the PaypalBatch object that uniquely references this StewardshipBatch
+					// by objPaypalBatch (Unique)
+					// @return PaypalBatch
+					try {
+						if ($this->objPaypalBatch === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objPaypalBatch)
+							$this->objPaypalBatch = PaypalBatch::LoadByStewardshipBatchId($this->intId);
+						return $this->objPaypalBatch;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				////////////////////////////
 				// Virtual Object References (Many to Many and Reverse References)
@@ -1401,6 +1480,43 @@
 						// Update Local Member Variables
 						$this->objCreatedByLogin = $mixValue;
 						$this->intCreatedByLoginId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'PaypalBatch':
+					// Sets the value for the PaypalBatch object referenced by objPaypalBatch (Unique)
+					// @param PaypalBatch $mixValue
+					// @return PaypalBatch
+					if (is_null($mixValue)) {
+						$this->objPaypalBatch = null;
+
+						// Make sure we update the adjoined PaypalBatch object the next time we call Save()
+						$this->blnDirtyPaypalBatch = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a PaypalBatch object
+						try {
+							$mixValue = QType::Cast($mixValue, 'PaypalBatch');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objPaypalBatch to a DIFFERENT $mixValue?
+						if ((!$this->PaypalBatch) || ($this->PaypalBatch->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined PaypalBatch object the next time we call Save()
+							$this->blnDirtyPaypalBatch = true;
+
+							// Update Local Member Variable
+							$this->objPaypalBatch = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -2100,6 +2216,7 @@
 	 * @property-read QQNode $PostedTotalAmount
 	 * @property-read QQNode $CreatedByLoginId
 	 * @property-read QQNodeLogin $CreatedByLogin
+	 * @property-read QQReverseReferenceNodePaypalBatch $PaypalBatch
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPost
 	 * @property-read QQReverseReferenceNodeStewardshipStack $StewardshipStack
@@ -2134,6 +2251,8 @@
 					return new QQNode('created_by_login_id', 'CreatedByLoginId', 'integer', $this);
 				case 'CreatedByLogin':
 					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
+				case 'PaypalBatch':
+					return new QQReverseReferenceNodePaypalBatch($this, 'paypalbatch', 'reverse_reference', 'stewardship_batch_id', 'PaypalBatch');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'stewardship_batch_id');
 				case 'StewardshipPost':
@@ -2167,6 +2286,7 @@
 	 * @property-read QQNode $PostedTotalAmount
 	 * @property-read QQNode $CreatedByLoginId
 	 * @property-read QQNodeLogin $CreatedByLogin
+	 * @property-read QQReverseReferenceNodePaypalBatch $PaypalBatch
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContribution
 	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPost
 	 * @property-read QQReverseReferenceNodeStewardshipStack $StewardshipStack
@@ -2202,6 +2322,8 @@
 					return new QQNode('created_by_login_id', 'CreatedByLoginId', 'integer', $this);
 				case 'CreatedByLogin':
 					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
+				case 'PaypalBatch':
+					return new QQReverseReferenceNodePaypalBatch($this, 'paypalbatch', 'reverse_reference', 'stewardship_batch_id', 'PaypalBatch');
 				case 'StewardshipContribution':
 					return new QQReverseReferenceNodeStewardshipContribution($this, 'stewardshipcontribution', 'reverse_reference', 'stewardship_batch_id');
 				case 'StewardshipPost':

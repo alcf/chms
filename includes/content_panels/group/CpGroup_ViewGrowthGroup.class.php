@@ -1,5 +1,7 @@
 <?php
 	class CpGroup_ViewGrowthGroup extends CpGroup_Base {
+		public $lblFacilitator;
+		public $lblHost;
 		public $lblRegion;
 		public $lblMeeting;
 		public $lblAddress;
@@ -11,6 +13,35 @@
 			$this->SetupViewControls(true, false);
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
 			
+			$strFacilitatorArray = array();
+			$strHostArray = array();
+			
+			foreach ($this->objGroup->GetActiveGroupParticipationArray() as $objParticipant) {
+				if ($objParticipant->GroupRole->Name == 'Facilitator') {
+					$strFacilitatorArray[] = $objParticipant->Person->Name;
+				} else if ($objParticipant->GroupRole->Name == 'Host') {
+					$strHostArray[] = $objParticipant->Person->Name;
+				}
+			}
+			
+			$this->lblFacilitator = new QLabel($this);
+			$this->lblFacilitator->Name = 'Facilitator';
+			if (count($strFacilitatorArray)) {
+				$this->lblFacilitator->Text = implode(', ', $strFacilitatorArray);
+			} else {
+				$this->lblFacilitator->CssClass = 'na';
+				$this->lblFacilitator->Text = 'Not Specified';
+			}
+			
+			$this->lblHost = new QLabel($this);
+			$this->lblHost->Name = 'Host';
+			if (count($strHostArray)) {
+				$this->lblHost->Text = implode(', ', $strHostArray);
+			} else {
+				$this->lblHost->CssClass = 'na';
+				$this->lblHost->Text = 'Not Specified';
+			}
+
 			$this->lblRegion = new QLabel($this);
 			$this->lblRegion->Name = 'Growth Group Region';
 			$this->lblRegion->Text = $this->objGroup->GrowthGroup->GrowthGroupLocation->Location;
@@ -18,7 +49,7 @@
 			$this->lblMeeting = new QLabel($this);
 			$this->lblMeeting->Name = 'Meeting Information';
 			$this->lblMeeting->Text = $this->objGroup->GrowthGroup->MeetingInfo;
-
+			
 			$this->lblAddress = new QLabel($this);
 			$this->lblAddress->Name = 'Address';
 			$this->lblAddress->Text = $this->objGroup->GrowthGroup->AddressInfo;

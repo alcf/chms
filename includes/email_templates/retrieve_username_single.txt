@@ -1,0 +1,15 @@
+======= DO NOT REPLY =======
+
+Dear %PERSON_NAME%,
+
+We have successfully looked up your username based on the email address you provided.
+
+Username:  %USERNAME%
+
+You should be able to use your username to log in to my.alcf.net.  If you have any questions, please feel free and contact Melissa Look at melissa.look@alcf.net or call 650-625-1500.
+
+Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!
+
+============================
+
+P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.

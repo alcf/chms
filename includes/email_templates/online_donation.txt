@@ -1,0 +1,19 @@
+======= DO NOT REPLY =======
+
+Dear %PERSON_NAME%,
+
+Thank you for your online donation to Abundant Life Christian Fellowship.  Your confirmation number is %ONLINE_DONATION_ID%.  You may want to print this page for your records.
+
+An online payment of %AMOUNT% has been charged on your credit card %CREDIT_CARD%.  The following is a summary of your donation:
+
+%PAYMENT_ITEMS%
+
+You can view your stewardship receipt online at anytime at https://my.alcf.net, however please note that it may take up to five (5) business days for this most recent transaction to show up on your receipt.
+
+If you have any questions, please don't hesitate to call Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.
+
+Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!
+
+============================
+
+P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.

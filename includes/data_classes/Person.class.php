@@ -48,6 +48,7 @@
 				$this->DeleteAllEmails();
 				$this->DeleteAllOtherContactInfos();
 				$this->DeleteAllPhones();
+				$this->UnassociateAllNameItems();
 
 				foreach ($this->GetHeadShotArray() as $objHeadShot) {
 					$objHeadShot->Delete();
@@ -192,6 +193,9 @@
 				case 'LinkUrl':
 					return sprintf('/individuals/view.php/%s#general', $this->intId);
 
+				case 'ContactInfoLinkUrl':
+					return sprintf('/individuals/view.php/%s#contact', $this->intId);
+
 				case 'RefreshLinkUrl':
 					return sprintf('/individuals/refresh_view.php/%s', $this->intId);
 
@@ -250,6 +254,32 @@
 
 			if ($blnSave) $this->Save();
 			return $this->intAge;
+		}
+
+		/**
+		 * This will try and figure out the primary address and return it as an object
+		 * (used for things like pre-filling address fields on my.alcf
+		 * @return Address
+		 */
+		public function DeducePrimaryAddress() {
+			$objAddress = null;
+
+			if ($this->MailingAddress) {
+				return $this->MailingAddress;
+			} else {
+				$objHouseholdParticipationArray = $this->GetHouseholdParticipationArray();
+				if (count($objHouseholdParticipationArray) > 1) {
+					return null;
+				} else if (count($objHouseholdParticipationArray) == 1) {
+					$objHouseholdParticipation = $objHouseholdParticipationArray[0];
+					$objAddressArray = Address::LoadArrayByHouseholdIdCurrentFlag($objHouseholdParticipation->HouseholdId, true);
+					foreach ($objAddressArray as $objAddressToTest) {
+						if (!$objAddressToTest->InvalidFlag) $objAddress = $objAddressToTest;
+					}
+				}
+			}
+			
+			return $objAddress;
 		}
 
 		/**
@@ -324,7 +354,164 @@
 
 			return ($this->Age < 18);
 		}
+
+		/**
+		 * This will check and provide a "score" on a match against DOB, Gender and Mobile Phone Number.
+		 * The score returned will be anything from -2 to 3.
+		 * 
+		 * A point is given for any item that is positively matched.
+		 * The score is negative if there is any item that does NOT match.
+		 * 
+		 * In order for a match or non-match to take place, the data item needs to be defined on BOTH this person and in the data being passed in.
+		 * 
+		 * @param QDateTime $dttDateOfBirth optional
+		 * @param string $strGender optional
+		 * @param string $strMobilePhone optional
+		 * @return integer
+		 */
+		public function ScoreDobGenderMobileMatch(QDateTime $dttDateOfBirth = null, $strGender = null, $strMobilePhone = null) {
+			$intScore = 0;
+			$blnNegativeFlag = false;
+
+			if ($dttDateOfBirth && $this->DateOfBirth && !$this->DobGuessedFlag && !$this->DobYearApproximateFlag) {
+				if ($dttDateOfBirth->IsEqualTo($this->DateOfBirth))
+					$intScore++;
+				else
+					$blnNegativeFlag = true;
+			}
+
+			if ($strGender && $this->Gender) {
+				if (trim(strtoupper($strGender) == $this->Gender))
+					$intScore++;
+				else
+					$blnNegativeFlag = true;
+			}
+
+			if ($strMobilePhone && $this->CountPhones()) {
+				$blnFound = false;
+				foreach ($this->GetPhoneArray() as $objPhone) {
+					if ($objPhone->PhoneTypeId != PhoneType::Home) {
+						if ($strMobilePhone == $objPhone->Number) $blnFound = true;
+					}
+				}
+				
+				if ($blnFound)
+					$intScore++;
+				else
+					$blnNegativeFlag = true;
+			}
+			
+			return ($blnNegativeFlag) ? (-1 * $intScore) : $intScore;
+		}
+
+
+		/**
+		 * This is a bit similar to a db-load based version of Person::IsNameMatch().
+		 * It will utilize querying to find any and all Person objects that do a normalized name match based on the name item objects.
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @return Person[]
+		 */
+		public static function LoadArrayByNameMatch($strFirstName, $strLastName) {
+			// Calculate the normalized name items were are using
+			$strNameItemArray = NameItem::GetNormalizedArrayFromNameString($strFirstName . ' ' . $strLastName);
+			
+			// Create an Integer[] of NameItem IDs
+			$intNameItemIdArray = array();
+			foreach ($strNameItemArray as $strNameItem) {
+				$objNameItem = NameItem::LoadByName($strNameItem);
+				if (!$objNameItem) return array();
+				$intNameItemIdArray[] = $objNameItem->Id;
+			}
+
+			// Iterate to setup the Condition and Clauses
+			$objCondition = QQ::All();
+			$objClauses = array();
+			$intIndex = 0;
+
+			foreach ($intNameItemIdArray as $intNameItemId) {
+				$intIndex++;
+				$strAlias = 'assn_' . $intIndex;
+
+				if ($intIndex == 2) $objClauses[] = QQ::Distinct();
+
+				$objClauses[] = QQ::CustomFrom('person_nameitem_assn', $strAlias);
+				$objCondition = QQ::AndCondition(
+					$objCondition,
+					QQ::Equal(QQ::CustomNode($strAlias . '.person_id'), QQN::Person()->Id),
+					QQ::Equal(QQ::CustomNode($strAlias . '.name_item_id'), $intNameItemId)
+				);
+			}
+
+			return Person::QueryArray($objCondition, $objClauses);
+		}
+
+		/**
+		 * This will check to see if this person has a near-match on the first and last name provided.
+		 * It will check first name against nicknames, it will check last name against prior last names
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @return boolean whether or not there was a match
+		 */
+		public function IsNameMatch($strFirstName, $strLastName) {
+			$strFirstName = NameItem::NormalizeNameItem($strFirstName);
+			$strLastName = NameItem::NormalizeNameItem($strLastName);
+
+			// Check First Name
+			if ($strFirstName != NameItem::NormalizeNameItem($this->FirstName)) {
+				// If we are here, then we should try and match against the nickname
+				$blnFound = false;
+
+				foreach (explode(',', $this->Nickname) as $strName) {
+					if (strlen(trim($strName)) && ($strFirstName == NameItem::NormalizeNameItem($strName)))
+						$blnFound = true;
+				}
+
+				if (!$blnFound) return false;
+			}
+
+			// So far, so good!  If we are here, then the first name is valid
+			// Now, let's check the last name
+			if ($strLastName != NameItem::NormalizeNameItem($this->LastName)) {
+				// If we are here, then we should try and match against the nickname
+				$blnFound = false;
+
+				foreach (explode(',', $this->PriorLastNames) as $strName) {
+					if (strlen(trim($strName)) && ($strLastName == NameItem::NormalizeNameItem($strName)))
+						$blnFound = true;
+				}
+
+				if (!$blnFound) return false;
+			}
+
+			// If we are here, then we've succeeded!
+			return true;
+		}
 		
+		/**
+		 * This will use CheckName to determine a name match and do a match on either the home or mailing address... will return true
+		 * if the names match AND at least one of the addresses match
+		 * @param string $strFirstName
+		 * @param string $strLastName
+		 * @param Address $objHomeAddress required
+		 * @param Address $objMailingAddress optional
+		 * @return boolean whether or not there was a match
+		 */
+		public function IsNameAndAddressMatch($strFirstName, $strLastName, Address $objHomeAddress, Address $objMailingAddress = null) {
+			// Check Names, and return FALSE if does not match
+			if (!$this->IsNameMatch($strFirstName, $strLastName)) return false;
+
+			// If we are here, the the name matched.
+			// Now let's match home and possibly mailing against any of the addresses that belong to this person
+			foreach ($this->GetAllAssociatedAddressArray() as $objAddress) {
+				if ($objHomeAddress->IsEqualTo($objAddress)) return true;
+				if ($objMailingAddress && $objMailingAddress->IsEqualTo($objAddress)) return true;
+			}
+
+			// If we are here, we did not find an address match
+			return false;
+		}
+
 		/**
 		 * Returns true if this person is an individual (has no household participation records and is not the head of any household)
 		 * @return boolean
@@ -786,6 +973,52 @@
 			
 			return $objToReturn;
 		}
+		
+		/**
+		 * For the my.alcf site this will return the MobilePhone record, if any is found
+		 * @return Phone or null
+		 */
+		public function DeduceMobilePhone() {
+			if ($this->PrimaryPhone &&
+				($this->PrimaryPhone->PhoneTypeId == PhoneType::Mobile)) return $this->PrimaryPhone;
+
+			foreach ($this->GetPhoneArray() as $objPhone)
+				if ($objPhone->PhoneTypeId == PhoneType::Mobile) return $objPhone;
+
+			return null;
+		}
+
+		/**
+		 * Similar to the codegenned GetAddressArray -- however this will retrieve ALL current and associated
+		 * Addresss.  Not just personal addresses, but addresses attributed to the current home
+		 * of a given household.  You must specify the household as well.  If the household is invalid (e.g.
+		 * the participation doesn't exist), then this will throw.
+		 * 
+		 * If NO household is passed in (or NULL), then this will return values for ALL associated households.
+		 * 
+		 * @return Address[]
+		 */
+		public function GetAllAssociatedAddressArray(Household $objHousehold = null) {
+			$objToReturn = array();
+
+			// Add Address from a specific household
+			if ($objHousehold) {
+				if (!HouseholdParticipation::LoadByPersonIdHouseholdId($this->intId, $objHousehold->Id))
+					throw new QCallerException('Person does not exist in this household');
+				foreach ($objHousehold->GetAddressArray() as $objAddress) $objToReturn[] = $objAddress;
+
+			// Add addresses from all households
+			} else foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+				foreach ($objHouseholdParticipation->Household->GetAddressArray() as $objAddress) $objToReturn[] = $objAddress;
+			}
+
+			// Now add personal addresses
+			foreach ($this->GetAddressArray(QQ::OrderBy(QQN::Address()->Id)) as $objAddress) {
+				if ($objAddress->CurrentFlag) $objToReturn[] = $objAddress;
+			}
+
+			return $objToReturn;
+		}
 
 		/**
 		 * Sets an attribute value for this person.
@@ -1108,6 +1341,219 @@
 
 			$objPersonMergeWith->Delete();
 			Person::GetDatabase()->TransactionCommit();
+		}
+
+		/**
+		 * Specifies whether the Login can edit this person's email address information.
+		 * If the person has a linked PublicLogin record, then only CHMS Administrators can edit the email address info.
+		 * @param Login $objLogin
+		 * @return boolean
+		 */
+		public function IsLoginCanEditEmailAddress(Login $objLogin) {
+			if (!$objLogin->IsPermissionAllowed(PermissionType::EditData)) return false;
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) return true;
+			if ($this->PublicLogin) return false;
+			return true;
+		}
+
+		/**
+		 * Given a string-based email address, this will see if this email is already associated with this person
+		 * and if so, it will upgrade that email record to be "Primary".  If not, it will delete the current primary (if applicable)
+		 * and create a new record for the passed-in string.
+		 * @param string $strEmailAddress
+		 * @param boolean $blnDeleteCurrentPrimary (default is true) whether or not to delete the current primary
+		 */
+		public function ChangePrimaryEmailTo($strEmailAddress, $blnDeleteCurrentPrimary = true) {
+			$strEmailAddress = trim(strtolower($strEmailAddress));
+			
+			// If what was passed in is already primary, then do nothing
+			if ($this->PrimaryEmail && ($this->PrimaryEmail->Address == $strEmailAddress))
+				return;
+
+			// If what was passed in already exists as non-primary, upgrade it to primary and downgrade current primary to not so (if applicable)
+			foreach ($this->GetEmailArray() as $objEmail) {
+				if ($objEmail->Address == $strEmailAddress) {
+					$this->PrimaryEmail = $objEmail;
+					$this->Save();
+					return;
+				}
+			}
+
+			// If we are here, then we *know* we need to create a new email address
+
+			// first, delete the current primary, if applicable
+			if ($this->PrimaryEmail && $blnDeleteCurrentPrimary) {
+				$this->PrimaryEmail->Delete();
+				$this->PrimaryEmail = null;
+			}
+
+			$objEmail = new Email();
+			$objEmail->Address = $strEmailAddress;
+			$objEmail->Person = $this;
+			$objEmail->Save();
+			
+			$this->PrimaryEmail = $objEmail;
+			$this->Save();
+		}
+
+		/**
+		 * If a mobile phone record already exists, update it with the following.
+		 * 
+		 * If one does NOT already exist, create it as a new one.
+		 * 
+		 * Finally, if there is no primary phone defined on this user, set the mobile phone to be primary
+		 * @param string $strMobilePhone
+		 */
+		public function CreateOrUpdateMobilePhone($strMobilePhone) {
+			// If what was passed in is already the deducedmobilephone record, then do nothing
+			$objPhone = $this->DeduceMobilePhone();
+			if ($objPhone && ($objPhone->Number == $strMobilePhone)) return;
+			
+			// Go through all mobile phones to see if this already exists
+			// If it does, simply upgrade that to be "primary"
+			foreach ($this->GetPhoneArray() as $objPhone) {
+				if ($objPhone->Number == $strMobilePhone) {
+					$objPhone->PhoneTypeId = PhoneType::Mobile;
+					$objPhone->Save();
+					
+					$this->PrimaryPhone = $objPhone;
+					$this->RefreshPrimaryContactInfo();
+					return;
+				}
+			}
+
+			// If we are here, then it's clearly a number that does not yet exist
+			// Let's use DeduecedMobilePhone record or create new one if there are none
+			$objPhone = $this->DeduceMobilePhone();
+			if (!$objPhone) {
+				$objPhone = new Phone();
+				$objPhone->PhoneTypeId = PhoneType::Mobile;
+				$objPhone->Person = $this;
+			}
+			$objPhone->Number = $strMobilePhone;
+			$objPhone->Save();
+
+			// Finally, if there is no primary phone, make this primary as well
+			if (!$this->PrimaryPhone) {
+				$this->PrimaryPhone = $objPhone;
+				$this->RefreshPrimaryContactInfo();
+			}
+		}
+
+		/**
+		 * Given a home (and optional mailing) address validator (which is unlinked from any db entry), go ahead and make updates
+		 * to this person record accordingly.
+		 * 
+		 * If this person is part of multiple households, it will throw an error.
+		 * 
+		 * If this person is part of one household, it will update the information for the household.
+		 * 
+		 * If this person is not part of any houseold, it will create one for him/her.
+		 * 
+		 * @param AddressValidator $objHomeAddressValidator
+		 * @param AddressValidator $objMailingAddressValidator optional
+		 * @param string $strHomePhone optional
+		 */
+		public function UpdateAddressInformation(AddressValidator $objHomeAddressValidator, AddressValidator $objMailingAddressValidator = null, $strHomePhone = null) {
+			$objHouseholdArray = array();
+			foreach ($this->GetHouseholdParticipationArray() as $objHouseholdParticipation) $objHouseholdArray[] = $objHouseholdParticipation->Household;
+
+			// Figure Out Household Information
+			if (count($objHouseholdArray) > 1) throw new QCallerException('Cannot call UpdateAddressInformation on a person who is part of multiple households: ' . $this->intId);
+			if (count($objHouseholdArray)) {
+				$objHousehold = $objHouseholdArray[0];
+			} else {
+				$objHousehold = Household::CreateHousehold($this);
+			}
+
+			// Home Address
+			$objHomeAddress = $objHousehold->GetCurrentAddress();
+			$objAddress = $objHomeAddressValidator->CreateAddressRecord();
+			
+			// Are we using the existing Household CurrentAddress record?
+			if ($objHomeAddress && $objHomeAddress->IsEqualTo($objAddress)) {
+				// Yes -- so all we're handling is the phones
+				$objHomePhoneArray = $objHomeAddress->GetPhoneArray();
+
+				// Are we setting a home phone?
+				if ($strHomePhone) {
+					// Try and find the phone within the array
+					foreach ($objHomePhoneArray as $objPhone) {
+						$blnFound = false;
+						if ($objPhone->Number == $strHomePhone) {
+							$objPhone->SetAsPrimary(null, $objHomeAddress);
+							$blnFound = true;
+						}
+					}
+					
+					// If we didn't find an existing home phone, we will update the current primary (if applicable)
+					// Or create a new one as primary
+					if (!$blnFound) {
+						if (count($objHomePhoneArray)) {
+							$objHomePhoneArray[0]->Number = $strHomePhone;
+							$objHomePhoneArray[0]->Save();
+						} else {
+							$objPhone = new Phone();
+							$objPhone->Number = $strHomePhone;
+							$objPhone->Address = $objHomeAddress;
+							$objPhone->PhoneTypeId = PhoneType::Home;
+							$objPhone->Save();
+							$objPhone->SetAsPrimary(null, $objHomeAddress);
+						}
+					}
+
+				// Nope - we are deleting the home phone
+				} else {
+					foreach ($objHomePhoneArray as $objPhone) {
+						$objPhone->Delete();
+					}
+				}
+
+			// Not an existing Household CurrentAddress record that matches -- so we are creating a new one
+			} else {
+				$objAddress->Household = $objHousehold;
+				$objAddress->CurrentFlag = true;
+				$objAddress->AddressTypeId = AddressType::Home;
+				$objAddress->Save();
+
+				$objHousehold->SetAsCurrentAddress($objAddress);
+
+				// Add the phone if applicable
+				if ($strHomePhone) {
+					$objPhone = new Phone();
+					$objPhone->Number = $strHomePhone;
+					$objPhone->Address = $objAddress;
+					$objPhone->PhoneTypeId = PhoneType::Home;
+					$objPhone->Save();
+					$objPhone->SetAsPrimary(null, $objAddress);
+				}
+			}
+
+			// Mailing Address?
+			if ($objMailingAddressValidator) {
+				$objAddress = $objMailingAddressValidator->CreateAddressRecord();
+
+				$blnFound = false;
+				foreach ($this->GetAllAssociatedAddressArray($objHousehold) as $objExistingAddress) {
+					if ($objExistingAddress->IsEqualTo($objAddress)) {
+						$this->MailingAddress = $objExistingAddress;
+						$this->RefreshPrimaryContactInfo();
+						$blnFound = true;
+					}
+				}
+
+				if (!$blnFound) {
+					$objAddress->AddressTypeId = AddressType::Other;
+					$objAddress->Person = $this;
+					$objAddress->CurrentFlag = true;
+					$objAddress->Save();
+					$this->MailingAddress = $objAddress;
+					$this->RefreshPrimaryContactInfo();
+				}
+			} else if ($this->MailingAddress) {
+				$this->MailingAddress = null;
+				$this->RefreshPrimaryContactInfo();
+			}
 		}
 
 		// Override or Create New Load/Count methods

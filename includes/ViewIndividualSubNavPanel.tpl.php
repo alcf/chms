@@ -3,6 +3,8 @@
 	$intCount = 1;
 	foreach ($_FORM->strSubNavItemArray as $strToken => $strSubNavItemArray) {
 		$strClassName = ($strToken == $_FORM->strSubNavItemToken) ? 'selected' : null;
+		if (!$strClassName) if (array_key_exists(2, $strSubNavItemArray)) $strClassName = $strSubNavItemArray[2];
+
 		if ($intCount == 1) {
 			$strLiClassName = 'class="first"';
 		} else if ($intCount == count($_FORM->strSubNavItemArray)) {

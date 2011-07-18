@@ -27,6 +27,36 @@
 			return sprintf('Email Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Label':
+					if ($this->PersonAsPrimary)
+						return sprintf('%s (Primary)', $this->strAddress);
+					else
+						return $this->strAddress;
+
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
+		public static function IsAvailableForPublicRegistration($strAddress) {
+			$strAddress = trim(strtolower($strAddress));
+
+			// Go through all potential active registrations
+			foreach (Email::LoadArrayByAddress($strAddress) as $objEmail) {
+				if ($objEmail->Person->PublicLogin) return false;
+			}
+
+			// If we are here, then there are no emails associated with publiclogin-linked people
+			return true;
+		}
+
 		public function Delete() {
 			try {
 				$objPerson = $this->PersonAsPrimary;

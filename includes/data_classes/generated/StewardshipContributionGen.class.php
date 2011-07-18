@@ -37,6 +37,7 @@
 	 * @property StewardshipStack $StewardshipStack the value for the StewardshipStack object referenced by intStewardshipStackId 
 	 * @property CheckingAccountLookup $CheckingAccountLookup the value for the CheckingAccountLookup object referenced by intCheckingAccountLookupId 
 	 * @property Login $CreatedByLogin the value for the Login object referenced by intCreatedByLoginId (Not Null)
+	 * @property CreditCardPayment $CreditCardPayment the value for the CreditCardPayment object that uniquely references this StewardshipContribution
 	 * @property StewardshipContributionAmount $_StewardshipContributionAmount the value for the private _objStewardshipContributionAmount (Read-Only) if set due to an expansion on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
 	 * @property StewardshipContributionAmount[] $_StewardshipContributionAmountArray the value for the private _objStewardshipContributionAmountArray (Read-Only) if set due to an ExpandAsArray on the stewardship_contribution_amount.stewardship_contribution_id reverse relationship
 	 * @property StewardshipPostLineItem $_StewardshipPostLineItem the value for the private _objStewardshipPostLineItem (Read-Only) if set due to an expansion on the stewardship_post_line_item.stewardship_contribution_id reverse relationship
@@ -291,6 +292,24 @@
 		 * @var Login objCreatedByLogin
 		 */
 		protected $objCreatedByLogin;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column credit_card_payment.stewardship_contribution_id.
+		 *
+		 * NOTE: Always use the CreditCardPayment property getter to correctly retrieve this CreditCardPayment object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var CreditCardPayment objCreditCardPayment
+		 */
+		protected $objCreditCardPayment;
+		
+		/**
+		 * Used internally to manage whether the adjoined CreditCardPayment object
+		 * needs to be updated on save.
+		 * 
+		 * NOTE: Do not manually update this value 
+		 */
+		protected $blnDirtyCreditCardPayment;
 
 
 
@@ -773,6 +792,18 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objCreatedByLogin = Login::InstantiateDbRow($objDbRow, $strAliasPrefix . 'created_by_login_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
+
+			// Check for CreditCardPayment Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'creditcardpayment__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName)))
+					$objToReturn->objCreditCardPayment = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'creditcardpayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objCreditCardPayment = false;
+			}
 
 
 
@@ -1257,6 +1288,26 @@
 					if ($objDatabase->JournalingDatabase) $this->Journal('UPDATE');
 				}
 
+		
+		
+				// Update the adjoined CreditCardPayment object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyCreditCardPayment) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = CreditCardPayment::LoadByStewardshipContributionId($this->intId)) {
+						$objAssociated->StewardshipContributionId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objCreditCardPayment) {
+						$this->objCreditCardPayment->StewardshipContributionId = $this->intId;
+						$this->objCreditCardPayment->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyCreditCardPayment = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1281,6 +1332,16 @@
 			// Get the Database Object for this Class
 			$objDatabase = StewardshipContribution::GetDatabase();
 
+			
+			
+			// Update the adjoined CreditCardPayment object (if applicable) and perform the unassociation
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = CreditCardPayment::LoadByStewardshipContributionId($this->intId)) {
+				$objAssociated->StewardshipContributionId = null;
+				$objAssociated->Save();
+			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -1593,6 +1654,24 @@
 						if ((!$this->objCreatedByLogin) && (!is_null($this->intCreatedByLoginId)))
 							$this->objCreatedByLogin = Login::Load($this->intCreatedByLoginId);
 						return $this->objCreatedByLogin;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+		
+		
+				case 'CreditCardPayment':
+					// Gets the value for the CreditCardPayment object that uniquely references this StewardshipContribution
+					// by objCreditCardPayment (Unique)
+					// @return CreditCardPayment
+					try {
+						if ($this->objCreditCardPayment === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objCreditCardPayment)
+							$this->objCreditCardPayment = CreditCardPayment::LoadByStewardshipContributionId($this->intId);
+						return $this->objCreditCardPayment;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1984,6 +2063,43 @@
 						// Update Local Member Variables
 						$this->objCreatedByLogin = $mixValue;
 						$this->intCreatedByLoginId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'CreditCardPayment':
+					// Sets the value for the CreditCardPayment object referenced by objCreditCardPayment (Unique)
+					// @param CreditCardPayment $mixValue
+					// @return CreditCardPayment
+					if (is_null($mixValue)) {
+						$this->objCreditCardPayment = null;
+
+						// Make sure we update the adjoined CreditCardPayment object the next time we call Save()
+						$this->blnDirtyCreditCardPayment = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a CreditCardPayment object
+						try {
+							$mixValue = QType::Cast($mixValue, 'CreditCardPayment');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objCreditCardPayment to a DIFFERENT $mixValue?
+						if ((!$this->CreditCardPayment) || ($this->CreditCardPayment->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined CreditCardPayment object the next time we call Save()
+							$this->blnDirtyCreditCardPayment = true;
+
+							// Update Local Member Variable
+							$this->objCreditCardPayment = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -2555,6 +2671,7 @@
 	 * @property-read QQNode $CreatedByLoginId
 	 * @property-read QQNodeLogin $CreatedByLogin
 	 * @property-read QQNode $UnpostedFlag
+	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
 	 */
@@ -2608,6 +2725,8 @@
 					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'UnpostedFlag':
 					return new QQNode('unposted_flag', 'UnpostedFlag', 'boolean', $this);
+				case 'CreditCardPayment':
+					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'stewardship_contribution_id', 'CreditCardPayment');
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_contribution_id');
 				case 'StewardshipPostLineItem':
@@ -2649,6 +2768,7 @@
 	 * @property-read QQNode $CreatedByLoginId
 	 * @property-read QQNodeLogin $CreatedByLogin
 	 * @property-read QQNode $UnpostedFlag
+	 * @property-read QQReverseReferenceNodeCreditCardPayment $CreditCardPayment
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
 	 * @property-read QQReverseReferenceNodeStewardshipPostLineItem $StewardshipPostLineItem
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -2703,6 +2823,8 @@
 					return new QQNodeLogin('created_by_login_id', 'CreatedByLogin', 'integer', $this);
 				case 'UnpostedFlag':
 					return new QQNode('unposted_flag', 'UnpostedFlag', 'boolean', $this);
+				case 'CreditCardPayment':
+					return new QQReverseReferenceNodeCreditCardPayment($this, 'creditcardpayment', 'reverse_reference', 'stewardship_contribution_id', 'CreditCardPayment');
 				case 'StewardshipContributionAmount':
 					return new QQReverseReferenceNodeStewardshipContributionAmount($this, 'stewardshipcontributionamount', 'reverse_reference', 'stewardship_contribution_id');
 				case 'StewardshipPostLineItem':

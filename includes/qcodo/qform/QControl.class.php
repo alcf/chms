@@ -45,8 +45,11 @@
 			else
 				$strInstructions = '';
 
-			$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, $this->strName, $strInstructions);
-
+			if (strlen($this->strName))
+				$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, $this->strName, $strInstructions);
+			else
+				$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, '&nbsp;', $strInstructions);
+				
 			// Render the Right side
 			if ($this->strValidationError)
 				$strMessage = sprintf('<span class="error"><br/>%s</span>', $this->strValidationError);
@@ -64,6 +67,62 @@
 			}
 
 			$strToReturn .= '</div>';
+
+			////////////////////////////////////////////
+			// Call RenderOutput, Returning its Contents
+			return $this->RenderOutput($strToReturn, $blnDisplayOutput);
+			////////////////////////////////////////////
+		}
+
+		public function RenderWithNameSoloSection($blnDisplayOutput = true) {
+			////////////////////
+			// Call RenderHelper
+			$this->RenderHelper(func_get_args(), __FUNCTION__);
+			////////////////////
+
+			// Custom Render Functionality Here
+
+			// Because this example RenderWithName will render a block-based element (e.g. a DIV), let's ensure
+			// that IsBlockElement is set to true
+			$this->blnIsBlockElement = true;
+
+			// Render the Control's Dressing
+			$strToReturn = '<div class="section"><div class="renderWithName">';
+
+			// Render the Left side
+			$strLeftClass = "left";
+			if ($this->blnRequired)
+				$strLeftClass .= ' required';
+			if (!$this->blnEnabled)
+				$strLeftClass .= ' disabled';
+
+			if ($this->strInstructions)
+				$strInstructions = '<br/><span class="instructions">' . $this->strInstructions . '</span>';
+			else
+				$strInstructions = '';
+
+			if (strlen($this->strName))
+				$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, $this->strName, $strInstructions);
+			else
+				$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, '&nbsp;', $strInstructions);
+				
+			// Render the Right side
+			if ($this->strValidationError)
+				$strMessage = sprintf('<span class="error"><br/>%s</span>', $this->strValidationError);
+			else if ($this->strWarning)
+				$strMessage = sprintf('<span class="error"><br/>%s</span>', $this->strWarning);
+			else
+				$strMessage = '';
+
+			try {
+				$strToReturn .= sprintf('<div class="right">%s%s%s%s</div>',
+					$this->strHtmlBefore, $this->GetControlHtml(), $this->strHtmlAfter, $strMessage);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			$strToReturn .= '</div></div>';
 
 			////////////////////////////////////////////
 			// Call RenderOutput, Returning its Contents

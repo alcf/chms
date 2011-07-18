@@ -45,7 +45,7 @@
 <?php
 	if ($_CONTROL->txtCheckNumber) $_CONTROL->txtCheckNumber->RenderWithName();
 	if ($_CONTROL->txtAuthorization) $_CONTROL->txtAuthorization->RenderWithName('Name=CC Authorization');
-	if ($_CONTROL->txtAlternateSource) $_CONTROL->txtAlternateSource->RenderWithName('Name=Trans. Info');
+	if ($_CONTROL->txtAlternateSource) $_CONTROL->txtAlternateSource->RenderWithName();
 ?>
 	<div class="cleaner"></div>
 </div>

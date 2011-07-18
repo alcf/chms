@@ -42,6 +42,8 @@
 	 * property-read QLabel $MiddleInitialLabel
 	 * property QTextBox $LastNameControl
 	 * property-read QLabel $LastNameLabel
+	 * property QListBox $ClassInstructorControl
+	 * property-read QLabel $ClassInstructorLabel
 	 * property QListBox $MinistryControl
 	 * property-read QLabel $MinistryLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -229,10 +231,22 @@
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstClassInstructor
+         * @access protected
+         */
+		protected $lstClassInstructor;
+
 		protected $lstMinistries;
 
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblClassInstructor
+         * @access protected
+         */
+		protected $lblClassInstructor;
+
 		protected $lblMinistries;
 
 
@@ -650,6 +664,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstClassInstructor
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstClassInstructor_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstClassInstructor = new QListBox($this->objParentObject, $strControlId);
+			$this->lstClassInstructor->Name = QApplication::Translate('Class Instructor');
+			$this->lstClassInstructor->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objClassInstructorCursor = ClassInstructor::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objClassInstructor = ClassInstructor::InstantiateCursor($objClassInstructorCursor)) {
+				$objListItem = new QListItem($objClassInstructor->__toString(), $objClassInstructor->Id);
+				if ($objClassInstructor->LoginId == $this->objLogin->Id)
+					$objListItem->Selected = true;
+				$this->lstClassInstructor->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstClassInstructor;
+		}
+
+		/**
+		 * Create and setup QLabel lblClassInstructor
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblClassInstructor_Create($strControlId = null) {
+			$this->lblClassInstructor = new QLabel($this->objParentObject, $strControlId);
+			$this->lblClassInstructor->Name = QApplication::Translate('Class Instructor');
+			$this->lblClassInstructor->Text = ($this->objLogin->ClassInstructor) ? $this->objLogin->ClassInstructor->__toString() : null;
+			return $this->lblClassInstructor;
+		}
+
+		/**
 		 * Create and setup QListBox lstMinistries
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -749,6 +803,19 @@
 			if ($this->txtLastName) $this->txtLastName->Text = $this->objLogin->LastName;
 			if ($this->lblLastName) $this->lblLastName->Text = $this->objLogin->LastName;
 
+			if ($this->lstClassInstructor) {
+				$this->lstClassInstructor->RemoveAllItems();
+				$this->lstClassInstructor->AddItem(QApplication::Translate('- Select One -'), null);
+				$objClassInstructorArray = ClassInstructor::LoadAll();
+				if ($objClassInstructorArray) foreach ($objClassInstructorArray as $objClassInstructor) {
+					$objListItem = new QListItem($objClassInstructor->__toString(), $objClassInstructor->Id);
+					if ($objClassInstructor->LoginId == $this->objLogin->Id)
+						$objListItem->Selected = true;
+					$this->lstClassInstructor->AddItem($objListItem);
+				}
+			}
+			if ($this->lblClassInstructor) $this->lblClassInstructor->Text = ($this->objLogin->ClassInstructor) ? $this->objLogin->ClassInstructor->__toString() : null;
+
 			if ($this->lstMinistries) {
 				$this->lstMinistries->RemoveAllItems();
 				$objAssociatedArray = $this->objLogin->GetMinistryArray();
@@ -817,6 +884,7 @@
 				if ($this->txtLastName) $this->objLogin->LastName = $this->txtLastName->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstClassInstructor) $this->objLogin->ClassInstructor = ClassInstructor::Load($this->lstClassInstructor->SelectedValue);
 
 				// Save the Login object
 				$this->objLogin->Save();
@@ -937,6 +1005,12 @@
 				case 'LastNameLabel':
 					if (!$this->lblLastName) return $this->lblLastName_Create();
 					return $this->lblLastName;
+				case 'ClassInstructorControl':
+					if (!$this->lstClassInstructor) return $this->lstClassInstructor_Create();
+					return $this->lstClassInstructor;
+				case 'ClassInstructorLabel':
+					if (!$this->lblClassInstructor) return $this->lblClassInstructor_Create();
+					return $this->lblClassInstructor;
 				case 'MinistryControl':
 					if (!$this->lstMinistries) return $this->lstMinistries_Create();
 					return $this->lstMinistries;
@@ -991,6 +1065,8 @@
 						return ($this->txtMiddleInitial = QType::Cast($mixValue, 'QControl'));
 					case 'LastNameControl':
 						return ($this->txtLastName = QType::Cast($mixValue, 'QControl'));
+					case 'ClassInstructorControl':
+						return ($this->lstClassInstructor = QType::Cast($mixValue, 'QControl'));
 					case 'MinistryControl':
 						return ($this->lstMinistries = QType::Cast($mixValue, 'QControl'));
 					default:

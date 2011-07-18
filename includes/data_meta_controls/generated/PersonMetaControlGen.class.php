@@ -80,6 +80,8 @@
 	 * property-read QLabel $PrimaryPhoneTextLabel
 	 * property QListBox $HouseholdAsHeadControl
 	 * property-read QLabel $HouseholdAsHeadLabel
+	 * property QListBox $PublicLoginControl
+	 * property-read QLabel $PublicLoginLabel
 	 * property QListBox $CheckingAccountLookupControl
 	 * property-read QLabel $CheckingAccountLookupLabel
 	 * property QListBox $CommunicationListControl
@@ -493,6 +495,12 @@
          */
 		protected $lstHouseholdAsHead;
 
+        /**
+         * @var QListBox lstPublicLogin
+         * @access protected
+         */
+		protected $lstPublicLogin;
+
 		protected $lstCheckingAccountLookups;
 
 		protected $lstCommunicationLists;
@@ -506,6 +514,12 @@
          * @access protected
          */
 		protected $lblHouseholdAsHead;
+
+        /**
+         * @var QLabel lblPublicLogin
+         * @access protected
+         */
+		protected $lblPublicLogin;
 
 		protected $lblCheckingAccountLookups;
 
@@ -1499,6 +1513,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstPublicLogin
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstPublicLogin_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstPublicLogin = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPublicLogin->Name = QApplication::Translate('Public Login');
+			$this->lstPublicLogin->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPublicLoginCursor = PublicLogin::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPublicLogin = PublicLogin::InstantiateCursor($objPublicLoginCursor)) {
+				$objListItem = new QListItem($objPublicLogin->__toString(), $objPublicLogin->Id);
+				if ($objPublicLogin->PersonId == $this->objPerson->Id)
+					$objListItem->Selected = true;
+				$this->lstPublicLogin->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstPublicLogin;
+		}
+
+		/**
+		 * Create and setup QLabel lblPublicLogin
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPublicLogin_Create($strControlId = null) {
+			$this->lblPublicLogin = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPublicLogin->Name = QApplication::Translate('Public Login');
+			$this->lblPublicLogin->Text = ($this->objPerson->PublicLogin) ? $this->objPerson->PublicLogin->__toString() : null;
+			return $this->lblPublicLogin;
+		}
+
+		/**
 		 * Create and setup QListBox lstCheckingAccountLookups
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -1822,6 +1876,19 @@
 			}
 			if ($this->lblHouseholdAsHead) $this->lblHouseholdAsHead->Text = ($this->objPerson->HouseholdAsHead) ? $this->objPerson->HouseholdAsHead->__toString() : null;
 
+			if ($this->lstPublicLogin) {
+				$this->lstPublicLogin->RemoveAllItems();
+				$this->lstPublicLogin->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPublicLoginArray = PublicLogin::LoadAll();
+				if ($objPublicLoginArray) foreach ($objPublicLoginArray as $objPublicLogin) {
+					$objListItem = new QListItem($objPublicLogin->__toString(), $objPublicLogin->Id);
+					if ($objPublicLogin->PersonId == $this->objPerson->Id)
+						$objListItem->Selected = true;
+					$this->lstPublicLogin->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPublicLogin) $this->lblPublicLogin->Text = ($this->objPerson->PublicLogin) ? $this->objPerson->PublicLogin->__toString() : null;
+
 			if ($this->lstCheckingAccountLookups) {
 				$this->lstCheckingAccountLookups->RemoveAllItems();
 				$objAssociatedArray = $this->objPerson->GetCheckingAccountLookupArray();
@@ -1971,6 +2038,7 @@
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstHouseholdAsHead) $this->objPerson->HouseholdAsHead = Household::Load($this->lstHouseholdAsHead->SelectedValue);
+				if ($this->lstPublicLogin) $this->objPerson->PublicLogin = PublicLogin::Load($this->lstPublicLogin->SelectedValue);
 
 				// Save the Person object
 				$this->objPerson->Save();
@@ -2209,6 +2277,12 @@
 				case 'HouseholdAsHeadLabel':
 					if (!$this->lblHouseholdAsHead) return $this->lblHouseholdAsHead_Create();
 					return $this->lblHouseholdAsHead;
+				case 'PublicLoginControl':
+					if (!$this->lstPublicLogin) return $this->lstPublicLogin_Create();
+					return $this->lstPublicLogin;
+				case 'PublicLoginLabel':
+					if (!$this->lblPublicLogin) return $this->lblPublicLogin_Create();
+					return $this->lblPublicLogin;
 				case 'CheckingAccountLookupControl':
 					if (!$this->lstCheckingAccountLookups) return $this->lstCheckingAccountLookups_Create();
 					return $this->lstCheckingAccountLookups;
@@ -2313,6 +2387,8 @@
 						return ($this->txtPrimaryPhoneText = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':
 						return ($this->lstHouseholdAsHead = QType::Cast($mixValue, 'QControl'));
+					case 'PublicLoginControl':
+						return ($this->lstPublicLogin = QType::Cast($mixValue, 'QControl'));
 					case 'CheckingAccountLookupControl':
 						return ($this->lstCheckingAccountLookups = QType::Cast($mixValue, 'QControl'));
 					case 'CommunicationListControl':

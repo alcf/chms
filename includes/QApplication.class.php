@@ -84,8 +84,18 @@
 		public static $LoginId;
 
 		/**
+		 * @var PublicLogin
+		 */
+		public static $PublicLogin;
+
+		/**
+		 * @var integer
+		 */
+		public static $PublicLoginId;
+
+		/**
 		 * Called by initialize_chms.inc.php to setup QApplication::$Login
-		 * from data in Session
+		 * and QApplication::$PublicLogin from data in Session
 		 * @return void
 		 */
 		public static function InitializeLogin() {
@@ -96,25 +106,48 @@
 				if (!QApplication::$Login) {
 					$_SESSION['intLoginId'] = null;
 					unset($_SESSION['intLoginId']);
-					return;
-				}
 
-				// Make sure this Login is allowed to use Chms
-				if (!QApplication::$Login->IsAllowedToUseChms()) {
-					$_SESSION['intLoginId'] = null;
-					unset($_SESSION['intLoginId']);
-					QApplication::$Login = null;
+				// Otherwise, process
 				} else {
-					QApplication::$LoginId = QApplication::$Login->Id;
-				}
+					// Make sure this Login is allowed to use Chms
+					if (!QApplication::$Login->IsAllowedToUseChms()) {
+						$_SESSION['intLoginId'] = null;
+						unset($_SESSION['intLoginId']);
+						QApplication::$Login = null;
+					} else {
+						QApplication::$LoginId = QApplication::$Login->Id;
+					}
 
-				// Update the NavBar based on Login
-				if (QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator) {
-					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
-				}
+					// Update the NavBar based on Login
+					if (QApplication::$Login->RoleTypeId != RoleType::ChMSAdministrator) {
+						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionAdministration]);
+					}
 
-				if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
-					unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
+					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
+						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionStewardship]);
+					}
+					
+					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageClassifieds)) {
+						unset(ChmsForm::$NavSectionArray[ChmsForm::NavSectionClassifieds]);
+					}
+					
+					if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageClasses)) {
+						ChmsForm::$NavSectionArray[ChmsForm::NavSectionEvents][0] = 'Events';
+					}
+				}
+			}
+
+			if (array_key_exists('intPublicLoginId', $_SESSION)) {
+				QApplication::$PublicLogin = PublicLogin::Load($_SESSION['intPublicLoginId']);
+
+				// If NO object, update session
+				if (!QApplication::$PublicLogin) {
+					$_SESSION['intPublicLoginId'] = null;
+					unset($_SESSION['intPublicLoginId']);
+
+				// Otherwise, process it
+				} else {
+					QApplication::$PublicLoginId = QApplication::$PublicLogin->Id;
 				}
 			}
 		}
@@ -130,6 +163,55 @@
 			QApplication::$Login->RefreshDateLastLogin();
 			$_SESSION['intLoginId'] = $objLogin->Id;
 		}
+		
+		/**
+		 * Called by the PublicLoginForm to actually peform a Login
+		 * @param PublicLogin $objPublicLogin
+		 * @return void
+		 */
+		public static function PublicLogin(PublicLogin $objPublicLogin) {
+			QApplication::$PublicLogin = $objPublicLogin;
+			QApplication::$PublicLoginId = $objPublicLogin->Id;
+			QApplication::$PublicLogin->RefreshDateLastLogin();
+			$_SESSION['intPublicLoginId'] = $objPublicLogin->Id;
+		}
+		
+		public static function PublicLoginRefresh() {
+			QApplication::$PublicLogin = PublicLogin::Load(QApplication::$PublicLogin->Id);
+		}
+
+		public static function RedirectToLogin($intMessageId) {
+			print '<script type="text/javascript" src="' . __JS_ASSETS__ . '/urlencode.js"></script>';
+			print '<script type="text/javascript">';
+			print 'document.location = ("/index.php/' . $intMessageId . '?r=" + urlencode(document.location));';
+			print '</script>';
+			exit();
+		}
+
+		/**
+		 * Verifies that the user is logged in, and if not, will redirect user to the public login page
+		 * @param boolean $blnProvisionalOkay whether or not provisional accounts are okay at this point
+		 * @return void
+		 */
+		public static function AuthenticatePublic($blnProvisionalOkay = false) {
+			if (!QApplication::$PublicLogin) QApplication::RedirectToLogin(2);
+
+			// If we're here, then double check validity
+			if (!QApplication::$PublicLogin->ActiveFlag) {
+				self::PublicLogout(false);
+				QApplication::RedirectToLogin(2);
+			}
+
+			// Check for provisional (if applicable)
+			if ($blnProvisionalOkay) return;
+			if (!QApplication::$PublicLogin->Person) {
+				self::PublicLogout(false);
+				QApplication::RedirectToLogin(2);
+			}
+
+			// If we are here,  then we're good to go!
+			return;
+		}
 
 		/**
 		 * Verifies that the user is logged in, and if not, will redirect user to the login page
@@ -139,7 +221,7 @@
 		 * @return void
 		 */
 		public static function Authenticate($intAcceptableRoleTypeIdArray = null, $intRequiredPermissionArray = null) {
-			if (!QApplication::$Login) QApplication::Redirect('/index.php/2');
+			if (!QApplication::$Login) QApplication::RedirectToLogin(2);
 
 			// Check against RoleTypeIdArray (if applicable)
 			if (is_array($intAcceptableRoleTypeIdArray)) {
@@ -188,17 +270,28 @@
 			QApplication::$LoginId = null;
 			QApplication::Redirect('/index.php/1');
 		}
+		
+		/**
+		 * Logs the PUBLIC user out (if applicable) and will redirect user to the public login page
+		 * @return void
+		 */
+		public static function PublicLogout($blnRedirectFlag = true) {
+			$_SESSION['intPublicLoginId'] = null;
+			unset($_SESSION['intPublicLoginId']);
+			QApplication::$PublicLogin = null;
+			QApplication::$PublicLoginId = null;
+			if ($blnRedirectFlag) QApplication::Redirect('/index.php/1');
+		}
 
 		/**
 		 * This will "tokenize" an email token (for groups and comm lists) to all lower case
 		 * alphanumeric/underscore characters.
 		 * 
-		 * TODO need to implement logic
-		 * 
 		 * @param string $strString
+		 * @param bool $blnUnderscoreOkay optional, specifies whether or not underscores are to be included (default is true)
 		 * @return string
 		 */
-		public static function Tokenize($strString) {
+		public static function Tokenize($strString, $blnUnderscoreOkay = true) {
 			$strString = trim(strtolower($strString));
 			$strToReturn = null;
 			while (strlen($strString)) {
@@ -215,12 +308,16 @@
 				$strString = substr($strString, 1);
 			}
 
-			// Cleanup Doubles
-			while (strpos($strToReturn, '__') !== false) $strToReturn = str_replace('__', '_', $strToReturn);
+			if ($blnUnderscoreOkay) {
+				// Cleanup Doubles
+				while (strpos($strToReturn, '__') !== false) $strToReturn = str_replace('__', '_', $strToReturn);
 
-			// Perform a "trim"
-			if (QString::FirstCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 1);
-			if (QString::LastCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 0, strlen($strToReturn) - 1);
+				// Perform a "trim"
+				if (QString::FirstCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 1);
+				if (QString::LastCharacter($strToReturn) == '_') $strToReturn = substr($strToReturn, 0, strlen($strToReturn) - 1);
+			} else {
+				$strToReturn = str_replace('_', null, $strToReturn);
+			}
 
 			return $strToReturn;
 		}
@@ -282,12 +379,13 @@
 		/**
 		 * Displays a currency value
 		 * @param float $fltAmount
+		 * @param string $strPad amount of padding text between dollar sign and number
 		 */
-		public static function DisplayCurrency($fltAmount) {
+		public static function DisplayCurrency($fltAmount, $strPad = null) {
 			if ($fltAmount < 0)
-				return '-$' . number_format(abs($fltAmount), 2);
+				return '-$' . $strPad . number_format(abs($fltAmount), 2);
 			else
-				return '$' . number_format($fltAmount, 2);
+				return '$' . $strPad . number_format($fltAmount, 2);
 		}
 
 		public static function DisplayCurrencyHtml($fltAmount, $blnAddSpaces = false) {

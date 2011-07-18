@@ -38,6 +38,8 @@
 	 * property-read QLabel $PostedTotalAmountLabel
 	 * property QListBox $CreatedByLoginIdControl
 	 * property-read QLabel $CreatedByLoginIdLabel
+	 * property QListBox $PaypalBatchControl
+	 * property-read QLabel $PaypalBatchLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -199,8 +201,20 @@
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QListBox lstPaypalBatch
+         * @access protected
+         */
+		protected $lstPaypalBatch;
+
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+        /**
+         * @var QLabel lblPaypalBatch
+         * @access protected
+         */
+		protected $lblPaypalBatch;
+
 
 
 		/**
@@ -598,6 +612,46 @@
 			return $this->lblCreatedByLoginId;
 		}
 
+		/**
+		 * Create and setup QListBox lstPaypalBatch
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstPaypalBatch_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstPaypalBatch = new QListBox($this->objParentObject, $strControlId);
+			$this->lstPaypalBatch->Name = QApplication::Translate('Paypal Batch');
+			$this->lstPaypalBatch->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPaypalBatchCursor = PaypalBatch::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPaypalBatch = PaypalBatch::InstantiateCursor($objPaypalBatchCursor)) {
+				$objListItem = new QListItem($objPaypalBatch->__toString(), $objPaypalBatch->Id);
+				if ($objPaypalBatch->StewardshipBatchId == $this->objStewardshipBatch->Id)
+					$objListItem->Selected = true;
+				$this->lstPaypalBatch->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstPaypalBatch;
+		}
+
+		/**
+		 * Create and setup QLabel lblPaypalBatch
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPaypalBatch_Create($strControlId = null) {
+			$this->lblPaypalBatch = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPaypalBatch->Name = QApplication::Translate('Paypal Batch');
+			$this->lblPaypalBatch->Text = ($this->objStewardshipBatch->PaypalBatch) ? $this->objStewardshipBatch->PaypalBatch->__toString() : null;
+			return $this->lblPaypalBatch;
+		}
+
 
 
 		/**
@@ -652,6 +706,19 @@
 			}
 			if ($this->lblCreatedByLoginId) $this->lblCreatedByLoginId->Text = ($this->objStewardshipBatch->CreatedByLogin) ? $this->objStewardshipBatch->CreatedByLogin->__toString() : null;
 
+			if ($this->lstPaypalBatch) {
+				$this->lstPaypalBatch->RemoveAllItems();
+				$this->lstPaypalBatch->AddItem(QApplication::Translate('- Select One -'), null);
+				$objPaypalBatchArray = PaypalBatch::LoadAll();
+				if ($objPaypalBatchArray) foreach ($objPaypalBatchArray as $objPaypalBatch) {
+					$objListItem = new QListItem($objPaypalBatch->__toString(), $objPaypalBatch->Id);
+					if ($objPaypalBatch->StewardshipBatchId == $this->objStewardshipBatch->Id)
+						$objListItem->Selected = true;
+					$this->lstPaypalBatch->AddItem($objListItem);
+				}
+			}
+			if ($this->lblPaypalBatch) $this->lblPaypalBatch->Text = ($this->objStewardshipBatch->PaypalBatch) ? $this->objStewardshipBatch->PaypalBatch->__toString() : null;
+
 		}
 
 
@@ -687,6 +754,7 @@
 				if ($this->lstCreatedByLogin) $this->objStewardshipBatch->CreatedByLoginId = $this->lstCreatedByLogin->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
+				if ($this->lstPaypalBatch) $this->objStewardshipBatch->PaypalBatch = PaypalBatch::Load($this->lstPaypalBatch->SelectedValue);
 
 				// Save the StewardshipBatch object
 				$this->objStewardshipBatch->Save();
@@ -793,6 +861,12 @@
 				case 'CreatedByLoginIdLabel':
 					if (!$this->lblCreatedByLoginId) return $this->lblCreatedByLoginId_Create();
 					return $this->lblCreatedByLoginId;
+				case 'PaypalBatchControl':
+					if (!$this->lstPaypalBatch) return $this->lstPaypalBatch_Create();
+					return $this->lstPaypalBatch;
+				case 'PaypalBatchLabel':
+					if (!$this->lblPaypalBatch) return $this->lblPaypalBatch_Create();
+					return $this->lblPaypalBatch;
 				default:
 					try {
 						return parent::__get($strName);
@@ -837,6 +911,8 @@
 						return ($this->txtPostedTotalAmount = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedByLoginIdControl':
 						return ($this->lstCreatedByLogin = QType::Cast($mixValue, 'QControl'));
+					case 'PaypalBatchControl':
+						return ($this->lstPaypalBatch = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

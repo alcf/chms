@@ -17,6 +17,7 @@
 			'comments' => array('Comments', 'Comments'),
 			'stewardship' => array('Stewardship', 'Stewardship'),
 			'attributes' => array('Attributes', 'Attributes'),
+			'online' => array('my.alcf Account', 'OnlineAccount', 'disabled'),
 			'merge' => array('Merge Records', 'Merge')
 		);
 		public $strUrlHashArgument;
@@ -65,6 +66,10 @@
 			
 			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::MergeIndividuals)) {
 				unset($this->strSubNavItemArray['merge']);
+			}
+			
+			if ($this->objPerson->PublicLogin) {
+				$this->strSubNavItemArray['online'][2] = null;
 			}
 			
 			$this->lblHeading = new QLabel($this);

@@ -3,7 +3,9 @@
 .settings
 .cache
 .DS_Store
-configuration.local
+*.local
+/groups_server_password.txt
+/sso_key.txt
 /file_assets/head_shots
 /file_assets/contribution_images
 /file_assets/receipt_pdf
@@ -11,7 +13,6 @@ configuration.local
 /qcodo_log/*.log.txt
 /error_log
 /micrimage
-/groups_server_password.txt
 /cli/*.lock
 /cli/scripts/test.cli.php
 /www/cache/*.jpg

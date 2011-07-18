@@ -112,6 +112,18 @@
 			// Add Indent
 			$strName = str_repeat('&nbsp;&nbsp;&nbsp;', $objGroup->HierarchyLevel) . $strName;
 
+			// Add Facilitator Name (for Growth Groups, specifically)
+			if ($objGroup->GroupTypeId == GroupType::GrowthGroup) {
+				$strFacArray = array();
+				foreach ($objGroup->GetActiveGroupParticipationArray() as $objParticipant) {
+					if ($objParticipant->GroupRole->Name == 'Facilitator') {
+						$strFacArray[] = $objParticipant->Person->Name;
+					}
+				}
+				
+				if (count($strFacArray)) $strName .= ' <span style="font-size: 10px;">(' . implode(', ', $strFacArray) . ')</span>';
+			}
+
 			return $strName;
 		}
 

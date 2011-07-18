@@ -61,13 +61,14 @@
 				$this->lstSuffix->AddItem($strSuffix, $strSuffix, $this->objPerson->Suffix == $strSuffix);
 
 			$this->txtNickname = new QTextBox($this);
-			$this->txtNickname->Name = 'Nickname';
+			$this->txtNickname->Name = 'Nickname(s)';
 			$this->txtNickname->Text = $this->objPerson->Nickname;
-
+			$this->txtNickname->Instructions = 'Separate multiples with commas';
+			
 			$this->txtPriorLastNames = new QTextBox($this);
 			$this->txtPriorLastNames->Name = 'Prior Last Name(s)';
 			$this->txtPriorLastNames->Text = $this->objPerson->PriorLastNames;
-			$this->txtPriorLastNames->Instructions = 'Separate with Spaces';
+			$this->txtPriorLastNames->Instructions = 'Separate multiples with commas';
 
 			$this->txtMailingLabel = new QTextBox($this);
 			$this->txtMailingLabel->Name = 'Mailing Label';
