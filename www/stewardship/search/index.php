@@ -117,7 +117,15 @@
 				$objContributionCursor = StewardshipContribution::QueryCursor($objCondition, $objClauses);
 				$fltTotal = 0.00;
 				while ($objContribution = StewardshipContribution::InstantiateCursor($objContributionCursor)) {
-					$fltTotal += $objContribution->TotalAmount;
+					// We need to look at a specific fund, if that was specified
+					if ($this->lstFund->SelectedValue) {
+						foreach ($objContribution->GetStewardshipContributionAmountArray() as $objAmount) {
+							if ($objAmount->StewardshipFundId == $this->lstFund->SelectedValue)
+								$fltTotal += $objAmount->Amount;
+						}
+					} else {
+						$fltTotal += $objContribution->TotalAmount;
+					}
 				}
 				
 				QApplication::DisplayAlert('Total: ' . QApplication::DisplayCurrency($fltTotal));
@@ -130,11 +138,21 @@
 		}
 
 		public function RenderAmount(StewardshipContribution $objStewardshipContribution) {
+			// We need to look at a specific fund?
+			if ($this->lstFund->SelectedValue) {
+				$fltAmount = 0;
+				foreach ($objStewardshipContribution->GetStewardshipContributionAmountArray() as $objAmount) {
+					if ($objAmount->StewardshipFundId == $this->lstFund->SelectedValue)
+						$fltAmount += $objAmount->Amount;
+				}
+			} else {
+				$fltAmount = $objStewardshipContribution->TotalAmount;
+			}
 			return sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
 				$objStewardshipContribution->StewardshipBatchId,
 				$objStewardshipContribution->StewardshipStack->StackNumber,
 				$objStewardshipContribution->Id,
-				$this->FormatNumber($objStewardshipContribution->TotalAmount));
+				$this->FormatNumber($fltAmount));
 		}
 
 		public function FormatNumber($fltAmount) {
