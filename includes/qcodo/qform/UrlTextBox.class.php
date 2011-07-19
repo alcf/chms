@@ -44,8 +44,8 @@
 		}
 
 		/**
-		* @copyright 2004   Esben Maaløe esm-at-baseclassmodulweb.dk
-		* @author   Esben Maaløe esm-at-baseclassmodulweb.dk
+		* @copyright 2004   Esben Maa esm-at-baseclassmodulweb.dk
+		* @author   Esben Maa esm-at-baseclassmodulweb.dk
 		* @license You are free to copy/modify this function to your hearts content
 		*          However I ask that you return any improvements you make to me,
 		*          and that you credit me in your sourcecode if you use it
