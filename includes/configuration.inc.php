@@ -104,7 +104,7 @@
 			define ('__MICRIMAGE_DROP_FOLDER__', '/home/magtek');
 			define ('MICRIMAGE_IP', 'STAGE_IP_MICR');
 
-			define ('MY_ALCF_URL', 'http://my.alcf.net');
+			define ('MY_ALCF_URL', 'https://my.alcf.net');
 
 			define('DB_CONNECTION_1', serialize(array(
 				'adapter' => 'MySqli5',
