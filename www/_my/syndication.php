@@ -10,7 +10,7 @@
 	///////////////////////
 	$strXml = null; $objXml = null;
 	try {
-		$strXml = @file_get_contents('http://alcfmagazine.wordpress.com/tag/sermon/feed');
+		$strXml = @file_get_contents('http://abundantliving.alcf.net/tag/sermon/feed');
 		if ($strXml) $objXml = @new SimpleXmlElement($strXml);
 	} catch (Exception $objExc) {}
 
@@ -52,7 +52,7 @@
 	///////////////////////
 	$strXml = null; $objXml = null;
 	try {
-		$strXml = @file_get_contents('http://alcfmagazine.wordpress.com/tag/sticky/feed');
+		$strXml = @file_get_contents('http://abundantliving.alcf.net/tag/sticky/feed');
 		if ($strXml) $objXml = @new SimpleXmlElement($strXml);
 	} catch (Exception $objExc) {
 	}
