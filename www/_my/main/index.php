@@ -145,6 +145,7 @@
 			$this->lstGender->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->dtxDateOfBirth->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
+			if ($this->mctPerson->Person->DobGuessedFlag || $this->mctPerson->Person->DobYearApproximateFlag) $this->dtxDateOfBirth->Text = null;
 			$this->Refresh();
 		}
 
