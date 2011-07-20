@@ -670,6 +670,8 @@
 
 							// Update the Person Information
 							$this->objSignupEntry->Person->DateOfBirth = $objFormAnswer->DateValue;
+							$this->objSignupEntry->Person->DobGuessedFlag = false;
+							$this->objSignupEntry->Person->DobYearApproximateFlag = false;
 							$this->objSignupEntry->Person->Save();
 						} else {
 							$objFormAnswer->DateValue = null;
