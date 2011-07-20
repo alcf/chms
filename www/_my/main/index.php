@@ -530,6 +530,11 @@
 			$this->btnCancel_Personal_Click();
 
 			$this->mctPerson->SavePerson();
+			if ($this->dtxDateOfBirth->Text) {
+				$this->mctPerson->Person->DobYearApproximateFlag = false;
+				$this->mctPerson->Person->DobGuessedFlag = false;
+				$this->mctPerson->Person->Save();
+			}
 			QApplication::PublicLoginRefresh();
 			$this->Refresh();
 		}
