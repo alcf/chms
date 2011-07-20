@@ -209,6 +209,10 @@
 				$objPerson = Person::CreatePerson($this->FirstName, null, $this->LastName, $blnMaleFlag, $this->EmailAddress,
 					$strMobilePhone, $intPhoneTypeId);
 				$objPerson->DateOfBirth = $dttDateOfBirth;
+				if ($objPerson->DateOfBirth) {
+					$objPerson->DobGuessedFlag = false;
+					$objPerson->DobYearApproximateFlag = false;
+				}
 				$objPerson->Save();
 			}
 
