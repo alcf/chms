@@ -128,7 +128,7 @@
 			define('PUBLIC_LOGIN_SALT', 'STAGE_PASSSALT');
 			define('CHMS_LOGIN_SALT', 'STAGE_LDAPSALT');
 			define('SMTP_SERVER', 'STAGE_IP_SMTP');
-			define('SMTP_TEST_MODE', false);
+			define('SMTP_TEST_MODE', true);
 			break;
 
 		case 'prod':
