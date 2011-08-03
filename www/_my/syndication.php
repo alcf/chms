@@ -37,7 +37,23 @@
 			$dttDateTime = new QDateTime((string)$objItemXml->pubDate);
 			$strLink = (string)$objItemXml->link;
 
-			$strHtml = sprintf('<h1 style="font-size: 18px;">Last Weekend\'s Sermon</h1><strong>%s</strong><br/>%s<br/><a href="%s">Watch</a>',
+			// Image?
+			$objImageNs = $objItemXml->children('http://search.yahoo.com/mrss/');
+			$strUrl = null;
+			if ($objImageNs) {
+				$objImageAttributes = $objImageNs->thumbnail->attributes();
+				$strUrl = (string) $objImageAttributes['url'];
+			}
+
+			if ($strUrl) {
+				$strUrl = str_replace('w=150', 'w=62', $strUrl);
+				$strImageHtml = '<img style="float: left; margin-top: 5px; margin-right: 5px;" src="' . $strUrl . '"/>';
+			} else {
+				$strImageHtml = null;
+			}
+
+			$strHtml = sprintf('<h1 style="font-size: 18px;">Last Weekend\'s Sermon</h1>%s<strong>%s</strong><br/>%s<br/><a href="%s">Watch</a>',
+				$strImageHtml,
 				$dttDateTime->ToString('MMMM D, YYYY'),
 				$strDescription,
 				QApplication::HtmlEntities($strLink));
@@ -71,6 +87,21 @@
 			$dttDateTime = new QDateTime((string)$objItemXml->pubDate);
 			$strLink = (string)$objItemXml->link;
 
+			// Image?
+			$objImageNs = $objItemXml->children('http://search.yahoo.com/mrss/');
+			$strUrl = null;
+			if ($objImageNs) {
+				$objImageAttributes = $objImageNs->thumbnail->attributes();
+				$strUrl = (string) $objImageAttributes['url'];
+			}
+
+			if ($strUrl) {
+				$strUrl = str_replace('w=150', 'w=62', $strUrl);
+				$strImageHtml = '<img style="float: left; margin-top: 5px; margin-right: 5px;" src="' . $strUrl . '"/>';
+			} else {
+				$strImageHtml = null;
+			}
+
 			$strAuthor = null;
 			// Try and deduce an author if applicable
 			$arrMatches = array();
@@ -81,14 +112,16 @@
 			}
 
 			if ($strAuthor) {
-				$strHtml = sprintf('<h1 style="font-size: 18px;">Featured Article</h1><strong>%s</strong><br/><em>%s<br/>%s</em><br/>%s<br/><a href="%s">Read More</a>',
+				$strHtml = sprintf('<h1 style="font-size: 18px;">Featured Article</h1>%s<strong>%s</strong><br/><em>%s<br/>%s</em><br/>%s<br/><a href="%s">Read More</a>',
+					$strImageHtml,
 					$strTitle,
 					$strAuthor,
 					$strDateTime,
 					QString::Truncate($strDescription, 100),
 					QApplication::HtmlEntities($strLink));
 			} else {
-				$strHtml = sprintf('<h1 style="font-size: 18px;">Featured Article</h1><strong>%s</strong><br/><em>%s</em><br/>%s<br/><a href="%s">Read More</a>',
+				$strHtml = sprintf('<h1 style="font-size: 18px;">Featured Article</h1>%s<strong>%s</strong><br/><em>%s</em><br/>%s<br/><a href="%s">Read More</a>',
+					$strImageHtml,
 					$strTitle,
 					$dttDateTime->ToString('MMMM D, YYYY'),
 					QString::Truncate($strDescription, 100),
