@@ -13,8 +13,8 @@
 	<div id="masthead">
 		<div class="utilityBar">
 			<div class="itemPad">&nbsp;</div>
-			<div class="item"><a href="http://stage.alcf.net/pages/page.asp?page_id=149934">Calendar</a></div>
-			<div class="item"><a href="http://stage.alcf.net/pages/page.asp?page_id=151903">Contact Us</a></div>
+			<div class="item"><a href="http://www.alcf.net/calendar">Calendar</a></div>
+			<div class="item"><a href="http://www.alcf.net/contact">Contact Us</a></div>
 		<?php if (!QApplication::$PublicLogin) { ?>
 			<div class="item"><a href="/register/">Register</a></div>
 			<div class="item"><a href="/">Log In</a></div>
