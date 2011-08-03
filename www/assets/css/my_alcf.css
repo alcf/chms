@@ -140,7 +140,7 @@
 
 	div.footerPane { height: 1px; overflow: visible; }
 
-	div.footerPaneBackground { height: 80px; background-color: #000; opacity: 0.25; }
+	div.footerPaneBackground { height: 80px; background-color: #000; opacity: 0.25; filter: alpha(opacity=25); }
 	
 	div.footer {
 		z-index: 1;

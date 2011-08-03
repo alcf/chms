@@ -13,5 +13,6 @@
 	<br/><br/>
 
 	<?php $this->dtrCategories->Render(); ?>
+	<br clear="all"/>
 	
 <?php require(__INCLUDES__ . '/footer_my.inc.php'); ?>
