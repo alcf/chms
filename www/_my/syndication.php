@@ -52,7 +52,8 @@
 				$strImageHtml = null;
 			}
 
-			$strHtml = sprintf('<h1 style="font-size: 18px;">Last Weekend\'s Sermon</h1>%s<strong>%s</strong><br/>%s<br/><a href="%s">Watch</a>',
+			$strHtml = sprintf('<div style="cursor: pointer;" onclick="document.location=&quot;%s&quot;;"><h1 style="font-size: 18px;">Last Weekend\'s Sermon</h1>%s<strong>%s</strong><br/>%s<br/><a href="%s" onclick="return false;">Watch Now</a></div>',
+				QApplication::HtmlEntities($strLink),
 				$strImageHtml,
 				$dttDateTime->ToString('MMMM D, YYYY'),
 				$strDescription,
@@ -112,7 +113,8 @@
 			}
 
 			if ($strAuthor) {
-				$strHtml = sprintf('<h1 style="font-size: 18px;">Featured Article</h1>%s<strong>%s</strong><br/><em>%s<br/>%s</em><br/>%s<br/><a href="%s">Read More</a>',
+				$strHtml = sprintf('<div style="cursor: pointer;" onclick="document.location=&quot;%s&quot;;"><h1 style="font-size: 18px;">Featured Article</h1>%s<strong>%s</strong><br/><em>%s<br/>%s</em><br/>%s<br/><a href="%s" onclick="return false;">Read More</a></div>',
+					QApplication::HtmlEntities($strLink),
 					$strImageHtml,
 					$strTitle,
 					$strAuthor,
@@ -120,7 +122,8 @@
 					QString::Truncate($strDescription, 100),
 					QApplication::HtmlEntities($strLink));
 			} else {
-				$strHtml = sprintf('<h1 style="font-size: 18px;">Featured Article</h1>%s<strong>%s</strong><br/><em>%s</em><br/>%s<br/><a href="%s">Read More</a>',
+				$strHtml = sprintf('<div style="cursor: pointer;" onclick="document.location=&quot;%s&quot;;"><h1 style="font-size: 18px;">Featured Article</h1>%s<strong>%s</strong><br/><em>%s</em><br/>%s<br/><a href="%s" onclick="return false;">Read More</a></div>',
+					QApplication::HtmlEntities($strLink),
 					$strImageHtml,
 					$strTitle,
 					$dttDateTime->ToString('MMMM D, YYYY'),
