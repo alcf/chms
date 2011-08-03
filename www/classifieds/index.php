@@ -109,7 +109,7 @@
 		public function RenderTitle(ClassifiedPost $objPost) {
 			if ($objPost->DateExpired->IsEarlierThan(QDateTime::Now(false))) {
 				$objStyle = new QDataGridRowStyle();
-				$objStyle->BackgroundColor = '#eaa';
+				$objStyle->BackColor = '#eaa';
 			} else if (!$objPost->ApprovalFlag) {
 				$objStyle = new QDataGridRowStyle();
 				$objStyle->ForeColor = '#888';
