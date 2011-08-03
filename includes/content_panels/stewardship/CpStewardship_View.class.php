@@ -83,7 +83,22 @@
 					// Capture the check image
 					$strHash = md5(microtime());
 					$this->strCheckFilePath = __MICRIMAGE_TEMP_FOLDER__ . '/' . $strHash . '.tif';
-					rename(__MICRIMAGE_DROP_FOLDER__ . '/' . $strFilename, $this->strCheckFilePath);
+
+					// This will not work due to some weird permissions issue
+					// so instead we will use exec
+//					rename(__MICRIMAGE_DROP_FOLDER__ . '/' . $strFilename, $this->strCheckFilePath);
+					$strFilename = str_replace('`', '', $strFilename);
+					$strFilename = str_replace('|', '', $strFilename);
+					$strFilename = str_replace(';', '', $strFilename);
+					$strFilename = str_replace('>', '', $strFilename);
+					$strFilename = str_replace('<', '', $strFilename);
+					$strFilename = str_replace('&', '', $strFilename);
+					$strFilename = str_replace('"', '', $strFilename);
+					$strFilename = str_replace(' ', '', $strFilename);
+					$strFilename = str_replace("'", '', $strFilename);
+					$strFilename = str_replace("\n", '', $strFilename);
+					$strFilename = str_replace("\r", '', $strFilename);
+					exec(sprintf('mv %s %s', __MICRIMAGE_DROP_FOLDER__ . '/' . $strFilename, $this->strCheckFilePath));
 
 					// Move to Next Step
 					return $this->ReturnTo(sprintf('#%s/edit_contribution/0/%s', $this->objStack->StackNumber, $strHash));
