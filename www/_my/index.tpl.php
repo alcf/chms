@@ -3,7 +3,7 @@
 	<h1>Welcome to my.alcf</h1>
 	<h2><?php $this->lblMessage->Render(); ?></h2>
 
-	<p style="font-size: 14px;">Abundant Life Chrsitian Fellowship's <strong>my.alcf Website</strong> will allow you to view and edit your contact information,
+	<p style="font-size: 14px;">Abundant Life Christian Fellowship's <strong>my.alcf Website</strong> will allow you to view and edit your contact information,
 	signup for events and Classes@ALCF, make online contributions, and download stewardship receipts.<br/><br/>
 	It's safe and secure so feel free and log in today!</p>
 	

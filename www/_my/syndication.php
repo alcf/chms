@@ -68,7 +68,7 @@
 	///////////////////////
 	$strXml = null; $objXml = null;
 	try {
-		$strXml = @file_get_contents('http://abundantliving.alcf.net/tag/sticky/feed');
+		$strXml = @file_get_contents('http://abundantliving.alcf.net/tag/homepage/feed');
 		if ($strXml) $objXml = @new SimpleXmlElement($strXml);
 	} catch (Exception $objExc) {
 	}
@@ -138,7 +138,9 @@
 	///////////////////////
 	if (count($strHtmlArray)) {
 		$strHtml = implode('<br/><br/>', $strHtmlArray);
+		$strHtml = '<img src="/uploads/mediaHeader.png" title="Abundant Living Online" style="position: relative; top: -15px; left: -10px; cursor: pointer;" onclick="document.location=&quot;http://abundantliving.alcf.net/&quot;" /><br/>' . $strHtml;
 		$strHtml = str_replace('"', '\\"', $strHtml);
+		
 		print ('document.getElementById("syndicatedContent").innerHTML = "' . $strHtml . '";');
 	}
 ?>
