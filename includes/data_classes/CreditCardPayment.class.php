@@ -226,8 +226,19 @@
 
 			$strNvpRequest = self::FormatNvp($strNvpRequestArray);
 
+			// First, we Sanitize NVP Request for Logging and then log it
+			$strNvpRequestToLog = $strNvpRequestArray;
+			$strNvpRequestToLog['PARTNER'] = 'xxxxx';
+			$strNvpRequestToLog['USER'] = 'xxxxx';
+			$strNvpRequestToLog['VENDOR'] = 'xxxxx';
+			$strNvpRequestToLog['PWD'] = 'xxxxx';
+			if (array_key_exists('ACCT', $strNvpRequestToLog)) {
+				$intLength = strlen($strNvpRequestToLog['ACCT']);
+				$strNvpRequestToLog['ACCT'] = str_repeat('x', $intLength - 4) . substr($strNvpRequestToLog['ACCT'], $intLength - 4);
+			}
+			QLog::Log($strLogHash . ' - ' . self::FormatNvp($strNvpRequestToLog), QLogLevel::Normal, $strLogFile);
+
 			// Setting the entire NvpRequest as POST FIELD to curl
-			QLog::Log($strLogHash . ' - ' . $strNvpRequest, QLogLevel::Normal, $strLogFile);
 			curl_setopt($objCurl, CURLOPT_POSTFIELDS, $strNvpRequest);
 
 			// Getting response from server
