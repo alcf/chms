@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('004');
+INSERT INTO _version VALUES('003');
 
 
 
@@ -317,12 +317,6 @@ INSERT INTO signup_payment_type(id, name) VALUES (8, 'Other');
 
 INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
 INSERT INTO permission_type VALUES(256, 'Manage Classes');
-
-#######################
-# Added for Version 004
-#######################
-
-INSERT INTO form_question_type VALUES(14, 'Instructions');
 
 ##############
 # Starter Data
