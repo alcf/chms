@@ -330,7 +330,7 @@
 					$objPerson->Save();
 				}
 
-				QApplication::Redirect('/register/thankyou.php');
+				QApplication::RedirectOnPublicLogin('/register/thankyou.php');
 			}
 		}
 

@@ -89,7 +89,7 @@
 		}
 
 		protected function btnBack_Click($strFormId, $strControlId, $strParameter) {
-			QApplication::Redirect('/main/');
+			QApplication::RedirectOnPublicLogin();
 		}
 	}
 

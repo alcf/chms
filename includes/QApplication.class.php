@@ -187,6 +187,21 @@
 			print '</script>';
 			exit();
 		}
+		
+		public static function RedirectOnPublicLogin($strUrl = '/main/') {
+			if (array_key_exists('redirect', $_SESSION) && $_SESSION['redirect']) {
+				$strUrl = $_SESSION['redirect'];
+				$_SESSION['redirect'] = null;
+				unset($_SESSION['redirect']);
+				QApplication::Redirect($strUrl);
+			} else
+				QApplication::Redirect($strUrl);
+		}
+
+		public static function RedirectToPublicLogin($intMessageId) {
+			$_SESSION['redirect'] = QApplication::$RequestUri;
+			QApplication::Redirect('/index.php/' . $intMessageId);
+		}
 
 		/**
 		 * Verifies that the user is logged in, and if not, will redirect user to the public login page
@@ -194,19 +209,19 @@
 		 * @return void
 		 */
 		public static function AuthenticatePublic($blnProvisionalOkay = false) {
-			if (!QApplication::$PublicLogin) QApplication::RedirectToLogin(2);
+			if (!QApplication::$PublicLogin) QApplication::RedirectToPublicLogin(2);
 
 			// If we're here, then double check validity
 			if (!QApplication::$PublicLogin->ActiveFlag) {
 				self::PublicLogout(false);
-				QApplication::RedirectToLogin(2);
+				QApplication::RedirectToPublicLogin(2);
 			}
 
 			// Check for provisional (if applicable)
 			if ($blnProvisionalOkay) return;
 			if (!QApplication::$PublicLogin->Person) {
 				self::PublicLogout(false);
-				QApplication::RedirectToLogin(2);
+				QApplication::RedirectToPublicLogin(2);
 			}
 
 			// If we are here,  then we're good to go!
