@@ -540,6 +540,21 @@
 						}
 						break;
 
+					case FormQuestionType::Instructions:
+						$lblAnswer = new QLabel($this, $strControlId);
+						$lblAnswer->HtmlEntities = false;
+						$lblAnswer->Text = nl2br(QApplication::HtmlEntities(trim($objFormQuestion->Options)), true);
+
+						if (strlen($strLabel = trim($objFormQuestion->Question))) {
+							$lblAnswer->Name = $strLabel;
+							$lblAnswer->RenderMethod = 'RenderWithName';
+						} else {
+							$lblAnswer->RenderMethod = 'Render';
+						}
+						
+						$this->objFormQuestionControlArray[] = $lblAnswer;
+						break;
+
 					default:
 						throw new Exception('Invalid FormQuestionTypeId: ' . $objFormQuestion->FormQuestionTypeId);
 				}
@@ -779,6 +794,10 @@
 						} else {
 							$objFormAnswer->TextValue = null;
 						}
+						break;
+
+					case FormQuestionType::Instructions:
+						// Don't need to do anything here!
 						break;
 
 					default:

@@ -141,6 +141,24 @@
 					$this->chkAllowOtherFlag->Visible = true;
 					break;
 
+				case FormQuestionType::Instructions:
+					$this->txtOptions->Name = 'Instructions Text';
+					$this->txtOptions->Required = true;
+					$this->txtOptions->Visible = true;
+					$this->chkAllowOtherFlag->Checked = false;
+					$this->chkAllowOtherFlag->Required = false;
+					$this->chkAllowOtherFlag->Visible = false;
+					$this->chkRequiredFlag->Visible = false;
+					
+					$this->txtShortDescription->Text = '(instructions)';
+					$this->txtShortDescription->Visible = false;
+
+					$this->chkRequiredFlag->Visible = false;
+					$this->txtQuestion->Name = 'Label';
+					$this->txtQuestion->Instructions = null;
+					$this->txtQuestion->Required = false;
+					break;
+
 				default:
 					throw new Exception(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
 			}

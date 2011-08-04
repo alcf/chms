@@ -38,11 +38,13 @@
 			$this->cblColumns->HtmlEntities = false;
 			$this->cblColumns->AddAction(new QClickEvent(), new QAjaxAction('cblColumns_Click'));
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
-				if ($objFormQuestion->RequiredFlag)
-					$strDescription = '<strong>' . QApplication::HtmlEntities($objFormQuestion->ShortDescription) . '</strong>';
-				else
-					$strDescription = QApplication::HtmlEntities($objFormQuestion->ShortDescription);
-				$this->cblColumns->AddItem($strDescription, 'q' . $objFormQuestion->Id, $objFormQuestion->ViewFlag);
+				if ($objFormQuestion->FormQuestionTypeId != FormQuestionType::Instructions) {
+					if ($objFormQuestion->RequiredFlag)
+						$strDescription = '<strong>' . QApplication::HtmlEntities($objFormQuestion->ShortDescription) . '</strong>';
+					else
+						$strDescription = QApplication::HtmlEntities($objFormQuestion->ShortDescription);
+					$this->cblColumns->AddItem($strDescription, 'q' . $objFormQuestion->Id, $objFormQuestion->ViewFlag);
+				}
 			}
 			foreach ($this->objSignupForm->GetFormProductArray(QQ::OrderBy(QQN::FormProduct()->FormProductTypeId, QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
 				$this->cblColumns->AddItem(QApplication::HtmlEntities($objFormProduct->Name), 'p' . $objFormProduct->Id, $objFormProduct->ViewFlag);
