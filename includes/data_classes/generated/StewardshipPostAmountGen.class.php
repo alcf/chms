@@ -561,9 +561,10 @@
 		 * @param integer $intId
 		 * @return StewardshipPostAmount
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipPostAmount::QuerySingle(
 				QQ::Equal(QQN::StewardshipPostAmount()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -579,7 +580,8 @@
 			try {
 				return StewardshipPostAmount::QueryArray(
 					QQ::Equal(QQN::StewardshipPostAmount()->StewardshipPostId, $intStewardshipPostId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -592,10 +594,11 @@
 		 * @param integer $intStewardshipPostId
 		 * @return int
 		*/
-		public static function CountByStewardshipPostId($intStewardshipPostId) {
+		public static function CountByStewardshipPostId($intStewardshipPostId, $objOptionalClauses = null) {
 			// Call StewardshipPostAmount::QueryCount to perform the CountByStewardshipPostId query
 			return StewardshipPostAmount::QueryCount(
 				QQ::Equal(QQN::StewardshipPostAmount()->StewardshipPostId, $intStewardshipPostId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -611,7 +614,8 @@
 			try {
 				return StewardshipPostAmount::QueryArray(
 					QQ::Equal(QQN::StewardshipPostAmount()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -624,10 +628,11 @@
 		 * @param integer $intStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
+		public static function CountByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
 			// Call StewardshipPostAmount::QueryCount to perform the CountByStewardshipFundId query
 			return StewardshipPostAmount::QueryCount(
 				QQ::Equal(QQN::StewardshipPostAmount()->StewardshipFundId, $intStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 

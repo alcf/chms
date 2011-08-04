@@ -462,8 +462,8 @@
 			$this->lstSignupEntryStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSignupEntryStatusType->Name = QApplication::Translate('Signup Entry Status Type');
 			$this->lstSignupEntryStatusType->Required = true;
-			foreach (SignupEntryStatusType::$NameArray as $intId => $strValue)
-				$this->lstSignupEntryStatusType->AddItem(new QListItem($strValue, $intId, $this->objSignupEntry->SignupEntryStatusTypeId == $intId));
+
+			$this->lstSignupEntryStatusType->AddItems(SignupEntryStatusType::$NameArray, $this->objSignupEntry->SignupEntryStatusTypeId);
 			return $this->lstSignupEntryStatusType;
 		}
 

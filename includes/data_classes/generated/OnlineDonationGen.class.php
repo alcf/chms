@@ -634,9 +634,10 @@
 		 * @param integer $intId
 		 * @return OnlineDonation
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return OnlineDonation::QuerySingle(
 				QQ::Equal(QQN::OnlineDonation()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -646,9 +647,10 @@
 		 * @param integer $intCreditCardPaymentId
 		 * @return OnlineDonation
 		*/
-		public static function LoadByCreditCardPaymentId($intCreditCardPaymentId) {
+		public static function LoadByCreditCardPaymentId($intCreditCardPaymentId, $objOptionalClauses = null) {
 			return OnlineDonation::QuerySingle(
 				QQ::Equal(QQN::OnlineDonation()->CreditCardPaymentId, $intCreditCardPaymentId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -664,7 +666,8 @@
 			try {
 				return OnlineDonation::QueryArray(
 					QQ::Equal(QQN::OnlineDonation()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -677,10 +680,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call OnlineDonation::QueryCount to perform the CountByPersonId query
 			return OnlineDonation::QueryCount(
 				QQ::Equal(QQN::OnlineDonation()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 

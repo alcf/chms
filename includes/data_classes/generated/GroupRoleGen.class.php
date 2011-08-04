@@ -605,9 +605,10 @@
 		 * @param integer $intId
 		 * @return GroupRole
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return GroupRole::QuerySingle(
 				QQ::Equal(QQN::GroupRole()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -623,7 +624,8 @@
 			try {
 				return GroupRole::QueryArray(
 					QQ::Equal(QQN::GroupRole()->MinistryId, $intMinistryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -636,10 +638,11 @@
 		 * @param integer $intMinistryId
 		 * @return int
 		*/
-		public static function CountByMinistryId($intMinistryId) {
+		public static function CountByMinistryId($intMinistryId, $objOptionalClauses = null) {
 			// Call GroupRole::QueryCount to perform the CountByMinistryId query
 			return GroupRole::QueryCount(
 				QQ::Equal(QQN::GroupRole()->MinistryId, $intMinistryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -655,7 +658,8 @@
 			try {
 				return GroupRole::QueryArray(
 					QQ::Equal(QQN::GroupRole()->GroupRoleTypeId, $intGroupRoleTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -668,10 +672,11 @@
 		 * @param integer $intGroupRoleTypeId
 		 * @return int
 		*/
-		public static function CountByGroupRoleTypeId($intGroupRoleTypeId) {
+		public static function CountByGroupRoleTypeId($intGroupRoleTypeId, $objOptionalClauses = null) {
 			// Call GroupRole::QueryCount to perform the CountByGroupRoleTypeId query
 			return GroupRole::QueryCount(
 				QQ::Equal(QQN::GroupRole()->GroupRoleTypeId, $intGroupRoleTypeId)
+			, $objOptionalClauses
 			);
 		}
 

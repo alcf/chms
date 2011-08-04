@@ -759,9 +759,10 @@
 		 * @param integer $intId
 		 * @return CreditCardPayment
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return CreditCardPayment::QuerySingle(
 				QQ::Equal(QQN::CreditCardPayment()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -771,9 +772,10 @@
 		 * @param string $strTransactionCode
 		 * @return CreditCardPayment
 		*/
-		public static function LoadByTransactionCode($strTransactionCode) {
+		public static function LoadByTransactionCode($strTransactionCode, $objOptionalClauses = null) {
 			return CreditCardPayment::QuerySingle(
 				QQ::Equal(QQN::CreditCardPayment()->TransactionCode, $strTransactionCode)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -783,9 +785,10 @@
 		 * @param integer $intStewardshipContributionId
 		 * @return CreditCardPayment
 		*/
-		public static function LoadByStewardshipContributionId($intStewardshipContributionId) {
+		public static function LoadByStewardshipContributionId($intStewardshipContributionId, $objOptionalClauses = null) {
 			return CreditCardPayment::QuerySingle(
 				QQ::Equal(QQN::CreditCardPayment()->StewardshipContributionId, $intStewardshipContributionId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -805,7 +808,8 @@
 					QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId),
 					QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -819,13 +823,14 @@
 		 * @param boolean $blnUnlinkedFlag
 		 * @return int
 		*/
-		public static function CountByPaypalBatchIdUnlinkedFlag($intPaypalBatchId, $blnUnlinkedFlag) {
+		public static function CountByPaypalBatchIdUnlinkedFlag($intPaypalBatchId, $blnUnlinkedFlag, $objOptionalClauses = null) {
 			// Call CreditCardPayment::QueryCount to perform the CountByPaypalBatchIdUnlinkedFlag query
 			return CreditCardPayment::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId),
 				QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -841,7 +846,8 @@
 			try {
 				return CreditCardPayment::QueryArray(
 					QQ::Equal(QQN::CreditCardPayment()->CreditCardStatusTypeId, $intCreditCardStatusTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -854,10 +860,11 @@
 		 * @param integer $intCreditCardStatusTypeId
 		 * @return int
 		*/
-		public static function CountByCreditCardStatusTypeId($intCreditCardStatusTypeId) {
+		public static function CountByCreditCardStatusTypeId($intCreditCardStatusTypeId, $objOptionalClauses = null) {
 			// Call CreditCardPayment::QueryCount to perform the CountByCreditCardStatusTypeId query
 			return CreditCardPayment::QueryCount(
 				QQ::Equal(QQN::CreditCardPayment()->CreditCardStatusTypeId, $intCreditCardStatusTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -873,7 +880,8 @@
 			try {
 				return CreditCardPayment::QueryArray(
 					QQ::Equal(QQN::CreditCardPayment()->CreditCardTypeId, $intCreditCardTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -886,10 +894,11 @@
 		 * @param integer $intCreditCardTypeId
 		 * @return int
 		*/
-		public static function CountByCreditCardTypeId($intCreditCardTypeId) {
+		public static function CountByCreditCardTypeId($intCreditCardTypeId, $objOptionalClauses = null) {
 			// Call CreditCardPayment::QueryCount to perform the CountByCreditCardTypeId query
 			return CreditCardPayment::QueryCount(
 				QQ::Equal(QQN::CreditCardPayment()->CreditCardTypeId, $intCreditCardTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -905,7 +914,8 @@
 			try {
 				return CreditCardPayment::QueryArray(
 					QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -918,10 +928,11 @@
 		 * @param integer $intPaypalBatchId
 		 * @return int
 		*/
-		public static function CountByPaypalBatchId($intPaypalBatchId) {
+		public static function CountByPaypalBatchId($intPaypalBatchId, $objOptionalClauses = null) {
 			// Call CreditCardPayment::QueryCount to perform the CountByPaypalBatchId query
 			return CreditCardPayment::QueryCount(
 				QQ::Equal(QQN::CreditCardPayment()->PaypalBatchId, $intPaypalBatchId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -937,7 +948,8 @@
 			try {
 				return CreditCardPayment::QueryArray(
 					QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -950,10 +962,11 @@
 		 * @param boolean $blnUnlinkedFlag
 		 * @return int
 		*/
-		public static function CountByUnlinkedFlag($blnUnlinkedFlag) {
+		public static function CountByUnlinkedFlag($blnUnlinkedFlag, $objOptionalClauses = null) {
 			// Call CreditCardPayment::QueryCount to perform the CountByUnlinkedFlag query
 			return CreditCardPayment::QueryCount(
 				QQ::Equal(QQN::CreditCardPayment()->UnlinkedFlag, $blnUnlinkedFlag)
+			, $objOptionalClauses
 			);
 		}
 

@@ -629,9 +629,10 @@
 		 * @param integer $intId
 		 * @return PaypalBatch
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return PaypalBatch::QuerySingle(
 				QQ::Equal(QQN::PaypalBatch()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -641,9 +642,10 @@
 		 * @param string $strNumber
 		 * @return PaypalBatch
 		*/
-		public static function LoadByNumber($strNumber) {
+		public static function LoadByNumber($strNumber, $objOptionalClauses = null) {
 			return PaypalBatch::QuerySingle(
 				QQ::Equal(QQN::PaypalBatch()->Number, $strNumber)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -653,9 +655,10 @@
 		 * @param integer $intStewardshipBatchId
 		 * @return PaypalBatch
 		*/
-		public static function LoadByStewardshipBatchId($intStewardshipBatchId) {
+		public static function LoadByStewardshipBatchId($intStewardshipBatchId, $objOptionalClauses = null) {
 			return PaypalBatch::QuerySingle(
 				QQ::Equal(QQN::PaypalBatch()->StewardshipBatchId, $intStewardshipBatchId)
+			, $objOptionalClauses
 			);
 		}
 

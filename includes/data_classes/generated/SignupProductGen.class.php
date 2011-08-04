@@ -585,9 +585,10 @@
 		 * @param integer $intId
 		 * @return SignupProduct
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return SignupProduct::QuerySingle(
 				QQ::Equal(QQN::SignupProduct()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -598,12 +599,13 @@
 		 * @param integer $intFormProductId
 		 * @return SignupProduct
 		*/
-		public static function LoadBySignupEntryIdFormProductId($intSignupEntryId, $intFormProductId) {
+		public static function LoadBySignupEntryIdFormProductId($intSignupEntryId, $intFormProductId, $objOptionalClauses = null) {
 			return SignupProduct::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::SignupProduct()->SignupEntryId, $intSignupEntryId),
 				QQ::Equal(QQN::SignupProduct()->FormProductId, $intFormProductId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -619,7 +621,8 @@
 			try {
 				return SignupProduct::QueryArray(
 					QQ::Equal(QQN::SignupProduct()->SignupEntryId, $intSignupEntryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -632,10 +635,11 @@
 		 * @param integer $intSignupEntryId
 		 * @return int
 		*/
-		public static function CountBySignupEntryId($intSignupEntryId) {
+		public static function CountBySignupEntryId($intSignupEntryId, $objOptionalClauses = null) {
 			// Call SignupProduct::QueryCount to perform the CountBySignupEntryId query
 			return SignupProduct::QueryCount(
 				QQ::Equal(QQN::SignupProduct()->SignupEntryId, $intSignupEntryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -651,7 +655,8 @@
 			try {
 				return SignupProduct::QueryArray(
 					QQ::Equal(QQN::SignupProduct()->FormProductId, $intFormProductId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -664,10 +669,11 @@
 		 * @param integer $intFormProductId
 		 * @return int
 		*/
-		public static function CountByFormProductId($intFormProductId) {
+		public static function CountByFormProductId($intFormProductId, $objOptionalClauses = null) {
 			// Call SignupProduct::QueryCount to perform the CountByFormProductId query
 			return SignupProduct::QueryCount(
 				QQ::Equal(QQN::SignupProduct()->FormProductId, $intFormProductId)
+			, $objOptionalClauses
 			);
 		}
 

@@ -626,9 +626,10 @@
 		 * @param integer $intId
 		 * @return Comment
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Comment::QuerySingle(
 				QQ::Equal(QQN::Comment()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -644,7 +645,8 @@
 			try {
 				return Comment::QueryArray(
 					QQ::Equal(QQN::Comment()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -657,10 +659,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Comment::QueryCount to perform the CountByPersonId query
 			return Comment::QueryCount(
 				QQ::Equal(QQN::Comment()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -676,7 +679,8 @@
 			try {
 				return Comment::QueryArray(
 					QQ::Equal(QQN::Comment()->PostedByLoginId, $intPostedByLoginId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -689,10 +693,11 @@
 		 * @param integer $intPostedByLoginId
 		 * @return int
 		*/
-		public static function CountByPostedByLoginId($intPostedByLoginId) {
+		public static function CountByPostedByLoginId($intPostedByLoginId, $objOptionalClauses = null) {
 			// Call Comment::QueryCount to perform the CountByPostedByLoginId query
 			return Comment::QueryCount(
 				QQ::Equal(QQN::Comment()->PostedByLoginId, $intPostedByLoginId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -708,7 +713,8 @@
 			try {
 				return Comment::QueryArray(
 					QQ::Equal(QQN::Comment()->CommentPrivacyTypeId, $intCommentPrivacyTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -721,10 +727,11 @@
 		 * @param integer $intCommentPrivacyTypeId
 		 * @return int
 		*/
-		public static function CountByCommentPrivacyTypeId($intCommentPrivacyTypeId) {
+		public static function CountByCommentPrivacyTypeId($intCommentPrivacyTypeId, $objOptionalClauses = null) {
 			// Call Comment::QueryCount to perform the CountByCommentPrivacyTypeId query
 			return Comment::QueryCount(
 				QQ::Equal(QQN::Comment()->CommentPrivacyTypeId, $intCommentPrivacyTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -740,7 +747,8 @@
 			try {
 				return Comment::QueryArray(
 					QQ::Equal(QQN::Comment()->CommentCategoryId, $intCommentCategoryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -753,10 +761,11 @@
 		 * @param integer $intCommentCategoryId
 		 * @return int
 		*/
-		public static function CountByCommentCategoryId($intCommentCategoryId) {
+		public static function CountByCommentCategoryId($intCommentCategoryId, $objOptionalClauses = null) {
 			// Call Comment::QueryCount to perform the CountByCommentCategoryId query
 			return Comment::QueryCount(
 				QQ::Equal(QQN::Comment()->CommentCategoryId, $intCommentCategoryId)
+			, $objOptionalClauses
 			);
 		}
 

@@ -333,8 +333,8 @@
 			$this->lstStewardshipBatchStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstStewardshipBatchStatusType->Name = QApplication::Translate('Stewardship Batch Status Type');
 			$this->lstStewardshipBatchStatusType->Required = true;
-			foreach (StewardshipBatchStatusType::$NameArray as $intId => $strValue)
-				$this->lstStewardshipBatchStatusType->AddItem(new QListItem($strValue, $intId, $this->objStewardshipBatch->StewardshipBatchStatusTypeId == $intId));
+
+			$this->lstStewardshipBatchStatusType->AddItems(StewardshipBatchStatusType::$NameArray, $this->objStewardshipBatch->StewardshipBatchStatusTypeId);
 			return $this->lstStewardshipBatchStatusType;
 		}
 

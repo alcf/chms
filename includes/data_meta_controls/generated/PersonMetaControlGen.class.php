@@ -645,8 +645,8 @@
 			$this->lstMembershipStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMembershipStatusType->Name = QApplication::Translate('Membership Status Type');
 			$this->lstMembershipStatusType->Required = true;
-			foreach (MembershipStatusType::$NameArray as $intId => $strValue)
-				$this->lstMembershipStatusType->AddItem(new QListItem($strValue, $intId, $this->objPerson->MembershipStatusTypeId == $intId));
+
+			$this->lstMembershipStatusType->AddItems(MembershipStatusType::$NameArray, $this->objPerson->MembershipStatusTypeId);
 			return $this->lstMembershipStatusType;
 		}
 
@@ -672,8 +672,8 @@
 			$this->lstMaritalStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMaritalStatusType->Name = QApplication::Translate('Marital Status Type');
 			$this->lstMaritalStatusType->Required = true;
-			foreach (MaritalStatusType::$NameArray as $intId => $strValue)
-				$this->lstMaritalStatusType->AddItem(new QListItem($strValue, $intId, $this->objPerson->MaritalStatusTypeId == $intId));
+
+			$this->lstMaritalStatusType->AddItems(MaritalStatusType::$NameArray, $this->objPerson->MaritalStatusTypeId);
 			return $this->lstMaritalStatusType;
 		}
 

@@ -645,9 +645,10 @@
 		 * @param integer $intId
 		 * @return Marriage
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Marriage::QuerySingle(
 				QQ::Equal(QQN::Marriage()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -657,9 +658,10 @@
 		 * @param integer $intLinkedMarriageId
 		 * @return Marriage
 		*/
-		public static function LoadByLinkedMarriageId($intLinkedMarriageId) {
+		public static function LoadByLinkedMarriageId($intLinkedMarriageId, $objOptionalClauses = null) {
 			return Marriage::QuerySingle(
 				QQ::Equal(QQN::Marriage()->LinkedMarriageId, $intLinkedMarriageId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -675,7 +677,8 @@
 			try {
 				return Marriage::QueryArray(
 					QQ::Equal(QQN::Marriage()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -688,10 +691,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Marriage::QueryCount to perform the CountByPersonId query
 			return Marriage::QueryCount(
 				QQ::Equal(QQN::Marriage()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -707,7 +711,8 @@
 			try {
 				return Marriage::QueryArray(
 					QQ::Equal(QQN::Marriage()->MarriedToPersonId, $intMarriedToPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -720,10 +725,11 @@
 		 * @param integer $intMarriedToPersonId
 		 * @return int
 		*/
-		public static function CountByMarriedToPersonId($intMarriedToPersonId) {
+		public static function CountByMarriedToPersonId($intMarriedToPersonId, $objOptionalClauses = null) {
 			// Call Marriage::QueryCount to perform the CountByMarriedToPersonId query
 			return Marriage::QueryCount(
 				QQ::Equal(QQN::Marriage()->MarriedToPersonId, $intMarriedToPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -739,7 +745,8 @@
 			try {
 				return Marriage::QueryArray(
 					QQ::Equal(QQN::Marriage()->MarriageStatusTypeId, $intMarriageStatusTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -752,10 +759,11 @@
 		 * @param integer $intMarriageStatusTypeId
 		 * @return int
 		*/
-		public static function CountByMarriageStatusTypeId($intMarriageStatusTypeId) {
+		public static function CountByMarriageStatusTypeId($intMarriageStatusTypeId, $objOptionalClauses = null) {
 			// Call Marriage::QueryCount to perform the CountByMarriageStatusTypeId query
 			return Marriage::QueryCount(
 				QQ::Equal(QQN::Marriage()->MarriageStatusTypeId, $intMarriageStatusTypeId)
+			, $objOptionalClauses
 			);
 		}
 

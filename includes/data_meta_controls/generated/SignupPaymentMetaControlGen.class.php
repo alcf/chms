@@ -362,8 +362,8 @@
 			$this->lstSignupPaymentType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSignupPaymentType->Name = QApplication::Translate('Signup Payment Type');
 			$this->lstSignupPaymentType->Required = true;
-			foreach (SignupPaymentType::$NameArray as $intId => $strValue)
-				$this->lstSignupPaymentType->AddItem(new QListItem($strValue, $intId, $this->objSignupPayment->SignupPaymentTypeId == $intId));
+
+			$this->lstSignupPaymentType->AddItems(SignupPaymentType::$NameArray, $this->objSignupPayment->SignupPaymentTypeId);
 			return $this->lstSignupPaymentType;
 		}
 

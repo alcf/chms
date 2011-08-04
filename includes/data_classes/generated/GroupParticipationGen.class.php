@@ -602,9 +602,10 @@
 		 * @param integer $intId
 		 * @return GroupParticipation
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return GroupParticipation::QuerySingle(
 				QQ::Equal(QQN::GroupParticipation()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -624,7 +625,8 @@
 					QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
 					QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -638,13 +640,14 @@
 		 * @param integer $intGroupId
 		 * @return int
 		*/
-		public static function CountByPersonIdGroupId($intPersonId, $intGroupId) {
+		public static function CountByPersonIdGroupId($intPersonId, $intGroupId, $objOptionalClauses = null) {
 			// Call GroupParticipation::QueryCount to perform the CountByPersonIdGroupId query
 			return GroupParticipation::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
 				QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -660,7 +663,8 @@
 			try {
 				return GroupParticipation::QueryArray(
 					QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -673,10 +677,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call GroupParticipation::QueryCount to perform the CountByPersonId query
 			return GroupParticipation::QueryCount(
 				QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -692,7 +697,8 @@
 			try {
 				return GroupParticipation::QueryArray(
 					QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -705,10 +711,11 @@
 		 * @param integer $intGroupId
 		 * @return int
 		*/
-		public static function CountByGroupId($intGroupId) {
+		public static function CountByGroupId($intGroupId, $objOptionalClauses = null) {
 			// Call GroupParticipation::QueryCount to perform the CountByGroupId query
 			return GroupParticipation::QueryCount(
 				QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -724,7 +731,8 @@
 			try {
 				return GroupParticipation::QueryArray(
 					QQ::Equal(QQN::GroupParticipation()->GroupRoleId, $intGroupRoleId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -737,10 +745,11 @@
 		 * @param integer $intGroupRoleId
 		 * @return int
 		*/
-		public static function CountByGroupRoleId($intGroupRoleId) {
+		public static function CountByGroupRoleId($intGroupRoleId, $objOptionalClauses = null) {
 			// Call GroupParticipation::QueryCount to perform the CountByGroupRoleId query
 			return GroupParticipation::QueryCount(
 				QQ::Equal(QQN::GroupParticipation()->GroupRoleId, $intGroupRoleId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -756,7 +765,8 @@
 			try {
 				return GroupParticipation::QueryArray(
 					QQ::Equal(QQN::GroupParticipation()->DateStart, $dttDateStart),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -769,10 +779,11 @@
 		 * @param QDateTime $dttDateStart
 		 * @return int
 		*/
-		public static function CountByDateStart($dttDateStart) {
+		public static function CountByDateStart($dttDateStart, $objOptionalClauses = null) {
 			// Call GroupParticipation::QueryCount to perform the CountByDateStart query
 			return GroupParticipation::QueryCount(
 				QQ::Equal(QQN::GroupParticipation()->DateStart, $dttDateStart)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -788,7 +799,8 @@
 			try {
 				return GroupParticipation::QueryArray(
 					QQ::Equal(QQN::GroupParticipation()->DateEnd, $dttDateEnd),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -801,10 +813,11 @@
 		 * @param QDateTime $dttDateEnd
 		 * @return int
 		*/
-		public static function CountByDateEnd($dttDateEnd) {
+		public static function CountByDateEnd($dttDateEnd, $objOptionalClauses = null) {
 			// Call GroupParticipation::QueryCount to perform the CountByDateEnd query
 			return GroupParticipation::QueryCount(
 				QQ::Equal(QQN::GroupParticipation()->DateEnd, $dttDateEnd)
+			, $objOptionalClauses
 			);
 		}
 

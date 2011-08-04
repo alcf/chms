@@ -375,8 +375,8 @@
 			$this->lstGroupType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroupType->Name = QApplication::Translate('Group Type');
 			$this->lstGroupType->Required = true;
-			foreach (GroupType::$NameArray as $intId => $strValue)
-				$this->lstGroupType->AddItem(new QListItem($strValue, $intId, $this->objGroup->GroupTypeId == $intId));
+
+			$this->lstGroupType->AddItems(GroupType::$NameArray, $this->objGroup->GroupTypeId);
 			return $this->lstGroupType;
 		}
 
@@ -611,8 +611,8 @@
 			$this->lstEmailBroadcastType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstEmailBroadcastType->Name = QApplication::Translate('Email Broadcast Type');
 			$this->lstEmailBroadcastType->AddItem(QApplication::Translate('- Select One -'), null);
-			foreach (EmailBroadcastType::$NameArray as $intId => $strValue)
-				$this->lstEmailBroadcastType->AddItem(new QListItem($strValue, $intId, $this->objGroup->EmailBroadcastTypeId == $intId));
+
+			$this->lstEmailBroadcastType->AddItems(EmailBroadcastType::$NameArray, $this->objGroup->EmailBroadcastTypeId);
 			return $this->lstEmailBroadcastType;
 		}
 

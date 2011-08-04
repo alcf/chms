@@ -403,8 +403,8 @@
 			$this->lstCreditCardStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCreditCardStatusType->Name = QApplication::Translate('Credit Card Status Type');
 			$this->lstCreditCardStatusType->Required = true;
-			foreach (CreditCardStatusType::$NameArray as $intId => $strValue)
-				$this->lstCreditCardStatusType->AddItem(new QListItem($strValue, $intId, $this->objCreditCardPayment->CreditCardStatusTypeId == $intId));
+
+			$this->lstCreditCardStatusType->AddItems(CreditCardStatusType::$NameArray, $this->objCreditCardPayment->CreditCardStatusTypeId);
 			return $this->lstCreditCardStatusType;
 		}
 
@@ -430,8 +430,8 @@
 			$this->lstCreditCardType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCreditCardType->Name = QApplication::Translate('Credit Card Type');
 			$this->lstCreditCardType->Required = true;
-			foreach (CreditCardType::$NameArray as $intId => $strValue)
-				$this->lstCreditCardType->AddItem(new QListItem($strValue, $intId, $this->objCreditCardPayment->CreditCardTypeId == $intId));
+
+			$this->lstCreditCardType->AddItems(CreditCardType::$NameArray, $this->objCreditCardPayment->CreditCardTypeId);
 			return $this->lstCreditCardType;
 		}
 

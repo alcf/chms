@@ -22,6 +22,7 @@
 	 * @property string $ShortDescription the value for strShortDescription 
 	 * @property string $Question the value for strQuestion 
 	 * @property boolean $RequiredFlag the value for blnRequiredFlag 
+	 * @property boolean $InternalFlag the value for blnInternalFlag 
 	 * @property string $Options the value for strOptions 
 	 * @property boolean $AllowOtherFlag the value for blnAllowOtherFlag 
 	 * @property boolean $ViewFlag the value for blnViewFlag 
@@ -92,6 +93,14 @@
 		 */
 		protected $blnRequiredFlag;
 		const RequiredFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column form_question.internal_flag
+		 * @var boolean blnInternalFlag
+		 */
+		protected $blnInternalFlag;
+		const InternalFlagDefault = null;
 
 
 		/**
@@ -483,6 +492,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'short_description', $strAliasPrefix . 'short_description');
 			$objBuilder->AddSelectItem($strTableName, 'question', $strAliasPrefix . 'question');
 			$objBuilder->AddSelectItem($strTableName, 'required_flag', $strAliasPrefix . 'required_flag');
+			$objBuilder->AddSelectItem($strTableName, 'internal_flag', $strAliasPrefix . 'internal_flag');
 			$objBuilder->AddSelectItem($strTableName, 'options', $strAliasPrefix . 'options');
 			$objBuilder->AddSelectItem($strTableName, 'allow_other_flag', $strAliasPrefix . 'allow_other_flag');
 			$objBuilder->AddSelectItem($strTableName, 'view_flag', $strAliasPrefix . 'view_flag');
@@ -563,6 +573,8 @@
 			$objToReturn->strQuestion = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'required_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'required_flag'] : $strAliasPrefix . 'required_flag';
 			$objToReturn->blnRequiredFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'internal_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'internal_flag'] : $strAliasPrefix . 'internal_flag';
+			$objToReturn->blnInternalFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'options', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'options'] : $strAliasPrefix . 'options';
 			$objToReturn->strOptions = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'allow_other_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'allow_other_flag'] : $strAliasPrefix . 'allow_other_flag';
@@ -678,9 +690,10 @@
 		 * @param integer $intId
 		 * @return FormQuestion
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return FormQuestion::QuerySingle(
 				QQ::Equal(QQN::FormQuestion()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -696,7 +709,8 @@
 			try {
 				return FormQuestion::QueryArray(
 					QQ::Equal(QQN::FormQuestion()->SignupFormId, $intSignupFormId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -709,10 +723,11 @@
 		 * @param integer $intSignupFormId
 		 * @return int
 		*/
-		public static function CountBySignupFormId($intSignupFormId) {
+		public static function CountBySignupFormId($intSignupFormId, $objOptionalClauses = null) {
 			// Call FormQuestion::QueryCount to perform the CountBySignupFormId query
 			return FormQuestion::QueryCount(
 				QQ::Equal(QQN::FormQuestion()->SignupFormId, $intSignupFormId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -728,7 +743,8 @@
 			try {
 				return FormQuestion::QueryArray(
 					QQ::Equal(QQN::FormQuestion()->FormQuestionTypeId, $intFormQuestionTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -741,10 +757,11 @@
 		 * @param integer $intFormQuestionTypeId
 		 * @return int
 		*/
-		public static function CountByFormQuestionTypeId($intFormQuestionTypeId) {
+		public static function CountByFormQuestionTypeId($intFormQuestionTypeId, $objOptionalClauses = null) {
 			// Call FormQuestion::QueryCount to perform the CountByFormQuestionTypeId query
 			return FormQuestion::QueryCount(
 				QQ::Equal(QQN::FormQuestion()->FormQuestionTypeId, $intFormQuestionTypeId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -784,6 +801,7 @@
 							`short_description`,
 							`question`,
 							`required_flag`,
+							`internal_flag`,
 							`options`,
 							`allow_other_flag`,
 							`view_flag`
@@ -794,6 +812,7 @@
 							' . $objDatabase->SqlVariable($this->strShortDescription) . ',
 							' . $objDatabase->SqlVariable($this->strQuestion) . ',
 							' . $objDatabase->SqlVariable($this->blnRequiredFlag) . ',
+							' . $objDatabase->SqlVariable($this->blnInternalFlag) . ',
 							' . $objDatabase->SqlVariable($this->strOptions) . ',
 							' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							' . $objDatabase->SqlVariable($this->blnViewFlag) . '
@@ -822,6 +841,7 @@
 							`short_description` = ' . $objDatabase->SqlVariable($this->strShortDescription) . ',
 							`question` = ' . $objDatabase->SqlVariable($this->strQuestion) . ',
 							`required_flag` = ' . $objDatabase->SqlVariable($this->blnRequiredFlag) . ',
+							`internal_flag` = ' . $objDatabase->SqlVariable($this->blnInternalFlag) . ',
 							`options` = ' . $objDatabase->SqlVariable($this->strOptions) . ',
 							`allow_other_flag` = ' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 							`view_flag` = ' . $objDatabase->SqlVariable($this->blnViewFlag) . '
@@ -915,6 +935,7 @@
 			$this->strShortDescription = $objReloaded->strShortDescription;
 			$this->strQuestion = $objReloaded->strQuestion;
 			$this->blnRequiredFlag = $objReloaded->blnRequiredFlag;
+			$this->blnInternalFlag = $objReloaded->blnInternalFlag;
 			$this->strOptions = $objReloaded->strOptions;
 			$this->blnAllowOtherFlag = $objReloaded->blnAllowOtherFlag;
 			$this->blnViewFlag = $objReloaded->blnViewFlag;
@@ -937,6 +958,7 @@
 					`short_description`,
 					`question`,
 					`required_flag`,
+					`internal_flag`,
 					`options`,
 					`allow_other_flag`,
 					`view_flag`,
@@ -951,6 +973,7 @@
 					' . $objDatabase->SqlVariable($this->strShortDescription) . ',
 					' . $objDatabase->SqlVariable($this->strQuestion) . ',
 					' . $objDatabase->SqlVariable($this->blnRequiredFlag) . ',
+					' . $objDatabase->SqlVariable($this->blnInternalFlag) . ',
 					' . $objDatabase->SqlVariable($this->strOptions) . ',
 					' . $objDatabase->SqlVariable($this->blnAllowOtherFlag) . ',
 					' . $objDatabase->SqlVariable($this->blnViewFlag) . ',
@@ -1038,6 +1061,11 @@
 					// Gets the value for blnRequiredFlag 
 					// @return boolean
 					return $this->blnRequiredFlag;
+
+				case 'InternalFlag':
+					// Gets the value for blnInternalFlag 
+					// @return boolean
+					return $this->blnInternalFlag;
 
 				case 'Options':
 					// Gets the value for strOptions 
@@ -1177,6 +1205,17 @@
 					// @return boolean
 					try {
 						return ($this->blnRequiredFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'InternalFlag':
+					// Sets the value for blnInternalFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnInternalFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1475,6 +1514,7 @@
 			$strToReturn .= '<element name="ShortDescription" type="xsd:string"/>';
 			$strToReturn .= '<element name="Question" type="xsd:string"/>';
 			$strToReturn .= '<element name="RequiredFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="InternalFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Options" type="xsd:string"/>';
 			$strToReturn .= '<element name="AllowOtherFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="ViewFlag" type="xsd:boolean"/>';
@@ -1516,6 +1556,8 @@
 				$objToReturn->strQuestion = $objSoapObject->Question;
 			if (property_exists($objSoapObject, 'RequiredFlag'))
 				$objToReturn->blnRequiredFlag = $objSoapObject->RequiredFlag;
+			if (property_exists($objSoapObject, 'InternalFlag'))
+				$objToReturn->blnInternalFlag = $objSoapObject->InternalFlag;
 			if (property_exists($objSoapObject, 'Options'))
 				$objToReturn->strOptions = $objSoapObject->Options;
 			if (property_exists($objSoapObject, 'AllowOtherFlag'))
@@ -1567,6 +1609,7 @@
 	 * @property-read QQNode $ShortDescription
 	 * @property-read QQNode $Question
 	 * @property-read QQNode $RequiredFlag
+	 * @property-read QQNode $InternalFlag
 	 * @property-read QQNode $Options
 	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $ViewFlag
@@ -1594,6 +1637,8 @@
 					return new QQNode('question', 'Question', 'string', $this);
 				case 'RequiredFlag':
 					return new QQNode('required_flag', 'RequiredFlag', 'boolean', $this);
+				case 'InternalFlag':
+					return new QQNode('internal_flag', 'InternalFlag', 'boolean', $this);
 				case 'Options':
 					return new QQNode('options', 'Options', 'string', $this);
 				case 'AllowOtherFlag':
@@ -1625,6 +1670,7 @@
 	 * @property-read QQNode $ShortDescription
 	 * @property-read QQNode $Question
 	 * @property-read QQNode $RequiredFlag
+	 * @property-read QQNode $InternalFlag
 	 * @property-read QQNode $Options
 	 * @property-read QQNode $AllowOtherFlag
 	 * @property-read QQNode $ViewFlag
@@ -1653,6 +1699,8 @@
 					return new QQNode('question', 'Question', 'string', $this);
 				case 'RequiredFlag':
 					return new QQNode('required_flag', 'RequiredFlag', 'boolean', $this);
+				case 'InternalFlag':
+					return new QQNode('internal_flag', 'InternalFlag', 'boolean', $this);
 				case 'Options':
 					return new QQNode('options', 'Options', 'string', $this);
 				case 'AllowOtherFlag':

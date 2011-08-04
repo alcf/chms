@@ -904,9 +904,10 @@
 		 * @param integer $intId
 		 * @return StewardshipContribution
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipContribution::QuerySingle(
 				QQ::Equal(QQN::StewardshipContribution()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -926,7 +927,8 @@
 					QQ::Equal(QQN::StewardshipContribution()->PersonId, $intPersonId),
 					QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -940,13 +942,14 @@
 		 * @param integer $intStewardshipContributionTypeId
 		 * @return int
 		*/
-		public static function CountByPersonIdStewardshipContributionTypeId($intPersonId, $intStewardshipContributionTypeId) {
+		public static function CountByPersonIdStewardshipContributionTypeId($intPersonId, $intStewardshipContributionTypeId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByPersonIdStewardshipContributionTypeId query
 			return StewardshipContribution::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipContribution()->PersonId, $intPersonId),
 				QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -966,7 +969,8 @@
 					QQ::Equal(QQN::StewardshipContribution()->StewardshipBatchId, $intStewardshipBatchId),
 					QQ::Equal(QQN::StewardshipContribution()->UnpostedFlag, $blnUnpostedFlag)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -980,13 +984,14 @@
 		 * @param boolean $blnUnpostedFlag
 		 * @return int
 		*/
-		public static function CountByStewardshipBatchIdUnpostedFlag($intStewardshipBatchId, $blnUnpostedFlag) {
+		public static function CountByStewardshipBatchIdUnpostedFlag($intStewardshipBatchId, $blnUnpostedFlag, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipBatchIdUnpostedFlag query
 			return StewardshipContribution::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipContribution()->StewardshipBatchId, $intStewardshipBatchId),
 				QQ::Equal(QQN::StewardshipContribution()->UnpostedFlag, $blnUnpostedFlag)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1002,7 +1007,8 @@
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::Equal(QQN::StewardshipContribution()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1015,10 +1021,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByPersonId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1034,7 +1041,8 @@
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1047,10 +1055,11 @@
 		 * @param integer $intStewardshipContributionTypeId
 		 * @return int
 		*/
-		public static function CountByStewardshipContributionTypeId($intStewardshipContributionTypeId) {
+		public static function CountByStewardshipContributionTypeId($intStewardshipContributionTypeId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipContributionTypeId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->StewardshipContributionTypeId, $intStewardshipContributionTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1066,7 +1075,8 @@
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::Equal(QQN::StewardshipContribution()->StewardshipBatchId, $intStewardshipBatchId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1079,10 +1089,11 @@
 		 * @param integer $intStewardshipBatchId
 		 * @return int
 		*/
-		public static function CountByStewardshipBatchId($intStewardshipBatchId) {
+		public static function CountByStewardshipBatchId($intStewardshipBatchId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipBatchId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->StewardshipBatchId, $intStewardshipBatchId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1098,7 +1109,8 @@
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $intStewardshipStackId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1111,10 +1123,11 @@
 		 * @param integer $intStewardshipStackId
 		 * @return int
 		*/
-		public static function CountByStewardshipStackId($intStewardshipStackId) {
+		public static function CountByStewardshipStackId($intStewardshipStackId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByStewardshipStackId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->StewardshipStackId, $intStewardshipStackId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1130,7 +1143,8 @@
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::Equal(QQN::StewardshipContribution()->CheckingAccountLookupId, $intCheckingAccountLookupId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1143,10 +1157,11 @@
 		 * @param integer $intCheckingAccountLookupId
 		 * @return int
 		*/
-		public static function CountByCheckingAccountLookupId($intCheckingAccountLookupId) {
+		public static function CountByCheckingAccountLookupId($intCheckingAccountLookupId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByCheckingAccountLookupId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->CheckingAccountLookupId, $intCheckingAccountLookupId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1162,7 +1177,8 @@
 			try {
 				return StewardshipContribution::QueryArray(
 					QQ::Equal(QQN::StewardshipContribution()->CreatedByLoginId, $intCreatedByLoginId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1175,10 +1191,11 @@
 		 * @param integer $intCreatedByLoginId
 		 * @return int
 		*/
-		public static function CountByCreatedByLoginId($intCreatedByLoginId) {
+		public static function CountByCreatedByLoginId($intCreatedByLoginId, $objOptionalClauses = null) {
 			// Call StewardshipContribution::QueryCount to perform the CountByCreatedByLoginId query
 			return StewardshipContribution::QueryCount(
 				QQ::Equal(QQN::StewardshipContribution()->CreatedByLoginId, $intCreatedByLoginId)
+			, $objOptionalClauses
 			);
 		}
 

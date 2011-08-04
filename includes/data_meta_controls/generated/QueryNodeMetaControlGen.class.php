@@ -274,8 +274,8 @@
 			$this->lstQueryNodeType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstQueryNodeType->Name = QApplication::Translate('Query Node Type');
 			$this->lstQueryNodeType->Required = true;
-			foreach (QueryNodeType::$NameArray as $intId => $strValue)
-				$this->lstQueryNodeType->AddItem(new QListItem($strValue, $intId, $this->objQueryNode->QueryNodeTypeId == $intId));
+
+			$this->lstQueryNodeType->AddItems(QueryNodeType::$NameArray, $this->objQueryNode->QueryNodeTypeId);
 			return $this->lstQueryNodeType;
 		}
 
@@ -326,8 +326,8 @@
 			$this->lstQueryDataType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstQueryDataType->Name = QApplication::Translate('Query Data Type');
 			$this->lstQueryDataType->Required = true;
-			foreach (QueryDataType::$NameArray as $intId => $strValue)
-				$this->lstQueryDataType->AddItem(new QListItem($strValue, $intId, $this->objQueryNode->QueryDataTypeId == $intId));
+
+			$this->lstQueryDataType->AddItems(QueryDataType::$NameArray, $this->objQueryNode->QueryDataTypeId);
 			return $this->lstQueryDataType;
 		}
 

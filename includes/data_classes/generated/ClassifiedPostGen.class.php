@@ -620,9 +620,10 @@
 		 * @param integer $intId
 		 * @return ClassifiedPost
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassifiedPost::QuerySingle(
 				QQ::Equal(QQN::ClassifiedPost()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -644,7 +645,8 @@
 					QQ::Equal(QQN::ClassifiedPost()->ApprovalFlag, $blnApprovalFlag),
 					QQ::Equal(QQN::ClassifiedPost()->DateExpired, $dttDateExpired)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -659,7 +661,7 @@
 		 * @param QDateTime $dttDateExpired
 		 * @return int
 		*/
-		public static function CountByClassifiedCategoryIdApprovalFlagDateExpired($intClassifiedCategoryId, $blnApprovalFlag, $dttDateExpired) {
+		public static function CountByClassifiedCategoryIdApprovalFlagDateExpired($intClassifiedCategoryId, $blnApprovalFlag, $dttDateExpired, $objOptionalClauses = null) {
 			// Call ClassifiedPost::QueryCount to perform the CountByClassifiedCategoryIdApprovalFlagDateExpired query
 			return ClassifiedPost::QueryCount(
 				QQ::AndCondition(
@@ -667,6 +669,7 @@
 				QQ::Equal(QQN::ClassifiedPost()->ApprovalFlag, $blnApprovalFlag),
 				QQ::Equal(QQN::ClassifiedPost()->DateExpired, $dttDateExpired)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -682,7 +685,8 @@
 			try {
 				return ClassifiedPost::QueryArray(
 					QQ::Equal(QQN::ClassifiedPost()->ClassifiedCategoryId, $intClassifiedCategoryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -695,10 +699,11 @@
 		 * @param integer $intClassifiedCategoryId
 		 * @return int
 		*/
-		public static function CountByClassifiedCategoryId($intClassifiedCategoryId) {
+		public static function CountByClassifiedCategoryId($intClassifiedCategoryId, $objOptionalClauses = null) {
 			// Call ClassifiedPost::QueryCount to perform the CountByClassifiedCategoryId query
 			return ClassifiedPost::QueryCount(
 				QQ::Equal(QQN::ClassifiedPost()->ClassifiedCategoryId, $intClassifiedCategoryId)
+			, $objOptionalClauses
 			);
 		}
 

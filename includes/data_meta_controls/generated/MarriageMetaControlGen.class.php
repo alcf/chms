@@ -400,8 +400,8 @@
 			$this->lstMarriageStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMarriageStatusType->Name = QApplication::Translate('Marriage Status Type');
 			$this->lstMarriageStatusType->Required = true;
-			foreach (MarriageStatusType::$NameArray as $intId => $strValue)
-				$this->lstMarriageStatusType->AddItem(new QListItem($strValue, $intId, $this->objMarriage->MarriageStatusTypeId == $intId));
+
+			$this->lstMarriageStatusType->AddItems(MarriageStatusType::$NameArray, $this->objMarriage->MarriageStatusTypeId);
 			return $this->lstMarriageStatusType;
 		}
 

@@ -564,9 +564,10 @@
 		 * @param integer $intId
 		 * @return NameItem
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return NameItem::QuerySingle(
 				QQ::Equal(QQN::NameItem()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -576,9 +577,10 @@
 		 * @param string $strName
 		 * @return NameItem
 		*/
-		public static function LoadByName($strName) {
+		public static function LoadByName($strName, $objOptionalClauses = null) {
 			return NameItem::QuerySingle(
 				QQ::Equal(QQN::NameItem()->Name, $strName)
+			, $objOptionalClauses
 			);
 		}
 
@@ -613,9 +615,10 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPerson($intPersonId) {
+		public static function CountByPerson($intPersonId, $objOptionalClauses = null) {
 			return NameItem::QueryCount(
-				QQ::Equal(QQN::NameItem()->Person->PersonId, $intPersonId)
+				QQ::Equal(QQN::NameItem()->Person->PersonId, $intPersonId),
+				$objOptionalClauses
 			);
 		}
 

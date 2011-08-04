@@ -553,9 +553,10 @@
 		 * @param integer $intSignupFormId
 		 * @return EventSignupForm
 		*/
-		public static function LoadBySignupFormId($intSignupFormId) {
+		public static function LoadBySignupFormId($intSignupFormId, $objOptionalClauses = null) {
 			return EventSignupForm::QuerySingle(
 				QQ::Equal(QQN::EventSignupForm()->SignupFormId, $intSignupFormId)
+			, $objOptionalClauses
 			);
 		}
 

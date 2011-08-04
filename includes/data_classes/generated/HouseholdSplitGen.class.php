@@ -561,9 +561,10 @@
 		 * @param integer $intId
 		 * @return HouseholdSplit
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return HouseholdSplit::QuerySingle(
 				QQ::Equal(QQN::HouseholdSplit()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -579,7 +580,8 @@
 			try {
 				return HouseholdSplit::QueryArray(
 					QQ::Equal(QQN::HouseholdSplit()->HouseholdId, $intHouseholdId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -592,10 +594,11 @@
 		 * @param integer $intHouseholdId
 		 * @return int
 		*/
-		public static function CountByHouseholdId($intHouseholdId) {
+		public static function CountByHouseholdId($intHouseholdId, $objOptionalClauses = null) {
 			// Call HouseholdSplit::QueryCount to perform the CountByHouseholdId query
 			return HouseholdSplit::QueryCount(
 				QQ::Equal(QQN::HouseholdSplit()->HouseholdId, $intHouseholdId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -611,7 +614,8 @@
 			try {
 				return HouseholdSplit::QueryArray(
 					QQ::Equal(QQN::HouseholdSplit()->SplitHouseholdId, $intSplitHouseholdId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -624,10 +628,11 @@
 		 * @param integer $intSplitHouseholdId
 		 * @return int
 		*/
-		public static function CountBySplitHouseholdId($intSplitHouseholdId) {
+		public static function CountBySplitHouseholdId($intSplitHouseholdId, $objOptionalClauses = null) {
 			// Call HouseholdSplit::QueryCount to perform the CountBySplitHouseholdId query
 			return HouseholdSplit::QueryCount(
 				QQ::Equal(QQN::HouseholdSplit()->SplitHouseholdId, $intSplitHouseholdId)
+			, $objOptionalClauses
 			);
 		}
 

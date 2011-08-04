@@ -684,9 +684,10 @@
 		 * @param integer $intId
 		 * @return FormAnswer
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return FormAnswer::QuerySingle(
 				QQ::Equal(QQN::FormAnswer()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -697,12 +698,13 @@
 		 * @param integer $intFormQuestionId
 		 * @return FormAnswer
 		*/
-		public static function LoadBySignupEntryIdFormQuestionId($intSignupEntryId, $intFormQuestionId) {
+		public static function LoadBySignupEntryIdFormQuestionId($intSignupEntryId, $intFormQuestionId, $objOptionalClauses = null) {
 			return FormAnswer::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::FormAnswer()->SignupEntryId, $intSignupEntryId),
 				QQ::Equal(QQN::FormAnswer()->FormQuestionId, $intFormQuestionId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -718,7 +720,8 @@
 			try {
 				return FormAnswer::QueryArray(
 					QQ::Equal(QQN::FormAnswer()->SignupEntryId, $intSignupEntryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -731,10 +734,11 @@
 		 * @param integer $intSignupEntryId
 		 * @return int
 		*/
-		public static function CountBySignupEntryId($intSignupEntryId) {
+		public static function CountBySignupEntryId($intSignupEntryId, $objOptionalClauses = null) {
 			// Call FormAnswer::QueryCount to perform the CountBySignupEntryId query
 			return FormAnswer::QueryCount(
 				QQ::Equal(QQN::FormAnswer()->SignupEntryId, $intSignupEntryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -750,7 +754,8 @@
 			try {
 				return FormAnswer::QueryArray(
 					QQ::Equal(QQN::FormAnswer()->FormQuestionId, $intFormQuestionId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -763,10 +768,11 @@
 		 * @param integer $intFormQuestionId
 		 * @return int
 		*/
-		public static function CountByFormQuestionId($intFormQuestionId) {
+		public static function CountByFormQuestionId($intFormQuestionId, $objOptionalClauses = null) {
 			// Call FormAnswer::QueryCount to perform the CountByFormQuestionId query
 			return FormAnswer::QueryCount(
 				QQ::Equal(QQN::FormAnswer()->FormQuestionId, $intFormQuestionId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -782,7 +788,8 @@
 			try {
 				return FormAnswer::QueryArray(
 					QQ::Equal(QQN::FormAnswer()->AddressId, $intAddressId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -795,10 +802,11 @@
 		 * @param integer $intAddressId
 		 * @return int
 		*/
-		public static function CountByAddressId($intAddressId) {
+		public static function CountByAddressId($intAddressId, $objOptionalClauses = null) {
 			// Call FormAnswer::QueryCount to perform the CountByAddressId query
 			return FormAnswer::QueryCount(
 				QQ::Equal(QQN::FormAnswer()->AddressId, $intAddressId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -814,7 +822,8 @@
 			try {
 				return FormAnswer::QueryArray(
 					QQ::Equal(QQN::FormAnswer()->PhoneId, $intPhoneId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -827,10 +836,11 @@
 		 * @param integer $intPhoneId
 		 * @return int
 		*/
-		public static function CountByPhoneId($intPhoneId) {
+		public static function CountByPhoneId($intPhoneId, $objOptionalClauses = null) {
 			// Call FormAnswer::QueryCount to perform the CountByPhoneId query
 			return FormAnswer::QueryCount(
 				QQ::Equal(QQN::FormAnswer()->PhoneId, $intPhoneId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -846,7 +856,8 @@
 			try {
 				return FormAnswer::QueryArray(
 					QQ::Equal(QQN::FormAnswer()->EmailId, $intEmailId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -859,10 +870,11 @@
 		 * @param integer $intEmailId
 		 * @return int
 		*/
-		public static function CountByEmailId($intEmailId) {
+		public static function CountByEmailId($intEmailId, $objOptionalClauses = null) {
 			// Call FormAnswer::QueryCount to perform the CountByEmailId query
 			return FormAnswer::QueryCount(
 				QQ::Equal(QQN::FormAnswer()->EmailId, $intEmailId)
+			, $objOptionalClauses
 			);
 		}
 

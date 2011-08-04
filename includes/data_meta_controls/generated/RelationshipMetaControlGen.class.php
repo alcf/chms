@@ -307,8 +307,8 @@
 			$this->lstRelationshipType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstRelationshipType->Name = QApplication::Translate('Relationship Type');
 			$this->lstRelationshipType->Required = true;
-			foreach (RelationshipType::$NameArray as $intId => $strValue)
-				$this->lstRelationshipType->AddItem(new QListItem($strValue, $intId, $this->objRelationship->RelationshipTypeId == $intId));
+
+			$this->lstRelationshipType->AddItems(RelationshipType::$NameArray, $this->objRelationship->RelationshipTypeId);
 			return $this->lstRelationshipType;
 		}
 

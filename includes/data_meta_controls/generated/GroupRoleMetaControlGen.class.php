@@ -289,8 +289,8 @@
 			$this->lstGroupRoleType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGroupRoleType->Name = QApplication::Translate('Group Role Type');
 			$this->lstGroupRoleType->Required = true;
-			foreach (GroupRoleType::$NameArray as $intId => $strValue)
-				$this->lstGroupRoleType->AddItem(new QListItem($strValue, $intId, $this->objGroupRole->GroupRoleTypeId == $intId));
+
+			$this->lstGroupRoleType->AddItems(GroupRoleType::$NameArray, $this->objGroupRole->GroupRoleTypeId);
 			return $this->lstGroupRoleType;
 		}
 

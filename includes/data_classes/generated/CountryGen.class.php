@@ -517,9 +517,10 @@
 		 * @param integer $intId
 		 * @return Country
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Country::QuerySingle(
 				QQ::Equal(QQN::Country()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -529,9 +530,10 @@
 		 * @param string $strAbbreviation
 		 * @return Country
 		*/
-		public static function LoadByAbbreviation($strAbbreviation) {
+		public static function LoadByAbbreviation($strAbbreviation, $objOptionalClauses = null) {
 			return Country::QuerySingle(
 				QQ::Equal(QQN::Country()->Abbreviation, $strAbbreviation)
+			, $objOptionalClauses
 			);
 		}
 

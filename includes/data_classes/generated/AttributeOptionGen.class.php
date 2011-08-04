@@ -635,9 +635,10 @@
 		 * @param integer $intId
 		 * @return AttributeOption
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return AttributeOption::QuerySingle(
 				QQ::Equal(QQN::AttributeOption()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -648,12 +649,13 @@
 		 * @param string $strName
 		 * @return AttributeOption
 		*/
-		public static function LoadByAttributeIdName($intAttributeId, $strName) {
+		public static function LoadByAttributeIdName($intAttributeId, $strName, $objOptionalClauses = null) {
 			return AttributeOption::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::AttributeOption()->AttributeId, $intAttributeId),
 				QQ::Equal(QQN::AttributeOption()->Name, $strName)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -669,7 +671,8 @@
 			try {
 				return AttributeOption::QueryArray(
 					QQ::Equal(QQN::AttributeOption()->AttributeId, $intAttributeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -682,10 +685,11 @@
 		 * @param integer $intAttributeId
 		 * @return int
 		*/
-		public static function CountByAttributeId($intAttributeId) {
+		public static function CountByAttributeId($intAttributeId, $objOptionalClauses = null) {
 			// Call AttributeOption::QueryCount to perform the CountByAttributeId query
 			return AttributeOption::QueryCount(
 				QQ::Equal(QQN::AttributeOption()->AttributeId, $intAttributeId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -720,9 +724,10 @@
 		 * @param integer $intAttributeValueId
 		 * @return int
 		*/
-		public static function CountByAttributeValueAsMultiple($intAttributeValueId) {
+		public static function CountByAttributeValueAsMultiple($intAttributeValueId, $objOptionalClauses = null) {
 			return AttributeOption::QueryCount(
-				QQ::Equal(QQN::AttributeOption()->AttributeValueAsMultiple->AttributeValueId, $intAttributeValueId)
+				QQ::Equal(QQN::AttributeOption()->AttributeValueAsMultiple->AttributeValueId, $intAttributeValueId),
+				$objOptionalClauses
 			);
 		}
 

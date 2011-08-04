@@ -645,9 +645,10 @@
 		 * @param integer $intId
 		 * @return CommunicationListEntry
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return CommunicationListEntry::QuerySingle(
 				QQ::Equal(QQN::CommunicationListEntry()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -657,9 +658,10 @@
 		 * @param string $strEmail
 		 * @return CommunicationListEntry
 		*/
-		public static function LoadByEmail($strEmail) {
+		public static function LoadByEmail($strEmail, $objOptionalClauses = null) {
 			return CommunicationListEntry::QuerySingle(
 				QQ::Equal(QQN::CommunicationListEntry()->Email, $strEmail)
+			, $objOptionalClauses
 			);
 		}
 
@@ -694,9 +696,10 @@
 		 * @param integer $intCommunicationListId
 		 * @return int
 		*/
-		public static function CountByCommunicationList($intCommunicationListId) {
+		public static function CountByCommunicationList($intCommunicationListId, $objOptionalClauses = null) {
 			return CommunicationListEntry::QueryCount(
-				QQ::Equal(QQN::CommunicationListEntry()->CommunicationList->CommunicationListId, $intCommunicationListId)
+				QQ::Equal(QQN::CommunicationListEntry()->CommunicationList->CommunicationListId, $intCommunicationListId),
+				$objOptionalClauses
 			);
 		}
 

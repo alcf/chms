@@ -247,8 +247,8 @@
 			$this->lstEmailBroadcastType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstEmailBroadcastType->Name = QApplication::Translate('Email Broadcast Type');
 			$this->lstEmailBroadcastType->Required = true;
-			foreach (EmailBroadcastType::$NameArray as $intId => $strValue)
-				$this->lstEmailBroadcastType->AddItem(new QListItem($strValue, $intId, $this->objCommunicationList->EmailBroadcastTypeId == $intId));
+
+			$this->lstEmailBroadcastType->AddItems(EmailBroadcastType::$NameArray, $this->objCommunicationList->EmailBroadcastTypeId);
 			return $this->lstEmailBroadcastType;
 		}
 

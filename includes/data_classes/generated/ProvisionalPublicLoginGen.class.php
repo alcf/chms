@@ -581,9 +581,10 @@
 		 * @param integer $intPublicLoginId
 		 * @return ProvisionalPublicLogin
 		*/
-		public static function LoadByPublicLoginId($intPublicLoginId) {
+		public static function LoadByPublicLoginId($intPublicLoginId, $objOptionalClauses = null) {
 			return ProvisionalPublicLogin::QuerySingle(
 				QQ::Equal(QQN::ProvisionalPublicLogin()->PublicLoginId, $intPublicLoginId)
+			, $objOptionalClauses
 			);
 		}
 

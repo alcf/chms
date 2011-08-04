@@ -305,8 +305,8 @@
 			$this->lstEmailMessageStatusType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstEmailMessageStatusType->Name = QApplication::Translate('Email Message Status Type');
 			$this->lstEmailMessageStatusType->Required = true;
-			foreach (EmailMessageStatusType::$NameArray as $intId => $strValue)
-				$this->lstEmailMessageStatusType->AddItem(new QListItem($strValue, $intId, $this->objEmailMessage->EmailMessageStatusTypeId == $intId));
+
+			$this->lstEmailMessageStatusType->AddItems(EmailMessageStatusType::$NameArray, $this->objEmailMessage->EmailMessageStatusTypeId);
 			return $this->lstEmailMessageStatusType;
 		}
 

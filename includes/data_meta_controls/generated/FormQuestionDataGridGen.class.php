@@ -301,6 +301,7 @@
 				case 'ShortDescription': return QQN::FormQuestion()->ShortDescription;
 				case 'Question': return QQN::FormQuestion()->Question;
 				case 'RequiredFlag': return QQN::FormQuestion()->RequiredFlag;
+				case 'InternalFlag': return QQN::FormQuestion()->InternalFlag;
 				case 'Options': return QQN::FormQuestion()->Options;
 				case 'AllowOtherFlag': return QQN::FormQuestion()->AllowOtherFlag;
 				case 'ViewFlag': return QQN::FormQuestion()->ViewFlag;

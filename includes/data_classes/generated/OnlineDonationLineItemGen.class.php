@@ -574,9 +574,10 @@
 		 * @param integer $intId
 		 * @return OnlineDonationLineItem
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return OnlineDonationLineItem::QuerySingle(
 				QQ::Equal(QQN::OnlineDonationLineItem()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -592,7 +593,8 @@
 			try {
 				return OnlineDonationLineItem::QueryArray(
 					QQ::Equal(QQN::OnlineDonationLineItem()->OnlineDonationId, $intOnlineDonationId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -605,10 +607,11 @@
 		 * @param integer $intOnlineDonationId
 		 * @return int
 		*/
-		public static function CountByOnlineDonationId($intOnlineDonationId) {
+		public static function CountByOnlineDonationId($intOnlineDonationId, $objOptionalClauses = null) {
 			// Call OnlineDonationLineItem::QueryCount to perform the CountByOnlineDonationId query
 			return OnlineDonationLineItem::QueryCount(
 				QQ::Equal(QQN::OnlineDonationLineItem()->OnlineDonationId, $intOnlineDonationId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -624,7 +627,8 @@
 			try {
 				return OnlineDonationLineItem::QueryArray(
 					QQ::Equal(QQN::OnlineDonationLineItem()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -637,10 +641,11 @@
 		 * @param integer $intStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
+		public static function CountByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
 			// Call OnlineDonationLineItem::QueryCount to perform the CountByStewardshipFundId query
 			return OnlineDonationLineItem::QueryCount(
 				QQ::Equal(QQN::OnlineDonationLineItem()->StewardshipFundId, $intStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 

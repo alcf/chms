@@ -627,9 +627,10 @@
 		 * @param integer $intId
 		 * @return QueryOperation
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return QueryOperation::QuerySingle(
 				QQ::Equal(QQN::QueryOperation()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 

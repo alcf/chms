@@ -896,9 +896,10 @@
 		 * @param integer $intId
 		 * @return Group
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Group::QuerySingle(
 				QQ::Equal(QQN::Group()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -908,9 +909,10 @@
 		 * @param string $strToken
 		 * @return Group
 		*/
-		public static function LoadByToken($strToken) {
+		public static function LoadByToken($strToken, $objOptionalClauses = null) {
 			return Group::QuerySingle(
 				QQ::Equal(QQN::Group()->Token, $strToken)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -926,7 +928,8 @@
 			try {
 				return Group::QueryArray(
 					QQ::Equal(QQN::Group()->GroupTypeId, $intGroupTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -939,10 +942,11 @@
 		 * @param integer $intGroupTypeId
 		 * @return int
 		*/
-		public static function CountByGroupTypeId($intGroupTypeId) {
+		public static function CountByGroupTypeId($intGroupTypeId, $objOptionalClauses = null) {
 			// Call Group::QueryCount to perform the CountByGroupTypeId query
 			return Group::QueryCount(
 				QQ::Equal(QQN::Group()->GroupTypeId, $intGroupTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -958,7 +962,8 @@
 			try {
 				return Group::QueryArray(
 					QQ::Equal(QQN::Group()->MinistryId, $intMinistryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -971,10 +976,11 @@
 		 * @param integer $intMinistryId
 		 * @return int
 		*/
-		public static function CountByMinistryId($intMinistryId) {
+		public static function CountByMinistryId($intMinistryId, $objOptionalClauses = null) {
 			// Call Group::QueryCount to perform the CountByMinistryId query
 			return Group::QueryCount(
 				QQ::Equal(QQN::Group()->MinistryId, $intMinistryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -990,7 +996,8 @@
 			try {
 				return Group::QueryArray(
 					QQ::Equal(QQN::Group()->ParentGroupId, $intParentGroupId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1003,10 +1010,11 @@
 		 * @param integer $intParentGroupId
 		 * @return int
 		*/
-		public static function CountByParentGroupId($intParentGroupId) {
+		public static function CountByParentGroupId($intParentGroupId, $objOptionalClauses = null) {
 			// Call Group::QueryCount to perform the CountByParentGroupId query
 			return Group::QueryCount(
 				QQ::Equal(QQN::Group()->ParentGroupId, $intParentGroupId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1022,7 +1030,8 @@
 			try {
 				return Group::QueryArray(
 					QQ::Equal(QQN::Group()->EmailBroadcastTypeId, $intEmailBroadcastTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1035,10 +1044,11 @@
 		 * @param integer $intEmailBroadcastTypeId
 		 * @return int
 		*/
-		public static function CountByEmailBroadcastTypeId($intEmailBroadcastTypeId) {
+		public static function CountByEmailBroadcastTypeId($intEmailBroadcastTypeId, $objOptionalClauses = null) {
 			// Call Group::QueryCount to perform the CountByEmailBroadcastTypeId query
 			return Group::QueryCount(
 				QQ::Equal(QQN::Group()->EmailBroadcastTypeId, $intEmailBroadcastTypeId)
+			, $objOptionalClauses
 			);
 		}
 

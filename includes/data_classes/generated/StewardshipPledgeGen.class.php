@@ -633,9 +633,10 @@
 		 * @param integer $intId
 		 * @return StewardshipPledge
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipPledge::QuerySingle(
 				QQ::Equal(QQN::StewardshipPledge()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -646,12 +647,13 @@
 		 * @param integer $intStewardshipFundId
 		 * @return StewardshipPledge
 		*/
-		public static function LoadByPersonIdStewardshipFundId($intPersonId, $intStewardshipFundId) {
+		public static function LoadByPersonIdStewardshipFundId($intPersonId, $intStewardshipFundId, $objOptionalClauses = null) {
 			return StewardshipPledge::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipPledge()->PersonId, $intPersonId),
 				QQ::Equal(QQN::StewardshipPledge()->StewardshipFundId, $intStewardshipFundId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -671,7 +673,8 @@
 					QQ::Equal(QQN::StewardshipPledge()->FulfilledFlag, $blnFulfilledFlag),
 					QQ::Equal(QQN::StewardshipPledge()->ActiveFlag, $blnActiveFlag)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -685,13 +688,14 @@
 		 * @param boolean $blnActiveFlag
 		 * @return int
 		*/
-		public static function CountByFulfilledFlagActiveFlag($blnFulfilledFlag, $blnActiveFlag) {
+		public static function CountByFulfilledFlagActiveFlag($blnFulfilledFlag, $blnActiveFlag, $objOptionalClauses = null) {
 			// Call StewardshipPledge::QueryCount to perform the CountByFulfilledFlagActiveFlag query
 			return StewardshipPledge::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipPledge()->FulfilledFlag, $blnFulfilledFlag),
 				QQ::Equal(QQN::StewardshipPledge()->ActiveFlag, $blnActiveFlag)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -707,7 +711,8 @@
 			try {
 				return StewardshipPledge::QueryArray(
 					QQ::Equal(QQN::StewardshipPledge()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -720,10 +725,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call StewardshipPledge::QueryCount to perform the CountByPersonId query
 			return StewardshipPledge::QueryCount(
 				QQ::Equal(QQN::StewardshipPledge()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -739,7 +745,8 @@
 			try {
 				return StewardshipPledge::QueryArray(
 					QQ::Equal(QQN::StewardshipPledge()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -752,10 +759,11 @@
 		 * @param integer $intStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
+		public static function CountByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
 			// Call StewardshipPledge::QueryCount to perform the CountByStewardshipFundId query
 			return StewardshipPledge::QueryCount(
 				QQ::Equal(QQN::StewardshipPledge()->StewardshipFundId, $intStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 

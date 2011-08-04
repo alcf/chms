@@ -556,9 +556,10 @@
 		 * @param integer $intId
 		 * @return Membership
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Membership::QuerySingle(
 				QQ::Equal(QQN::Membership()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -578,7 +579,8 @@
 					QQ::Equal(QQN::Membership()->PersonId, $intPersonId),
 					QQ::Equal(QQN::Membership()->DateEnd, $dttDateEnd)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -592,13 +594,14 @@
 		 * @param QDateTime $dttDateEnd
 		 * @return int
 		*/
-		public static function CountByPersonIdDateEnd($intPersonId, $dttDateEnd) {
+		public static function CountByPersonIdDateEnd($intPersonId, $dttDateEnd, $objOptionalClauses = null) {
 			// Call Membership::QueryCount to perform the CountByPersonIdDateEnd query
 			return Membership::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::Membership()->PersonId, $intPersonId),
 				QQ::Equal(QQN::Membership()->DateEnd, $dttDateEnd)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -614,7 +617,8 @@
 			try {
 				return Membership::QueryArray(
 					QQ::Equal(QQN::Membership()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -627,10 +631,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Membership::QueryCount to perform the CountByPersonId query
 			return Membership::QueryCount(
 				QQ::Equal(QQN::Membership()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -646,7 +651,8 @@
 			try {
 				return Membership::QueryArray(
 					QQ::Equal(QQN::Membership()->DateStart, $dttDateStart),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -659,10 +665,11 @@
 		 * @param QDateTime $dttDateStart
 		 * @return int
 		*/
-		public static function CountByDateStart($dttDateStart) {
+		public static function CountByDateStart($dttDateStart, $objOptionalClauses = null) {
 			// Call Membership::QueryCount to perform the CountByDateStart query
 			return Membership::QueryCount(
 				QQ::Equal(QQN::Membership()->DateStart, $dttDateStart)
+			, $objOptionalClauses
 			);
 		}
 

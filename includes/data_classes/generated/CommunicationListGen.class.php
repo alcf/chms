@@ -702,9 +702,10 @@
 		 * @param integer $intId
 		 * @return CommunicationList
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return CommunicationList::QuerySingle(
 				QQ::Equal(QQN::CommunicationList()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -714,9 +715,10 @@
 		 * @param string $strToken
 		 * @return CommunicationList
 		*/
-		public static function LoadByToken($strToken) {
+		public static function LoadByToken($strToken, $objOptionalClauses = null) {
 			return CommunicationList::QuerySingle(
 				QQ::Equal(QQN::CommunicationList()->Token, $strToken)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -732,7 +734,8 @@
 			try {
 				return CommunicationList::QueryArray(
 					QQ::Equal(QQN::CommunicationList()->EmailBroadcastTypeId, $intEmailBroadcastTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -745,10 +748,11 @@
 		 * @param integer $intEmailBroadcastTypeId
 		 * @return int
 		*/
-		public static function CountByEmailBroadcastTypeId($intEmailBroadcastTypeId) {
+		public static function CountByEmailBroadcastTypeId($intEmailBroadcastTypeId, $objOptionalClauses = null) {
 			// Call CommunicationList::QueryCount to perform the CountByEmailBroadcastTypeId query
 			return CommunicationList::QueryCount(
 				QQ::Equal(QQN::CommunicationList()->EmailBroadcastTypeId, $intEmailBroadcastTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -764,7 +768,8 @@
 			try {
 				return CommunicationList::QueryArray(
 					QQ::Equal(QQN::CommunicationList()->MinistryId, $intMinistryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -777,10 +782,11 @@
 		 * @param integer $intMinistryId
 		 * @return int
 		*/
-		public static function CountByMinistryId($intMinistryId) {
+		public static function CountByMinistryId($intMinistryId, $objOptionalClauses = null) {
 			// Call CommunicationList::QueryCount to perform the CountByMinistryId query
 			return CommunicationList::QueryCount(
 				QQ::Equal(QQN::CommunicationList()->MinistryId, $intMinistryId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -815,9 +821,10 @@
 		 * @param integer $intCommunicationListEntryId
 		 * @return int
 		*/
-		public static function CountByCommunicationListEntry($intCommunicationListEntryId) {
+		public static function CountByCommunicationListEntry($intCommunicationListEntryId, $objOptionalClauses = null) {
 			return CommunicationList::QueryCount(
-				QQ::Equal(QQN::CommunicationList()->CommunicationListEntry->CommunicationListEntryId, $intCommunicationListEntryId)
+				QQ::Equal(QQN::CommunicationList()->CommunicationListEntry->CommunicationListEntryId, $intCommunicationListEntryId),
+				$objOptionalClauses
 			);
 		}
 			/**
@@ -846,9 +853,10 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPerson($intPersonId) {
+		public static function CountByPerson($intPersonId, $objOptionalClauses = null) {
 			return CommunicationList::QueryCount(
-				QQ::Equal(QQN::CommunicationList()->Person->PersonId, $intPersonId)
+				QQ::Equal(QQN::CommunicationList()->Person->PersonId, $intPersonId),
+				$objOptionalClauses
 			);
 		}
 

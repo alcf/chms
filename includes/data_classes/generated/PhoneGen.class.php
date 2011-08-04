@@ -747,9 +747,10 @@
 		 * @param integer $intId
 		 * @return Phone
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Phone::QuerySingle(
 				QQ::Equal(QQN::Phone()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -765,7 +766,8 @@
 			try {
 				return Phone::QueryArray(
 					QQ::Equal(QQN::Phone()->PhoneTypeId, $intPhoneTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -778,10 +780,11 @@
 		 * @param integer $intPhoneTypeId
 		 * @return int
 		*/
-		public static function CountByPhoneTypeId($intPhoneTypeId) {
+		public static function CountByPhoneTypeId($intPhoneTypeId, $objOptionalClauses = null) {
 			// Call Phone::QueryCount to perform the CountByPhoneTypeId query
 			return Phone::QueryCount(
 				QQ::Equal(QQN::Phone()->PhoneTypeId, $intPhoneTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -797,7 +800,8 @@
 			try {
 				return Phone::QueryArray(
 					QQ::Equal(QQN::Phone()->AddressId, $intAddressId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -810,10 +814,11 @@
 		 * @param integer $intAddressId
 		 * @return int
 		*/
-		public static function CountByAddressId($intAddressId) {
+		public static function CountByAddressId($intAddressId, $objOptionalClauses = null) {
 			// Call Phone::QueryCount to perform the CountByAddressId query
 			return Phone::QueryCount(
 				QQ::Equal(QQN::Phone()->AddressId, $intAddressId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -829,7 +834,8 @@
 			try {
 				return Phone::QueryArray(
 					QQ::Equal(QQN::Phone()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -842,10 +848,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Phone::QueryCount to perform the CountByPersonId query
 			return Phone::QueryCount(
 				QQ::Equal(QQN::Phone()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -861,7 +868,8 @@
 			try {
 				return Phone::QueryArray(
 					QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -874,10 +882,11 @@
 		 * @param integer $intMobileProviderId
 		 * @return int
 		*/
-		public static function CountByMobileProviderId($intMobileProviderId) {
+		public static function CountByMobileProviderId($intMobileProviderId, $objOptionalClauses = null) {
 			// Call Phone::QueryCount to perform the CountByMobileProviderId query
 			return Phone::QueryCount(
 				QQ::Equal(QQN::Phone()->MobileProviderId, $intMobileProviderId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -893,7 +902,8 @@
 			try {
 				return Phone::QueryArray(
 					QQ::Equal(QQN::Phone()->Number, $strNumber),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -906,10 +916,11 @@
 		 * @param string $strNumber
 		 * @return int
 		*/
-		public static function CountByNumber($strNumber) {
+		public static function CountByNumber($strNumber, $objOptionalClauses = null) {
 			// Call Phone::QueryCount to perform the CountByNumber query
 			return Phone::QueryCount(
 				QQ::Equal(QQN::Phone()->Number, $strNumber)
+			, $objOptionalClauses
 			);
 		}
 

@@ -516,9 +516,10 @@
 		 * @param integer $intId
 		 * @return Registry
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Registry::QuerySingle(
 				QQ::Equal(QQN::Registry()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -528,9 +529,10 @@
 		 * @param string $strName
 		 * @return Registry
 		*/
-		public static function LoadByName($strName) {
+		public static function LoadByName($strName, $objOptionalClauses = null) {
 			return Registry::QuerySingle(
 				QQ::Equal(QQN::Registry()->Name, $strName)
+			, $objOptionalClauses
 			);
 		}
 

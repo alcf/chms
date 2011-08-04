@@ -389,8 +389,8 @@
 			$this->lstAddressType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstAddressType->Name = QApplication::Translate('Address Type');
 			$this->lstAddressType->Required = true;
-			foreach (AddressType::$NameArray as $intId => $strValue)
-				$this->lstAddressType->AddItem(new QListItem($strValue, $intId, $this->objAddress->AddressTypeId == $intId));
+
+			$this->lstAddressType->AddItems(AddressType::$NameArray, $this->objAddress->AddressTypeId);
 			return $this->lstAddressType;
 		}
 

@@ -561,9 +561,10 @@
 		 * @param integer $intId
 		 * @return Relationship
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Relationship::QuerySingle(
 				QQ::Equal(QQN::Relationship()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -574,12 +575,13 @@
 		 * @param integer $intRelatedToPersonId
 		 * @return Relationship
 		*/
-		public static function LoadByPersonIdRelatedToPersonId($intPersonId, $intRelatedToPersonId) {
+		public static function LoadByPersonIdRelatedToPersonId($intPersonId, $intRelatedToPersonId, $objOptionalClauses = null) {
 			return Relationship::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::Relationship()->PersonId, $intPersonId),
 				QQ::Equal(QQN::Relationship()->RelatedToPersonId, $intRelatedToPersonId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -595,7 +597,8 @@
 			try {
 				return Relationship::QueryArray(
 					QQ::Equal(QQN::Relationship()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -608,10 +611,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Relationship::QueryCount to perform the CountByPersonId query
 			return Relationship::QueryCount(
 				QQ::Equal(QQN::Relationship()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -627,7 +631,8 @@
 			try {
 				return Relationship::QueryArray(
 					QQ::Equal(QQN::Relationship()->RelatedToPersonId, $intRelatedToPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -640,10 +645,11 @@
 		 * @param integer $intRelatedToPersonId
 		 * @return int
 		*/
-		public static function CountByRelatedToPersonId($intRelatedToPersonId) {
+		public static function CountByRelatedToPersonId($intRelatedToPersonId, $objOptionalClauses = null) {
 			// Call Relationship::QueryCount to perform the CountByRelatedToPersonId query
 			return Relationship::QueryCount(
 				QQ::Equal(QQN::Relationship()->RelatedToPersonId, $intRelatedToPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -659,7 +665,8 @@
 			try {
 				return Relationship::QueryArray(
 					QQ::Equal(QQN::Relationship()->RelationshipTypeId, $intRelationshipTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -672,10 +679,11 @@
 		 * @param integer $intRelationshipTypeId
 		 * @return int
 		*/
-		public static function CountByRelationshipTypeId($intRelationshipTypeId) {
+		public static function CountByRelationshipTypeId($intRelationshipTypeId, $objOptionalClauses = null) {
 			// Call Relationship::QueryCount to perform the CountByRelationshipTypeId query
 			return Relationship::QueryCount(
 				QQ::Equal(QQN::Relationship()->RelationshipTypeId, $intRelationshipTypeId)
+			, $objOptionalClauses
 			);
 		}
 

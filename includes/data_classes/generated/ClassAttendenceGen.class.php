@@ -544,9 +544,10 @@
 		 * @param integer $intId
 		 * @return ClassAttendence
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassAttendence::QuerySingle(
 				QQ::Equal(QQN::ClassAttendence()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -557,12 +558,13 @@
 		 * @param integer $intMeetingNumber
 		 * @return ClassAttendence
 		*/
-		public static function LoadByClassRegistrationIdMeetingNumber($intClassRegistrationId, $intMeetingNumber) {
+		public static function LoadByClassRegistrationIdMeetingNumber($intClassRegistrationId, $intMeetingNumber, $objOptionalClauses = null) {
 			return ClassAttendence::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::ClassAttendence()->ClassRegistrationId, $intClassRegistrationId),
 				QQ::Equal(QQN::ClassAttendence()->MeetingNumber, $intMeetingNumber)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -578,7 +580,8 @@
 			try {
 				return ClassAttendence::QueryArray(
 					QQ::Equal(QQN::ClassAttendence()->ClassRegistrationId, $intClassRegistrationId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -591,10 +594,11 @@
 		 * @param integer $intClassRegistrationId
 		 * @return int
 		*/
-		public static function CountByClassRegistrationId($intClassRegistrationId) {
+		public static function CountByClassRegistrationId($intClassRegistrationId, $objOptionalClauses = null) {
 			// Call ClassAttendence::QueryCount to perform the CountByClassRegistrationId query
 			return ClassAttendence::QueryCount(
 				QQ::Equal(QQN::ClassAttendence()->ClassRegistrationId, $intClassRegistrationId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -610,7 +614,8 @@
 			try {
 				return ClassAttendence::QueryArray(
 					QQ::Equal(QQN::ClassAttendence()->MeetingNumber, $intMeetingNumber),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -623,10 +628,11 @@
 		 * @param integer $intMeetingNumber
 		 * @return int
 		*/
-		public static function CountByMeetingNumber($intMeetingNumber) {
+		public static function CountByMeetingNumber($intMeetingNumber, $objOptionalClauses = null) {
 			// Call ClassAttendence::QueryCount to perform the CountByMeetingNumber query
 			return ClassAttendence::QueryCount(
 				QQ::Equal(QQN::ClassAttendence()->MeetingNumber, $intMeetingNumber)
+			, $objOptionalClauses
 			);
 		}
 

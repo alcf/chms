@@ -444,8 +444,8 @@
 			$this->lstGrowthGroupDayType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstGrowthGroupDayType->Name = QApplication::Translate('Growth Group Day Type');
 			$this->lstGrowthGroupDayType->AddItem(QApplication::Translate('- Select One -'), null);
-			foreach (GrowthGroupDayType::$NameArray as $intId => $strValue)
-				$this->lstGrowthGroupDayType->AddItem(new QListItem($strValue, $intId, $this->objGrowthGroup->GrowthGroupDayTypeId == $intId));
+
+			$this->lstGrowthGroupDayType->AddItems(GrowthGroupDayType::$NameArray, $this->objGrowthGroup->GrowthGroupDayTypeId);
 			return $this->lstGrowthGroupDayType;
 		}
 

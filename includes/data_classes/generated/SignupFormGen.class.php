@@ -968,9 +968,10 @@
 		 * @param integer $intId
 		 * @return SignupForm
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return SignupForm::QuerySingle(
 				QQ::Equal(QQN::SignupForm()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -980,9 +981,10 @@
 		 * @param string $strToken
 		 * @return SignupForm
 		*/
-		public static function LoadByToken($strToken) {
+		public static function LoadByToken($strToken, $objOptionalClauses = null) {
 			return SignupForm::QuerySingle(
 				QQ::Equal(QQN::SignupForm()->Token, $strToken)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -998,7 +1000,8 @@
 			try {
 				return SignupForm::QueryArray(
 					QQ::Equal(QQN::SignupForm()->SignupFormTypeId, $intSignupFormTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1011,10 +1014,11 @@
 		 * @param integer $intSignupFormTypeId
 		 * @return int
 		*/
-		public static function CountBySignupFormTypeId($intSignupFormTypeId) {
+		public static function CountBySignupFormTypeId($intSignupFormTypeId, $objOptionalClauses = null) {
 			// Call SignupForm::QueryCount to perform the CountBySignupFormTypeId query
 			return SignupForm::QueryCount(
 				QQ::Equal(QQN::SignupForm()->SignupFormTypeId, $intSignupFormTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1030,7 +1034,8 @@
 			try {
 				return SignupForm::QueryArray(
 					QQ::Equal(QQN::SignupForm()->MinistryId, $intMinistryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1043,10 +1048,11 @@
 		 * @param integer $intMinistryId
 		 * @return int
 		*/
-		public static function CountByMinistryId($intMinistryId) {
+		public static function CountByMinistryId($intMinistryId, $objOptionalClauses = null) {
 			// Call SignupForm::QueryCount to perform the CountByMinistryId query
 			return SignupForm::QueryCount(
 				QQ::Equal(QQN::SignupForm()->MinistryId, $intMinistryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1062,7 +1068,8 @@
 			try {
 				return SignupForm::QueryArray(
 					QQ::Equal(QQN::SignupForm()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1075,10 +1082,11 @@
 		 * @param integer $intStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
+		public static function CountByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
 			// Call SignupForm::QueryCount to perform the CountByStewardshipFundId query
 			return SignupForm::QueryCount(
 				QQ::Equal(QQN::SignupForm()->StewardshipFundId, $intStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1094,7 +1102,8 @@
 			try {
 				return SignupForm::QueryArray(
 					QQ::Equal(QQN::SignupForm()->DonationStewardshipFundId, $intDonationStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1107,10 +1116,11 @@
 		 * @param integer $intDonationStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByDonationStewardshipFundId($intDonationStewardshipFundId) {
+		public static function CountByDonationStewardshipFundId($intDonationStewardshipFundId, $objOptionalClauses = null) {
 			// Call SignupForm::QueryCount to perform the CountByDonationStewardshipFundId query
 			return SignupForm::QueryCount(
 				QQ::Equal(QQN::SignupForm()->DonationStewardshipFundId, $intDonationStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 

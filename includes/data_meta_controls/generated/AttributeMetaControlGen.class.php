@@ -207,8 +207,8 @@
 			$this->lstAttributeDataType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstAttributeDataType->Name = QApplication::Translate('Attribute Data Type');
 			$this->lstAttributeDataType->Required = true;
-			foreach (AttributeDataType::$NameArray as $intId => $strValue)
-				$this->lstAttributeDataType->AddItem(new QListItem($strValue, $intId, $this->objAttribute->AttributeDataTypeId == $intId));
+
+			$this->lstAttributeDataType->AddItems(AttributeDataType::$NameArray, $this->objAttribute->AttributeDataTypeId);
 			return $this->lstAttributeDataType;
 		}
 

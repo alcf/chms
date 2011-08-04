@@ -309,8 +309,8 @@
 			$this->lstImageType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstImageType->Name = QApplication::Translate('Image Type');
 			$this->lstImageType->Required = true;
-			foreach (ImageType::$NameArray as $intId => $strValue)
-				$this->lstImageType->AddItem(new QListItem($strValue, $intId, $this->objHeadShot->ImageTypeId == $intId));
+
+			$this->lstImageType->AddItems(ImageType::$NameArray, $this->objHeadShot->ImageTypeId);
 			return $this->lstImageType;
 		}
 

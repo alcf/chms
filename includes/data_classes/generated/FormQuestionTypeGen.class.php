@@ -31,8 +31,9 @@
 		const YesNo = 11;
 		const SingleSelect = 12;
 		const MultipleSelect = 13;
+		const Instructions = 14;
 
-		const MaxId = 13;
+		const MaxId = 14;
 
 		public static $NameArray = array(
 			1 => 'Spouse Name',
@@ -47,7 +48,8 @@
 			10 => 'Number',
 			11 => 'Yes No',
 			12 => 'Single Select',
-			13 => 'Multiple Select');
+			13 => 'Multiple Select',
+			14 => 'Instructions');
 
 		public static $TokenArray = array(
 			1 => 'SpouseName',
@@ -62,7 +64,8 @@
 			10 => 'Number',
 			11 => 'YesNo',
 			12 => 'SingleSelect',
-			13 => 'MultipleSelect');
+			13 => 'MultipleSelect',
+			14 => 'Instructions');
 
 		public static function ToString($intFormQuestionTypeId) {
 			switch ($intFormQuestionTypeId) {
@@ -79,6 +82,7 @@
 				case 11: return 'Yes No';
 				case 12: return 'Single Select';
 				case 13: return 'Multiple Select';
+				case 14: return 'Instructions';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
 			}
@@ -99,6 +103,7 @@
 				case 11: return 'YesNo';
 				case 12: return 'SingleSelect';
 				case 13: return 'MultipleSelect';
+				case 14: return 'Instructions';
 				default:
 					throw new QCallerException(sprintf('Invalid intFormQuestionTypeId: %s', $intFormQuestionTypeId));
 			}

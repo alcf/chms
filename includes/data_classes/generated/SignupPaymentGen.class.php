@@ -680,9 +680,10 @@
 		 * @param integer $intId
 		 * @return SignupPayment
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return SignupPayment::QuerySingle(
 				QQ::Equal(QQN::SignupPayment()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -692,9 +693,10 @@
 		 * @param integer $intCreditCardPaymentId
 		 * @return SignupPayment
 		*/
-		public static function LoadByCreditCardPaymentId($intCreditCardPaymentId) {
+		public static function LoadByCreditCardPaymentId($intCreditCardPaymentId, $objOptionalClauses = null) {
 			return SignupPayment::QuerySingle(
 				QQ::Equal(QQN::SignupPayment()->CreditCardPaymentId, $intCreditCardPaymentId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -710,7 +712,8 @@
 			try {
 				return SignupPayment::QueryArray(
 					QQ::Equal(QQN::SignupPayment()->SignupEntryId, $intSignupEntryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -723,10 +726,11 @@
 		 * @param integer $intSignupEntryId
 		 * @return int
 		*/
-		public static function CountBySignupEntryId($intSignupEntryId) {
+		public static function CountBySignupEntryId($intSignupEntryId, $objOptionalClauses = null) {
 			// Call SignupPayment::QueryCount to perform the CountBySignupEntryId query
 			return SignupPayment::QueryCount(
 				QQ::Equal(QQN::SignupPayment()->SignupEntryId, $intSignupEntryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -742,7 +746,8 @@
 			try {
 				return SignupPayment::QueryArray(
 					QQ::Equal(QQN::SignupPayment()->SignupPaymentTypeId, $intSignupPaymentTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -755,10 +760,11 @@
 		 * @param integer $intSignupPaymentTypeId
 		 * @return int
 		*/
-		public static function CountBySignupPaymentTypeId($intSignupPaymentTypeId) {
+		public static function CountBySignupPaymentTypeId($intSignupPaymentTypeId, $objOptionalClauses = null) {
 			// Call SignupPayment::QueryCount to perform the CountBySignupPaymentTypeId query
 			return SignupPayment::QueryCount(
 				QQ::Equal(QQN::SignupPayment()->SignupPaymentTypeId, $intSignupPaymentTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -774,7 +780,8 @@
 			try {
 				return SignupPayment::QueryArray(
 					QQ::Equal(QQN::SignupPayment()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -787,10 +794,11 @@
 		 * @param integer $intStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
+		public static function CountByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
 			// Call SignupPayment::QueryCount to perform the CountByStewardshipFundId query
 			return SignupPayment::QueryCount(
 				QQ::Equal(QQN::SignupPayment()->StewardshipFundId, $intStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -806,7 +814,8 @@
 			try {
 				return SignupPayment::QueryArray(
 					QQ::Equal(QQN::SignupPayment()->DonationStewardshipFundId, $intDonationStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -819,10 +828,11 @@
 		 * @param integer $intDonationStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByDonationStewardshipFundId($intDonationStewardshipFundId) {
+		public static function CountByDonationStewardshipFundId($intDonationStewardshipFundId, $objOptionalClauses = null) {
 			// Call SignupPayment::QueryCount to perform the CountByDonationStewardshipFundId query
 			return SignupPayment::QueryCount(
 				QQ::Equal(QQN::SignupPayment()->DonationStewardshipFundId, $intDonationStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 

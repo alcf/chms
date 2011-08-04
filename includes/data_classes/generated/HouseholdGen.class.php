@@ -744,9 +744,10 @@
 		 * @param integer $intId
 		 * @return Household
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Household::QuerySingle(
 				QQ::Equal(QQN::Household()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -756,9 +757,10 @@
 		 * @param integer $intHeadPersonId
 		 * @return Household
 		*/
-		public static function LoadByHeadPersonId($intHeadPersonId) {
+		public static function LoadByHeadPersonId($intHeadPersonId, $objOptionalClauses = null) {
 			return Household::QuerySingle(
 				QQ::Equal(QQN::Household()->HeadPersonId, $intHeadPersonId)
+			, $objOptionalClauses
 			);
 		}
 

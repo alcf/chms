@@ -992,9 +992,10 @@
 		 * @param integer $intId
 		 * @return StewardshipFund
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipFund::QuerySingle(
 				QQ::Equal(QQN::StewardshipFund()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1010,7 +1011,8 @@
 			try {
 				return StewardshipFund::QueryArray(
 					QQ::Equal(QQN::StewardshipFund()->MinistryId, $intMinistryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1023,10 +1025,11 @@
 		 * @param integer $intMinistryId
 		 * @return int
 		*/
-		public static function CountByMinistryId($intMinistryId) {
+		public static function CountByMinistryId($intMinistryId, $objOptionalClauses = null) {
 			// Call StewardshipFund::QueryCount to perform the CountByMinistryId query
 			return StewardshipFund::QueryCount(
 				QQ::Equal(QQN::StewardshipFund()->MinistryId, $intMinistryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1042,7 +1045,8 @@
 			try {
 				return StewardshipFund::QueryArray(
 					QQ::Equal(QQN::StewardshipFund()->ActiveFlag, $blnActiveFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1055,10 +1059,11 @@
 		 * @param boolean $blnActiveFlag
 		 * @return int
 		*/
-		public static function CountByActiveFlag($blnActiveFlag) {
+		public static function CountByActiveFlag($blnActiveFlag, $objOptionalClauses = null) {
 			// Call StewardshipFund::QueryCount to perform the CountByActiveFlag query
 			return StewardshipFund::QueryCount(
 				QQ::Equal(QQN::StewardshipFund()->ActiveFlag, $blnActiveFlag)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1074,7 +1079,8 @@
 			try {
 				return StewardshipFund::QueryArray(
 					QQ::Equal(QQN::StewardshipFund()->ExternalFlag, $blnExternalFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1087,10 +1093,11 @@
 		 * @param boolean $blnExternalFlag
 		 * @return int
 		*/
-		public static function CountByExternalFlag($blnExternalFlag) {
+		public static function CountByExternalFlag($blnExternalFlag, $objOptionalClauses = null) {
 			// Call StewardshipFund::QueryCount to perform the CountByExternalFlag query
 			return StewardshipFund::QueryCount(
 				QQ::Equal(QQN::StewardshipFund()->ExternalFlag, $blnExternalFlag)
+			, $objOptionalClauses
 			);
 		}
 

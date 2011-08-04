@@ -575,9 +575,10 @@
 		 * @param integer $intId
 		 * @return HeadShot
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return HeadShot::QuerySingle(
 				QQ::Equal(QQN::HeadShot()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -593,7 +594,8 @@
 			try {
 				return HeadShot::QueryArray(
 					QQ::Equal(QQN::HeadShot()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -606,10 +608,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call HeadShot::QueryCount to perform the CountByPersonId query
 			return HeadShot::QueryCount(
 				QQ::Equal(QQN::HeadShot()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -625,7 +628,8 @@
 			try {
 				return HeadShot::QueryArray(
 					QQ::Equal(QQN::HeadShot()->ImageTypeId, $intImageTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -638,10 +642,11 @@
 		 * @param integer $intImageTypeId
 		 * @return int
 		*/
-		public static function CountByImageTypeId($intImageTypeId) {
+		public static function CountByImageTypeId($intImageTypeId, $objOptionalClauses = null) {
 			// Call HeadShot::QueryCount to perform the CountByImageTypeId query
 			return HeadShot::QueryCount(
 				QQ::Equal(QQN::HeadShot()->ImageTypeId, $intImageTypeId)
+			, $objOptionalClauses
 			);
 		}
 

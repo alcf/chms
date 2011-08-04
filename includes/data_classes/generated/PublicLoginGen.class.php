@@ -663,9 +663,10 @@
 		 * @param integer $intId
 		 * @return PublicLogin
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return PublicLogin::QuerySingle(
 				QQ::Equal(QQN::PublicLogin()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -675,9 +676,10 @@
 		 * @param string $strUsername
 		 * @return PublicLogin
 		*/
-		public static function LoadByUsername($strUsername) {
+		public static function LoadByUsername($strUsername, $objOptionalClauses = null) {
 			return PublicLogin::QuerySingle(
 				QQ::Equal(QQN::PublicLogin()->Username, $strUsername)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -687,9 +689,10 @@
 		 * @param integer $intPersonId
 		 * @return PublicLogin
 		*/
-		public static function LoadByPersonId($intPersonId) {
+		public static function LoadByPersonId($intPersonId, $objOptionalClauses = null) {
 			return PublicLogin::QuerySingle(
 				QQ::Equal(QQN::PublicLogin()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -705,7 +708,8 @@
 			try {
 				return PublicLogin::QueryArray(
 					QQ::Equal(QQN::PublicLogin()->NewPersonFlag, $blnNewPersonFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -718,10 +722,11 @@
 		 * @param boolean $blnNewPersonFlag
 		 * @return int
 		*/
-		public static function CountByNewPersonFlag($blnNewPersonFlag) {
+		public static function CountByNewPersonFlag($blnNewPersonFlag, $objOptionalClauses = null) {
 			// Call PublicLogin::QueryCount to perform the CountByNewPersonFlag query
 			return PublicLogin::QueryCount(
 				QQ::Equal(QQN::PublicLogin()->NewPersonFlag, $blnNewPersonFlag)
+			, $objOptionalClauses
 			);
 		}
 

@@ -576,9 +576,10 @@
 		 * @param integer $intId
 		 * @return ClassTerm
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassTerm::QuerySingle(
 				QQ::Equal(QQN::ClassTerm()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -594,7 +595,8 @@
 			try {
 				return ClassTerm::QueryArray(
 					QQ::Equal(QQN::ClassTerm()->ActiveFlag, $blnActiveFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -607,10 +609,11 @@
 		 * @param boolean $blnActiveFlag
 		 * @return int
 		*/
-		public static function CountByActiveFlag($blnActiveFlag) {
+		public static function CountByActiveFlag($blnActiveFlag, $objOptionalClauses = null) {
 			// Call ClassTerm::QueryCount to perform the CountByActiveFlag query
 			return ClassTerm::QueryCount(
 				QQ::Equal(QQN::ClassTerm()->ActiveFlag, $blnActiveFlag)
+			, $objOptionalClauses
 			);
 		}
 

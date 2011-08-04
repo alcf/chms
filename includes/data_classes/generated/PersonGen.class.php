@@ -2122,9 +2122,10 @@
 		 * @param integer $intId
 		 * @return Person
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Person::QuerySingle(
 				QQ::Equal(QQN::Person()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2134,9 +2135,10 @@
 		 * @param integer $intCurrentHeadShotId
 		 * @return Person
 		*/
-		public static function LoadByCurrentHeadShotId($intCurrentHeadShotId) {
+		public static function LoadByCurrentHeadShotId($intCurrentHeadShotId, $objOptionalClauses = null) {
 			return Person::QuerySingle(
 				QQ::Equal(QQN::Person()->CurrentHeadShotId, $intCurrentHeadShotId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2146,9 +2148,10 @@
 		 * @param integer $intPrimaryEmailId
 		 * @return Person
 		*/
-		public static function LoadByPrimaryEmailId($intPrimaryEmailId) {
+		public static function LoadByPrimaryEmailId($intPrimaryEmailId, $objOptionalClauses = null) {
 			return Person::QuerySingle(
 				QQ::Equal(QQN::Person()->PrimaryEmailId, $intPrimaryEmailId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2164,7 +2167,8 @@
 			try {
 				return Person::QueryArray(
 					QQ::Equal(QQN::Person()->MembershipStatusTypeId, $intMembershipStatusTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -2177,10 +2181,11 @@
 		 * @param integer $intMembershipStatusTypeId
 		 * @return int
 		*/
-		public static function CountByMembershipStatusTypeId($intMembershipStatusTypeId) {
+		public static function CountByMembershipStatusTypeId($intMembershipStatusTypeId, $objOptionalClauses = null) {
 			// Call Person::QueryCount to perform the CountByMembershipStatusTypeId query
 			return Person::QueryCount(
 				QQ::Equal(QQN::Person()->MembershipStatusTypeId, $intMembershipStatusTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2196,7 +2201,8 @@
 			try {
 				return Person::QueryArray(
 					QQ::Equal(QQN::Person()->MaritalStatusTypeId, $intMaritalStatusTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -2209,10 +2215,11 @@
 		 * @param integer $intMaritalStatusTypeId
 		 * @return int
 		*/
-		public static function CountByMaritalStatusTypeId($intMaritalStatusTypeId) {
+		public static function CountByMaritalStatusTypeId($intMaritalStatusTypeId, $objOptionalClauses = null) {
 			// Call Person::QueryCount to perform the CountByMaritalStatusTypeId query
 			return Person::QueryCount(
 				QQ::Equal(QQN::Person()->MaritalStatusTypeId, $intMaritalStatusTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2228,7 +2235,8 @@
 			try {
 				return Person::QueryArray(
 					QQ::Equal(QQN::Person()->MailingAddressId, $intMailingAddressId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -2241,10 +2249,11 @@
 		 * @param integer $intMailingAddressId
 		 * @return int
 		*/
-		public static function CountByMailingAddressId($intMailingAddressId) {
+		public static function CountByMailingAddressId($intMailingAddressId, $objOptionalClauses = null) {
 			// Call Person::QueryCount to perform the CountByMailingAddressId query
 			return Person::QueryCount(
 				QQ::Equal(QQN::Person()->MailingAddressId, $intMailingAddressId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2260,7 +2269,8 @@
 			try {
 				return Person::QueryArray(
 					QQ::Equal(QQN::Person()->StewardshipAddressId, $intStewardshipAddressId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -2273,10 +2283,11 @@
 		 * @param integer $intStewardshipAddressId
 		 * @return int
 		*/
-		public static function CountByStewardshipAddressId($intStewardshipAddressId) {
+		public static function CountByStewardshipAddressId($intStewardshipAddressId, $objOptionalClauses = null) {
 			// Call Person::QueryCount to perform the CountByStewardshipAddressId query
 			return Person::QueryCount(
 				QQ::Equal(QQN::Person()->StewardshipAddressId, $intStewardshipAddressId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -2292,7 +2303,8 @@
 			try {
 				return Person::QueryArray(
 					QQ::Equal(QQN::Person()->PrimaryPhoneId, $intPrimaryPhoneId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -2305,10 +2317,11 @@
 		 * @param integer $intPrimaryPhoneId
 		 * @return int
 		*/
-		public static function CountByPrimaryPhoneId($intPrimaryPhoneId) {
+		public static function CountByPrimaryPhoneId($intPrimaryPhoneId, $objOptionalClauses = null) {
 			// Call Person::QueryCount to perform the CountByPrimaryPhoneId query
 			return Person::QueryCount(
 				QQ::Equal(QQN::Person()->PrimaryPhoneId, $intPrimaryPhoneId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -2343,9 +2356,10 @@
 		 * @param integer $intCheckingAccountLookupId
 		 * @return int
 		*/
-		public static function CountByCheckingAccountLookup($intCheckingAccountLookupId) {
+		public static function CountByCheckingAccountLookup($intCheckingAccountLookupId, $objOptionalClauses = null) {
 			return Person::QueryCount(
-				QQ::Equal(QQN::Person()->CheckingAccountLookup->CheckingAccountLookupId, $intCheckingAccountLookupId)
+				QQ::Equal(QQN::Person()->CheckingAccountLookup->CheckingAccountLookupId, $intCheckingAccountLookupId),
+				$objOptionalClauses
 			);
 		}
 			/**
@@ -2374,9 +2388,10 @@
 		 * @param integer $intCommunicationListId
 		 * @return int
 		*/
-		public static function CountByCommunicationList($intCommunicationListId) {
+		public static function CountByCommunicationList($intCommunicationListId, $objOptionalClauses = null) {
 			return Person::QueryCount(
-				QQ::Equal(QQN::Person()->CommunicationList->CommunicationListId, $intCommunicationListId)
+				QQ::Equal(QQN::Person()->CommunicationList->CommunicationListId, $intCommunicationListId),
+				$objOptionalClauses
 			);
 		}
 			/**
@@ -2405,9 +2420,10 @@
 		 * @param integer $intNameItemId
 		 * @return int
 		*/
-		public static function CountByNameItem($intNameItemId) {
+		public static function CountByNameItem($intNameItemId, $objOptionalClauses = null) {
 			return Person::QueryCount(
-				QQ::Equal(QQN::Person()->NameItem->NameItemId, $intNameItemId)
+				QQ::Equal(QQN::Person()->NameItem->NameItemId, $intNameItemId),
+				$objOptionalClauses
 			);
 		}
 

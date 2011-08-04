@@ -621,9 +621,10 @@
 		 * @param integer $intId
 		 * @return SearchQuery
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return SearchQuery::QuerySingle(
 				QQ::Equal(QQN::SearchQuery()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -633,9 +634,10 @@
 		 * @param integer $intSmartGroupId
 		 * @return SearchQuery
 		*/
-		public static function LoadBySmartGroupId($intSmartGroupId) {
+		public static function LoadBySmartGroupId($intSmartGroupId, $objOptionalClauses = null) {
 			return SearchQuery::QuerySingle(
 				QQ::Equal(QQN::SearchQuery()->SmartGroupId, $intSmartGroupId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -651,7 +653,8 @@
 			try {
 				return SearchQuery::QueryArray(
 					QQ::Equal(QQN::SearchQuery()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -664,10 +667,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call SearchQuery::QueryCount to perform the CountByPersonId query
 			return SearchQuery::QueryCount(
 				QQ::Equal(QQN::SearchQuery()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 

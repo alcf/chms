@@ -628,9 +628,10 @@
 		 * @param integer $intId
 		 * @return StewardshipStack
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipStack::QuerySingle(
 				QQ::Equal(QQN::StewardshipStack()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -641,12 +642,13 @@
 		 * @param integer $intStackNumber
 		 * @return StewardshipStack
 		*/
-		public static function LoadByStewardshipBatchIdStackNumber($intStewardshipBatchId, $intStackNumber) {
+		public static function LoadByStewardshipBatchIdStackNumber($intStewardshipBatchId, $intStackNumber, $objOptionalClauses = null) {
 			return StewardshipStack::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipStack()->StewardshipBatchId, $intStewardshipBatchId),
 				QQ::Equal(QQN::StewardshipStack()->StackNumber, $intStackNumber)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -662,7 +664,8 @@
 			try {
 				return StewardshipStack::QueryArray(
 					QQ::Equal(QQN::StewardshipStack()->StewardshipBatchId, $intStewardshipBatchId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -675,10 +678,11 @@
 		 * @param integer $intStewardshipBatchId
 		 * @return int
 		*/
-		public static function CountByStewardshipBatchId($intStewardshipBatchId) {
+		public static function CountByStewardshipBatchId($intStewardshipBatchId, $objOptionalClauses = null) {
 			// Call StewardshipStack::QueryCount to perform the CountByStewardshipBatchId query
 			return StewardshipStack::QueryCount(
 				QQ::Equal(QQN::StewardshipStack()->StewardshipBatchId, $intStewardshipBatchId)
+			, $objOptionalClauses
 			);
 		}
 

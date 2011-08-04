@@ -459,8 +459,8 @@
 			$this->lstSignupFormType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSignupFormType->Name = QApplication::Translate('Signup Form Type');
 			$this->lstSignupFormType->Required = true;
-			foreach (SignupFormType::$NameArray as $intId => $strValue)
-				$this->lstSignupFormType->AddItem(new QListItem($strValue, $intId, $this->objSignupForm->SignupFormTypeId == $intId));
+
+			$this->lstSignupFormType->AddItems(SignupFormType::$NameArray, $this->objSignupForm->SignupFormTypeId);
 			return $this->lstSignupFormType;
 		}
 

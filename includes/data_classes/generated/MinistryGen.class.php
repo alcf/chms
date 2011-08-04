@@ -894,9 +894,10 @@
 		 * @param integer $intId
 		 * @return Ministry
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Ministry::QuerySingle(
 				QQ::Equal(QQN::Ministry()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -906,9 +907,10 @@
 		 * @param string $strToken
 		 * @return Ministry
 		*/
-		public static function LoadByToken($strToken) {
+		public static function LoadByToken($strToken, $objOptionalClauses = null) {
 			return Ministry::QuerySingle(
 				QQ::Equal(QQN::Ministry()->Token, $strToken)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -924,7 +926,8 @@
 			try {
 				return Ministry::QueryArray(
 					QQ::Equal(QQN::Ministry()->ParentMinistryId, $intParentMinistryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -937,10 +940,11 @@
 		 * @param integer $intParentMinistryId
 		 * @return int
 		*/
-		public static function CountByParentMinistryId($intParentMinistryId) {
+		public static function CountByParentMinistryId($intParentMinistryId, $objOptionalClauses = null) {
 			// Call Ministry::QueryCount to perform the CountByParentMinistryId query
 			return Ministry::QueryCount(
 				QQ::Equal(QQN::Ministry()->ParentMinistryId, $intParentMinistryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -956,7 +960,8 @@
 			try {
 				return Ministry::QueryArray(
 					QQ::Equal(QQN::Ministry()->ActiveFlag, $blnActiveFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -969,10 +974,11 @@
 		 * @param boolean $blnActiveFlag
 		 * @return int
 		*/
-		public static function CountByActiveFlag($blnActiveFlag) {
+		public static function CountByActiveFlag($blnActiveFlag, $objOptionalClauses = null) {
 			// Call Ministry::QueryCount to perform the CountByActiveFlag query
 			return Ministry::QueryCount(
 				QQ::Equal(QQN::Ministry()->ActiveFlag, $blnActiveFlag)
+			, $objOptionalClauses
 			);
 		}
 
@@ -1007,9 +1013,10 @@
 		 * @param integer $intLoginId
 		 * @return int
 		*/
-		public static function CountByLogin($intLoginId) {
+		public static function CountByLogin($intLoginId, $objOptionalClauses = null) {
 			return Ministry::QueryCount(
-				QQ::Equal(QQN::Ministry()->Login->LoginId, $intLoginId)
+				QQ::Equal(QQN::Ministry()->Login->LoginId, $intLoginId),
+				$objOptionalClauses
 			);
 		}
 

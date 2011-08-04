@@ -577,9 +577,10 @@
 		 * @param integer $intId
 		 * @return ClassGrade
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassGrade::QuerySingle(
 				QQ::Equal(QQN::ClassGrade()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 

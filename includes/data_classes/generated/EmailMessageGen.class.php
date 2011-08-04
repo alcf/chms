@@ -704,9 +704,10 @@
 		 * @param integer $intId
 		 * @return EmailMessage
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return EmailMessage::QuerySingle(
 				QQ::Equal(QQN::EmailMessage()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -716,9 +717,10 @@
 		 * @param string $strMessageIdentifier
 		 * @return EmailMessage
 		*/
-		public static function LoadByMessageIdentifier($strMessageIdentifier) {
+		public static function LoadByMessageIdentifier($strMessageIdentifier, $objOptionalClauses = null) {
 			return EmailMessage::QuerySingle(
 				QQ::Equal(QQN::EmailMessage()->MessageIdentifier, $strMessageIdentifier)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -734,7 +736,8 @@
 			try {
 				return EmailMessage::QueryArray(
 					QQ::Equal(QQN::EmailMessage()->EmailMessageStatusTypeId, $intEmailMessageStatusTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -747,10 +750,11 @@
 		 * @param integer $intEmailMessageStatusTypeId
 		 * @return int
 		*/
-		public static function CountByEmailMessageStatusTypeId($intEmailMessageStatusTypeId) {
+		public static function CountByEmailMessageStatusTypeId($intEmailMessageStatusTypeId, $objOptionalClauses = null) {
 			// Call EmailMessage::QueryCount to perform the CountByEmailMessageStatusTypeId query
 			return EmailMessage::QueryCount(
 				QQ::Equal(QQN::EmailMessage()->EmailMessageStatusTypeId, $intEmailMessageStatusTypeId)
+			, $objOptionalClauses
 			);
 		}
 

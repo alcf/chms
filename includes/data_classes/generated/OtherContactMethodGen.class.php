@@ -564,9 +564,10 @@
 		 * @param integer $intId
 		 * @return OtherContactMethod
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return OtherContactMethod::QuerySingle(
 				QQ::Equal(QQN::OtherContactMethod()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 

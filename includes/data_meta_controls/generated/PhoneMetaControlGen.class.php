@@ -249,8 +249,8 @@
 			$this->lstPhoneType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPhoneType->Name = QApplication::Translate('Phone Type');
 			$this->lstPhoneType->Required = true;
-			foreach (PhoneType::$NameArray as $intId => $strValue)
-				$this->lstPhoneType->AddItem(new QListItem($strValue, $intId, $this->objPhone->PhoneTypeId == $intId));
+
+			$this->lstPhoneType->AddItems(PhoneType::$NameArray, $this->objPhone->PhoneTypeId);
 			return $this->lstPhoneType;
 		}
 

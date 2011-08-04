@@ -363,8 +363,8 @@
 			$this->lstCommentPrivacyType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstCommentPrivacyType->Name = QApplication::Translate('Comment Privacy Type');
 			$this->lstCommentPrivacyType->Required = true;
-			foreach (CommentPrivacyType::$NameArray as $intId => $strValue)
-				$this->lstCommentPrivacyType->AddItem(new QListItem($strValue, $intId, $this->objComment->CommentPrivacyTypeId == $intId));
+
+			$this->lstCommentPrivacyType->AddItems(CommentPrivacyType::$NameArray, $this->objComment->CommentPrivacyTypeId);
 			return $this->lstCommentPrivacyType;
 		}
 

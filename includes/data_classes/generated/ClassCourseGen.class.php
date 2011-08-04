@@ -577,9 +577,10 @@
 		 * @param integer $intId
 		 * @return ClassCourse
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassCourse::QuerySingle(
 				QQ::Equal(QQN::ClassCourse()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 

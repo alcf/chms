@@ -577,9 +577,10 @@
 		 * @param integer $intId
 		 * @return MobileProvider
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return MobileProvider::QuerySingle(
 				QQ::Equal(QQN::MobileProvider()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 

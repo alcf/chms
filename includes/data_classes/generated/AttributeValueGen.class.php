@@ -686,9 +686,10 @@
 		 * @param integer $intId
 		 * @return AttributeValue
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return AttributeValue::QuerySingle(
 				QQ::Equal(QQN::AttributeValue()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -699,12 +700,13 @@
 		 * @param integer $intPersonId
 		 * @return AttributeValue
 		*/
-		public static function LoadByAttributeIdPersonId($intAttributeId, $intPersonId) {
+		public static function LoadByAttributeIdPersonId($intAttributeId, $intPersonId, $objOptionalClauses = null) {
 			return AttributeValue::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::AttributeValue()->AttributeId, $intAttributeId),
 				QQ::Equal(QQN::AttributeValue()->PersonId, $intPersonId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -720,7 +722,8 @@
 			try {
 				return AttributeValue::QueryArray(
 					QQ::Equal(QQN::AttributeValue()->AttributeId, $intAttributeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -733,10 +736,11 @@
 		 * @param integer $intAttributeId
 		 * @return int
 		*/
-		public static function CountByAttributeId($intAttributeId) {
+		public static function CountByAttributeId($intAttributeId, $objOptionalClauses = null) {
 			// Call AttributeValue::QueryCount to perform the CountByAttributeId query
 			return AttributeValue::QueryCount(
 				QQ::Equal(QQN::AttributeValue()->AttributeId, $intAttributeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -752,7 +756,8 @@
 			try {
 				return AttributeValue::QueryArray(
 					QQ::Equal(QQN::AttributeValue()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -765,10 +770,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call AttributeValue::QueryCount to perform the CountByPersonId query
 			return AttributeValue::QueryCount(
 				QQ::Equal(QQN::AttributeValue()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -784,7 +790,8 @@
 			try {
 				return AttributeValue::QueryArray(
 					QQ::Equal(QQN::AttributeValue()->SingleAttributeOptionId, $intSingleAttributeOptionId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -797,10 +804,11 @@
 		 * @param integer $intSingleAttributeOptionId
 		 * @return int
 		*/
-		public static function CountBySingleAttributeOptionId($intSingleAttributeOptionId) {
+		public static function CountBySingleAttributeOptionId($intSingleAttributeOptionId, $objOptionalClauses = null) {
 			// Call AttributeValue::QueryCount to perform the CountBySingleAttributeOptionId query
 			return AttributeValue::QueryCount(
 				QQ::Equal(QQN::AttributeValue()->SingleAttributeOptionId, $intSingleAttributeOptionId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -835,9 +843,10 @@
 		 * @param integer $intAttributeOptionId
 		 * @return int
 		*/
-		public static function CountByAttributeOptionAsMultiple($intAttributeOptionId) {
+		public static function CountByAttributeOptionAsMultiple($intAttributeOptionId, $objOptionalClauses = null) {
 			return AttributeValue::QueryCount(
-				QQ::Equal(QQN::AttributeValue()->AttributeOptionAsMultiple->AttributeOptionId, $intAttributeOptionId)
+				QQ::Equal(QQN::AttributeValue()->AttributeOptionAsMultiple->AttributeOptionId, $intAttributeOptionId),
+				$objOptionalClauses
 			);
 		}
 

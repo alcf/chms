@@ -593,9 +593,10 @@
 		 * @param integer $intId
 		 * @return ClassInstructor
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassInstructor::QuerySingle(
 				QQ::Equal(QQN::ClassInstructor()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -605,9 +606,10 @@
 		 * @param integer $intLoginId
 		 * @return ClassInstructor
 		*/
-		public static function LoadByLoginId($intLoginId) {
+		public static function LoadByLoginId($intLoginId, $objOptionalClauses = null) {
 			return ClassInstructor::QuerySingle(
 				QQ::Equal(QQN::ClassInstructor()->LoginId, $intLoginId)
+			, $objOptionalClauses
 			);
 		}
 

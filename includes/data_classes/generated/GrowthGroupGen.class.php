@@ -754,9 +754,10 @@
 		 * @param integer $intGroupId
 		 * @return GrowthGroup
 		*/
-		public static function LoadByGroupId($intGroupId) {
+		public static function LoadByGroupId($intGroupId, $objOptionalClauses = null) {
 			return GrowthGroup::QuerySingle(
 				QQ::Equal(QQN::GrowthGroup()->GroupId, $intGroupId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -772,7 +773,8 @@
 			try {
 				return GrowthGroup::QueryArray(
 					QQ::Equal(QQN::GrowthGroup()->GrowthGroupLocationId, $intGrowthGroupLocationId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -785,10 +787,11 @@
 		 * @param integer $intGrowthGroupLocationId
 		 * @return int
 		*/
-		public static function CountByGrowthGroupLocationId($intGrowthGroupLocationId) {
+		public static function CountByGrowthGroupLocationId($intGrowthGroupLocationId, $objOptionalClauses = null) {
 			// Call GrowthGroup::QueryCount to perform the CountByGrowthGroupLocationId query
 			return GrowthGroup::QueryCount(
 				QQ::Equal(QQN::GrowthGroup()->GrowthGroupLocationId, $intGrowthGroupLocationId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -804,7 +807,8 @@
 			try {
 				return GrowthGroup::QueryArray(
 					QQ::Equal(QQN::GrowthGroup()->GrowthGroupDayTypeId, $intGrowthGroupDayTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -817,10 +821,11 @@
 		 * @param integer $intGrowthGroupDayTypeId
 		 * @return int
 		*/
-		public static function CountByGrowthGroupDayTypeId($intGrowthGroupDayTypeId) {
+		public static function CountByGrowthGroupDayTypeId($intGrowthGroupDayTypeId, $objOptionalClauses = null) {
 			// Call GrowthGroup::QueryCount to perform the CountByGrowthGroupDayTypeId query
 			return GrowthGroup::QueryCount(
 				QQ::Equal(QQN::GrowthGroup()->GrowthGroupDayTypeId, $intGrowthGroupDayTypeId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -855,9 +860,10 @@
 		 * @param integer $intGrowthGroupStructureId
 		 * @return int
 		*/
-		public static function CountByGrowthGroupStructure($intGrowthGroupStructureId) {
+		public static function CountByGrowthGroupStructure($intGrowthGroupStructureId, $objOptionalClauses = null) {
 			return GrowthGroup::QueryCount(
-				QQ::Equal(QQN::GrowthGroup()->GrowthGroupStructure->GrowthGroupStructureId, $intGrowthGroupStructureId)
+				QQ::Equal(QQN::GrowthGroup()->GrowthGroupStructure->GrowthGroupStructureId, $intGrowthGroupStructureId),
+				$objOptionalClauses
 			);
 		}
 

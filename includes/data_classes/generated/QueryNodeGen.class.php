@@ -613,9 +613,10 @@
 		 * @param integer $intId
 		 * @return QueryNode
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return QueryNode::QuerySingle(
 				QQ::Equal(QQN::QueryNode()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -631,7 +632,8 @@
 			try {
 				return QueryNode::QueryArray(
 					QQ::Equal(QQN::QueryNode()->QueryNodeTypeId, $intQueryNodeTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -644,10 +646,11 @@
 		 * @param integer $intQueryNodeTypeId
 		 * @return int
 		*/
-		public static function CountByQueryNodeTypeId($intQueryNodeTypeId) {
+		public static function CountByQueryNodeTypeId($intQueryNodeTypeId, $objOptionalClauses = null) {
 			// Call QueryNode::QueryCount to perform the CountByQueryNodeTypeId query
 			return QueryNode::QueryCount(
 				QQ::Equal(QQN::QueryNode()->QueryNodeTypeId, $intQueryNodeTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -663,7 +666,8 @@
 			try {
 				return QueryNode::QueryArray(
 					QQ::Equal(QQN::QueryNode()->QueryDataTypeId, $intQueryDataTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -676,10 +680,11 @@
 		 * @param integer $intQueryDataTypeId
 		 * @return int
 		*/
-		public static function CountByQueryDataTypeId($intQueryDataTypeId) {
+		public static function CountByQueryDataTypeId($intQueryDataTypeId, $objOptionalClauses = null) {
 			// Call QueryNode::QueryCount to perform the CountByQueryDataTypeId query
 			return QueryNode::QueryCount(
 				QQ::Equal(QQN::QueryNode()->QueryDataTypeId, $intQueryDataTypeId)
+			, $objOptionalClauses
 			);
 		}
 

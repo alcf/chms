@@ -460,8 +460,8 @@
 			$this->lstStewardshipContributionType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstStewardshipContributionType->Name = QApplication::Translate('Stewardship Contribution Type');
 			$this->lstStewardshipContributionType->Required = true;
-			foreach (StewardshipContributionType::$NameArray as $intId => $strValue)
-				$this->lstStewardshipContributionType->AddItem(new QListItem($strValue, $intId, $this->objStewardshipContribution->StewardshipContributionTypeId == $intId));
+
+			$this->lstStewardshipContributionType->AddItems(StewardshipContributionType::$NameArray, $this->objStewardshipContribution->StewardshipContributionTypeId);
 			return $this->lstStewardshipContributionType;
 		}
 

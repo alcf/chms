@@ -576,9 +576,10 @@
 		 * @param integer $intId
 		 * @return CommentCategory
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return CommentCategory::QuerySingle(
 				QQ::Equal(QQN::CommentCategory()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 

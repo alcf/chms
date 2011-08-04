@@ -625,9 +625,10 @@
 		 * @param integer $intId
 		 * @return ClassifiedCategory
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return ClassifiedCategory::QuerySingle(
 				QQ::Equal(QQN::ClassifiedCategory()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -637,9 +638,10 @@
 		 * @param string $strToken
 		 * @return ClassifiedCategory
 		*/
-		public static function LoadByToken($strToken) {
+		public static function LoadByToken($strToken, $objOptionalClauses = null) {
 			return ClassifiedCategory::QuerySingle(
 				QQ::Equal(QQN::ClassifiedCategory()->Token, $strToken)
+			, $objOptionalClauses
 			);
 		}
 

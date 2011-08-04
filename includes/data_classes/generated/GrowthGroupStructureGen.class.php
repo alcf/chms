@@ -564,9 +564,10 @@
 		 * @param integer $intId
 		 * @return GrowthGroupStructure
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return GrowthGroupStructure::QuerySingle(
 				QQ::Equal(QQN::GrowthGroupStructure()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -601,9 +602,10 @@
 		 * @param integer $intGrowthGroupId
 		 * @return int
 		*/
-		public static function CountByGrowthGroup($intGrowthGroupId) {
+		public static function CountByGrowthGroup($intGrowthGroupId, $objOptionalClauses = null) {
 			return GrowthGroupStructure::QueryCount(
-				QQ::Equal(QQN::GrowthGroupStructure()->GrowthGroup->GrowthGroupId, $intGrowthGroupId)
+				QQ::Equal(QQN::GrowthGroupStructure()->GrowthGroup->GrowthGroupId, $intGrowthGroupId),
+				$objOptionalClauses
 			);
 		}
 

@@ -430,8 +430,8 @@
 			$this->lstFormProductType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstFormProductType->Name = QApplication::Translate('Form Product Type');
 			$this->lstFormProductType->Required = true;
-			foreach (FormProductType::$NameArray as $intId => $strValue)
-				$this->lstFormProductType->AddItem(new QListItem($strValue, $intId, $this->objFormProduct->FormProductTypeId == $intId));
+
+			$this->lstFormProductType->AddItems(FormProductType::$NameArray, $this->objFormProduct->FormProductTypeId);
 			return $this->lstFormProductType;
 		}
 
@@ -457,8 +457,8 @@
 			$this->lstFormPaymentType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstFormPaymentType->Name = QApplication::Translate('Form Payment Type');
 			$this->lstFormPaymentType->Required = true;
-			foreach (FormPaymentType::$NameArray as $intId => $strValue)
-				$this->lstFormPaymentType->AddItem(new QListItem($strValue, $intId, $this->objFormProduct->FormPaymentTypeId == $intId));
+
+			$this->lstFormPaymentType->AddItems(FormPaymentType::$NameArray, $this->objFormProduct->FormPaymentTypeId);
 			return $this->lstFormPaymentType;
 		}
 

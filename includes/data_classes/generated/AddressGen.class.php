@@ -915,9 +915,10 @@
 		 * @param integer $intId
 		 * @return Address
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Address::QuerySingle(
 				QQ::Equal(QQN::Address()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -937,7 +938,8 @@
 					QQ::Equal(QQN::Address()->HouseholdId, $intHouseholdId),
 					QQ::Equal(QQN::Address()->CurrentFlag, $blnCurrentFlag)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -951,13 +953,14 @@
 		 * @param boolean $blnCurrentFlag
 		 * @return int
 		*/
-		public static function CountByHouseholdIdCurrentFlag($intHouseholdId, $blnCurrentFlag) {
+		public static function CountByHouseholdIdCurrentFlag($intHouseholdId, $blnCurrentFlag, $objOptionalClauses = null) {
 			// Call Address::QueryCount to perform the CountByHouseholdIdCurrentFlag query
 			return Address::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::Address()->HouseholdId, $intHouseholdId),
 				QQ::Equal(QQN::Address()->CurrentFlag, $blnCurrentFlag)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -973,7 +976,8 @@
 			try {
 				return Address::QueryArray(
 					QQ::Equal(QQN::Address()->AddressTypeId, $intAddressTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -986,10 +990,11 @@
 		 * @param integer $intAddressTypeId
 		 * @return int
 		*/
-		public static function CountByAddressTypeId($intAddressTypeId) {
+		public static function CountByAddressTypeId($intAddressTypeId, $objOptionalClauses = null) {
 			// Call Address::QueryCount to perform the CountByAddressTypeId query
 			return Address::QueryCount(
 				QQ::Equal(QQN::Address()->AddressTypeId, $intAddressTypeId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1005,7 +1010,8 @@
 			try {
 				return Address::QueryArray(
 					QQ::Equal(QQN::Address()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1018,10 +1024,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Address::QueryCount to perform the CountByPersonId query
 			return Address::QueryCount(
 				QQ::Equal(QQN::Address()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1037,7 +1044,8 @@
 			try {
 				return Address::QueryArray(
 					QQ::Equal(QQN::Address()->HouseholdId, $intHouseholdId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1050,10 +1058,11 @@
 		 * @param integer $intHouseholdId
 		 * @return int
 		*/
-		public static function CountByHouseholdId($intHouseholdId) {
+		public static function CountByHouseholdId($intHouseholdId, $objOptionalClauses = null) {
 			// Call Address::QueryCount to perform the CountByHouseholdId query
 			return Address::QueryCount(
 				QQ::Equal(QQN::Address()->HouseholdId, $intHouseholdId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1069,7 +1078,8 @@
 			try {
 				return Address::QueryArray(
 					QQ::Equal(QQN::Address()->PrimaryPhoneId, $intPrimaryPhoneId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1082,10 +1092,11 @@
 		 * @param integer $intPrimaryPhoneId
 		 * @return int
 		*/
-		public static function CountByPrimaryPhoneId($intPrimaryPhoneId) {
+		public static function CountByPrimaryPhoneId($intPrimaryPhoneId, $objOptionalClauses = null) {
 			// Call Address::QueryCount to perform the CountByPrimaryPhoneId query
 			return Address::QueryCount(
 				QQ::Equal(QQN::Address()->PrimaryPhoneId, $intPrimaryPhoneId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1101,7 +1112,8 @@
 			try {
 				return Address::QueryArray(
 					QQ::Equal(QQN::Address()->VerificationCheckedFlag, $blnVerificationCheckedFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1114,10 +1126,11 @@
 		 * @param boolean $blnVerificationCheckedFlag
 		 * @return int
 		*/
-		public static function CountByVerificationCheckedFlag($blnVerificationCheckedFlag) {
+		public static function CountByVerificationCheckedFlag($blnVerificationCheckedFlag, $objOptionalClauses = null) {
 			// Call Address::QueryCount to perform the CountByVerificationCheckedFlag query
 			return Address::QueryCount(
 				QQ::Equal(QQN::Address()->VerificationCheckedFlag, $blnVerificationCheckedFlag)
+			, $objOptionalClauses
 			);
 		}
 

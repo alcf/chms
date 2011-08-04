@@ -600,9 +600,10 @@
 		 * @param integer $intId
 		 * @return OutgoingEmailQueue
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return OutgoingEmailQueue::QuerySingle(
 				QQ::Equal(QQN::OutgoingEmailQueue()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -618,7 +619,8 @@
 			try {
 				return OutgoingEmailQueue::QueryArray(
 					QQ::Equal(QQN::OutgoingEmailQueue()->ErrorFlag, $blnErrorFlag),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -631,10 +633,11 @@
 		 * @param boolean $blnErrorFlag
 		 * @return int
 		*/
-		public static function CountByErrorFlag($blnErrorFlag) {
+		public static function CountByErrorFlag($blnErrorFlag, $objOptionalClauses = null) {
 			// Call OutgoingEmailQueue::QueryCount to perform the CountByErrorFlag query
 			return OutgoingEmailQueue::QueryCount(
 				QQ::Equal(QQN::OutgoingEmailQueue()->ErrorFlag, $blnErrorFlag)
+			, $objOptionalClauses
 			);
 		}
 

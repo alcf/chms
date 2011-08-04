@@ -561,9 +561,10 @@
 		 * @param integer $intId
 		 * @return StewardshipContributionAmount
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipContributionAmount::QuerySingle(
 				QQ::Equal(QQN::StewardshipContributionAmount()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -579,7 +580,8 @@
 			try {
 				return StewardshipContributionAmount::QueryArray(
 					QQ::Equal(QQN::StewardshipContributionAmount()->StewardshipContributionId, $intStewardshipContributionId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -592,10 +594,11 @@
 		 * @param integer $intStewardshipContributionId
 		 * @return int
 		*/
-		public static function CountByStewardshipContributionId($intStewardshipContributionId) {
+		public static function CountByStewardshipContributionId($intStewardshipContributionId, $objOptionalClauses = null) {
 			// Call StewardshipContributionAmount::QueryCount to perform the CountByStewardshipContributionId query
 			return StewardshipContributionAmount::QueryCount(
 				QQ::Equal(QQN::StewardshipContributionAmount()->StewardshipContributionId, $intStewardshipContributionId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -611,7 +614,8 @@
 			try {
 				return StewardshipContributionAmount::QueryArray(
 					QQ::Equal(QQN::StewardshipContributionAmount()->StewardshipFundId, $intStewardshipFundId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -624,10 +628,11 @@
 		 * @param integer $intStewardshipFundId
 		 * @return int
 		*/
-		public static function CountByStewardshipFundId($intStewardshipFundId) {
+		public static function CountByStewardshipFundId($intStewardshipFundId, $objOptionalClauses = null) {
 			// Call StewardshipContributionAmount::QueryCount to perform the CountByStewardshipFundId query
 			return StewardshipContributionAmount::QueryCount(
 				QQ::Equal(QQN::StewardshipContributionAmount()->StewardshipFundId, $intStewardshipFundId)
+			, $objOptionalClauses
 			);
 		}
 

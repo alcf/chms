@@ -624,9 +624,10 @@
 		 * @param integer $intId
 		 * @return Email
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Email::QuerySingle(
 				QQ::Equal(QQN::Email()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -642,7 +643,8 @@
 			try {
 				return Email::QueryArray(
 					QQ::Equal(QQN::Email()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -655,10 +657,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call Email::QueryCount to perform the CountByPersonId query
 			return Email::QueryCount(
 				QQ::Equal(QQN::Email()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -674,7 +677,8 @@
 			try {
 				return Email::QueryArray(
 					QQ::Equal(QQN::Email()->Address, $strAddress),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -687,10 +691,11 @@
 		 * @param string $strAddress
 		 * @return int
 		*/
-		public static function CountByAddress($strAddress) {
+		public static function CountByAddress($strAddress, $objOptionalClauses = null) {
 			// Call Email::QueryCount to perform the CountByAddress query
 			return Email::QueryCount(
 				QQ::Equal(QQN::Email()->Address, $strAddress)
+			, $objOptionalClauses
 			);
 		}
 

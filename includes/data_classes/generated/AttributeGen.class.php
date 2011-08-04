@@ -618,9 +618,10 @@
 		 * @param integer $intId
 		 * @return Attribute
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Attribute::QuerySingle(
 				QQ::Equal(QQN::Attribute()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -636,7 +637,8 @@
 			try {
 				return Attribute::QueryArray(
 					QQ::Equal(QQN::Attribute()->AttributeDataTypeId, $intAttributeDataTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -649,10 +651,11 @@
 		 * @param integer $intAttributeDataTypeId
 		 * @return int
 		*/
-		public static function CountByAttributeDataTypeId($intAttributeDataTypeId) {
+		public static function CountByAttributeDataTypeId($intAttributeDataTypeId, $objOptionalClauses = null) {
 			// Call Attribute::QueryCount to perform the CountByAttributeDataTypeId query
 			return Attribute::QueryCount(
 				QQ::Equal(QQN::Attribute()->AttributeDataTypeId, $intAttributeDataTypeId)
+			, $objOptionalClauses
 			);
 		}
 

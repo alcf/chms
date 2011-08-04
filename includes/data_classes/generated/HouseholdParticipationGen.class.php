@@ -575,9 +575,10 @@
 		 * @param integer $intId
 		 * @return HouseholdParticipation
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return HouseholdParticipation::QuerySingle(
 				QQ::Equal(QQN::HouseholdParticipation()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -588,12 +589,13 @@
 		 * @param integer $intHouseholdId
 		 * @return HouseholdParticipation
 		*/
-		public static function LoadByPersonIdHouseholdId($intPersonId, $intHouseholdId) {
+		public static function LoadByPersonIdHouseholdId($intPersonId, $intHouseholdId, $objOptionalClauses = null) {
 			return HouseholdParticipation::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::HouseholdParticipation()->PersonId, $intPersonId),
 				QQ::Equal(QQN::HouseholdParticipation()->HouseholdId, $intHouseholdId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -609,7 +611,8 @@
 			try {
 				return HouseholdParticipation::QueryArray(
 					QQ::Equal(QQN::HouseholdParticipation()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -622,10 +625,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call HouseholdParticipation::QueryCount to perform the CountByPersonId query
 			return HouseholdParticipation::QueryCount(
 				QQ::Equal(QQN::HouseholdParticipation()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -641,7 +645,8 @@
 			try {
 				return HouseholdParticipation::QueryArray(
 					QQ::Equal(QQN::HouseholdParticipation()->HouseholdId, $intHouseholdId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -654,10 +659,11 @@
 		 * @param integer $intHouseholdId
 		 * @return int
 		*/
-		public static function CountByHouseholdId($intHouseholdId) {
+		public static function CountByHouseholdId($intHouseholdId, $objOptionalClauses = null) {
 			// Call HouseholdParticipation::QueryCount to perform the CountByHouseholdId query
 			return HouseholdParticipation::QueryCount(
 				QQ::Equal(QQN::HouseholdParticipation()->HouseholdId, $intHouseholdId)
+			, $objOptionalClauses
 			);
 		}
 

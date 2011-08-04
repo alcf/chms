@@ -687,9 +687,10 @@
 		 * @param integer $intId
 		 * @return StewardshipPost
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return StewardshipPost::QuerySingle(
 				QQ::Equal(QQN::StewardshipPost()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -700,12 +701,13 @@
 		 * @param integer $intPostNumber
 		 * @return StewardshipPost
 		*/
-		public static function LoadByStewardshipBatchIdPostNumber($intStewardshipBatchId, $intPostNumber) {
+		public static function LoadByStewardshipBatchIdPostNumber($intStewardshipBatchId, $intPostNumber, $objOptionalClauses = null) {
 			return StewardshipPost::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::StewardshipPost()->StewardshipBatchId, $intStewardshipBatchId),
 				QQ::Equal(QQN::StewardshipPost()->PostNumber, $intPostNumber)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -721,7 +723,8 @@
 			try {
 				return StewardshipPost::QueryArray(
 					QQ::Equal(QQN::StewardshipPost()->StewardshipBatchId, $intStewardshipBatchId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -734,10 +737,11 @@
 		 * @param integer $intStewardshipBatchId
 		 * @return int
 		*/
-		public static function CountByStewardshipBatchId($intStewardshipBatchId) {
+		public static function CountByStewardshipBatchId($intStewardshipBatchId, $objOptionalClauses = null) {
 			// Call StewardshipPost::QueryCount to perform the CountByStewardshipBatchId query
 			return StewardshipPost::QueryCount(
 				QQ::Equal(QQN::StewardshipPost()->StewardshipBatchId, $intStewardshipBatchId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -753,7 +757,8 @@
 			try {
 				return StewardshipPost::QueryArray(
 					QQ::Equal(QQN::StewardshipPost()->CreatedByLoginId, $intCreatedByLoginId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -766,10 +771,11 @@
 		 * @param integer $intCreatedByLoginId
 		 * @return int
 		*/
-		public static function CountByCreatedByLoginId($intCreatedByLoginId) {
+		public static function CountByCreatedByLoginId($intCreatedByLoginId, $objOptionalClauses = null) {
 			// Call StewardshipPost::QueryCount to perform the CountByCreatedByLoginId query
 			return StewardshipPost::QueryCount(
 				QQ::Equal(QQN::StewardshipPost()->CreatedByLoginId, $intCreatedByLoginId)
+			, $objOptionalClauses
 			);
 		}
 

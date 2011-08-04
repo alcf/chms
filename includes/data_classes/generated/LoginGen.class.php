@@ -943,9 +943,10 @@
 		 * @param integer $intId
 		 * @return Login
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return Login::QuerySingle(
 				QQ::Equal(QQN::Login()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -955,9 +956,10 @@
 		 * @param string $strUsername
 		 * @return Login
 		*/
-		public static function LoadByUsername($strUsername) {
+		public static function LoadByUsername($strUsername, $objOptionalClauses = null) {
 			return Login::QuerySingle(
 				QQ::Equal(QQN::Login()->Username, $strUsername)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -967,9 +969,10 @@
 		 * @param string $strEmail
 		 * @return Login
 		*/
-		public static function LoadByEmail($strEmail) {
+		public static function LoadByEmail($strEmail, $objOptionalClauses = null) {
 			return Login::QuerySingle(
 				QQ::Equal(QQN::Login()->Email, $strEmail)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -985,7 +988,8 @@
 			try {
 				return Login::QueryArray(
 					QQ::Equal(QQN::Login()->RoleTypeId, $intRoleTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -998,10 +1002,11 @@
 		 * @param integer $intRoleTypeId
 		 * @return int
 		*/
-		public static function CountByRoleTypeId($intRoleTypeId) {
+		public static function CountByRoleTypeId($intRoleTypeId, $objOptionalClauses = null) {
 			// Call Login::QueryCount to perform the CountByRoleTypeId query
 			return Login::QueryCount(
 				QQ::Equal(QQN::Login()->RoleTypeId, $intRoleTypeId)
+			, $objOptionalClauses
 			);
 		}
 
@@ -1036,9 +1041,10 @@
 		 * @param integer $intMinistryId
 		 * @return int
 		*/
-		public static function CountByMinistry($intMinistryId) {
+		public static function CountByMinistry($intMinistryId, $objOptionalClauses = null) {
 			return Login::QueryCount(
-				QQ::Equal(QQN::Login()->Ministry->MinistryId, $intMinistryId)
+				QQ::Equal(QQN::Login()->Ministry->MinistryId, $intMinistryId),
+				$objOptionalClauses
 			);
 		}
 

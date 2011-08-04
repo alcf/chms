@@ -517,9 +517,10 @@
 		 * @param integer $intId
 		 * @return UsState
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return UsState::QuerySingle(
 				QQ::Equal(QQN::UsState()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -529,9 +530,10 @@
 		 * @param string $strAbbreviation
 		 * @return UsState
 		*/
-		public static function LoadByAbbreviation($strAbbreviation) {
+		public static function LoadByAbbreviation($strAbbreviation, $objOptionalClauses = null) {
 			return UsState::QuerySingle(
 				QQ::Equal(QQN::UsState()->Abbreviation, $strAbbreviation)
+			, $objOptionalClauses
 			);
 		}
 

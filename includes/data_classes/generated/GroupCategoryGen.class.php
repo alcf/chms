@@ -540,9 +540,10 @@
 		 * @param integer $intGroupId
 		 * @return GroupCategory
 		*/
-		public static function LoadByGroupId($intGroupId) {
+		public static function LoadByGroupId($intGroupId, $objOptionalClauses = null) {
 			return GroupCategory::QuerySingle(
 				QQ::Equal(QQN::GroupCategory()->GroupId, $intGroupId)
+			, $objOptionalClauses
 			);
 		}
 

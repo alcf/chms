@@ -665,9 +665,10 @@
 		 * @param integer $intId
 		 * @return EmailMessageRoute
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return EmailMessageRoute::QuerySingle(
 				QQ::Equal(QQN::EmailMessageRoute()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -683,7 +684,8 @@
 			try {
 				return EmailMessageRoute::QueryArray(
 					QQ::Equal(QQN::EmailMessageRoute()->EmailMessageId, $intEmailMessageId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -696,10 +698,11 @@
 		 * @param integer $intEmailMessageId
 		 * @return int
 		*/
-		public static function CountByEmailMessageId($intEmailMessageId) {
+		public static function CountByEmailMessageId($intEmailMessageId, $objOptionalClauses = null) {
 			// Call EmailMessageRoute::QueryCount to perform the CountByEmailMessageId query
 			return EmailMessageRoute::QueryCount(
 				QQ::Equal(QQN::EmailMessageRoute()->EmailMessageId, $intEmailMessageId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -715,7 +718,8 @@
 			try {
 				return EmailMessageRoute::QueryArray(
 					QQ::Equal(QQN::EmailMessageRoute()->GroupId, $intGroupId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -728,10 +732,11 @@
 		 * @param integer $intGroupId
 		 * @return int
 		*/
-		public static function CountByGroupId($intGroupId) {
+		public static function CountByGroupId($intGroupId, $objOptionalClauses = null) {
 			// Call EmailMessageRoute::QueryCount to perform the CountByGroupId query
 			return EmailMessageRoute::QueryCount(
 				QQ::Equal(QQN::EmailMessageRoute()->GroupId, $intGroupId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -747,7 +752,8 @@
 			try {
 				return EmailMessageRoute::QueryArray(
 					QQ::Equal(QQN::EmailMessageRoute()->CommunicationListId, $intCommunicationListId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -760,10 +766,11 @@
 		 * @param integer $intCommunicationListId
 		 * @return int
 		*/
-		public static function CountByCommunicationListId($intCommunicationListId) {
+		public static function CountByCommunicationListId($intCommunicationListId, $objOptionalClauses = null) {
 			// Call EmailMessageRoute::QueryCount to perform the CountByCommunicationListId query
 			return EmailMessageRoute::QueryCount(
 				QQ::Equal(QQN::EmailMessageRoute()->CommunicationListId, $intCommunicationListId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -779,7 +786,8 @@
 			try {
 				return EmailMessageRoute::QueryArray(
 					QQ::Equal(QQN::EmailMessageRoute()->LoginId, $intLoginId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -792,10 +800,11 @@
 		 * @param integer $intLoginId
 		 * @return int
 		*/
-		public static function CountByLoginId($intLoginId) {
+		public static function CountByLoginId($intLoginId, $objOptionalClauses = null) {
 			// Call EmailMessageRoute::QueryCount to perform the CountByLoginId query
 			return EmailMessageRoute::QueryCount(
 				QQ::Equal(QQN::EmailMessageRoute()->LoginId, $intLoginId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -811,7 +820,8 @@
 			try {
 				return EmailMessageRoute::QueryArray(
 					QQ::Equal(QQN::EmailMessageRoute()->CommunicationListEntryId, $intCommunicationListEntryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -824,10 +834,11 @@
 		 * @param integer $intCommunicationListEntryId
 		 * @return int
 		*/
-		public static function CountByCommunicationListEntryId($intCommunicationListEntryId) {
+		public static function CountByCommunicationListEntryId($intCommunicationListEntryId, $objOptionalClauses = null) {
 			// Call EmailMessageRoute::QueryCount to perform the CountByCommunicationListEntryId query
 			return EmailMessageRoute::QueryCount(
 				QQ::Equal(QQN::EmailMessageRoute()->CommunicationListEntryId, $intCommunicationListEntryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -843,7 +854,8 @@
 			try {
 				return EmailMessageRoute::QueryArray(
 					QQ::Equal(QQN::EmailMessageRoute()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -856,10 +868,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call EmailMessageRoute::QueryCount to perform the CountByPersonId query
 			return EmailMessageRoute::QueryCount(
 				QQ::Equal(QQN::EmailMessageRoute()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 

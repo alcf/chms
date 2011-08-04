@@ -30,6 +30,8 @@
 	 * property-read QLabel $QuestionLabel
 	 * property QCheckBox $RequiredFlagControl
 	 * property-read QLabel $RequiredFlagLabel
+	 * property QCheckBox $InternalFlagControl
+	 * property-read QLabel $InternalFlagLabel
 	 * property QTextBox $OptionsControl
 	 * property-read QLabel $OptionsLabel
 	 * property QCheckBox $AllowOtherFlagControl
@@ -110,6 +112,12 @@
 		protected $chkRequiredFlag;
 
         /**
+         * @var QCheckBox chkInternalFlag;
+         * @access protected
+         */
+		protected $chkInternalFlag;
+
+        /**
          * @var QTextBox txtOptions;
          * @access protected
          */
@@ -164,6 +172,12 @@
          * @access protected
          */
 		protected $lblRequiredFlag;
+
+        /**
+         * @var QLabel lblInternalFlag
+         * @access protected
+         */
+		protected $lblInternalFlag;
 
         /**
          * @var QLabel lblOptions
@@ -374,8 +388,8 @@
 			$this->lstFormQuestionType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstFormQuestionType->Name = QApplication::Translate('Form Question Type');
 			$this->lstFormQuestionType->Required = true;
-			foreach (FormQuestionType::$NameArray as $intId => $strValue)
-				$this->lstFormQuestionType->AddItem(new QListItem($strValue, $intId, $this->objFormQuestion->FormQuestionTypeId == $intId));
+
+			$this->lstFormQuestionType->AddItems(FormQuestionType::$NameArray, $this->objFormQuestion->FormQuestionTypeId);
 			return $this->lstFormQuestionType;
 		}
 
@@ -464,6 +478,30 @@
 			$this->lblRequiredFlag->Name = QApplication::Translate('Required Flag');
 			$this->lblRequiredFlag->Text = ($this->objFormQuestion->RequiredFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 			return $this->lblRequiredFlag;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkInternalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkInternalFlag_Create($strControlId = null) {
+			$this->chkInternalFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkInternalFlag->Name = QApplication::Translate('Internal Flag');
+			$this->chkInternalFlag->Checked = $this->objFormQuestion->InternalFlag;
+			return $this->chkInternalFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblInternalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblInternalFlag_Create($strControlId = null) {
+			$this->lblInternalFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblInternalFlag->Name = QApplication::Translate('Internal Flag');
+			$this->lblInternalFlag->Text = ($this->objFormQuestion->InternalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblInternalFlag;
 		}
 
 		/**
@@ -581,6 +619,9 @@
 			if ($this->chkRequiredFlag) $this->chkRequiredFlag->Checked = $this->objFormQuestion->RequiredFlag;
 			if ($this->lblRequiredFlag) $this->lblRequiredFlag->Text = ($this->objFormQuestion->RequiredFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->chkInternalFlag) $this->chkInternalFlag->Checked = $this->objFormQuestion->InternalFlag;
+			if ($this->lblInternalFlag) $this->lblInternalFlag->Text = ($this->objFormQuestion->InternalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->txtOptions) $this->txtOptions->Text = $this->objFormQuestion->Options;
 			if ($this->lblOptions) $this->lblOptions->Text = $this->objFormQuestion->Options;
 
@@ -619,6 +660,7 @@
 				if ($this->txtShortDescription) $this->objFormQuestion->ShortDescription = $this->txtShortDescription->Text;
 				if ($this->txtQuestion) $this->objFormQuestion->Question = $this->txtQuestion->Text;
 				if ($this->chkRequiredFlag) $this->objFormQuestion->RequiredFlag = $this->chkRequiredFlag->Checked;
+				if ($this->chkInternalFlag) $this->objFormQuestion->InternalFlag = $this->chkInternalFlag->Checked;
 				if ($this->txtOptions) $this->objFormQuestion->Options = $this->txtOptions->Text;
 				if ($this->chkAllowOtherFlag) $this->objFormQuestion->AllowOtherFlag = $this->chkAllowOtherFlag->Checked;
 				if ($this->chkViewFlag) $this->objFormQuestion->ViewFlag = $this->chkViewFlag->Checked;
@@ -706,6 +748,12 @@
 				case 'RequiredFlagLabel':
 					if (!$this->lblRequiredFlag) return $this->lblRequiredFlag_Create();
 					return $this->lblRequiredFlag;
+				case 'InternalFlagControl':
+					if (!$this->chkInternalFlag) return $this->chkInternalFlag_Create();
+					return $this->chkInternalFlag;
+				case 'InternalFlagLabel':
+					if (!$this->lblInternalFlag) return $this->lblInternalFlag_Create();
+					return $this->lblInternalFlag;
 				case 'OptionsControl':
 					if (!$this->txtOptions) return $this->txtOptions_Create();
 					return $this->txtOptions;
@@ -760,6 +808,8 @@
 						return ($this->txtQuestion = QType::Cast($mixValue, 'QControl'));
 					case 'RequiredFlagControl':
 						return ($this->chkRequiredFlag = QType::Cast($mixValue, 'QControl'));
+					case 'InternalFlagControl':
+						return ($this->chkInternalFlag = QType::Cast($mixValue, 'QControl'));
 					case 'OptionsControl':
 						return ($this->txtOptions = QType::Cast($mixValue, 'QControl'));
 					case 'AllowOtherFlagControl':

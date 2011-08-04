@@ -562,9 +562,10 @@
 		 * @param integer $intId
 		 * @return OtherContactInfo
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return OtherContactInfo::QuerySingle(
 				QQ::Equal(QQN::OtherContactInfo()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -580,7 +581,8 @@
 			try {
 				return OtherContactInfo::QueryArray(
 					QQ::Equal(QQN::OtherContactInfo()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -593,10 +595,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call OtherContactInfo::QueryCount to perform the CountByPersonId query
 			return OtherContactInfo::QueryCount(
 				QQ::Equal(QQN::OtherContactInfo()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -612,7 +615,8 @@
 			try {
 				return OtherContactInfo::QueryArray(
 					QQ::Equal(QQN::OtherContactInfo()->OtherContactMethodId, $intOtherContactMethodId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -625,10 +629,11 @@
 		 * @param integer $intOtherContactMethodId
 		 * @return int
 		*/
-		public static function CountByOtherContactMethodId($intOtherContactMethodId) {
+		public static function CountByOtherContactMethodId($intOtherContactMethodId, $objOptionalClauses = null) {
 			// Call OtherContactInfo::QueryCount to perform the CountByOtherContactMethodId query
 			return OtherContactInfo::QueryCount(
 				QQ::Equal(QQN::OtherContactInfo()->OtherContactMethodId, $intOtherContactMethodId)
+			, $objOptionalClauses
 			);
 		}
 

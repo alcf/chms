@@ -583,9 +583,10 @@
 		 * @param integer $intGroupId
 		 * @return SmartGroup
 		*/
-		public static function LoadByGroupId($intGroupId) {
+		public static function LoadByGroupId($intGroupId, $objOptionalClauses = null) {
 			return SmartGroup::QuerySingle(
 				QQ::Equal(QQN::SmartGroup()->GroupId, $intGroupId)
+			, $objOptionalClauses
 			);
 		}
 

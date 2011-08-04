@@ -837,9 +837,10 @@
 		 * @param integer $intId
 		 * @return SignupEntry
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return SignupEntry::QuerySingle(
 				QQ::Equal(QQN::SignupEntry()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -861,7 +862,8 @@
 					QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId),
 					QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -876,7 +878,7 @@
 		 * @param integer $intSignupEntryStatusTypeId
 		 * @return int
 		*/
-		public static function CountBySignupFormIdPersonIdSignupEntryStatusTypeId($intSignupFormId, $intPersonId, $intSignupEntryStatusTypeId) {
+		public static function CountBySignupFormIdPersonIdSignupEntryStatusTypeId($intSignupFormId, $intPersonId, $intSignupEntryStatusTypeId, $objOptionalClauses = null) {
 			// Call SignupEntry::QueryCount to perform the CountBySignupFormIdPersonIdSignupEntryStatusTypeId query
 			return SignupEntry::QueryCount(
 				QQ::AndCondition(
@@ -884,6 +886,7 @@
 				QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId),
 				QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -903,7 +906,8 @@
 					QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
 					QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -917,13 +921,14 @@
 		 * @param integer $intSignupEntryStatusTypeId
 		 * @return int
 		*/
-		public static function CountBySignupFormIdSignupEntryStatusTypeId($intSignupFormId, $intSignupEntryStatusTypeId) {
+		public static function CountBySignupFormIdSignupEntryStatusTypeId($intSignupFormId, $intSignupEntryStatusTypeId, $objOptionalClauses = null) {
 			// Call SignupEntry::QueryCount to perform the CountBySignupFormIdSignupEntryStatusTypeId query
 			return SignupEntry::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
 				QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -939,7 +944,8 @@
 			try {
 				return SignupEntry::QueryArray(
 					QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -952,10 +958,11 @@
 		 * @param integer $intSignupFormId
 		 * @return int
 		*/
-		public static function CountBySignupFormId($intSignupFormId) {
+		public static function CountBySignupFormId($intSignupFormId, $objOptionalClauses = null) {
 			// Call SignupEntry::QueryCount to perform the CountBySignupFormId query
 			return SignupEntry::QueryCount(
 				QQ::Equal(QQN::SignupEntry()->SignupFormId, $intSignupFormId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -971,7 +978,8 @@
 			try {
 				return SignupEntry::QueryArray(
 					QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -984,10 +992,11 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPersonId($intPersonId) {
+		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
 			// Call SignupEntry::QueryCount to perform the CountByPersonId query
 			return SignupEntry::QueryCount(
 				QQ::Equal(QQN::SignupEntry()->PersonId, $intPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1003,7 +1012,8 @@
 			try {
 				return SignupEntry::QueryArray(
 					QQ::Equal(QQN::SignupEntry()->SignupByPersonId, $intSignupByPersonId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1016,10 +1026,11 @@
 		 * @param integer $intSignupByPersonId
 		 * @return int
 		*/
-		public static function CountBySignupByPersonId($intSignupByPersonId) {
+		public static function CountBySignupByPersonId($intSignupByPersonId, $objOptionalClauses = null) {
 			// Call SignupEntry::QueryCount to perform the CountBySignupByPersonId query
 			return SignupEntry::QueryCount(
 				QQ::Equal(QQN::SignupEntry()->SignupByPersonId, $intSignupByPersonId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -1035,7 +1046,8 @@
 			try {
 				return SignupEntry::QueryArray(
 					QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1048,10 +1060,11 @@
 		 * @param integer $intSignupEntryStatusTypeId
 		 * @return int
 		*/
-		public static function CountBySignupEntryStatusTypeId($intSignupEntryStatusTypeId) {
+		public static function CountBySignupEntryStatusTypeId($intSignupEntryStatusTypeId, $objOptionalClauses = null) {
 			// Call SignupEntry::QueryCount to perform the CountBySignupEntryStatusTypeId query
 			return SignupEntry::QueryCount(
 				QQ::Equal(QQN::SignupEntry()->SignupEntryStatusTypeId, $intSignupEntryStatusTypeId)
+			, $objOptionalClauses
 			);
 		}
 

@@ -367,8 +367,8 @@
 			$this->lstRoleType = new QListBox($this->objParentObject, $strControlId);
 			$this->lstRoleType->Name = QApplication::Translate('Role Type');
 			$this->lstRoleType->Required = true;
-			foreach (RoleType::$NameArray as $intId => $strValue)
-				$this->lstRoleType->AddItem(new QListItem($strValue, $intId, $this->objLogin->RoleTypeId == $intId));
+
+			$this->lstRoleType->AddItems(RoleType::$NameArray, $this->objLogin->RoleTypeId);
 			return $this->lstRoleType;
 		}
 

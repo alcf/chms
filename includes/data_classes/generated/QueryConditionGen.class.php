@@ -651,9 +651,10 @@
 		 * @param integer $intId
 		 * @return QueryCondition
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return QueryCondition::QuerySingle(
 				QQ::Equal(QQN::QueryCondition()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -663,9 +664,10 @@
 		 * @param integer $intOrQueryConditionId
 		 * @return QueryCondition
 		*/
-		public static function LoadByOrQueryConditionId($intOrQueryConditionId) {
+		public static function LoadByOrQueryConditionId($intOrQueryConditionId, $objOptionalClauses = null) {
 			return QueryCondition::QuerySingle(
 				QQ::Equal(QQN::QueryCondition()->OrQueryConditionId, $intOrQueryConditionId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -681,7 +683,8 @@
 			try {
 				return QueryCondition::QueryArray(
 					QQ::Equal(QQN::QueryCondition()->SearchQueryId, $intSearchQueryId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -694,10 +697,11 @@
 		 * @param integer $intSearchQueryId
 		 * @return int
 		*/
-		public static function CountBySearchQueryId($intSearchQueryId) {
+		public static function CountBySearchQueryId($intSearchQueryId, $objOptionalClauses = null) {
 			// Call QueryCondition::QueryCount to perform the CountBySearchQueryId query
 			return QueryCondition::QueryCount(
 				QQ::Equal(QQN::QueryCondition()->SearchQueryId, $intSearchQueryId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -713,7 +717,8 @@
 			try {
 				return QueryCondition::QueryArray(
 					QQ::Equal(QQN::QueryCondition()->QueryOperationId, $intQueryOperationId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -726,10 +731,11 @@
 		 * @param integer $intQueryOperationId
 		 * @return int
 		*/
-		public static function CountByQueryOperationId($intQueryOperationId) {
+		public static function CountByQueryOperationId($intQueryOperationId, $objOptionalClauses = null) {
 			// Call QueryCondition::QueryCount to perform the CountByQueryOperationId query
 			return QueryCondition::QueryCount(
 				QQ::Equal(QQN::QueryCondition()->QueryOperationId, $intQueryOperationId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -745,7 +751,8 @@
 			try {
 				return QueryCondition::QueryArray(
 					QQ::Equal(QQN::QueryCondition()->QueryNodeId, $intQueryNodeId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -758,10 +765,11 @@
 		 * @param integer $intQueryNodeId
 		 * @return int
 		*/
-		public static function CountByQueryNodeId($intQueryNodeId) {
+		public static function CountByQueryNodeId($intQueryNodeId, $objOptionalClauses = null) {
 			// Call QueryCondition::QueryCount to perform the CountByQueryNodeId query
 			return QueryCondition::QueryCount(
 				QQ::Equal(QQN::QueryCondition()->QueryNodeId, $intQueryNodeId)
+			, $objOptionalClauses
 			);
 		}
 

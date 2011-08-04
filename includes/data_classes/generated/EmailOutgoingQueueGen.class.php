@@ -558,9 +558,10 @@
 		 * @param integer $intId
 		 * @return EmailOutgoingQueue
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return EmailOutgoingQueue::QuerySingle(
 				QQ::Equal(QQN::EmailOutgoingQueue()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -580,7 +581,8 @@
 					QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
 					QQ::Equal(QQN::EmailOutgoingQueue()->Token, $strToken)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -594,13 +596,14 @@
 		 * @param string $strToken
 		 * @return int
 		*/
-		public static function CountByEmailMessageIdToken($intEmailMessageId, $strToken) {
+		public static function CountByEmailMessageIdToken($intEmailMessageId, $strToken, $objOptionalClauses = null) {
 			// Call EmailOutgoingQueue::QueryCount to perform the CountByEmailMessageIdToken query
 			return EmailOutgoingQueue::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
 				QQ::Equal(QQN::EmailOutgoingQueue()->Token, $strToken)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -620,7 +623,8 @@
 					QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
 					QQ::Equal(QQN::EmailOutgoingQueue()->ErrorFlag, $blnErrorFlag)
 					),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -634,13 +638,14 @@
 		 * @param boolean $blnErrorFlag
 		 * @return int
 		*/
-		public static function CountByEmailMessageIdErrorFlag($intEmailMessageId, $blnErrorFlag) {
+		public static function CountByEmailMessageIdErrorFlag($intEmailMessageId, $blnErrorFlag, $objOptionalClauses = null) {
 			// Call EmailOutgoingQueue::QueryCount to perform the CountByEmailMessageIdErrorFlag query
 			return EmailOutgoingQueue::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
 				QQ::Equal(QQN::EmailOutgoingQueue()->ErrorFlag, $blnErrorFlag)
 				)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -656,7 +661,8 @@
 			try {
 				return EmailOutgoingQueue::QueryArray(
 					QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId),
-					$objOptionalClauses);
+					$objOptionalClauses
+					);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -669,10 +675,11 @@
 		 * @param integer $intEmailMessageId
 		 * @return int
 		*/
-		public static function CountByEmailMessageId($intEmailMessageId) {
+		public static function CountByEmailMessageId($intEmailMessageId, $objOptionalClauses = null) {
 			// Call EmailOutgoingQueue::QueryCount to perform the CountByEmailMessageId query
 			return EmailOutgoingQueue::QueryCount(
 				QQ::Equal(QQN::EmailOutgoingQueue()->EmailMessageId, $intEmailMessageId)
+			, $objOptionalClauses
 			);
 		}
 

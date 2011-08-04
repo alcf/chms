@@ -619,9 +619,10 @@
 		 * @param integer $intId
 		 * @return CheckingAccountLookup
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return CheckingAccountLookup::QuerySingle(
 				QQ::Equal(QQN::CheckingAccountLookup()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 			
@@ -632,12 +633,13 @@
 		 * @param string $strAccountHash
 		 * @return CheckingAccountLookup
 		*/
-		public static function LoadByTransitHashAccountHash($strTransitHash, $strAccountHash) {
+		public static function LoadByTransitHashAccountHash($strTransitHash, $strAccountHash, $objOptionalClauses = null) {
 			return CheckingAccountLookup::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::CheckingAccountLookup()->TransitHash, $strTransitHash),
 				QQ::Equal(QQN::CheckingAccountLookup()->AccountHash, $strAccountHash)
 				)
+			, $objOptionalClauses
 			);
 		}
 
@@ -672,9 +674,10 @@
 		 * @param integer $intPersonId
 		 * @return int
 		*/
-		public static function CountByPerson($intPersonId) {
+		public static function CountByPerson($intPersonId, $objOptionalClauses = null) {
 			return CheckingAccountLookup::QueryCount(
-				QQ::Equal(QQN::CheckingAccountLookup()->Person->PersonId, $intPersonId)
+				QQ::Equal(QQN::CheckingAccountLookup()->Person->PersonId, $intPersonId),
+				$objOptionalClauses
 			);
 		}
 

@@ -600,9 +600,10 @@
 		 * @param integer $intId
 		 * @return GrowthGroupLocation
 		*/
-		public static function LoadById($intId) {
+		public static function LoadById($intId, $objOptionalClauses = null) {
 			return GrowthGroupLocation::QuerySingle(
 				QQ::Equal(QQN::GrowthGroupLocation()->Id, $intId)
+			, $objOptionalClauses
 			);
 		}
 
