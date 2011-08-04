@@ -40,7 +40,7 @@
 			// Image?
 			$objImageNs = $objItemXml->children('http://search.yahoo.com/mrss/');
 			$strUrl = null;
-			if ($objImageNs) {
+			if ($objImageNs && $objImageNs->thumbnail) {
 				$objImageAttributes = $objImageNs->thumbnail->attributes();
 				$strUrl = (string) $objImageAttributes['url'];
 			}
@@ -91,7 +91,7 @@
 			// Image?
 			$objImageNs = $objItemXml->children('http://search.yahoo.com/mrss/');
 			$strUrl = null;
-			if ($objImageNs) {
+			if ($objImageNs && $objImageNs->thumbnail) {
 				$objImageAttributes = $objImageNs->thumbnail->attributes();
 				$strUrl = (string) $objImageAttributes['url'];
 			}
