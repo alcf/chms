@@ -6,6 +6,9 @@
 	<div class="section">
 		<?php $this->lblFormQuestionType->RenderWithName(); ?>
 		<?php $this->txtShortDescription->RenderWithName(); ?>
+		<?php $this->chkInternalFlag->RenderWithName(); ?>
+		<br/>
+		
 		<?php $this->txtQuestion->RenderWithName(); ?>
 		<?php $this->chkRequiredFlag->RenderWithName(); ?>
 

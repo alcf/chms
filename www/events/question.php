@@ -13,6 +13,8 @@
 		
 		protected $lblFormQuestionType;
 		protected $txtShortDescription;
+		protected $chkInternalFlag;
+
 		protected $txtQuestion;
 		protected $chkRequiredFlag;
 
@@ -91,6 +93,10 @@
 			$this->txtShortDescription = $this->mctQuestion->txtShortDescription_Create();
 			$this->txtShortDescription->Required = true;
 			$this->txtShortDescription->Instructions = 'This is the label that will show up on reports and forms';
+			$this->chkInternalFlag = $this->mctQuestion->chkInternalFlag_Create();
+			$this->chkInternalFlag->Text = 'Check if this question is only for internal use, and is <strong>NOT</strong> to be displayed on the registration form';
+			$this->chkInternalFlag->HtmlEntities = false;
+
 			$this->txtQuestion = $this->mctQuestion->txtQuestion_Create();
 			$this->txtQuestion->Required = true;
 			$this->txtQuestion->Instructions = 'This is the label that will show up on the signup form online';
@@ -157,6 +163,8 @@
 					$this->txtQuestion->Name = 'Label';
 					$this->txtQuestion->Instructions = null;
 					$this->txtQuestion->Required = false;
+					
+					$this->chkInternalFlag->Visible = false;
 					break;
 
 				default:

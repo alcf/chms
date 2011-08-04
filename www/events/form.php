@@ -53,10 +53,11 @@
 
 			$this->dtgQuestions = new FormQuestionDataGrid($this);
 			$this->dtgQuestions->AddColumn(new QDataGridColumn('Reorder', '<?= $_FORM->RenderReorderQuestion($_ITEM); ?>', 'HtmlEntities=false', 'Width=60px'));
-			$this->dtgQuestions->MetaAddTypeColumn('FormQuestionTypeId', 'FormQuestionType', 'Name=Question Type', 'Width=180px');
-			$this->dtgQuestions->MetaAddColumn('ShortDescription', 'Html=<?= $_FORM->RenderShortDescription($_ITEM); ?>', 'Width=200px', 'HtmlEntities=false');
+			$this->dtgQuestions->MetaAddTypeColumn('FormQuestionTypeId', 'FormQuestionType', 'Name=Question Type', 'Width=140px');
+			$this->dtgQuestions->MetaAddColumn('ShortDescription', 'Html=<?= $_FORM->RenderShortDescription($_ITEM); ?>', 'Width=170px', 'HtmlEntities=false');
 			$this->dtgQuestions->MetaAddColumn('Question', 'Width=400px');
 			$this->dtgQuestions->MetaAddColumn('RequiredFlag', 'Width=60px', 'Name=Required?', 'Html=<?= ($_ITEM->RequiredFlag ? "Yes" : null) ?>');
+			$this->dtgQuestions->MetaAddColumn('InternalFlag', 'Width=60px', 'Name=Internal Only', 'Html=<?= ($_ITEM->InternalFlag ? "Yes" : null) ?>');
 			$this->dtgQuestions->SetDataBinder('dtgQuestions_Bind');
 			
 			$this->dtgProductsArray = array();

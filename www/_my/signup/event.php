@@ -122,6 +122,9 @@
 
 			// Go through all the other fields
 			foreach ($this->objSignupForm->GetFormQuestionArray(QQ::OrderBy(QQN::FormQuestion()->OrderNumber)) as $objFormQuestion) {
+				// Only display if this is NOT "InternalFlag"
+				if ($objFormQuestion->InternalFlag) continue;
+
 				$strControlId = 'fq' . $objFormQuestion->Id;
 				$objFormAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($this->objSignupEntry->Id, $objFormQuestion->Id);
 
@@ -630,6 +633,9 @@
 			$this->objSignupEntry->Save();
 
 			foreach ($this->objSignupForm->GetFormQuestionArray() as $objFormQuestion) {
+				// Only update if this is NOT "InternalFlag"
+				if ($objFormQuestion->InternalFlag) continue;
+
 				$strControlId = 'fq' . $objFormQuestion->Id;
 				$objFormAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($this->objSignupEntry->Id, $objFormQuestion->Id);
 				if (!$objFormAnswer) {
