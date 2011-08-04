@@ -145,6 +145,7 @@
 			if (!$this->lblInformationUrl->Text) $this->lblInformationUrl->Visible = false;
 			$this->lblAllowMultipleFlag = $this->mctSignupForm->lblAllowMultipleFlag_Create();
 			$this->lblAllowOtherFlag = $this->mctSignupForm->lblAllowOtherFlag_Create();
+			$this->lblAllowOtherFlag->Visible = false;
 			$this->lblDateCreated = $this->mctSignupForm->lblDateCreated_Create();
 			$this->lblStewardshipFund = $this->mctSignupForm->lblStewardshipFundId_Create();
 			if (!$this->lblStewardshipFund->Text) $this->lblStewardshipFund->Visible = false;

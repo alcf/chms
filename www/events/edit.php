@@ -105,6 +105,7 @@
 			$this->chkAllowOtherFlag = $this->mctSignupForm->chkAllowOtherFlag_Create();
 			$this->chkAllowOtherFlag->Name = 'Allow Registering for Others?';
 			$this->chkAllowOtherFlag->Text = 'Check if people are allowed to register on behalf of someone else.';
+			$this->chkAllowOtherFlag->Visible = false;
 			
 			$this->chkActiveFlag = $this->mctSignupForm->chkActiveFlag_Create();
 			$this->chkActiveFlag->Name = 'Active?';
