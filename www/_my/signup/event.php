@@ -463,6 +463,7 @@
 					case FormQuestionType::YesNo:
 						$chkAnswer = new QCheckBox($this, $strControlId);
 						$chkAnswer->Name = $objFormQuestion->Question;
+						$chkAnswer->Text = trim($objFormQuestion->Options);
 						$chkAnswer->Required = $objFormQuestion->RequiredFlag;
 						$chkAnswer->RenderMethod = 'RenderWithName';
 						$this->objFormQuestionControlArray[] = $chkAnswer;

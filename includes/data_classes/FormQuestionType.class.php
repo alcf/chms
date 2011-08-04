@@ -16,5 +16,19 @@
 	 * @subpackage DataObjects
 	 */
 	abstract class FormQuestionType extends FormQuestionTypeGen {
+		public static function ToString($intFormQuestionTypeId) {
+			switch ($intFormQuestionTypeId) {
+				case 11: return 'Checkbox (Yes/No)';
+				default:
+					try {
+						parent::ToString($intFormQuestionTypeId);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
 	}
+	
+	FormQuestionType::$NameArray[FormQuestionType::YesNo] = 'Checkbox (Yes/No)';
 ?>

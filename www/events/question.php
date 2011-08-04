@@ -49,30 +49,37 @@
 				switch ($objQuestion->FormQuestionTypeId) {
 					case FormQuestionType::SpouseName:
 						$objQuestion->ShortDescription = 'Spouse\'s Name';
+						$objQuestion->Question = 'Spouse\'s Name';
 						break;
 	
 					case FormQuestionType::Address:
 						$objQuestion->ShortDescription = 'Home Address';
+						$objQuestion->Question = 'Home Address';
 						break;
 	
 					case FormQuestionType::Age:
 						$objQuestion->ShortDescription = 'Age';
+						$objQuestion->Question = 'Age';
 						break;
 	
 					case FormQuestionType::DateofBirth:
 						$objQuestion->ShortDescription = 'Date of Birth';
+						$objQuestion->Question = 'Date of Birth';
 						break;
 	
 					case FormQuestionType::Gender:
 						$objQuestion->ShortDescription = 'Gender';
+						$objQuestion->Question = 'Gender';
 						break;
 	
 					case FormQuestionType::Phone:
 						$objQuestion->ShortDescription = 'Phone Number';
+						$objQuestion->Question = 'Phone Number';
 						break;
 	
 					case FormQuestionType::Email:
 						$objQuestion->ShortDescription = 'Email Address';
+						$objQuestion->Question = 'Email Address';
 						break;
 				}
 			}
@@ -88,6 +95,8 @@
 			$this->txtQuestion->Required = true;
 			$this->txtQuestion->Instructions = 'This is the label that will show up on the signup form online';
 			$this->chkRequiredFlag = $this->mctQuestion->chkRequiredFlag_Create();
+			$this->chkRequiredFlag->Name = 'Answer Required?';
+			$this->chkRequiredFlag->Text = 'Check if an answer to this question is required';
 
 			$this->txtOptions = $this->mctQuestion->txtOptions_Create();
 			$this->chkAllowOtherFlag = $this->mctQuestion->chkAllowOtherFlag_Create();
@@ -104,13 +113,24 @@
 				case FormQuestionType::ShortText:
 				case FormQuestionType::LongText:
 				case FormQuestionType::Number:
-				case FormQuestionType::YesNo:
 					$this->txtOptions->Text = null;
 					$this->txtOptions->Required = false;
 					$this->txtOptions->Visible = false;
 					$this->chkAllowOtherFlag->Checked = false;
 					$this->chkAllowOtherFlag->Required = false;
 					$this->chkAllowOtherFlag->Visible = false;
+					break;
+
+				case FormQuestionType::YesNo:
+					$this->txtOptions->TextMode = QTextMode::SingleLine;
+					$this->txtOptions->Name = 'Text by the Checkbox';
+					$this->txtOptions->Required = false;
+					$this->txtOptions->Visible = true;
+					$this->chkAllowOtherFlag->Checked = false;
+					$this->chkAllowOtherFlag->Required = false;
+					$this->chkAllowOtherFlag->Visible = false;
+					$this->chkRequiredFlag->Text = 'Check if the registrant is <strong>REQUIRED</strong> check &quot;yes&quot;';
+					$this->chkRequiredFlag->HtmlEntities = false;
 					break;
 
 				case FormQuestionType::SingleSelect:
