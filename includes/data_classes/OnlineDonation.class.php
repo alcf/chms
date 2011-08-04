@@ -130,7 +130,7 @@
 			}
 			$strArray['PAYMENT_ITEMS'] = implode("\r\n", $strProductArray);
 
-			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
+			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject, null, trim(Registry::GetValue('donation_receipt_bcc')));
 		}
 
 		/**
