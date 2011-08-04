@@ -282,6 +282,29 @@
 		}
 
 		/**
+		 * Retrieves a list of Groups that can be managed by a given login
+		 * @param Login $objLogin
+		 * @return Group[]
+		 */
+		public static function LoadArrayByManagedByLogin(Login $objLogin) {
+			if ($objLogin->RoleTypeId == RoleType::ChMSAdministrator) {
+				$intMinistryIdArray = array();
+				foreach (Ministry::LoadArrayByActiveFlag(true) as $objMinistry) $intMinistryIdArray[] = $objMinistry->Id;
+			} else {
+				$intMinistryIdArray = array();
+				foreach ($objLogin->GetMinistryArray() as $objMinistry) $intMinistryIdArray[] = $objMinistry->Id;
+			}
+
+			return Group::QueryArray(
+				QQ::AndCondition(
+					QQ::Equal(QQN::Group()->GroupTypeId, GroupType::RegularGroup),
+					QQ::In(QQN::Group()->MinistryId, $intMinistryIdArray),
+					QQ::Equal(QQN::Group()->ActiveFlag, true)
+				), QQ::OrderBy(QQN::Group()->Name)
+			);
+		}
+
+		/**
 		 * Helper method to recurse through an array of ministries for LoadOrderedArrayForMinistry
 		 * @param Group[] $objGroupArray
 		 * @param integer $intParentGroupId

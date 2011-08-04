@@ -13,4 +13,4 @@ ALTER TABLE form_question ADD COLUMN internal_flag BOOLEAN AFTER required_flag;
 ####### TYPE TABLES
 
 INSERT INTO form_question_type VALUES(14, 'Instructions');
-INSERT INTO query_node VALUES (null, 'Group Participation - Group',   1, 'GroupParticipation->Group->Id',          32,  'Ministry LoadArrayByActiveFlag 1 Name');
+INSERT INTO query_node VALUES (null, 'Group Participation - Group',   1, 'GroupParticipation->Group->Id',          32,  'Group LoadArrayByManagedByLogin %L% Name');

@@ -237,6 +237,13 @@
 						$strClassName = $strTokens[0];
 						$strMethodName = $strTokens[1];
 						$strParameter = $strTokens[2];
+
+						switch ($strParameter) {
+							case '%L%':
+								$strParameter = QApplication::$Login;
+								break;
+						}
+
 						$strProperty = $strTokens[3];
 
 						if (array_key_exists(4, $strTokens))
