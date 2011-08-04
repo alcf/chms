@@ -88,7 +88,7 @@
 				foreach (FormProductType::$NameArray as $intId => $strName)
 					$this->lstCreateNew->AddItem($strName, $intId * -1, false, 'Product Types');
 
-				$this->lstCreateNew->AddAction(new QClickEvent(), new QAjaxAction('lstCreateNew_Change'));
+				$this->lstCreateNew->AddAction(new QChangeEvent(), new QAjaxAction('lstCreateNew_Change'));
 			}
 
 			// Setup "About Event" label controls
@@ -121,7 +121,8 @@
 
 			$this->lblSignupUrl = new QLabel($this);
 			$this->lblSignupUrl->Name = 'Signup Web Address';
-			$this->lblSignupUrl->Text = $this->objSignupForm->SignupUrl;
+			$this->lblSignupUrl->HtmlEntities = false;
+			$this->lblSignupUrl->Text = sprintf('<a href="%s" target="_blank">%s</a><br/><span class="na" style="font-size: 11px;">Clicking will open link in a new window</span>', $this->objSignupForm->SignupUrl, $this->objSignupForm->SignupUrl);
 
 			$this->lblConfidential = new QLabel($this);
 			$this->lblConfidential->Name = 'Confidential?';

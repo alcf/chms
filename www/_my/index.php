@@ -84,7 +84,7 @@
 			$objLogin = PublicLogin::LoadByUsernamePassword(trim(strtolower($this->txtUsername->Text)), $this->txtPassword->Text);
 
 			if (!$objLogin || !$objLogin->IsAllowedToUseChms()) {
-				$this->lblMessage->Text = 'Invalid email, username or password.';
+				$this->lblMessage->Text = 'Invalid username or password.';
 				$this->txtUsername->Blink();
 				$this->txtPassword->Blink();
 				$this->txtUsername->Focus();

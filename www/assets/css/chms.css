@@ -29,14 +29,14 @@
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
 
 	input.primary, button.primary {
-		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; 
+		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
 		font-size: 12px; font-family: arial; color: #fff;
 		text-transform: uppercase;
 	}
 	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
 
 	input.alternate, button.alternate {
-		background-image: url(/assets/images/button_alternate.png); border: 1px solid #859da9; height: 24px; -moz-border-radius: 5px; 
+		background-image: url(/assets/images/button_alternate.png); border: 1px solid #859da9; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
 		font-size: 11px; font-family: arial; color: #ddd;
 		text-transform: uppercase;
 	}
@@ -175,20 +175,20 @@
 	ul.subnavSide li a:hover { background-color: #ddd; color: #00679c; border-color: #ddd; text-shadow: 1px 1px #9ab; }
 	
 
-	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; }
-	ul.subnavSide li.last a { -moz-border-radius: 0 0 0 5px; }
+	ul.subnavSide li.first a { -moz-border-radius: 5px 0 0 0; border-radius: 5px 0 0 0; }
+	ul.subnavSide li.last a { -moz-border-radius: 0 0 0 5px; border-radius: 0 0 0 5px; }
 
 		/** Alterations for "SwitchStyle" **/
 		ul#switchStyle { float: none; display: inline; }
 		ui#switchStyle li { }
 		ul#switchStyle li a { width: 100px; float: left; text-align: center; border-width: 1px 0; border-style: solid; border-color: #998877;}
 
-		ul#switchStyle li.first a { -moz-border-radius: 5px 0 0 5px; border-left-width: 1px; }
-		ul#switchStyle li.last a { -moz-border-radius:  0 5px 5px 0; border-right-width: 1px; }
+		ul#switchStyle li.first a { -moz-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px; border-left-width: 1px; float: left; }
+		ul#switchStyle li.last a { -moz-border-radius:  0 5px 5px 0; border-radius:  0 5px 5px 0; border-right-width: 1px; float: right; }
 
 	/*** SUBNAV-SIDE CONTENT ***/
 
-	div.subnavSideContent { background-color: #5a768e; width: 150px; margin-bottom: 12px; padding: 10px; -moz-border-radius: 5px 0 0 5px;}
+	div.subnavSideContent { background-color: #5a768e; width: 150px; margin-bottom: 12px; padding: 10px; -moz-border-radius: 5px 0 0 5px; border-radius: 5px 0 0 5px;}
 	div.subnavSideContent h4 { color: #ddd; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif;
 		font-size: 13px;
 		color: #ddd;
@@ -204,7 +204,7 @@
 	/*** SUBNAV-CONTENT ***/
 
 	div.subnavContent { background: url(/assets/images/content_background.png); min-height: 500px; border: 1px solid #fff; width: 788px; float: left; padding: 10px;
-		-moz-border-radius: 0 5px 5px 5px;
+		-moz-border-radius: 0 5px 5px 5px; border-radius: 0 5px 5px 5px;
 	}
 
 
@@ -241,7 +241,7 @@
 	/*** OTHER ***/
 
 	div.line { height: 1px; border-top: 1px dashed #636; font-size: 1px; color: #636; margin: 18px 0; }
-	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
+	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px 5px 5px 5px; border-radius: 5px 5px 5px 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 	div.subnavContent div.section { border-color: #ddf; }
@@ -313,7 +313,7 @@ div.shopInfo div.shopLeft { float: left; }
 	table.datagrid tr div.stewardshipAmount span.positive { color: #272; }
 
 	table.datagrid tr div.stewardshipAmount { }
-	table.datagrid tr:hover div.stewardshipActionBackground { position: absolute; background-color: #6c9; width: 70px; height: 26px; display: block; opacity: 0.75; margin-top: -5px; margin-left: 14px; -moz-border-radius: 8px 0 0 8px; }
+	table.datagrid tr:hover div.stewardshipActionBackground { position: absolute; background-color: #6c9; width: 70px; height: 26px; display: block; opacity: 0.75; margin-top: -5px; margin-left: 14px; -moz-border-radius: 8px 0 0 8px; border-radius: 8px 0 0 8px; }
 	table.datagrid tr:hover div.stewardshipAction { display: block; left: 6px; }
 	table.datagrid tr:hover div.stewardshipAction a { display: block; width: 16px; height: 16px; float: right; margin: 0 3px; }
 
@@ -328,7 +328,7 @@ div.shopInfo div.shopLeft { float: left; }
 	div.sectionStewardshipAmount div.amount div.fund select { width: 280px; padding: 2px 2px; }
 	div.sectionStewardshipAmount div.amount div.value { float: right; width: 100px; text-align: right;}
 	div.sectionStewardshipAmount div.amount div.value input.textbox { text-align: right; width: 80px; }
-	div.sectionStewardshipAmount div.amountTotal { background-color: #5a768e; font-weight: bold; -moz-border-radius: 0 0 5px 5px;} 
+	div.sectionStewardshipAmount div.amountTotal { background-color: #5a768e; font-weight: bold; -moz-border-radius: 0 0 5px 5px; border-radius: 0 0 5px 5px; } 
 
 	div.errorMessage { padding: 5px; border-width: 1px; border-style: solid; border-color: #600; font: 12px 'Arial', 'Helvetica'; color: #600; background-color: #fee; margin: 5px; }
 	
@@ -379,7 +379,7 @@ div.shopInfo div.shopLeft { float: left; }
 
 
 	/* QDialogBox */
-	div.dialogbox { border: 5px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; font-size: 16px; font-family: arial, helvetica, sans-serif; color: #333; -moz-border-radius: 10px; }
+	div.dialogbox { border: 5px solid #333; background-color: #fff; padding: 20px; width: 500px; overflow: auto; font-size: 16px; font-family: arial, helvetica, sans-serif; color: #333; -moz-border-radius: 10px; border-radius: 10px; }
 	div.dialogbox div.buttonBar { margin-top: 24px; }
 
 	div.stewardshipDialogbox { width: 1100px; height: 710px; padding: 5px; background: url(/assets/images/main_content_background.png); }

@@ -30,6 +30,7 @@
 			<?php $this->dtgSignupEntries->Render(); ?>
 		</div>
 		<br clear="all"/>
+		<br/>
 	</div>
 
 <?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>

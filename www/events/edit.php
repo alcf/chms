@@ -210,6 +210,7 @@
 				if ($this->txtToken->Warning) {
 					$this->txtToken->Blink(); $this->txtToken->Focus(); return;
 				}
+				$this->txtToken->Text = $strToken;
 			} else {
 				$this->txtToken->Text = null;
 			}
