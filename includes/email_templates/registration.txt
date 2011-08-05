@@ -11,7 +11,7 @@ Confirmation Code:  %CODE%
 
 The web site will then take things from there.
 
-If you did *NOT* request a registration on th my.alcf website, or if you have any questions, please feel free and contact Melissa Look at melissa.look@alcf.net or call 650-625-1500.
+If you did *NOT* request a registration on th my.alcf website, or if you have any questions, please feel free and %CONTACT%.
 
 Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!
 

@@ -162,6 +162,11 @@
 			define('CHMS_LOGIN_SALT', 'PROD_LDAPSALT');
 			define('SMTP_SERVER', 'PROD_IP_SMTP');
 			define('SMTP_TEST_MODE', false);
+
+			if (strpos($_SERVER['REQUEST_URI'], '//my.')) {
+				define('ERROR_FRIENDLY_PAGE_PATH', __DOCROOT__ . '/_my/error_page.html');
+				define('ERROR_FRIENDLY_AJAX_MESSAGE', 'Oops!  An error has occurred.\r\n\r\nThe error was logged, and we will take a look into this right away.  If you have any questions, please contact Melissa Look at melissa.look@alcf.net or call 650-625-1500.');
+			}
 			break;
 	}
 
@@ -224,8 +229,6 @@
 		date_default_timezone_set('America/Los_Angeles');
 
 	define('ERROR_LOG_FLAG', true);
-//	define('ERROR_FRIENDLY_PAGE_PATH', '/absolute/path/to/friendly_error_page.html');
-//	define('ERROR_FRIENDLY_AJAX_MESSAGE', 'Oops!  An error has occurred.\r\n\r\nThe error was logged, and we will take a look into this right away.');
 
 	define('QCODO_LOG_LEVEL', 6);
 

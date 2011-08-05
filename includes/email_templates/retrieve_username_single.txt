@@ -6,7 +6,7 @@ We have successfully looked up your username based on the email address you prov
 
 Username:  %USERNAME%
 
-You should be able to use your username to log in to my.alcf.net.  If you have any questions, please feel free and contact Melissa Look at melissa.look@alcf.net or call 650-625-1500.
+You should be able to use your username to log in to my.alcf.net.  If you have any questions, please feel free and %CONTACT%.
 
 Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!
 

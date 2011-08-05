@@ -10,7 +10,7 @@
 		need to check your SPAM or Junk Mail folder.
 		<br/><br/>
 	
-		If you have any questions or issues, please don't hesitate to contact Melissa Look at melissa.look@alcf.net or at 650-625-1500.
+		If you have any questions or issues, please don't hesitate to <?php _p(Registry::GetValue('contact_sentence_my_alcf_support'), false); ?>.
 	</p>
 	<br/>
 

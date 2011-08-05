@@ -69,7 +69,7 @@
 				'<p>We are looking to see if <strong>' . QApplication::HtmlEntities($strEmail) . '</strong> exists in the system, and if so ' .
 				'we will send you an email that contains your username.  This should only take a moment, but please wait up to a few minnutes for delivery.</p>' .
 				'<p>On the off-chance that the email gets caught by SPAM filters, you may also want to check your SPAM or Junk Mail folder.</p>' .
-				'<p>If you encounter any issues, please feel free and contact Melissa Look at melissa.look@alcf.net or at 650-625-1500.</p>';
+				'<p>If you encounter any issues, please feel free and ' . Registry::GetValue('contact_sentence_my_alcf_support') . '.</p>';
 		}
 
 		protected function btnBack_Click($strFormId, $strControlId, $strParameter) {

@@ -1,7 +1,8 @@
 <?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
 
 	<h1>my.alcf Account Profile</h1>
-	If you would like to update other items (such as family and marriage information, etc.) please contact Christina Alo at 650-625-1500 or email members@alcf.net.<br/><br/>
+	If you would like to update other items (such as family and marriage information, etc.) please 
+		<?php _p(Registry::GetValue('contact_sentence_records_support'), false); ?>.<br/><br/>
 
 	<h4><?php _p(QApplication::$PublicLogin->Person->Name); ?>'s Contact Information</h4>
 	<div class="section">

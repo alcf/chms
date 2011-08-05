@@ -133,7 +133,7 @@
 				'<p>We have reset your <strong>my.alcf</strong> account with a temporary password that we have emailed to the email address we have on file for your account.  ' . 
 				'Please wait up to a few minnutes for delivery.</p>' .
 				'<p>On the off-chance that the email gets caught by SPAM filters, you may also want to check your SPAM or Junk Mail folder.</p>' .
-				'<p>If you encounter any issues, please feel free and contact Melissa Look at melissa.look@alcf.net or at 650-625-1500.</p>';
+				'<p>If you encounter any issues, please feel free and ' . Registry::GetValue('contact_sentence_my_alcf_support') . '.</p>';
 
 			$this->btnBack->Visible = true;
 		}

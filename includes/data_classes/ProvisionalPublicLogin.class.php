@@ -68,7 +68,8 @@
 			$strArray['URL'] = $this->ConfirmationUrl . '/' . $this->strConfirmationCode;
 			$strArray['CODE'] = $this->strConfirmationCode;
 			$strArray['USERNAME'] = $this->PublicLogin->Username;
-			
+			$strArray['CONTACT'] = strip_tags(Registry::GetValue('contact_sentence_my_alcf_support'));
+
 			OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
 		}
 

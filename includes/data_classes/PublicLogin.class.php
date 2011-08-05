@@ -66,6 +66,7 @@
 
 			// Setup Always-Used Fields
 			$strArray['PERSON_NAME'] = $objPublicLoginArray[0]->Person->Name;
+			$strArray['CONTACT'] = strip_tags(Registry::GetValue('contact_sentence_my_alcf_support'));
 
 			if (count($objPublicLoginArray) == 1) {
 				// Template
@@ -108,6 +109,7 @@
 			// Setup Always-Used Fields
 			$strArray['PERSON_NAME'] = $this->Person->Name;
 			$strArray['PASSWORD'] = $strTemporaryPassword;
+			$strArray['CONTACT'] = strip_tags(Registry::GetValue('contact_sentence_my_alcf_support'));
 
 			OutgoingEmailQueue::QueueFromTemplate('reset_password', $strArray, $strToAddress, $strFromAddress, $strSubject);
 		}

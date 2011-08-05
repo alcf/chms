@@ -4,7 +4,7 @@
 	<h2>Reset My Password</h2>
 
 	<p style="font-size: 14px;">Please fill out the following form to reset your password.  Your new password will be emailed to you using the email address we have on file for your account.</p>
-	<p>If you encounter any issues, please feel free and contact Melissa Look at melissa.look@alcf.net or at 650-625-1500.</p>
+	<p>If you encounter any issues, please feel free and <?php _p(Registry::GetValue('contact_sentence_my_alcf_support'), false); ?>.</p>
 
 	<div class="section">
 		<?php $this->lblFirstMessage->Render(); ?>
