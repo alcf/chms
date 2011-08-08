@@ -7,7 +7,7 @@
 		var objUtility = document.getElementById("utility");
 		var strHtml = objUtility.innerHTML;
 
-		strHtml = strHtml.replace('<a href="/login.asp">Login</a>', '<a href="https://my.alcf.net/logout/">Logout</a>');
+		strHtml = strHtml.replace('<a href="/login.asp">Login</a>', '<a href="https://my.alcf.net/logout/">Log Out</a>');
 		strHtml = strHtml.replace('<a href="/register.asp">Register</a>', '<a href="https://my.alcf.net/main/">My Profile</a>');
 
 		objUtility.innerHTML = strHtml;
@@ -17,7 +17,7 @@
 		var objUtility = document.getElementById("utility");
 		var strHtml = objUtility.innerHTML;
 
-		strHtml = strHtml.replace('<a href="/login.asp">Login</a>', '<a href="https://my.alcf.net/">Login</a>');
+		strHtml = strHtml.replace('<a href="/login.asp">Login</a>', '<a href="https://my.alcf.net/">Log In</a>');
 		strHtml = strHtml.replace('<a href="/register.asp">Register</a>', '<a href="https://my.alcf.net/register/">Register</a>');
 
 		objUtility.innerHTML = strHtml;
