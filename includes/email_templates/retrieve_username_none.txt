@@ -1,0 +1,19 @@
+======= DO NOT REPLY =======
+
+Dear %EMAIL%,
+
+Unfortunately, we were not able to find any my.ALCF username associated with the email "%EMAIL%".
+
+Please note that on Monday, August 8, ALCF launched a new version of our website (http://www.alcf.net) with significant enhancements.  If you had been using the old alcf.net website for event registration or online giving, you will need to re-register on the new site on or after August 8th.  The updated ALCF website will include the following new features and benefits:
+
+** An all-new area for registered users (my.alcf.net) that enables self-management of contact information, direct access to giving records, and a new event registration system and online giving system.
+** A re-organized ALCF website that will make it easier to know what's happening at ALCF and how to get connected.
+** A new ALCF media site that will highlight recent sermons, spotlight videos, and feature articles.
+
+If you would like to register for a new account, please go to https://my.alcf.net/register/.  If you have any questions, please feel free and %CONTACT%.
+
+Thank you for your previous support of Abundant Life, and we hope our new website facilitates your continued involvement and participation in our ministries.
+
+============================
+
+P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.

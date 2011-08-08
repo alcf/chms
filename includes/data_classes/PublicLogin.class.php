@@ -54,7 +54,24 @@
 			);
 
 			// If none found, return
-			if (!count($objPublicLoginArray)) return;
+			if (!count($objPublicLoginArray)) {
+				// Setup email info
+				$strFromAddress = 'ALCF my.alcf Account Support <do_not_reply@alcf.net>';
+				$strToAddress = trim(strtolower($strEmailAddress));
+				$strSubject = 'Account Support: Retreive Your Username';
+
+				// Setup the SubstitutionArray
+				$strArray = array();
+
+				// Setup Always-Used Fields
+				$strArray['CONTACT'] = strip_tags(Registry::GetValue('contact_sentence_my_alcf_support'));
+				$strArray['EMAIL'] = $strEmailAddress;
+
+				$strTemplateName = 'retrieve_username_none';
+				OutgoingEmailQueue::QueueFromTemplate($strTemplateName, $strArray, $strToAddress, $strFromAddress, $strSubject);
+
+				return;
+			}
 
 			// Setup email info
 			$strFromAddress = 'ALCF my.alcf Account Support <do_not_reply@alcf.net>';
