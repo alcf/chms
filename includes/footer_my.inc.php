@@ -18,7 +18,7 @@
 <?php if (SERVER_INSTANCE != 'dev') { ?>
 <script type="text/javascript">
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-20970690-1']);
+  _gaq.push(['_setAccount', 'UA-25024457-1']);
   _gaq.push(['_setDomainName', '.alcf.net']);
   _gaq.push(['_trackPageview']);
 
