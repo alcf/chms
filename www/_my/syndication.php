@@ -2,8 +2,15 @@
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 
 	header('Content-Type: text/javascript');
-	$strHtmlArray = array();
+	
+	// Syndication Cache?
+	if (file_exists(SYNDICATION_CACHE_PATH)) {
+		print(file_get_contents(SYNDICATION_CACHE_PATH));
+		return;
+	}
 
+	// No Syndication Cache -- Therefore, we create it!
+	$strHtmlArray = array();
 
 	///////////////////////
 	// Add the Sermon
@@ -143,7 +150,10 @@
 		$strHtml = implode('<br/><br/>', $strHtmlArray);
 		$strHtml = '<img src="/uploads/mediaHeader.png" title="Abundant Living Online" style="position: relative; top: -15px; left: -10px; cursor: pointer;" onclick="document.location=&quot;http://abundantliving.alcf.net/&quot;" /><br/>' . $strHtml;
 		$strHtml = str_replace('"', '\\"', $strHtml);
-		
-		print ('document.getElementById("syndicatedContent").innerHTML = "' . $strHtml . '";');
+
+		if (!is_dir(dirname(SYNDICATION_CACHE_PATH))) QApplication::MakeDirectory(dirname(SYNDICATION_CACHE_PATH), 0777);
+		file_put_contents(SYNDICATION_CACHE_PATH, 'document.getElementById("syndicatedContent").innerHTML = "' . $strHtml . '";');
+		@chmod(SYNDICATION_CACHE_PATH, 0777);
+		print(file_get_contents(SYNDICATION_CACHE_PATH));
 	}
 ?>

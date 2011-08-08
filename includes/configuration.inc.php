@@ -225,6 +225,8 @@
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_1', 'This document is necessary for any available federal income tax deduction for your contribution. Please retain it for your records.');
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_2', 'No goods or services were provided in exchange for the gifts other than intangible religious benefits.');
 
+	define ('SYNDICATION_CACHE_PATH', __DOCROOT__ . '/cache/syndication.js');
+
 	if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
 		date_default_timezone_set('America/Los_Angeles');
 
