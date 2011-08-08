@@ -8,7 +8,7 @@
 		var strHtml = objUtility.innerHTML;
 
 		strHtml = strHtml.replace('<a href="https://my.alcf.net">Login</a>', '<a href="https://my.alcf.net/logout/">Log Out</a>');
-		strHtml = strHtml.replace('<a href="https://my.alcf.net/register">Register</a>', '<a href="https://my.alcf.net/main/">my.alcf for <?php _p(QApplication::$PublicLogin->Person->FirstName); ?></a>');
+		strHtml = strHtml.replace('<a href="https://my.alcf.net/register">Register</a>', '<a href="https://my.alcf.net/main/"><?php _p(QApplication::$PublicLogin->UtilityProfileLinkName); ?></a>');
 
 		objUtility.innerHTML = strHtml;
 <?php

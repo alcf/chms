@@ -19,7 +19,7 @@
 			<div class="item"><a href="/register/">Register</a></div>
 			<div class="item"><a href="/">Log In</a></div>
 		<?php } else { ?>
-			<div class="item"><a href="/main/">my.alcf for <?php _p(QApplication::$PublicLogin->Person->FirstName); ?></a></div>
+			<div class="item"><a href="/main/"><?php _p(QApplication::$PublicLogin->UtilityProfileLinkName); ?></a></div>
 			<div class="item"><a href="/logout/">Log Out</a></div>
 		<?php } ?>
 		</div>

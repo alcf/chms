@@ -29,7 +29,11 @@
 
 		public function __get($strName) {
 			switch ($strName) {
-				case 'FooBar': return $this->strSomeNewProperty;
+				case 'UtilityProfileLinkName':
+					if ($this->Person)
+						return 'my.alcf for ' . $this->Person->FirstName;
+					else
+						return 'My Profile';
 
 				default:
 					try {
