@@ -2,7 +2,7 @@
 
 Dear %EMAIL%,
 
-Unfortunately, we were not able to find any my.ALCF username associated with the email "%EMAIL%".
+Unfortunately, we were not able to find a my.ALCF username for the email "%EMAIL%".
 
 Please note that on Monday, August 8, ALCF launched a new version of our website (http://www.alcf.net) with significant enhancements.  If you had been using the old alcf.net website for event registration or online giving, you will need to re-register on the new site on or after August 8th.  The updated ALCF website will include the following new features and benefits:
 
