@@ -30,6 +30,6 @@
 
 <br clear="all"/><br/>
 
-<div style="margin: auto; text-align: center; font-size: 10px;">Developed by the <a href="http://www.alcf.net/itteam">ALCF Web Development Team</a></div>
+<div style="margin: auto; text-align: center; font-size: 10px;">Developed by the <a href="http://www.alcf.net/it-team">ALCF Web Development Team</a></div>
 
 <?php require(__INCLUDES__ . '/footer_growthgroups.inc.php'); ?>
