@@ -22,7 +22,7 @@
 		 *
 		 * @var string FormStateHandler the classname of the FormState handler to use
 		 */
-		public static $FormStateHandler = 'QFileFormStateHandler';
+		public static $FormStateHandler = 'QSessionFormStateHandler';
 		// SEE FileFormStateHandler Change Below! //
 
 		/**
@@ -63,6 +63,10 @@
 		protected $strIgnoreStyleSheetFileArray = array();
 		// protected $strIgnoreStyleSheetFileArray = array('datagrid.css', 'calendar.css', 'textbox.css', 'listbox.css');
 	}
-	
-	QFileFormStateHandler::$GarbageCollectDaysOld = 1;
+
+	// For NOAH in Production, let's use FileFormStateHandler
+	if (strpos($_SERVER['HTTP_HOST'], 'noah') !== false) {
+		QForm::$FormStateHandler = 'QFileFormStateHandler';
+		QFileFormStateHandler::$GarbageCollectDaysOld = 1;
+	}
 ?>
