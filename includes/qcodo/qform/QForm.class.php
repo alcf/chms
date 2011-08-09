@@ -22,7 +22,8 @@
 		 *
 		 * @var string FormStateHandler the classname of the FormState handler to use
 		 */
-		public static $FormStateHandler = 'QSessionFormStateHandler';
+		public static $FormStateHandler = 'QFileFormStateHandler';
+		// SEE FileFormStateHandler Change Below! //
 
 		/**
 		 * These are the list of core QForm JavaScript files, or JavaScript files needed by
@@ -62,4 +63,6 @@
 		protected $strIgnoreStyleSheetFileArray = array();
 		// protected $strIgnoreStyleSheetFileArray = array('datagrid.css', 'calendar.css', 'textbox.css', 'listbox.css');
 	}
+	
+	QFileFormStateHandler::$GarbageCollectDaysOld = 1;
 ?>
