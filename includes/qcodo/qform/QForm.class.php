@@ -65,7 +65,7 @@
 	}
 
 	// For NOAH in Production, let's use FileFormStateHandler
-	if (strpos($_SERVER['HTTP_HOST'], 'noah') !== false) {
+	if (array_key_exists('HTTP_HOST', $_SERVER) && (strpos($_SERVER['HTTP_HOST'], 'noah') !== false)) {
 		QForm::$FormStateHandler = 'QFileFormStateHandler';
 		QFileFormStateHandler::$GarbageCollectDaysOld = 1;
 	}
