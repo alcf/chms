@@ -23,6 +23,7 @@
 		const PayPalType					= 'Type';
 		const PayPalTenderType				= 'Tender Type';
 		const PayPalTime					= 'Time';
+		const PayPalSettledDate				= 'Settled Date';
 
 		public static $RequiredFields = array(
 			self::PayPalTransactionId,
@@ -33,7 +34,8 @@
 			self::PayPalAccountNumber,
 			self::PayPalType,
 			self::PayPalTenderType,
-			self::PayPalTime
+			self::PayPalTime,
+			self::PayPalSettledDate
 		);
 
 		public function PostBatch(Login $objLogin, QDateTime $dttDateCredited) {
@@ -239,13 +241,13 @@
 					}
 
 					// Link in the Pay Pal Batch Info (if applicable)
-					if (SERVER_INSTANCE == 'dev') $strValuesArray[self::PayPalBatchId] = 789;
+//					if (SERVER_INSTANCE == 'dev') $strValuesArray[self::PayPalBatchId] = 789;
 					if ($intBatchNumber = trim($strValuesArray[self::PayPalBatchId])) {
 						$objPayPalBatch = PaypalBatch::LoadByNumber($intBatchNumber);
 						if (!$objPayPalBatch) {
 							$objPayPalBatch = new PaypalBatch();
 							$objPayPalBatch->Number = $intBatchNumber;
-							$objPayPalBatch->DateReceived = QDateTime::Now();
+							$objPayPalBatch->DateReceived = new QDateTime($strValuesArray[self::PayPalSettledDate]);
 							$objPayPalBatch->ReconciledFlag = false;
 							$objPayPalBatch->Save();
 						}
@@ -271,7 +273,7 @@
 							$strValuesArray[self::PayPalAuthCode],
 							$objCreditCardPayment->AuthorizationCode));
 
-					if ($objCreditCardPayment->AmountCharged != $strValuesArray[self::PayPalAmount])
+					if ($objCreditCardPayment->AmountCharged != str_replace(',', '', $strValuesArray[self::PayPalAmount]))
 						throw new QCallerException(sprintf('Mismatch Amount for Transaction %s: %s vs. %s',
 							$strValuesArray[self::PayPalOriginalTransactionId],
 							$strValuesArray[self::PayPalAmount],
