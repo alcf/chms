@@ -28,8 +28,8 @@
 	 * property-read QLabel $TransactionDescriptionLabel
 	 * property QFloatTextBox $AmountControl
 	 * property-read QLabel $AmountLabel
-	 * property QListBox $StewardshipFundIdControl
-	 * property-read QLabel $StewardshipFundIdLabel
+	 * property QTextBox $FundingAccountControl
+	 * property-read QLabel $FundingAccountLabel
 	 * property QListBox $DonationStewardshipFundIdControl
 	 * property-read QLabel $DonationStewardshipFundIdLabel
 	 * property QFloatTextBox $AmountDonationControl
@@ -106,10 +106,10 @@
 		protected $txtAmount;
 
         /**
-         * @var QListBox lstStewardshipFund;
+         * @var QTextBox txtFundingAccount;
          * @access protected
          */
-		protected $lstStewardshipFund;
+		protected $txtFundingAccount;
 
         /**
          * @var QListBox lstDonationStewardshipFund;
@@ -168,10 +168,10 @@
 		protected $lblAmount;
 
         /**
-         * @var QLabel lblStewardshipFundId
+         * @var QLabel lblFundingAccount
          * @access protected
          */
-		protected $lblStewardshipFundId;
+		protected $lblFundingAccount;
 
         /**
          * @var QLabel lblDonationStewardshipFundId
@@ -461,43 +461,28 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstStewardshipFund
+		 * Create and setup QTextBox txtFundingAccount
 		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
+		 * @return QTextBox
 		 */
-		public function lstStewardshipFund_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstStewardshipFund = new QListBox($this->objParentObject, $strControlId);
-			$this->lstStewardshipFund->Name = QApplication::Translate('Stewardship Fund');
-			$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objStewardshipFundCursor = StewardshipFund::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objStewardshipFund = StewardshipFund::InstantiateCursor($objStewardshipFundCursor)) {
-				$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-				if (($this->objSignupPayment->StewardshipFund) && ($this->objSignupPayment->StewardshipFund->Id == $objStewardshipFund->Id))
-					$objListItem->Selected = true;
-				$this->lstStewardshipFund->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstStewardshipFund;
+		public function txtFundingAccount_Create($strControlId = null) {
+			$this->txtFundingAccount = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtFundingAccount->Name = QApplication::Translate('Funding Account');
+			$this->txtFundingAccount->Text = $this->objSignupPayment->FundingAccount;
+			$this->txtFundingAccount->MaxLength = SignupPayment::FundingAccountMaxLength;
+			return $this->txtFundingAccount;
 		}
 
 		/**
-		 * Create and setup QLabel lblStewardshipFundId
+		 * Create and setup QLabel lblFundingAccount
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblStewardshipFundId_Create($strControlId = null) {
-			$this->lblStewardshipFundId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblStewardshipFundId->Name = QApplication::Translate('Stewardship Fund');
-			$this->lblStewardshipFundId->Text = ($this->objSignupPayment->StewardshipFund) ? $this->objSignupPayment->StewardshipFund->__toString() : null;
-			return $this->lblStewardshipFundId;
+		public function lblFundingAccount_Create($strControlId = null) {
+			$this->lblFundingAccount = new QLabel($this->objParentObject, $strControlId);
+			$this->lblFundingAccount->Name = QApplication::Translate('Funding Account');
+			$this->lblFundingAccount->Text = $this->objSignupPayment->FundingAccount;
+			return $this->lblFundingAccount;
 		}
 
 		/**
@@ -671,18 +656,8 @@
 			if ($this->txtAmount) $this->txtAmount->Text = $this->objSignupPayment->Amount;
 			if ($this->lblAmount) $this->lblAmount->Text = $this->objSignupPayment->Amount;
 
-			if ($this->lstStewardshipFund) {
-					$this->lstStewardshipFund->RemoveAllItems();
-				$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
-				$objStewardshipFundArray = StewardshipFund::LoadAll();
-				if ($objStewardshipFundArray) foreach ($objStewardshipFundArray as $objStewardshipFund) {
-					$objListItem = new QListItem($objStewardshipFund->__toString(), $objStewardshipFund->Id);
-					if (($this->objSignupPayment->StewardshipFund) && ($this->objSignupPayment->StewardshipFund->Id == $objStewardshipFund->Id))
-						$objListItem->Selected = true;
-					$this->lstStewardshipFund->AddItem($objListItem);
-				}
-			}
-			if ($this->lblStewardshipFundId) $this->lblStewardshipFundId->Text = ($this->objSignupPayment->StewardshipFund) ? $this->objSignupPayment->StewardshipFund->__toString() : null;
+			if ($this->txtFundingAccount) $this->txtFundingAccount->Text = $this->objSignupPayment->FundingAccount;
+			if ($this->lblFundingAccount) $this->lblFundingAccount->Text = $this->objSignupPayment->FundingAccount;
 
 			if ($this->lstDonationStewardshipFund) {
 					$this->lstDonationStewardshipFund->RemoveAllItems();
@@ -744,7 +719,7 @@
 				if ($this->calTransactionDate) $this->objSignupPayment->TransactionDate = $this->calTransactionDate->DateTime;
 				if ($this->txtTransactionDescription) $this->objSignupPayment->TransactionDescription = $this->txtTransactionDescription->Text;
 				if ($this->txtAmount) $this->objSignupPayment->Amount = $this->txtAmount->Text;
-				if ($this->lstStewardshipFund) $this->objSignupPayment->StewardshipFundId = $this->lstStewardshipFund->SelectedValue;
+				if ($this->txtFundingAccount) $this->objSignupPayment->FundingAccount = $this->txtFundingAccount->Text;
 				if ($this->lstDonationStewardshipFund) $this->objSignupPayment->DonationStewardshipFundId = $this->lstDonationStewardshipFund->SelectedValue;
 				if ($this->txtAmountDonation) $this->objSignupPayment->AmountDonation = $this->txtAmountDonation->Text;
 				if ($this->txtAmountNonDonation) $this->objSignupPayment->AmountNonDonation = $this->txtAmountNonDonation->Text;
@@ -827,12 +802,12 @@
 				case 'AmountLabel':
 					if (!$this->lblAmount) return $this->lblAmount_Create();
 					return $this->lblAmount;
-				case 'StewardshipFundIdControl':
-					if (!$this->lstStewardshipFund) return $this->lstStewardshipFund_Create();
-					return $this->lstStewardshipFund;
-				case 'StewardshipFundIdLabel':
-					if (!$this->lblStewardshipFundId) return $this->lblStewardshipFundId_Create();
-					return $this->lblStewardshipFundId;
+				case 'FundingAccountControl':
+					if (!$this->txtFundingAccount) return $this->txtFundingAccount_Create();
+					return $this->txtFundingAccount;
+				case 'FundingAccountLabel':
+					if (!$this->lblFundingAccount) return $this->lblFundingAccount_Create();
+					return $this->lblFundingAccount;
 				case 'DonationStewardshipFundIdControl':
 					if (!$this->lstDonationStewardshipFund) return $this->lstDonationStewardshipFund_Create();
 					return $this->lstDonationStewardshipFund;
@@ -891,8 +866,8 @@
 						return ($this->txtTransactionDescription = QType::Cast($mixValue, 'QControl'));
 					case 'AmountControl':
 						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
-					case 'StewardshipFundIdControl':
-						return ($this->lstStewardshipFund = QType::Cast($mixValue, 'QControl'));
+					case 'FundingAccountControl':
+						return ($this->txtFundingAccount = QType::Cast($mixValue, 'QControl'));
 					case 'DonationStewardshipFundIdControl':
 						return ($this->lstDonationStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'AmountDonationControl':

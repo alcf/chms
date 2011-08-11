@@ -33,7 +33,7 @@
 		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations'); ?>
 		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
-		<?php $this->lblStewardshipFund->RenderWithName('Name=Funding Account'); ?>
+		<?php $this->lblFundingAccount->RenderWithName('Name=Funding Account'); ?>
 		<?php $this->lblDonationStewardshipFund->RenderWithName('Name=Funding Account for Donations'); ?>
 		<?php $this->lblSupportEmail->RenderWithName('Name=Support Email Address'); ?>
 		<?php $this->lblEmailNotification->RenderWithName('Name=BCC Confirmation Emails'); ?>

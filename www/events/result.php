@@ -191,7 +191,10 @@
 				if ($objPayment->SignupPaymentTypeId == SignupPaymentType::CreditCard) {
 					$strToReturn = QApplication::HtmlEntities($objPayment->TransactionDescription);
 					$strToReturn .= '<br/><span class="detail">';
-					$strToReturn .= sprintf('Funds <strong>%s</strong>', QApplication::HtmlEntities($objPayment->StewardshipFund->Name));
+					if (strlen(trim($objPayment->FundingAccount)))
+						$strToReturn .= sprintf('Funds <strong>Account [%s]</strong>', QApplication::HtmlEntities($objPayment->FundingAccount));
+					else
+						$strToReturn .= 'Funds <strong>UNSPECIFIED FUNDING ACCOUNT</strong>';
 					if ($objPayment->AmountDonation) $strToReturn .= sprintf('<br/> &nbsp; &nbsp; &bull; Amount of Donation: <strong>%s</strong>', QApplication::DisplayCurrency($objPayment->AmountDonation));
 					if ($objPayment->AmountNonDonation) $strToReturn .= sprintf('<br/> &nbsp; &nbsp; &bull; Amount of Non-Donation: <strong>%s</strong>', QApplication::DisplayCurrency($objPayment->AmountNonDonation));
 					$strToReturn .= '</span>';

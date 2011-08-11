@@ -64,6 +64,11 @@
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return SignupPaymentType::$NameArray[$this->intSignupPaymentTypeId];
+				case 'FundingAccountLabel':
+					if (strlen(trim($this->FundingAccount)))
+						return ($this->SignupEntry->SignupForm->Name . ' [' . $this->FundingAccount . ']');
+					else
+						return ($this->SignupEntry->SignupForm->Name . ' [UNSPECIFIED FUNDING ACCOUNT]');
 
 				default:
 					try {

@@ -300,8 +300,7 @@
 				case 'TransactionDate': return QQN::SignupPayment()->TransactionDate;
 				case 'TransactionDescription': return QQN::SignupPayment()->TransactionDescription;
 				case 'Amount': return QQN::SignupPayment()->Amount;
-				case 'StewardshipFundId': return QQN::SignupPayment()->StewardshipFundId;
-				case 'StewardshipFund': return QQN::SignupPayment()->StewardshipFund;
+				case 'FundingAccount': return QQN::SignupPayment()->FundingAccount;
 				case 'DonationStewardshipFundId': return QQN::SignupPayment()->DonationStewardshipFundId;
 				case 'DonationStewardshipFund': return QQN::SignupPayment()->DonationStewardshipFund;
 				case 'AmountDonation': return QQN::SignupPayment()->AmountDonation;

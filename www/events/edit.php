@@ -22,7 +22,7 @@
 		protected $chkAllowOtherFlag;
 		protected $chkAllowMultipleFlag;
 
-		protected $lstStewardshipFund;
+		protected $txtFundingAccount;
 		protected $lstDonationStewardshipFund;
 		
 		protected $txtSignupLimit;
@@ -119,9 +119,8 @@
 			$this->chkConfidentialFlag->Name = 'Confidential?';
 			$this->chkConfidentialFlag->Text = 'Check if this form is considered a "Confidential" form.';
 
-			$this->lstStewardshipFund = $this->mctSignupForm->lstStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
-			$this->lstStewardshipFund->Name = 'Funding Account';
-			if ($this->mctSignupForm->SignupForm->CountFormProducts()) $this->lstStewardshipFund->Required = true;
+			$this->txtFundingAccount = $this->mctSignupForm->txtFundingAccount_Create();
+			if ($this->mctSignupForm->SignupForm->CountFormProducts()) $this->txtFundingAccount->Required = true;
 			
 			$this->lstDonationStewardshipFund = $this->mctSignupForm->lstDonationStewardshipFund_Create(null, QQ::Equal(QQN::StewardshipFund()->ActiveFlag, true), QQ::OrderBy(QQN::StewardshipFund()->Name));
 			$this->lstDonationStewardshipFund->Name = 'Funding Account for Donations';

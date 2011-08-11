@@ -34,7 +34,7 @@
 		protected $lblAllowMultipleFlag;
 		protected $lblLimitInfo;
 		protected $lblDateCreated;
-		protected $lblStewardshipFund;
+		protected $lblFundingAccount;
 		protected $lblDonationStewardshipFund;
 		
 		protected $lblSupportEmail;
@@ -147,13 +147,14 @@
 			$this->lblAllowOtherFlag = $this->mctSignupForm->lblAllowOtherFlag_Create();
 			$this->lblAllowOtherFlag->Visible = false;
 			$this->lblDateCreated = $this->mctSignupForm->lblDateCreated_Create();
-			$this->lblStewardshipFund = $this->mctSignupForm->lblStewardshipFundId_Create();
-			if (!$this->lblStewardshipFund->Text) $this->lblStewardshipFund->Visible = false;
+			$this->lblFundingAccount = $this->mctSignupForm->lblFundingAccount_Create();
+			if (!$this->lblFundingAccount->Text) $this->lblFundingAccount->Visible = false;
 			
 			$this->lblDonationStewardshipFund = $this->mctSignupForm->lblDonationStewardshipFundId_Create();
 			if (!$this->lblDonationStewardshipFund->Text) $this->lblDonationStewardshipFund->Visible = false;
 			
 			$this->lblSupportEmail = $this->mctSignupForm->lblSupportEmail_Create();
+			$this->lblSupportEmail->Required = false;
 			$this->lblEmailNotification = $this->mctSignupForm->lblEmailNotification_Create();
 			if (!$this->lblEmailNotification ->Text) $this->lblEmailNotification ->Visible = false;
 			

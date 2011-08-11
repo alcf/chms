@@ -51,8 +51,9 @@
 				$this->objEditing = $objSignupPayment;
 				if ($this->strEditingCode == 'd')
 					$this->lstDialogFund->SelectedValue = $objSignupPayment->DonationStewardshipFundId;
-				else
-					$this->lstDialogFund->SelectedValue = $objSignupPayment->StewardshipFundId;
+				else {
+					throw new Exception('Should Not Be Here -- Event Funds No Longer Editable');
+				}
 				$this->dlgEditFund->ShowDialogBox();
 			}
 		}
@@ -243,11 +244,9 @@
 
 					// Display the Non-Donation amount (if applicable)
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
-						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name);
-						if ($this->objBatch->ReconciledFlag)
-							$strLineItemNameArray[] = $strNameHtml . ' (Non-Donation)';
-						else
-							$strLineItemNameArray[] = '<a href="#" ' . $this->pxyEditFundSignupPayment->RenderAsEvents('n' . $objPayment->SignupPayment->Id, false) . '>' . $strNameHtml . '</a> (Non-Donation)';
+						$strNameHtml = QApplication::HtmlEntities($objPayment->SignupPayment->FundingAccountLabel);
+
+						$strLineItemNameArray[] = $strNameHtml . ' (Non-Donation)';
 						$strLineItemAmountArray[] = QApplication::DisplayCurrency($fltAmount);
 					}
 
@@ -298,10 +297,12 @@
 
 				} else if ($objPayment->SignupPayment) {
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {
-						if (!array_key_exists($objPayment->SignupPayment->StewardshipFundId, $objDataSource)) {
-							$objDataSource[$objPayment->SignupPayment->StewardshipFundId] = array(QApplication::HtmlEntities($objPayment->SignupPayment->StewardshipFund->Name), $objPayment->SignupPayment->StewardshipFund->AccountNumber, 0);
+						if (!array_key_exists($objPayment->SignupPayment->FundingAccountLabel, $objDataSource)) {
+							$objDataSource[$objPayment->SignupPayment->FundingAccountLabel] = array(QApplication::HtmlEntities($objPayment->SignupPayment->SignupEntry->SignupForm->Name),
+								strlen(trim($objPayment->SignupPayment->FundingAccount)) ? QApplication::HtmlEntities($objPayment->SignupPayment->FundingAccount) : 'Unspecified',
+								0);
 						}
-						$objDataSource[$objPayment->SignupPayment->StewardshipFundId][2] += $fltAmount;
+						$objDataSource[$objPayment->SignupPayment->FundingAccountLabel][2] += $fltAmount;
 						$fltTotalNonDonation += $fltAmount;
 					}
 					if ($fltAmount = $objPayment->SignupPayment->AmountDonation) {

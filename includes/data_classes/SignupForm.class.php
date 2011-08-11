@@ -71,7 +71,7 @@
 			$blnToReturn = false;
 			
 			if ($this->CountFormProducts()) {
-				if (!$this->StewardshipFund) $blnToReturn = true;
+				if (!strlen(trim($this->FundingAccount))) $blnToReturn = true;
 			}
 			
 			if ($this->IsDonationAccepted()) {

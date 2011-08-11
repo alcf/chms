@@ -439,7 +439,7 @@
 			$objSignupPayment = new SignupPayment();
 			$objSignupPayment->SignupEntry = $this->objSignupEntry;
 			$objSignupPayment->SignupPaymentTypeId = SignupPaymentType::CreditCard;
-			$objSignupPayment->StewardshipFund = $this->objSignupEntry->SignupForm->StewardshipFund;
+			$objSignupPayment->FundingAccount = $this->objSignupEntry->SignupForm->FundingAccount;
 			$objSignupPayment->DonationStewardshipFund = $this->objSignupEntry->SignupForm->DonationStewardshipFund;
 			
 			return $objSignupPayment;
