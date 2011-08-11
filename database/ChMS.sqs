@@ -538,7 +538,7 @@
         <schema><![CDATA[]]></schema>
         <tableType><![CDATA[InnoDB]]></tableType>
         <location>
-            <x>2784.000000</x>
+            <x>2768.000000</x>
             <y>1792.000000</y>
         </location>
         <size>
@@ -613,20 +613,12 @@
             <uid><![CDATA[100363:11e2766da55:-7ac0]]></uid>
         </SQLField>
         <SQLField>
-            <name><![CDATA[stewardship_fund_id]]></name>
-            <type><![CDATA[INTEGER]]></type>
-            <referencesField>id</referencesField>
-            <referencesTable>stewardship_fund</referencesTable>
-            <referencesField><![CDATA[id]]></referencesField>
-            <referencesTable><![CDATA[stewardship_fund]]></referencesTable>
-            <sourceCardinality>4</sourceCardinality>
-            <destinationCardinality>2</destinationCardinality>
-            <referencesFieldUID><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></referencesFieldUID>
-            <referencesTableUID><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></referencesTableUID>
+            <name><![CDATA[funding_account]]></name>
+            <type><![CDATA[VARCHAR(10)]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[C369E9DB-0282-41C4-A049-E5D7573819EC]]></uid>
-            <unsigned><![CDATA[1]]></unsigned>
+            <unsigned><![CDATA[0]]></unsigned>
         </SQLField>
         <SQLField>
             <name><![CDATA[donation_stewardship_fund_id]]></name>
@@ -5532,20 +5524,12 @@
             <uid><![CDATA[932135A4-C7F3-4251-90C4-E3141179E334]]></uid>
         </SQLField>
         <SQLField>
-            <name><![CDATA[stewardship_fund_id]]></name>
-            <type><![CDATA[INTEGER]]></type>
-            <referencesField>id</referencesField>
-            <referencesTable>stewardship_fund</referencesTable>
-            <referencesField><![CDATA[id]]></referencesField>
-            <referencesTable><![CDATA[stewardship_fund]]></referencesTable>
-            <sourceCardinality>4</sourceCardinality>
-            <destinationCardinality>2</destinationCardinality>
-            <referencesFieldUID><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></referencesFieldUID>
-            <referencesTableUID><![CDATA[C07EEC31-0B13-4A4E-9189-028F77F718CA]]></referencesTableUID>
+            <name><![CDATA[funding_account]]></name>
+            <type><![CDATA[VARCHAR(10)]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[7E9C5D8C-B303-4923-86DE-F540C5DAE67E]]></uid>
-            <unsigned><![CDATA[1]]></unsigned>
+            <unsigned><![CDATA[0]]></unsigned>
         </SQLField>
         <SQLField>
             <name><![CDATA[donation_stewardship_fund_id]]></name>
@@ -5659,6 +5643,7 @@
             <notNull>1</notNull>
             <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <forcedUnique><![CDATA[1]]></forcedUnique>
             <uid><![CDATA[3FDCD05C-5585-431B-88DF-005931EFCFA3]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
@@ -7958,12 +7943,12 @@ Zn2hgcgEgRgDhoaG
         <pageBoundariesVisible><![CDATA[1]]></pageBoundariesVisible>
         <PageGridVisible><![CDATA[1]]></PageGridVisible>
         <snapToGrid><![CDATA[1]]></snapToGrid>
-        <SourceSplitViewState><![CDATA[2 -396.632 1884]]></SourceSplitViewState>
+        <SourceSplitViewState><![CDATA[2 -350.389 1667]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
-        <windowHeight><![CDATA[1162.000000]]></windowHeight>
-        <windowLocationX><![CDATA[17.000000]]></windowLocationX>
-        <windowLocationY><![CDATA[16.000000]]></windowLocationY>
-        <windowWidth><![CDATA[1893.000000]]></windowWidth>
+        <windowHeight><![CDATA[1028.000000]]></windowHeight>
+        <windowLocationX><![CDATA[9.000000]]></windowLocationX>
+        <windowLocationY><![CDATA[0.000000]]></windowLocationY>
+        <windowWidth><![CDATA[1676.000000]]></windowWidth>
     </SQLDocumentInfo>
     <AllowsIndexRenamingOnInsert><![CDATA[1]]></AllowsIndexRenamingOnInsert>
     <containerName><![CDATA[model controller orginal container]]></containerName>

@@ -308,7 +308,7 @@ CREATE TABLE `signup_form`
 `signup_limit` INTEGER,
 `signup_male_limit` INTEGER,
 `signup_female_limit` INTEGER,
-`funding_account` VARCHAR(10),
+`stewardship_fund_id` INTEGER UNSIGNED,
 `donation_stewardship_fund_id` INTEGER UNSIGNED,
 `date_created` DATETIME NOT NULL,
 PRIMARY KEY (`id`)
@@ -614,6 +614,42 @@ CREATE TABLE `attributevalue_multipleattributeoption_assn`
 PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE `person`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`membership_status_type_id` INTEGER UNSIGNED NOT NULL,
+`marital_status_type_id` INTEGER UNSIGNED NOT NULL,
+`first_name` VARCHAR(100),
+`middle_name` VARCHAR(100),
+`last_name` VARCHAR(100),
+`mailing_label` VARCHAR(200),
+`prior_last_names` VARCHAR(255),
+`nickname` VARCHAR(100),
+`title` VARCHAR(40),
+`suffix` VARCHAR(40),
+`gender` VARCHAR(1),
+`date_of_birth` DATE,
+`dob_year_approximate_flag` BOOLEAN,
+`dob_guessed_flag` BOOLEAN,
+`age` INTEGER,
+`deceased_flag` BOOLEAN NOT NULL,
+`date_deceased` DATE,
+`current_head_shot_id` INTEGER UNSIGNED UNIQUE,
+`mailing_address_id` INTEGER UNSIGNED,
+`stewardship_address_id` INTEGER UNSIGNED,
+`primary_phone_id` INTEGER UNSIGNED,
+`primary_email_id` INTEGER UNSIGNED UNIQUE,
+`can_mail_flag` BOOLEAN,
+`can_phone_flag` BOOLEAN,
+`can_email_flag` BOOLEAN,
+`primary_address_text` VARCHAR(255),
+`primary_city_text` VARCHAR(100),
+`primary_state_text` VARCHAR(2),
+`primary_zip_code_text` VARCHAR(10),
+`primary_phone_text` VARCHAR(20),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 CREATE TABLE `public_login`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -797,42 +833,6 @@ CREATE TABLE `phone`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `person`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`membership_status_type_id` INTEGER UNSIGNED NOT NULL,
-`marital_status_type_id` INTEGER UNSIGNED NOT NULL,
-`first_name` VARCHAR(100),
-`middle_name` VARCHAR(100),
-`last_name` VARCHAR(100),
-`mailing_label` VARCHAR(200),
-`prior_last_names` VARCHAR(255),
-`nickname` VARCHAR(100),
-`title` VARCHAR(40),
-`suffix` VARCHAR(40),
-`gender` VARCHAR(1),
-`date_of_birth` DATE,
-`dob_year_approximate_flag` BOOLEAN,
-`dob_guessed_flag` BOOLEAN,
-`age` INTEGER,
-`deceased_flag` BOOLEAN NOT NULL,
-`date_deceased` DATE,
-`current_head_shot_id` INTEGER UNSIGNED UNIQUE,
-`mailing_address_id` INTEGER UNSIGNED,
-`stewardship_address_id` INTEGER UNSIGNED,
-`primary_phone_id` INTEGER UNSIGNED,
-`primary_email_id` INTEGER UNSIGNED UNIQUE,
-`can_mail_flag` BOOLEAN,
-`can_phone_flag` BOOLEAN,
-`can_email_flag` BOOLEAN,
-`primary_address_text` VARCHAR(255),
-`primary_city_text` VARCHAR(100),
-`primary_state_text` VARCHAR(2),
-`primary_zip_code_text` VARCHAR(10),
-`primary_phone_text` VARCHAR(20),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `signup_entry`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -952,16 +952,6 @@ CREATE TABLE `class_attendence`
 `class_registration_id` INTEGER UNSIGNED NOT NULL,
 `meeting_number` INTEGER UNSIGNED NOT NULL,
 `present_flag` BOOLEAN,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `online_donation_line_item`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`online_donation_id` INTEGER UNSIGNED NOT NULL,
-`amount` DECIMAL(10,2),
-`stewardship_fund_id` INTEGER UNSIGNED,
-`other` VARCHAR(255),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -1106,7 +1096,7 @@ CREATE TABLE `signup_payment`
 `transaction_date` DATETIME,
 `transaction_description` VARCHAR(255),
 `amount` DECIMAL(10,2),
-`funding_account` VARCHAR(10),
+`stewardship_fund_id` INTEGER UNSIGNED,
 `donation_stewardship_fund_id` INTEGER UNSIGNED,
 `amount_donation` DECIMAL(10,2),
 `amount_non_donation` DECIMAL(10,2),
@@ -1121,6 +1111,16 @@ CREATE TABLE `online_donation`
 `confirmation_email` VARCHAR(255),
 `amount` DECIMAL(10,2),
 `credit_card_payment_id` INTEGER UNSIGNED UNIQUE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `online_donation_line_item`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`online_donation_id` INTEGER UNSIGNED NOT NULL,
+`amount` DECIMAL(10,2),
+`stewardship_fund_id` INTEGER UNSIGNED,
+`other` VARCHAR(255),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -1185,6 +1185,9 @@ ALTER TABLE `signup_form` ADD FOREIGN KEY signup_form_type_id_idxfk (`signup_for
 
 CREATE INDEX `ministry_id_idx` ON `signup_form`(`ministry_id`);
 ALTER TABLE `signup_form` ADD FOREIGN KEY ministry_id_idxfk_1 (`ministry_id`) REFERENCES `ministry` (`id`);
+
+CREATE INDEX `stewardship_fund_id_idx` ON `signup_form`(`stewardship_fund_id`);
+ALTER TABLE `signup_form` ADD FOREIGN KEY stewardship_fund_id_idxfk (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 CREATE INDEX `donation_stewardship_fund_id_idx` ON `signup_form`(`donation_stewardship_fund_id`);
 ALTER TABLE `signup_form` ADD FOREIGN KEY donation_stewardship_fund_id_idxfk (`donation_stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
@@ -1289,6 +1292,25 @@ ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attrib
 
 ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
 
+CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
+ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
+
+CREATE INDEX `marital_status_type_id_idx` ON `person`(`marital_status_type_id`);
+ALTER TABLE `person` ADD FOREIGN KEY marital_status_type_id_idxfk (`marital_status_type_id`) REFERENCES `marital_status_type` (`id`);
+
+ALTER TABLE `person` ADD FOREIGN KEY current_head_shot_id_idxfk (`current_head_shot_id`) REFERENCES `head_shot` (`id`);
+
+CREATE INDEX `mailing_address_id_idx` ON `person`(`mailing_address_id`);
+ALTER TABLE `person` ADD FOREIGN KEY mailing_address_id_idxfk (`mailing_address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
+ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
+ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
+
+ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
+
 ALTER TABLE `public_login` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `new_person_flag_idx` ON `public_login`(`new_person_flag`);
@@ -1362,7 +1384,7 @@ CREATE INDEX `person_id_idx` ON `stewardship_pledge`(`person_id`);
 ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY person_id_idxfk_10 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_pledge`(`stewardship_fund_id`);
-ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY stewardship_fund_id_idxfk (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+ALTER TABLE `stewardship_pledge` ADD FOREIGN KEY stewardship_fund_id_idxfk_1 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 ALTER TABLE `search_query` ADD FOREIGN KEY smart_group_id_idxfk (`smart_group_id`) REFERENCES `smart_group` (`group_id`);
 
@@ -1396,7 +1418,7 @@ CREATE INDEX `household_id_idx` ON `address`(`household_id`);
 ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_2 (`household_id`) REFERENCES `household` (`id`);
 
 CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
-ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
+ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
 
 CREATE INDEX `verification_checked_flag_idx` ON `address`(`verification_checked_flag`);
 CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
@@ -1412,25 +1434,6 @@ CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
 ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
 
 CREATE INDEX `number_idx` ON `phone`(`number`);
-CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
-ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
-
-CREATE INDEX `marital_status_type_id_idx` ON `person`(`marital_status_type_id`);
-ALTER TABLE `person` ADD FOREIGN KEY marital_status_type_id_idxfk (`marital_status_type_id`) REFERENCES `marital_status_type` (`id`);
-
-ALTER TABLE `person` ADD FOREIGN KEY current_head_shot_id_idxfk (`current_head_shot_id`) REFERENCES `head_shot` (`id`);
-
-CREATE INDEX `mailing_address_id_idx` ON `person`(`mailing_address_id`);
-ALTER TABLE `person` ADD FOREIGN KEY mailing_address_id_idxfk (`mailing_address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
-ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
-ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
-
-ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
-
 CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`,`signup_entry_status_type_id`);
 
 CREATE INDEX `signup_entry_idx_1` ON `signup_entry` (`signup_form_id`,`signup_entry_status_type_id`);
@@ -1523,12 +1526,6 @@ CREATE INDEX `class_registration_id_idx` ON `class_attendence`(`class_registrati
 ALTER TABLE `class_attendence` ADD FOREIGN KEY class_registration_id_idxfk (`class_registration_id`) REFERENCES `class_registration` (`signup_entry_id`);
 
 CREATE INDEX `meeting_number_idx` ON `class_attendence`(`meeting_number`);
-CREATE INDEX `online_donation_id_idx` ON `online_donation_line_item`(`online_donation_id`);
-ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY online_donation_id_idxfk (`online_donation_id`) REFERENCES `online_donation` (`id`);
-
-CREATE INDEX `stewardship_fund_id_idx` ON `online_donation_line_item`(`stewardship_fund_id`);
-ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_1 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
-
 CREATE INDEX `email_message_id_idx` ON `email_message_route`(`email_message_id`);
 ALTER TABLE `email_message_route` ADD FOREIGN KEY email_message_id_idxfk_1 (`email_message_id`) REFERENCES `email_message` (`id`);
 
@@ -1636,6 +1633,9 @@ ALTER TABLE `signup_payment` ADD FOREIGN KEY signup_entry_id_idxfk_3 (`signup_en
 CREATE INDEX `signup_payment_type_id_idx` ON `signup_payment`(`signup_payment_type_id`);
 ALTER TABLE `signup_payment` ADD FOREIGN KEY signup_payment_type_id_idxfk (`signup_payment_type_id`) REFERENCES `signup_payment_type` (`id`);
 
+CREATE INDEX `stewardship_fund_id_idx` ON `signup_payment`(`stewardship_fund_id`);
+ALTER TABLE `signup_payment` ADD FOREIGN KEY stewardship_fund_id_idxfk_5 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+
 CREATE INDEX `donation_stewardship_fund_id_idx` ON `signup_payment`(`donation_stewardship_fund_id`);
 ALTER TABLE `signup_payment` ADD FOREIGN KEY donation_stewardship_fund_id_idxfk_1 (`donation_stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
@@ -1645,6 +1645,12 @@ CREATE INDEX `person_id_idx` ON `online_donation`(`person_id`);
 ALTER TABLE `online_donation` ADD FOREIGN KEY person_id_idxfk_22 (`person_id`) REFERENCES `person` (`id`);
 
 ALTER TABLE `online_donation` ADD FOREIGN KEY credit_card_payment_id_idxfk_1 (`credit_card_payment_id`) REFERENCES `credit_card_payment` (`id`);
+
+CREATE INDEX `online_donation_id_idx` ON `online_donation_line_item`(`online_donation_id`);
+ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY online_donation_id_idxfk (`online_donation_id`) REFERENCES `online_donation` (`id`);
+
+CREATE INDEX `stewardship_fund_id_idx` ON `online_donation_line_item`(`stewardship_fund_id`);
+ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_6 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 CREATE INDEX `ministry_id_idx` ON `group_role`(`ministry_id`);
 ALTER TABLE `group_role` ADD FOREIGN KEY ministry_id_idxfk_5 (`ministry_id`) REFERENCES `ministry` (`id`);
