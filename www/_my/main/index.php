@@ -524,6 +524,7 @@
 			QApplication::$PublicLogin->Save();
 
 			QApplication::PublicLoginRefresh();
+			$this->mctPerson->Person->Reload();
 			$this->Refresh();
 		}
 
@@ -604,6 +605,7 @@
 			QApplication::$PublicLogin->Save();
 
 			// Refresh Stuff
+			$this->mctPerson->Person->Reload();
 			$this->Refresh();
 
 			// Cleanup Stuff
