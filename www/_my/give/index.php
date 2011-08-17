@@ -135,7 +135,7 @@
 				$txtAmount->Width = '100px';
 				$txtAmount->Text = '0.00';
 			}
-			
+
 			if (!is_null($lstFunds->SelectedValue)) {
 				if (!$txtAmount->Enabled) $txtAmount->Enabled = true;
 			} else {
@@ -150,6 +150,7 @@
 			$lstFunds = $this->GetControl('lstFunds' . $strParameter);
 			
 			$txtAmount->Text = str_replace('$', '', $txtAmount->Text);
+			$txtAmount->Text = str_replace(',', '', $txtAmount->Text);
 			$txtAmount->Text = str_replace('-', '', $txtAmount->Text);
 			$txtAmount->Text = sprintf('%.2f', (float) $txtAmount->Text);
 			$this->lblTotal_Refresh();
