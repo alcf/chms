@@ -63,7 +63,7 @@
 				QApplication::HtmlEntities($strLink),
 				$strImageHtml,
 				$dttDateTime->ToString('MMMM D, YYYY'),
-				$strDescription,
+				QString::Truncate($strDescription, 100),
 				QApplication::HtmlEntities($strLink));
 
 			$strHtmlArray[] = $strHtml;
