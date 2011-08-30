@@ -284,14 +284,11 @@
 				$objProvisionalPublicLogin->EmailAddress = trim($strEmailAddress);
 				if ($blnChangeHash) {
 					$objProvisionalPublicLogin->UrlHash = md5(microtime());
-					$objProvisionalPublicLogin->ConfirmationCode = md5(microtime());
-					$objProvisionalPublicLogin->ConfirmationCode = str_replace('0', '', $objProvisionalPublicLogin->ConfirmationCode);
-					$objProvisionalPublicLogin->ConfirmationCode = str_replace('1', '', $objProvisionalPublicLogin->ConfirmationCode);
-					$objProvisionalPublicLogin->ConfirmationCode = substr($objProvisionalPublicLogin->ConfirmationCode, 0, 8);
+					$objProvisionalPublicLogin->ConfirmationCode = rand(1000, 9999);
 				}
 				$objProvisionalPublicLogin->Save();
 				PublicLogin::GetDatabase()->TransactionCommit();
-				
+
 				$objProvisionalPublicLogin->SendConfirmationEmail();
 
 				return $objProvisionalPublicLogin;

@@ -33,7 +33,7 @@
 					return sprintf('/register/awaiting.php/%s/%s', $this->intPublicLoginId, $this->strUrlHash);
 
 				case 'ConfirmationUrl':
-					return sprintf('%s/confirm.php/%s', MY_ALCF_URL, $this->PublicLogin->Username);
+					return sprintf('%s/c.php/%s', MY_ALCF_URL, $this->PublicLogin->Username);
 
 				default:
 					try {

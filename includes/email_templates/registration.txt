@@ -4,7 +4,11 @@ Dear %PERSON_NAME%,
 
 Thank you for opening up a registration at the my.alcf website for Abundant Life Christian Fellowship.  The first thing we need to do is for you to confirm your email address.
 
-You can do this by going to %URL% by using your web browser and then entering in your username and the following confirmation code:
+You can do this by going to the following web address using your web browser:
+
+Address:  %URL% 
+
+Then, be sure to enter in your username and the following confirmation code:
 
 Username:  %USERNAME%
 Confirmation Code:  %CODE%
