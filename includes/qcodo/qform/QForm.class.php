@@ -22,7 +22,7 @@
 		 *
 		 * @var string FormStateHandler the classname of the FormState handler to use
 		 */
-		public static $FormStateHandler = 'QSessionFormStateHandler';
+		public static $FormStateHandler = 'QFormStateHandler';
 		// SEE FileFormStateHandler Change Below! //
 
 		/**
