@@ -2,7 +2,6 @@
 	<p style="margin-top: 0;">(*) Fields in <strong>BOLD</strong> are required</p>
 
 	<div class="section">	
-		<span id="siteseal" style="display:none;"><script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=lKecTsirMxSF0INdtixqvPFE2i6Ymfv0ShV284ctWsw2kRnqpIKVxOy2xvkg"></script></span>
 		<div class="securePayment"><div class="securePaymentInside" onclick="verifySeal();" title="Secure SSL Using 2048-bit RSA Triple-DES Encryption">&nbsp;</div></div>
 		<?php $_CONTROL->txtFirstName->HtmlAfter = ' ' . $_CONTROL->txtLastName->RenderWithError(false); ?>
 		<?php $_CONTROL->txtFirstName->RenderWithName(); ?>
@@ -23,3 +22,4 @@
 	</div>
 
 	<?php $_CONTROL->dlgDialogBox->Render(); ?>
+	<span id="siteseal" style="display:none;"><script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=lKecTsirMxSF0INdtixqvPFE2i6Ymfv0ShV284ctWsw2kRnqpIKVxOy2xvkg"></script></span>	

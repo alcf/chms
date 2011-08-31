@@ -39,6 +39,7 @@
 			$this->txtFirstName->Width = '120px';
 
 			$this->txtLastName = new QTextBox($this);
+			$this->txtLastName->Name = 'Cardholder Last Name';
 			$this->txtLastName->Required = true;
 			$this->txtLastName->Text = $strLastName;
 			$this->txtLastName->Width = '120px';

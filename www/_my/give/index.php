@@ -71,28 +71,38 @@
 			$strMissingArray = array();
 
 			if (!$this->GetAmount()) {
+				$strMissingArray[] = 'A Fund and/or Donation Amount is missing';
+				$this->GetControl('txtAmount0')->Select();
+				$blnFirst = false;
+			}
+
+			foreach ($this->GetErrorControls() as $objControl) {
+				$objControl->Blink();
+				if ($objControl->ValidationError) $strMissingArray[] = $objControl->ValidationError;
+				else $strMissingArray[] = $objControl->Warning;
+				if ($blnFirst) {
+					$objControl->Focus();
+					$blnFirst = false;
+				}
+			}
+			
+			if (count($strMissingArray)) {
 				$blnToReturn = false;
-				$this->lblMessage->Text = 'You must enter in an amount.';
+				$this->lblMessage->Text = 'Please address the issues in the following fields:<ul>';
+				foreach ($strMissingArray as $strMissing)
+					$this->lblMessage->Text .= '<li>' . $strMissing . '</li>';
+				$this->lblMessage->Text .= '</ul>';
 				$this->lblMessage->FontSize = '14px';
 				$this->lblMessage->FontBold = true;
 				$this->lblMessage->ForeColor = '#844';
 				$this->lblMessage->Visible = true;
 				$this->lblMessage->Blink();
-				
+
 				$this->pnlPayment->btnSubmit_Reset();
-				$this->GetControl('txtAmount0')->Select();
-				$blnFirst = false;
+				QApplication::ExecuteJavaScript('document.location="#give";');
+				QApplication::ExecuteJavaScript('document.location="#";');
 			} else {
 				if ($this->lblMessage->Visible) $this->lblMessage->Visible = false;
-			}
-			
-			foreach ($this->GetErrorControls() as $objControl) {
-				$objControl->Blink();
-				if ($blnFirst) {
-					$this->pnlPayment->btnSubmit_Reset();
-					$objControl->Focus();
-					$blnFirst = false;
-				}
 			}
 
 			return $blnToReturn;
