@@ -262,6 +262,7 @@
 				if ($objDonationItem->Amount) {
 					$objOnlineDonationLineItem = clone($objDonationItem);
 					$objOnlineDonationLineItem->OnlineDonation = $objPaymentObject;
+					$objOnlineDonationLineItem->DonationFlag = true;
 					$objOnlineDonationLineItem->Save();
 				}
 			}

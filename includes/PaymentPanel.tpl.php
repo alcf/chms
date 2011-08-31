@@ -22,4 +22,12 @@
 	</div>
 
 	<?php $_CONTROL->dlgDialogBox->Render(); ?>
-	<span id="siteseal" style="display:none;"><script type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=lKecTsirMxSF0INdtixqvPFE2i6Ymfv0ShV284ctWsw2kRnqpIKVxOy2xvkg"></script></span>	
+
+<script type="text/javascript">
+function verifySeal() {
+	var bgHeight = "740";
+	var bgWidth = "592";
+	var url = "https://seal.godaddy.com:443/verifySeal?sealID=lKecTsirMxSF0INdtixqvPFE2i6Ymfv0ShV284ctWsw2kRnqpIKVxOy2xvkg";
+	window.open(url,'SealVerfication','location=yes,status=yes,resizable=yes,scrollbars=no,width=' + bgWidth + ',height=' + bgHeight);
+}
+</script>
