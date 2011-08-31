@@ -68,6 +68,8 @@
 			$blnToReturn = parent::Form_Validate();
 			$blnFirst = true;
 
+			$strMissingArray = array();
+
 			if (!$this->GetAmount()) {
 				$blnToReturn = false;
 				$this->lblMessage->Text = 'You must enter in an amount.';
