@@ -84,6 +84,15 @@
 				$this->txtEmail->Warning = 'Email already in use by another account';
 				$blnToReturn = false;
 			}
+			
+			// Check "First Name" to ensure no & or " and "
+			$strFirstName = trim(strtolower($this->txtFirstName->Text));
+			if ((strpos($strFirstName, ' and ') !== false) ||
+				(strpos($strFirstName, '&') !== false) ||
+				(strpos($strFirstName, ',') !== false)) {
+				$this->txtFirstName->Warning = 'Please only register one person per account.  For couples or families, you can register each person as different individual accounts.';
+				$blnToReturn = false;
+			}
 
 			$blnFirst = true;
 			foreach ($this->GetErrorControls() as $objControl) {
