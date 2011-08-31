@@ -93,6 +93,8 @@
 			} else {
 				// Create as a new person
 				$this->Person = Person::CreatePerson($strFirstName, null, $strLastName, null);
+				$this->Person->PublicCreationFlag = true;
+				$this->Person->Save();
 				$this->objAddress = $objAddress;
 			}
 		}
