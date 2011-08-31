@@ -300,13 +300,6 @@
 		QApplicationBase::$ClassFile['ministrymetacontrol'] = __DATA_META_CONTROLS__ . '/MinistryMetaControl.class.php';
 		QApplicationBase::$ClassFile['ministrydatagrid'] = __DATA_META_CONTROLS__ . '/MinistryDataGrid.class.php';
 
-	// ClassPaths for the MiscellaneousPayment class
-		QApplicationBase::$ClassFile['miscellaneouspayment'] = __DATA_CLASSES__ . '/MiscellaneousPayment.class.php';
-		QApplicationBase::$ClassFile['qqnodemiscellaneouspayment'] = __DATA_CLASSES__ . '/MiscellaneousPayment.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodemiscellaneouspayment'] = __DATA_CLASSES__ . '/MiscellaneousPayment.class.php';
-		QApplicationBase::$ClassFile['miscellaneouspaymentmetacontrol'] = __DATA_META_CONTROLS__ . '/MiscellaneousPaymentMetaControl.class.php';
-		QApplicationBase::$ClassFile['miscellaneouspaymentdatagrid'] = __DATA_META_CONTROLS__ . '/MiscellaneousPaymentDataGrid.class.php';
-
 	// ClassPaths for the MobileProvider class
 		QApplicationBase::$ClassFile['mobileprovider'] = __DATA_CLASSES__ . '/MobileProvider.class.php';
 		QApplicationBase::$ClassFile['qqnodemobileprovider'] = __DATA_CLASSES__ . '/MobileProvider.class.php';

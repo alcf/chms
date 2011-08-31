@@ -28,6 +28,7 @@
 		protected $btnDialogSave;
 		protected $btnDialogCancel;
 		protected $lstDialogFund;
+		protected $txtDialogOther;
 
 		protected function btnPost_Click() {
 			if (!$this->dtxDateCredited->DateTime) $this->dtxDateCredited->Warning = 'Invalid Date';
@@ -39,8 +40,13 @@
 			$objOnlineDonationLineItem = OnlineDonationLineItem::Load($strParameter);
 			if ($objOnlineDonationLineItem->OnlineDonation->CreditCardPayment->PaypalBatchId == $this->objBatch->Id) {
 				$this->objEditing = $objOnlineDonationLineItem;
-				$this->lstDialogFund->SelectedValue = $objOnlineDonationLineItem->StewardshipFundId;
+				if ($this->objEditing->DonationFlag)
+					$this->lstDialogFund->SelectedValue = $objOnlineDonationLineItem->StewardshipFundId;
+				else
+					$this->lstDialogFund->SelectedValue = -1;
+				$this->txtDialogOther->Text = $objOnlineDonationLineItem->Other;
 				$this->dlgEditFund->ShowDialogBox();
+				$this->lstDialogFund_Change();
 			}
 		}
 
@@ -55,12 +61,21 @@
 					throw new Exception('Should Not Be Here -- Event Funds No Longer Editable');
 				}
 				$this->dlgEditFund->ShowDialogBox();
+				$this->lstDialogFund_Change();
 			}
 		}
-		
+
 		protected function btnDialogSave_Click() {
 			if ($this->objEditing instanceof OnlineDonationLineItem) {
-				$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
+				if ($this->lstDialogFund->SelectedValue == -1) {
+					$this->objEditing->DonationFlag = false;
+					$this->objEditing->StewardshipFundId = null;
+					$this->objEditing->Other = trim($this->txtDialogOther->Text);
+				} else {
+					$this->objEditing->DonationFlag = true;
+					$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
+					$this->objEditing->Other = null;
+				}
 				$this->objEditing->Save();
 			} else if ($this->strEditingCode == 'd') {
 				$this->objEditing->DonationStewardshipFundId = $this->lstDialogFund->SelectedValue;
@@ -77,7 +92,7 @@
 		protected function btnDialogCancel_Click() {
 			$this->dlgEditFund->HideDialogBox();
 		}
-		
+
 		/**
 		 * Stores the LINKED CC Paymente records for this batch
 		 * @var CreditCardPayment[]
@@ -144,13 +159,18 @@
 			$this->lstDialogFund->Required = true;
 			foreach (StewardshipFund::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::StewardshipFund()->Name)) as $objFund)
 				$this->lstDialogFund->AddItem($objFund->Name, $objFund->Id);
+			$this->lstDialogFund->AddItem('- Other (Non-Donation)... -', -1);
+			$this->lstDialogFund->AddAction(new QChangeEvent(), new QAjaxAction('lstDialogFund_Change'));
 
+			$this->txtDialogOther = new QTextBox($this->dlgEditFund);
+			$this->txtDialogOther->Name = 'Non-Donation Funding Account';
+			
 			$this->btnDialogSave = new QButton($this->dlgEditFund);
 			$this->btnDialogSave->CssClass = 'primary';
 			$this->btnDialogSave->Text = 'Update';
-			$this->btnDialogSave->CausesValidation = $this->lstDialogFund;
+			$this->btnDialogSave->CausesValidation = QCausesValidation::SiblingsAndChildren;
 			$this->btnDialogSave->AddAction(new QClickEvent(), new QAjaxAction('btnDialogSave_Click'));
-
+			
 			$this->btnDialogCancel = new QLinkButton($this->dlgEditFund);
 			$this->btnDialogCancel->CssClass = 'cancel';
 			$this->btnDialogCancel->Text = 'Cancel';
@@ -160,6 +180,16 @@
 			$this->Transactions_Refresh();
 		}
 		
+		public function lstDialogFund_Change(){ 
+			if ($this->lstDialogFund->SelectedValue == -1) {
+				$this->txtDialogOther->Visible = true;
+				$this->txtDialogOther->Required = true;
+			} else {
+				$this->txtDialogOther->Visible = false;
+				$this->txtDialogOther->Required = false;
+			}
+		}
+
 		protected function Transactions_Refresh() {
 			// Cache the Payment Array for actual trackable payments
 			$this->objPaymentArray = CreditCardPayment::LoadArrayByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, false, 
@@ -218,9 +248,15 @@
 					foreach ($objPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objLineItem) {
 						$strLineItemAmountArray[] = QApplication::DisplayCurrency($objLineItem->Amount);
 						
+						// We display it normally if we have a stewardshipfund
 						if ($objLineItem->StewardshipFund)
 							$strNameHtml = QApplication::HtmlEntities($objLineItem->StewardshipFund->Name);
-						else {
+						// We display a non-donation fund if applicable
+						else if (!$objLineItem->DonationFlag) {
+							if (!strlen($strDescription = trim($objLineItem->Other))) $strDescription = '(not specified)';
+							$strNameHtml = '<strong>NON-DONATION</strong> - ' . QApplication::HtmlEntities($strDescription);
+						// We display it as not-yet-selected
+						} else {
 							if (!strlen($strDescription = trim($objLineItem->Other))) $strDescription = '(not specified)';
 							$strNameHtml = '<strong>OTHER</strong> - ' . QApplication::HtmlEntities($strDescription);
 						}
@@ -281,19 +317,34 @@
 			foreach ($this->objPaymentArray as $objPayment) {
 				if ($objPayment->OnlineDonation) {
 					foreach ($objPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objLineItem) {
+						// We've explicitly selected a Stewardship / Donation Fund
 						if ($objLineItem->StewardshipFundId) {
 							if (!array_key_exists($objLineItem->StewardshipFundId, $objDataSource)) {
 								$objDataSource[$objLineItem->StewardshipFundId] = array(QApplication::HtmlEntities($objLineItem->StewardshipFund->Name), $objLineItem->StewardshipFund->AccountNumber, 0);
 							}
 							$objDataSource[$objLineItem->StewardshipFundId][2] += $objLineItem->Amount;
+							$fltTotalDonation += $objLineItem->Amount;
+							
+
+						// We're explicilty looking at a NON DONATION
+						} else if (!$objLineItem->DonationFlag) {
+							$strKey = 'Non-Donation: ' . $objLineItem->Other;
+							if (!array_key_exists($strKey, $objDataSource)) {
+								$objDataSource[$strKey] = array('Non-Donation / Payment', $objLineItem->Other, 0);
+							}
+							$objDataSource[$strKey][2] += $objLineItem->Amount;
+							$fltTotalNonDonation += $objLineItem->Amount;
+							
+
+						// We have not yet specified it, but we're assuming this to be a donation of some sort
 						} else {
 							if (!array_key_exists(0, $objDataSource)) {
 								$objDataSource[0] = array('<span style="color: #888;">(Not Yet Specified)</span>', '---', 0);
 							}
 							$objDataSource[0][2] += $objLineItem->Amount;
+							$fltTotalDonation += $objLineItem->Amount;
 						}
 					}
-					$fltTotalDonation += $objPayment->OnlineDonation->Amount;
 
 				} else if ($objPayment->SignupPayment) {
 					if ($fltAmount = $objPayment->SignupPayment->AmountNonDonation) {

@@ -22,6 +22,8 @@
 	 * property-read QLabel $OnlineDonationIdLabel
 	 * property QFloatTextBox $AmountControl
 	 * property-read QLabel $AmountLabel
+	 * property QCheckBox $DonationFlagControl
+	 * property-read QLabel $DonationFlagLabel
 	 * property QListBox $StewardshipFundIdControl
 	 * property-read QLabel $StewardshipFundIdLabel
 	 * property QTextBox $OtherControl
@@ -76,6 +78,12 @@
 		protected $txtAmount;
 
         /**
+         * @var QCheckBox chkDonationFlag;
+         * @access protected
+         */
+		protected $chkDonationFlag;
+
+        /**
          * @var QListBox lstStewardshipFund;
          * @access protected
          */
@@ -100,6 +108,12 @@
          * @access protected
          */
 		protected $lblAmount;
+
+        /**
+         * @var QLabel lblDonationFlag
+         * @access protected
+         */
+		protected $lblDonationFlag;
 
         /**
          * @var QLabel lblStewardshipFundId
@@ -296,6 +310,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkDonationFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkDonationFlag_Create($strControlId = null) {
+			$this->chkDonationFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkDonationFlag->Name = QApplication::Translate('Donation Flag');
+			$this->chkDonationFlag->Checked = $this->objOnlineDonationLineItem->DonationFlag;
+			return $this->chkDonationFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblDonationFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDonationFlag_Create($strControlId = null) {
+			$this->lblDonationFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDonationFlag->Name = QApplication::Translate('Donation Flag');
+			$this->lblDonationFlag->Text = ($this->objOnlineDonationLineItem->DonationFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblDonationFlag;
+		}
+
+		/**
 		 * Create and setup QListBox lstStewardshipFund
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -390,6 +428,9 @@
 			if ($this->txtAmount) $this->txtAmount->Text = $this->objOnlineDonationLineItem->Amount;
 			if ($this->lblAmount) $this->lblAmount->Text = $this->objOnlineDonationLineItem->Amount;
 
+			if ($this->chkDonationFlag) $this->chkDonationFlag->Checked = $this->objOnlineDonationLineItem->DonationFlag;
+			if ($this->lblDonationFlag) $this->lblDonationFlag->Text = ($this->objOnlineDonationLineItem->DonationFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->lstStewardshipFund) {
 					$this->lstStewardshipFund->RemoveAllItems();
 				$this->lstStewardshipFund->AddItem(QApplication::Translate('- Select One -'), null);
@@ -431,6 +472,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstOnlineDonation) $this->objOnlineDonationLineItem->OnlineDonationId = $this->lstOnlineDonation->SelectedValue;
 				if ($this->txtAmount) $this->objOnlineDonationLineItem->Amount = $this->txtAmount->Text;
+				if ($this->chkDonationFlag) $this->objOnlineDonationLineItem->DonationFlag = $this->chkDonationFlag->Checked;
 				if ($this->lstStewardshipFund) $this->objOnlineDonationLineItem->StewardshipFundId = $this->lstStewardshipFund->SelectedValue;
 				if ($this->txtOther) $this->objOnlineDonationLineItem->Other = $this->txtOther->Text;
 
@@ -493,6 +535,12 @@
 				case 'AmountLabel':
 					if (!$this->lblAmount) return $this->lblAmount_Create();
 					return $this->lblAmount;
+				case 'DonationFlagControl':
+					if (!$this->chkDonationFlag) return $this->chkDonationFlag_Create();
+					return $this->chkDonationFlag;
+				case 'DonationFlagLabel':
+					if (!$this->lblDonationFlag) return $this->lblDonationFlag_Create();
+					return $this->lblDonationFlag;
 				case 'StewardshipFundIdControl':
 					if (!$this->lstStewardshipFund) return $this->lstStewardshipFund_Create();
 					return $this->lstStewardshipFund;
@@ -533,6 +581,8 @@
 						return ($this->lstOnlineDonation = QType::Cast($mixValue, 'QControl'));
 					case 'AmountControl':
 						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
+					case 'DonationFlagControl':
+						return ($this->chkDonationFlag = QType::Cast($mixValue, 'QControl'));
 					case 'StewardshipFundIdControl':
 						return ($this->lstStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'OtherControl':

@@ -34,8 +34,6 @@
 	 * @property StewardshipContribution $StewardshipContribution the value for the StewardshipContribution object referenced by intStewardshipContributionId (Unique)
 	 * @property OnlineDonation $OnlineDonation the value for the OnlineDonation object that uniquely references this CreditCardPayment
 	 * @property SignupPayment $SignupPayment the value for the SignupPayment object that uniquely references this CreditCardPayment
-	 * @property MiscellaneousPayment $_MiscellaneousPayment the value for the private _objMiscellaneousPayment (Read-Only) if set due to an expansion on the miscellaneous_payment.credit_card_payment_id reverse relationship
-	 * @property MiscellaneousPayment[] $_MiscellaneousPaymentArray the value for the private _objMiscellaneousPaymentArray (Read-Only) if set due to an ExpandAsArray on the miscellaneous_payment.credit_card_payment_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class CreditCardPaymentGen extends QBaseClass {
@@ -167,22 +165,6 @@
 		protected $intStewardshipContributionId;
 		const StewardshipContributionIdDefault = null;
 
-
-		/**
-		 * Private member variable that stores a reference to a single MiscellaneousPayment object
-		 * (of type MiscellaneousPayment), if this CreditCardPayment object was restored with
-		 * an expansion on the miscellaneous_payment association table.
-		 * @var MiscellaneousPayment _objMiscellaneousPayment;
-		 */
-		private $_objMiscellaneousPayment;
-
-		/**
-		 * Private member variable that stores a reference to an array of MiscellaneousPayment objects
-		 * (of type MiscellaneousPayment[]), if this CreditCardPayment object was restored with
-		 * an ExpandAsArray on the miscellaneous_payment association table.
-		 * @var MiscellaneousPayment[] _objMiscellaneousPaymentArray;
-		 */
-		private $_objMiscellaneousPaymentArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -613,38 +595,6 @@
 			if (!$objDbRow)
 				return null;
 
-			// See if we're doing an array expansion on the previous item
-			$strAlias = $strAliasPrefix . 'id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (($strExpandAsArrayNodes) && ($objPreviousItem) &&
-				($objPreviousItem->intId == $objDbRow->GetColumn($strAliasName, 'Integer'))) {
-
-				// We are.  Now, prepare to check for ExpandAsArray clauses
-				$blnExpandedViaArray = false;
-				if (!$strAliasPrefix)
-					$strAliasPrefix = 'credit_card_payment__';
-
-
-				$strAlias = $strAliasPrefix . 'miscellaneouspayment__id';
-				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objMiscellaneousPaymentArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objMiscellaneousPaymentArray[$intPreviousChildItemCount - 1];
-						$objChildItem = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
-						if ($objChildItem)
-							$objPreviousItem->_objMiscellaneousPaymentArray[] = $objChildItem;
-					} else
-						$objPreviousItem->_objMiscellaneousPaymentArray[] = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-					$blnExpandedViaArray = true;
-				}
-
-				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
-				if ($blnExpandedViaArray)
-					return false;
-				else if ($strAliasPrefix == 'credit_card_payment__')
-					$strAliasPrefix = null;
-			}
 
 			// Create a new instance of the CreditCardPayment object
 			$objToReturn = new CreditCardPayment();
@@ -731,16 +681,6 @@
 			}
 
 
-
-			// Check for MiscellaneousPayment Virtual Binding
-			$strAlias = $strAliasPrefix . 'miscellaneouspayment__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objMiscellaneousPaymentArray[] = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objMiscellaneousPayment = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
 
 			return $objToReturn;
 		}
@@ -1521,18 +1461,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_MiscellaneousPayment':
-					// Gets the value for the private _objMiscellaneousPayment (Read-Only)
-					// if set due to an expansion on the miscellaneous_payment.credit_card_payment_id reverse relationship
-					// @return MiscellaneousPayment
-					return $this->_objMiscellaneousPayment;
-
-				case '_MiscellaneousPaymentArray':
-					// Gets the value for the private _objMiscellaneousPaymentArray (Read-Only)
-					// if set due to an ExpandAsArray on the miscellaneous_payment.credit_card_payment_id reverse relationship
-					// @return MiscellaneousPayment[]
-					return (array) $this->_objMiscellaneousPaymentArray;
-
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1881,188 +1809,6 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
-		// Related Objects' Methods for MiscellaneousPayment
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated MiscellaneousPayments as an array of MiscellaneousPayment objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return MiscellaneousPayment[]
-		*/ 
-		public function GetMiscellaneousPaymentArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return MiscellaneousPayment::LoadArrayByCreditCardPaymentId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated MiscellaneousPayments
-		 * @return int
-		*/ 
-		public function CountMiscellaneousPayments() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return MiscellaneousPayment::CountByCreditCardPaymentId($this->intId);
-		}
-
-		/**
-		 * Associates a MiscellaneousPayment
-		 * @param MiscellaneousPayment $objMiscellaneousPayment
-		 * @return void
-		*/ 
-		public function AssociateMiscellaneousPayment(MiscellaneousPayment $objMiscellaneousPayment) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMiscellaneousPayment on this unsaved CreditCardPayment.');
-			if ((is_null($objMiscellaneousPayment->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMiscellaneousPayment on this CreditCardPayment with an unsaved MiscellaneousPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CreditCardPayment::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`miscellaneous_payment`
-				SET
-					`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objMiscellaneousPayment->Id) . '
-			');
-
-			// Journaling (if applicable)
-			if ($objDatabase->JournalingDatabase) {
-				$objMiscellaneousPayment->CreditCardPaymentId = $this->intId;
-				$objMiscellaneousPayment->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates a MiscellaneousPayment
-		 * @param MiscellaneousPayment $objMiscellaneousPayment
-		 * @return void
-		*/ 
-		public function UnassociateMiscellaneousPayment(MiscellaneousPayment $objMiscellaneousPayment) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved CreditCardPayment.');
-			if ((is_null($objMiscellaneousPayment->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this CreditCardPayment with an unsaved MiscellaneousPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CreditCardPayment::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`miscellaneous_payment`
-				SET
-					`credit_card_payment_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objMiscellaneousPayment->Id) . ' AND
-					`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objMiscellaneousPayment->CreditCardPaymentId = null;
-				$objMiscellaneousPayment->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates all MiscellaneousPayments
-		 * @return void
-		*/ 
-		public function UnassociateAllMiscellaneousPayments() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved CreditCardPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CreditCardPayment::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (MiscellaneousPayment::LoadArrayByCreditCardPaymentId($this->intId) as $objMiscellaneousPayment) {
-					$objMiscellaneousPayment->CreditCardPaymentId = null;
-					$objMiscellaneousPayment->Journal('UPDATE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`miscellaneous_payment`
-				SET
-					`credit_card_payment_id` = null
-				WHERE
-					`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated MiscellaneousPayment
-		 * @param MiscellaneousPayment $objMiscellaneousPayment
-		 * @return void
-		*/ 
-		public function DeleteAssociatedMiscellaneousPayment(MiscellaneousPayment $objMiscellaneousPayment) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved CreditCardPayment.');
-			if ((is_null($objMiscellaneousPayment->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this CreditCardPayment with an unsaved MiscellaneousPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CreditCardPayment::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`miscellaneous_payment`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objMiscellaneousPayment->Id) . ' AND
-					`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objMiscellaneousPayment->Journal('DELETE');
-			}
-		}
-
-		/**
-		 * Deletes all associated MiscellaneousPayments
-		 * @return void
-		*/ 
-		public function DeleteAllMiscellaneousPayments() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved CreditCardPayment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = CreditCardPayment::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (MiscellaneousPayment::LoadArrayByCreditCardPaymentId($this->intId) as $objMiscellaneousPayment) {
-					$objMiscellaneousPayment->Journal('DELETE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`miscellaneous_payment`
-				WHERE
-					`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
 
 
 
@@ -2206,7 +1952,6 @@
 	 * @property-read QQNode $UnlinkedFlag
 	 * @property-read QQNode $StewardshipContributionId
 	 * @property-read QQNodeStewardshipContribution $StewardshipContribution
-	 * @property-read QQReverseReferenceNodeMiscellaneousPayment $MiscellaneousPayment
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 */
@@ -2250,8 +1995,6 @@
 					return new QQNode('stewardship_contribution_id', 'StewardshipContributionId', 'integer', $this);
 				case 'StewardshipContribution':
 					return new QQNodeStewardshipContribution('stewardship_contribution_id', 'StewardshipContribution', 'integer', $this);
-				case 'MiscellaneousPayment':
-					return new QQReverseReferenceNodeMiscellaneousPayment($this, 'miscellaneouspayment', 'reverse_reference', 'credit_card_payment_id');
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'credit_card_payment_id', 'OnlineDonation');
 				case 'SignupPayment':
@@ -2288,7 +2031,6 @@
 	 * @property-read QQNode $UnlinkedFlag
 	 * @property-read QQNode $StewardshipContributionId
 	 * @property-read QQNodeStewardshipContribution $StewardshipContribution
-	 * @property-read QQReverseReferenceNodeMiscellaneousPayment $MiscellaneousPayment
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
 	 * @property-read QQNode $_PrimaryKeyNode
@@ -2333,8 +2075,6 @@
 					return new QQNode('stewardship_contribution_id', 'StewardshipContributionId', 'integer', $this);
 				case 'StewardshipContribution':
 					return new QQNodeStewardshipContribution('stewardship_contribution_id', 'StewardshipContribution', 'integer', $this);
-				case 'MiscellaneousPayment':
-					return new QQReverseReferenceNodeMiscellaneousPayment($this, 'miscellaneouspayment', 'reverse_reference', 'credit_card_payment_id');
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'credit_card_payment_id', 'OnlineDonation');
 				case 'SignupPayment':

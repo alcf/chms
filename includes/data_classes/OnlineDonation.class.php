@@ -154,16 +154,21 @@
 
 		/**
 		 * This will return an indexed array of amounts, indexed by the stewardship fund id
+		 * This will only return the array of amounts that are flagged as DONATION
+		 * If no donations exist, this will return NULL
 		 * @return mix[][] an array of arrays, where each item has the 0th index item being the StewardshipFundId and the 1st index being the amount
 		 */
 		public function GetAmountArray() {
 			$mixArrayToReturn = array();
 			foreach ($this->GetOnlineDonationLineItemArray() as $objLineItem) {
-				$mixArrayToReturn[] = array($objLineItem->StewardshipFundId, $objLineItem->Amount);
+				if ($objLineItem->DonationFlag)
+					$mixArrayToReturn[] = array($objLineItem->StewardshipFundId, $objLineItem->Amount);
 			}
 			
+			if (!count($mixArrayToReturn)) return null;
 			return $mixArrayToReturn;
 		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

@@ -18,6 +18,7 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $OnlineDonationId the value for intOnlineDonationId (Not Null)
 	 * @property double $Amount the value for fltAmount 
+	 * @property boolean $DonationFlag the value for blnDonationFlag (Not Null)
 	 * @property integer $StewardshipFundId the value for intStewardshipFundId 
 	 * @property string $Other the value for strOther 
 	 * @property OnlineDonation $OnlineDonation the value for the OnlineDonation object referenced by intOnlineDonationId (Not Null)
@@ -52,6 +53,14 @@
 		 */
 		protected $fltAmount;
 		const AmountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column online_donation_line_item.donation_flag
+		 * @var boolean blnDonationFlag
+		 */
+		protected $blnDonationFlag;
+		const DonationFlagDefault = null;
 
 
 		/**
@@ -426,6 +435,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'online_donation_id', $strAliasPrefix . 'online_donation_id');
 			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
+			$objBuilder->AddSelectItem($strTableName, 'donation_flag', $strAliasPrefix . 'donation_flag');
 			$objBuilder->AddSelectItem($strTableName, 'stewardship_fund_id', $strAliasPrefix . 'stewardship_fund_id');
 			$objBuilder->AddSelectItem($strTableName, 'other', $strAliasPrefix . 'other');
 		}
@@ -465,6 +475,8 @@
 			$objToReturn->intOnlineDonationId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'amount', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'amount'] : $strAliasPrefix . 'amount';
 			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAliasName = array_key_exists($strAliasPrefix . 'donation_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'donation_flag'] : $strAliasPrefix . 'donation_flag';
+			$objToReturn->blnDonationFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'stewardship_fund_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'stewardship_fund_id'] : $strAliasPrefix . 'stewardship_fund_id';
 			$objToReturn->intStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'other', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'other'] : $strAliasPrefix . 'other';
@@ -681,11 +693,13 @@
 						INSERT INTO `online_donation_line_item` (
 							`online_donation_id`,
 							`amount`,
+							`donation_flag`,
 							`stewardship_fund_id`,
 							`other`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intOnlineDonationId) . ',
 							' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							' . $objDatabase->SqlVariable($this->blnDonationFlag) . ',
 							' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 							' . $objDatabase->SqlVariable($this->strOther) . '
 						)
@@ -709,6 +723,7 @@
 						SET
 							`online_donation_id` = ' . $objDatabase->SqlVariable($this->intOnlineDonationId) . ',
 							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
+							`donation_flag` = ' . $objDatabase->SqlVariable($this->blnDonationFlag) . ',
 							`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 							`other` = ' . $objDatabase->SqlVariable($this->strOther) . '
 						WHERE
@@ -797,6 +812,7 @@
 			// Update $this's local variables to match
 			$this->OnlineDonationId = $objReloaded->OnlineDonationId;
 			$this->fltAmount = $objReloaded->fltAmount;
+			$this->blnDonationFlag = $objReloaded->blnDonationFlag;
 			$this->StewardshipFundId = $objReloaded->StewardshipFundId;
 			$this->strOther = $objReloaded->strOther;
 		}
@@ -814,6 +830,7 @@
 					`id`,
 					`online_donation_id`,
 					`amount`,
+					`donation_flag`,
 					`stewardship_fund_id`,
 					`other`,
 					__sys_login_id,
@@ -823,6 +840,7 @@
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intOnlineDonationId) . ',
 					' . $objDatabase->SqlVariable($this->fltAmount) . ',
+					' . $objDatabase->SqlVariable($this->blnDonationFlag) . ',
 					' . $objDatabase->SqlVariable($this->intStewardshipFundId) . ',
 					' . $objDatabase->SqlVariable($this->strOther) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
@@ -889,6 +907,11 @@
 					// Gets the value for fltAmount 
 					// @return double
 					return $this->fltAmount;
+
+				case 'DonationFlag':
+					// Gets the value for blnDonationFlag (Not Null)
+					// @return boolean
+					return $this->blnDonationFlag;
 
 				case 'StewardshipFundId':
 					// Gets the value for intStewardshipFundId 
@@ -979,6 +1002,17 @@
 					// @return double
 					try {
 						return ($this->fltAmount = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DonationFlag':
+					// Sets the value for blnDonationFlag (Not Null)
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnDonationFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1111,6 +1145,7 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="OnlineDonation" type="xsd1:OnlineDonation"/>';
 			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
+			$strToReturn .= '<element name="DonationFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="StewardshipFund" type="xsd1:StewardshipFund"/>';
 			$strToReturn .= '<element name="Other" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1144,6 +1179,8 @@
 				$objToReturn->OnlineDonation = OnlineDonation::GetObjectFromSoapObject($objSoapObject->OnlineDonation);
 			if (property_exists($objSoapObject, 'Amount'))
 				$objToReturn->fltAmount = $objSoapObject->Amount;
+			if (property_exists($objSoapObject, 'DonationFlag'))
+				$objToReturn->blnDonationFlag = $objSoapObject->DonationFlag;
 			if ((property_exists($objSoapObject, 'StewardshipFund')) &&
 				($objSoapObject->StewardshipFund))
 				$objToReturn->StewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->StewardshipFund);
@@ -1194,6 +1231,7 @@
 	 * @property-read QQNode $OnlineDonationId
 	 * @property-read QQNodeOnlineDonation $OnlineDonation
 	 * @property-read QQNode $Amount
+	 * @property-read QQNode $DonationFlag
 	 * @property-read QQNode $StewardshipFundId
 	 * @property-read QQNodeStewardshipFund $StewardshipFund
 	 * @property-read QQNode $Other
@@ -1212,6 +1250,8 @@
 					return new QQNodeOnlineDonation('online_donation_id', 'OnlineDonation', 'integer', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'DonationFlag':
+					return new QQNode('donation_flag', 'DonationFlag', 'boolean', $this);
 				case 'StewardshipFundId':
 					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
 				case 'StewardshipFund':
@@ -1237,6 +1277,7 @@
 	 * @property-read QQNode $OnlineDonationId
 	 * @property-read QQNodeOnlineDonation $OnlineDonation
 	 * @property-read QQNode $Amount
+	 * @property-read QQNode $DonationFlag
 	 * @property-read QQNode $StewardshipFundId
 	 * @property-read QQNodeStewardshipFund $StewardshipFund
 	 * @property-read QQNode $Other
@@ -1256,6 +1297,8 @@
 					return new QQNodeOnlineDonation('online_donation_id', 'OnlineDonation', 'integer', $this);
 				case 'Amount':
 					return new QQNode('amount', 'Amount', 'double', $this);
+				case 'DonationFlag':
+					return new QQNode('donation_flag', 'DonationFlag', 'boolean', $this);
 				case 'StewardshipFundId':
 					return new QQNode('stewardship_fund_id', 'StewardshipFundId', 'integer', $this);
 				case 'StewardshipFund':

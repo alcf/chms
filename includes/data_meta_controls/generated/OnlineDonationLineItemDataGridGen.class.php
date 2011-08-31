@@ -297,6 +297,7 @@
 				case 'OnlineDonationId': return QQN::OnlineDonationLineItem()->OnlineDonationId;
 				case 'OnlineDonation': return QQN::OnlineDonationLineItem()->OnlineDonation;
 				case 'Amount': return QQN::OnlineDonationLineItem()->Amount;
+				case 'DonationFlag': return QQN::OnlineDonationLineItem()->DonationFlag;
 				case 'StewardshipFundId': return QQN::OnlineDonationLineItem()->StewardshipFundId;
 				case 'StewardshipFund': return QQN::OnlineDonationLineItem()->StewardshipFund;
 				case 'Other': return QQN::OnlineDonationLineItem()->Other;

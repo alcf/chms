@@ -55,9 +55,11 @@
 						$fltRunningTotal = 0;
 					}
 					$objCurrentStack[] = $objCreditCardPayment;
-					if ($objCreditCardPayment->OnlineDonation)
-						$fltRunningTotal += $objCreditCardPayment->OnlineDonation->Amount;
-					else
+					if ($objCreditCardPayment->OnlineDonation) {
+						foreach ($objCreditCardPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objOnlineDonationLineItem)
+							if ($objOnlineDonationLineItem->DonationFlag)
+								$fltRunningTotal += $objOnlineDonationLineItem->Amount;
+					} else
 						$fltRunningTotal += $objCreditCardPayment->SignupPayment->AmountDonation;
 				}
 			}
@@ -84,19 +86,26 @@
 					foreach ($objPaymentArray as $objPayment) {
 						// Create a StewardshipContribution for each OnlineDonation entry
 						if ($objPayment->OnlineDonation) {
-							$objContribution = StewardshipContribution::Create(
-								$objLogin,
-								$objPayment->OnlineDonation->Person,
-								$objStack,
-								StewardshipContributionType::CreditCard,
-								$objPayment->TransactionCode,
-								$objPayment->OnlineDonation->GetAmountArray(),
-								null,
-								null,
-								null,
-								null,
-								true
-							);
+							// First ensure we have a Donation AmountArray
+							$objAmountArray = $objPayment->OnlineDonation->GetAmountArray();
+							
+							if ($objAmountArray) {
+								$objContribution = StewardshipContribution::Create(
+									$objLogin,
+									$objPayment->OnlineDonation->Person,
+									$objStack,
+									StewardshipContributionType::CreditCard,
+									$objPayment->TransactionCode,
+									$objAmountArray,
+									null,
+									null,
+									null,
+									null,
+									true
+								);
+							} else {
+								$objContribution = null;
+							}
 
 						// Create a StewardshipContribution for the donation in a SignupPayment
 						} else {
@@ -115,16 +124,18 @@
 							);
 						}
 
-						// Fixup on the Contribution Object
-						$objContribution->AlternateSource = $objPayment->CreditCardDescription;
-						$objContribution->DateCredited = $dttDateCredited;
-						$objContribution->Save();
+						// Proceed if a Contribution was successfully created
+						if ($objContribution) {
+							// Fixup on the Contribution Object
+							$objContribution->AlternateSource = $objPayment->CreditCardDescription;
+							$objContribution->DateCredited = $dttDateCredited;
+							$objContribution->Save();
 
-						// Fixup on the CCPayment Object to link back to the contribution object
-						$objPayment->StewardshipContribution = $objContribution;
-						$objPayment->Save();
+							// Fixup on the CCPayment Object to link back to the contribution object
+							$objPayment->StewardshipContribution = $objContribution;
+							$objPayment->Save();
+						}
 					}
-					
 				}
 
 				// Cleanup each Payment object
@@ -297,7 +308,7 @@
 			foreach ($this->GetCreditCardPaymentArray() as $objPayment) {
 				if ($objPayment->OnlineDonation) {
 					foreach ($objPayment->OnlineDonation->GetOnlineDonationLineItemArray() as $objLineItem) {
-						if (!$objLineItem->StewardshipFundId) return true;
+						if (!$objLineItem->StewardshipFundId && $objLineItem->DonationFlag) return true;
 					}
 				}
 			}

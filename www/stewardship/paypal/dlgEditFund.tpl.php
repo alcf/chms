@@ -3,6 +3,7 @@
 Please specify the appropriate Stewardship Funding Account for this line item.
 
 <?php $_FORM->lstDialogFund->RenderWithName(); ?>
+<?php $_FORM->txtDialogOther->RenderWithName(); ?>
 
 <br/>
 
