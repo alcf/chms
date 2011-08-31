@@ -22,11 +22,12 @@
 			$this->dtgPeople->Paginator = new QPaginator($this->dtgPeople);
 			$this->dtgPeople->MetaAddColumn('FirstName','Html=<?=$_FORM->RenderFirstName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
 			$this->dtgPeople->MetaAddColumn('LastName','Html=<?=$_FORM->RenderLastName($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
+			$this->dtgPeople->MetaAddColumn('Nickname', 'Width=100px', 'FontSize=11px');
 			$this->dtgPeople->MetaAddTypeColumn('MembershipStatusTypeId', 'MembershipStatusType', 'Name=Membership', 'Width=110px', 'FontSize=11px');
 
-			$this->dtgPeople->MetaAddColumn('PrimaryAddressText', 'Name=Address', 'Width=240px', 'FontSize=11px');
-			$this->dtgPeople->MetaAddColumn('PrimaryCityText', 'Name=City', 'Width=130px', 'FontSize=11px');
-			$this->dtgPeople->MetaAddColumn('PrimaryPhoneText', 'Name=Phone', 'Width=115px', 'FontSize=11px');
+			$this->dtgPeople->MetaAddColumn('PrimaryAddressText', 'Name=Address', 'Width=170px', 'FontSize=10px');
+			$this->dtgPeople->MetaAddColumn('PrimaryCityText', 'Name=City', 'Width=120px', 'FontSize=10px');
+			$this->dtgPeople->MetaAddColumn('PrimaryPhoneText', 'Name=Phone', 'Width=85px', 'FontSize=10px');
 			$this->dtgPeople->SetDataBinder('dtgPeople_Bind');
 			$this->dtgPeople->NoDataHtml = 'No results found.  Please use a less-restrictive filter.';
 			
