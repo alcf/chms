@@ -83,6 +83,8 @@
 	 * @property Marriage[] $_MarriageAsMarriedToArray the value for the private _objMarriageAsMarriedToArray (Read-Only) if set due to an ExpandAsArray on the marriage.married_to_person_id reverse relationship
 	 * @property Membership $_Membership the value for the private _objMembership (Read-Only) if set due to an expansion on the membership.person_id reverse relationship
 	 * @property Membership[] $_MembershipArray the value for the private _objMembershipArray (Read-Only) if set due to an ExpandAsArray on the membership.person_id reverse relationship
+	 * @property MiscellaneousPayment $_MiscellaneousPayment the value for the private _objMiscellaneousPayment (Read-Only) if set due to an expansion on the miscellaneous_payment.person_id reverse relationship
+	 * @property MiscellaneousPayment[] $_MiscellaneousPaymentArray the value for the private _objMiscellaneousPaymentArray (Read-Only) if set due to an ExpandAsArray on the miscellaneous_payment.person_id reverse relationship
 	 * @property OnlineDonation $_OnlineDonation the value for the private _objOnlineDonation (Read-Only) if set due to an expansion on the online_donation.person_id reverse relationship
 	 * @property OnlineDonation[] $_OnlineDonationArray the value for the private _objOnlineDonationArray (Read-Only) if set due to an ExpandAsArray on the online_donation.person_id reverse relationship
 	 * @property OtherContactInfo $_OtherContactInfo the value for the private _objOtherContactInfo (Read-Only) if set due to an expansion on the other_contact_info.person_id reverse relationship
@@ -614,6 +616,22 @@
 		 * @var Membership[] _objMembershipArray;
 		 */
 		private $_objMembershipArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single MiscellaneousPayment object
+		 * (of type MiscellaneousPayment), if this Person object was restored with
+		 * an expansion on the miscellaneous_payment association table.
+		 * @var MiscellaneousPayment _objMiscellaneousPayment;
+		 */
+		private $_objMiscellaneousPayment;
+
+		/**
+		 * Private member variable that stores a reference to an array of MiscellaneousPayment objects
+		 * (of type MiscellaneousPayment[]), if this Person object was restored with
+		 * an ExpandAsArray on the miscellaneous_payment association table.
+		 * @var MiscellaneousPayment[] _objMiscellaneousPaymentArray;
+		 */
+		private $_objMiscellaneousPaymentArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single OnlineDonation object
@@ -1488,6 +1506,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'miscellaneouspayment__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objMiscellaneousPaymentArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objMiscellaneousPaymentArray[$intPreviousChildItemCount - 1];
+						$objChildItem = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objMiscellaneousPaymentArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objMiscellaneousPaymentArray[] = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'onlinedonation__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1933,6 +1965,16 @@
 					$objToReturn->_objMembershipArray[] = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objMembership = Membership::InstantiateDbRow($objDbRow, $strAliasPrefix . 'membership__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for MiscellaneousPayment Virtual Binding
+			$strAlias = $strAliasPrefix . 'miscellaneouspayment__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objMiscellaneousPaymentArray[] = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objMiscellaneousPayment = MiscellaneousPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'miscellaneouspayment__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for OnlineDonation Virtual Binding
@@ -3302,6 +3344,18 @@
 					// if set due to an ExpandAsArray on the membership.person_id reverse relationship
 					// @return Membership[]
 					return (array) $this->_objMembershipArray;
+
+				case '_MiscellaneousPayment':
+					// Gets the value for the private _objMiscellaneousPayment (Read-Only)
+					// if set due to an expansion on the miscellaneous_payment.person_id reverse relationship
+					// @return MiscellaneousPayment
+					return $this->_objMiscellaneousPayment;
+
+				case '_MiscellaneousPaymentArray':
+					// Gets the value for the private _objMiscellaneousPaymentArray (Read-Only)
+					// if set due to an ExpandAsArray on the miscellaneous_payment.person_id reverse relationship
+					// @return MiscellaneousPayment[]
+					return (array) $this->_objMiscellaneousPaymentArray;
 
 				case '_OnlineDonation':
 					// Gets the value for the private _objOnlineDonation (Read-Only)
@@ -6238,6 +6292,188 @@
 
 			
 		
+		// Related Objects' Methods for MiscellaneousPayment
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated MiscellaneousPayments as an array of MiscellaneousPayment objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return MiscellaneousPayment[]
+		*/ 
+		public function GetMiscellaneousPaymentArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return MiscellaneousPayment::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated MiscellaneousPayments
+		 * @return int
+		*/ 
+		public function CountMiscellaneousPayments() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return MiscellaneousPayment::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a MiscellaneousPayment
+		 * @param MiscellaneousPayment $objMiscellaneousPayment
+		 * @return void
+		*/ 
+		public function AssociateMiscellaneousPayment(MiscellaneousPayment $objMiscellaneousPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMiscellaneousPayment on this unsaved Person.');
+			if ((is_null($objMiscellaneousPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMiscellaneousPayment on this Person with an unsaved MiscellaneousPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`miscellaneous_payment`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objMiscellaneousPayment->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objMiscellaneousPayment->PersonId = $this->intId;
+				$objMiscellaneousPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a MiscellaneousPayment
+		 * @param MiscellaneousPayment $objMiscellaneousPayment
+		 * @return void
+		*/ 
+		public function UnassociateMiscellaneousPayment(MiscellaneousPayment $objMiscellaneousPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved Person.');
+			if ((is_null($objMiscellaneousPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this Person with an unsaved MiscellaneousPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`miscellaneous_payment`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objMiscellaneousPayment->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objMiscellaneousPayment->PersonId = null;
+				$objMiscellaneousPayment->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all MiscellaneousPayments
+		 * @return void
+		*/ 
+		public function UnassociateAllMiscellaneousPayments() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (MiscellaneousPayment::LoadArrayByPersonId($this->intId) as $objMiscellaneousPayment) {
+					$objMiscellaneousPayment->PersonId = null;
+					$objMiscellaneousPayment->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`miscellaneous_payment`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated MiscellaneousPayment
+		 * @param MiscellaneousPayment $objMiscellaneousPayment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedMiscellaneousPayment(MiscellaneousPayment $objMiscellaneousPayment) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved Person.');
+			if ((is_null($objMiscellaneousPayment->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this Person with an unsaved MiscellaneousPayment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`miscellaneous_payment`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objMiscellaneousPayment->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objMiscellaneousPayment->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated MiscellaneousPayments
+		 * @return void
+		*/ 
+		public function DeleteAllMiscellaneousPayments() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMiscellaneousPayment on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (MiscellaneousPayment::LoadArrayByPersonId($this->intId) as $objMiscellaneousPayment) {
+					$objMiscellaneousPayment->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`miscellaneous_payment`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for OnlineDonation
 		//-------------------------------------------------------------------
 
@@ -9127,6 +9363,7 @@
 	 * @property-read QQReverseReferenceNodeMarriage $Marriage
 	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsMarriedTo
 	 * @property-read QQReverseReferenceNodeMembership $Membership
+	 * @property-read QQReverseReferenceNodeMiscellaneousPayment $MiscellaneousPayment
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodePhone $Phone
@@ -9250,6 +9487,8 @@
 					return new QQReverseReferenceNodeMarriage($this, 'marriageasmarriedto', 'reverse_reference', 'married_to_person_id');
 				case 'Membership':
 					return new QQReverseReferenceNodeMembership($this, 'membership', 'reverse_reference', 'person_id');
+				case 'MiscellaneousPayment':
+					return new QQReverseReferenceNodeMiscellaneousPayment($this, 'miscellaneouspayment', 'reverse_reference', 'person_id');
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
@@ -9341,6 +9580,7 @@
 	 * @property-read QQReverseReferenceNodeMarriage $Marriage
 	 * @property-read QQReverseReferenceNodeMarriage $MarriageAsMarriedTo
 	 * @property-read QQReverseReferenceNodeMembership $Membership
+	 * @property-read QQReverseReferenceNodeMiscellaneousPayment $MiscellaneousPayment
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodePhone $Phone
@@ -9465,6 +9705,8 @@
 					return new QQReverseReferenceNodeMarriage($this, 'marriageasmarriedto', 'reverse_reference', 'married_to_person_id');
 				case 'Membership':
 					return new QQReverseReferenceNodeMembership($this, 'membership', 'reverse_reference', 'person_id');
+				case 'MiscellaneousPayment':
+					return new QQReverseReferenceNodeMiscellaneousPayment($this, 'miscellaneouspayment', 'reverse_reference', 'person_id');
 				case 'OnlineDonation':
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':

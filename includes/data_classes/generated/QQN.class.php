@@ -259,6 +259,12 @@
 			return new QQNodeMinistry('ministry', null, null);
 		}
 		/**
+		 * @return QQNodeMiscellaneousPayment
+		 */
+		static public function MiscellaneousPayment() {
+			return new QQNodeMiscellaneousPayment('miscellaneous_payment', null, null);
+		}
+		/**
 		 * @return QQNodeMobileProvider
 		 */
 		static public function MobileProvider() {
