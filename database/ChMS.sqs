@@ -1528,8 +1528,8 @@
             <y>720.000000</y>
         </location>
         <size>
-            <width>264.000000</width>
-            <height>240.000000</height>
+            <width>272.000000</width>
+            <height>224.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -1563,13 +1563,6 @@
             <type><![CDATA[BOOLEAN]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[792823C3-84B8-4D5D-A513-4F56562E343C]]></uid>
-        </SQLField>
-        <SQLField>
-            <name><![CDATA[new_person_flag]]></name>
-            <type><![CDATA[BOOLEAN]]></type>
-            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
-            <uid><![CDATA[7B0A2173-944F-4EFB-82CF-DA99AB91F3A1]]></uid>
         </SQLField>
         <SQLField>
             <name><![CDATA[username]]></name>
@@ -3434,7 +3427,7 @@
         </location>
         <size>
             <width>330.000000</width>
-            <height>640.000000</height>
+            <height>660.000000</height>
         </size>
         <SQLField>
             <name><![CDATA[id]]></name>
@@ -3442,6 +3435,7 @@
             <notNull>1</notNull>
             <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <forcedUnique><![CDATA[1]]></forcedUnique>
             <uid><![CDATA[C5FA9BB7-E1A4-4050-AD84-B222124D0F6E]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
@@ -3671,6 +3665,13 @@
             <type><![CDATA[VARCHAR(20)]]></type>
             <uid><![CDATA[E74859CA-99F8-4F28-997C-74DA6C576A5C]]></uid>
         </SQLField>
+        <SQLField>
+            <name><![CDATA[public_creation_flag]]></name>
+            <type><![CDATA[BOOLEAN]]></type>
+            <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
+            <uid><![CDATA[FFD26D68-83E6-4416-B316-28A06E130B35]]></uid>
+        </SQLField>
+        <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
         <uid><![CDATA[6E71867A-FAA2-4654-AC6A-A50B14A46CE5]]></uid>
         <zorder><![CDATA[-1]]></zorder>
     </SQLTable>

@@ -200,7 +200,6 @@
 			// Do we have a single Person object?
 			// If not, let's create it
 			if (!$objPerson) {
-				$this->PublicLogin->NewPersonFlag = true;
 				$blnMaleFlag = null;
 				if ($strGenderFlag = trim(strtoupper($strGenderFlag))) {
 					$blnMaleFlag = ($strGenderFlag == 'M');
@@ -214,6 +213,7 @@
 					$objPerson->DobGuessedFlag = false;
 					$objPerson->DobYearApproximateFlag = false;
 				}
+				$objPerson->PublicCreationFlag = true;
 				$objPerson->Save();
 			}
 

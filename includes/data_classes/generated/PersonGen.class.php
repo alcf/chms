@@ -46,6 +46,7 @@
 	 * @property string $PrimaryStateText the value for strPrimaryStateText 
 	 * @property string $PrimaryZipCodeText the value for strPrimaryZipCodeText 
 	 * @property string $PrimaryPhoneText the value for strPrimaryPhoneText 
+	 * @property boolean $PublicCreationFlag the value for blnPublicCreationFlag 
 	 * @property HeadShot $CurrentHeadShot the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 	 * @property Address $MailingAddress the value for the Address object referenced by intMailingAddressId 
 	 * @property Address $StewardshipAddress the value for the Address object referenced by intStewardshipAddressId 
@@ -373,6 +374,14 @@
 		protected $strPrimaryPhoneText;
 		const PrimaryPhoneTextMaxLength = 20;
 		const PrimaryPhoneTextDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.public_creation_flag
+		 * @var boolean blnPublicCreationFlag
+		 */
+		protected $blnPublicCreationFlag;
+		const PublicCreationFlagDefault = null;
 
 
 		/**
@@ -1240,6 +1249,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'primary_state_text', $strAliasPrefix . 'primary_state_text');
 			$objBuilder->AddSelectItem($strTableName, 'primary_zip_code_text', $strAliasPrefix . 'primary_zip_code_text');
 			$objBuilder->AddSelectItem($strTableName, 'primary_phone_text', $strAliasPrefix . 'primary_phone_text');
+			$objBuilder->AddSelectItem($strTableName, 'public_creation_flag', $strAliasPrefix . 'public_creation_flag');
 		}
 
 
@@ -1715,6 +1725,8 @@
 			$objToReturn->strPrimaryZipCodeText = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'primary_phone_text', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'primary_phone_text'] : $strAliasPrefix . 'primary_phone_text';
 			$objToReturn->strPrimaryPhoneText = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'public_creation_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'public_creation_flag'] : $strAliasPrefix . 'public_creation_flag';
+			$objToReturn->blnPublicCreationFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -2480,7 +2492,8 @@
 							`primary_city_text`,
 							`primary_state_text`,
 							`primary_zip_code_text`,
-							`primary_phone_text`
+							`primary_phone_text`,
+							`public_creation_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
@@ -2511,7 +2524,8 @@
 							' . $objDatabase->SqlVariable($this->strPrimaryCityText) . ',
 							' . $objDatabase->SqlVariable($this->strPrimaryStateText) . ',
 							' . $objDatabase->SqlVariable($this->strPrimaryZipCodeText) . ',
-							' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . '
+							' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
+							' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . '
 						)
 					');
 
@@ -2560,7 +2574,8 @@
 							`primary_city_text` = ' . $objDatabase->SqlVariable($this->strPrimaryCityText) . ',
 							`primary_state_text` = ' . $objDatabase->SqlVariable($this->strPrimaryStateText) . ',
 							`primary_zip_code_text` = ' . $objDatabase->SqlVariable($this->strPrimaryZipCodeText) . ',
-							`primary_phone_text` = ' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . '
+							`primary_phone_text` = ' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
+							`public_creation_flag` = ' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -2734,6 +2749,7 @@
 			$this->strPrimaryStateText = $objReloaded->strPrimaryStateText;
 			$this->strPrimaryZipCodeText = $objReloaded->strPrimaryZipCodeText;
 			$this->strPrimaryPhoneText = $objReloaded->strPrimaryPhoneText;
+			$this->blnPublicCreationFlag = $objReloaded->blnPublicCreationFlag;
 		}
 
 		/**
@@ -2777,6 +2793,7 @@
 					`primary_state_text`,
 					`primary_zip_code_text`,
 					`primary_phone_text`,
+					`public_creation_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -2812,6 +2829,7 @@
 					' . $objDatabase->SqlVariable($this->strPrimaryStateText) . ',
 					' . $objDatabase->SqlVariable($this->strPrimaryZipCodeText) . ',
 					' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
+					' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -3016,6 +3034,11 @@
 					// Gets the value for strPrimaryPhoneText 
 					// @return string
 					return $this->strPrimaryPhoneText;
+
+				case 'PublicCreationFlag':
+					// Gets the value for blnPublicCreationFlag 
+					// @return boolean
+					return $this->blnPublicCreationFlag;
 
 
 				///////////////////
@@ -3792,6 +3815,17 @@
 					// @return string
 					try {
 						return ($this->strPrimaryPhoneText = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PublicCreationFlag':
+					// Sets the value for blnPublicCreationFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnPublicCreationFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -8828,6 +8862,7 @@
 			$strToReturn .= '<element name="PrimaryStateText" type="xsd:string"/>';
 			$strToReturn .= '<element name="PrimaryZipCodeText" type="xsd:string"/>';
 			$strToReturn .= '<element name="PrimaryPhoneText" type="xsd:string"/>';
+			$strToReturn .= '<element name="PublicCreationFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -8922,6 +8957,8 @@
 				$objToReturn->strPrimaryZipCodeText = $objSoapObject->PrimaryZipCodeText;
 			if (property_exists($objSoapObject, 'PrimaryPhoneText'))
 				$objToReturn->strPrimaryPhoneText = $objSoapObject->PrimaryPhoneText;
+			if (property_exists($objSoapObject, 'PublicCreationFlag'))
+				$objToReturn->blnPublicCreationFlag = $objSoapObject->PublicCreationFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -9111,6 +9148,7 @@
 	 * @property-read QQNode $PrimaryStateText
 	 * @property-read QQNode $PrimaryZipCodeText
 	 * @property-read QQNode $PrimaryPhoneText
+	 * @property-read QQNode $PublicCreationFlag
 	 * @property-read QQNodePersonCheckingAccountLookup $CheckingAccountLookup
 	 * @property-read QQNodePersonCommunicationList $CommunicationList
 	 * @property-read QQNodePersonNameItem $NameItem
@@ -9218,6 +9256,8 @@
 					return new QQNode('primary_zip_code_text', 'PrimaryZipCodeText', 'string', $this);
 				case 'PrimaryPhoneText':
 					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
+				case 'PublicCreationFlag':
+					return new QQNode('public_creation_flag', 'PublicCreationFlag', 'boolean', $this);
 				case 'CheckingAccountLookup':
 					return new QQNodePersonCheckingAccountLookup($this);
 				case 'CommunicationList':
@@ -9325,6 +9365,7 @@
 	 * @property-read QQNode $PrimaryStateText
 	 * @property-read QQNode $PrimaryZipCodeText
 	 * @property-read QQNode $PrimaryPhoneText
+	 * @property-read QQNode $PublicCreationFlag
 	 * @property-read QQNodePersonCheckingAccountLookup $CheckingAccountLookup
 	 * @property-read QQNodePersonCommunicationList $CommunicationList
 	 * @property-read QQNodePersonNameItem $NameItem
@@ -9433,6 +9474,8 @@
 					return new QQNode('primary_zip_code_text', 'PrimaryZipCodeText', 'string', $this);
 				case 'PrimaryPhoneText':
 					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
+				case 'PublicCreationFlag':
+					return new QQNode('public_creation_flag', 'PublicCreationFlag', 'boolean', $this);
 				case 'CheckingAccountLookup':
 					return new QQNodePersonCheckingAccountLookup($this);
 				case 'CommunicationList':

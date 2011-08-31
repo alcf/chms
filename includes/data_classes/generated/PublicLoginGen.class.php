@@ -18,7 +18,6 @@
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $PersonId the value for intPersonId (Unique)
 	 * @property boolean $ActiveFlag the value for blnActiveFlag 
-	 * @property boolean $NewPersonFlag the value for blnNewPersonFlag 
 	 * @property string $Username the value for strUsername (Unique)
 	 * @property string $Password the value for strPassword 
 	 * @property string $LostPasswordQuestion the value for strLostPasswordQuestion 
@@ -58,14 +57,6 @@
 		 */
 		protected $blnActiveFlag;
 		const ActiveFlagDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column public_login.new_person_flag
-		 * @var boolean blnNewPersonFlag
-		 */
-		protected $blnNewPersonFlag;
-		const NewPersonFlagDefault = null;
 
 
 		/**
@@ -491,7 +482,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
-			$objBuilder->AddSelectItem($strTableName, 'new_person_flag', $strAliasPrefix . 'new_person_flag');
 			$objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
 			$objBuilder->AddSelectItem($strTableName, 'password', $strAliasPrefix . 'password');
 			$objBuilder->AddSelectItem($strTableName, 'lost_password_question', $strAliasPrefix . 'lost_password_question');
@@ -536,8 +526,6 @@
 			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'new_person_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'new_person_flag'] : $strAliasPrefix . 'new_person_flag';
-			$objToReturn->blnNewPersonFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'username', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'username'] : $strAliasPrefix . 'username';
 			$objToReturn->strUsername = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'password', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password'] : $strAliasPrefix . 'password';
@@ -695,40 +683,6 @@
 			, $objOptionalClauses
 			);
 		}
-			
-		/**
-		 * Load an array of PublicLogin objects,
-		 * by NewPersonFlag Index(es)
-		 * @param boolean $blnNewPersonFlag
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return PublicLogin[]
-		*/
-		public static function LoadArrayByNewPersonFlag($blnNewPersonFlag, $objOptionalClauses = null) {
-			// Call PublicLogin::QueryArray to perform the LoadArrayByNewPersonFlag query
-			try {
-				return PublicLogin::QueryArray(
-					QQ::Equal(QQN::PublicLogin()->NewPersonFlag, $blnNewPersonFlag),
-					$objOptionalClauses
-					);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count PublicLogins
-		 * by NewPersonFlag Index(es)
-		 * @param boolean $blnNewPersonFlag
-		 * @return int
-		*/
-		public static function CountByNewPersonFlag($blnNewPersonFlag, $objOptionalClauses = null) {
-			// Call PublicLogin::QueryCount to perform the CountByNewPersonFlag query
-			return PublicLogin::QueryCount(
-				QQ::Equal(QQN::PublicLogin()->NewPersonFlag, $blnNewPersonFlag)
-			, $objOptionalClauses
-			);
-		}
 
 
 
@@ -762,7 +716,6 @@
 						INSERT INTO `public_login` (
 							`person_id`,
 							`active_flag`,
-							`new_person_flag`,
 							`username`,
 							`password`,
 							`lost_password_question`,
@@ -773,7 +726,6 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
-							' . $objDatabase->SqlVariable($this->blnNewPersonFlag) . ',
 							' . $objDatabase->SqlVariable($this->strUsername) . ',
 							' . $objDatabase->SqlVariable($this->strPassword) . ',
 							' . $objDatabase->SqlVariable($this->strLostPasswordQuestion) . ',
@@ -802,7 +754,6 @@
 						SET
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
-							`new_person_flag` = ' . $objDatabase->SqlVariable($this->blnNewPersonFlag) . ',
 							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
 							`password` = ' . $objDatabase->SqlVariable($this->strPassword) . ',
 							`lost_password_question` = ' . $objDatabase->SqlVariable($this->strLostPasswordQuestion) . ',
@@ -925,7 +876,6 @@
 			// Update $this's local variables to match
 			$this->PersonId = $objReloaded->PersonId;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
-			$this->blnNewPersonFlag = $objReloaded->blnNewPersonFlag;
 			$this->strUsername = $objReloaded->strUsername;
 			$this->strPassword = $objReloaded->strPassword;
 			$this->strLostPasswordQuestion = $objReloaded->strLostPasswordQuestion;
@@ -948,7 +898,6 @@
 					`id`,
 					`person_id`,
 					`active_flag`,
-					`new_person_flag`,
 					`username`,
 					`password`,
 					`lost_password_question`,
@@ -963,7 +912,6 @@
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intPersonId) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
-					' . $objDatabase->SqlVariable($this->blnNewPersonFlag) . ',
 					' . $objDatabase->SqlVariable($this->strUsername) . ',
 					' . $objDatabase->SqlVariable($this->strPassword) . ',
 					' . $objDatabase->SqlVariable($this->strLostPasswordQuestion) . ',
@@ -1035,11 +983,6 @@
 					// Gets the value for blnActiveFlag 
 					// @return boolean
 					return $this->blnActiveFlag;
-
-				case 'NewPersonFlag':
-					// Gets the value for blnNewPersonFlag 
-					// @return boolean
-					return $this->blnNewPersonFlag;
 
 				case 'Username':
 					// Gets the value for strUsername (Unique)
@@ -1161,17 +1104,6 @@
 					// @return boolean
 					try {
 						return ($this->blnActiveFlag = QType::Cast($mixValue, QType::Boolean));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'NewPersonFlag':
-					// Sets the value for blnNewPersonFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnNewPersonFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1365,7 +1297,6 @@
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
-			$strToReturn .= '<element name="NewPersonFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Username" type="xsd:string"/>';
 			$strToReturn .= '<element name="Password" type="xsd:string"/>';
 			$strToReturn .= '<element name="LostPasswordQuestion" type="xsd:string"/>';
@@ -1403,8 +1334,6 @@
 				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
-			if (property_exists($objSoapObject, 'NewPersonFlag'))
-				$objToReturn->blnNewPersonFlag = $objSoapObject->NewPersonFlag;
 			if (property_exists($objSoapObject, 'Username'))
 				$objToReturn->strUsername = $objSoapObject->Username;
 			if (property_exists($objSoapObject, 'Password'))
@@ -1464,7 +1393,6 @@
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $ActiveFlag
-	 * @property-read QQNode $NewPersonFlag
 	 * @property-read QQNode $Username
 	 * @property-read QQNode $Password
 	 * @property-read QQNode $LostPasswordQuestion
@@ -1488,8 +1416,6 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
-				case 'NewPersonFlag':
-					return new QQNode('new_person_flag', 'NewPersonFlag', 'boolean', $this);
 				case 'Username':
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'Password':
@@ -1525,7 +1451,6 @@
 	 * @property-read QQNode $PersonId
 	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $ActiveFlag
-	 * @property-read QQNode $NewPersonFlag
 	 * @property-read QQNode $Username
 	 * @property-read QQNode $Password
 	 * @property-read QQNode $LostPasswordQuestion
@@ -1550,8 +1475,6 @@
 					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
-				case 'NewPersonFlag':
-					return new QQNode('new_person_flag', 'NewPersonFlag', 'boolean', $this);
 				case 'Username':
 					return new QQNode('username', 'Username', 'string', $this);
 				case 'Password':

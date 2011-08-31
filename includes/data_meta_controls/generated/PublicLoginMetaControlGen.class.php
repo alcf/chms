@@ -22,8 +22,6 @@
 	 * property-read QLabel $PersonIdLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
-	 * property QCheckBox $NewPersonFlagControl
-	 * property-read QLabel $NewPersonFlagLabel
 	 * property QTextBox $UsernameControl
 	 * property-read QLabel $UsernameLabel
 	 * property QTextBox $PasswordControl
@@ -90,12 +88,6 @@
 		protected $chkActiveFlag;
 
         /**
-         * @var QCheckBox chkNewPersonFlag;
-         * @access protected
-         */
-		protected $chkNewPersonFlag;
-
-        /**
          * @var QTextBox txtUsername;
          * @access protected
          */
@@ -150,12 +142,6 @@
          * @access protected
          */
 		protected $lblActiveFlag;
-
-        /**
-         * @var QLabel lblNewPersonFlag
-         * @access protected
-         */
-		protected $lblNewPersonFlag;
 
         /**
          * @var QLabel lblUsername
@@ -386,30 +372,6 @@
 			$this->lblActiveFlag->Name = QApplication::Translate('Active Flag');
 			$this->lblActiveFlag->Text = ($this->objPublicLogin->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 			return $this->lblActiveFlag;
-		}
-
-		/**
-		 * Create and setup QCheckBox chkNewPersonFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
-		 */
-		public function chkNewPersonFlag_Create($strControlId = null) {
-			$this->chkNewPersonFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkNewPersonFlag->Name = QApplication::Translate('New Person Flag');
-			$this->chkNewPersonFlag->Checked = $this->objPublicLogin->NewPersonFlag;
-			return $this->chkNewPersonFlag;
-		}
-
-		/**
-		 * Create and setup QLabel lblNewPersonFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblNewPersonFlag_Create($strControlId = null) {
-			$this->lblNewPersonFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblNewPersonFlag->Name = QApplication::Translate('New Person Flag');
-			$this->lblNewPersonFlag->Text = ($this->objPublicLogin->NewPersonFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblNewPersonFlag;
 		}
 
 		/**
@@ -671,9 +633,6 @@
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objPublicLogin->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objPublicLogin->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
-			if ($this->chkNewPersonFlag) $this->chkNewPersonFlag->Checked = $this->objPublicLogin->NewPersonFlag;
-			if ($this->lblNewPersonFlag) $this->lblNewPersonFlag->Text = ($this->objPublicLogin->NewPersonFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
 			if ($this->txtUsername) $this->txtUsername->Text = $this->objPublicLogin->Username;
 			if ($this->lblUsername) $this->lblUsername->Text = $this->objPublicLogin->Username;
 
@@ -738,7 +697,6 @@
 				// Update any fields for controls that have been created
 				if ($this->lstPerson) $this->objPublicLogin->PersonId = $this->lstPerson->SelectedValue;
 				if ($this->chkActiveFlag) $this->objPublicLogin->ActiveFlag = $this->chkActiveFlag->Checked;
-				if ($this->chkNewPersonFlag) $this->objPublicLogin->NewPersonFlag = $this->chkNewPersonFlag->Checked;
 				if ($this->txtUsername) $this->objPublicLogin->Username = $this->txtUsername->Text;
 				if ($this->txtPassword) $this->objPublicLogin->Password = $this->txtPassword->Text;
 				if ($this->txtLostPasswordQuestion) $this->objPublicLogin->LostPasswordQuestion = $this->txtLostPasswordQuestion->Text;
@@ -807,12 +765,6 @@
 				case 'ActiveFlagLabel':
 					if (!$this->lblActiveFlag) return $this->lblActiveFlag_Create();
 					return $this->lblActiveFlag;
-				case 'NewPersonFlagControl':
-					if (!$this->chkNewPersonFlag) return $this->chkNewPersonFlag_Create();
-					return $this->chkNewPersonFlag;
-				case 'NewPersonFlagLabel':
-					if (!$this->lblNewPersonFlag) return $this->lblNewPersonFlag_Create();
-					return $this->lblNewPersonFlag;
 				case 'UsernameControl':
 					if (!$this->txtUsername) return $this->txtUsername_Create();
 					return $this->txtUsername;
@@ -889,8 +841,6 @@
 						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
-					case 'NewPersonFlagControl':
-						return ($this->chkNewPersonFlag = QType::Cast($mixValue, 'QControl'));
 					case 'UsernameControl':
 						return ($this->txtUsername = QType::Cast($mixValue, 'QControl'));
 					case 'PasswordControl':

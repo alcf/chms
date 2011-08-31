@@ -78,6 +78,8 @@
 	 * property-read QLabel $PrimaryZipCodeTextLabel
 	 * property QTextBox $PrimaryPhoneTextControl
 	 * property-read QLabel $PrimaryPhoneTextLabel
+	 * property QCheckBox $PublicCreationFlagControl
+	 * property-read QLabel $PublicCreationFlagLabel
 	 * property QListBox $HouseholdAsHeadControl
 	 * property-read QLabel $HouseholdAsHeadLabel
 	 * property QListBox $PublicLoginControl
@@ -305,6 +307,12 @@
          */
 		protected $txtPrimaryPhoneText;
 
+        /**
+         * @var QCheckBox chkPublicCreationFlag;
+         * @access protected
+         */
+		protected $chkPublicCreationFlag;
+
 
 		// Controls that allow the viewing of Person's individual data fields
         /**
@@ -486,6 +494,12 @@
          * @access protected
          */
 		protected $lblPrimaryPhoneText;
+
+        /**
+         * @var QLabel lblPublicCreationFlag
+         * @access protected
+         */
+		protected $lblPublicCreationFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -1469,6 +1483,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkPublicCreationFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkPublicCreationFlag_Create($strControlId = null) {
+			$this->chkPublicCreationFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkPublicCreationFlag->Name = QApplication::Translate('Public Creation Flag');
+			$this->chkPublicCreationFlag->Checked = $this->objPerson->PublicCreationFlag;
+			return $this->chkPublicCreationFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblPublicCreationFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPublicCreationFlag_Create($strControlId = null) {
+			$this->lblPublicCreationFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPublicCreationFlag->Name = QApplication::Translate('Public Creation Flag');
+			$this->lblPublicCreationFlag->Text = ($this->objPerson->PublicCreationFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblPublicCreationFlag;
+		}
+
+		/**
 		 * Create and setup QListBox lstHouseholdAsHead
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -1858,6 +1896,9 @@
 			if ($this->txtPrimaryPhoneText) $this->txtPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
 			if ($this->lblPrimaryPhoneText) $this->lblPrimaryPhoneText->Text = $this->objPerson->PrimaryPhoneText;
 
+			if ($this->chkPublicCreationFlag) $this->chkPublicCreationFlag->Checked = $this->objPerson->PublicCreationFlag;
+			if ($this->lblPublicCreationFlag) $this->lblPublicCreationFlag->Text = ($this->objPerson->PublicCreationFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->lstHouseholdAsHead) {
 				$this->lstHouseholdAsHead->RemoveAllItems();
 				$this->lstHouseholdAsHead->AddItem(QApplication::Translate('- Select One -'), null);
@@ -2035,6 +2076,7 @@
 				if ($this->txtPrimaryStateText) $this->objPerson->PrimaryStateText = $this->txtPrimaryStateText->Text;
 				if ($this->txtPrimaryZipCodeText) $this->objPerson->PrimaryZipCodeText = $this->txtPrimaryZipCodeText->Text;
 				if ($this->txtPrimaryPhoneText) $this->objPerson->PrimaryPhoneText = $this->txtPrimaryPhoneText->Text;
+				if ($this->chkPublicCreationFlag) $this->objPerson->PublicCreationFlag = $this->chkPublicCreationFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstHouseholdAsHead) $this->objPerson->HouseholdAsHead = Household::Load($this->lstHouseholdAsHead->SelectedValue);
@@ -2271,6 +2313,12 @@
 				case 'PrimaryPhoneTextLabel':
 					if (!$this->lblPrimaryPhoneText) return $this->lblPrimaryPhoneText_Create();
 					return $this->lblPrimaryPhoneText;
+				case 'PublicCreationFlagControl':
+					if (!$this->chkPublicCreationFlag) return $this->chkPublicCreationFlag_Create();
+					return $this->chkPublicCreationFlag;
+				case 'PublicCreationFlagLabel':
+					if (!$this->lblPublicCreationFlag) return $this->lblPublicCreationFlag_Create();
+					return $this->lblPublicCreationFlag;
 				case 'HouseholdAsHeadControl':
 					if (!$this->lstHouseholdAsHead) return $this->lstHouseholdAsHead_Create();
 					return $this->lstHouseholdAsHead;
@@ -2385,6 +2433,8 @@
 						return ($this->txtPrimaryZipCodeText = QType::Cast($mixValue, 'QControl'));
 					case 'PrimaryPhoneTextControl':
 						return ($this->txtPrimaryPhoneText = QType::Cast($mixValue, 'QControl'));
+					case 'PublicCreationFlagControl':
+						return ($this->chkPublicCreationFlag = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':
 						return ($this->lstHouseholdAsHead = QType::Cast($mixValue, 'QControl'));
 					case 'PublicLoginControl':
