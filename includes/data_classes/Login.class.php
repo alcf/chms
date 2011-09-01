@@ -24,7 +24,7 @@
 		 * @return string a nicely formatted string representation of this object
 		 */
 		public function __toString() {
-			return sprintf('Login Object %s',  $this->intId);
+			return $this->FirstName . ' ' . $this->LastName;
 		}
 
 		public function __get($strName) {
