@@ -156,9 +156,9 @@
 				$this->pnlMinistry_Refresh($this->intMinistryId);
 				$this->lblMinistry_Refresh();
 				$this->dtgSignupForms->Refresh();
-				
+
 				$objMinistry = Ministry::Load($this->intMinistryId);
-				if ($objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) {
+				if ($objMinistry && $objMinistry->IsLoginCanAdminMinistry(QApplication::$Login)) {
 					$this->chkViewAll->Visible = true;
 					$this->lstSignupFormType->Visible = true;
 					$this->lstSignupFormType->RemoveAllItems();

@@ -1,6 +1,13 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 
-	<h1>Events and Signups</h1>
+	<?php if (QApplication::$Login->IsPermissionAllowed(PermissionType::ManageClasses)) { ?>
+		<h1>Events, Classes and Signups
+			<button class="primary" onclick="document.location='/classes/'; return false;">Manage Classes@ALCF</button>
+		</h1>
+	<?php } else { ?>
+		<h1>Events and Signups</h1>
+	<?php } ?>
+
 	<?php $this->pnlMinistries->Render(); ?>
 	<div class="subnavContent">
 		<?php $this->lblMinistry->Render(); ?>
