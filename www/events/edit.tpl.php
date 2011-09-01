@@ -2,6 +2,31 @@
 
 	<?php $this->lblHeading->Render('TagName=h1')?>
 
+<?php
+	// Display Course-specific Fields
+	if ($this->mctSignupForm->SignupForm->SignupFormTypeId == SignupFormType::Course) {
+?>
+		<h3>Class Meeting / Information (Required)</h3>
+		<div class="section">
+			<?php $this->lstClassTerm->RenderWithName('Name=Class Term'); ?>
+			<?php $this->lstClassCourse->RenderWithName('Name=Course'); ?>
+			<?php $this->lstClassInstructor->RenderWithName('Name=Instructor'); ?>
+			<br/>
+
+			<?php $this->calDateStart->RenderWithName('Name=Date of First Class'); ?>
+			<?php $this->calDateEnd->RenderWithName('Name=Date of Last Class'); ?>
+			<br/>
+
+			<?php $this->txtLocation->RenderWithName('Name=Class Meeting Location'); ?>
+			<?php $this->lstMeetingDay->RenderWithName('Name=Day of the Week'); ?>
+			<?php $this->lstMeetingStartTime->RenderWithName('Name=Class Start Time'); ?>
+			<?php $this->lstMeetingEndTime->RenderWithName('Name=Class End Time'); ?>
+			<br/>
+		</div>
+<?php
+	}
+?>
+
 	<div class="section">
 		<?php $this->lstMinistry->RenderWithName(); ?>
 		<?php $this->txtName->RenderWithName(); ?>
@@ -30,18 +55,23 @@
 		<?php $this->txtSignupMaleLimit->RenderWithName('Name=Capacity Limit for Males'); ?>
 		<?php $this->txtSignupFemaleLimit->RenderWithName('Name=Capacity Limit for Females'); ?>
 	</div>
-	
-		<?php if ($this->dtxDateStart) { ?>
-	<h3>Event Information (Optional)</h3>
-	<div class="section">
-		<?php $this->dtxDateStart->HtmlAfter = '&nbsp;' . $this->calDateStart->Render(false); ?>
-		<?php $this->dtxDateEnd->HtmlAfter = '&nbsp;' . $this->calDateEnd->Render(false); ?>
-		<?php $this->dtxDateStart->RenderWithName('Name=Event Start Date (and Time)'); ?>
-		<?php $this->dtxDateEnd->RenderWithName('Name=Event End Date (and Time)'); ?>
-		<?php $this->txtLocation->RenderWithName('Name=Event Location'); ?>
-	</div>
-<?php } ?>
 
+<?php
+	// Display Event-specific Fields
+	if ($this->mctSignupForm->SignupForm->SignupFormTypeId == SignupFormType::Event) {
+?>
+			<h3>Event Information (Optional)</h3>
+			<div class="section">
+				<?php $this->dtxDateStart->HtmlAfter = '&nbsp;' . $this->calDateStart->Render(false); ?>
+				<?php $this->dtxDateEnd->HtmlAfter = '&nbsp;' . $this->calDateEnd->Render(false); ?>
+				<?php $this->dtxDateStart->RenderWithName('Name=Event Start Date (and Time)'); ?>
+				<?php $this->dtxDateEnd->RenderWithName('Name=Event End Date (and Time)'); ?>
+				<?php $this->txtLocation->RenderWithName('Name=Event Location'); ?>
+			</div>
+<?php
+	}
+?>
+				
 	<div class="buttonBar">
 		<?php $this->btnSave->Render(); ?>
 		&nbsp; or &nbsp;

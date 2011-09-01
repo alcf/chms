@@ -34,12 +34,21 @@
 
 		// Child Object for Signup
 		protected $mctSignupChild;
-		// Event-Specific
+
+		// Event-Specific and ClassMeeting-Specific Controls
 		protected $dtxDateStart;
 		protected $calDateStart;
 		protected $dtxDateEnd;
 		protected $calDateEnd;
 		protected $txtLocation;
+
+		// Class Meeting-specific Controls
+		protected $lstClassTerm;
+		protected $lstClassCourse;
+		protected $lstClassInstructor;
+		protected $lstMeetingDay;
+		protected $lstMeetingStartTime;
+		protected $lstMeetingEndTime;
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -59,6 +68,9 @@
 					case SignupFormType::Event:
 						$objChild = $objSignupForm->EventSignupForm;
 						break;
+					case SignupFormType::Course:
+						$objChild = $objSignupForm->ClassMeeting;
+						break;
 					default:
 						throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
 				}
@@ -75,6 +87,9 @@
 					case SignupFormType::Event:
 						$objChild = new EventSignupForm();
 						break;
+					case SignupFormType::Course:
+						$objChild = new ClassMeeting();
+						break;
 					default:
 						throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
 				}
@@ -85,6 +100,9 @@
 			switch ($objSignupForm->SignupFormTypeId) {
 				case SignupFormType::Event:
 					$this->mctSignupChild = new EventSignupFormMetaControl($this, $objChild);
+					break;
+				case SignupFormType::Course:
+					$this->mctSignupChild = new ClassMeetingMetaControl($this, $objChild);
 					break;
 				default:
 					throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
@@ -163,6 +181,29 @@
 					$this->calDateEnd = $this->mctSignupChild->calDateEnd_Create();
 					$this->txtLocation = $this->mctSignupChild->txtLocation_Create();
 					break;
+
+				case SignupFormType::Course:
+					$this->lstClassTerm = $this->mctSignupChild->lstClassTerm_Create(
+						null,
+						QQ::OrCondition(
+							QQ::Equal(QQN::ClassTerm()->ActiveFlag, true),
+							QQ::Equal(QQN::ClassTerm()->Id, $this->mctSignupChild->ClassMeeting->ClassTermId)
+						)
+					);
+					$this->lstClassCourse = $this->mctSignupChild->lstClassCourse_Create(null, null, QQ::OrderBy(QQN::ClassCourse()->Code));
+					$this->lstClassInstructor = $this->mctSignupChild->lstClassInstructor_Create(null, null, QQ::OrderBy(QQN::ClassInstructor()->DisplayName));
+					$this->calDateStart = $this->mctSignupChild->calDateStart_Create();
+					$this->calDateEnd = $this->mctSignupChild->calDateEnd_Create();
+					$this->txtLocation = $this->mctSignupChild->txtLocation_Create();
+					$this->lstMeetingDay = $this->mctSignupChild->lstMeetingDay_Create();
+					$this->lstMeetingStartTime = $this->mctSignupChild->lstMeetingStartTime_Create();
+					$this->lstMeetingEndTime = $this->mctSignupChild->lstMeetingEndTime_Create();
+					
+					// Make some upates to the default fields
+					$this->txtName->Enabled = false;
+					$this->lstClassCourse->AddAction(new QChangeEvent(), new QAjaxAction('lstClassCourse_Change'));
+					break;
+
 				default:
 					throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
 			}
@@ -223,6 +264,10 @@
 					if (!$this->mctSignupChild->EventSignupForm->SignupForm) $this->mctSignupChild->EventSignupForm->SignupForm = $this->mctSignupForm->SignupForm;
 					$this->mctSignupChild->SaveEventSignupForm();
 					break;
+				case SignupFormType::Course:
+					if (!$this->mctSignupChild->ClassMeeting->SignupForm) $this->mctSignupChild->ClassMeeting->SignupForm = $this->mctSignupForm->SignupForm;
+					$this->mctSignupChild->SaveClassMeeting();
+					break;
 				default:
 					throw new Exception('Invalid SignupFormTypeId: ' . $objSignupForm->SignupFormTypeId);
 			}
@@ -244,6 +289,14 @@
 			$this->mctSignupForm->DeleteSignupForm();
 
 			QApplication::Redirect('/events/');
+		}
+
+		public function lstClassCourse_Change() {
+			if ($this->lstClassCourse && $this->lstClassCourse->SelectedValue) {
+				$this->txtName->Text = $this->lstClassCourse->SelectedName;
+			} else {
+				$this->txtName->Text = null;
+			}
 		}
 	}
 
