@@ -40,6 +40,16 @@
 		protected $lblSupportEmail;
 		protected $lblEmailNotification;
 
+		protected $lblClassTerm;
+		protected $lblClassCourse;
+		protected $lblClassInstructor;
+
+		protected $lblDateStart;
+		protected $lblDateEnd;
+		protected $lblLocation;
+
+		protected $lblMeetsOn;
+
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
 			if (!$this->objSignupForm) QApplication::Redirect('/events/');
@@ -97,6 +107,9 @@
 			switch ($this->objSignupForm->SignupFormTypeId) {
 				case SignupFormType::Event:
 					$this->SetupLabelsForEvent();
+					break;
+				case SignupFormType::Course:
+					$this->SetupLabelsForCourse();
 					break;
 			}
 
@@ -172,7 +185,39 @@
 		}
 		
 		protected function SetupLabelsForEvent() {
+			$mctEventSignupForm = new EventSignupFormMetaControl($this, $this->mctSignupForm->SignupForm->EventSignupForm);
+			$this->lblDateStart = $mctEventSignupForm->lblDateStart_Create();
+			$this->lblDateEnd = $mctEventSignupForm->lblDateEnd_Create();
+			$this->lblLocation = $mctEventSignupForm->lblLocation_Create();
+			if (!strlen(trim($this->lblDateStart->Text))) $this->lblDateStart->Visible = false;
+			if (!strlen(trim($this->lblDateEnd->Text))) $this->lblDateEnd->Visible = false;
+			if (!strlen(trim($this->lblLocation->Text))) $this->lblLocation->Visible = false;
+		}
+
+		protected function SetupLabelsForCourse() {
+			$mctClassMeeting = new ClassMeetingMetaControl($this, $this->mctSignupForm->SignupForm->ClassMeeting);
+			if ($mctClassMeeting->ClassMeeting->ClassTerm) {
+				$this->lblClassTerm = new QLabel($this);
+				$this->lblClassTerm->Text = $mctClassMeeting->ClassMeeting->ClassTerm->__ToString();
+			}
 			
+			if ($mctClassMeeting->ClassMeeting->ClassCourse) {
+				$this->lblClassCourse = new QLabel($this);
+				$this->lblClassCourse->Text = $mctClassMeeting->ClassMeeting->ClassCourse->__ToString();
+			}
+
+			if ($mctClassMeeting->ClassMeeting->ClassInstructor) {
+				$this->lblClassInstructor = new QLabel($this);
+				$this->lblClassInstructor->Text = $mctClassMeeting->ClassMeeting->ClassInstructor->__ToString();
+			}
+
+			$this->lblDateStart = $mctClassMeeting->lblDateStart_Create();
+			$this->lblDateEnd = $mctClassMeeting->lblDateEnd_Create();
+			$this->lblLocation = $mctClassMeeting->lblLocation_Create();
+			if (!strlen(trim($this->lblLocation->Text))) $this->lblLocation->Visible = false;
+
+			$this->lblMeetsOn = new QLabel($this);
+			$this->lblMeetsOn->Text = $mctClassMeeting->ClassMeeting->MeetsOnInfo;
 		}
 
 		public function RenderShortDescription(FormQuestion $objQuestion) {

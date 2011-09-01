@@ -49,7 +49,7 @@
 				6 => 'Saturday',
 			);
 
-			if (!$this->blnEditMode) $this->lstMeetingDay->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstMeetingDay->AddItem(QApplication::Translate('- Select One -'), null);
 			foreach ($strArray as $intValue => $strName)
 				$this->lstMeetingDay->AddItem($strName, $intValue, $intValue === $this->objClassMeeting->MeetingDay);
 			return $this->lstMeetingDay;
@@ -59,7 +59,7 @@
 			$this->lstMeetingStartTime = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMeetingStartTime->Name = 'Meeting Start Time';
 
-			if (!$this->blnEditMode) $this->lstMeetingStartTime->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstMeetingStartTime->AddItem(QApplication::Translate('- Select One -'), null);
 			$dttDate = new QDateTime();
 			for ($intTimeIndex = 0; $intTimeIndex < 2400; $intTimeIndex += 70) {
 				$dttDate->SetTime(floor($intTimeIndex / 100), 0, 0);
@@ -78,7 +78,7 @@
 			$this->lstMeetingEndTime = new QListBox($this->objParentObject, $strControlId);
 			$this->lstMeetingEndTime->Name = 'Meeting End Time';
 
-			if (!$this->blnEditMode) $this->lstMeetingEndTime->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstMeetingEndTime->AddItem(QApplication::Translate('- Select One -'), null);
 			$dttDate = new QDateTime();
 			for ($intTimeIndex = 0; $intTimeIndex < 2400; $intTimeIndex += 70) {
 				$dttDate->SetTime(floor($intTimeIndex / 100), 0, 0);

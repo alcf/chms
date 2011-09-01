@@ -27,7 +27,40 @@
 			return sprintf('ClassMeeting Object %s',  $this->intSignupFormId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'MeetsOnInfo':
+					if (!is_null($this->intMeetingDay) &&
+						!is_null($this->intMeetingStartTime) &&
+						!is_null($this->intMeetingEndTime)) {
+						$strArray = array(
+							0 => 'Sunday',
+							1 => 'Monday',
+							2 => 'Tuesday',
+							3 => 'Wednesday',
+							4 => 'Thursday',
+							5 => 'Friday',
+							6 => 'Saturday',
+						);
+						$dttStart = new QDateTime();
+						$dttEnd = new QDateTime();
+						$dttStart->SetTime(floor($this->intMeetingStartTime / 100), $this->intMeetingStartTime % 100, 0);
+						$dttEnd->SetTime(floor($this->intMeetingEndTime / 100), $this->intMeetingEndTime % 100, 0);
+						return sprintf('%ss, %s to %s', $strArray[$this->intMeetingDay], $dttStart->ToString('h:mmz'), $dttEnd->ToString('h:mmz'));
+					} else {
+						return 'TBA';
+					}
 
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

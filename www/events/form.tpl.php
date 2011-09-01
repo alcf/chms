@@ -23,12 +23,12 @@
 	</div>
 <?php } ?>
 	<div class="section">
-		<?php $this->lblName->RenderWithName(); ?>
+		<?php $this->lblName->RenderWithName('FontBold=true'); ?>
 		<?php $this->lblActive->RenderWithName(); ?>
 		<?php $this->lblSignupUrl->RenderWithName(); ?>
 		<?php $this->lblConfidential->RenderWithName(); ?>
 		
-		<?php $this->lblDescription->RenderWithName('Width=700px', 'TagName=div'); ?>
+		<?php $this->lblDescription->RenderWithName('Width=700px', 'TagName=div', 'FontSize=14px', 'ForeColor=#444444'); ?>
 		<?php $this->lblInformationUrl->RenderWithName(); ?>
 		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations'); ?>
 		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
@@ -37,6 +37,15 @@
 		<?php $this->lblDonationStewardshipFund->RenderWithName('Name=Funding Account for Donations'); ?>
 		<?php $this->lblSupportEmail->RenderWithName('Name=Support Email Address'); ?>
 		<?php $this->lblEmailNotification->RenderWithName('Name=BCC Confirmation Emails'); ?>
+		<br/>
+
+		<?php if ($this->lblClassTerm) $this->lblClassTerm->RenderWithName('Name=Term', 'Required=false'); ?>
+		<?php if ($this->lblClassCourse) $this->lblClassCourse->RenderWithName('Name=Course','Required=false'); ?>
+		<?php if ($this->lblClassInstructor) $this->lblClassInstructor->RenderWithName('Name=Instructor','Required=false'); ?>
+		<?php if ($this->lblDateStart) $this->lblDateStart->RenderWithName('Name=Starts on','Required=false'); ?>
+		<?php if ($this->lblDateEnd) $this->lblDateEnd->RenderWithName('Name=Ends on','Required=false'); ?>
+		<?php if ($this->lblLocation) $this->lblLocation->RenderWithName('Name=Location','Required=false'); ?>
+		<?php if ($this->lblMeetsOn) $this->lblMeetsOn->RenderWithName('Name=Meets on','Required=false'); ?>
 	</div>
 	
 	<?php if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
