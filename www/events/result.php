@@ -97,17 +97,6 @@
 				QApplication::Redirect('/events/results.php/' . $this->objSignupForm->Id);
 			}
 
-			// Child Object
-			switch ($this->objSignupForm->SignupFormTypeId) {
-				case SignupFormType::Event:
-					break;
-				case SignupFormType::Course:
-					$this->mctClassRegistration = new ClassRegistrationMetaControl($this, $objSignupEntry->ClassRegistration);
-					break;
-				default:
-					throw new Exception('Invalid SignupFormTypeId for SignupForm: ' . $this->objSignupForm->Id);
-			}
-
 			$this->mctSignupEntry = new SignupEntryMetaControl($this, $objSignupEntry);
 			$this->lblPerson = new QLabel($this);
 			$this->lblPerson->Name = 'Person';
@@ -171,6 +160,19 @@
 			}
 			$this->lstAddPayment->AddAction(new QChangeEvent(), new QAjaxAction('lstAddPayment_Change'));
 
+			$this->dlgEdit_Create();
+
+			// Child Object
+			switch ($this->objSignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					break;
+				case SignupFormType::Course:
+					$this->mctClassRegistration = new ClassRegistrationMetaControl($this->dlgEdit, $objSignupEntry->ClassRegistration);
+					break;
+				default:
+					throw new Exception('Invalid SignupFormTypeId for SignupForm: ' . $this->objSignupForm->Id);
+			}
+
 			// Specifically for class registrations
 			if ($this->mctClassRegistration) {
 				$this->dtgClassAttendance = new QDataGrid($this);
@@ -180,9 +182,15 @@
 				$this->pxyEditClassAttendance = new QControlProxy($this);
 				$this->pxyEditClassAttendance->AddAction(new QClickEvent(), new QAjaxAction('pxyEditClassAttendance_Click'));
 				$this->pxyEditClassAttendance->AddAction(new QClickEvent(), new QTerminateAction());
+
+				$this->dtgClassGrade = new QDataGrid($this);
+				$this->dtgClassGrade->AddColumn(new QDataGridColumn('Class Grade', 'Final Class Grade', 'Width=300px'));
+				$this->dtgClassGrade->AddColumn(new QDataGridColumn('Grade', '<?= $_FORM->RenderClassGrade(); ?>', 'Width=640px', 'HtmlEntities=false'));
+				$this->dtgClassGrade->SetDataBinder('dtgClassGrade_Bind');
+				$this->pxyEditClassGrade = new QControlProxy($this);
+				$this->pxyEditClassGrade->AddAction(new QClickEvent(), new QAjaxAction('pxyEditClassGrade_Click'));
+				$this->pxyEditClassGrade->AddAction(new QClickEvent(), new QTerminateAction());
 			}
-			
-			$this->dlgEdit_Create();
 		}
 
 		/**
@@ -207,6 +215,21 @@
 			$this->mctClassRegistration->ClassRegistration->RefreshClassAttendance();
 			$this->dttClassMeetingArrayForIndex = $this->mctClassRegistration->ClassRegistration->ClassMeeting->GetClassMeetingDays();
 			$this->dtgClassAttendance->DataSource = $this->mctClassRegistration->ClassRegistration->GetClassAttendenceArray(QQ::OrderBy(QQN::ClassAttendence()->MeetingNumber));
+		}
+
+		public function RenderClassGrade() {
+			if (is_null($this->mctClassRegistration->ClassRegistration->ClassGrade)) {
+				$strToReturn = '(not yet specified)';
+				$strStyle = 'color: #666;';
+			} else {
+				$strToReturn = $this->mctClassRegistration->ClassRegistration->ClassGrade->Code . ' - ' . $this->mctClassRegistration->ClassRegistration->ClassGrade->Name;
+				$strStyle = 'color: #000; font-weight: bold;';
+			}
+			
+			return sprintf('<a href="#" %s style="%s">%s</a>', $this->pxyEditClassGrade->RenderAsEvents(null, false), $strStyle, $strToReturn);
+		}
+		public function dtgClassGrade_Bind() {
+			$this->dtgClassGrade->DataSource = array(true);
 		}
 
 		/**
@@ -426,6 +449,18 @@
 			}
 		}
 
+		protected function pxyEditClassGrade_Click() {
+			$this->dlgEdit->ShowDialogBox();
+			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_ClassGrade.tpl.php';
+			$this->intEditTag = self::EditTagClassGrade;
+			$this->btnDelete->Visible = false;
+			
+			// Reset
+			$this->ResetDialogControls();
+
+			$this->lstListbox = $this->mctClassRegistration->lstClassGrade_Create();
+		}
+
 		protected $objClassAttendance;
 		protected function pxyEditClassAttendance_Click($strFormId, $strControlId, $strParameter) {
 			$this->objClassAttendance = ClassAttendence::LoadByClassRegistrationIdMeetingNumber($this->mctClassRegistration->ClassRegistration->SignupEntryId, $strParameter);
@@ -439,7 +474,7 @@
 			$this->ResetDialogControls();
 			
 			$this->lstListbox->Name = 'Attendance Entry';
-			$this->lstListbox->AddItem('Not Specified', null, is_null($this->objClassAttendance->PresentFlag));
+			$this->lstListbox->AddItem('- Not Specified -', null, is_null($this->objClassAttendance->PresentFlag));
 			$this->lstListbox->AddItem('Present', true, $this->objClassAttendance->PresentFlag === true);
 			$this->lstListbox->AddItem('Not Present', false, $this->objClassAttendance->PresentFlag === false);
 		}
@@ -857,6 +892,10 @@
 					$this->objClassAttendance->PresentFlag = $this->lstListbox->SelectedValue;
 					$this->objClassAttendance->Save();
 					$this->dtgClassAttendance->Refresh();
+					break;
+				case self::EditTagClassGrade:
+					$this->mctClassRegistration->SaveClassRegistration();
+					$this->dtgClassGrade->Refresh();
 					break;
 			}
 

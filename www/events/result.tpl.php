@@ -22,9 +22,9 @@
 <?php if ($this->mctClassRegistration) { ?>
 	<h3><?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?>'s Class Information</h3>
 	<div class="section">
-		<?php $this->dtgClassAttendance->Render();?>
+		<?php $this->dtgClassGrade->Render();?>
 		<br/>
-		<?php // $this->dtgFormProducts->Render();?>
+		<?php $this->dtgClassAttendance->Render();?>
 	</div>
 <?php } ?>
 
