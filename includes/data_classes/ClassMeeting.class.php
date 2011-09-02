@@ -63,7 +63,42 @@
 					}
 			}
 		}
-		
+
+		/**
+		 * Given the start date, end date and meeting day of the week for this class,
+		 * this will return the total number of class days.
+		 * @return integer
+		 */
+		public function GetClassMeetingCount() {
+			return count($this->GetClassMeetingDays());
+		}
+
+		/**
+		 * Given the start date, end date and meeting day of the week for this class,
+		 * this will return an array of all the meeting days
+		 * @return QDateTime[]
+		 */
+		public function GetClassMeetingDays() {
+			// Figure out the first real start date
+			$dttStartDate = new QDateTime($this->DateStart);
+			if ($dttStartDate->PhpDate('w') < $this->intMeetingDay) {
+				$dttStartDate->Day += ($this->intMeetingDay - $dttStartDate->PhpDate('w'));
+			} else if ($dttStartDate->PhpDate('w') > $this->intMeetingDay) {
+				$dttStartDate->Day += (7 - ($dttStartDate->PhpDate('w') - $this->intMeetingDay));
+			}
+
+			// Array to Return
+			$dttArrayToReturn = array();
+						
+			while ($dttStartDate->IsEarlierOrEqualTo($this->DateEnd)) {
+				$dttToAdd = new QDateTime($dttStartDate);
+				$dttArrayToReturn[] = $dttToAdd;
+				$dttStartDate->Day += 7;
+			}
+
+			return $dttArrayToReturn;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
