@@ -75,7 +75,10 @@
 				$this->btnSubmit->Text = 'Submit Registration';
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
 		}
-		
+
+		protected function CreateChildObject() {
+		}
+
 		public function Form_Validate() {
 			$blnToReturn = parent::Form_Validate();
 			$blnFirst = true;
@@ -621,6 +624,7 @@
 
 		protected function btnSubmit_Click($strFormId, $strControlId, $strParameter) {
 			$this->objSignupEntry->Save();
+			$this->CreateChildObject();
 
 			foreach ($this->objSignupForm->GetFormQuestionArray() as $objFormQuestion) {
 				// Only update if this is NOT "InternalFlag"

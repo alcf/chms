@@ -25,6 +25,14 @@
 
 			$this->CreateFormItemControls();
 		}
+		
+		protected function CreateChildObject() {
+			$objClassRegistration = new ClassRegistration();
+			$objClassRegistration->SignupEntry = $this->objSignupEntry;
+			$objClassRegistration->ClassMeeting = $this->objClassMeeting;
+			$objClassRegistration->Person = $this->objSignupEntry->Person;
+			$objClassRegistration->Save();
+		}
 	}
 
 	ClassSignupForm::Run('ClassSignupForm');
