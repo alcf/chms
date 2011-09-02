@@ -7,9 +7,9 @@
 </div>
 <br/>
 
-<h3>Events</h3>
+<h3>Events and Classes@ALCF</h3>
 <div class="section">
-	<p>The following are Event Signups that this person has completed <strong>OR</strong> cancelled a registration for.</p>
+	<p>The following are Event or Class Signups that this person has completed <strong>OR</strong> cancelled a registration for.</p>
 <?php $_CONTROL->dtgEvents->Render(); ?>
 </div>
 <br/>

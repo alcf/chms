@@ -9,6 +9,7 @@
 		protected $dtgTerms;
 		protected $dtgCourses;
 		protected $dtgInstructors;
+		protected $dtgGrades;
 
 		protected function Form_Create() {
 			$this->dtgTerms = new ClassTermDataGrid($this);
@@ -27,6 +28,12 @@
 			$this->dtgInstructors->MetaAddEditLinkColumn('/classes/instructor.php', 'Edit', 'Edit', QMetaControlArgumentType::PathInfo);
 			$this->dtgInstructors->MetaAddColumn('DisplayName');
 			$this->dtgInstructors->NoDataHtml = '<p><em>There are currently no Instructors defined yet.</em></p>';
+
+			$this->dtgGrades = new ClassGradeDataGrid($this);
+			$this->dtgGrades->MetaAddEditLinkColumn('/classes/grade.php', 'Edit', 'Edit', QMetaControlArgumentType::PathInfo);
+			$this->dtgGrades->MetaAddColumn('Code');
+			$this->dtgGrades->MetaAddColumn('Name');
+			$this->dtgGrades->NoDataHtml = '<p><em>There are currently no Grades defined yet.</em></p>';
 		}
 	}
 

@@ -19,4 +19,10 @@
 		<div class="buttonBar"><button class="primary" onclick="document.location='/classes/instructor.php'; return false;">Add an Instructor</button></div>
 	</div>
 
+	<div class="section">
+		<h3>Grade Levels</h3>
+		<?php $this->dtgGrades->Render(); ?>
+		<div class="buttonBar"><button class="primary" onclick="document.location='/classes/grade.php'; return false;">Add a Grade Level</button></div>
+	</div>
+
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
