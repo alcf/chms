@@ -19,6 +19,15 @@
 		<?php $this->btnToggleStatus->Render(); ?>
 	</div>
 
+<?php if ($this->mctClassRegistration) { ?>
+	<h3><?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?>'s Class Information</h3>
+	<div class="section">
+		<?php $this->dtgClassAttendance->Render();?>
+		<br/>
+		<?php // $this->dtgFormProducts->Render();?>
+	</div>
+<?php } ?>
+
 	<h3><?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?>'s Signup Details</h3>
 	<div class="section">
 		<?php $this->dtgFormQuestions->Render();?>

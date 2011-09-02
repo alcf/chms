@@ -30,7 +30,7 @@
 		public function RefreshClassAttendance() {
 			$intMeetingCount = $this->ClassMeeting->GetClassMeetingCount();
 			for ($intMeetingNumber = 1; $intMeetingNumber <= $intMeetingCount; $intMeetingNumber++) {
-				$objAttendance = ClassAttendence::LoadByClassRegistrationIdMeetingNumber($this->intId, $intMeetingNumber);
+				$objAttendance = ClassAttendence::LoadByClassRegistrationIdMeetingNumber($this->intSignupEntryId, $intMeetingNumber);
 				if (!$objAttendance) {
 					$objAttendance = new ClassAttendence();
 					$objAttendance->ClassRegistration = $this;

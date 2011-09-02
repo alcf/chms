@@ -32,6 +32,12 @@
 		protected $dtgPayments;
 		protected $lstAddPayment;
 
+		// Specifically for classes
+		protected $dtgClassAttendance;
+		protected $pxyEditClassAttendance;
+		protected $dtgClassGrade;
+		protected $pxyEditClassGrade;
+
 		protected $dlgEdit;
 		/**
 		 * Tag should be one of the EditTag constants
@@ -60,6 +66,8 @@
 		const EditTagAnswer = 3;
 		const EditTagProduct = 4;
 		const EditTagStatus = 5;
+		const EditTagClassAttendance = 6;
+		const EditTagClassGrade = 7;
 		
 		protected function Form_Create() {
 			$this->objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
@@ -105,11 +113,11 @@
 			$this->lblPerson->Name = 'Person';
 			$this->lblPerson->HtmlEntities = false;
 			$this->lblPerson->Text = $this->mctSignupEntry->SignupEntry->Person->LinkHtml;
-			
+
 			$this->lblSignupEntryStatusType = $this->mctSignupEntry->lblSignupEntryStatusTypeId_Create();
 			$this->lblDateCreated = $this->mctSignupEntry->lblDateCreated_Create();
 			$this->lblDateSubmitted = $this->mctSignupEntry->lblDateSubmitted_Create();
-			
+
 			if (($this->mctSignupEntry->SignupEntry->PersonId != $this->mctSignupEntry->SignupEntry->SignupByPersonId) &&
 				($this->mctSignupEntry->SignupEntry->SignupByPersonId)) {
 				$this->lblSignupByPerson = new QLabel($this);
@@ -163,9 +171,44 @@
 			}
 			$this->lstAddPayment->AddAction(new QChangeEvent(), new QAjaxAction('lstAddPayment_Change'));
 
+			// Specifically for class registrations
+			if ($this->mctClassRegistration) {
+				$this->dtgClassAttendance = new QDataGrid($this);
+				$this->dtgClassAttendance->AddColumn(new QDataGridColumn('Class Meeting', '<?= $_FORM->dttClassMeetingArrayForIndex[$_ITEM->MeetingNumber - 1]->ToString("DDDD, MMMM D, YYYY"); ?>', 'Width=300px'));
+				$this->dtgClassAttendance->AddColumn(new QDataGridColumn('Attendance', '<?= $_FORM->RenderAttendance($_ITEM); ?>', 'Width=640px', 'HtmlEntities=false'));
+				$this->dtgClassAttendance->SetDataBinder('dtgClassAttendance_Bind');
+				$this->pxyEditClassAttendance = new QControlProxy($this);
+				$this->pxyEditClassAttendance->AddAction(new QClickEvent(), new QAjaxAction('pxyEditClassAttendance_Click'));
+				$this->pxyEditClassAttendance->AddAction(new QClickEvent(), new QTerminateAction());
+			}
+			
 			$this->dlgEdit_Create();
 		}
-		
+
+		/**
+		 * @var QDateTime[]
+		 */
+		public $dttClassMeetingArrayForIndex;
+		public function RenderAttendance(ClassAttendence $objAttendance) {
+			if (is_null($objAttendance->PresentFlag)) {
+				$strToReturn = '(not yet specified)';
+				$strStyle = 'color: #666;';
+			} else if ($objAttendance->PresentFlag) {
+				$strToReturn = 'PRESENT';
+				$strStyle = 'color: #060; font-weight: bold;';
+			} else {
+				$strToReturn = 'NOT Present';
+				$strStyle = 'color: #600; font-weight: bold;';
+			}
+			
+			return sprintf('<a href="#" %s style="%s">%s</a>', $this->pxyEditClassAttendance->RenderAsEvents($objAttendance->MeetingNumber, false), $strStyle, $strToReturn);
+		}
+		public function dtgClassAttendance_Bind() {
+			$this->mctClassRegistration->ClassRegistration->RefreshClassAttendance();
+			$this->dttClassMeetingArrayForIndex = $this->mctClassRegistration->ClassRegistration->ClassMeeting->GetClassMeetingDays();
+			$this->dtgClassAttendance->DataSource = $this->mctClassRegistration->ClassRegistration->GetClassAttendenceArray(QQ::OrderBy(QQN::ClassAttendence()->MeetingNumber));
+		}
+
 		/**
 		 * @var SignupProduct
 		 */
@@ -381,6 +424,24 @@
 				// If we are here, nothing was answered!
 				return (sprintf('<a href="#" style="color: #999; font-size: 10px;" %s>Not Answered</a>', $this->pxyEditFormQuestion->RenderAsEvents($objFormQuestion->Id, false)));
 			}
+		}
+
+		protected $objClassAttendance;
+		protected function pxyEditClassAttendance_Click($strFormId, $strControlId, $strParameter) {
+			$this->objClassAttendance = ClassAttendence::LoadByClassRegistrationIdMeetingNumber($this->mctClassRegistration->ClassRegistration->SignupEntryId, $strParameter);
+			
+			$this->dlgEdit->ShowDialogBox();
+			$this->dlgEdit->Template = dirname(__FILE__) . '/dlgEditResult_ClassAttendance.tpl.php';
+			$this->intEditTag = self::EditTagClassAttendance;
+			$this->btnDelete->Visible = false;
+			
+			// Reset
+			$this->ResetDialogControls();
+			
+			$this->lstListbox->Name = 'Attendance Entry';
+			$this->lstListbox->AddItem('Not Specified', null, is_null($this->objClassAttendance->PresentFlag));
+			$this->lstListbox->AddItem('Present', true, $this->objClassAttendance->PresentFlag === true);
+			$this->lstListbox->AddItem('Not Present', false, $this->objClassAttendance->PresentFlag === false);
 		}
 
 		protected function pxyEditFormProduct_Click($strFormId, $strControlId, $strParameter) {
@@ -791,6 +852,11 @@
 					if (!$this->PerformSignupProductSave()) return;
 					$this->dtgFormProducts->Refresh();
 					$this->dtgPayments->Refresh();
+					break;
+				case self::EditTagClassAttendance:
+					$this->objClassAttendance->PresentFlag = $this->lstListbox->SelectedValue;
+					$this->objClassAttendance->Save();
+					$this->dtgClassAttendance->Refresh();
 					break;
 			}
 
