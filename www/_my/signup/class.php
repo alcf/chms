@@ -3,11 +3,11 @@
 	QApplication::AuthenticatePublic();
 	require(dirname(__FILE__) . '/SignupQForm.class.php');
 
-	class EventSignupQForm extends SignupQForm {
+	class ClassSignupForm extends SignupQForm {
 		/**
-		 * @var EventSignupForm
+		 * @var ClassMeeting
 		 */
-		protected $objEvent;
+		protected $objClassMeeting;
 
 		protected function Form_Create() {
 			try {
@@ -18,7 +18,7 @@
 			}
 
 			// Ensure it is the correct type and it exists
-			if (!($this->objEvent = $this->objSignupForm->EventSignupForm)) {
+			if (!($this->objClassMeeting = $this->objSignupForm->ClassMeeting)) {
 				$this->strHtmlIncludeFilePath = '_notfound.tpl.php';
 				return;
 			}
@@ -27,5 +27,5 @@
 		}
 	}
 
-	EventSignupQForm::Run('EventSignupQForm');
+	ClassSignupForm::Run('ClassSignupForm');
 ?>

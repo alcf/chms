@@ -31,10 +31,21 @@
 			switch ($strName) {
 				case 'Type': return SignupFormType::$NameArray[$this->intSignupFormTypeId];
 				case 'SignupUrl':
+					switch ($this->intSignupFormTypeId) {
+						case SignupFormType::Event:
+							$strBaseUrl = '/signup/event.php/';
+							break;
+						case SignupFormType::Course:
+							$strBaseUrl = '/signup/class.php/';
+							break;
+						default:
+							throw new QCallerException('Cannot get SignupUrl for an undefined Signup Form Type on this SignupForm: ' . $this->intId);
+					}
+
 					if ($this->strToken) {
-						return MY_ALCF_URL . '/signup/event.php/' . $this->strToken;
+						return MY_ALCF_URL . $strBaseUrl . $this->strToken;
 					} else {
-						return MY_ALCF_URL . '/signup/event.php/' . $this->intId;
+						return MY_ALCF_URL . $strBaseUrl . $this->intId;
 					}
 
 				case 'CsvFilename':

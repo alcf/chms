@@ -68,6 +68,9 @@
 				case SignupFormType::Event:
 					$this->objChild = $this->objSignupForm->EventSignupForm;
 					break;
+				case SignupFormType::Course:
+					$this->objChild = $this->objSignupForm->ClassMeeting;
+					break;
 			}
 
 			$this->dtgProducts = new QDataGrid($this);

@@ -9,8 +9,27 @@
 		<h2>Payment Information</h2>
 	<?php } ?>
 
-	Please fill out the following form to sign up for <strong><?php _p($this->objSignupForm->Name); ?></strong><?php _p($this->objChild->GeneratedDescription); ?>.
-	<?php if ($this->objSignupForm->InformationUrl) _p($this->objSignupForm->InformationLinkHtml, false); ?>
+<?php
+	switch ($this->objSignupForm->SignupFormTypeId) {
+		case SignupFormType::Event:
+?>
+			Please fill out the following form to sign up for <strong><?php _p($this->objSignupForm->Name); ?></strong><?php _p($this->objChild->GeneratedDescription); ?>.
+			<?php if ($this->objSignupForm->InformationUrl) _p($this->objSignupForm->InformationLinkHtml, false); ?>
+<?php
+			break;
+		case SignupFormType::Course:
+?>
+			Please fill out the following form to sign up for <strong><?php _p($this->objSignupForm->Name); ?></strong>:
+			<ul>
+				<li>Class Dates: <strong><?php _p($this->objChild->DateRange); ?></strong></li>
+				<li>Class Meetings: <strong>Meets <?php _p($this->objChild->MeetsOnInfo); ?></strong></li>
+			</ul>
+			<?php if ($this->objSignupForm->InformationUrl) _p($this->objSignupForm->InformationLinkHtml, false); ?>
+			(*) Fields in <strong>BOLD</strong> are required.
+<?php
+			break;
+	}
+?>
 	(*) Fields in <strong>BOLD</strong> are required.
 	<br/>
 	<br/>

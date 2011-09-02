@@ -29,6 +29,9 @@
 
 		public function __get($strName) {
 			switch ($strName) {
+				case 'DateRange':
+					return sprintf('Takes place from %s to %s', $this->dttDateStart->ToString('MMM D'), $this->dttDateEnd->ToString('MMM D'), $this->MeetsOnInfo);
+
 				case 'MeetsOnInfo':
 					if (!is_null($this->intMeetingDay) &&
 						!is_null($this->intMeetingStartTime) &&
