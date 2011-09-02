@@ -27,6 +27,18 @@
 			return sprintf('ClassRegistration Object %s',  $this->intSignupEntryId);
 		}
 
+		public function RefreshClassAttendance() {
+			$intMeetingCount = $this->ClassMeeting->GetClassMeetingCount();
+			for ($intMeetingNumber = 1; $intMeetingNumber <= $intMeetingCount; $intMeetingNumber++) {
+				$objAttendance = ClassAttendence::LoadByClassRegistrationIdMeetingNumber($this->intId, $intMeetingNumber);
+				if (!$objAttendance) {
+					$objAttendance = new ClassAttendence();
+					$objAttendance->ClassRegistration = $this;
+					$objAttendance->MeetingNumber = $intMeetingNumber;
+					$objAttendance->Save();
+				}
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

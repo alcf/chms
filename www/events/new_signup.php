@@ -112,6 +112,15 @@
 			$objSignupEntry->SignupEntryStatusTypeId = SignupEntryStatusType::Incomplete;
 			$objSignupEntry->DateCreated = QDateTime::Now();
 			$objSignupEntry->Save();
+			
+			if ($this->objSignupForm->SignupFormTypeId == SignupFormType::Course) {
+				$objClassRegistration = new ClassRegistration();
+				$objClassRegistration->SignupEntry = $objSignupEntry;
+				$objClassRegistration->ClassMeeting = $this->objSignupForm->ClassMeeting;
+				$objClassRegistration->Person = $objSignupEntry->Person;
+				$objClassRegistration->Save();
+			}
+
 			QApplication::Redirect(sprintf('/events/result.php/%s/%s', $this->objSignupForm->Id, $objSignupEntry->Id));
 		}
 

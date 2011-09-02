@@ -11,6 +11,7 @@
 		 */
 		protected $objSignupForm;
 		protected $mctSignupEntry;
+		protected $mctClassRegistration;
 		
 		protected $lblPerson;
 		protected $lblSignupByPerson;
@@ -68,7 +69,16 @@
 			if (!$this->objSignupForm->IsLoginCanView(QApplication::$Login)) QApplication::Redirect('/events/');
 			if (!$this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) QApplication::Redirect('/events/');
 
-			$this->strPageTitle .= $this->objSignupForm->Name;
+			switch ($this->objSignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					$this->strPageTitle .= $this->objSignupForm->Name;
+					break;
+				case SignupFormType::Course:
+					$this->strPageTitle = 'Class Registration - ' . $this->objSignupForm->Name;
+					break;
+				default:
+					throw new Exception('Invalid SignupFormTypeId for SignupForm: ' . $this->objSignupForm->Id);
+			}
 
 			// Check for the SignupEntry
 			if (QApplication::PathInfo(1)) {
@@ -76,8 +86,18 @@
 				if (!$objSignupEntry) QApplication::Redirect('/events/');
 				if ($objSignupEntry->SignupFormId != $this->objSignupForm->Id) QApplication::Redirect('/events/');
 			} else {
-				$objSignupEntry = new SignupEntry();
-				$objSignupEntry->SignupForm = $this->objSignupForm;
+				QApplication::Redirect('/events/results.php/' . $this->objSignupForm->Id);
+			}
+
+			// Child Object
+			switch ($this->objSignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					break;
+				case SignupFormType::Course:
+					$this->mctClassRegistration = new ClassRegistrationMetaControl($this, $objSignupEntry->ClassRegistration);
+					break;
+				default:
+					throw new Exception('Invalid SignupFormTypeId for SignupForm: ' . $this->objSignupForm->Id);
 			}
 
 			$this->mctSignupEntry = new SignupEntryMetaControl($this, $objSignupEntry);
