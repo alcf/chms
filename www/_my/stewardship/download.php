@@ -25,6 +25,12 @@
 	// Get PDF document as a string 
 	$strData = $objPdf->render(); 
 
+	// Disable strict no-cache for IE due to IE issues with downloading no-cache items
+	if (QApplication::IsBrowser(QBrowserType::InternetExplorer)) {
+		header("Pragma:");
+		header("Expires:");
+	}
+
 	if (QApplication::PathInfo(1))
 		header('Content-Disposition: attachment; filename=' . QApplication::PathInfo(1)); 
 	header('Content-type: application/x-pdf'); 
