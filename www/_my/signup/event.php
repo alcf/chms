@@ -17,6 +17,9 @@
 				throw $objExc;
 			}
 
+			// If we are in an "error condition" then return
+			if ($this->blnFormErrorFlag) return;
+
 			// Ensure it is the correct type and it exists
 			if (!($this->objEvent = $this->objSignupForm->EventSignupForm)) {
 				$this->strHtmlIncludeFilePath = '_notfound.tpl.php';

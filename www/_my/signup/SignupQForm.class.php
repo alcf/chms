@@ -14,6 +14,7 @@
 		protected $objFormQuestionControlArray = array();
 		
 		protected $btnSubmit;
+		protected $blnFormErrorFlag = false;
 
 		protected function Form_Create() {
 			// Attempt to load by Token and then by ID
@@ -23,6 +24,7 @@
 			// Ensure it is the correct type and it exists
 			if (!$this->objSignupForm) {
 				$this->strHtmlIncludeFilePath = '_notfound.tpl.php';
+				$this->blnFormErrorFlag = true;
 				return;
 			}
 
@@ -31,12 +33,14 @@
 			// Ensure it is Active
 			if (!$this->objSignupForm->ActiveFlag) {
 				$this->strHtmlIncludeFilePath = '_notactive.tpl.php';
+				$this->blnFormErrorFlag = true;
 				return;
 			}
 
 			// Ensure that the funding stuff is a-okay
 			if ($this->objSignupForm->IsStewardshipFundMissing()) {
 				$this->strHtmlIncludeFilePath = '_notactive.tpl.php';
+				$this->blnFormErrorFlag = true;
 				return;
 			}
 
@@ -44,12 +48,14 @@
 			if (!$this->objSignupForm->AllowMultipleFlag &&
 				count(SignupEntry::LoadArrayBySignupFormIdPersonIdSignupEntryStatusTypeId($this->objSignupForm->Id, QApplication::$PublicLogin->PersonId, SignupEntryStatusType::Complete))) {
 				$this->strHtmlIncludeFilePath = '_registered.tpl.php';
+				$this->blnFormErrorFlag = true;
 				return;
 			}
 			
 			// Ensure capacity limits
 			if (!$this->objSignupForm->IsWithinCapacity()) {
 				$this->strHtmlIncludeFilePath = '_capacity.tpl.php';
+				$this->blnFormErrorFlag = true;
 				return;
 			}
 
