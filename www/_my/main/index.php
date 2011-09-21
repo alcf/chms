@@ -425,7 +425,10 @@
 				$this->txtMobilePhone->Name = 'Mobile Phone';
 			}
 			
-			$this->txtEmail->Text = QApplication::$PublicLogin->Person->PrimaryEmail->Address;
+			if (QApplication::$PublicLogin->Person->PrimaryEmail)
+				$this->txtEmail->Text = QApplication::$PublicLogin->Person->PrimaryEmail->Address;
+			else
+				$this->txtEmail->Text = null;
 			$this->chkBulkEmail->Checked = QApplication::$PublicLogin->Person->CanEmailFlag;
 			if ($objPhone = QApplication::$PublicLogin->Person->DeduceMobilePhone())
 				$this->txtMobilePhone->Text = $objPhone->Number;
