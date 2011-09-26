@@ -974,6 +974,7 @@
 
 				case FormQuestionType::Address:
 					$this->objAnswer->AddressId = $this->lstListbox->SelectedValue;
+					$this->objAnswer->TextValue = $this->objAnswer->Address->AddressShortLine;
 					break;
 
 				case FormQuestionType::Gender:
@@ -998,10 +999,12 @@
 
 				case FormQuestionType::Phone:
 					$this->objAnswer->PhoneId = $this->lstListbox->SelectedValue;
+					$this->objAnswer->TextValue = $this->objAnswer->Phone->Number;
 					break;
 
 				case FormQuestionType::Email:
 					$this->objAnswer->EmailId = $this->lstListbox->SelectedValue;
+					$this->objAnswer->TextValue = $this->objAnswer->Email->Address;
 					break;
 
 				case FormQuestionType::ShortText:
