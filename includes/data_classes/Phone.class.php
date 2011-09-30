@@ -48,6 +48,7 @@
 		public function Delete() {
 			$this->UnassociateAllAddressesAsPrimary();
 			$this->UnassociateAllPeopleAsPrimary();
+			$this->UnassociateAllFormAnswers();
 			if ($this->Person) $this->Person->RefreshPrimaryContactInfo();
 			try {
 				parent::Delete();

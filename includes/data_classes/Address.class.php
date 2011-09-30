@@ -77,6 +77,7 @@
 
 				$this->UnassociateAllPeopleAsMailing();
 				$this->UnassociateAllPeopleAsStewardship();
+				$this->UnassociateAllFormAnswers();
 
 				foreach ($intPersonIdArray as $intPersonId => $blnValue) {
 					Person::Load($intPersonId)->RefreshPrimaryContactInfo();

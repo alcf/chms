@@ -253,7 +253,7 @@
 
 				// Each Person in the Merging Household will be now be associated with This Household
 				foreach ($objParticipationArray as $objParticipation) {
-					$this->AssociatePerson($objParticipation->Person, 'none');
+					$this->AssociatePerson(Person::Load($objParticipation->PersonId), null);
 				}
 
 				// Setup the New Head and Refresh Data

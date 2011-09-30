@@ -59,6 +59,8 @@
 
 		public function Delete() {
 			try {
+				$this->UnassociateAllFormAnswers();
+				
 				$objPerson = $this->PersonAsPrimary;
 				$this->PersonAsPrimary = null;
 				$this->Save();
