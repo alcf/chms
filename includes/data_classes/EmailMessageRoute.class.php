@@ -97,7 +97,7 @@
 					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objPerson);
 				}
 				foreach ($this->Group->Ministry->GetLoginArray() as $objLogin) {
-					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objLogin);
+					if ($objLogin->DomainActiveFlag && $objLogin->LoginActiveFlag) EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objLogin);
 				}
 			} else if ($this->CommunicationList) {
 				foreach ($this->CommunicationList->GetPersonArray() as $objPerson) {
@@ -107,7 +107,7 @@
 					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objCommunicationListEntry);
 				}
 				foreach ($this->CommunicationList->Ministry->GetLoginArray() as $objLogin) {
-					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objLogin);
+					if ($objLogin->DomainActiveFlag && $objLogin->LoginActiveFlag) EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->CommunicationList->Token, $objLogin);
 				}
 			}
 		}
