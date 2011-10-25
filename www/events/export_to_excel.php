@@ -1,5 +1,6 @@
 <?php
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
+	QApplication::Authenticate();
 
 	function EscapeCsv($strString) {
 		return '"' . str_replace('"', '""', $strString) . '"';

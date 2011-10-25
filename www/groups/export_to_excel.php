@@ -1,5 +1,7 @@
 <?php
 	require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
+	QApplication::Authenticate();
+
 	$objGroup = Group::Load(QApplication::PathInfo(0));
 	if (!$objGroup) QApplication::Redirect('/');
 
