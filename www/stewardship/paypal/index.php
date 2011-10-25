@@ -18,13 +18,17 @@
 			$this->dtgBatches->MetaAddColumn('Number', 'Name=Batch Number', 'Html=<?= $_FORM->RenderBatchLabel($_ITEM); ?>', 'HtmlEntities=false', 'Width=200px');
 			$this->dtgBatches->MetaAddColumn('DateReceived', 'Name=Date Created', 'Width=200px');
 			$this->dtgBatches->MetaAddColumn('ReconciledFlag', 'Name=Posted?', 'Html=<?= $_ITEM->ReconciledFlag ? "Yes" : "No"; ?>', 'Width=100px');
-			$this->dtgBatches->MetaAddColumn('DateReconciled', 'Name=Date Posted', 'Width=400px');
+			$this->dtgBatches->MetaAddColumn('DateReconciled', 'Name=Date Posted', 'Width=200px');
+			$this->dtgBatches->AddColumn(new QDataGridColumn('Number of Transactions', '<?= $_FORM->RenderCount($_ITEM); ?>', 'Width=200px'));
 			$this->dtgBatches->SetDataBinder('dtgBatches_Bind');
 
 			$this->dtgBatches->SortColumnIndex = 0;
 			$this->dtgBatches->SortDirection = 1;
 		}
 
+		public function RenderCount(PaypalBatch $objBatch) {
+			return $objBatch->CountCreditCardPayments();
+		}
 		public function RenderBatchLabel(PaypalBatch $objBatch) {
 			return sprintf('<a href="/stewardship/paypal/batch.php/%s" style="font-weight: bold;">%s</a> ',
 				$objBatch->Id, $objBatch->Number);
