@@ -27,6 +27,12 @@
 			return sprintf('SignupForm Object %s',  $this->intId);
 		}
 
+		public function Delete() {
+			if ($this->EventSignupForm) $this->EventSignupForm->Delete();
+			if ($this->ClassMeeting) $this->ClassMeeting->Delete();
+			parent::Delete();
+		}
+
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Type': return SignupFormType::$NameArray[$this->intSignupFormTypeId];
