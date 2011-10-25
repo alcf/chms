@@ -197,6 +197,7 @@
 			if ($this->blnScanFlag) {
 				$this->ProcessNewCheck();
 				$this->btnSaveAndScanAgain = new QButton($this);
+				$this->btnSaveAndScanAgain->CausesValidation = true;
 				$this->btnSaveAndScanAgain->Text = 'Save and Scan Next Check';
 				$this->btnSaveAndScanAgain->CssClass = 'primary';
 				$this->btnSaveAndScanAgain->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
@@ -209,6 +210,7 @@
 					$this->mctAmountArray[0]->StewardshipFundIdControl->Focus();
 				}
 				$this->btnSaveAndScanAgain = new QButton($this);
+				$this->btnSaveAndScanAgain->CausesValidation = true;
 				$this->btnSaveAndScanAgain->Text = 'Save and Enter Next Entry';
 				$this->btnSaveAndScanAgain->ActionParameter = 'new';
 				$this->btnSaveAndScanAgain->CssClass = 'primary';
