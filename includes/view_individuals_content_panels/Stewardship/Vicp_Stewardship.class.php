@@ -127,6 +127,7 @@
 		}
 
 		public function RenderDate(StewardshipContributionAmount $objAmount) {
+			if (!$objAmount->Id) return;
 			if ($objAmount->StewardshipContribution->NonDeductibleFlag) {
 				$objStyle = new QDataGridRowStyle();
 				$objStyle->BackColor = '#ddd';
@@ -143,14 +144,27 @@
 		}
 		
 		public function RenderPerson(StewardshipContributionAmount $objAmount) {
+			if (!$objAmount->Id) return;
 			return $objAmount->StewardshipContribution->Person->Name;
 		}
 		
 		public function RenderTransaction(StewardshipContributionAmount $objAmount) {
+			if (!$objAmount->Id) {
+				$objRowStyle = new QDataGridRowStyle();
+				$objRowStyle->FontBold = true;
+				$objRowStyle->BackColor = '#ccc';
+				$this->dtgStewardshipContributionAmount->OverrideRowStyle($this->dtgStewardshipContributionAmount->CurrentRowIndex, $objRowStyle);
+				return 'TOTAL AMOUNT';
+			} else {
+				$this->dtgStewardshipContributionAmount->OverrideRowStyle($this->dtgStewardshipContributionAmount->CurrentRowIndex, null);
+			}
 			return ($objAmount->StewardshipContribution->Transaction);
 		}
 		
+		protected $fltTotal = 0;
 		public function RenderAmount(StewardshipContributionAmount $objAmount) {
+			if (!$objAmount->Id) return '<span style="font-weight: normal;">' . QApplication::DisplayCurrency($this->fltTotal, true) . '</span>';
+			$this->fltTotal += $objAmount->Amount;
 			$strToReturn = QApplication::DisplayCurrencyHtml($objAmount->Amount, true);
 			if ($objAmount->StewardshipContribution->NonDeductibleFlag) {
 				$strToReturn .= '<br/><span style="color: #666; font-size: 10px;">Non-Deductible</span>';
@@ -159,6 +173,7 @@
 		}
 		
 		public function dtgStewardshipContributionAmount_Bind() {
+			$this->fltTotal = 0;
 			if ($this->chkCombined && $this->chkCombined->Checked) {
 				$intPersonIdArray = array();
 				foreach ($this->objForm->objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
@@ -182,6 +197,11 @@
 			}
 
 			$this->dtgStewardshipContributionAmount->MetaDataBinder($objCondition);
+			
+			// Add 'Totals' Row
+			$objDataSource = $this->dtgStewardshipContributionAmount->DataSource;
+			$objDataSource[] = new StewardshipContributionAmount();
+			$this->dtgStewardshipContributionAmount->DataSource = $objDataSource;
 		}
 	}
 ?>
