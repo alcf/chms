@@ -1308,6 +1308,28 @@
 				}
 			}
 
+			// Online Donations
+			foreach ($objPersonMergeWith->GetOnlineDonationArray() as $objOnlineDonation) {
+				$objOnlineDonation->PersonId = $this->Id;
+				$objOnlineDonation->Save();
+			}
+
+			// Public Login
+			if ($objPublicLogin = $objPersonMergeWith->PublicLogin) {
+				$objPublicLogin->PersonId = $this->Id;
+				$objPublicLogin->Save();
+			}
+
+			// Events and Classes
+			foreach ($objPersonMergeWith->GetSignupEntryArray() as $objSignupEntry) {
+				$objSignupEntry->PersonId = $this->Id;
+				$objSignupEntry->Save();
+			}
+			
+			foreach ($objPersonMergeWith->GetClassRegistrationArray() as $objClassRegistration) {
+				$objClassRegistration->PersonId = $this->Id;
+				$objClassRegistration->Save();
+			}
 
 			// Stewardship Post Line Items
 			foreach ($objPersonMergeWith->GetStewardshipPostLineItemArray() as $objStewardship) {

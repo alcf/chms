@@ -38,6 +38,11 @@
 				return;
 			}
 
+			if ($this->objPerson->PublicLogin && $this->objPersonMergeWith->PublicLogin) {
+				$this->strTemplate = dirname(__FILE__) . '/Vicp_Merge_Fields_InvalidPublicLogin.tpl.php';
+				return;
+			}
+
 			$this->btnLeft = new QButton($this);
 			$this->btnLeft->CssClass = 'primary';
 			$this->btnLeft->Text = 'Use This';
