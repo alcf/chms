@@ -121,6 +121,10 @@
 		}
 
 		protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+			if (!$this->objSelectedHousehold) {
+				QApplication::DisplayAlert('Please Select a Household');
+				return;
+			}
 			$this->objHousehold->MergeHousehold($this->objSelectedHousehold, Person::Load($this->lstHead->SelectedValue));
 			$this->RedirectToViewPage();
 		}
