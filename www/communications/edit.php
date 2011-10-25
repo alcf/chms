@@ -62,7 +62,7 @@
 				$this->btnDelete = new QLinkButton($this);
 				$this->btnDelete->Text = 'Delete';
 				$this->btnDelete->CssClass = 'delete';
-				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to permanently DELETE this Email List?'));
+				$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to permanently DELETE this Email List?  This will also delete ALL the messages as well!'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
 				$this->btnDelete->AddAction(new QClickEvent(), new QTerminateAction());
 			}

@@ -31,6 +31,7 @@
 			try {
 				$this->UnassociateAllPeople();
 				$this->UnassociateAllCommunicationListEntries();
+				$this->DeleteAllEmailMessageRoutes();
 				parent::Delete();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
