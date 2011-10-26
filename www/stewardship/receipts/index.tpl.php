@@ -8,8 +8,12 @@
 			Genearte Bulk PDFs For:
 			&nbsp;
 			<?php $this->btnGenerate->Render('CssClass=primary'); ?> 
-			&nbsp;
+			&nbsp;			&nbsp;
+			or
+			&nbsp;			&nbsp;
 			<?php $this->btnGenerateQuarterly->Render('CssClass=primary'); ?>
+			for
+			<?php $this->lstQuarter->Render(); ?>
 		</div>
 		<?php $this->lstYear->RenderWithName(); ?>
 	</div>

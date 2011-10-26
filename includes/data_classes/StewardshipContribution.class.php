@@ -366,13 +366,29 @@
 		/**
 		 * @param integer[] $intPersonIdArray
 		 * @param integer $intYear
+		 * @param integer $intQuarter optional, can be 1, 2 or 3 to limit results to JUST Q1, Q1-Q2, Q1-Q3 data if applicable
 		 * @return StewardshipContributionAmount[]
 		 */
-		public static function GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear) {
+		public static function GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter = null) {
+			switch ($intQuarter) {
+				case 1:
+					$strEndMonthDay = '-03-31 23:59:59';
+					break;
+				case 2:
+					$strEndMonthDay = '-06-30 23:59:59';
+					break;
+				case 3:
+					$strEndMonthDay = '-09-30 23:59:59';
+					break;
+				default:
+					$strEndMonthDay = '-12-31 23:59:59';
+					break;
+			}
+
 			$objCondition = QQ::AndCondition(
 				QQ::In(QQN::StewardshipContributionAmount()->StewardshipContribution->PersonId, $intPersonIdArray),
 				QQ::GreaterOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-01-01 00:00:00')),
-				QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . '-12-31 23:59:59')));
+				QQ::LessOrEqual(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, new QDateTime($intYear . $strEndMonthDay)));
 			return StewardshipContributionAmount::QueryArray($objCondition, QQ::OrderBy(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, QQN::StewardshipContributionAmount()->Id));
 		}
 
@@ -470,12 +486,13 @@
 		 * @param mixed $objPersonOrHousehold
 		 * @param integer $intYear
 		 * @param boolean $blnDrawLegal whether or not to include the "legal" tax information (e.g. yes for annual, no for quarterly)
+		 * @param integer $intQuarter optional, can be 1, 2 or 3 to limit results to JUST Q1, Q1-Q2, Q1-Q3 data if applicable
 		 */
-		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear, $blnDrawLegal) {
+		public static function GenerateReceiptInPdf(Zend_Pdf $objPdf, $objPersonOrHousehold, $intYear, $blnDrawLegal, $intQuarter = null) {
 			$intPersonIdArray = self::GetPersonIdArrayForPersonOrHousehold($objPersonOrHousehold);
 
 			// Get the Contributions
-			$objContributionAmountArray = self::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
+			$objContributionAmountArray = self::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter);
 
 			// Get the Pledges
 			$objCondition = QQ::AndCondition(

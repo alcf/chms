@@ -9,6 +9,7 @@
 		$strTokens = explode(' ', trim(file_get_contents(RECEIPT_PDF_PATH . '/run.txt')));
 		$intYear = intval($strTokens[0]);
 		$blnAnnual = (strtolower($strTokens[1]) == 'annual');
+		$intQuarter = intval($strTokens[1]);
 		unlink(RECEIPT_PDF_PATH . '/run.txt');
 	} else {
 		exit(0);
@@ -43,36 +44,36 @@
 		if ($objHousehold->CombinedStewardshipFlag) {
 			if ($objHousehold->GetStewardshipAddress()) {
 				$intPersonIdArray = StewardshipContribution::GetPersonIdArrayForPersonOrHousehold($objHousehold);
-				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
+				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter);
 				$intEntryCount = count($objContributionAmountArray);
 				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
 
 				if ($fltAmount > $fltMinimumAmount) {
 					if ($intEntryCount > 38)
-						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear, $blnAnnual);
+						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
 					else if ($intEntryCount)
-						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear, $blnAnnual);
+						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
 				}
 			} else {
-				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objHousehold, $intYear, $blnAnnual);
+				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
 			}
 
 		// Generate for each individual in the household
 		} else foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
 			if ($objParticipation->Person->GetStewardshipAddress()) {
 				$intPersonIdArray = array($objParticipation->Person->Id);
-				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear);
+				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter);
 				$intEntryCount = count($objContributionAmountArray);
 				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
 
 				if ($fltAmount > $fltMinimumAmount) {
 					if ($intEntryCount > 38)
-						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear, $blnAnnual);
+						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
 					else if ($intEntryCount)
-						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear, $blnAnnual);
+						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
 				}
 			} else {
-				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objParticipation->Person, $intYear, $blnAnnual);
+				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
 			}
 		}
 

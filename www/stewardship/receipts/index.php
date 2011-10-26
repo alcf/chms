@@ -10,6 +10,7 @@
 		protected $intNavSectionId = ChmsForm::NavSectionStewardship;
 
 		protected $lstYear;
+		protected $lstQuarter;
 		protected $btnGenerate;
 		protected $btnGenerateQuarterly;
 
@@ -44,8 +45,13 @@
 			$this->btnGenerateQuarterly->CausesValidation = true;
 			$this->btnGenerateQuarterly->Text = 'Quarterly Statement';
 			$this->btnGenerateQuarterly->AddAction(new QClickEvent(), new QAjaxAction('btnGenerate_Click'));
-			$this->btnGenerateQuarterly->ActionParameter = 'quarterly';
-
+			$this->btnGenerateQuarterly->ActionParameter = null;
+			
+			$this->lstQuarter = new QListBox($this);
+			$this->lstQuarter->AddItem('1st Quarter', 1);
+			$this->lstQuarter->AddItem('2nd Quarter', 2);
+			$this->lstQuarter->AddItem('3rd Quarter', 3);
+						
 			$this->pxyDelete = new QControlProxy($this);
 			$this->pxyDelete->AddAction(new QClickEvent(), new QAjaxAction('pxyDelete_Click'));
 			$this->pxyDelete->AddAction(new QClickEvent(), new QTerminateAction());
@@ -60,7 +66,10 @@
 
 		public function btnGenerate_Click($strFormId, $strControlId, $strParameter) {
 			QApplication::DisplayAlert(sprintf('Receipts for %s are now being generated.  Please come back shortly to check on its status.', $this->lstYear->SelectedValue));
-			file_put_contents(RECEIPT_PDF_PATH . '/run.txt', $this->lstYear->SelectedValue . " " . $strParameter);
+			if (strlen($strParameter))
+				file_put_contents(RECEIPT_PDF_PATH . '/run.txt', $this->lstYear->SelectedValue . " " . $strParameter);
+			else
+				file_put_contents(RECEIPT_PDF_PATH . '/run.txt', $this->lstYear->SelectedValue . " " . $this->lstQuarter->SelectedValue);
 			chmod(RECEIPT_PDF_PATH . '/run.txt', 0777);
 		}
 	}
