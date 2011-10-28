@@ -394,9 +394,19 @@
 		/**
 		 * Displays a currency value
 		 * @param float $fltAmount
-		 * @param string $strPad amount of padding text between dollar sign and number
+		 * @param string $strPad padding text between dollar sign and number, or if it's a number, then add space padding until the desired length (e.g. 9)
 		 */
 		public static function DisplayCurrency($fltAmount, $strPad = null) {
+			if (is_numeric($strPad)) {
+				$strText = number_format(abs($fltAmount), 2);
+				$strBlank = null;
+				if ((strlen($strText) <= $strPad)) {
+					$strPad = str_repeat('&nbsp;', $strPad-strlen($strText));
+				} else {
+					$strPad = null;
+				}
+			}
+
 			if ($fltAmount < 0)
 				return '-$' . $strPad . number_format(abs($fltAmount), 2);
 			else

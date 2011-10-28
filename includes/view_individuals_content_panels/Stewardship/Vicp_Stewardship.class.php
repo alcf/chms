@@ -163,7 +163,7 @@
 		
 		protected $fltTotal = 0;
 		public function RenderAmount(StewardshipContributionAmount $objAmount) {
-			if (!$objAmount->Id) return '<span style="font-weight: normal;">' . QApplication::DisplayCurrency($this->fltTotal, true) . '</span>';
+			if (!$objAmount->Id) return '<span style="font-weight: normal;">' . QApplication::DisplayCurrency($this->fltTotal, 10) . '</span>';
 			$this->fltTotal += $objAmount->Amount;
 			$strToReturn = QApplication::DisplayCurrencyHtml($objAmount->Amount, true);
 			if ($objAmount->StewardshipContribution->NonDeductibleFlag) {
