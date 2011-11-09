@@ -109,6 +109,7 @@
 		/**
 		 * This will reset this publiclogin's password and will email the new password to the email account on file.
 		 * If no primary email address this will throw an exception.
+		 * @return string
 		 */
 		public function ResetPassword() {
 			if (!$this->Person->PrimaryEmail->Address) throw new QCallerException('ResetPassword for a PublicLogin record with no attached primary email: ' . $this->Id);
@@ -133,6 +134,7 @@
 			$strArray['CONTACT'] = strip_tags(Registry::GetValue('contact_sentence_my_alcf_support'));
 
 			OutgoingEmailQueue::QueueFromTemplate('reset_password', $strArray, $strToAddress, $strFromAddress, $strSubject);
+			return $strTemporaryPassword;
 		}
 
 		/**

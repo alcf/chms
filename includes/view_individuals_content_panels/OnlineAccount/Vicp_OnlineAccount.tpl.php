@@ -38,6 +38,7 @@
 
 <?php if ($_CONTROL->btnRemove) { ?>
 	<div class="buttonBar">
+		<?php $_CONTROL->btnResetPassword->Render(); ?>
 		<?php $_CONTROL->btnRemove->Render(); ?>
 	</div>
 <?php } ?>

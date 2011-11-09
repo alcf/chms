@@ -19,7 +19,8 @@
 			PermissionType::EditMembershipStatus => 'vcard_edit.png',
 			PermissionType::DeleteIndividual => 'user_delete.png',
 			PermissionType::ManageClasses => 'book_open.png',
-			PermissionType::ManageClassifieds => 'house.png'
+			PermissionType::ManageClassifieds => 'house.png',
+			PermissionType::ManageOnlineAccounts => 'world.png'
 		);
 
 		protected function Form_Create() {
@@ -32,7 +33,7 @@
 			$this->dtgStaff->MetaAddTypeColumn('RoleTypeId', 'RoleType', 'Name=Role', 'Width=120px');
 
 			foreach (PermissionType::$NameArray as $intId => $strName) {
-				$this->dtgStaff->AddColumn(new QDataGridColumn($strName, '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=63px', 'HtmlEntities=false'));
+				$this->dtgStaff->AddColumn(new QDataGridColumn('<span style="font-size: 10px;">' . $strName . '</span>', '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=50px', 'HtmlEntities=false'));
 			}
 
 			$this->dtgStaff->SetDataBinder('dtgStaff_Bind');
