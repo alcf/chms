@@ -219,6 +219,9 @@ INSERT INTO permission_type VALUES(8, 'Merge Individuals');
 INSERT INTO permission_type VALUES(16, 'Edit Membership Status');
 INSERT INTO permission_type VALUES(32, 'Add New Individual');
 INSERT INTO permission_type VALUES(64, 'Delete Individual');
+INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
+INSERT INTO permission_type VALUES(256, 'Manage Classes');
+INSERT INTO permission_type VALUES(512, 'Manage Online Accounts');
 
 INSERT INTO phone_type VALUES(1, 'Home');
 INSERT INTO phone_type VALUES(2, 'Work');
@@ -315,8 +318,8 @@ INSERT INTO signup_payment_type(id, name) VALUES (6, 'Refund');
 INSERT INTO signup_payment_type(id, name) VALUES (7, 'Transfer');
 INSERT INTO signup_payment_type(id, name) VALUES (8, 'Other');
 
-INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
-INSERT INTO permission_type VALUES(256, 'Manage Classes');
+#INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
+#INSERT INTO permission_type VALUES(256, 'Manage Classes');
 
 #######################
 # Added for Version 004
