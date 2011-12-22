@@ -200,6 +200,7 @@
 				$txtAmount->Text = '0.00';
 				if ($txtFund->Visible) $txtFund->Visible = false;
 				if ($txtFund->Required) $txtFund->Required = false;
+				$this->lblTotal_Refresh();
 			}
 
 			// Do we need to add another row?
@@ -298,6 +299,7 @@
 				} else {
 					if ($txtAmount->Text != '0.00') $txtAmount->Text = '0.00';
 					if ($txtAmount->Enabled) $txtAmount->Enabled = false;
+					$objDonationItem->Amount = 0;
 				}
 			}
 
