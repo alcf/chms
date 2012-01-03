@@ -266,10 +266,12 @@
 					'Click on any <strong>Date Captured</strong> below on a credit card transaction with a donation record to view its linked Stewardship Entry.', 
 					$this->objBatch->DateReconciled->ToString('MMMM D YYYY at h:mm z'), $this->objBatch->StewardshipBatchId);
 				$this->btnPost->Visible = false;
+				$this->btnSplit->Visible = false;
 				$this->dtxDateCredited->Visible = false;
 			} else if ($this->objBatch->IsUncategorizedPaymentsExist()) {
 				$this->lblInstructionHtml->Text = 'There are currently unspecified funding accounts for one more more credit card payment line item.  Please ensure all items are accounted for before posting to NOAH.';
 				$this->btnPost->Visible = false;
+				$this->btnSplit->Visible = false;
 				$this->dtxDateCredited->Visible = false;
 				
 				if (CreditCardPayment::CountByPaypalBatchIdUnlinkedFlag($this->objBatch->Id, true)) {
@@ -278,6 +280,7 @@
 			} else {
 				$this->lblInstructionHtml->Text = 'This PayPal Batch has not yet been posted to NOAH.  Click on <strong>Post to NOAH</strong> when you are sure that there are no more changes or additions left for this batch.';
 				$this->btnPost->Visible = true;
+				$this->btnSplit->Visible = true;
 				$this->dtxDateCredited->Visible = true;
 				$this->btnPost->RemoveAllActions(QClickEvent::EventName);
 
