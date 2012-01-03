@@ -7,6 +7,7 @@
 		<?php $this->lblInstructionHtml->Render(); ?>
 		<?php $this->dtxDateCredited->RenderWithName(); ?><br/>
 		<?php $this->btnPost->Render(); ?>
+		<?php $this->btnSplit->Render(); ?>
 	</div>
 	
 	<h3>Credit Card Transactions</h3>
@@ -25,5 +26,6 @@
 	</div>
 	
 	<?php $this->dlgEditFund->Render(); ?>
+	<?php $this->dlgSplit->Render(); ?>
 
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

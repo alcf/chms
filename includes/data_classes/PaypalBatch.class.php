@@ -38,6 +38,39 @@
 			self::PayPalSettledDate
 		);
 
+		/**
+		 * This will SPLIT a single PayPal batch into two separate batches, at the "Transaction Split Point"
+		 * @param string $strOldName the name of the OLD PayPal Batch for all the transactions that are staying
+		 * @param string $strNewName the name of the NEW PayPal Batch for all the transactions that are being split off
+		 * @param CreditCardPayment $objPaymentSplitPoint the point at which transactions will be split off (split off all transactions performed AFTER the SplitPoint)
+		 */
+		public function SplitBatch($strOldName, $strNewName, CreditCardPayment $objPaymentSplitPoint) {
+			if ($objPaymentSplitPoint->PaypalBatchId != $this->Id) throw new QCallerException('Split Point does not exist in PayPal Batch');
+			if ($this->DateReconciled || $this->ReconciledFlag) throw new QCallerException('Cannot split an already-reconciled PayPal Batch');
+			
+			self::GetDatabase()->TransactionBegin();
+			
+			$this->strNumber = $strOldName;
+			$this->Save();
+			
+			$objNewBatch = new PaypalBatch();
+			$objNewBatch->DateReceived = new QDateTime($this->DateReceived);
+			$objNewBatch->Number = $strNewName;
+			$objNewBatch->ReconciledFlag = false;
+			$objNewBatch->Save();
+
+			foreach ($this->GetCreditCardPaymentArray() as $objPayment) {
+				if ($objPayment->DateCaptured->IsLaterThan($objPaymentSplitPoint->DateCaptured)) {
+					$objPayment->PaypalBatch = $objNewBatch;
+					$objPayment->Save();
+				}
+			}
+
+			self::GetDatabase()->TransactionCommit();
+
+			return $objNewBatch;
+		}
+		
 		public function PostBatch(Login $objLogin, QDateTime $dttDateCredited) {
 			if ($this->blnReconciledFlag) throw new QCallerException('Cannot post a PayPal Batch that has already been reconciled!');
 			

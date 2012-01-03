@@ -22,7 +22,16 @@
 
 		protected $lblInstructionHtml;
 		protected $btnPost;
+		protected $btnSplit;
 		protected $dtxDateCredited;
+
+		protected $dlgSplit;
+		
+		protected $btnSplitSave;
+		protected $btnSplitCancel;
+		protected $lstSplitItem;
+		protected $txtSplitNameCurrent;
+		protected $txtSplitNameNew;
 
 		protected $dlgEditFund;
 		protected $btnDialogSave;
@@ -34,6 +43,10 @@
 			if (!$this->dtxDateCredited->DateTime) $this->dtxDateCredited->Warning = 'Invalid Date';
 			$this->objBatch->PostBatch(QApplication::$Login, $this->dtxDateCredited->DateTime);
 			$this->Transactions_Refresh();
+		}
+
+		protected function btnSplit_Click() {
+			$this->dlgSplit->ShowDialogBox();
 		}
 
 		protected function pxyEditFundDonationLineItem_Click($strFormid, $strControlId, $strParameter) {
@@ -92,7 +105,20 @@
 		protected function btnDialogCancel_Click() {
 			$this->dlgEditFund->HideDialogBox();
 		}
+		
+		protected function btnSplitSave_Click() {
+			if (strtolower(trim($this->txtSplitNameCurrent->Text)) == strtolower(trim($this->txtSplitNameNew->Text))) {
+				QApplication::DisplayAlert('PayPal Batch Name/Numbers must be different.');
+				return;
+			}
+			$this->objBatch->SplitBatch(trim($this->txtSplitNameCurrent->Text), trim($this->txtSplitNameNew->Text), CreditCardPayment::Load($this->lstSplitItem->SelectedValue));
+			QApplication::Redirect('/stewardship/paypal');
+		}
 
+		protected function btnSplitCancel_Click() {
+			$this->dlgSplit->HideDialogBox();
+		}
+		
 		/**
 		 * Stores the LINKED CC Paymente records for this batch
 		 * @var CreditCardPayment[]
@@ -148,6 +174,12 @@
 			$this->btnPost->CssClass = 'primary';
 			$this->btnPost->CausesValidation = $this->dtxDateCredited;
 
+			$this->btnSplit = new QButton($this);
+			$this->btnSplit->Text = 'Split This Batch';
+			$this->btnSplit->CssClass = 'alternate';
+			$this->btnSplit->SetCustomStyle('float', 'right');
+			$this->btnSplit->AddAction(new QClickEvent(), new QAjaxAction('btnSplit_Click'));
+
 			$this->dlgEditFund = new QDialogBox($this);
 			$this->dlgEditFund->MatteClickable = false;
 			$this->dlgEditFund->HideDialogBox();
@@ -176,6 +208,39 @@
 			$this->btnDialogCancel->Text = 'Cancel';
 			$this->btnDialogCancel->AddAction(new QClickEvent(), new QAjaxAction('btnDialogCancel_Click'));
 			$this->btnDialogCancel->AddAction(new QClickEvent(), new QTerminateAction());
+
+			$this->dlgSplit = new QDialogBox($this);
+			$this->dlgSplit->MatteClickable = false;
+			$this->dlgSplit->HideDialogBox();
+			$this->dlgSplit->Template = dirname(__FILE__) . '/dlgSplit.tpl.php';
+
+			$this->lstSplitItem = new QListBox($this->dlgSplit);
+			$this->lstSplitItem->Name = 'Transaction Split Point';
+			$this->lstSplitItem->AddItem('- Select One -', null);
+			$this->lstSplitItem->Required = true;
+			foreach ($this->objBatch->GetCreditCardPaymentArray(QQ::OrderBy(QQN::CreditCardPayment()->DateCaptured)) as $objPayment) {
+				$this->lstSplitItem->AddItem('After ' . $objPayment->DateCaptured->ToString('MMM D YYYY h:mm z'), $objPayment->Id);
+			}
+
+			$this->txtSplitNameCurrent = new QTextBox($this->dlgSplit);
+			$this->txtSplitNameCurrent->Name = 'Batch Number/Title for Original Batch';
+			$this->txtSplitNameCurrent->Text = $this->objBatch->Number . ' (1)';
+
+			$this->txtSplitNameNew = new QTextBox($this->dlgSplit);
+			$this->txtSplitNameNew->Name = 'Batch Number/Title for New Batch';
+			$this->txtSplitNameNew->Text = $this->objBatch->Number . ' (2)';
+
+			$this->btnSplitSave = new QButton($this->dlgSplit);
+			$this->btnSplitSave->CssClass = 'primary';
+			$this->btnSplitSave->Text = 'Split';
+			$this->btnSplitSave->CausesValidation = QCausesValidation::SiblingsAndChildren;
+			$this->btnSplitSave->AddAction(new QClickEvent(), new QAjaxAction('btnSplitSave_Click'));
+			
+			$this->btnSplitCancel = new QLinkButton($this->dlgSplit);
+			$this->btnSplitCancel->CssClass = 'cancel';
+			$this->btnSplitCancel->Text = 'Cancel';
+			$this->btnSplitCancel->AddAction(new QClickEvent(), new QAjaxAction('btnSplitCancel_Click'));
+			$this->btnSplitCancel->AddAction(new QClickEvent(), new QTerminateAction());
 			
 			$this->Transactions_Refresh();
 		}
