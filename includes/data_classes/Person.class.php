@@ -212,6 +212,34 @@
 			}
 		}
 
+		/**
+		 * This will move all the transactions for a given year to be credited to another person
+		 * @param integer $intYear
+		 * @param Person $objPerson
+		 */
+		public function MoveStewardshipTransactions($intYear, Person $objPerson) {
+			StewardshipContribution::GetDatabase()->TransactionBegin();
+
+			$objArray = StewardshipContribution::QueryArray(
+				QQ::AndCondition(
+					QQ::Equal(QQN::StewardshipContribution()->PersonId, $this->intId),
+					QQ::GreaterOrEqual(QQN::StewardshipContribution()->DateCredited, new QDateTime($intYear . '-01-01')),
+					QQ::LessThan(QQN::StewardshipContribution()->DateCredited, new QDateTime(($intYear + 1). '-01-01'))
+				)
+			);
+			
+			foreach ($objArray as $objContribution) {
+				$objContribution->Person = $objPerson;
+				$objContribution->Save();
+				
+				foreach ($objContribution->GetStewardshipPostLineItemArray() as $objLineItem) {
+					$objLineItem->Person = $objPerson;
+					$objLineItem->Save();
+				}
+			}
+			
+			StewardshipContribution::GetDatabase()->TransactionCommit();
+		}
 
 		/**
 		 * Attempts to get the StewardshipAddress record for this person

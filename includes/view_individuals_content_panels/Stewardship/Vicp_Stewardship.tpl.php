@@ -1,5 +1,11 @@
 <h3>Stewardship
 	<button class="primary" <?php $_CONTROL->pxyPrint->RenderAsEvents(); ?>>Print Receipt</button>
+<?php
+	if ($_CONTROL->btnMoveTransactions) {
+		$_CONTROL->btnMoveTransactions->Render();
+		$_CONTROL->dlgMove->Render();
+	}
+?>
 </h3>
 
 <div class="section">

@@ -11,6 +11,12 @@
 		
 		public $dtgPledges;
 		
+		public $btnMoveTransactions;
+		public $dlgMove;
+		public $lstMoveTo;
+		public $btnMoveSave;
+		public $btnMoveCancel;
+
 		protected function SetupPanel() {
 			$this->dtgStewardshipContributionAmount = new StewardshipContributionAmountDataGrid($this);
 			$this->dtgStewardshipContributionAmount->MetaAddColumn(QQN::StewardshipContributionAmount()->StewardshipContribution->DateCredited, 'Html=<?= $_CONTROL->ParentControl->RenderDate($_ITEM); ?>', 'Name=Date', 'Width=100px', 'HtmlEntities=false');
@@ -31,9 +37,12 @@
 
 			$this->lstYear = new QListBox($this);
 			$this->lstYear->AddItem('- View All -', null);
+			
 			$intYearNow = QDateTime::Now()->Year;
+			if (array_key_exists('stewardship_view_year', $_SESSION)) $intYearToView = $_SESSION['stewardship_view_year'];
+			else $intYearToView = $intYearNow;
 			for ($intYear = 2000; $intYear <= ($intYearNow + 1); $intYear++) {
-				$this->lstYear->AddItem($intYear, $intYear, $intYear == $intYearNow);
+				$this->lstYear->AddItem($intYear, $intYear, $intYear == $intYearToView);
 			}
 
 			$this->lstFund = new QListBox($this);
@@ -42,8 +51,8 @@
 				$this->lstFund->AddItem($objFund->Name, $objFund->Id);
 			}
 
-			$this->lstYear->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'Filter'));
-			$this->lstYear->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'Filter'));
+			$this->lstYear->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstYear_Change'));
+			$this->lstYear->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'lstYear_Change'));
 			$this->lstYear->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 			$this->lstFund->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'Filter'));
@@ -70,8 +79,56 @@
 			$this->dtgPledges->SetDataBinder('dtgPledges_Bind', $this);
 			
 			$this->dtgPledges->NoDataHtml = '<span style="font-size: 14px;">No pledge records given your filtering criteria above.</span>';
+			
+			if ($this->objPerson->DeceasedFlag && $this->objForm->objHousehold && ($this->objForm->objHousehold->CountHouseholdParticipations() > 1)) {
+				$this->btnMoveTransactions = new QButton($this);
+				$this->btnMoveTransactions->CssClass = 'alternate';
+				$this->btnMoveTransactions->Text = 'Deceased / Move Transactions';
+				$this->btnMoveTransactions->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMoveTransactions_Click'));
+
+				$this->dlgMove = new QDialogBox($this);
+				$this->dlgMove->Template = dirname(__FILE__) . '/dlgMove.tpl.php';
+				$this->dlgMove->MatteClickable = false;
+				$this->dlgMove->HideDialogBox();
+
+				$this->lstMoveTo = new QListBox($this->dlgMove);
+				$this->lstMoveTo->AddItem('- Select One -', null);
+				$this->lstMoveTo->Name = 'Reassign To';
+				$this->lstMoveTo->Required = true;
+				foreach ($this->objForm->objHousehold->GetHouseholdParticipationArray() as $objHouseholdParticipation) {
+					if ($objHouseholdParticipation->PersonId != $this->objPerson->Id)
+						$this->lstMoveTo->AddItem($objHouseholdParticipation->Person->Name, $objHouseholdParticipation->Person->Id);
+				}
+
+				$this->btnMoveSave = new QButton($this->dlgMove);
+				$this->btnMoveSave->Text = 'Move Transactions';
+				$this->btnMoveSave->CssClass = 'primary';
+				$this->btnMoveSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMoveSave_Click'));
+				$this->btnMoveSave->CausesValidation = QCausesValidation::SiblingsAndChildren;
+				
+				$this->btnMoveCancel = new QLinkButton($this->dlgMove);
+				$this->btnMoveCancel->Text = 'Cancel';
+				$this->btnMoveCancel->CssClass = 'cancel';
+				$this->btnMoveCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMoveCancel_Click'));
+				$this->btnMoveCancel->AddAction(new QClickEvent(), new QTerminateAction());
+			}
 		}
 
+		public function btnMoveTransactions_Click() {
+			$this->dlgMove->ShowDialogBox();
+			$this->lstMoveTo->SelectedIndex = 0;
+		}
+
+		public function btnMoveSave_Click() {
+			$this->objPerson->MoveStewardshipTransactions($this->lstYear->SelectedValue, Person::Load($this->lstMoveTo->SelectedValue));
+			$this->dtgStewardshipContributionAmount->Refresh();
+			$this->dlgMove->HideDialogBox();
+		}
+
+		public function btnMoveCancel_Click() {
+			$this->dlgMove->HideDialogBox();
+		}
+		
 		public function RenderPledgePerson(StewardshipPledge $objPledge) {
 			if ($objPledge->ActiveFlag) {
 				$objStyle = null;
@@ -121,6 +178,10 @@
 			QApplication::Redirect($strUrl);
 		}
 
+		public function lstYear_Change() {
+			$_SESSION['stewardship_view_year'] = $this->lstYear->SelectedValue;
+			$this->Filter();
+		}
 		public function Filter() {
 			$this->dtgStewardshipContributionAmount->Refresh();
 			$this->dtgPledges->Refresh();
