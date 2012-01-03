@@ -24,7 +24,7 @@
 
 				$this->dtgLineItems = new QDataGrid($this);
 				$this->dtgLineItems->AddColumn(new QDataGridColumn('Person', '<?= $_ITEM->Person->Name; ?>', 'Width=200px'));
-				$this->dtgLineItems->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=200px'));
+				$this->dtgLineItems->AddColumn(new QDataGridColumn('Fund', '<?= $_CONTROL->ParentControl->RenderStewardshipFundName($_ITEM); ?>', 'Width=200px', 'HtmlEntities=false'));
 				$this->dtgLineItems->AddColumn(new QDataGridColumn('Description', '<?= $_ITEM->Description; ?>', 'Width=200px'));
 				$this->dtgLineItems->AddColumn(new QDataGridColumn('Amount', '<?= QApplication::DisplayCurrencyHtml($_ITEM->Amount); ?>', 'HtmlEntities=false', 'Width=130px'));
 				$this->dtgLineItems->SetDataBinder('dtgLineItems_Posted_Bind', $this);
@@ -38,7 +38,7 @@
 
 				$this->dtgLineItems = new QDataGrid($this);
 				$this->dtgLineItems->AddColumn(new QDataGridColumn('Person', '<?= $_ITEM->StewardshipContribution->Person->Name; ?>', 'Width=300px'));
-				$this->dtgLineItems->AddColumn(new QDataGridColumn('Fund', '<?= $_ITEM->StewardshipFund->Name; ?>', 'Width=300px'));
+				$this->dtgLineItems->AddColumn(new QDataGridColumn('Fund', '<?= $_CONTROL->ParentControl->RenderStewardshipFundName($_ITEM); ?>', 'Width=300px', 'HtmlEntities=false'));
 				$this->dtgLineItems->AddColumn(new QDataGridColumn('Amount', '<?= QApplication::DisplayCurrencyHtml($_ITEM->Amount); ?>', 'HtmlEntities=false', 'Width=130px'));
 				$this->dtgLineItems->SetDataBinder('dtgLineItems_Unposted_Bind', $this);
 
@@ -47,6 +47,10 @@
 			} else {
 				return $this->ReturnTo('#/post_batch');
 			}
+		}
+		
+		public function RenderStewardshipFundName($objStewardshipChildItem) {
+			return sprintf('<a href="%s">%s</a>', $objStewardshipChildItem->StewardshipContribution->ViewUrl, QApplication::HtmlEntities($objStewardshipChildItem->StewardshipFund->Name));
 		}
 
 		public function btnSave_Click() {

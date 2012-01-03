@@ -43,6 +43,9 @@
 					if (!$this->Id) return null;
 					return $this->Folder . '/' . $this->Id . '.tif';
 
+				case 'ViewUrl':
+					return sprintf('/stewardship/batch.php/%s#%s/view_contribution/%s', $this->StewardshipBatchId, $this->StewardshipStack->StackNumber, $this->Id);
+
 				case 'ViewLargeUrl':
 					return '/stewardship/view_check.php/' . $this->Id;
 
