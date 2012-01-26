@@ -1353,7 +1353,12 @@
 				$objSignupEntry->PersonId = $this->Id;
 				$objSignupEntry->Save();
 			}
-			
+
+			foreach ($objPersonMergeWith->GetSignupEntryAsSignupByArray() as $objSignupEntry) {
+				$objSignupEntry->SignupByPersonId = $this->Id;
+				$objSignupEntry->Save();
+			}
+
 			foreach ($objPersonMergeWith->GetClassRegistrationArray() as $objClassRegistration) {
 				$objClassRegistration->PersonId = $this->Id;
 				$objClassRegistration->Save();
