@@ -62,7 +62,7 @@
 			// Test the simple case -- we are attempting to be a "current" membership period that has no end date
 			if (!$this->dttDateEnd) {
 				// If the most recent membership has NOT ended, we have a conflict
-				if ($objMostRecentMembership->DateEnd)
+				if (!$objMostRecentMembership->DateEnd)
 					return true;
 
 				// No current membership -- let's go ahead and make sure this now "current" membership is later than the rest
