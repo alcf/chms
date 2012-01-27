@@ -20,7 +20,9 @@
 
 		protected $btnCalculateTotal;
 		protected $btnCalculateLabel;
-
+		protected $btnPrint;
+		protected $btnPrintLabel;
+		
 		protected function Form_Create() {
 			$this->dtgContributions = new StewardshipContributionDataGrid($this);
 			$this->dtgContributions->Paginator = new QPaginator($this->dtgContributions);
@@ -49,6 +51,19 @@
 			$this->btnCalculateTotal->AddAction(new QClickEvent(), new QToggleDisplayAction($this->btnCalculateTotal));
 			$this->btnCalculateTotal->AddAction(new QClickEvent(), new QToggleDisplayAction($this->btnCalculateLabel));
 			$this->btnCalculateTotal->AddAction(new QClickEvent(), new QAjaxAction('btnCalculateTotal_Click'));
+			
+			$this->btnPrint = new QButton($this);
+			$this->btnPrint->CssClass = 'alternate';
+			$this->btnPrint->Text = 'Print Results';
+
+			$this->btnPrintLabel = new QLabel($this);
+			$this->btnPrintLabel->Text = 'Preparing to Print... <img src="/assets/images/spinner_14.gif"/>';
+			$this->btnPrintLabel->Display = false;
+			$this->btnPrintLabel->HtmlEntities = false;
+
+			$this->btnPrint->AddAction(new QClickEvent(), new QToggleDisplayAction($this->btnPrint));
+			$this->btnPrint->AddAction(new QClickEvent(), new QToggleDisplayAction($this->btnPrintLabel));
+			$this->btnPrint->AddAction(new QClickEvent(), new QAjaxAction('btnPrint_Click'));
 			
 			$this->txtName = new QTextBox($this);
 			$this->txtDateEnteredStart = new QDateTimeTextBox($this);
@@ -108,6 +123,24 @@
 		public function ResetFilter() {
 			$this->dtgContributions->PageNumber = 1;
 			$this->dtgContributions->Refresh();
+		}
+
+		public function btnPrint_Click() {
+			$this->dtgContributions->ItemsPerPage = 999999;
+			$this->dtgContributions->Refresh();
+			QApplication::ExecuteJavaScript('window.print();');
+			$this->btnPrint->Visible = false;
+			$this->btnPrintLabel->Visible = false;
+			
+			$this->txtName->Enabled = false;
+			$this->txtAmount->Enabled = false;
+			$this->txtCheckNumber->Enabled = false;
+			$this->txtAuthorizationNumber->Enabled = false;
+			$this->txtDateCreditedEnd->Enabled = false;
+			$this->txtDateCreditedStart->Enabled = false;
+			$this->txtDateEnteredEnd->Enabled = false;
+			$this->txtDateEnteredStart->Enabled = false;
+			$this->lstFund->Enabled = false;
 		}
 
 		public function btnCalculateTotal_Click() {

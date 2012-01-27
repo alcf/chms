@@ -23,7 +23,11 @@
 		<?php $this->dtgContributions->Render(); ?>
 	</div>
 
-	<div class="buttonBar"><?php $this->btnCalculateTotal->Render(); ?><?php $this->btnCalculateLabel->Render(); ?></div>
+	<div class="buttonBar">
+		<div style="float: left;"><?php $this->btnPrint->Render(); ?><?php $this->btnPrintLabel->Render(); ?></div>
+		<div style="float: right;"><?php $this->btnCalculateTotal->Render(); ?><?php $this->btnCalculateLabel->Render(); ?></div>
+		<br clear="all"/>
+	</div>
 
 	<br/><br/>
 
