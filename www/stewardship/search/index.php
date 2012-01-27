@@ -22,11 +22,13 @@
 		protected $btnCalculateLabel;
 		protected $btnPrint;
 		protected $btnPrintLabel;
-		
+
+		protected $blnPrintMode = false;
+
 		protected function Form_Create() {
 			$this->dtgContributions = new StewardshipContributionDataGrid($this);
 			$this->dtgContributions->Paginator = new QPaginator($this->dtgContributions);
-			$this->dtgContributions->MetaAddColumn(QQN::StewardshipContribution()->Person->LastName, 'Name=Person', 'Html=<?= $_ITEM->Person->Name; ?>', 'Width=280px');
+			$this->dtgContributions->MetaAddColumn(QQN::StewardshipContribution()->Person->LastName, 'Name=Person', 'Html=<?= $_ITEM->Id ? $_ITEM->Person->Name : "TOTAL"; ?>', 'Width=280px');
 			$this->dtgContributions->MetaAddColumn('TotalAmount', 'Html=<?= $_FORM->RenderAmount($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px');
 			$this->dtgContributions->MetaAddColumn('CheckNumber', 'Width=120px');
 			$this->dtgContributions->MetaAddColumn('AuthorizationNumber', 'Width=140px');
@@ -127,11 +129,12 @@
 
 		public function btnPrint_Click() {
 			$this->dtgContributions->ItemsPerPage = 999999;
+			$this->blnPrintMode = true;
 			$this->dtgContributions->Refresh();
 			QApplication::ExecuteJavaScript('window.print();');
 			$this->btnPrint->Visible = false;
 			$this->btnPrintLabel->Visible = false;
-			
+
 			$this->txtName->Enabled = false;
 			$this->txtAmount->Enabled = false;
 			$this->txtCheckNumber->Enabled = false;
@@ -170,7 +173,14 @@
 			$this->btnCalculateLabel->Display = false;
 		}
 
+		protected $fltTotal = 0;
 		public function RenderAmount(StewardshipContribution $objStewardshipContribution) {
+			if ($this->dtgContributions->CurrentRowIndex == 0) $this->fltTotal = 0;
+
+			if (!$objStewardshipContribution->Id) {
+				return QApplication::DisplayCurrency($this->fltTotal);
+			}
+
 			// We need to look at a specific fund?
 			if ($this->lstFund->SelectedValue) {
 				$fltAmount = 0;
@@ -181,6 +191,9 @@
 			} else {
 				$fltAmount = $objStewardshipContribution->TotalAmount;
 			}
+
+			$this->fltTotal += $fltAmount;
+
 			return sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
 				$objStewardshipContribution->StewardshipBatchId,
 				$objStewardshipContribution->StewardshipStack->StackNumber,
@@ -270,6 +283,12 @@
 				$this->dtgContributions->MetaDataBinder($objCondition, $objClauses);
 			else
 				$this->dtgContributions->MetaDataBinder(QQ::None());
+
+			if ($this->blnPrintMode) {
+				$objDataSource = $this->dtgContributions->DataSource;
+				$objDataSource[] = new StewardshipContribution();
+				$this->dtgContributions->DataSource = $objDataSource;
+			}
 		}
 	}
 
