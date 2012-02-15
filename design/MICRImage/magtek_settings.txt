@@ -11,7 +11,7 @@ PR2=255.255.255.0
 PR3=0
 PR4=0.0.0.0
 PR5=0
-PR6=chms.ir.alcf.net
+PR6=<actual server name of prod chms>
 PR7=1
 PR8=magtek
 PR9=1
@@ -27,8 +27,9 @@ PR18=
 PR19=
 HW =00011000
 
-FC = 70 00
+FC 70 00
 
+SA (This will perform the save)
 
 ED
 Link detected.
@@ -38,5 +39,17 @@ ROUTER -> IP addr= 10.128.  2.  1,
 DHCPSV -> IP addr= 10.128.  2. 50,
 DNS1SV -> IP addr= 10.128.  2. 50,
 DNS2SV -> IP addr= 10.128.  2. 30,
-FTPSRV -> chms.ir.alcf.net,
+FTPSRV -> *************
 FTPDIR -> 
+
+----------------------
+ed
+Link detected.
+CHKSCN -> MAC=0001A100DAC0
+CHKSCN -> IP addr= 10.128.  2. 89, Subnet mask=255.255.255.0,
+ROUTER -> IP addr= 10.128.  2.  1,
+DHCPSV -> IP addr=  0.  0.  0.  0,
+DNS1SV -> IP addr=  0.  0.  0.  0,
+DNS2SV -> IP addr=  0.  0.  0.  0,
+FTPSRV -> ************
+FTPDIR ->
