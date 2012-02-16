@@ -38,6 +38,8 @@
 	 * @property Group[] $_ChildGroupArray the value for the private _objChildGroupArray (Read-Only) if set due to an ExpandAsArray on the group.parent_group_id reverse relationship
 	 * @property GroupParticipation $_GroupParticipation the value for the private _objGroupParticipation (Read-Only) if set due to an expansion on the group_participation.group_id reverse relationship
 	 * @property GroupParticipation[] $_GroupParticipationArray the value for the private _objGroupParticipationArray (Read-Only) if set due to an ExpandAsArray on the group_participation.group_id reverse relationship
+	 * @property SmsMessage $_SmsMessage the value for the private _objSmsMessage (Read-Only) if set due to an expansion on the sms_message.group_id reverse relationship
+	 * @property SmsMessage[] $_SmsMessageArray the value for the private _objSmsMessageArray (Read-Only) if set due to an ExpandAsArray on the sms_message.group_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class GroupGen extends QBaseClass {
@@ -191,6 +193,22 @@
 		 * @var GroupParticipation[] _objGroupParticipationArray;
 		 */
 		private $_objGroupParticipationArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SmsMessage object
+		 * (of type SmsMessage), if this Group object was restored with
+		 * an expansion on the sms_message association table.
+		 * @var SmsMessage _objSmsMessage;
+		 */
+		private $_objSmsMessage;
+
+		/**
+		 * Private member variable that stores a reference to an array of SmsMessage objects
+		 * (of type SmsMessage[]), if this Group object was restored with
+		 * an ExpandAsArray on the sms_message association table.
+		 * @var SmsMessage[] _objSmsMessageArray;
+		 */
+		private $_objSmsMessageArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -690,6 +708,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'smsmessage__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSmsMessageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSmsMessageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSmsMessageArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSmsMessageArray[] = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -817,6 +849,16 @@
 					$objToReturn->_objGroupParticipationArray[] = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objGroupParticipation = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SmsMessage Virtual Binding
+			$strAlias = $strAliasPrefix . 'smsmessage__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSmsMessageArray[] = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSmsMessage = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1590,6 +1632,18 @@
 					// if set due to an ExpandAsArray on the group_participation.group_id reverse relationship
 					// @return GroupParticipation[]
 					return (array) $this->_objGroupParticipationArray;
+
+				case '_SmsMessage':
+					// Gets the value for the private _objSmsMessage (Read-Only)
+					// if set due to an expansion on the sms_message.group_id reverse relationship
+					// @return SmsMessage
+					return $this->_objSmsMessage;
+
+				case '_SmsMessageArray':
+					// Gets the value for the private _objSmsMessageArray (Read-Only)
+					// if set due to an ExpandAsArray on the sms_message.group_id reverse relationship
+					// @return SmsMessage[]
+					return (array) $this->_objSmsMessageArray;
 
 
 				case '__Restored':
@@ -2489,6 +2543,188 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for SmsMessage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SmsMessages as an array of SmsMessage objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SmsMessage[]
+		*/ 
+		public function GetSmsMessageArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SmsMessage::LoadArrayByGroupId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SmsMessages
+		 * @return int
+		*/ 
+		public function CountSmsMessages() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SmsMessage::CountByGroupId($this->intId);
+		}
+
+		/**
+		 * Associates a SmsMessage
+		 * @param SmsMessage $objSmsMessage
+		 * @return void
+		*/ 
+		public function AssociateSmsMessage(SmsMessage $objSmsMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSmsMessage on this unsaved Group.');
+			if ((is_null($objSmsMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSmsMessage on this Group with an unsaved SmsMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`sms_message`
+				SET
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSmsMessage->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSmsMessage->GroupId = $this->intId;
+				$objSmsMessage->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SmsMessage
+		 * @param SmsMessage $objSmsMessage
+		 * @return void
+		*/ 
+		public function UnassociateSmsMessage(SmsMessage $objSmsMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Group.');
+			if ((is_null($objSmsMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this Group with an unsaved SmsMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`sms_message`
+				SET
+					`group_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSmsMessage->Id) . ' AND
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSmsMessage->GroupId = null;
+				$objSmsMessage->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SmsMessages
+		 * @return void
+		*/ 
+		public function UnassociateAllSmsMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SmsMessage::LoadArrayByGroupId($this->intId) as $objSmsMessage) {
+					$objSmsMessage->GroupId = null;
+					$objSmsMessage->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`sms_message`
+				SET
+					`group_id` = null
+				WHERE
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SmsMessage
+		 * @param SmsMessage $objSmsMessage
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSmsMessage(SmsMessage $objSmsMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Group.');
+			if ((is_null($objSmsMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this Group with an unsaved SmsMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`sms_message`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSmsMessage->Id) . ' AND
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSmsMessage->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SmsMessages
+		 * @return void
+		*/ 
+		public function DeleteAllSmsMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Group.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Group::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SmsMessage::LoadArrayByGroupId($this->intId) as $objSmsMessage) {
+					$objSmsMessage->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`sms_message`
+				WHERE
+					`group_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -2622,6 +2858,7 @@
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
 	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
 	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
+	 * @property-read QQReverseReferenceNodeSmsMessage $SmsMessage
 	 */
 	class QQNodeGroup extends QQNode {
 		protected $strTableName = 'group';
@@ -2669,6 +2906,8 @@
 					return new QQReverseReferenceNodeGrowthGroup($this, 'growthgroup', 'reverse_reference', 'group_id', 'GrowthGroup');
 				case 'SmartGroup':
 					return new QQReverseReferenceNodeSmartGroup($this, 'smartgroup', 'reverse_reference', 'group_id', 'SmartGroup');
+				case 'SmsMessage':
+					return new QQReverseReferenceNodeSmsMessage($this, 'smsmessage', 'reverse_reference', 'group_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -2704,6 +2943,7 @@
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
 	 * @property-read QQReverseReferenceNodeGrowthGroup $GrowthGroup
 	 * @property-read QQReverseReferenceNodeSmartGroup $SmartGroup
+	 * @property-read QQReverseReferenceNodeSmsMessage $SmsMessage
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeGroup extends QQReverseReferenceNode {
@@ -2752,6 +2992,8 @@
 					return new QQReverseReferenceNodeGrowthGroup($this, 'growthgroup', 'reverse_reference', 'group_id', 'GrowthGroup');
 				case 'SmartGroup':
 					return new QQReverseReferenceNodeSmartGroup($this, 'smartgroup', 'reverse_reference', 'group_id', 'SmartGroup');
+				case 'SmsMessage':
+					return new QQReverseReferenceNodeSmsMessage($this, 'smsmessage', 'reverse_reference', 'group_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

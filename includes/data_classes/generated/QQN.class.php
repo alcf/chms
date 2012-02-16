@@ -301,6 +301,54 @@
 			return new QQNodeOutgoingEmailQueue('outgoing_email_queue', null, null);
 		}
 		/**
+		 * @return QQNodeParentPagerAddress
+		 */
+		static public function ParentPagerAddress() {
+			return new QQNodeParentPagerAddress('parent_pager_address', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerAttendantHistory
+		 */
+		static public function ParentPagerAttendantHistory() {
+			return new QQNodeParentPagerAttendantHistory('parent_pager_attendant_history', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerChildHistory
+		 */
+		static public function ParentPagerChildHistory() {
+			return new QQNodeParentPagerChildHistory('parent_pager_child_history', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerHousehold
+		 */
+		static public function ParentPagerHousehold() {
+			return new QQNodeParentPagerHousehold('parent_pager_household', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerIndividual
+		 */
+		static public function ParentPagerIndividual() {
+			return new QQNodeParentPagerIndividual('parent_pager_individual', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerPeriod
+		 */
+		static public function ParentPagerPeriod() {
+			return new QQNodeParentPagerPeriod('parent_pager_period', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerProgram
+		 */
+		static public function ParentPagerProgram() {
+			return new QQNodeParentPagerProgram('parent_pager_program', null, null);
+		}
+		/**
+		 * @return QQNodeParentPagerStation
+		 */
+		static public function ParentPagerStation() {
+			return new QQNodeParentPagerStation('parent_pager_station', null, null);
+		}
+		/**
 		 * @return QQNodePaypalBatch
 		 */
 		static public function PaypalBatch() {
@@ -395,6 +443,12 @@
 		 */
 		static public function SmartGroup() {
 			return new QQNodeSmartGroup('smart_group', null, null);
+		}
+		/**
+		 * @return QQNodeSmsMessage
+		 */
+		static public function SmsMessage() {
+			return new QQNodeSmsMessage('sms_message', null, null);
 		}
 		/**
 		 * @return QQNodeStewardshipBatch

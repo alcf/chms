@@ -349,6 +349,62 @@
 		QApplicationBase::$ClassFile['outgoingemailqueuemetacontrol'] = __DATA_META_CONTROLS__ . '/OutgoingEmailQueueMetaControl.class.php';
 		QApplicationBase::$ClassFile['outgoingemailqueuedatagrid'] = __DATA_META_CONTROLS__ . '/OutgoingEmailQueueDataGrid.class.php';
 
+	// ClassPaths for the ParentPagerAddress class
+		QApplicationBase::$ClassFile['parentpageraddress'] = __DATA_CLASSES__ . '/ParentPagerAddress.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpageraddress'] = __DATA_CLASSES__ . '/ParentPagerAddress.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpageraddress'] = __DATA_CLASSES__ . '/ParentPagerAddress.class.php';
+		QApplicationBase::$ClassFile['parentpageraddressmetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerAddressMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpageraddressdatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerAddressDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerAttendantHistory class
+		QApplicationBase::$ClassFile['parentpagerattendanthistory'] = __DATA_CLASSES__ . '/ParentPagerAttendantHistory.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerattendanthistory'] = __DATA_CLASSES__ . '/ParentPagerAttendantHistory.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerattendanthistory'] = __DATA_CLASSES__ . '/ParentPagerAttendantHistory.class.php';
+		QApplicationBase::$ClassFile['parentpagerattendanthistorymetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerAttendantHistoryMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerattendanthistorydatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerAttendantHistoryDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerChildHistory class
+		QApplicationBase::$ClassFile['parentpagerchildhistory'] = __DATA_CLASSES__ . '/ParentPagerChildHistory.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerchildhistory'] = __DATA_CLASSES__ . '/ParentPagerChildHistory.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerchildhistory'] = __DATA_CLASSES__ . '/ParentPagerChildHistory.class.php';
+		QApplicationBase::$ClassFile['parentpagerchildhistorymetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerChildHistoryMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerchildhistorydatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerChildHistoryDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerHousehold class
+		QApplicationBase::$ClassFile['parentpagerhousehold'] = __DATA_CLASSES__ . '/ParentPagerHousehold.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerhousehold'] = __DATA_CLASSES__ . '/ParentPagerHousehold.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerhousehold'] = __DATA_CLASSES__ . '/ParentPagerHousehold.class.php';
+		QApplicationBase::$ClassFile['parentpagerhouseholdmetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerHouseholdMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerhouseholddatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerHouseholdDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerIndividual class
+		QApplicationBase::$ClassFile['parentpagerindividual'] = __DATA_CLASSES__ . '/ParentPagerIndividual.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerindividual'] = __DATA_CLASSES__ . '/ParentPagerIndividual.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerindividual'] = __DATA_CLASSES__ . '/ParentPagerIndividual.class.php';
+		QApplicationBase::$ClassFile['parentpagerindividualmetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerIndividualMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerindividualdatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerIndividualDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerPeriod class
+		QApplicationBase::$ClassFile['parentpagerperiod'] = __DATA_CLASSES__ . '/ParentPagerPeriod.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerperiod'] = __DATA_CLASSES__ . '/ParentPagerPeriod.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerperiod'] = __DATA_CLASSES__ . '/ParentPagerPeriod.class.php';
+		QApplicationBase::$ClassFile['parentpagerperiodmetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerPeriodMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerperioddatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerPeriodDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerProgram class
+		QApplicationBase::$ClassFile['parentpagerprogram'] = __DATA_CLASSES__ . '/ParentPagerProgram.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerprogram'] = __DATA_CLASSES__ . '/ParentPagerProgram.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerprogram'] = __DATA_CLASSES__ . '/ParentPagerProgram.class.php';
+		QApplicationBase::$ClassFile['parentpagerprogrammetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerProgramMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerprogramdatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerProgramDataGrid.class.php';
+
+	// ClassPaths for the ParentPagerStation class
+		QApplicationBase::$ClassFile['parentpagerstation'] = __DATA_CLASSES__ . '/ParentPagerStation.class.php';
+		QApplicationBase::$ClassFile['qqnodeparentpagerstation'] = __DATA_CLASSES__ . '/ParentPagerStation.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeparentpagerstation'] = __DATA_CLASSES__ . '/ParentPagerStation.class.php';
+		QApplicationBase::$ClassFile['parentpagerstationmetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerStationMetaControl.class.php';
+		QApplicationBase::$ClassFile['parentpagerstationdatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerStationDataGrid.class.php';
+
 	// ClassPaths for the PaypalBatch class
 		QApplicationBase::$ClassFile['paypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
 		QApplicationBase::$ClassFile['qqnodepaypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
@@ -460,6 +516,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodesmartgroup'] = __DATA_CLASSES__ . '/SmartGroup.class.php';
 		QApplicationBase::$ClassFile['smartgroupmetacontrol'] = __DATA_META_CONTROLS__ . '/SmartGroupMetaControl.class.php';
 		QApplicationBase::$ClassFile['smartgroupdatagrid'] = __DATA_META_CONTROLS__ . '/SmartGroupDataGrid.class.php';
+
+	// ClassPaths for the SmsMessage class
+		QApplicationBase::$ClassFile['smsmessage'] = __DATA_CLASSES__ . '/SmsMessage.class.php';
+		QApplicationBase::$ClassFile['qqnodesmsmessage'] = __DATA_CLASSES__ . '/SmsMessage.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesmsmessage'] = __DATA_CLASSES__ . '/SmsMessage.class.php';
+		QApplicationBase::$ClassFile['smsmessagemetacontrol'] = __DATA_META_CONTROLS__ . '/SmsMessageMetaControl.class.php';
+		QApplicationBase::$ClassFile['smsmessagedatagrid'] = __DATA_META_CONTROLS__ . '/SmsMessageDataGrid.class.php';
 
 	// ClassPaths for the StewardshipBatch class
 		QApplicationBase::$ClassFile['stewardshipbatch'] = __DATA_CLASSES__ . '/StewardshipBatch.class.php';

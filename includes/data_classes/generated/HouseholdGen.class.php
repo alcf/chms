@@ -29,6 +29,8 @@
 	 * @property HouseholdSplit[] $_HouseholdSplitAsSplitArray the value for the private _objHouseholdSplitAsSplitArray (Read-Only) if set due to an ExpandAsArray on the household_split.split_household_id reverse relationship
 	 * @property HouseholdSplit $_HouseholdSplit the value for the private _objHouseholdSplit (Read-Only) if set due to an expansion on the household_split.household_id reverse relationship
 	 * @property HouseholdSplit[] $_HouseholdSplitArray the value for the private _objHouseholdSplitArray (Read-Only) if set due to an ExpandAsArray on the household_split.household_id reverse relationship
+	 * @property ParentPagerHousehold $_ParentPagerHousehold the value for the private _objParentPagerHousehold (Read-Only) if set due to an expansion on the parent_pager_household.household_id reverse relationship
+	 * @property ParentPagerHousehold[] $_ParentPagerHouseholdArray the value for the private _objParentPagerHouseholdArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_household.household_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class HouseholdGen extends QBaseClass {
@@ -142,6 +144,22 @@
 		 * @var HouseholdSplit[] _objHouseholdSplitArray;
 		 */
 		private $_objHouseholdSplitArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single ParentPagerHousehold object
+		 * (of type ParentPagerHousehold), if this Household object was restored with
+		 * an expansion on the parent_pager_household association table.
+		 * @var ParentPagerHousehold _objParentPagerHousehold;
+		 */
+		private $_objParentPagerHousehold;
+
+		/**
+		 * Private member variable that stores a reference to an array of ParentPagerHousehold objects
+		 * (of type ParentPagerHousehold[]), if this Household object was restored with
+		 * an ExpandAsArray on the parent_pager_household association table.
+		 * @var ParentPagerHousehold[] _objParentPagerHouseholdArray;
+		 */
+		private $_objParentPagerHouseholdArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -584,6 +602,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'parentpagerhousehold__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objParentPagerHouseholdArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objParentPagerHouseholdArray[$intPreviousChildItemCount - 1];
+						$objChildItem = ParentPagerHousehold::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerhousehold__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objParentPagerHouseholdArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objParentPagerHouseholdArray[] = ParentPagerHousehold::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerhousehold__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -665,6 +697,16 @@
 					$objToReturn->_objHouseholdSplitArray[] = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objHouseholdSplit = HouseholdSplit::InstantiateDbRow($objDbRow, $strAliasPrefix . 'householdsplit__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for ParentPagerHousehold Virtual Binding
+			$strAlias = $strAliasPrefix . 'parentpagerhousehold__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objParentPagerHouseholdArray[] = ParentPagerHousehold::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerhousehold__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objParentPagerHousehold = ParentPagerHousehold::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerhousehold__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -1084,6 +1126,18 @@
 					// if set due to an ExpandAsArray on the household_split.household_id reverse relationship
 					// @return HouseholdSplit[]
 					return (array) $this->_objHouseholdSplitArray;
+
+				case '_ParentPagerHousehold':
+					// Gets the value for the private _objParentPagerHousehold (Read-Only)
+					// if set due to an expansion on the parent_pager_household.household_id reverse relationship
+					// @return ParentPagerHousehold
+					return $this->_objParentPagerHousehold;
+
+				case '_ParentPagerHouseholdArray':
+					// Gets the value for the private _objParentPagerHouseholdArray (Read-Only)
+					// if set due to an ExpandAsArray on the parent_pager_household.household_id reverse relationship
+					// @return ParentPagerHousehold[]
+					return (array) $this->_objParentPagerHouseholdArray;
 
 
 				case '__Restored':
@@ -1946,6 +2000,188 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for ParentPagerHousehold
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated ParentPagerHouseholds as an array of ParentPagerHousehold objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ParentPagerHousehold[]
+		*/ 
+		public function GetParentPagerHouseholdArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return ParentPagerHousehold::LoadArrayByHouseholdId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated ParentPagerHouseholds
+		 * @return int
+		*/ 
+		public function CountParentPagerHouseholds() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return ParentPagerHousehold::CountByHouseholdId($this->intId);
+		}
+
+		/**
+		 * Associates a ParentPagerHousehold
+		 * @param ParentPagerHousehold $objParentPagerHousehold
+		 * @return void
+		*/ 
+		public function AssociateParentPagerHousehold(ParentPagerHousehold $objParentPagerHousehold) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerHousehold on this unsaved Household.');
+			if ((is_null($objParentPagerHousehold->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerHousehold on this Household with an unsaved ParentPagerHousehold.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`parent_pager_household`
+				SET
+					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objParentPagerHousehold->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objParentPagerHousehold->HouseholdId = $this->intId;
+				$objParentPagerHousehold->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a ParentPagerHousehold
+		 * @param ParentPagerHousehold $objParentPagerHousehold
+		 * @return void
+		*/ 
+		public function UnassociateParentPagerHousehold(ParentPagerHousehold $objParentPagerHousehold) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerHousehold on this unsaved Household.');
+			if ((is_null($objParentPagerHousehold->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerHousehold on this Household with an unsaved ParentPagerHousehold.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`parent_pager_household`
+				SET
+					`household_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objParentPagerHousehold->Id) . ' AND
+					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objParentPagerHousehold->HouseholdId = null;
+				$objParentPagerHousehold->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all ParentPagerHouseholds
+		 * @return void
+		*/ 
+		public function UnassociateAllParentPagerHouseholds() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerHousehold on this unsaved Household.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (ParentPagerHousehold::LoadArrayByHouseholdId($this->intId) as $objParentPagerHousehold) {
+					$objParentPagerHousehold->HouseholdId = null;
+					$objParentPagerHousehold->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`parent_pager_household`
+				SET
+					`household_id` = null
+				WHERE
+					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated ParentPagerHousehold
+		 * @param ParentPagerHousehold $objParentPagerHousehold
+		 * @return void
+		*/ 
+		public function DeleteAssociatedParentPagerHousehold(ParentPagerHousehold $objParentPagerHousehold) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerHousehold on this unsaved Household.');
+			if ((is_null($objParentPagerHousehold->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerHousehold on this Household with an unsaved ParentPagerHousehold.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`parent_pager_household`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objParentPagerHousehold->Id) . ' AND
+					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objParentPagerHousehold->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated ParentPagerHouseholds
+		 * @return void
+		*/ 
+		public function DeleteAllParentPagerHouseholds() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerHousehold on this unsaved Household.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Household::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (ParentPagerHousehold::LoadArrayByHouseholdId($this->intId) as $objParentPagerHousehold) {
+					$objParentPagerHousehold->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`parent_pager_household`
+				WHERE
+					`household_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -2042,6 +2278,7 @@
 	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
 	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
 	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplit
+	 * @property-read QQReverseReferenceNodeParentPagerHousehold $ParentPagerHousehold
 	 */
 	class QQNodeHousehold extends QQNode {
 		protected $strTableName = 'household';
@@ -2069,6 +2306,8 @@
 					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplitassplit', 'reverse_reference', 'split_household_id');
 				case 'HouseholdSplit':
 					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplit', 'reverse_reference', 'household_id');
+				case 'ParentPagerHousehold':
+					return new QQReverseReferenceNodeParentPagerHousehold($this, 'parentpagerhousehold', 'reverse_reference', 'household_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -2094,6 +2333,7 @@
 	 * @property-read QQReverseReferenceNodeHouseholdParticipation $HouseholdParticipation
 	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplitAsSplit
 	 * @property-read QQReverseReferenceNodeHouseholdSplit $HouseholdSplit
+	 * @property-read QQReverseReferenceNodeParentPagerHousehold $ParentPagerHousehold
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeHousehold extends QQReverseReferenceNode {
@@ -2122,6 +2362,8 @@
 					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplitassplit', 'reverse_reference', 'split_household_id');
 				case 'HouseholdSplit':
 					return new QQReverseReferenceNodeHouseholdSplit($this, 'householdsplit', 'reverse_reference', 'household_id');
+				case 'ParentPagerHousehold':
+					return new QQReverseReferenceNodeParentPagerHousehold($this, 'parentpagerhousehold', 'reverse_reference', 'household_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

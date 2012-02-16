@@ -1,40 +1,39 @@
 <?php
 	/**
-	 * The abstract GroupParticipationGen class defined here is
+	 * The abstract SmsMessageGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the GroupParticipation subclass which
-	 * extends this GroupParticipationGen class.
+	 * To use, you should use the SmsMessage subclass which
+	 * extends this SmsMessageGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the GroupParticipation class.
+	 * in the SmsMessage class.
 	 * 
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
-	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $GroupId the value for intGroupId (Not Null)
-	 * @property integer $GroupRoleId the value for intGroupRoleId 
-	 * @property QDateTime $DateStart the value for dttDateStart (Not Null)
-	 * @property QDateTime $DateEnd the value for dttDateEnd 
-	 * @property boolean $ModeratorFlag the value for blnModeratorFlag 
-	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
+	 * @property integer $LoginId the value for intLoginId (Not Null)
+	 * @property string $Subject the value for strSubject 
+	 * @property string $Body the value for strBody 
+	 * @property QDateTime $DateQueued the value for dttDateQueued (Not Null)
+	 * @property QDateTime $DateSent the value for dttDateSent 
 	 * @property Group $Group the value for the Group object referenced by intGroupId (Not Null)
-	 * @property GroupRole $GroupRole the value for the GroupRole object referenced by intGroupRoleId 
+	 * @property Login $Login the value for the Login object referenced by intLoginId (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
-	class GroupParticipationGen extends QBaseClass {
+	class SmsMessageGen extends QBaseClass {
 
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK Identity column group_participation.id
+		 * Protected member variable that maps to the database PK Identity column sms_message.id
 		 * @var integer intId
 		 */
 		protected $intId;
@@ -42,15 +41,7 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column group_participation.person_id
-		 * @var integer intPersonId
-		 */
-		protected $intPersonId;
-		const PersonIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column group_participation.group_id
+		 * Protected member variable that maps to the database column sms_message.group_id
 		 * @var integer intGroupId
 		 */
 		protected $intGroupId;
@@ -58,35 +49,45 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column group_participation.group_role_id
-		 * @var integer intGroupRoleId
+		 * Protected member variable that maps to the database column sms_message.login_id
+		 * @var integer intLoginId
 		 */
-		protected $intGroupRoleId;
-		const GroupRoleIdDefault = null;
+		protected $intLoginId;
+		const LoginIdDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column group_participation.date_start
-		 * @var QDateTime dttDateStart
+		 * Protected member variable that maps to the database column sms_message.subject
+		 * @var string strSubject
 		 */
-		protected $dttDateStart;
-		const DateStartDefault = null;
+		protected $strSubject;
+		const SubjectMaxLength = 100;
+		const SubjectDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column group_participation.date_end
-		 * @var QDateTime dttDateEnd
+		 * Protected member variable that maps to the database column sms_message.body
+		 * @var string strBody
 		 */
-		protected $dttDateEnd;
-		const DateEndDefault = null;
+		protected $strBody;
+		const BodyMaxLength = 200;
+		const BodyDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column group_participation.moderator_flag
-		 * @var boolean blnModeratorFlag
+		 * Protected member variable that maps to the database column sms_message.date_queued
+		 * @var QDateTime dttDateQueued
 		 */
-		protected $blnModeratorFlag;
-		const ModeratorFlagDefault = null;
+		protected $dttDateQueued;
+		const DateQueuedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column sms_message.date_sent
+		 * @var QDateTime dttDateSent
+		 */
+		protected $dttDateSent;
+		const DateSentDefault = null;
 
 
 		/**
@@ -113,17 +114,7 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column group_participation.person_id.
-		 *
-		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Person objPerson
-		 */
-		protected $objPerson;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column group_participation.group_id.
+		 * in the database column sms_message.group_id.
 		 *
 		 * NOTE: Always use the Group property getter to correctly retrieve this Group object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
@@ -133,13 +124,13 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column group_participation.group_role_id.
+		 * in the database column sms_message.login_id.
 		 *
-		 * NOTE: Always use the GroupRole property getter to correctly retrieve this GroupRole object.
+		 * NOTE: Always use the Login property getter to correctly retrieve this Login object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var GroupRole objGroupRole
+		 * @var Login objLogin
 		 */
-		protected $objGroupRole;
+		protected $objLogin;
 
 
 
@@ -158,26 +149,26 @@
 		}
 
 		/**
-		 * Load a GroupParticipation from PK Info
+		 * Load a SmsMessage from PK Info
 		 * @param integer $intId
-		 * @return GroupParticipation
+		 * @return SmsMessage
 		 */
 		public static function Load($intId) {
 			// Use QuerySingle to Perform the Query
-			return GroupParticipation::QuerySingle(
-				QQ::Equal(QQN::GroupParticipation()->Id, $intId)
+			return SmsMessage::QuerySingle(
+				QQ::Equal(QQN::SmsMessage()->Id, $intId)
 			);
 		}
 
 		/**
-		 * Load all GroupParticipations
+		 * Load all SmsMessages
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadAll query
+			// Call SmsMessage::QueryArray to perform the LoadAll query
 			try {
-				return GroupParticipation::QueryArray(QQ::All(), $objOptionalClauses);
+				return SmsMessage::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -185,12 +176,12 @@
 		}
 
 		/**
-		 * Count all GroupParticipations
+		 * Count all SmsMessages
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call GroupParticipation::QueryCount to perform the CountAll query
-			return GroupParticipation::QueryCount(QQ::All());
+			// Call SmsMessage::QueryCount to perform the CountAll query
+			return SmsMessage::QueryCount(QQ::All());
 		}
 
 
@@ -212,12 +203,12 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = GroupParticipation::GetDatabase();
+			$objDatabase = SmsMessage::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with GroupParticipation-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'group_participation');
-			GroupParticipation::GetSelectFields($objQueryBuilder);
-			$objQueryBuilder->AddFromItem('group_participation');
+			// Create/Build out the QueryBuilder object with SmsMessage-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'sms_message');
+			SmsMessage::GetSelectFields($objQueryBuilder);
+			$objQueryBuilder->AddFromItem('sms_message');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -264,17 +255,17 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a single GroupParticipation object.
+		 * Static Qcodo Query method to query for a single SmsMessage object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return GroupParticipation the queried object
+		 * @return SmsMessage the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = GroupParticipation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = SmsMessage::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -283,13 +274,13 @@
 			// Perform the Query
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 
-			// Instantiate a new GroupParticipation object and return it
+			// Instantiate a new SmsMessage object and return it
 
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = GroupParticipation::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
+					$objItem = SmsMessage::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem) $objToReturn[] = $objItem;
 				}
 
@@ -303,22 +294,22 @@
 				// No expands just return the first row
 				$objDbRow = $objDbResult->GetNextRow();
 				if (is_null($objDbRow)) return null;
-				return GroupParticipation::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
+				return SmsMessage::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
 			}
 		}
 
 		/**
-		 * Static Qcodo Query method to query for an array of GroupParticipation objects.
+		 * Static Qcodo Query method to query for an array of SmsMessage objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return GroupParticipation[] the queried objects as an array
+		 * @return SmsMessage[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = GroupParticipation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = SmsMessage::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -326,7 +317,7 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return GroupParticipation::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
+			return SmsMessage::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
@@ -340,7 +331,7 @@
 		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the query statement
 			try {
-				$strQuery = GroupParticipation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = SmsMessage::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -355,7 +346,7 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a count of GroupParticipation objects.
+		 * Static Qcodo Query method to query for a count of SmsMessage objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -365,7 +356,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = GroupParticipation::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = SmsMessage::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -396,15 +387,15 @@
 
 /*		public static function QueryArrayCached($strConditions, $mixParameterArray = null) {
 			// Get the Database Object for this Class
-			$objDatabase = GroupParticipation::GetDatabase();
+			$objDatabase = SmsMessage::GetDatabase();
 
 			// Lookup the QCache for This Query Statement
-			$objCache = new QCache('query', 'group_participation_' . serialize($strConditions));
+			$objCache = new QCache('query', 'sms_message_' . serialize($strConditions));
 			if (!($strQuery = $objCache->GetData())) {
-				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with GroupParticipation-specific fields
+				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with SmsMessage-specific fields
 				$objQueryBuilder = new QQueryBuilder($objDatabase);
-				GroupParticipation::GetSelectFields($objQueryBuilder);
-				GroupParticipation::GetFromFields($objQueryBuilder);
+				SmsMessage::GetSelectFields($objQueryBuilder);
+				SmsMessage::GetFromFields($objQueryBuilder);
 
 				// Ensure the Passed-in Conditions is a string
 				try {
@@ -434,11 +425,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return GroupParticipation::InstantiateDbResult($objDbResult);
+			return SmsMessage::InstantiateDbResult($objDbResult);
 		}*/
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this GroupParticipation
+		 * Updates a QQueryBuilder with the SELECT fields for this SmsMessage
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -447,17 +438,17 @@
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
 			} else {
-				$strTableName = 'group_participation';
+				$strTableName = 'sms_message';
 				$strAliasPrefix = '';
 			}
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
-			$objBuilder->AddSelectItem($strTableName, 'person_id', $strAliasPrefix . 'person_id');
 			$objBuilder->AddSelectItem($strTableName, 'group_id', $strAliasPrefix . 'group_id');
-			$objBuilder->AddSelectItem($strTableName, 'group_role_id', $strAliasPrefix . 'group_role_id');
-			$objBuilder->AddSelectItem($strTableName, 'date_start', $strAliasPrefix . 'date_start');
-			$objBuilder->AddSelectItem($strTableName, 'date_end', $strAliasPrefix . 'date_end');
-			$objBuilder->AddSelectItem($strTableName, 'moderator_flag', $strAliasPrefix . 'moderator_flag');
+			$objBuilder->AddSelectItem($strTableName, 'login_id', $strAliasPrefix . 'login_id');
+			$objBuilder->AddSelectItem($strTableName, 'subject', $strAliasPrefix . 'subject');
+			$objBuilder->AddSelectItem($strTableName, 'body', $strAliasPrefix . 'body');
+			$objBuilder->AddSelectItem($strTableName, 'date_queued', $strAliasPrefix . 'date_queued');
+			$objBuilder->AddSelectItem($strTableName, 'date_sent', $strAliasPrefix . 'date_sent');
 		}
 
 
@@ -468,16 +459,16 @@
 		///////////////////////////////
 
 		/**
-		 * Instantiate a GroupParticipation from a Database Row.
+		 * Instantiate a SmsMessage from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this GroupParticipation::InstantiateDbRow in order to perform
+		 * is calling this SmsMessage::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param QDatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
 		 * @param string $strExpandAsArrayNodes
 		 * @param QBaseClass $objPreviousItem
 		 * @param string[] $strColumnAliasArray
-		 * @return GroupParticipation
+		 * @return SmsMessage
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null, $strColumnAliasArray = array()) {
 			// If blank row, return null
@@ -485,24 +476,24 @@
 				return null;
 
 
-			// Create a new instance of the GroupParticipation object
-			$objToReturn = new GroupParticipation();
+			// Create a new instance of the SmsMessage object
+			$objToReturn = new SmsMessage();
 			$objToReturn->__blnRestored = true;
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'person_id'] : $strAliasPrefix . 'person_id';
-			$objToReturn->intPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'group_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_id'] : $strAliasPrefix . 'group_id';
 			$objToReturn->intGroupId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'group_role_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_role_id'] : $strAliasPrefix . 'group_role_id';
-			$objToReturn->intGroupRoleId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_start', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_start'] : $strAliasPrefix . 'date_start';
-			$objToReturn->dttDateStart = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date_end', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_end'] : $strAliasPrefix . 'date_end';
-			$objToReturn->dttDateEnd = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'moderator_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'moderator_flag'] : $strAliasPrefix . 'moderator_flag';
-			$objToReturn->blnModeratorFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'login_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'login_id'] : $strAliasPrefix . 'login_id';
+			$objToReturn->intLoginId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'subject', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subject'] : $strAliasPrefix . 'subject';
+			$objToReturn->strSubject = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'body', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'body'] : $strAliasPrefix . 'body';
+			$objToReturn->strBody = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_queued', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_queued'] : $strAliasPrefix . 'date_queued';
+			$objToReturn->dttDateQueued = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_sent', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_sent'] : $strAliasPrefix . 'date_sent';
+			$objToReturn->dttDateSent = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -514,13 +505,7 @@
 
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'group_participation__';
-
-			// Check for Person Early Binding
-			$strAlias = $strAliasPrefix . 'person_id__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$strAliasPrefix = 'sms_message__';
 
 			// Check for Group Early Binding
 			$strAlias = $strAliasPrefix . 'group_id__id';
@@ -528,11 +513,11 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
-			// Check for GroupRole Early Binding
-			$strAlias = $strAliasPrefix . 'group_role_id__id';
+			// Check for Login Early Binding
+			$strAlias = $strAliasPrefix . 'login_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objGroupRole = GroupRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'group_role_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objLogin = Login::InstantiateDbRow($objDbRow, $strAliasPrefix . 'login_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -541,11 +526,11 @@
 		}
 
 		/**
-		 * Instantiate an array of GroupParticipations from a Database Result
+		 * Instantiate an array of SmsMessages from a Database Result
 		 * @param QDatabaseResultBase $objDbResult
 		 * @param string $strExpandAsArrayNodes
 		 * @param string[] $strColumnAliasArray
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
@@ -561,7 +546,7 @@
 			if ($strExpandAsArrayNodes) {
 				$objLastRowItem = null;
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = GroupParticipation::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
+					$objItem = SmsMessage::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem, $strColumnAliasArray);
 					if ($objItem) {
 						$objToReturn[] = $objItem;
 						$objLastRowItem = $objItem;
@@ -569,18 +554,18 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					$objToReturn[] = GroupParticipation::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
+					$objToReturn[] = SmsMessage::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
 		}
 
 		/**
-		 * Instantiate a single GroupParticipation object from a query cursor (e.g. a DB ResultSet).
+		 * Instantiate a single SmsMessage object from a query cursor (e.g. a DB ResultSet).
 		 * Cursor is automatically moved to the "next row" of the result set.
 		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
 		 * @param QDatabaseResultBase $objDbResult cursor resource
-		 * @return GroupParticipation next row resulting from the query
+		 * @return SmsMessage next row resulting from the query
 		 */
 		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
 			// If blank resultset, then return empty result
@@ -598,7 +583,7 @@
 			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
 
 			// Load up the return result with a row and return it
-			return GroupParticipation::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			return SmsMessage::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
 		}
 
 
@@ -609,106 +594,30 @@
 		///////////////////////////////////////////////////
 			
 		/**
-		 * Load a single GroupParticipation object,
+		 * Load a single SmsMessage object,
 		 * by Id Index(es)
 		 * @param integer $intId
-		 * @return GroupParticipation
+		 * @return SmsMessage
 		*/
 		public static function LoadById($intId, $objOptionalClauses = null) {
-			return GroupParticipation::QuerySingle(
-				QQ::Equal(QQN::GroupParticipation()->Id, $intId)
+			return SmsMessage::QuerySingle(
+				QQ::Equal(QQN::SmsMessage()->Id, $intId)
 			, $objOptionalClauses
 			);
 		}
 			
 		/**
-		 * Load an array of GroupParticipation objects,
-		 * by PersonId, GroupId Index(es)
-		 * @param integer $intPersonId
-		 * @param integer $intGroupId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
-		*/
-		public static function LoadArrayByPersonIdGroupId($intPersonId, $intGroupId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadArrayByPersonIdGroupId query
-			try {
-				return GroupParticipation::QueryArray(
-					QQ::AndCondition(
-					QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
-					QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
-					),
-					$objOptionalClauses
-					);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count GroupParticipations
-		 * by PersonId, GroupId Index(es)
-		 * @param integer $intPersonId
-		 * @param integer $intGroupId
-		 * @return int
-		*/
-		public static function CountByPersonIdGroupId($intPersonId, $intGroupId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryCount to perform the CountByPersonIdGroupId query
-			return GroupParticipation::QueryCount(
-				QQ::AndCondition(
-				QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
-				QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
-				)
-			, $objOptionalClauses
-			);
-		}
-			
-		/**
-		 * Load an array of GroupParticipation objects,
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
-		*/
-		public static function LoadArrayByPersonId($intPersonId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadArrayByPersonId query
-			try {
-				return GroupParticipation::QueryArray(
-					QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId),
-					$objOptionalClauses
-					);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count GroupParticipations
-		 * by PersonId Index(es)
-		 * @param integer $intPersonId
-		 * @return int
-		*/
-		public static function CountByPersonId($intPersonId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryCount to perform the CountByPersonId query
-			return GroupParticipation::QueryCount(
-				QQ::Equal(QQN::GroupParticipation()->PersonId, $intPersonId)
-			, $objOptionalClauses
-			);
-		}
-			
-		/**
-		 * Load an array of GroupParticipation objects,
+		 * Load an array of SmsMessage objects,
 		 * by GroupId Index(es)
 		 * @param integer $intGroupId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		*/
 		public static function LoadArrayByGroupId($intGroupId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadArrayByGroupId query
+			// Call SmsMessage::QueryArray to perform the LoadArrayByGroupId query
 			try {
-				return GroupParticipation::QueryArray(
-					QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId),
+				return SmsMessage::QueryArray(
+					QQ::Equal(QQN::SmsMessage()->GroupId, $intGroupId),
 					$objOptionalClauses
 					);
 			} catch (QCallerException $objExc) {
@@ -718,31 +627,31 @@
 		}
 
 		/**
-		 * Count GroupParticipations
+		 * Count SmsMessages
 		 * by GroupId Index(es)
 		 * @param integer $intGroupId
 		 * @return int
 		*/
 		public static function CountByGroupId($intGroupId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryCount to perform the CountByGroupId query
-			return GroupParticipation::QueryCount(
-				QQ::Equal(QQN::GroupParticipation()->GroupId, $intGroupId)
+			// Call SmsMessage::QueryCount to perform the CountByGroupId query
+			return SmsMessage::QueryCount(
+				QQ::Equal(QQN::SmsMessage()->GroupId, $intGroupId)
 			, $objOptionalClauses
 			);
 		}
 			
 		/**
-		 * Load an array of GroupParticipation objects,
-		 * by GroupRoleId Index(es)
-		 * @param integer $intGroupRoleId
+		 * Load an array of SmsMessage objects,
+		 * by LoginId Index(es)
+		 * @param integer $intLoginId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		*/
-		public static function LoadArrayByGroupRoleId($intGroupRoleId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadArrayByGroupRoleId query
+		public static function LoadArrayByLoginId($intLoginId, $objOptionalClauses = null) {
+			// Call SmsMessage::QueryArray to perform the LoadArrayByLoginId query
 			try {
-				return GroupParticipation::QueryArray(
-					QQ::Equal(QQN::GroupParticipation()->GroupRoleId, $intGroupRoleId),
+				return SmsMessage::QueryArray(
+					QQ::Equal(QQN::SmsMessage()->LoginId, $intLoginId),
 					$objOptionalClauses
 					);
 			} catch (QCallerException $objExc) {
@@ -752,31 +661,31 @@
 		}
 
 		/**
-		 * Count GroupParticipations
-		 * by GroupRoleId Index(es)
-		 * @param integer $intGroupRoleId
+		 * Count SmsMessages
+		 * by LoginId Index(es)
+		 * @param integer $intLoginId
 		 * @return int
 		*/
-		public static function CountByGroupRoleId($intGroupRoleId, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryCount to perform the CountByGroupRoleId query
-			return GroupParticipation::QueryCount(
-				QQ::Equal(QQN::GroupParticipation()->GroupRoleId, $intGroupRoleId)
+		public static function CountByLoginId($intLoginId, $objOptionalClauses = null) {
+			// Call SmsMessage::QueryCount to perform the CountByLoginId query
+			return SmsMessage::QueryCount(
+				QQ::Equal(QQN::SmsMessage()->LoginId, $intLoginId)
 			, $objOptionalClauses
 			);
 		}
 			
 		/**
-		 * Load an array of GroupParticipation objects,
-		 * by DateStart Index(es)
-		 * @param QDateTime $dttDateStart
+		 * Load an array of SmsMessage objects,
+		 * by DateSent Index(es)
+		 * @param QDateTime $dttDateSent
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		*/
-		public static function LoadArrayByDateStart($dttDateStart, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadArrayByDateStart query
+		public static function LoadArrayByDateSent($dttDateSent, $objOptionalClauses = null) {
+			// Call SmsMessage::QueryArray to perform the LoadArrayByDateSent query
 			try {
-				return GroupParticipation::QueryArray(
-					QQ::Equal(QQN::GroupParticipation()->DateStart, $dttDateStart),
+				return SmsMessage::QueryArray(
+					QQ::Equal(QQN::SmsMessage()->DateSent, $dttDateSent),
 					$objOptionalClauses
 					);
 			} catch (QCallerException $objExc) {
@@ -786,49 +695,15 @@
 		}
 
 		/**
-		 * Count GroupParticipations
-		 * by DateStart Index(es)
-		 * @param QDateTime $dttDateStart
+		 * Count SmsMessages
+		 * by DateSent Index(es)
+		 * @param QDateTime $dttDateSent
 		 * @return int
 		*/
-		public static function CountByDateStart($dttDateStart, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryCount to perform the CountByDateStart query
-			return GroupParticipation::QueryCount(
-				QQ::Equal(QQN::GroupParticipation()->DateStart, $dttDateStart)
-			, $objOptionalClauses
-			);
-		}
-			
-		/**
-		 * Load an array of GroupParticipation objects,
-		 * by DateEnd Index(es)
-		 * @param QDateTime $dttDateEnd
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GroupParticipation[]
-		*/
-		public static function LoadArrayByDateEnd($dttDateEnd, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryArray to perform the LoadArrayByDateEnd query
-			try {
-				return GroupParticipation::QueryArray(
-					QQ::Equal(QQN::GroupParticipation()->DateEnd, $dttDateEnd),
-					$objOptionalClauses
-					);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count GroupParticipations
-		 * by DateEnd Index(es)
-		 * @param QDateTime $dttDateEnd
-		 * @return int
-		*/
-		public static function CountByDateEnd($dttDateEnd, $objOptionalClauses = null) {
-			// Call GroupParticipation::QueryCount to perform the CountByDateEnd query
-			return GroupParticipation::QueryCount(
-				QQ::Equal(QQN::GroupParticipation()->DateEnd, $dttDateEnd)
+		public static function CountByDateSent($dttDateSent, $objOptionalClauses = null) {
+			// Call SmsMessage::QueryCount to perform the CountByDateSent query
+			return SmsMessage::QueryCount(
+				QQ::Equal(QQN::SmsMessage()->DateSent, $dttDateSent)
 			, $objOptionalClauses
 			);
 		}
@@ -847,14 +722,14 @@
 		//////////////////////////////////////
 
 		/**
-		 * Save this GroupParticipation
+		 * Save this SmsMessage
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
 		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = GroupParticipation::GetDatabase();
+			$objDatabase = SmsMessage::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -862,25 +737,25 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `group_participation` (
-							`person_id`,
+						INSERT INTO `sms_message` (
 							`group_id`,
-							`group_role_id`,
-							`date_start`,
-							`date_end`,
-							`moderator_flag`
+							`login_id`,
+							`subject`,
+							`body`,
+							`date_queued`,
+							`date_sent`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
-							' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-							' . $objDatabase->SqlVariable($this->blnModeratorFlag) . '
+							' . $objDatabase->SqlVariable($this->intLoginId) . ',
+							' . $objDatabase->SqlVariable($this->strSubject) . ',
+							' . $objDatabase->SqlVariable($this->strBody) . ',
+							' . $objDatabase->SqlVariable($this->dttDateQueued) . ',
+							' . $objDatabase->SqlVariable($this->dttDateSent) . '
 						)
 					');
 
 					// Update Identity column and return its value
-					$mixToReturn = $this->intId = $objDatabase->InsertId('group_participation', 'id');
+					$mixToReturn = $this->intId = $objDatabase->InsertId('sms_message', 'id');
 
 					// Journaling
 					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
@@ -893,14 +768,14 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`group_participation`
+							`sms_message`
 						SET
-							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
-							`group_role_id` = ' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
-							`date_start` = ' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-							`moderator_flag` = ' . $objDatabase->SqlVariable($this->blnModeratorFlag) . '
+							`login_id` = ' . $objDatabase->SqlVariable($this->intLoginId) . ',
+							`subject` = ' . $objDatabase->SqlVariable($this->strSubject) . ',
+							`body` = ' . $objDatabase->SqlVariable($this->strBody) . ',
+							`date_queued` = ' . $objDatabase->SqlVariable($this->dttDateQueued) . ',
+							`date_sent` = ' . $objDatabase->SqlVariable($this->dttDateSent) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -923,21 +798,21 @@
 		}
 
 		/**
-		 * Delete this GroupParticipation
+		 * Delete this SmsMessage
 		 * @return void
 		 */
 		public function Delete() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this GroupParticipation with an unset primary key.');
+				throw new QUndefinedPrimaryKeyException('Cannot delete this SmsMessage with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = GroupParticipation::GetDatabase();
+			$objDatabase = SmsMessage::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`group_participation`
+					`sms_message`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
@@ -946,51 +821,51 @@
 		}
 
 		/**
-		 * Delete all GroupParticipations
+		 * Delete all SmsMessages
 		 * @return void
 		 */
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = GroupParticipation::GetDatabase();
+			$objDatabase = SmsMessage::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`group_participation`');
+					`sms_message`');
 		}
 
 		/**
-		 * Truncate group_participation table
+		 * Truncate sms_message table
 		 * @return void
 		 */
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = GroupParticipation::GetDatabase();
+			$objDatabase = SmsMessage::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `group_participation`');
+				TRUNCATE `sms_message`');
 		}
 
 		/**
-		 * Reload this GroupParticipation from the database.
+		 * Reload this SmsMessage from the database.
 		 * @return void
 		 */
 		public function Reload() {
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
-				throw new QCallerException('Cannot call Reload() on a new, unsaved GroupParticipation object.');
+				throw new QCallerException('Cannot call Reload() on a new, unsaved SmsMessage object.');
 
 			// Reload the Object
-			$objReloaded = GroupParticipation::Load($this->intId);
+			$objReloaded = SmsMessage::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->PersonId = $objReloaded->PersonId;
 			$this->GroupId = $objReloaded->GroupId;
-			$this->GroupRoleId = $objReloaded->GroupRoleId;
-			$this->dttDateStart = $objReloaded->dttDateStart;
-			$this->dttDateEnd = $objReloaded->dttDateEnd;
-			$this->blnModeratorFlag = $objReloaded->blnModeratorFlag;
+			$this->LoginId = $objReloaded->LoginId;
+			$this->strSubject = $objReloaded->strSubject;
+			$this->strBody = $objReloaded->strBody;
+			$this->dttDateQueued = $objReloaded->dttDateQueued;
+			$this->dttDateSent = $objReloaded->dttDateSent;
 		}
 
 		/**
@@ -999,28 +874,28 @@
 		 * @param string $strJournalCommand
 		 */
 		public function Journal($strJournalCommand) {
-			$objDatabase = GroupParticipation::GetDatabase()->JournalingDatabase;
+			$objDatabase = SmsMessage::GetDatabase()->JournalingDatabase;
 
 			$objDatabase->NonQuery('
-				INSERT INTO `group_participation` (
+				INSERT INTO `sms_message` (
 					`id`,
-					`person_id`,
 					`group_id`,
-					`group_role_id`,
-					`date_start`,
-					`date_end`,
-					`moderator_flag`,
+					`login_id`,
+					`subject`,
+					`body`,
+					`date_queued`,
+					`date_sent`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
-					' . $objDatabase->SqlVariable($this->intPersonId) . ',
 					' . $objDatabase->SqlVariable($this->intGroupId) . ',
-					' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
-					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-					' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-					' . $objDatabase->SqlVariable($this->blnModeratorFlag) . ',
+					' . $objDatabase->SqlVariable($this->intLoginId) . ',
+					' . $objDatabase->SqlVariable($this->strSubject) . ',
+					' . $objDatabase->SqlVariable($this->strBody) . ',
+					' . $objDatabase->SqlVariable($this->dttDateQueued) . ',
+					' . $objDatabase->SqlVariable($this->dttDateSent) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1032,24 +907,24 @@
 		 * Gets the historical journal for an object from the log database.
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
 		 * @param integer intId
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		 */
 		public static function GetJournalForId($intId) {
-			$objDatabase = GroupParticipation::GetDatabase()->JournalingDatabase;
+			$objDatabase = SmsMessage::GetDatabase()->JournalingDatabase;
 
-			$objResult = $objDatabase->Query('SELECT * FROM group_participation WHERE id = ' .
+			$objResult = $objDatabase->Query('SELECT * FROM sms_message WHERE id = ' .
 				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
 
-			return GroupParticipation::InstantiateDbResult($objResult);
+			return SmsMessage::InstantiateDbResult($objResult);
 		}
 
 		/**
 		 * Gets the historical journal for this object from the log database.
 		 * Objects will have VirtualAttributes available to lookup login, date, and action information from the journal object.
-		 * @return GroupParticipation[]
+		 * @return SmsMessage[]
 		 */
 		public function GetJournal() {
-			return GroupParticipation::GetJournalForId($this->intId);
+			return SmsMessage::GetJournalForId($this->intId);
 		}
 
 
@@ -1076,52 +951,40 @@
 					// @return integer
 					return $this->intId;
 
-				case 'PersonId':
-					// Gets the value for intPersonId (Not Null)
-					// @return integer
-					return $this->intPersonId;
-
 				case 'GroupId':
 					// Gets the value for intGroupId (Not Null)
 					// @return integer
 					return $this->intGroupId;
 
-				case 'GroupRoleId':
-					// Gets the value for intGroupRoleId 
+				case 'LoginId':
+					// Gets the value for intLoginId (Not Null)
 					// @return integer
-					return $this->intGroupRoleId;
+					return $this->intLoginId;
 
-				case 'DateStart':
-					// Gets the value for dttDateStart (Not Null)
+				case 'Subject':
+					// Gets the value for strSubject 
+					// @return string
+					return $this->strSubject;
+
+				case 'Body':
+					// Gets the value for strBody 
+					// @return string
+					return $this->strBody;
+
+				case 'DateQueued':
+					// Gets the value for dttDateQueued (Not Null)
 					// @return QDateTime
-					return $this->dttDateStart;
+					return $this->dttDateQueued;
 
-				case 'DateEnd':
-					// Gets the value for dttDateEnd 
+				case 'DateSent':
+					// Gets the value for dttDateSent 
 					// @return QDateTime
-					return $this->dttDateEnd;
-
-				case 'ModeratorFlag':
-					// Gets the value for blnModeratorFlag 
-					// @return boolean
-					return $this->blnModeratorFlag;
+					return $this->dttDateSent;
 
 
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Person':
-					// Gets the value for the Person object referenced by intPersonId (Not Null)
-					// @return Person
-					try {
-						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
-							$this->objPerson = Person::Load($this->intPersonId);
-						return $this->objPerson;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'Group':
 					// Gets the value for the Group object referenced by intGroupId (Not Null)
 					// @return Group
@@ -1134,13 +997,13 @@
 						throw $objExc;
 					}
 
-				case 'GroupRole':
-					// Gets the value for the GroupRole object referenced by intGroupRoleId 
-					// @return GroupRole
+				case 'Login':
+					// Gets the value for the Login object referenced by intLoginId (Not Null)
+					// @return Login
 					try {
-						if ((!$this->objGroupRole) && (!is_null($this->intGroupRoleId)))
-							$this->objGroupRole = GroupRole::Load($this->intGroupRoleId);
-						return $this->objGroupRole;
+						if ((!$this->objLogin) && (!is_null($this->intLoginId)))
+							$this->objLogin = Login::Load($this->intLoginId);
+						return $this->objLogin;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1179,18 +1042,6 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'PersonId':
-					// Sets the value for intPersonId (Not Null)
-					// @param integer $mixValue
-					// @return integer
-					try {
-						$this->objPerson = null;
-						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'GroupId':
 					// Sets the value for intGroupId (Not Null)
 					// @param integer $mixValue
@@ -1203,46 +1054,57 @@
 						throw $objExc;
 					}
 
-				case 'GroupRoleId':
-					// Sets the value for intGroupRoleId 
+				case 'LoginId':
+					// Sets the value for intLoginId (Not Null)
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objGroupRole = null;
-						return ($this->intGroupRoleId = QType::Cast($mixValue, QType::Integer));
+						$this->objLogin = null;
+						return ($this->intLoginId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'DateStart':
-					// Sets the value for dttDateStart (Not Null)
+				case 'Subject':
+					// Sets the value for strSubject 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strSubject = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Body':
+					// Sets the value for strBody 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strBody = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateQueued':
+					// Sets the value for dttDateQueued (Not Null)
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
-						return ($this->dttDateStart = QType::Cast($mixValue, QType::DateTime));
+						return ($this->dttDateQueued = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'DateEnd':
-					// Sets the value for dttDateEnd 
+				case 'DateSent':
+					// Sets the value for dttDateSent 
 					// @param QDateTime $mixValue
 					// @return QDateTime
 					try {
-						return ($this->dttDateEnd = QType::Cast($mixValue, QType::DateTime));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'ModeratorFlag':
-					// Sets the value for blnModeratorFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnModeratorFlag = QType::Cast($mixValue, QType::Boolean));
+						return ($this->dttDateSent = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1252,36 +1114,6 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Person':
-					// Sets the value for the Person object referenced by intPersonId (Not Null)
-					// @param Person $mixValue
-					// @return Person
-					if (is_null($mixValue)) {
-						$this->intPersonId = null;
-						$this->objPerson = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a Person object
-						try {
-							$mixValue = QType::Cast($mixValue, 'Person');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED Person object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Person for this GroupParticipation');
-
-						// Update Local Member Variables
-						$this->objPerson = $mixValue;
-						$this->intPersonId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
 				case 'Group':
 					// Sets the value for the Group object referenced by intGroupId (Not Null)
 					// @param Group $mixValue
@@ -1301,7 +1133,7 @@
 
 						// Make sure $mixValue is a SAVED Group object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Group for this GroupParticipation');
+							throw new QCallerException('Unable to set an unsaved Group for this SmsMessage');
 
 						// Update Local Member Variables
 						$this->objGroup = $mixValue;
@@ -1312,30 +1144,30 @@
 					}
 					break;
 
-				case 'GroupRole':
-					// Sets the value for the GroupRole object referenced by intGroupRoleId 
-					// @param GroupRole $mixValue
-					// @return GroupRole
+				case 'Login':
+					// Sets the value for the Login object referenced by intLoginId (Not Null)
+					// @param Login $mixValue
+					// @return Login
 					if (is_null($mixValue)) {
-						$this->intGroupRoleId = null;
-						$this->objGroupRole = null;
+						$this->intLoginId = null;
+						$this->objLogin = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a GroupRole object
+						// Make sure $mixValue actually is a Login object
 						try {
-							$mixValue = QType::Cast($mixValue, 'GroupRole');
+							$mixValue = QType::Cast($mixValue, 'Login');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						} 
 
-						// Make sure $mixValue is a SAVED GroupRole object
+						// Make sure $mixValue is a SAVED Login object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved GroupRole for this GroupParticipation');
+							throw new QCallerException('Unable to set an unsaved Login for this SmsMessage');
 
 						// Update Local Member Variables
-						$this->objGroupRole = $mixValue;
-						$this->intGroupRoleId = $mixValue->Id;
+						$this->objLogin = $mixValue;
+						$this->intLoginId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1378,25 +1210,24 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="GroupParticipation"><sequence>';
+			$strToReturn = '<complexType name="SmsMessage"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
-			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="Group" type="xsd1:Group"/>';
-			$strToReturn .= '<element name="GroupRole" type="xsd1:GroupRole"/>';
-			$strToReturn .= '<element name="DateStart" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="DateEnd" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="ModeratorFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="Login" type="xsd1:Login"/>';
+			$strToReturn .= '<element name="Subject" type="xsd:string"/>';
+			$strToReturn .= '<element name="Body" type="xsd:string"/>';
+			$strToReturn .= '<element name="DateQueued" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="DateSent" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('GroupParticipation', $strComplexTypeArray)) {
-				$strComplexTypeArray['GroupParticipation'] = GroupParticipation::GetSoapComplexTypeXml();
-				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
+			if (!array_key_exists('SmsMessage', $strComplexTypeArray)) {
+				$strComplexTypeArray['SmsMessage'] = SmsMessage::GetSoapComplexTypeXml();
 				Group::AlterSoapComplexTypeArray($strComplexTypeArray);
-				GroupRole::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Login::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1404,30 +1235,29 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, GroupParticipation::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, SmsMessage::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new GroupParticipation();
+			$objToReturn = new SmsMessage();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
-			if ((property_exists($objSoapObject, 'Person')) &&
-				($objSoapObject->Person))
-				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if ((property_exists($objSoapObject, 'Group')) &&
 				($objSoapObject->Group))
 				$objToReturn->Group = Group::GetObjectFromSoapObject($objSoapObject->Group);
-			if ((property_exists($objSoapObject, 'GroupRole')) &&
-				($objSoapObject->GroupRole))
-				$objToReturn->GroupRole = GroupRole::GetObjectFromSoapObject($objSoapObject->GroupRole);
-			if (property_exists($objSoapObject, 'DateStart'))
-				$objToReturn->dttDateStart = new QDateTime($objSoapObject->DateStart);
-			if (property_exists($objSoapObject, 'DateEnd'))
-				$objToReturn->dttDateEnd = new QDateTime($objSoapObject->DateEnd);
-			if (property_exists($objSoapObject, 'ModeratorFlag'))
-				$objToReturn->blnModeratorFlag = $objSoapObject->ModeratorFlag;
+			if ((property_exists($objSoapObject, 'Login')) &&
+				($objSoapObject->Login))
+				$objToReturn->Login = Login::GetObjectFromSoapObject($objSoapObject->Login);
+			if (property_exists($objSoapObject, 'Subject'))
+				$objToReturn->strSubject = $objSoapObject->Subject;
+			if (property_exists($objSoapObject, 'Body'))
+				$objToReturn->strBody = $objSoapObject->Body;
+			if (property_exists($objSoapObject, 'DateQueued'))
+				$objToReturn->dttDateQueued = new QDateTime($objSoapObject->DateQueued);
+			if (property_exists($objSoapObject, 'DateSent'))
+				$objToReturn->dttDateSent = new QDateTime($objSoapObject->DateSent);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1440,28 +1270,24 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, GroupParticipation::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, SmsMessage::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objPerson)
-				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intPersonId = null;
 			if ($objObject->objGroup)
 				$objObject->objGroup = Group::GetSoapObjectFromObject($objObject->objGroup, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intGroupId = null;
-			if ($objObject->objGroupRole)
-				$objObject->objGroupRole = GroupRole::GetSoapObjectFromObject($objObject->objGroupRole, false);
+			if ($objObject->objLogin)
+				$objObject->objLogin = Login::GetSoapObjectFromObject($objObject->objLogin, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intGroupRoleId = null;
-			if ($objObject->dttDateStart)
-				$objObject->dttDateStart = $objObject->dttDateStart->__toString(QDateTime::FormatSoap);
-			if ($objObject->dttDateEnd)
-				$objObject->dttDateEnd = $objObject->dttDateEnd->__toString(QDateTime::FormatSoap);
+				$objObject->intLoginId = null;
+			if ($objObject->dttDateQueued)
+				$objObject->dttDateQueued = $objObject->dttDateQueued->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateSent)
+				$objObject->dttDateSent = $objObject->dttDateSent->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1478,42 +1304,39 @@
 
 	/**
 	 * @property-read QQNode $Id
-	 * @property-read QQNode $PersonId
-	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $GroupId
 	 * @property-read QQNodeGroup $Group
-	 * @property-read QQNode $GroupRoleId
-	 * @property-read QQNodeGroupRole $GroupRole
-	 * @property-read QQNode $DateStart
-	 * @property-read QQNode $DateEnd
-	 * @property-read QQNode $ModeratorFlag
+	 * @property-read QQNode $LoginId
+	 * @property-read QQNodeLogin $Login
+	 * @property-read QQNode $Subject
+	 * @property-read QQNode $Body
+	 * @property-read QQNode $DateQueued
+	 * @property-read QQNode $DateSent
 	 */
-	class QQNodeGroupParticipation extends QQNode {
-		protected $strTableName = 'group_participation';
+	class QQNodeSmsMessage extends QQNode {
+		protected $strTableName = 'sms_message';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'GroupParticipation';
+		protected $strClassName = 'SmsMessage';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'PersonId':
-					return new QQNode('person_id', 'PersonId', 'integer', $this);
-				case 'Person':
-					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'GroupId':
 					return new QQNode('group_id', 'GroupId', 'integer', $this);
 				case 'Group':
 					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'GroupRoleId':
-					return new QQNode('group_role_id', 'GroupRoleId', 'integer', $this);
-				case 'GroupRole':
-					return new QQNodeGroupRole('group_role_id', 'GroupRole', 'integer', $this);
-				case 'DateStart':
-					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
-				case 'DateEnd':
-					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
-				case 'ModeratorFlag':
-					return new QQNode('moderator_flag', 'ModeratorFlag', 'boolean', $this);
+				case 'LoginId':
+					return new QQNode('login_id', 'LoginId', 'integer', $this);
+				case 'Login':
+					return new QQNodeLogin('login_id', 'Login', 'integer', $this);
+				case 'Subject':
+					return new QQNode('subject', 'Subject', 'string', $this);
+				case 'Body':
+					return new QQNode('body', 'Body', 'string', $this);
+				case 'DateQueued':
+					return new QQNode('date_queued', 'DateQueued', 'QDateTime', $this);
+				case 'DateSent':
+					return new QQNode('date_sent', 'DateSent', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1530,43 +1353,40 @@
 	
 	/**
 	 * @property-read QQNode $Id
-	 * @property-read QQNode $PersonId
-	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $GroupId
 	 * @property-read QQNodeGroup $Group
-	 * @property-read QQNode $GroupRoleId
-	 * @property-read QQNodeGroupRole $GroupRole
-	 * @property-read QQNode $DateStart
-	 * @property-read QQNode $DateEnd
-	 * @property-read QQNode $ModeratorFlag
+	 * @property-read QQNode $LoginId
+	 * @property-read QQNodeLogin $Login
+	 * @property-read QQNode $Subject
+	 * @property-read QQNode $Body
+	 * @property-read QQNode $DateQueued
+	 * @property-read QQNode $DateSent
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
-	class QQReverseReferenceNodeGroupParticipation extends QQReverseReferenceNode {
-		protected $strTableName = 'group_participation';
+	class QQReverseReferenceNodeSmsMessage extends QQReverseReferenceNode {
+		protected $strTableName = 'sms_message';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'GroupParticipation';
+		protected $strClassName = 'SmsMessage';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'PersonId':
-					return new QQNode('person_id', 'PersonId', 'integer', $this);
-				case 'Person':
-					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'GroupId':
 					return new QQNode('group_id', 'GroupId', 'integer', $this);
 				case 'Group':
 					return new QQNodeGroup('group_id', 'Group', 'integer', $this);
-				case 'GroupRoleId':
-					return new QQNode('group_role_id', 'GroupRoleId', 'integer', $this);
-				case 'GroupRole':
-					return new QQNodeGroupRole('group_role_id', 'GroupRole', 'integer', $this);
-				case 'DateStart':
-					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
-				case 'DateEnd':
-					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
-				case 'ModeratorFlag':
-					return new QQNode('moderator_flag', 'ModeratorFlag', 'boolean', $this);
+				case 'LoginId':
+					return new QQNode('login_id', 'LoginId', 'integer', $this);
+				case 'Login':
+					return new QQNodeLogin('login_id', 'Login', 'integer', $this);
+				case 'Subject':
+					return new QQNode('subject', 'Subject', 'string', $this);
+				case 'Body':
+					return new QQNode('body', 'Body', 'string', $this);
+				case 'DateQueued':
+					return new QQNode('date_queued', 'DateQueued', 'QDateTime', $this);
+				case 'DateSent':
+					return new QQNode('date_sent', 'DateSent', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

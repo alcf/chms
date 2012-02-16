@@ -88,6 +88,8 @@
 	 * @property OnlineDonation[] $_OnlineDonationArray the value for the private _objOnlineDonationArray (Read-Only) if set due to an ExpandAsArray on the online_donation.person_id reverse relationship
 	 * @property OtherContactInfo $_OtherContactInfo the value for the private _objOtherContactInfo (Read-Only) if set due to an expansion on the other_contact_info.person_id reverse relationship
 	 * @property OtherContactInfo[] $_OtherContactInfoArray the value for the private _objOtherContactInfoArray (Read-Only) if set due to an ExpandAsArray on the other_contact_info.person_id reverse relationship
+	 * @property ParentPagerIndividual $_ParentPagerIndividual the value for the private _objParentPagerIndividual (Read-Only) if set due to an expansion on the parent_pager_individual.person_id reverse relationship
+	 * @property ParentPagerIndividual[] $_ParentPagerIndividualArray the value for the private _objParentPagerIndividualArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_individual.person_id reverse relationship
 	 * @property Phone $_Phone the value for the private _objPhone (Read-Only) if set due to an expansion on the phone.person_id reverse relationship
 	 * @property Phone[] $_PhoneArray the value for the private _objPhoneArray (Read-Only) if set due to an ExpandAsArray on the phone.person_id reverse relationship
 	 * @property Relationship $_Relationship the value for the private _objRelationship (Read-Only) if set due to an expansion on the relationship.person_id reverse relationship
@@ -655,6 +657,22 @@
 		 * @var OtherContactInfo[] _objOtherContactInfoArray;
 		 */
 		private $_objOtherContactInfoArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single ParentPagerIndividual object
+		 * (of type ParentPagerIndividual), if this Person object was restored with
+		 * an expansion on the parent_pager_individual association table.
+		 * @var ParentPagerIndividual _objParentPagerIndividual;
+		 */
+		private $_objParentPagerIndividual;
+
+		/**
+		 * Private member variable that stores a reference to an array of ParentPagerIndividual objects
+		 * (of type ParentPagerIndividual[]), if this Person object was restored with
+		 * an ExpandAsArray on the parent_pager_individual association table.
+		 * @var ParentPagerIndividual[] _objParentPagerIndividualArray;
+		 */
+		private $_objParentPagerIndividualArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single Phone object
@@ -1526,6 +1544,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'parentpagerindividual__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objParentPagerIndividualArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objParentPagerIndividualArray[$intPreviousChildItemCount - 1];
+						$objChildItem = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerindividual__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objParentPagerIndividualArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objParentPagerIndividualArray[] = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerindividual__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'phone__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1965,6 +1997,16 @@
 					$objToReturn->_objOtherContactInfoArray[] = OtherContactInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'othercontactinfo__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objOtherContactInfo = OtherContactInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'othercontactinfo__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for ParentPagerIndividual Virtual Binding
+			$strAlias = $strAliasPrefix . 'parentpagerindividual__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objParentPagerIndividualArray[] = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerindividual__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objParentPagerIndividual = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerindividual__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for Phone Virtual Binding
@@ -3349,6 +3391,18 @@
 					// if set due to an ExpandAsArray on the other_contact_info.person_id reverse relationship
 					// @return OtherContactInfo[]
 					return (array) $this->_objOtherContactInfoArray;
+
+				case '_ParentPagerIndividual':
+					// Gets the value for the private _objParentPagerIndividual (Read-Only)
+					// if set due to an expansion on the parent_pager_individual.person_id reverse relationship
+					// @return ParentPagerIndividual
+					return $this->_objParentPagerIndividual;
+
+				case '_ParentPagerIndividualArray':
+					// Gets the value for the private _objParentPagerIndividualArray (Read-Only)
+					// if set due to an ExpandAsArray on the parent_pager_individual.person_id reverse relationship
+					// @return ParentPagerIndividual[]
+					return (array) $this->_objParentPagerIndividualArray;
 
 				case '_Phone':
 					// Gets the value for the private _objPhone (Read-Only)
@@ -6636,6 +6690,188 @@
 
 			
 		
+		// Related Objects' Methods for ParentPagerIndividual
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated ParentPagerIndividuals as an array of ParentPagerIndividual objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ParentPagerIndividual[]
+		*/ 
+		public function GetParentPagerIndividualArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return ParentPagerIndividual::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated ParentPagerIndividuals
+		 * @return int
+		*/ 
+		public function CountParentPagerIndividuals() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return ParentPagerIndividual::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a ParentPagerIndividual
+		 * @param ParentPagerIndividual $objParentPagerIndividual
+		 * @return void
+		*/ 
+		public function AssociateParentPagerIndividual(ParentPagerIndividual $objParentPagerIndividual) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerIndividual on this unsaved Person.');
+			if ((is_null($objParentPagerIndividual->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerIndividual on this Person with an unsaved ParentPagerIndividual.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`parent_pager_individual`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objParentPagerIndividual->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objParentPagerIndividual->PersonId = $this->intId;
+				$objParentPagerIndividual->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a ParentPagerIndividual
+		 * @param ParentPagerIndividual $objParentPagerIndividual
+		 * @return void
+		*/ 
+		public function UnassociateParentPagerIndividual(ParentPagerIndividual $objParentPagerIndividual) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerIndividual on this unsaved Person.');
+			if ((is_null($objParentPagerIndividual->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerIndividual on this Person with an unsaved ParentPagerIndividual.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`parent_pager_individual`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objParentPagerIndividual->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objParentPagerIndividual->PersonId = null;
+				$objParentPagerIndividual->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all ParentPagerIndividuals
+		 * @return void
+		*/ 
+		public function UnassociateAllParentPagerIndividuals() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerIndividual on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (ParentPagerIndividual::LoadArrayByPersonId($this->intId) as $objParentPagerIndividual) {
+					$objParentPagerIndividual->PersonId = null;
+					$objParentPagerIndividual->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`parent_pager_individual`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated ParentPagerIndividual
+		 * @param ParentPagerIndividual $objParentPagerIndividual
+		 * @return void
+		*/ 
+		public function DeleteAssociatedParentPagerIndividual(ParentPagerIndividual $objParentPagerIndividual) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerIndividual on this unsaved Person.');
+			if ((is_null($objParentPagerIndividual->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerIndividual on this Person with an unsaved ParentPagerIndividual.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`parent_pager_individual`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objParentPagerIndividual->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objParentPagerIndividual->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated ParentPagerIndividuals
+		 * @return void
+		*/ 
+		public function DeleteAllParentPagerIndividuals() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerIndividual on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (ParentPagerIndividual::LoadArrayByPersonId($this->intId) as $objParentPagerIndividual) {
+					$objParentPagerIndividual->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`parent_pager_individual`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for Phone
 		//-------------------------------------------------------------------
 
@@ -9167,6 +9403,7 @@
 	 * @property-read QQReverseReferenceNodeMembership $Membership
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
+	 * @property-read QQReverseReferenceNodeParentPagerIndividual $ParentPagerIndividual
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
@@ -9294,6 +9531,8 @@
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
+				case 'ParentPagerIndividual':
+					return new QQReverseReferenceNodeParentPagerIndividual($this, 'parentpagerindividual', 'reverse_reference', 'person_id');
 				case 'Phone':
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
 				case 'PublicLogin':
@@ -9384,6 +9623,7 @@
 	 * @property-read QQReverseReferenceNodeMembership $Membership
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
+	 * @property-read QQReverseReferenceNodeParentPagerIndividual $ParentPagerIndividual
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
@@ -9512,6 +9752,8 @@
 					return new QQReverseReferenceNodeOnlineDonation($this, 'onlinedonation', 'reverse_reference', 'person_id');
 				case 'OtherContactInfo':
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
+				case 'ParentPagerIndividual':
+					return new QQReverseReferenceNodeParentPagerIndividual($this, 'parentpagerindividual', 'reverse_reference', 'person_id');
 				case 'Phone':
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
 				case 'PublicLogin':
