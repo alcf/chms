@@ -33,6 +33,8 @@
 		QApplicationBase::$ClassFile['marriagestatustype'] = __DATA_CLASSES__ . '/MarriageStatusType.class.php';
 	// ClassPaths for the MembershipStatusType type class
 		QApplicationBase::$ClassFile['membershipstatustype'] = __DATA_CLASSES__ . '/MembershipStatusType.class.php';
+	// ClassPaths for the ParentPagerSyncStatusType type class
+		QApplicationBase::$ClassFile['parentpagersyncstatustype'] = __DATA_CLASSES__ . '/ParentPagerSyncStatusType.class.php';
 	// ClassPaths for the PermissionType type class
 		QApplicationBase::$ClassFile['permissiontype'] = __DATA_CLASSES__ . '/PermissionType.class.php';
 	// ClassPaths for the PhoneType type class

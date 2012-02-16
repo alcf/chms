@@ -35,6 +35,8 @@
 	 * @property Comment[] $_CommentAsPostedByArray the value for the private _objCommentAsPostedByArray (Read-Only) if set due to an ExpandAsArray on the comment.posted_by_login_id reverse relationship
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.login_id reverse relationship
 	 * @property EmailMessageRoute[] $_EmailMessageRouteArray the value for the private _objEmailMessageRouteArray (Read-Only) if set due to an ExpandAsArray on the email_message_route.login_id reverse relationship
+	 * @property SmsMessage $_SmsMessage the value for the private _objSmsMessage (Read-Only) if set due to an expansion on the sms_message.login_id reverse relationship
+	 * @property SmsMessage[] $_SmsMessageArray the value for the private _objSmsMessageArray (Read-Only) if set due to an ExpandAsArray on the sms_message.login_id reverse relationship
 	 * @property StewardshipBatch $_StewardshipBatchAsCreatedBy the value for the private _objStewardshipBatchAsCreatedBy (Read-Only) if set due to an expansion on the stewardship_batch.created_by_login_id reverse relationship
 	 * @property StewardshipBatch[] $_StewardshipBatchAsCreatedByArray the value for the private _objStewardshipBatchAsCreatedByArray (Read-Only) if set due to an ExpandAsArray on the stewardship_batch.created_by_login_id reverse relationship
 	 * @property StewardshipContribution $_StewardshipContributionAsCreatedBy the value for the private _objStewardshipContributionAsCreatedBy (Read-Only) if set due to an expansion on the stewardship_contribution.created_by_login_id reverse relationship
@@ -207,6 +209,22 @@
 		 * @var EmailMessageRoute[] _objEmailMessageRouteArray;
 		 */
 		private $_objEmailMessageRouteArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SmsMessage object
+		 * (of type SmsMessage), if this Login object was restored with
+		 * an expansion on the sms_message association table.
+		 * @var SmsMessage _objSmsMessage;
+		 */
+		private $_objSmsMessage;
+
+		/**
+		 * Private member variable that stores a reference to an array of SmsMessage objects
+		 * (of type SmsMessage[]), if this Login object was restored with
+		 * an ExpandAsArray on the sms_message association table.
+		 * @var SmsMessage[] _objSmsMessageArray;
+		 */
+		private $_objSmsMessageArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single StewardshipBatchAsCreatedBy object
@@ -699,6 +717,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'smsmessage__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSmsMessageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSmsMessageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSmsMessageArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSmsMessageArray[] = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'stewardshipbatchascreatedby__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -834,6 +866,16 @@
 					$objToReturn->_objEmailMessageRouteArray[] = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objEmailMessageRoute = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SmsMessage Virtual Binding
+			$strAlias = $strAliasPrefix . 'smsmessage__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSmsMessageArray[] = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSmsMessage = SmsMessage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'smsmessage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for StewardshipBatchAsCreatedBy Virtual Binding
@@ -1475,6 +1517,18 @@
 					// @return EmailMessageRoute[]
 					return (array) $this->_objEmailMessageRouteArray;
 
+				case '_SmsMessage':
+					// Gets the value for the private _objSmsMessage (Read-Only)
+					// if set due to an expansion on the sms_message.login_id reverse relationship
+					// @return SmsMessage
+					return $this->_objSmsMessage;
+
+				case '_SmsMessageArray':
+					// Gets the value for the private _objSmsMessageArray (Read-Only)
+					// if set due to an ExpandAsArray on the sms_message.login_id reverse relationship
+					// @return SmsMessage[]
+					return (array) $this->_objSmsMessageArray;
+
 				case '_StewardshipBatchAsCreatedBy':
 					// Gets the value for the private _objStewardshipBatchAsCreatedBy (Read-Only)
 					// if set due to an expansion on the stewardship_batch.created_by_login_id reverse relationship
@@ -2097,6 +2151,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`email_message_route`
+				WHERE
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for SmsMessage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SmsMessages as an array of SmsMessage objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SmsMessage[]
+		*/ 
+		public function GetSmsMessageArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SmsMessage::LoadArrayByLoginId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SmsMessages
+		 * @return int
+		*/ 
+		public function CountSmsMessages() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SmsMessage::CountByLoginId($this->intId);
+		}
+
+		/**
+		 * Associates a SmsMessage
+		 * @param SmsMessage $objSmsMessage
+		 * @return void
+		*/ 
+		public function AssociateSmsMessage(SmsMessage $objSmsMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSmsMessage on this unsaved Login.');
+			if ((is_null($objSmsMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSmsMessage on this Login with an unsaved SmsMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`sms_message`
+				SET
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSmsMessage->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSmsMessage->LoginId = $this->intId;
+				$objSmsMessage->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SmsMessage
+		 * @param SmsMessage $objSmsMessage
+		 * @return void
+		*/ 
+		public function UnassociateSmsMessage(SmsMessage $objSmsMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Login.');
+			if ((is_null($objSmsMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this Login with an unsaved SmsMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`sms_message`
+				SET
+					`login_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSmsMessage->Id) . ' AND
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSmsMessage->LoginId = null;
+				$objSmsMessage->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SmsMessages
+		 * @return void
+		*/ 
+		public function UnassociateAllSmsMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SmsMessage::LoadArrayByLoginId($this->intId) as $objSmsMessage) {
+					$objSmsMessage->LoginId = null;
+					$objSmsMessage->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`sms_message`
+				SET
+					`login_id` = null
+				WHERE
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SmsMessage
+		 * @param SmsMessage $objSmsMessage
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSmsMessage(SmsMessage $objSmsMessage) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Login.');
+			if ((is_null($objSmsMessage->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this Login with an unsaved SmsMessage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`sms_message`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSmsMessage->Id) . ' AND
+					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSmsMessage->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SmsMessages
+		 * @return void
+		*/ 
+		public function DeleteAllSmsMessages() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSmsMessage on this unsaved Login.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Login::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SmsMessage::LoadArrayByLoginId($this->intId) as $objSmsMessage) {
+					$objSmsMessage->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`sms_message`
 				WHERE
 					`login_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -2986,6 +3222,7 @@
 	 * @property-read QQReverseReferenceNodeClassInstructor $ClassInstructor
 	 * @property-read QQReverseReferenceNodeComment $CommentAsPostedBy
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeSmsMessage $SmsMessage
 	 * @property-read QQReverseReferenceNodeStewardshipBatch $StewardshipBatchAsCreatedBy
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContributionAsCreatedBy
 	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPostAsCreatedBy
@@ -3030,6 +3267,8 @@
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'login_id');
+				case 'SmsMessage':
+					return new QQReverseReferenceNodeSmsMessage($this, 'smsmessage', 'reverse_reference', 'login_id');
 				case 'StewardshipBatchAsCreatedBy':
 					return new QQReverseReferenceNodeStewardshipBatch($this, 'stewardshipbatchascreatedby', 'reverse_reference', 'created_by_login_id');
 				case 'StewardshipContributionAsCreatedBy':
@@ -3068,6 +3307,7 @@
 	 * @property-read QQReverseReferenceNodeClassInstructor $ClassInstructor
 	 * @property-read QQReverseReferenceNodeComment $CommentAsPostedBy
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeSmsMessage $SmsMessage
 	 * @property-read QQReverseReferenceNodeStewardshipBatch $StewardshipBatchAsCreatedBy
 	 * @property-read QQReverseReferenceNodeStewardshipContribution $StewardshipContributionAsCreatedBy
 	 * @property-read QQReverseReferenceNodeStewardshipPost $StewardshipPostAsCreatedBy
@@ -3113,6 +3353,8 @@
 					return new QQReverseReferenceNodeComment($this, 'commentaspostedby', 'reverse_reference', 'posted_by_login_id');
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'login_id');
+				case 'SmsMessage':
+					return new QQReverseReferenceNodeSmsMessage($this, 'smsmessage', 'reverse_reference', 'login_id');
 				case 'StewardshipBatchAsCreatedBy':
 					return new QQReverseReferenceNodeStewardshipBatch($this, 'stewardshipbatchascreatedby', 'reverse_reference', 'created_by_login_id');
 				case 'StewardshipContributionAsCreatedBy':

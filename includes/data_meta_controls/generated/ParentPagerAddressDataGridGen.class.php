@@ -1,9 +1,9 @@
 <?php
 	/**
 	 * This is the "Meta" DataGrid class for the List functionality
-	 * of the GroupParticipation class.  This code-generated class
+	 * of the ParentPagerAddress class.  This code-generated class
 	 * contains a QDataGrid class which can be used by any QForm or QPanel,
-	 * listing a collection of GroupParticipation objects.  It includes
+	 * listing a collection of ParentPagerAddress objects.  It includes
 	 * functionality to perform pagination and sorting on columns.
 	 *
 	 * To take advantage of some (or all) of these control objects, you
@@ -16,7 +16,7 @@
 	 * @subpackage MetaControls
 	 * 
 	 */
-	class GroupParticipationDataGridGen extends QDataGrid {
+	class ParentPagerAddressDataGridGen extends QDataGrid {
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own BindAllRows method (which can obviousy be switched to something else).
@@ -35,9 +35,9 @@
 
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
-		 * way of adding a column to this GroupParticipation datagrid.  The description of a column's
+		 * way of adding a column to this ParentPagerAddress datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
-		 * in the GroupParticipation object, or it can be any QQNode extending from QQN::GroupParticipation().
+		 * in the ParentPagerAddress object, or it can be any QQNode extending from QQN::ParentPagerAddress().
 		 * 
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
@@ -45,7 +45,7 @@
 		 * Any of these things can be overridden with OverrideParameters.
 		 * 
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
-		 * sorting using two fields from the GroupParticipation object.
+		 * sorting using two fields from the ParentPagerAddress object.
 		 *
 		 * @param mixed $mixContents
 		 * @param string $objOverrideParameters[]
@@ -127,7 +127,7 @@
 		 * 
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
-		 * @param mixed $mixContent string or QQNode from GroupParticipation
+		 * @param mixed $mixContent string or QQNode from ParentPagerAddress
 		 * @param string $strTypeClassName the name of the TypeClass to use $NameArray against
 		 * @param mixed $objOverrideParameters
 		 */
@@ -251,7 +251,7 @@
 			$objClauses = ($objOptionalClauses) ? $objOptionalClauses : array();
 
 			// We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-			if ($this->Paginator) $this->TotalItemCount = GroupParticipation::QueryCount($objCondition, $objClauses);
+			if ($this->Paginator) $this->TotalItemCount = ParentPagerAddress::QueryCount($objCondition, $objClauses);
 
 			// If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
 			// the OrderByClause to the $objClauses array
@@ -260,8 +260,8 @@
 			// Add the LimitClause information, as well
 			if ($objClause = $this->LimitClause) array_push($objClauses, $objClause);
 
-			// Set the DataSource to be a Query result from GroupParticipation, given the clauses above
-			$this->DataSource = GroupParticipation::QueryArray($objCondition, $objClauses);
+			// Set the DataSource to be a Query result from ParentPagerAddress, given the clauses above
+			$this->DataSource = ParentPagerAddress::QueryArray($objCondition, $objClauses);
 		}
 
 
@@ -269,8 +269,8 @@
 		/**
 		 * Used internally by the Meta-based Add Column tools.
 		 *
-		 * Given a QQNode or a Text String, this will return a GroupParticipation-based QQNode.
-		 * It will also verify that it is a proper GroupParticipation-based QQNode, and will throw an exception otherwise.
+		 * Given a QQNode or a Text String, this will return a ParentPagerAddress-based QQNode.
+		 * It will also verify that it is a proper ParentPagerAddress-based QQNode, and will throw an exception otherwise.
 		 *
 		 * @param mixed $mixContent
 		 * @return QQNode
@@ -279,7 +279,7 @@
 			if ($mixContent instanceof QQNode) {
 				if (!$mixContent->_ParentNode)
 					throw new QCallerException('Content QQNode cannot be a Top Level Node');
-				if ($mixContent->_RootTableName == 'group_participation') {
+				if ($mixContent->_RootTableName == 'parent_pager_address') {
 					if (($mixContent instanceof QQReverseReferenceNode) && !($mixContent->_PropertyName))
 						throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 					$objCurrentNode = $mixContent;
@@ -291,19 +291,21 @@
 					}
 					return $mixContent;
 				} else
-					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "group_participation".');
+					throw new QCallerException('Content QQNode has a root table of "' . $mixContent->_RootTableName . '". Must be a root of "parent_pager_address".');
 			} else if (is_string($mixContent)) switch ($mixContent) {
-				case 'Id': return QQN::GroupParticipation()->Id;
-				case 'PersonId': return QQN::GroupParticipation()->PersonId;
-				case 'Person': return QQN::GroupParticipation()->Person;
-				case 'GroupId': return QQN::GroupParticipation()->GroupId;
-				case 'Group': return QQN::GroupParticipation()->Group;
-				case 'GroupRoleId': return QQN::GroupParticipation()->GroupRoleId;
-				case 'GroupRole': return QQN::GroupParticipation()->GroupRole;
-				case 'DateStart': return QQN::GroupParticipation()->DateStart;
-				case 'DateEnd': return QQN::GroupParticipation()->DateEnd;
-				case 'ModeratorFlag': return QQN::GroupParticipation()->ModeratorFlag;
-				default: throw new QCallerException('Simple Property not found in GroupParticipationDataGrid content: ' . $mixContent);
+				case 'Id': return QQN::ParentPagerAddress()->Id;
+				case 'ServerIdentifier': return QQN::ParentPagerAddress()->ServerIdentifier;
+				case 'ParentPagerPersonId': return QQN::ParentPagerAddress()->ParentPagerPersonId;
+				case 'ParentPagerPerson': return QQN::ParentPagerAddress()->ParentPagerPerson;
+				case 'ParentPagerHouseholdId': return QQN::ParentPagerAddress()->ParentPagerHouseholdId;
+				case 'ParentPagerHousehold': return QQN::ParentPagerAddress()->ParentPagerHousehold;
+				case 'Address1': return QQN::ParentPagerAddress()->Address1;
+				case 'Address2': return QQN::ParentPagerAddress()->Address2;
+				case 'Address3': return QQN::ParentPagerAddress()->Address3;
+				case 'City': return QQN::ParentPagerAddress()->City;
+				case 'State': return QQN::ParentPagerAddress()->State;
+				case 'ZipCode': return QQN::ParentPagerAddress()->ZipCode;
+				default: throw new QCallerException('Simple Property not found in ParentPagerAddressDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
 			else
