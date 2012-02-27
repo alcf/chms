@@ -42,6 +42,8 @@
 			$strNickname = trim($objRow['strNickName']);
 			$intGraduationYear = $objRow['sintGraduationYear'];
 			$strDateOfBirth = trim($objRow['dtBirthDate']);
+			$strGender = trim(strtoupper($objRow['chrGender']));
+			if (!$strGender) $strGender = null;
 			
 			$strHouseholdId = trim($objRow['lngHouseholdID']);
 
@@ -61,6 +63,7 @@
 			$objParentPagerIndividual->Nickname = $strNickname;
 			$objParentPagerIndividual->GraduationYear = $intGraduationYear;
 			$objParentPagerIndividual->DateOfBirth = ($strDateOfBirth ? new QDateTime($strDateOfBirth) : null);
+			$objParentPagerIndividual->Gender = $strGender;
 
 			if ($strHouseholdId) {
 				$objParentPagerIndividual->ParentPagerHousehold = ParentPagerHousehold::LoadByServerIdentifier($strHouseholdId);
