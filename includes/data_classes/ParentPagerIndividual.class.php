@@ -34,7 +34,41 @@
 		 */
 		public static function CreateOrUpdateForMsSqlRow($objRow) {
 			$intServerIdentifier = $objRow['lngIndividualID'];
+			$strFirstName = trim($objRow['strFirstName']);
+			$strMiddleName = trim($objRow['strMiddleName']);
+			$strLastName = trim($objRow['strLastName']);
+			$strPrefix = trim($objRow['strPrefix']);
+			$strSuffix = trim($objRow['strSuffix']);
+			$strNickname = trim($objRow['strNickName']);
+			$intGraduationYear = $objRow['sintGraduationYear'];
+			$strDateOfBirth = trim($objRow['dtBirthDate']);
 			
+			$strHouseholdId = trim($objRow['lngHouseholdID']);
+
+			$objParentPagerIndividual = ParentPagerIndividual::LoadByServerIdentifier($intServerIdentifier);
+			if (!$objParentPagerIndividual) {
+				$objParentPagerIndividual = new ParentPagerIndividual();
+				$objParentPagerIndividual->ServerIdentifier = $intServerIdentifier;
+				$objParentPagerIndividual->HiddenFlag = false;
+				$objParentPagerIndividual->ParentPagerSyncStatusTypeId = ParentPagerSyncStatusType::NotYetSynced;
+			}
+
+			$objParentPagerIndividual->FirstName = $strFirstName;
+			$objParentPagerIndividual->MiddleName = $strMiddleName;
+			$objParentPagerIndividual->LastName = $strLastName;
+			$objParentPagerIndividual->Prefix = $strPrefix;
+			$objParentPagerIndividual->Suffix = $strSuffix;
+			$objParentPagerIndividual->Nickname = $strNickname;
+			$objParentPagerIndividual->GraduationYear = $intGraduationYear;
+			$objParentPagerIndividual->DateOfBirth = ($strDateOfBirth ? new QDateTime($strDateOfBirth) : null);
+
+			if ($strHouseholdId) {
+				$objParentPagerIndividual->ParentPagerHousehold = ParentPagerHousehold::LoadByServerIdentifier($strHouseholdId);
+			}
+
+			$objParentPagerIndividual->Save();
+
+			return $objParentPagerIndividual;
 		}
 
 		// Override or Create New Load/Count methods

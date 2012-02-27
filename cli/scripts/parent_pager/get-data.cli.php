@@ -38,12 +38,14 @@
 	$objMsSql = mssql_connect($strConnectionName, $strUsername, $strPassword);
 	mssql_select_db($strDbName, $objMsSql);
 
-	// One Table at a Time
+
+	// One Table at a Time...
+
 
 	////////////////////////////
 	// ParentPager Household
 	////////////////////////////
-	$strTableName = 'tblHousehold';
+/*	$strTableName = 'tblHousehold';
 	$strPkColumnName = 'lngHouseHoldID';
 	$intRowCount = GetRowCount($strTableName);
 	$intCurrentRow = 0;
@@ -55,20 +57,21 @@ printf('[%5s/%5s]', $intCurrentRow++, $intRowCount);
 print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strHouseHold'] . "\r\n";
 		ParentPagerHousehold::CreateOrUpdateForMsSqlRow($objRow);
 	}
-
+*/
 
 	///////////////////////////
 	// ParentPager Individual
 	////////////////////////////
-	
-	return;
-	
-	
-	// ParentPager Individual
-	$objResult = mssql_query('SELECT lngIndividualID FROM tblIndividual', $objMsSql);
+	$strTableName = 'tblIndividual';
+	$strPkColumnName = 'lngIndividualID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
 	while ($objRow = mssql_fetch_assoc($objResult)) {
-		$objRow = mssql_fetch_assoc(mssql_query('SELECT * FROM tblIndividual WHERE lngIndividualID=' . $objRow['lngIndividualID'] . ';', $objMsSql));	
-		print $objRow['lngIndividualID'] . '  -  ' . $objRow['strFirstName'] . ' ' . $objRow['strLastName'];
-		print "\r\n";
+printf('[%5s/%5s]', $intCurrentRow++, $intRowCount); 
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strFirstName'] . ' ' . $objRow['strLastName'] . "\r\n";
+		ParentPagerIndividual::CreateOrUpdateForMsSqlRow($objRow);
 	}
-	?>
+?>
