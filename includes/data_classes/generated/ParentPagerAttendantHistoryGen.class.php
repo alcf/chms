@@ -15,7 +15,7 @@
 	 * 
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
-	 * @property integer $Id the value for intId (PK)
+	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $ServerIdentifier the value for intServerIdentifier (Unique)
 	 * @property integer $ParentPagerIndividualId the value for intParentPagerIndividualId (Not Null)
 	 * @property integer $ParentPagerStationId the value for intParentPagerStationId 
@@ -36,19 +36,12 @@
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK column parent_pager_attendant_history.id
+		 * Protected member variable that maps to the database PK Identity column parent_pager_attendant_history.id
 		 * @var integer intId
 		 */
 		protected $intId;
 		const IdDefault = null;
 
-
-		/**
-		 * Protected internal member variable that stores the original version of the PK column value (if restored)
-		 * Used by Save() to update a PK column during UPDATE
-		 * @var integer __intId;
-		 */
-		protected $__intId;
 
 		/**
 		 * Protected member variable that maps to the database column parent_pager_attendant_history.server_identifier
@@ -519,7 +512,6 @@
 
 			$strAliasName = array_key_exists($strAliasPrefix . 'id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'id'] : $strAliasPrefix . 'id';
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$objToReturn->__intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'server_identifier', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'server_identifier'] : $strAliasPrefix . 'server_identifier';
 			$objToReturn->intServerIdentifier = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'parent_pager_individual_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_pager_individual_id'] : $strAliasPrefix . 'parent_pager_individual_id';
@@ -824,7 +816,7 @@
 		 * Save this ParentPagerAttendantHistory
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
-		 * @return void
+		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
@@ -837,7 +829,6 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `parent_pager_attendant_history` (
-							`id`,
 							`server_identifier`,
 							`parent_pager_individual_id`,
 							`parent_pager_station_id`,
@@ -846,7 +837,6 @@
 							`date_in`,
 							`date_out`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intId) . ',
 							' . $objDatabase->SqlVariable($this->intServerIdentifier) . ',
 							' . $objDatabase->SqlVariable($this->intParentPagerIndividualId) . ',
 							' . $objDatabase->SqlVariable($this->intParentPagerStationId) . ',
@@ -857,7 +847,8 @@
 						)
 					');
 
-
+					// Update Identity column and return its value
+					$mixToReturn = $this->intId = $objDatabase->InsertId('parent_pager_attendant_history', 'id');
 
 					// Journaling
 					if ($objDatabase->JournalingDatabase) $this->Journal('INSERT');
@@ -872,7 +863,6 @@
 						UPDATE
 							`parent_pager_attendant_history`
 						SET
-							`id` = ' . $objDatabase->SqlVariable($this->intId) . ',
 							`server_identifier` = ' . $objDatabase->SqlVariable($this->intServerIdentifier) . ',
 							`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intParentPagerIndividualId) . ',
 							`parent_pager_station_id` = ' . $objDatabase->SqlVariable($this->intParentPagerStationId) . ',
@@ -881,7 +871,7 @@
 							`date_in` = ' . $objDatabase->SqlVariable($this->dttDateIn) . ',
 							`date_out` = ' . $objDatabase->SqlVariable($this->dttDateOut) . '
 						WHERE
-							`id` = ' . $objDatabase->SqlVariable($this->__intId) . '
+							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
 
 					// Journaling
@@ -895,7 +885,6 @@
 
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
-			$this->__intId = $this->intId;
 
 
 			// Return 
@@ -965,8 +954,6 @@
 			$objReloaded = ParentPagerAttendantHistory::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->intId = $objReloaded->intId;
-			$this->__intId = $this->intId;
 			$this->intServerIdentifier = $objReloaded->intServerIdentifier;
 			$this->ParentPagerIndividualId = $objReloaded->ParentPagerIndividualId;
 			$this->ParentPagerStationId = $objReloaded->ParentPagerStationId;
@@ -1057,7 +1044,7 @@
 				// Member Variables
 				///////////////////
 				case 'Id':
-					// Gets the value for intId (PK)
+					// Gets the value for intId (Read-Only PK)
 					// @return integer
 					return $this->intId;
 
@@ -1181,17 +1168,6 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'Id':
-					// Sets the value for intId (PK)
-					// @param integer $mixValue
-					// @return integer
-					try {
-						return ($this->intId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'ServerIdentifier':
 					// Sets the value for intServerIdentifier (Unique)
 					// @param integer $mixValue

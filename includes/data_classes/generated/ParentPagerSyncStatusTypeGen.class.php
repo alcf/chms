@@ -18,15 +18,31 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class ParentPagerSyncStatusTypeGen extends QBaseClass {
+		const NotYetSynced = 1;
+		const Synced = 2;
+		const OutOfSync = 3;
+		const Ignore = 4;
 
-		const MaxId = 0;
+		const MaxId = 4;
 
-		public static $NameArray = array();
+		public static $NameArray = array(
+			1 => 'Not Yet Synced',
+			2 => 'Synced',
+			3 => 'Out Of Sync',
+			4 => 'Ignore');
 
-		public static $TokenArray = array();
+		public static $TokenArray = array(
+			1 => 'NotYetSynced',
+			2 => 'Synced',
+			3 => 'OutOfSync',
+			4 => 'Ignore');
 
 		public static function ToString($intParentPagerSyncStatusTypeId) {
 			switch ($intParentPagerSyncStatusTypeId) {
+				case 1: return 'Not Yet Synced';
+				case 2: return 'Synced';
+				case 3: return 'Out Of Sync';
+				case 4: return 'Ignore';
 				default:
 					throw new QCallerException(sprintf('Invalid intParentPagerSyncStatusTypeId: %s', $intParentPagerSyncStatusTypeId));
 			}
@@ -34,6 +50,10 @@
 
 		public static function ToToken($intParentPagerSyncStatusTypeId) {
 			switch ($intParentPagerSyncStatusTypeId) {
+				case 1: return 'NotYetSynced';
+				case 2: return 'Synced';
+				case 3: return 'OutOfSync';
+				case 4: return 'Ignore';
 				default:
 					throw new QCallerException(sprintf('Invalid intParentPagerSyncStatusTypeId: %s', $intParentPagerSyncStatusTypeId));
 			}

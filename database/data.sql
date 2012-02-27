@@ -212,6 +212,11 @@ INSERT INTO membership_status_type VALUES(2, 'Former Member');
 INSERT INTO membership_status_type VALUES(3, 'Member');
 INSERT INTO membership_status_type VALUES(4, 'Child Of Member');
 
+INSERT INTO parent_pager_sync_status_type VALUES(1, 'Not Yet Synced');
+INSERT INTO parent_pager_sync_status_type VALUES(2, 'Synced');
+INSERT INTO parent_pager_sync_status_type VALUES(3, 'Out Of Sync');
+INSERT INTO parent_pager_sync_status_type VALUES(4, 'Ignore');
+
 INSERT INTO permission_type VALUES(1, 'Edit Data');
 INSERT INTO permission_type VALUES(2, 'Access Stewardship');
 INSERT INTO permission_type VALUES(4, 'Access Confidential Notes');

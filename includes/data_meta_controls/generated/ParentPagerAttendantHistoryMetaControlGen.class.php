@@ -16,7 +16,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage MetaControls
 	 * property-read ParentPagerAttendantHistory $ParentPagerAttendantHistory the actual ParentPagerAttendantHistory data class being edited
-	 * property QIntegerTextBox $IdControl
+	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
 	 * property QIntegerTextBox $ServerIdentifierControl
 	 * property-read QLabel $ServerIdentifierLabel
@@ -64,10 +64,10 @@
 
 		// Controls that allow the editing of ParentPagerAttendantHistory's individual data fields
         /**
-         * @var QIntegerTextBox txtId;
+         * @var QLabel lblId;
          * @access protected
          */
-		protected $txtId;
+		protected $lblId;
 
         /**
          * @var QIntegerTextBox txtServerIdentifier;
@@ -113,12 +113,6 @@
 
 
 		// Controls that allow the viewing of ParentPagerAttendantHistory's individual data fields
-        /**
-         * @var QLabel lblId
-         * @access protected
-         */
-		protected $lblId;
-
         /**
          * @var QLabel lblServerIdentifier
          * @access protected
@@ -260,30 +254,17 @@
 		///////////////////////////////////////////////
 
 		/**
-		 * Create and setup QIntegerTextBox txtId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QIntegerTextBox
-		 */
-		public function txtId_Create($strControlId = null) {
-			$this->txtId = new QIntegerTextBox($this->objParentObject, $strControlId);
-			$this->txtId->Name = QApplication::Translate('Id');
-			$this->txtId->Text = $this->objParentPagerAttendantHistory->Id;
-			$this->txtId->Required = true;
-			return $this->txtId;
-		}
-
-		/**
 		 * Create and setup QLabel lblId
 		 * @param string $strControlId optional ControlId to use
-		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblId_Create($strControlId = null, $strFormat = null) {
+		public function lblId_Create($strControlId = null) {
 			$this->lblId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblId->Name = QApplication::Translate('Id');
-			$this->lblId->Text = $this->objParentPagerAttendantHistory->Id;
-			$this->lblId->Required = true;
-			$this->lblId->Format = $strFormat;
+			if ($this->blnEditMode)
+				$this->lblId->Text = $this->objParentPagerAttendantHistory->Id;
+			else
+				$this->lblId->Text = 'N/A';
 			return $this->lblId;
 		}
 
@@ -551,8 +532,7 @@
 			if ($blnReload)
 				$this->objParentPagerAttendantHistory->Reload();
 
-			if ($this->txtId) $this->txtId->Text = $this->objParentPagerAttendantHistory->Id;
-			if ($this->lblId) $this->lblId->Text = $this->objParentPagerAttendantHistory->Id;
+			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objParentPagerAttendantHistory->Id;
 
 			if ($this->txtServerIdentifier) $this->txtServerIdentifier->Text = $this->objParentPagerAttendantHistory->ServerIdentifier;
 			if ($this->lblServerIdentifier) $this->lblServerIdentifier->Text = $this->objParentPagerAttendantHistory->ServerIdentifier;
@@ -639,7 +619,6 @@
 		public function SaveParentPagerAttendantHistory() {
 			try {
 				// Update any fields for controls that have been created
-				if ($this->txtId) $this->objParentPagerAttendantHistory->Id = $this->txtId->Text;
 				if ($this->txtServerIdentifier) $this->objParentPagerAttendantHistory->ServerIdentifier = $this->txtServerIdentifier->Text;
 				if ($this->lstParentPagerIndividual) $this->objParentPagerAttendantHistory->ParentPagerIndividualId = $this->lstParentPagerIndividual->SelectedValue;
 				if ($this->lstParentPagerStation) $this->objParentPagerAttendantHistory->ParentPagerStationId = $this->lstParentPagerStation->SelectedValue;
@@ -690,8 +669,8 @@
 
 				// Controls that point to ParentPagerAttendantHistory fields -- will be created dynamically if not yet created
 				case 'IdControl':
-					if (!$this->txtId) return $this->txtId_Create();
-					return $this->txtId;
+					if (!$this->lblId) return $this->lblId_Create();
+					return $this->lblId;
 				case 'IdLabel':
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
@@ -760,7 +739,7 @@
 				switch ($strName) {
 					// Controls that point to ParentPagerAttendantHistory fields
 					case 'IdControl':
-						return ($this->txtId = QType::Cast($mixValue, 'QControl'));
+						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'ServerIdentifierControl':
 						return ($this->txtServerIdentifier = QType::Cast($mixValue, 'QControl'));
 					case 'ParentPagerIndividualIdControl':

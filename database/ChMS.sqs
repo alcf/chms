@@ -1909,9 +1909,10 @@
             <name><![CDATA[id]]></name>
             <type><![CDATA[INTEGER]]></type>
             <notNull>1</notNull>
+            <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[8F992538-85A0-4C74-9A81-CFF768C35C4B]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
@@ -4200,10 +4201,11 @@
             <name><![CDATA[id]]></name>
             <type><![CDATA[INTEGER]]></type>
             <notNull>1</notNull>
+            <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <forcedUnique><![CDATA[1]]></forcedUnique>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[E4C73214-5E24-4C1A-A2F1-23A54B9AAC93]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
@@ -5034,10 +5036,11 @@
             <name><![CDATA[id]]></name>
             <type><![CDATA[INTEGER]]></type>
             <notNull>1</notNull>
+            <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <forcedUnique><![CDATA[1]]></forcedUnique>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[2C4175BB-5FC2-4FD8-98DC-8AF4F44416B7]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
@@ -6718,9 +6721,10 @@
             <name><![CDATA[id]]></name>
             <type><![CDATA[INTEGER]]></type>
             <notNull>1</notNull>
+            <autoIncrement>1</autoIncrement>
             <primaryKey>1</primaryKey>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
-            <indexed><![CDATA[1]]></indexed>
+            <indexed><![CDATA[0]]></indexed>
             <uid><![CDATA[07757D30-7A7C-46FD-9277-6A0ECFBED478]]></uid>
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
