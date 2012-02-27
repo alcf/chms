@@ -28,6 +28,30 @@
 		}
 
 
+		/**
+		 * This will create a new record or update an existing record given the MS SQL Data Row
+		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
+		 * @return ParentPagerHousehold
+		 */
+		public static function CreateOrUpdateForMsSqlRow($objRow) {
+			$intServerIdentifier = $objRow['lngHouseHoldID'];
+			$strName = trim($objRow['strHouseHold']);
+
+			$objParentPagerHousehold = ParentPagerHousehold::LoadByServerIdentifier($intServerIdentifier);
+			if (!$objParentPagerHousehold) {
+				$objParentPagerHousehold = new ParentPagerHousehold();
+				$objParentPagerHousehold->ServerIdentifier = $intServerIdentifier;
+				$objParentPagerHousehold->HiddenFlag = false;
+				$objParentPagerHousehold->ParentPagerSyncStatusTypeId = ParentPagerSyncStatusType::NotYetSynced;
+			}
+
+			$objParentPagerHousehold->Name = $strName;
+			$objParentPagerHousehold->Save();
+			
+			return $objParentPagerHousehold;
+		}
+
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
