@@ -52,6 +52,11 @@
 				$objCondition = QQ::AndCondition($objCondition,
 					QQ::Equal(QQN::GrowthGroup()->GrowthGroupStructure->GrowthGroupStructureId, $this->lstTypes->SelectedValue)
 				);
+
+			// Filter Out "inactive" groups
+			$objCondition = QQ::AndCondition($objCondition,
+				QQ::Equal(QQN::GrowthGroup()->Group->ActiveFlag, true));
+
 			$this->dtrGrowthGroups->DataSource = GrowthGroup::QueryArray($objCondition, QQ::OrderBy(QQN::GrowthGroup()->Group->Name));
 			
 			// Results?
