@@ -42,7 +42,7 @@
 	// One Table at a Time...
 
 
-/*	////////////////////////////
+	////////////////////////////
 	// ParentPager Station, Period and Program
 	////////////////////////////
 	$strTableName = 'tblStation';
@@ -122,7 +122,6 @@ printf('[%5s/%5s]', $intCurrentRow++, $intRowCount);
 print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strAddress1'] . ' ' . $objRow['strCity'] . "\r\n";
 		ParentPagerAddress::CreateOrUpdateForMsSqlRow($objRow);
 	}
-*/
 
 
 	///////////////////////////
