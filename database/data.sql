@@ -227,6 +227,7 @@ INSERT INTO permission_type VALUES(64, 'Delete Individual');
 INSERT INTO permission_type VALUES(128, 'Manage Classifieds');
 INSERT INTO permission_type VALUES(256, 'Manage Classes');
 INSERT INTO permission_type VALUES(512, 'Manage Online Accounts');
+INSERT INTO permission_type VALUES(1024, 'Manage Safari Kids');
 
 INSERT INTO phone_type VALUES(1, 'Home');
 INSERT INTO phone_type VALUES(2, 'Work');
