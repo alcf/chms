@@ -20,7 +20,8 @@
 			PermissionType::DeleteIndividual => 'user_delete.png',
 			PermissionType::ManageClasses => 'book_open.png',
 			PermissionType::ManageClassifieds => 'house.png',
-			PermissionType::ManageOnlineAccounts => 'world.png'
+			PermissionType::ManageOnlineAccounts => 'world.png',
+			PermissionType::ManageSafariKids => 'award_star_gold_2.png'
 		);
 
 		protected function Form_Create() {

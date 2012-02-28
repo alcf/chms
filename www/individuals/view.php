@@ -11,6 +11,7 @@
 
 		public $strSubNavItemToken = null;
 		public $strSubNavItemArray = array(
+			// #HashTag => array(DisplayName, Vicp_-based ClassName/Token)
 			'general' => array('General Profile', 'GeneralProfile'),
 			'contact' => array('Contact Information', 'ContactInformation'),
 			'groups' => array('Groups', 'Groups'),
@@ -18,6 +19,7 @@
 			'stewardship' => array('Stewardship', 'Stewardship'),
 			'attributes' => array('Attributes', 'Attributes'),
 			'online' => array('my.alcf Account', 'OnlineAccount', 'disabled'),
+			'sk' => array('Safari Kids', 'SafariKids'),
 			'merge' => array('Merge Records', 'Merge')
 		);
 		public $strUrlHashArgument;
@@ -60,18 +62,14 @@
 
 			$this->strPageTitle .= $this->objPerson->Name;
 
-			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) {
-				unset($this->strSubNavItemArray['stewardship']);
-			}
-			
-			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::MergeIndividuals)) {
-				unset($this->strSubNavItemArray['merge']);
-			}
-			
-			if ($this->objPerson->PublicLogin) {
-				$this->strSubNavItemArray['online'][2] = null;
-			}
-			
+			// Unset based on Permissions
+			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) unset($this->strSubNavItemArray['stewardship']);
+			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::MergeIndividuals)) unset($this->strSubNavItemArray['merge']);
+			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids)) unset($this->strSubNavItemArray['sk']);
+
+			// Alter Inactive/Active based on whether or not the person has a login
+			if ($this->objPerson->PublicLogin) $this->strSubNavItemArray['online'][2] = null;
+
 			$this->lblHeading = new QLabel($this);
 			$this->lblSubheading = new QLabel($this);
 			$this->lblSubheading->CssClass = 'subhead';
