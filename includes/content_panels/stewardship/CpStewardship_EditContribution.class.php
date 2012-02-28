@@ -22,6 +22,8 @@
 		public $pnlPersonError;
 		public $pnlFundingError;
 
+		public $imgCheckImage;
+
 		/**
 		 * This methods will save the currently selected funds to session, so that the next time
 		 * this pops up, it will "remember" the last used funds
@@ -87,6 +89,9 @@
 			} else if ($this->strUrlHashArgument2) {
 				$objContribution = StewardshipContribution::CreateFromCheckImage(QApplication::$Login, $this->objStack, $this->strUrlHashArgument2);
 				$this->blnScanFlag = true;
+				$this->imgCheckImage = new TiffImageControl($this);
+				$this->imgCheckImage->ImagePath = $objContribution->TempPath;
+				$this->imgCheckImage->Width = '390';
 
 			// Error -- go back
 			} else {

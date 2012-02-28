@@ -50,6 +50,12 @@
 	<div class="cleaner"></div>
 </div>
 
+<?php if ($_CONTROL->imgCheckImage) { ?>
+	<div class="section">
+		<?php $_CONTROL->imgCheckImage->Render(); ?>
+	</div>
+<?php } ?>
+
 <h3>Funding Accounts</h3>
 <div class="section sectionStewardshipAmount">
 	<?php $_CONTROL->pnlFundingError->Render(); ?>
