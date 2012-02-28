@@ -27,6 +27,29 @@
 			return sprintf('ParentPagerProgram Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will create a new record or update an existing record given the MS SQL Data Row
+		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
+		 * @return ParentPagerProgram
+		 */
+		public static function CreateOrUpdateForMsSqlRow($objRow) {
+			$intServerIdentifier = $objRow['lngProgramID'];
+			$strName = trim($objRow['strProgram']);
+			$strDescription = trim($objRow['strDescription']);
+
+			$objParentPagerProgram = ParentPagerProgram::LoadByServerIdentifier($intServerIdentifier);
+			if (!$objParentPagerProgram) {
+				$objParentPagerProgram = new ParentPagerProgram();
+				$objParentPagerProgram->ServerIdentifier = $intServerIdentifier;
+			}
+
+			$objParentPagerProgram->Name = $strName;
+			$objParentPagerProgram->Description = $strDescription;
+
+			$objParentPagerProgram->Save();
+
+			return $objParentPagerProgram;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

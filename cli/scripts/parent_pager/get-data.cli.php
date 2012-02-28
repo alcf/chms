@@ -43,6 +43,39 @@
 
 
 	////////////////////////////
+	// ParentPager Station, Period and Program
+	////////////////////////////
+	$strTableName = 'tblStation';
+	$strPkColumnName = 'lngStationID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
+	while ($objRow = mssql_fetch_assoc($objResult)) {
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+		ParentPagerStation::CreateOrUpdateForMsSqlRow($objRow);
+	}
+
+	$strTableName = 'tblPeriod';
+	$strPkColumnName = 'lngPeriodID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
+	while ($objRow = mssql_fetch_assoc($objResult)) {
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+		ParentPagerPeriod::CreateOrUpdateForMsSqlRow($objRow);
+	}
+
+	$strTableName = 'tblProgram';
+	$strPkColumnName = 'lngProgramID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
+	while ($objRow = mssql_fetch_assoc($objResult)) {
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+		ParentPagerProgram::CreateOrUpdateForMsSqlRow($objRow);
+	}
+
+	////////////////////////////
 	// ParentPager Household
 	////////////////////////////
 /*	$strTableName = 'tblHousehold';
@@ -73,7 +106,6 @@ printf('[%5s/%5s]', $intCurrentRow++, $intRowCount);
 print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strFirstName'] . ' ' . $objRow['strLastName'] . "\r\n";
 		ParentPagerIndividual::CreateOrUpdateForMsSqlRow($objRow);
 	}
-*/
 
 	///////////////////////////
 	// ParentPager Address
@@ -90,4 +122,5 @@ printf('[%5s/%5s]', $intCurrentRow++, $intRowCount);
 print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strAddress1'] . ' ' . $objRow['strCity'] . "\r\n";
 		ParentPagerAddress::CreateOrUpdateForMsSqlRow($objRow);
 	}
+*/
 ?>
