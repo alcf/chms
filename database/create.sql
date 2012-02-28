@@ -681,7 +681,7 @@ CREATE TABLE `parent_pager_address`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
 `server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
-`parent_pager_person_id` INTEGER UNSIGNED,
+`parent_pager_individual_id` INTEGER UNSIGNED,
 `parent_pager_household_id` INTEGER UNSIGNED,
 `address_1` VARCHAR(100),
 `address_2` VARCHAR(100),
@@ -1438,8 +1438,8 @@ ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_period
 CREATE INDEX `parent_pager_program_id_idx` ON `parent_pager_attendant_history`(`parent_pager_program_id`);
 ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_program_id_idxfk (`parent_pager_program_id`) REFERENCES `parent_pager_program` (`id`);
 
-CREATE INDEX `parent_pager_person_id_idx` ON `parent_pager_address`(`parent_pager_person_id`);
-ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_person_id_idxfk (`parent_pager_person_id`) REFERENCES `parent_pager_individual` (`id`);
+CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_address`(`parent_pager_individual_id`);
+ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_individual_id_idxfk_2 (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
 
 CREATE INDEX `parent_pager_household_id_idx` ON `parent_pager_address`(`parent_pager_household_id`);
 ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_household_id_idxfk (`parent_pager_household_id`) REFERENCES `parent_pager_household` (`id`);

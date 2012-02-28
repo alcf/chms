@@ -32,8 +32,8 @@
 	 * @property QDateTime $DateOfBirth the value for dttDateOfBirth 
 	 * @property Person $Person the value for the Person object referenced by intPersonId 
 	 * @property ParentPagerHousehold $ParentPagerHousehold the value for the ParentPagerHousehold object referenced by intParentPagerHouseholdId 
-	 * @property ParentPagerAddress $_ParentPagerAddressAsParentPagerPerson the value for the private _objParentPagerAddressAsParentPagerPerson (Read-Only) if set due to an expansion on the parent_pager_address.parent_pager_person_id reverse relationship
-	 * @property ParentPagerAddress[] $_ParentPagerAddressAsParentPagerPersonArray the value for the private _objParentPagerAddressAsParentPagerPersonArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_address.parent_pager_person_id reverse relationship
+	 * @property ParentPagerAddress $_ParentPagerAddress the value for the private _objParentPagerAddress (Read-Only) if set due to an expansion on the parent_pager_address.parent_pager_individual_id reverse relationship
+	 * @property ParentPagerAddress[] $_ParentPagerAddressArray the value for the private _objParentPagerAddressArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_address.parent_pager_individual_id reverse relationship
 	 * @property ParentPagerAttendantHistory $_ParentPagerAttendantHistory the value for the private _objParentPagerAttendantHistory (Read-Only) if set due to an expansion on the parent_pager_attendant_history.parent_pager_individual_id reverse relationship
 	 * @property ParentPagerAttendantHistory[] $_ParentPagerAttendantHistoryArray the value for the private _objParentPagerAttendantHistoryArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_attendant_history.parent_pager_individual_id reverse relationship
 	 * @property ParentPagerChildHistory $_ParentPagerChildHistoryAsPickupBy the value for the private _objParentPagerChildHistoryAsPickupBy (Read-Only) if set due to an expansion on the parent_pager_child_history.pickup_by_parent_pager_individual_id reverse relationship
@@ -178,20 +178,20 @@
 
 
 		/**
-		 * Private member variable that stores a reference to a single ParentPagerAddressAsParentPagerPerson object
+		 * Private member variable that stores a reference to a single ParentPagerAddress object
 		 * (of type ParentPagerAddress), if this ParentPagerIndividual object was restored with
 		 * an expansion on the parent_pager_address association table.
-		 * @var ParentPagerAddress _objParentPagerAddressAsParentPagerPerson;
+		 * @var ParentPagerAddress _objParentPagerAddress;
 		 */
-		private $_objParentPagerAddressAsParentPagerPerson;
+		private $_objParentPagerAddress;
 
 		/**
-		 * Private member variable that stores a reference to an array of ParentPagerAddressAsParentPagerPerson objects
+		 * Private member variable that stores a reference to an array of ParentPagerAddress objects
 		 * (of type ParentPagerAddress[]), if this ParentPagerIndividual object was restored with
 		 * an ExpandAsArray on the parent_pager_address association table.
-		 * @var ParentPagerAddress[] _objParentPagerAddressAsParentPagerPersonArray;
+		 * @var ParentPagerAddress[] _objParentPagerAddressArray;
 		 */
-		private $_objParentPagerAddressAsParentPagerPersonArray = array();
+		private $_objParentPagerAddressArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single ParentPagerAttendantHistory object
@@ -662,17 +662,17 @@
 					$strAliasPrefix = 'parent_pager_individual__';
 
 
-				$strAlias = $strAliasPrefix . 'parentpageraddressasparentpagerperson__id';
+				$strAlias = $strAliasPrefix . 'parentpageraddress__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objParentPagerAddressAsParentPagerPersonArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objParentPagerAddressAsParentPagerPersonArray[$intPreviousChildItemCount - 1];
-						$objChildItem = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddressasparentpagerperson__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objParentPagerAddressArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objParentPagerAddressArray[$intPreviousChildItemCount - 1];
+						$objChildItem = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddress__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
 						if ($objChildItem)
-							$objPreviousItem->_objParentPagerAddressAsParentPagerPersonArray[] = $objChildItem;
+							$objPreviousItem->_objParentPagerAddressArray[] = $objChildItem;
 					} else
-						$objPreviousItem->_objParentPagerAddressAsParentPagerPersonArray[] = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddressasparentpagerperson__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+						$objPreviousItem->_objParentPagerAddressArray[] = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddress__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 					$blnExpandedViaArray = true;
 				}
 
@@ -801,14 +801,14 @@
 
 
 
-			// Check for ParentPagerAddressAsParentPagerPerson Virtual Binding
-			$strAlias = $strAliasPrefix . 'parentpageraddressasparentpagerperson__id';
+			// Check for ParentPagerAddress Virtual Binding
+			$strAlias = $strAliasPrefix . 'parentpageraddress__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objParentPagerAddressAsParentPagerPersonArray[] = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddressasparentpagerperson__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objParentPagerAddressArray[] = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddress__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
-					$objToReturn->_objParentPagerAddressAsParentPagerPerson = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddressasparentpagerperson__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$objToReturn->_objParentPagerAddress = ParentPagerAddress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpageraddress__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for ParentPagerAttendantHistory Virtual Binding
@@ -1479,17 +1479,17 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_ParentPagerAddressAsParentPagerPerson':
-					// Gets the value for the private _objParentPagerAddressAsParentPagerPerson (Read-Only)
-					// if set due to an expansion on the parent_pager_address.parent_pager_person_id reverse relationship
+				case '_ParentPagerAddress':
+					// Gets the value for the private _objParentPagerAddress (Read-Only)
+					// if set due to an expansion on the parent_pager_address.parent_pager_individual_id reverse relationship
 					// @return ParentPagerAddress
-					return $this->_objParentPagerAddressAsParentPagerPerson;
+					return $this->_objParentPagerAddress;
 
-				case '_ParentPagerAddressAsParentPagerPersonArray':
-					// Gets the value for the private _objParentPagerAddressAsParentPagerPersonArray (Read-Only)
-					// if set due to an ExpandAsArray on the parent_pager_address.parent_pager_person_id reverse relationship
+				case '_ParentPagerAddressArray':
+					// Gets the value for the private _objParentPagerAddressArray (Read-Only)
+					// if set due to an ExpandAsArray on the parent_pager_address.parent_pager_individual_id reverse relationship
 					// @return ParentPagerAddress[]
-					return (array) $this->_objParentPagerAddressAsParentPagerPersonArray;
+					return (array) $this->_objParentPagerAddressArray;
 
 				case '_ParentPagerAttendantHistory':
 					// Gets the value for the private _objParentPagerAttendantHistory (Read-Only)
@@ -1815,20 +1815,20 @@
 
 			
 		
-		// Related Objects' Methods for ParentPagerAddressAsParentPagerPerson
+		// Related Objects' Methods for ParentPagerAddress
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all associated ParentPagerAddressesAsParentPagerPerson as an array of ParentPagerAddress objects
+		 * Gets all associated ParentPagerAddresses as an array of ParentPagerAddress objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return ParentPagerAddress[]
 		*/ 
-		public function GetParentPagerAddressAsParentPagerPersonArray($objOptionalClauses = null) {
+		public function GetParentPagerAddressArray($objOptionalClauses = null) {
 			if ((is_null($this->intId)))
 				return array();
 
 			try {
-				return ParentPagerAddress::LoadArrayByParentPagerPersonId($this->intId, $objOptionalClauses);
+				return ParentPagerAddress::LoadArrayByParentPagerIndividualId($this->intId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -1836,26 +1836,26 @@
 		}
 
 		/**
-		 * Counts all associated ParentPagerAddressesAsParentPagerPerson
+		 * Counts all associated ParentPagerAddresses
 		 * @return int
 		*/ 
-		public function CountParentPagerAddressesAsParentPagerPerson() {
+		public function CountParentPagerAddresses() {
 			if ((is_null($this->intId)))
 				return 0;
 
-			return ParentPagerAddress::CountByParentPagerPersonId($this->intId);
+			return ParentPagerAddress::CountByParentPagerIndividualId($this->intId);
 		}
 
 		/**
-		 * Associates a ParentPagerAddressAsParentPagerPerson
+		 * Associates a ParentPagerAddress
 		 * @param ParentPagerAddress $objParentPagerAddress
 		 * @return void
 		*/ 
-		public function AssociateParentPagerAddressAsParentPagerPerson(ParentPagerAddress $objParentPagerAddress) {
+		public function AssociateParentPagerAddress(ParentPagerAddress $objParentPagerAddress) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerAddressAsParentPagerPerson on this unsaved ParentPagerIndividual.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerAddress on this unsaved ParentPagerIndividual.');
 			if ((is_null($objParentPagerAddress->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerAddressAsParentPagerPerson on this ParentPagerIndividual with an unsaved ParentPagerAddress.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateParentPagerAddress on this ParentPagerIndividual with an unsaved ParentPagerAddress.');
 
 			// Get the Database Object for this Class
 			$objDatabase = ParentPagerIndividual::GetDatabase();
@@ -1865,28 +1865,28 @@
 				UPDATE
 					`parent_pager_address`
 				SET
-					`parent_pager_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objParentPagerAddress->Id) . '
 			');
 
 			// Journaling (if applicable)
 			if ($objDatabase->JournalingDatabase) {
-				$objParentPagerAddress->ParentPagerPersonId = $this->intId;
+				$objParentPagerAddress->ParentPagerIndividualId = $this->intId;
 				$objParentPagerAddress->Journal('UPDATE');
 			}
 		}
 
 		/**
-		 * Unassociates a ParentPagerAddressAsParentPagerPerson
+		 * Unassociates a ParentPagerAddress
 		 * @param ParentPagerAddress $objParentPagerAddress
 		 * @return void
 		*/ 
-		public function UnassociateParentPagerAddressAsParentPagerPerson(ParentPagerAddress $objParentPagerAddress) {
+		public function UnassociateParentPagerAddress(ParentPagerAddress $objParentPagerAddress) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddressAsParentPagerPerson on this unsaved ParentPagerIndividual.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddress on this unsaved ParentPagerIndividual.');
 			if ((is_null($objParentPagerAddress->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddressAsParentPagerPerson on this ParentPagerIndividual with an unsaved ParentPagerAddress.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddress on this ParentPagerIndividual with an unsaved ParentPagerAddress.');
 
 			// Get the Database Object for this Class
 			$objDatabase = ParentPagerIndividual::GetDatabase();
@@ -1896,34 +1896,34 @@
 				UPDATE
 					`parent_pager_address`
 				SET
-					`parent_pager_person_id` = null
+					`parent_pager_individual_id` = null
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objParentPagerAddress->Id) . ' AND
-					`parent_pager_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 
 			// Journaling
 			if ($objDatabase->JournalingDatabase) {
-				$objParentPagerAddress->ParentPagerPersonId = null;
+				$objParentPagerAddress->ParentPagerIndividualId = null;
 				$objParentPagerAddress->Journal('UPDATE');
 			}
 		}
 
 		/**
-		 * Unassociates all ParentPagerAddressesAsParentPagerPerson
+		 * Unassociates all ParentPagerAddresses
 		 * @return void
 		*/ 
-		public function UnassociateAllParentPagerAddressesAsParentPagerPerson() {
+		public function UnassociateAllParentPagerAddresses() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddressAsParentPagerPerson on this unsaved ParentPagerIndividual.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddress on this unsaved ParentPagerIndividual.');
 
 			// Get the Database Object for this Class
 			$objDatabase = ParentPagerIndividual::GetDatabase();
 
 			// Journaling
 			if ($objDatabase->JournalingDatabase) {
-				foreach (ParentPagerAddress::LoadArrayByParentPagerPersonId($this->intId) as $objParentPagerAddress) {
-					$objParentPagerAddress->ParentPagerPersonId = null;
+				foreach (ParentPagerAddress::LoadArrayByParentPagerIndividualId($this->intId) as $objParentPagerAddress) {
+					$objParentPagerAddress->ParentPagerIndividualId = null;
 					$objParentPagerAddress->Journal('UPDATE');
 				}
 			}
@@ -1933,22 +1933,22 @@
 				UPDATE
 					`parent_pager_address`
 				SET
-					`parent_pager_person_id` = null
+					`parent_pager_individual_id` = null
 				WHERE
-					`parent_pager_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
 		/**
-		 * Deletes an associated ParentPagerAddressAsParentPagerPerson
+		 * Deletes an associated ParentPagerAddress
 		 * @param ParentPagerAddress $objParentPagerAddress
 		 * @return void
 		*/ 
-		public function DeleteAssociatedParentPagerAddressAsParentPagerPerson(ParentPagerAddress $objParentPagerAddress) {
+		public function DeleteAssociatedParentPagerAddress(ParentPagerAddress $objParentPagerAddress) {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddressAsParentPagerPerson on this unsaved ParentPagerIndividual.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddress on this unsaved ParentPagerIndividual.');
 			if ((is_null($objParentPagerAddress->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddressAsParentPagerPerson on this ParentPagerIndividual with an unsaved ParentPagerAddress.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddress on this ParentPagerIndividual with an unsaved ParentPagerAddress.');
 
 			// Get the Database Object for this Class
 			$objDatabase = ParentPagerIndividual::GetDatabase();
@@ -1959,7 +1959,7 @@
 					`parent_pager_address`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($objParentPagerAddress->Id) . ' AND
-					`parent_pager_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 
 			// Journaling
@@ -1969,19 +1969,19 @@
 		}
 
 		/**
-		 * Deletes all associated ParentPagerAddressesAsParentPagerPerson
+		 * Deletes all associated ParentPagerAddresses
 		 * @return void
 		*/ 
-		public function DeleteAllParentPagerAddressesAsParentPagerPerson() {
+		public function DeleteAllParentPagerAddresses() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddressAsParentPagerPerson on this unsaved ParentPagerIndividual.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateParentPagerAddress on this unsaved ParentPagerIndividual.');
 
 			// Get the Database Object for this Class
 			$objDatabase = ParentPagerIndividual::GetDatabase();
 
 			// Journaling
 			if ($objDatabase->JournalingDatabase) {
-				foreach (ParentPagerAddress::LoadArrayByParentPagerPersonId($this->intId) as $objParentPagerAddress) {
+				foreach (ParentPagerAddress::LoadArrayByParentPagerIndividualId($this->intId) as $objParentPagerAddress) {
 					$objParentPagerAddress->Journal('DELETE');
 				}
 			}
@@ -1991,7 +1991,7 @@
 				DELETE FROM
 					`parent_pager_address`
 				WHERE
-					`parent_pager_person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+					`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -2864,7 +2864,7 @@
 	 * @property-read QQNode $GraduationYear
 	 * @property-read QQNode $Gender
 	 * @property-read QQNode $DateOfBirth
-	 * @property-read QQReverseReferenceNodeParentPagerAddress $ParentPagerAddressAsParentPagerPerson
+	 * @property-read QQReverseReferenceNodeParentPagerAddress $ParentPagerAddress
 	 * @property-read QQReverseReferenceNodeParentPagerAttendantHistory $ParentPagerAttendantHistory
 	 * @property-read QQReverseReferenceNodeParentPagerChildHistory $ParentPagerChildHistoryAsPickupBy
 	 * @property-read QQReverseReferenceNodeParentPagerChildHistory $ParentPagerChildHistory
@@ -2910,8 +2910,8 @@
 					return new QQNode('gender', 'Gender', 'string', $this);
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
-				case 'ParentPagerAddressAsParentPagerPerson':
-					return new QQReverseReferenceNodeParentPagerAddress($this, 'parentpageraddressasparentpagerperson', 'reverse_reference', 'parent_pager_person_id');
+				case 'ParentPagerAddress':
+					return new QQReverseReferenceNodeParentPagerAddress($this, 'parentpageraddress', 'reverse_reference', 'parent_pager_individual_id');
 				case 'ParentPagerAttendantHistory':
 					return new QQReverseReferenceNodeParentPagerAttendantHistory($this, 'parentpagerattendanthistory', 'reverse_reference', 'parent_pager_individual_id');
 				case 'ParentPagerChildHistoryAsPickupBy':
@@ -2952,7 +2952,7 @@
 	 * @property-read QQNode $GraduationYear
 	 * @property-read QQNode $Gender
 	 * @property-read QQNode $DateOfBirth
-	 * @property-read QQReverseReferenceNodeParentPagerAddress $ParentPagerAddressAsParentPagerPerson
+	 * @property-read QQReverseReferenceNodeParentPagerAddress $ParentPagerAddress
 	 * @property-read QQReverseReferenceNodeParentPagerAttendantHistory $ParentPagerAttendantHistory
 	 * @property-read QQReverseReferenceNodeParentPagerChildHistory $ParentPagerChildHistoryAsPickupBy
 	 * @property-read QQReverseReferenceNodeParentPagerChildHistory $ParentPagerChildHistory
@@ -2999,8 +2999,8 @@
 					return new QQNode('gender', 'Gender', 'string', $this);
 				case 'DateOfBirth':
 					return new QQNode('date_of_birth', 'DateOfBirth', 'QDateTime', $this);
-				case 'ParentPagerAddressAsParentPagerPerson':
-					return new QQReverseReferenceNodeParentPagerAddress($this, 'parentpageraddressasparentpagerperson', 'reverse_reference', 'parent_pager_person_id');
+				case 'ParentPagerAddress':
+					return new QQReverseReferenceNodeParentPagerAddress($this, 'parentpageraddress', 'reverse_reference', 'parent_pager_individual_id');
 				case 'ParentPagerAttendantHistory':
 					return new QQReverseReferenceNodeParentPagerAttendantHistory($this, 'parentpagerattendanthistory', 'reverse_reference', 'parent_pager_individual_id');
 				case 'ParentPagerChildHistoryAsPickupBy':

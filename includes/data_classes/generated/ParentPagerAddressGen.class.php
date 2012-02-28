@@ -17,7 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $ServerIdentifier the value for intServerIdentifier (Unique)
-	 * @property integer $ParentPagerPersonId the value for intParentPagerPersonId 
+	 * @property integer $ParentPagerIndividualId the value for intParentPagerIndividualId 
 	 * @property integer $ParentPagerHouseholdId the value for intParentPagerHouseholdId 
 	 * @property string $Address1 the value for strAddress1 
 	 * @property string $Address2 the value for strAddress2 
@@ -25,7 +25,7 @@
 	 * @property string $City the value for strCity 
 	 * @property string $State the value for strState 
 	 * @property string $ZipCode the value for strZipCode 
-	 * @property ParentPagerIndividual $ParentPagerPerson the value for the ParentPagerIndividual object referenced by intParentPagerPersonId 
+	 * @property ParentPagerIndividual $ParentPagerIndividual the value for the ParentPagerIndividual object referenced by intParentPagerIndividualId 
 	 * @property ParentPagerHousehold $ParentPagerHousehold the value for the ParentPagerHousehold object referenced by intParentPagerHouseholdId 
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -52,11 +52,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column parent_pager_address.parent_pager_person_id
-		 * @var integer intParentPagerPersonId
+		 * Protected member variable that maps to the database column parent_pager_address.parent_pager_individual_id
+		 * @var integer intParentPagerIndividualId
 		 */
-		protected $intParentPagerPersonId;
-		const ParentPagerPersonIdDefault = null;
+		protected $intParentPagerIndividualId;
+		const ParentPagerIndividualIdDefault = null;
 
 
 		/**
@@ -145,13 +145,13 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column parent_pager_address.parent_pager_person_id.
+		 * in the database column parent_pager_address.parent_pager_individual_id.
 		 *
-		 * NOTE: Always use the ParentPagerPerson property getter to correctly retrieve this ParentPagerIndividual object.
+		 * NOTE: Always use the ParentPagerIndividual property getter to correctly retrieve this ParentPagerIndividual object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var ParentPagerIndividual objParentPagerPerson
+		 * @var ParentPagerIndividual objParentPagerIndividual
 		 */
-		protected $objParentPagerPerson;
+		protected $objParentPagerIndividual;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -475,7 +475,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
 			$objBuilder->AddSelectItem($strTableName, 'server_identifier', $strAliasPrefix . 'server_identifier');
-			$objBuilder->AddSelectItem($strTableName, 'parent_pager_person_id', $strAliasPrefix . 'parent_pager_person_id');
+			$objBuilder->AddSelectItem($strTableName, 'parent_pager_individual_id', $strAliasPrefix . 'parent_pager_individual_id');
 			$objBuilder->AddSelectItem($strTableName, 'parent_pager_household_id', $strAliasPrefix . 'parent_pager_household_id');
 			$objBuilder->AddSelectItem($strTableName, 'address_1', $strAliasPrefix . 'address_1');
 			$objBuilder->AddSelectItem($strTableName, 'address_2', $strAliasPrefix . 'address_2');
@@ -518,8 +518,8 @@
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'server_identifier', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'server_identifier'] : $strAliasPrefix . 'server_identifier';
 			$objToReturn->intServerIdentifier = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'parent_pager_person_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_pager_person_id'] : $strAliasPrefix . 'parent_pager_person_id';
-			$objToReturn->intParentPagerPersonId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'parent_pager_individual_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_pager_individual_id'] : $strAliasPrefix . 'parent_pager_individual_id';
+			$objToReturn->intParentPagerIndividualId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'parent_pager_household_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_pager_household_id'] : $strAliasPrefix . 'parent_pager_household_id';
 			$objToReturn->intParentPagerHouseholdId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'address_1', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'address_1'] : $strAliasPrefix . 'address_1';
@@ -547,11 +547,11 @@
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'parent_pager_address__';
 
-			// Check for ParentPagerPerson Early Binding
-			$strAlias = $strAliasPrefix . 'parent_pager_person_id__id';
+			// Check for ParentPagerIndividual Early Binding
+			$strAlias = $strAliasPrefix . 'parent_pager_individual_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objParentPagerPerson = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parent_pager_person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				$objToReturn->objParentPagerIndividual = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parent_pager_individual_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 			// Check for ParentPagerHousehold Early Binding
 			$strAlias = $strAliasPrefix . 'parent_pager_household_id__id';
@@ -661,16 +661,16 @@
 			
 		/**
 		 * Load an array of ParentPagerAddress objects,
-		 * by ParentPagerPersonId Index(es)
-		 * @param integer $intParentPagerPersonId
+		 * by ParentPagerIndividualId Index(es)
+		 * @param integer $intParentPagerIndividualId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return ParentPagerAddress[]
 		*/
-		public static function LoadArrayByParentPagerPersonId($intParentPagerPersonId, $objOptionalClauses = null) {
-			// Call ParentPagerAddress::QueryArray to perform the LoadArrayByParentPagerPersonId query
+		public static function LoadArrayByParentPagerIndividualId($intParentPagerIndividualId, $objOptionalClauses = null) {
+			// Call ParentPagerAddress::QueryArray to perform the LoadArrayByParentPagerIndividualId query
 			try {
 				return ParentPagerAddress::QueryArray(
-					QQ::Equal(QQN::ParentPagerAddress()->ParentPagerPersonId, $intParentPagerPersonId),
+					QQ::Equal(QQN::ParentPagerAddress()->ParentPagerIndividualId, $intParentPagerIndividualId),
 					$objOptionalClauses
 					);
 			} catch (QCallerException $objExc) {
@@ -681,14 +681,14 @@
 
 		/**
 		 * Count ParentPagerAddresses
-		 * by ParentPagerPersonId Index(es)
-		 * @param integer $intParentPagerPersonId
+		 * by ParentPagerIndividualId Index(es)
+		 * @param integer $intParentPagerIndividualId
 		 * @return int
 		*/
-		public static function CountByParentPagerPersonId($intParentPagerPersonId, $objOptionalClauses = null) {
-			// Call ParentPagerAddress::QueryCount to perform the CountByParentPagerPersonId query
+		public static function CountByParentPagerIndividualId($intParentPagerIndividualId, $objOptionalClauses = null) {
+			// Call ParentPagerAddress::QueryCount to perform the CountByParentPagerIndividualId query
 			return ParentPagerAddress::QueryCount(
-				QQ::Equal(QQN::ParentPagerAddress()->ParentPagerPersonId, $intParentPagerPersonId)
+				QQ::Equal(QQN::ParentPagerAddress()->ParentPagerIndividualId, $intParentPagerIndividualId)
 			, $objOptionalClauses
 			);
 		}
@@ -758,7 +758,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `parent_pager_address` (
 							`server_identifier`,
-							`parent_pager_person_id`,
+							`parent_pager_individual_id`,
 							`parent_pager_household_id`,
 							`address_1`,
 							`address_2`,
@@ -768,7 +768,7 @@
 							`zip_code`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intServerIdentifier) . ',
-							' . $objDatabase->SqlVariable($this->intParentPagerPersonId) . ',
+							' . $objDatabase->SqlVariable($this->intParentPagerIndividualId) . ',
 							' . $objDatabase->SqlVariable($this->intParentPagerHouseholdId) . ',
 							' . $objDatabase->SqlVariable($this->strAddress1) . ',
 							' . $objDatabase->SqlVariable($this->strAddress2) . ',
@@ -796,7 +796,7 @@
 							`parent_pager_address`
 						SET
 							`server_identifier` = ' . $objDatabase->SqlVariable($this->intServerIdentifier) . ',
-							`parent_pager_person_id` = ' . $objDatabase->SqlVariable($this->intParentPagerPersonId) . ',
+							`parent_pager_individual_id` = ' . $objDatabase->SqlVariable($this->intParentPagerIndividualId) . ',
 							`parent_pager_household_id` = ' . $objDatabase->SqlVariable($this->intParentPagerHouseholdId) . ',
 							`address_1` = ' . $objDatabase->SqlVariable($this->strAddress1) . ',
 							`address_2` = ' . $objDatabase->SqlVariable($this->strAddress2) . ',
@@ -889,7 +889,7 @@
 
 			// Update $this's local variables to match
 			$this->intServerIdentifier = $objReloaded->intServerIdentifier;
-			$this->ParentPagerPersonId = $objReloaded->ParentPagerPersonId;
+			$this->ParentPagerIndividualId = $objReloaded->ParentPagerIndividualId;
 			$this->ParentPagerHouseholdId = $objReloaded->ParentPagerHouseholdId;
 			$this->strAddress1 = $objReloaded->strAddress1;
 			$this->strAddress2 = $objReloaded->strAddress2;
@@ -911,7 +911,7 @@
 				INSERT INTO `parent_pager_address` (
 					`id`,
 					`server_identifier`,
-					`parent_pager_person_id`,
+					`parent_pager_individual_id`,
 					`parent_pager_household_id`,
 					`address_1`,
 					`address_2`,
@@ -925,7 +925,7 @@
 				) VALUES (
 					' . $objDatabase->SqlVariable($this->intId) . ',
 					' . $objDatabase->SqlVariable($this->intServerIdentifier) . ',
-					' . $objDatabase->SqlVariable($this->intParentPagerPersonId) . ',
+					' . $objDatabase->SqlVariable($this->intParentPagerIndividualId) . ',
 					' . $objDatabase->SqlVariable($this->intParentPagerHouseholdId) . ',
 					' . $objDatabase->SqlVariable($this->strAddress1) . ',
 					' . $objDatabase->SqlVariable($this->strAddress2) . ',
@@ -993,10 +993,10 @@
 					// @return integer
 					return $this->intServerIdentifier;
 
-				case 'ParentPagerPersonId':
-					// Gets the value for intParentPagerPersonId 
+				case 'ParentPagerIndividualId':
+					// Gets the value for intParentPagerIndividualId 
 					// @return integer
-					return $this->intParentPagerPersonId;
+					return $this->intParentPagerIndividualId;
 
 				case 'ParentPagerHouseholdId':
 					// Gets the value for intParentPagerHouseholdId 
@@ -1037,13 +1037,13 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'ParentPagerPerson':
-					// Gets the value for the ParentPagerIndividual object referenced by intParentPagerPersonId 
+				case 'ParentPagerIndividual':
+					// Gets the value for the ParentPagerIndividual object referenced by intParentPagerIndividualId 
 					// @return ParentPagerIndividual
 					try {
-						if ((!$this->objParentPagerPerson) && (!is_null($this->intParentPagerPersonId)))
-							$this->objParentPagerPerson = ParentPagerIndividual::Load($this->intParentPagerPersonId);
-						return $this->objParentPagerPerson;
+						if ((!$this->objParentPagerIndividual) && (!is_null($this->intParentPagerIndividualId)))
+							$this->objParentPagerIndividual = ParentPagerIndividual::Load($this->intParentPagerIndividualId);
+						return $this->objParentPagerIndividual;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1105,13 +1105,13 @@
 						throw $objExc;
 					}
 
-				case 'ParentPagerPersonId':
-					// Sets the value for intParentPagerPersonId 
+				case 'ParentPagerIndividualId':
+					// Sets the value for intParentPagerIndividualId 
 					// @param integer $mixValue
 					// @return integer
 					try {
-						$this->objParentPagerPerson = null;
-						return ($this->intParentPagerPersonId = QType::Cast($mixValue, QType::Integer));
+						$this->objParentPagerIndividual = null;
+						return ($this->intParentPagerIndividualId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1199,13 +1199,13 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'ParentPagerPerson':
-					// Sets the value for the ParentPagerIndividual object referenced by intParentPagerPersonId 
+				case 'ParentPagerIndividual':
+					// Sets the value for the ParentPagerIndividual object referenced by intParentPagerIndividualId 
 					// @param ParentPagerIndividual $mixValue
 					// @return ParentPagerIndividual
 					if (is_null($mixValue)) {
-						$this->intParentPagerPersonId = null;
-						$this->objParentPagerPerson = null;
+						$this->intParentPagerIndividualId = null;
+						$this->objParentPagerIndividual = null;
 						return null;
 					} else {
 						// Make sure $mixValue actually is a ParentPagerIndividual object
@@ -1218,11 +1218,11 @@
 
 						// Make sure $mixValue is a SAVED ParentPagerIndividual object
 						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved ParentPagerPerson for this ParentPagerAddress');
+							throw new QCallerException('Unable to set an unsaved ParentPagerIndividual for this ParentPagerAddress');
 
 						// Update Local Member Variables
-						$this->objParentPagerPerson = $mixValue;
-						$this->intParentPagerPersonId = $mixValue->Id;
+						$this->objParentPagerIndividual = $mixValue;
+						$this->intParentPagerIndividualId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1298,7 +1298,7 @@
 			$strToReturn = '<complexType name="ParentPagerAddress"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="ServerIdentifier" type="xsd:int"/>';
-			$strToReturn .= '<element name="ParentPagerPerson" type="xsd1:ParentPagerIndividual"/>';
+			$strToReturn .= '<element name="ParentPagerIndividual" type="xsd1:ParentPagerIndividual"/>';
 			$strToReturn .= '<element name="ParentPagerHousehold" type="xsd1:ParentPagerHousehold"/>';
 			$strToReturn .= '<element name="Address1" type="xsd:string"/>';
 			$strToReturn .= '<element name="Address2" type="xsd:string"/>';
@@ -1334,9 +1334,9 @@
 				$objToReturn->intId = $objSoapObject->Id;
 			if (property_exists($objSoapObject, 'ServerIdentifier'))
 				$objToReturn->intServerIdentifier = $objSoapObject->ServerIdentifier;
-			if ((property_exists($objSoapObject, 'ParentPagerPerson')) &&
-				($objSoapObject->ParentPagerPerson))
-				$objToReturn->ParentPagerPerson = ParentPagerIndividual::GetObjectFromSoapObject($objSoapObject->ParentPagerPerson);
+			if ((property_exists($objSoapObject, 'ParentPagerIndividual')) &&
+				($objSoapObject->ParentPagerIndividual))
+				$objToReturn->ParentPagerIndividual = ParentPagerIndividual::GetObjectFromSoapObject($objSoapObject->ParentPagerIndividual);
 			if ((property_exists($objSoapObject, 'ParentPagerHousehold')) &&
 				($objSoapObject->ParentPagerHousehold))
 				$objToReturn->ParentPagerHousehold = ParentPagerHousehold::GetObjectFromSoapObject($objSoapObject->ParentPagerHousehold);
@@ -1370,10 +1370,10 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objParentPagerPerson)
-				$objObject->objParentPagerPerson = ParentPagerIndividual::GetSoapObjectFromObject($objObject->objParentPagerPerson, false);
+			if ($objObject->objParentPagerIndividual)
+				$objObject->objParentPagerIndividual = ParentPagerIndividual::GetSoapObjectFromObject($objObject->objParentPagerIndividual, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intParentPagerPersonId = null;
+				$objObject->intParentPagerIndividualId = null;
 			if ($objObject->objParentPagerHousehold)
 				$objObject->objParentPagerHousehold = ParentPagerHousehold::GetSoapObjectFromObject($objObject->objParentPagerHousehold, false);
 			else if (!$blnBindRelatedObjects)
@@ -1395,8 +1395,8 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $ServerIdentifier
-	 * @property-read QQNode $ParentPagerPersonId
-	 * @property-read QQNodeParentPagerIndividual $ParentPagerPerson
+	 * @property-read QQNode $ParentPagerIndividualId
+	 * @property-read QQNodeParentPagerIndividual $ParentPagerIndividual
 	 * @property-read QQNode $ParentPagerHouseholdId
 	 * @property-read QQNodeParentPagerHousehold $ParentPagerHousehold
 	 * @property-read QQNode $Address1
@@ -1416,10 +1416,10 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'ServerIdentifier':
 					return new QQNode('server_identifier', 'ServerIdentifier', 'integer', $this);
-				case 'ParentPagerPersonId':
-					return new QQNode('parent_pager_person_id', 'ParentPagerPersonId', 'integer', $this);
-				case 'ParentPagerPerson':
-					return new QQNodeParentPagerIndividual('parent_pager_person_id', 'ParentPagerPerson', 'integer', $this);
+				case 'ParentPagerIndividualId':
+					return new QQNode('parent_pager_individual_id', 'ParentPagerIndividualId', 'integer', $this);
+				case 'ParentPagerIndividual':
+					return new QQNodeParentPagerIndividual('parent_pager_individual_id', 'ParentPagerIndividual', 'integer', $this);
 				case 'ParentPagerHouseholdId':
 					return new QQNode('parent_pager_household_id', 'ParentPagerHouseholdId', 'integer', $this);
 				case 'ParentPagerHousehold':
@@ -1453,8 +1453,8 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $ServerIdentifier
-	 * @property-read QQNode $ParentPagerPersonId
-	 * @property-read QQNodeParentPagerIndividual $ParentPagerPerson
+	 * @property-read QQNode $ParentPagerIndividualId
+	 * @property-read QQNodeParentPagerIndividual $ParentPagerIndividual
 	 * @property-read QQNode $ParentPagerHouseholdId
 	 * @property-read QQNodeParentPagerHousehold $ParentPagerHousehold
 	 * @property-read QQNode $Address1
@@ -1475,10 +1475,10 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'ServerIdentifier':
 					return new QQNode('server_identifier', 'ServerIdentifier', 'integer', $this);
-				case 'ParentPagerPersonId':
-					return new QQNode('parent_pager_person_id', 'ParentPagerPersonId', 'integer', $this);
-				case 'ParentPagerPerson':
-					return new QQNodeParentPagerIndividual('parent_pager_person_id', 'ParentPagerPerson', 'integer', $this);
+				case 'ParentPagerIndividualId':
+					return new QQNode('parent_pager_individual_id', 'ParentPagerIndividualId', 'integer', $this);
+				case 'ParentPagerIndividual':
+					return new QQNodeParentPagerIndividual('parent_pager_individual_id', 'ParentPagerIndividual', 'integer', $this);
 				case 'ParentPagerHouseholdId':
 					return new QQNode('parent_pager_household_id', 'ParentPagerHouseholdId', 'integer', $this);
 				case 'ParentPagerHousehold':

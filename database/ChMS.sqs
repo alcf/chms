@@ -2591,7 +2591,7 @@
             <unsigned><![CDATA[1]]></unsigned>
         </SQLField>
         <SQLField>
-            <name><![CDATA[parent_pager_person_id]]></name>
+            <name><![CDATA[parent_pager_individual_id]]></name>
             <type><![CDATA[INTEGER]]></type>
             <referencesField>id</referencesField>
             <referencesTable>parent_pager_individual</referencesTable>
@@ -8808,7 +8808,7 @@ Zn2hgcgEgRgDhoaG
         <SourceSplitViewState><![CDATA[2 -266 1267]]></SourceSplitViewState>
         <uid><![CDATA[B9286DAB-527F-4BD4-A9F3-FA2BE004439F]]></uid>
         <windowHeight><![CDATA[1002.000000]]></windowHeight>
-        <windowLocationX><![CDATA[4.000000]]></windowLocationX>
+        <windowLocationX><![CDATA[-296.000000]]></windowLocationX>
         <windowLocationY><![CDATA[0.000000]]></windowLocationY>
         <windowWidth><![CDATA[1276.000000]]></windowWidth>
     </SQLDocumentInfo>

@@ -295,8 +295,8 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::ParentPagerAddress()->Id;
 				case 'ServerIdentifier': return QQN::ParentPagerAddress()->ServerIdentifier;
-				case 'ParentPagerPersonId': return QQN::ParentPagerAddress()->ParentPagerPersonId;
-				case 'ParentPagerPerson': return QQN::ParentPagerAddress()->ParentPagerPerson;
+				case 'ParentPagerIndividualId': return QQN::ParentPagerAddress()->ParentPagerIndividualId;
+				case 'ParentPagerIndividual': return QQN::ParentPagerAddress()->ParentPagerIndividual;
 				case 'ParentPagerHouseholdId': return QQN::ParentPagerAddress()->ParentPagerHouseholdId;
 				case 'ParentPagerHousehold': return QQN::ParentPagerAddress()->ParentPagerHousehold;
 				case 'Address1': return QQN::ParentPagerAddress()->Address1;

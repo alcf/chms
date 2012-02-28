@@ -20,8 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QIntegerTextBox $ServerIdentifierControl
 	 * property-read QLabel $ServerIdentifierLabel
-	 * property QListBox $ParentPagerPersonIdControl
-	 * property-read QLabel $ParentPagerPersonIdLabel
+	 * property QListBox $ParentPagerIndividualIdControl
+	 * property-read QLabel $ParentPagerIndividualIdLabel
 	 * property QListBox $ParentPagerHouseholdIdControl
 	 * property-read QLabel $ParentPagerHouseholdIdLabel
 	 * property QTextBox $Address1Control
@@ -80,10 +80,10 @@
 		protected $txtServerIdentifier;
 
         /**
-         * @var QListBox lstParentPagerPerson;
+         * @var QListBox lstParentPagerIndividual;
          * @access protected
          */
-		protected $lstParentPagerPerson;
+		protected $lstParentPagerIndividual;
 
         /**
          * @var QListBox lstParentPagerHousehold;
@@ -136,10 +136,10 @@
 		protected $lblServerIdentifier;
 
         /**
-         * @var QLabel lblParentPagerPersonId
+         * @var QLabel lblParentPagerIndividualId
          * @access protected
          */
-		protected $lblParentPagerPersonId;
+		protected $lblParentPagerIndividualId;
 
         /**
          * @var QLabel lblParentPagerHouseholdId
@@ -325,43 +325,43 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstParentPagerPerson
+		 * Create and setup QListBox lstParentPagerIndividual
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstParentPagerPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstParentPagerPerson = new QListBox($this->objParentObject, $strControlId);
-			$this->lstParentPagerPerson->Name = QApplication::Translate('Parent Pager Person');
-			$this->lstParentPagerPerson->AddItem(QApplication::Translate('- Select One -'), null);
+		public function lstParentPagerIndividual_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstParentPagerIndividual = new QListBox($this->objParentObject, $strControlId);
+			$this->lstParentPagerIndividual->Name = QApplication::Translate('Parent Pager Individual');
+			$this->lstParentPagerIndividual->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objParentPagerPersonCursor = ParentPagerIndividual::QueryCursor($objCondition, $objOptionalClauses);
+			$objParentPagerIndividualCursor = ParentPagerIndividual::QueryCursor($objCondition, $objOptionalClauses);
 
 			// Iterate through the Cursor
-			while ($objParentPagerPerson = ParentPagerIndividual::InstantiateCursor($objParentPagerPersonCursor)) {
-				$objListItem = new QListItem($objParentPagerPerson->__toString(), $objParentPagerPerson->Id);
-				if (($this->objParentPagerAddress->ParentPagerPerson) && ($this->objParentPagerAddress->ParentPagerPerson->Id == $objParentPagerPerson->Id))
+			while ($objParentPagerIndividual = ParentPagerIndividual::InstantiateCursor($objParentPagerIndividualCursor)) {
+				$objListItem = new QListItem($objParentPagerIndividual->__toString(), $objParentPagerIndividual->Id);
+				if (($this->objParentPagerAddress->ParentPagerIndividual) && ($this->objParentPagerAddress->ParentPagerIndividual->Id == $objParentPagerIndividual->Id))
 					$objListItem->Selected = true;
-				$this->lstParentPagerPerson->AddItem($objListItem);
+				$this->lstParentPagerIndividual->AddItem($objListItem);
 			}
 
 			// Return the QListBox
-			return $this->lstParentPagerPerson;
+			return $this->lstParentPagerIndividual;
 		}
 
 		/**
-		 * Create and setup QLabel lblParentPagerPersonId
+		 * Create and setup QLabel lblParentPagerIndividualId
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblParentPagerPersonId_Create($strControlId = null) {
-			$this->lblParentPagerPersonId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblParentPagerPersonId->Name = QApplication::Translate('Parent Pager Person');
-			$this->lblParentPagerPersonId->Text = ($this->objParentPagerAddress->ParentPagerPerson) ? $this->objParentPagerAddress->ParentPagerPerson->__toString() : null;
-			return $this->lblParentPagerPersonId;
+		public function lblParentPagerIndividualId_Create($strControlId = null) {
+			$this->lblParentPagerIndividualId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblParentPagerIndividualId->Name = QApplication::Translate('Parent Pager Individual');
+			$this->lblParentPagerIndividualId->Text = ($this->objParentPagerAddress->ParentPagerIndividual) ? $this->objParentPagerAddress->ParentPagerIndividual->__toString() : null;
+			return $this->lblParentPagerIndividualId;
 		}
 
 		/**
@@ -570,18 +570,18 @@
 			if ($this->txtServerIdentifier) $this->txtServerIdentifier->Text = $this->objParentPagerAddress->ServerIdentifier;
 			if ($this->lblServerIdentifier) $this->lblServerIdentifier->Text = $this->objParentPagerAddress->ServerIdentifier;
 
-			if ($this->lstParentPagerPerson) {
-					$this->lstParentPagerPerson->RemoveAllItems();
-				$this->lstParentPagerPerson->AddItem(QApplication::Translate('- Select One -'), null);
-				$objParentPagerPersonArray = ParentPagerIndividual::LoadAll();
-				if ($objParentPagerPersonArray) foreach ($objParentPagerPersonArray as $objParentPagerPerson) {
-					$objListItem = new QListItem($objParentPagerPerson->__toString(), $objParentPagerPerson->Id);
-					if (($this->objParentPagerAddress->ParentPagerPerson) && ($this->objParentPagerAddress->ParentPagerPerson->Id == $objParentPagerPerson->Id))
+			if ($this->lstParentPagerIndividual) {
+					$this->lstParentPagerIndividual->RemoveAllItems();
+				$this->lstParentPagerIndividual->AddItem(QApplication::Translate('- Select One -'), null);
+				$objParentPagerIndividualArray = ParentPagerIndividual::LoadAll();
+				if ($objParentPagerIndividualArray) foreach ($objParentPagerIndividualArray as $objParentPagerIndividual) {
+					$objListItem = new QListItem($objParentPagerIndividual->__toString(), $objParentPagerIndividual->Id);
+					if (($this->objParentPagerAddress->ParentPagerIndividual) && ($this->objParentPagerAddress->ParentPagerIndividual->Id == $objParentPagerIndividual->Id))
 						$objListItem->Selected = true;
-					$this->lstParentPagerPerson->AddItem($objListItem);
+					$this->lstParentPagerIndividual->AddItem($objListItem);
 				}
 			}
-			if ($this->lblParentPagerPersonId) $this->lblParentPagerPersonId->Text = ($this->objParentPagerAddress->ParentPagerPerson) ? $this->objParentPagerAddress->ParentPagerPerson->__toString() : null;
+			if ($this->lblParentPagerIndividualId) $this->lblParentPagerIndividualId->Text = ($this->objParentPagerAddress->ParentPagerIndividual) ? $this->objParentPagerAddress->ParentPagerIndividual->__toString() : null;
 
 			if ($this->lstParentPagerHousehold) {
 					$this->lstParentPagerHousehold->RemoveAllItems();
@@ -638,7 +638,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->txtServerIdentifier) $this->objParentPagerAddress->ServerIdentifier = $this->txtServerIdentifier->Text;
-				if ($this->lstParentPagerPerson) $this->objParentPagerAddress->ParentPagerPersonId = $this->lstParentPagerPerson->SelectedValue;
+				if ($this->lstParentPagerIndividual) $this->objParentPagerAddress->ParentPagerIndividualId = $this->lstParentPagerIndividual->SelectedValue;
 				if ($this->lstParentPagerHousehold) $this->objParentPagerAddress->ParentPagerHouseholdId = $this->lstParentPagerHousehold->SelectedValue;
 				if ($this->txtAddress1) $this->objParentPagerAddress->Address1 = $this->txtAddress1->Text;
 				if ($this->txtAddress2) $this->objParentPagerAddress->Address2 = $this->txtAddress2->Text;
@@ -700,12 +700,12 @@
 				case 'ServerIdentifierLabel':
 					if (!$this->lblServerIdentifier) return $this->lblServerIdentifier_Create();
 					return $this->lblServerIdentifier;
-				case 'ParentPagerPersonIdControl':
-					if (!$this->lstParentPagerPerson) return $this->lstParentPagerPerson_Create();
-					return $this->lstParentPagerPerson;
-				case 'ParentPagerPersonIdLabel':
-					if (!$this->lblParentPagerPersonId) return $this->lblParentPagerPersonId_Create();
-					return $this->lblParentPagerPersonId;
+				case 'ParentPagerIndividualIdControl':
+					if (!$this->lstParentPagerIndividual) return $this->lstParentPagerIndividual_Create();
+					return $this->lstParentPagerIndividual;
+				case 'ParentPagerIndividualIdLabel':
+					if (!$this->lblParentPagerIndividualId) return $this->lblParentPagerIndividualId_Create();
+					return $this->lblParentPagerIndividualId;
 				case 'ParentPagerHouseholdIdControl':
 					if (!$this->lstParentPagerHousehold) return $this->lstParentPagerHousehold_Create();
 					return $this->lstParentPagerHousehold;
@@ -774,8 +774,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'ServerIdentifierControl':
 						return ($this->txtServerIdentifier = QType::Cast($mixValue, 'QControl'));
-					case 'ParentPagerPersonIdControl':
-						return ($this->lstParentPagerPerson = QType::Cast($mixValue, 'QControl'));
+					case 'ParentPagerIndividualIdControl':
+						return ($this->lstParentPagerIndividual = QType::Cast($mixValue, 'QControl'));
 					case 'ParentPagerHouseholdIdControl':
 						return ($this->lstParentPagerHousehold = QType::Cast($mixValue, 'QControl'));
 					case 'Address1Control':

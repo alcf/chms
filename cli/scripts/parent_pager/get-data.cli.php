@@ -57,7 +57,6 @@ printf('[%5s/%5s]', $intCurrentRow++, $intRowCount);
 print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strHouseHold'] . "\r\n";
 		ParentPagerHousehold::CreateOrUpdateForMsSqlRow($objRow);
 	}
-*/
 
 	///////////////////////////
 	// ParentPager Individual
@@ -73,5 +72,22 @@ printf('[%5s/%5s]', $intCurrentRow++, $intRowCount);
 		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
 print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strFirstName'] . ' ' . $objRow['strLastName'] . "\r\n";
 		ParentPagerIndividual::CreateOrUpdateForMsSqlRow($objRow);
+	}
+*/
+
+	///////////////////////////
+	// ParentPager Address
+	////////////////////////////
+	$strTableName = 'tblAddress';
+	$strPkColumnName = 'lngAddressID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
+	while ($objRow = mssql_fetch_assoc($objResult)) {
+printf('[%5s/%5s]', $intCurrentRow++, $intRowCount); 
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strAddress1'] . ' ' . $objRow['strCity'] . "\r\n";
+		ParentPagerAddress::CreateOrUpdateForMsSqlRow($objRow);
 	}
 ?>

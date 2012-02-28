@@ -27,7 +27,53 @@
 			return sprintf('ParentPagerAddress Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will create a new record or update an existing record given the MS SQL Data Row
+		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
+		 * @return ParentPagerAddress
+		 */
+		public static function CreateOrUpdateForMsSqlRow($objRow) {
+			$intServerIdentifier = $objRow['lngAddressID'];
+			$intEntityIdentifier = $objRow['lngEntityID'];
+			$strEntityCode = trim(strtolower($objRow['chrEntityTypeCode']));
+			$strAddress1 = trim($objRow['strAddress1']);
+			$strAddress2 = trim($objRow['strAddress2']);
+			$strAddress3 = trim($objRow['strAddress3']);
+			$strCity = trim($objRow['strCity']);
+			$strState = strtoupper(trim($objRow['strState']));
+			if (!$strState) $strState = null;
+			$strZip = trim($objRow['strZip']);
+									
+			$objParentPagerAddress = ParentPagerAddress::LoadByServerIdentifier($intServerIdentifier);
+			if (!$objParentPagerAddress) {
+				$objParentPagerAddress = new ParentPagerAddress();
+				$objParentPagerAddress->ServerIdentifier = $intServerIdentifier;
+			}
 
+			switch ($strEntityCode) {
+				case 'hse':
+					$objParentPagerAddress->ParentPagerHousehold = ParentPagerHousehold::LoadByServerIdentifier($intEntityIdentifier);
+					$objParentPagerAddress->ParentPagerIndividual = null;
+					break;
+				case 'att':
+					$objParentPagerAddress->ParentPagerHousehold = null;
+					$objParentPagerAddress->ParentPagerIndividual = ParentPagerIndividual::LoadByServerIdentifier($intEntityIdentifier);
+					break;
+				default:
+					throw new Exception('Invalid EntityCode for MSSQL Row ' . $intServerIdentifier);
+			}
+			
+			$objParentPagerAddress->Address1 = $strAddress1;
+			$objParentPagerAddress->Address2 = $strAddress2;
+			$objParentPagerAddress->Address3 = $strAddress3;
+			$objParentPagerAddress->City = $strCity;
+			$objParentPagerAddress->State = $strState;
+			$objParentPagerAddress->ZipCode = $strZip;
+			$objParentPagerAddress->Save();
+
+			return $objParentPagerAddress;
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
