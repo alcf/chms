@@ -42,7 +42,7 @@
 	// One Table at a Time...
 
 
-	////////////////////////////
+/*	////////////////////////////
 	// ParentPager Station, Period and Program
 	////////////////////////////
 	$strTableName = 'tblStation';
@@ -78,7 +78,7 @@
 	////////////////////////////
 	// ParentPager Household
 	////////////////////////////
-/*	$strTableName = 'tblHousehold';
+	$strTableName = 'tblHousehold';
 	$strPkColumnName = 'lngHouseHoldID';
 	$intRowCount = GetRowCount($strTableName);
 	$intCurrentRow = 0;
@@ -123,4 +123,38 @@ print '  -  ID #' . $objRow[$strPkColumnName] . '  -  ' . $objRow['strAddress1']
 		ParentPagerAddress::CreateOrUpdateForMsSqlRow($objRow);
 	}
 */
+
+
+	///////////////////////////
+	// ParentPager Child Records
+	////////////////////////////
+	$strTableName = 'tblChildInStationHistory';
+	$strPkColumnName = 'lngChildHistoryID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
+	while ($objRow = mssql_fetch_assoc($objResult)) {
+printf('[%6s/%6s]', $intCurrentRow++, $intRowCount); 
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+print '  -  ID #' . $objRow[$strPkColumnName] . "\r\n";
+		ParentPagerChildHistory::CreateOrUpdateForMsSqlRow($objRow);
+	}
+
+
+	///////////////////////////
+	// ParentPager Volunteer Records
+	////////////////////////////
+	$strTableName = 'tblAttendantInStationHistory';
+	$strPkColumnName = 'lngAttendantHistoryID';
+	$intRowCount = GetRowCount($strTableName);
+	$intCurrentRow = 0;
+
+	$objResult = GetPkResultForTableColumn($strTableName, $strPkColumnName);
+	while ($objRow = mssql_fetch_assoc($objResult)) {
+printf('[%6s/%6s]', $intCurrentRow++, $intRowCount); 
+		$objRow = GetRowForTableColumnRow($strTableName, $strPkColumnName, $objRow);
+print '  -  ID #' . $objRow[$strPkColumnName] . "\r\n";
+		ParentPagerAttendantHistory::CreateOrUpdateForMsSqlRow($objRow);
+	}
 ?>

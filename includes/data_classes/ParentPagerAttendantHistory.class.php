@@ -27,6 +27,37 @@
 			return sprintf('ParentPagerAttendantHistory Object %s',  $this->intId);
 		}
 
+		/**
+		 * This will create a new record or update an existing record given the MS SQL Data Row
+		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
+		 * @return ParentPagerAttendantHistory
+		 */
+		public static function CreateOrUpdateForMsSqlRow($objRow) {
+			$intServerIdentifier = $objRow['lngAttendantHistoryID'];
+			$intIndividualIdentifier = $objRow['lngIndividualID'];
+			$intStationIdentifier = $objRow['lngStationID'];
+			$intPeriodIdentifier = $objRow['lngPeriodID'];
+			$intProgramIdentifier = $objRow['lngProgramID'];
+			$dttDateIn = new QDateTime($objRow['dtmStartDateTime']);
+			$dttDateOut = new QDateTime($objRow['dtmEndDateTime']);
+
+			$objParentPagerAttendantHistory = ParentPagerAttendantHistory::LoadByServerIdentifier($intServerIdentifier);
+			if (!$objParentPagerAttendantHistory) {
+				$objParentPagerAttendantHistory = new ParentPagerAttendantHistory();
+				$objParentPagerAttendantHistory->ServerIdentifier = $intServerIdentifier;
+			}
+
+			$objParentPagerAttendantHistory->ParentPagerIndividual = ParentPagerIndividual::LoadByServerIdentifier($intIndividualIdentifier);
+			$objParentPagerAttendantHistory->ParentPagerStation = ParentPagerStation::LoadByServerIdentifier($intStationIdentifier);
+			$objParentPagerAttendantHistory->ParentPagerPeriod = ParentPagerPeriod::LoadByServerIdentifier($intPeriodIdentifier);
+			$objParentPagerAttendantHistory->ParentPagerProgram = ParentPagerProgram::LoadByServerIdentifier($intProgramIdentifier);
+			$objParentPagerAttendantHistory->DateIn = $dttDateIn;
+			$objParentPagerAttendantHistory->DateOut = $dttDateOut;
+
+			$objParentPagerAttendantHistory->Save();
+
+			return $objParentPagerAttendantHistory;
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

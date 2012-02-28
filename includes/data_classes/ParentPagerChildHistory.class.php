@@ -28,6 +28,40 @@
 		}
 
 
+		/**
+		 * This will create a new record or update an existing record given the MS SQL Data Row
+		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
+		 * @return ParentPagerChildHistory
+		 */
+		public static function CreateOrUpdateForMsSqlRow($objRow) {
+			$intServerIdentifier = $objRow['lngChildHistoryID'];
+			$intIndividualIdentifier = $objRow['lngIndividualID'];
+			$intStationIdentifier = $objRow['lngStationID'];
+			$intPeriodIdentifier = $objRow['lngPeriodID'];
+			$intDropoffIndividualIdentifier = $objRow['lngDropOffByID'];
+			$intPickupIndividualIdentifier = $objRow['lngPickupByID'];
+			$dttDateIn = new QDateTime($objRow['dtmCheckInDateTime']);
+			$dttDateOut = new QDateTime($objRow['dtmCheckOutDateTime']);
+
+			$objParentPagerChildHistory = ParentPagerChildHistory::LoadByServerIdentifier($intServerIdentifier);
+			if (!$objParentPagerChildHistory) {
+				$objParentPagerChildHistory = new ParentPagerChildHistory();
+				$objParentPagerChildHistory->ServerIdentifier = $intServerIdentifier;
+			}
+
+			$objParentPagerChildHistory->ParentPagerIndividual = ParentPagerIndividual::LoadByServerIdentifier($intIndividualIdentifier);
+			$objParentPagerChildHistory->ParentPagerStation = ParentPagerStation::LoadByServerIdentifier($intStationIdentifier);
+			$objParentPagerChildHistory->ParentPagerPeriod = ParentPagerPeriod::LoadByServerIdentifier($intPeriodIdentifier);
+			$objParentPagerChildHistory->DropoffByParentPagerIndividual = ParentPagerIndividual::LoadByServerIdentifier($intDropoffIndividualIdentifier);
+			$objParentPagerChildHistory->PickupByParentPagerIndividual = ParentPagerIndividual::LoadByServerIdentifier($intPickupIndividualIdentifier);
+			$objParentPagerChildHistory->DateIn = $dttDateIn;
+			$objParentPagerChildHistory->DateOut = $dttDateOut;
+
+			$objParentPagerChildHistory->Save();
+
+			return $objParentPagerChildHistory;
+		}
+
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
