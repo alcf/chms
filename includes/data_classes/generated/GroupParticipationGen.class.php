@@ -21,7 +21,6 @@
 	 * @property integer $GroupRoleId the value for intGroupRoleId 
 	 * @property QDateTime $DateStart the value for dttDateStart (Not Null)
 	 * @property QDateTime $DateEnd the value for dttDateEnd 
-	 * @property boolean $ModeratorFlag the value for blnModeratorFlag 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Group $Group the value for the Group object referenced by intGroupId (Not Null)
 	 * @property GroupRole $GroupRole the value for the GroupRole object referenced by intGroupRoleId 
@@ -79,14 +78,6 @@
 		 */
 		protected $dttDateEnd;
 		const DateEndDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column group_participation.moderator_flag
-		 * @var boolean blnModeratorFlag
-		 */
-		protected $blnModeratorFlag;
-		const ModeratorFlagDefault = null;
 
 
 		/**
@@ -457,7 +448,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'group_role_id', $strAliasPrefix . 'group_role_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_start', $strAliasPrefix . 'date_start');
 			$objBuilder->AddSelectItem($strTableName, 'date_end', $strAliasPrefix . 'date_end');
-			$objBuilder->AddSelectItem($strTableName, 'moderator_flag', $strAliasPrefix . 'moderator_flag');
 		}
 
 
@@ -501,8 +491,6 @@
 			$objToReturn->dttDateStart = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_end', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_end'] : $strAliasPrefix . 'date_end';
 			$objToReturn->dttDateEnd = $objDbRow->GetColumn($strAliasName, 'Date');
-			$strAliasName = array_key_exists($strAliasPrefix . 'moderator_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'moderator_flag'] : $strAliasPrefix . 'moderator_flag';
-			$objToReturn->blnModeratorFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -867,15 +855,13 @@
 							`group_id`,
 							`group_role_id`,
 							`date_start`,
-							`date_end`,
-							`moderator_flag`
+							`date_end`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-							' . $objDatabase->SqlVariable($this->blnModeratorFlag) . '
+							' . $objDatabase->SqlVariable($this->dttDateEnd) . '
 						)
 					');
 
@@ -899,8 +885,7 @@
 							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
 							`group_role_id` = ' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
 							`date_start` = ' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-							`moderator_flag` = ' . $objDatabase->SqlVariable($this->blnModeratorFlag) . '
+							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -990,7 +975,6 @@
 			$this->GroupRoleId = $objReloaded->GroupRoleId;
 			$this->dttDateStart = $objReloaded->dttDateStart;
 			$this->dttDateEnd = $objReloaded->dttDateEnd;
-			$this->blnModeratorFlag = $objReloaded->blnModeratorFlag;
 		}
 
 		/**
@@ -1009,7 +993,6 @@
 					`group_role_id`,
 					`date_start`,
 					`date_end`,
-					`moderator_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1020,7 +1003,6 @@
 					' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
 					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
 					' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
-					' . $objDatabase->SqlVariable($this->blnModeratorFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1100,11 +1082,6 @@
 					// Gets the value for dttDateEnd 
 					// @return QDateTime
 					return $this->dttDateEnd;
-
-				case 'ModeratorFlag':
-					// Gets the value for blnModeratorFlag 
-					// @return boolean
-					return $this->blnModeratorFlag;
 
 
 				///////////////////
@@ -1232,17 +1209,6 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateEnd = QType::Cast($mixValue, QType::DateTime));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'ModeratorFlag':
-					// Sets the value for blnModeratorFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnModeratorFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1385,7 +1351,6 @@
 			$strToReturn .= '<element name="GroupRole" type="xsd1:GroupRole"/>';
 			$strToReturn .= '<element name="DateStart" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateEnd" type="xsd:dateTime"/>';
-			$strToReturn .= '<element name="ModeratorFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1426,8 +1391,6 @@
 				$objToReturn->dttDateStart = new QDateTime($objSoapObject->DateStart);
 			if (property_exists($objSoapObject, 'DateEnd'))
 				$objToReturn->dttDateEnd = new QDateTime($objSoapObject->DateEnd);
-			if (property_exists($objSoapObject, 'ModeratorFlag'))
-				$objToReturn->blnModeratorFlag = $objSoapObject->ModeratorFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1486,7 +1449,6 @@
 	 * @property-read QQNodeGroupRole $GroupRole
 	 * @property-read QQNode $DateStart
 	 * @property-read QQNode $DateEnd
-	 * @property-read QQNode $ModeratorFlag
 	 */
 	class QQNodeGroupParticipation extends QQNode {
 		protected $strTableName = 'group_participation';
@@ -1512,8 +1474,6 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
-				case 'ModeratorFlag':
-					return new QQNode('moderator_flag', 'ModeratorFlag', 'boolean', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1538,7 +1498,6 @@
 	 * @property-read QQNodeGroupRole $GroupRole
 	 * @property-read QQNode $DateStart
 	 * @property-read QQNode $DateEnd
-	 * @property-read QQNode $ModeratorFlag
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeGroupParticipation extends QQReverseReferenceNode {
@@ -1565,8 +1524,6 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
-				case 'ModeratorFlag':
-					return new QQNode('moderator_flag', 'ModeratorFlag', 'boolean', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

@@ -1630,7 +1630,7 @@
 				} else {
 					foreach ($objExistingAddressListArray as $objExistingAddress) {
 						if ($objExistingAddress->IsEqualTo($objAddress)) {
-							print "DUPLICATE FOUND!! Deleting - " . $objAddress->__get('AddressFullLine') ."\r\n";
+							print "Deleting - " . $objAddress->__get('AddressFullLine') ."from ".$this->FirstName." ".$this->LastName."\r\n";
 							// now to figure out which one to delete.
 							if ($objAddress->__get('PersonId') && !$objExistingAddress->__get('PersonId')) {
 								$objAddress->delete();
@@ -1656,27 +1656,18 @@
 		* @return none
 		*/
 		public function RemoveDuplicateAddresses() {
-			print "called RemoveDuplicateAddresses" . "\r\n";
-			
-			print "BEFORE Address List: \r\n";
-			$objAddressArray = $this->GetAllAssociatedAddressArray(null,false);
-			foreach($objAddressArray as $objAddress) {
-				print $objAddress->__get('AddressFullLine') . "\r\n";
-			}
 			/*
 			 * 1) Obtain household/s of the person.
 			 * 2) For each household, check for duplication of addresses
 			 * 3) If duplication found, remove.
 			 */	
 			if (!$this->__get('_HouseholdParticipation')){
-				print "_HouseholdParticipation is null - this must be a multiple household person\r\n";
 				$objHouseholdArray = $this->__get('_HouseholdParticipationArray');
 				foreach ($objHouseholdArray as $objHousehold) {
 					$objAddressArray = $objHousehold->GetAddressArray();
 					$this->RemoveRedundantAddresses($objAddressArray);
 				}
 			} else {
-				print "_HouseholdParticipation NOT null You can get the household....";
 				$this->RemoveRedundantAddresses($this->__get('_HouseholdParticipation'));
 			}
 			
@@ -1687,12 +1678,6 @@
 			*/
 			$objAddressArray = $this->GetAllAssociatedAddressArray(null,false);
 			$this->RemoveRedundantAddresses($objAddressArray);
-
-			print "\r\n\r\nAFTER Address List: \r\n";
-			$objAddressArray = $this->GetAllAssociatedAddressArray(null,false);
-			foreach($objAddressArray as $objAddress) {
-				print $objAddress->__get('AddressFullLine') . "\r\n";
-			}
 		}
 		
 		// Override or Create New Load/Count methods

@@ -202,6 +202,13 @@
 		QApplicationBase::$ClassFile['groupmetacontrol'] = __DATA_META_CONTROLS__ . '/GroupMetaControl.class.php';
 		QApplicationBase::$ClassFile['groupdatagrid'] = __DATA_META_CONTROLS__ . '/GroupDataGrid.class.php';
 
+	// ClassPaths for the GroupAuthorizedSender class
+		QApplicationBase::$ClassFile['groupauthorizedsender'] = __DATA_CLASSES__ . '/GroupAuthorizedSender.class.php';
+		QApplicationBase::$ClassFile['qqnodegroupauthorizedsender'] = __DATA_CLASSES__ . '/GroupAuthorizedSender.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegroupauthorizedsender'] = __DATA_CLASSES__ . '/GroupAuthorizedSender.class.php';
+		QApplicationBase::$ClassFile['groupauthorizedsendermetacontrol'] = __DATA_META_CONTROLS__ . '/GroupAuthorizedSenderMetaControl.class.php';
+		QApplicationBase::$ClassFile['groupauthorizedsenderdatagrid'] = __DATA_META_CONTROLS__ . '/GroupAuthorizedSenderDataGrid.class.php';
+
 	// ClassPaths for the GroupCategory class
 		QApplicationBase::$ClassFile['groupcategory'] = __DATA_CLASSES__ . '/GroupCategory.class.php';
 		QApplicationBase::$ClassFile['qqnodegroupcategory'] = __DATA_CLASSES__ . '/GroupCategory.class.php';

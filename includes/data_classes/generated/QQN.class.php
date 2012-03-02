@@ -175,6 +175,12 @@
 			return new QQNodeGroup('group', null, null);
 		}
 		/**
+		 * @return QQNodeGroupAuthorizedSender
+		 */
+		static public function GroupAuthorizedSender() {
+			return new QQNodeGroupAuthorizedSender('group_authorized_sender', null, null);
+		}
+		/**
 		 * @return QQNodeGroupCategory
 		 */
 		static public function GroupCategory() {

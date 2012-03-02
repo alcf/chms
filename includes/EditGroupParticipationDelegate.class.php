@@ -18,6 +18,7 @@
 		public $btnEditOkay;
 		public $btnEditCancel;
 		public $btnEditDelete;
+		public $chkIsModerator;
 
 		public $objParticipationArray;
 		protected $intEditParticipationIndex;
@@ -45,6 +46,8 @@
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Role', '<?= $_CONTROL->ParentControl->objDelegate->RenderRole($_ITEM); ?>', 'HtmlEntities=false', 'Width=100px'));
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Started', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateStart($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgParticipations->AddColumn(new QDataGridColumn('Participation Ended', '<?= $_CONTROL->ParentControl->objDelegate->RenderDateEnd($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
+			$this->dtgParticipations->AddColumn(new QDataGridColumn('Make Moderator', '<?= $_CONTROL->ParentControl->objDelegate->RenderModerator($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px')); 
+			
 			$this->dtgParticipations->SetDataBinder('dtgParticipations_Bind', $this);
 
 			$this->pxyEdit = new QControlProxy($this->pnlContent);
@@ -76,7 +79,7 @@
 			$this->dtxEditEnd = new QDateTimeTextBox($this->dlgEdit);
 			$this->dtxEditEnd->Name = 'Ended';
 			$this->calEditEnd = new QCalendar($this->dlgEdit, $this->dtxEditEnd);
-
+			
 			$this->dtxEditStart->RemoveAllActions(QClickEvent::EventName);
 			$this->dtxEditEnd->RemoveAllActions(QClickEvent::EventName);
 
@@ -146,6 +149,31 @@
 			return sprintf('<a href="" %s>%s</a>', $this->pxyEdit->RenderAsEvents($this->dtgParticipations->CurrentRowIndex . '_', false), $strValue);
 		}
 
+		public function RenderModerator (GroupParticipation $objParticipation) {
+			$this->chkIsModerator = new QCheckBox($this->dtgParticipations);
+			$this->chkIsModerator->Text = 'Make Moderator';
+			
+			if($objParticipation->__get('ModeratorFlag'))
+				$this->chkIsModerator->__set("Checked",true);
+			else
+				$this->chkIsModerator->__set("Checked",false);
+
+			return $this->chkIsModerator->Render(false);
+		}
+		
+		// This chkModerator_Click action will update the moderator row
+		protected function chkModerator_Click($strFormId, $strControlId, $strParameter) {
+			// We look to the Parameter for the ID of the person being checked
+			$intGroupParticipationId = $strParameter;
+		
+			// Let's get the selected Group Participation
+			$objParticipation = GroupParticipation::Load($intGroupParticipationId);
+			if ($this->$chkIsModerator->Checked)
+				$objParticipation->__set("ModeratorFlag",true);
+			else
+				$objParticipation->__set("ModeratorFlag",false);
+		}
+		
 		public function dtgParticipations_Bind() {
 			$this->strRole = null;
 			$this->dtgParticipations->DataSource = $this->objParticipationArray;
@@ -262,6 +290,10 @@
 
 			// Save all the participation records
 			foreach ($this->objParticipationArray as $objParticipation) {
+				if ($this->chkIsModerator->Checked)
+					$objParticipation->__set("ModeratorFlag",true);
+				else
+					$objParticipation->__set("ModeratorFlag",false);
 				$objParticipation->Save();
 				if (array_key_exists($objParticipation->Id, $objArrayToDelete)) {
 					unset($objArrayToDelete[$objParticipation->Id]);

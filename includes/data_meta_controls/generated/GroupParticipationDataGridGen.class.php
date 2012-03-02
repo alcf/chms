@@ -302,7 +302,6 @@
 				case 'GroupRole': return QQN::GroupParticipation()->GroupRole;
 				case 'DateStart': return QQN::GroupParticipation()->DateStart;
 				case 'DateEnd': return QQN::GroupParticipation()->DateEnd;
-				case 'ModeratorFlag': return QQN::GroupParticipation()->ModeratorFlag;
 				default: throw new QCallerException('Simple Property not found in GroupParticipationDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

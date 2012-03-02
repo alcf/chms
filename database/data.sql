@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('007');
+INSERT INTO _version VALUES('008');
 
 
 

@@ -72,6 +72,8 @@
 	 * @property Email[] $_EmailArray the value for the private _objEmailArray (Read-Only) if set due to an ExpandAsArray on the email.person_id reverse relationship
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.person_id reverse relationship
 	 * @property EmailMessageRoute[] $_EmailMessageRouteArray the value for the private _objEmailMessageRouteArray (Read-Only) if set due to an ExpandAsArray on the email_message_route.person_id reverse relationship
+	 * @property GroupAuthorizedSender $_GroupAuthorizedSender the value for the private _objGroupAuthorizedSender (Read-Only) if set due to an expansion on the group_authorized_sender.person_id reverse relationship
+	 * @property GroupAuthorizedSender[] $_GroupAuthorizedSenderArray the value for the private _objGroupAuthorizedSenderArray (Read-Only) if set due to an ExpandAsArray on the group_authorized_sender.person_id reverse relationship
 	 * @property GroupParticipation $_GroupParticipation the value for the private _objGroupParticipation (Read-Only) if set due to an expansion on the group_participation.person_id reverse relationship
 	 * @property GroupParticipation[] $_GroupParticipationArray the value for the private _objGroupParticipationArray (Read-Only) if set due to an ExpandAsArray on the group_participation.person_id reverse relationship
 	 * @property HeadShot $_HeadShot the value for the private _objHeadShot (Read-Only) if set due to an expansion on the head_shot.person_id reverse relationship
@@ -529,6 +531,22 @@
 		 * @var EmailMessageRoute[] _objEmailMessageRouteArray;
 		 */
 		private $_objEmailMessageRouteArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single GroupAuthorizedSender object
+		 * (of type GroupAuthorizedSender), if this Person object was restored with
+		 * an expansion on the group_authorized_sender association table.
+		 * @var GroupAuthorizedSender _objGroupAuthorizedSender;
+		 */
+		private $_objGroupAuthorizedSender;
+
+		/**
+		 * Private member variable that stores a reference to an array of GroupAuthorizedSender objects
+		 * (of type GroupAuthorizedSender[]), if this Person object was restored with
+		 * an ExpandAsArray on the group_authorized_sender association table.
+		 * @var GroupAuthorizedSender[] _objGroupAuthorizedSenderArray;
+		 */
+		private $_objGroupAuthorizedSenderArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single GroupParticipation object
@@ -1432,6 +1450,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'groupauthorizedsender__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupAuthorizedSenderArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupAuthorizedSenderArray[$intPreviousChildItemCount - 1];
+						$objChildItem = GroupAuthorizedSender::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupauthorizedsender__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupAuthorizedSenderArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupAuthorizedSenderArray[] = GroupAuthorizedSender::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupauthorizedsender__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'groupparticipation__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1917,6 +1949,16 @@
 					$objToReturn->_objEmailMessageRouteArray[] = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objEmailMessageRoute = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for GroupAuthorizedSender Virtual Binding
+			$strAlias = $strAliasPrefix . 'groupauthorizedsender__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupAuthorizedSenderArray[] = GroupAuthorizedSender::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupauthorizedsender__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroupAuthorizedSender = GroupAuthorizedSender::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupauthorizedsender__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for GroupParticipation Virtual Binding
@@ -3295,6 +3337,18 @@
 					// if set due to an ExpandAsArray on the email_message_route.person_id reverse relationship
 					// @return EmailMessageRoute[]
 					return (array) $this->_objEmailMessageRouteArray;
+
+				case '_GroupAuthorizedSender':
+					// Gets the value for the private _objGroupAuthorizedSender (Read-Only)
+					// if set due to an expansion on the group_authorized_sender.person_id reverse relationship
+					// @return GroupAuthorizedSender
+					return $this->_objGroupAuthorizedSender;
+
+				case '_GroupAuthorizedSenderArray':
+					// Gets the value for the private _objGroupAuthorizedSenderArray (Read-Only)
+					// if set due to an ExpandAsArray on the group_authorized_sender.person_id reverse relationship
+					// @return GroupAuthorizedSender[]
+					return (array) $this->_objGroupAuthorizedSenderArray;
 
 				case '_GroupParticipation':
 					// Gets the value for the private _objGroupParticipation (Read-Only)
@@ -5227,6 +5281,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`email_message_route`
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for GroupAuthorizedSender
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated GroupAuthorizedSenders as an array of GroupAuthorizedSender objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupAuthorizedSender[]
+		*/ 
+		public function GetGroupAuthorizedSenderArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return GroupAuthorizedSender::LoadArrayByPersonId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated GroupAuthorizedSenders
+		 * @return int
+		*/ 
+		public function CountGroupAuthorizedSenders() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return GroupAuthorizedSender::CountByPersonId($this->intId);
+		}
+
+		/**
+		 * Associates a GroupAuthorizedSender
+		 * @param GroupAuthorizedSender $objGroupAuthorizedSender
+		 * @return void
+		*/ 
+		public function AssociateGroupAuthorizedSender(GroupAuthorizedSender $objGroupAuthorizedSender) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupAuthorizedSender on this unsaved Person.');
+			if ((is_null($objGroupAuthorizedSender->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupAuthorizedSender on this Person with an unsaved GroupAuthorizedSender.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_authorized_sender`
+				SET
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupAuthorizedSender->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupAuthorizedSender->PersonId = $this->intId;
+				$objGroupAuthorizedSender->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a GroupAuthorizedSender
+		 * @param GroupAuthorizedSender $objGroupAuthorizedSender
+		 * @return void
+		*/ 
+		public function UnassociateGroupAuthorizedSender(GroupAuthorizedSender $objGroupAuthorizedSender) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupAuthorizedSender on this unsaved Person.');
+			if ((is_null($objGroupAuthorizedSender->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupAuthorizedSender on this Person with an unsaved GroupAuthorizedSender.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_authorized_sender`
+				SET
+					`person_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupAuthorizedSender->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupAuthorizedSender->PersonId = null;
+				$objGroupAuthorizedSender->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all GroupAuthorizedSenders
+		 * @return void
+		*/ 
+		public function UnassociateAllGroupAuthorizedSenders() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupAuthorizedSender on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupAuthorizedSender::LoadArrayByPersonId($this->intId) as $objGroupAuthorizedSender) {
+					$objGroupAuthorizedSender->PersonId = null;
+					$objGroupAuthorizedSender->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_authorized_sender`
+				SET
+					`person_id` = null
+				WHERE
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated GroupAuthorizedSender
+		 * @param GroupAuthorizedSender $objGroupAuthorizedSender
+		 * @return void
+		*/ 
+		public function DeleteAssociatedGroupAuthorizedSender(GroupAuthorizedSender $objGroupAuthorizedSender) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupAuthorizedSender on this unsaved Person.');
+			if ((is_null($objGroupAuthorizedSender->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupAuthorizedSender on this Person with an unsaved GroupAuthorizedSender.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_authorized_sender`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupAuthorizedSender->Id) . ' AND
+					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupAuthorizedSender->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated GroupAuthorizedSenders
+		 * @return void
+		*/ 
+		public function DeleteAllGroupAuthorizedSenders() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupAuthorizedSender on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupAuthorizedSender::LoadArrayByPersonId($this->intId) as $objGroupAuthorizedSender) {
+					$objGroupAuthorizedSender->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_authorized_sender`
 				WHERE
 					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -9394,6 +9630,7 @@
 	 * @property-read QQReverseReferenceNodeComment $Comment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeGroupAuthorizedSender $GroupAuthorizedSender
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
 	 * @property-read QQReverseReferenceNodeHeadShot $HeadShot
 	 * @property-read QQReverseReferenceNodeHousehold $HouseholdAsHead
@@ -9513,6 +9750,8 @@
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'person_id');
+				case 'GroupAuthorizedSender':
+					return new QQReverseReferenceNodeGroupAuthorizedSender($this, 'groupauthorizedsender', 'reverse_reference', 'person_id');
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'person_id');
 				case 'HeadShot':
@@ -9614,6 +9853,7 @@
 	 * @property-read QQReverseReferenceNodeComment $Comment
 	 * @property-read QQReverseReferenceNodeEmail $Email
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeGroupAuthorizedSender $GroupAuthorizedSender
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
 	 * @property-read QQReverseReferenceNodeHeadShot $HeadShot
 	 * @property-read QQReverseReferenceNodeHousehold $HouseholdAsHead
@@ -9734,6 +9974,8 @@
 					return new QQReverseReferenceNodeEmail($this, 'email', 'reverse_reference', 'person_id');
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'person_id');
+				case 'GroupAuthorizedSender':
+					return new QQReverseReferenceNodeGroupAuthorizedSender($this, 'groupauthorizedsender', 'reverse_reference', 'person_id');
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'person_id');
 				case 'HeadShot':

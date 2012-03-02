@@ -28,8 +28,6 @@
 	 * property-read QLabel $DateStartLabel
 	 * property QDateTimePicker $DateEndControl
 	 * property-read QLabel $DateEndLabel
-	 * property QCheckBox $ModeratorFlagControl
-	 * property-read QLabel $ModeratorFlagLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -97,12 +95,6 @@
          */
 		protected $calDateEnd;
 
-        /**
-         * @var QCheckBox chkModeratorFlag;
-         * @access protected
-         */
-		protected $chkModeratorFlag;
-
 
 		// Controls that allow the viewing of GroupParticipation's individual data fields
         /**
@@ -134,12 +126,6 @@
          * @access protected
          */
 		protected $lblDateEnd;
-
-        /**
-         * @var QLabel lblModeratorFlag
-         * @access protected
-         */
-		protected $lblModeratorFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -440,30 +426,6 @@
 
 		protected $strDateEndDateTimeFormat;
 
-		/**
-		 * Create and setup QCheckBox chkModeratorFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
-		 */
-		public function chkModeratorFlag_Create($strControlId = null) {
-			$this->chkModeratorFlag = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkModeratorFlag->Name = QApplication::Translate('Moderator Flag');
-			$this->chkModeratorFlag->Checked = $this->objGroupParticipation->ModeratorFlag;
-			return $this->chkModeratorFlag;
-		}
-
-		/**
-		 * Create and setup QLabel lblModeratorFlag
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblModeratorFlag_Create($strControlId = null) {
-			$this->lblModeratorFlag = new QLabel($this->objParentObject, $strControlId);
-			$this->lblModeratorFlag->Name = QApplication::Translate('Moderator Flag');
-			$this->lblModeratorFlag->Text = ($this->objGroupParticipation->ModeratorFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblModeratorFlag;
-		}
-
 
 
 		/**
@@ -524,9 +486,6 @@
 			if ($this->calDateEnd) $this->calDateEnd->DateTime = $this->objGroupParticipation->DateEnd;
 			if ($this->lblDateEnd) $this->lblDateEnd->Text = sprintf($this->objGroupParticipation->DateEnd) ? $this->objGroupParticipation->__toString($this->strDateEndDateTimeFormat) : null;
 
-			if ($this->chkModeratorFlag) $this->chkModeratorFlag->Checked = $this->objGroupParticipation->ModeratorFlag;
-			if ($this->lblModeratorFlag) $this->lblModeratorFlag->Text = ($this->objGroupParticipation->ModeratorFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
 		}
 
 
@@ -555,7 +514,6 @@
 				if ($this->lstGroupRole) $this->objGroupParticipation->GroupRoleId = $this->lstGroupRole->SelectedValue;
 				if ($this->calDateStart) $this->objGroupParticipation->DateStart = $this->calDateStart->DateTime;
 				if ($this->calDateEnd) $this->objGroupParticipation->DateEnd = $this->calDateEnd->DateTime;
-				if ($this->chkModeratorFlag) $this->objGroupParticipation->ModeratorFlag = $this->chkModeratorFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -634,12 +592,6 @@
 				case 'DateEndLabel':
 					if (!$this->lblDateEnd) return $this->lblDateEnd_Create();
 					return $this->lblDateEnd;
-				case 'ModeratorFlagControl':
-					if (!$this->chkModeratorFlag) return $this->chkModeratorFlag_Create();
-					return $this->chkModeratorFlag;
-				case 'ModeratorFlagLabel':
-					if (!$this->lblModeratorFlag) return $this->lblModeratorFlag_Create();
-					return $this->lblModeratorFlag;
 				default:
 					try {
 						return parent::__get($strName);
@@ -674,8 +626,6 @@
 						return ($this->calDateStart = QType::Cast($mixValue, 'QControl'));
 					case 'DateEndControl':
 						return ($this->calDateEnd = QType::Cast($mixValue, 'QControl'));
-					case 'ModeratorFlagControl':
-						return ($this->chkModeratorFlag = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}
