@@ -347,7 +347,7 @@
 				'Width=' . ($blnDisplayRoleColumn ? '190px' : '220px'));
 			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>',
 				'Width=' . ($blnDisplayRoleColumn ? '60px' : '105px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Moderator?', '<?= $_CONTROL->ParentControl->RenderModerator($_ITEM); ?>', 'HtmlEntities=true', 'Width=80px'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Authorized Sender', '<?= $_CONTROL->ParentControl->RenderAuthorizedSender($_ITEM); ?>', 'HtmlEntities=true', 'Width=80px'));
 			
 			if ($blnDisplayRoleColumn) {
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false', 'Width=180px'));
@@ -397,17 +397,12 @@
 		/*
 		 * GJS - render the moderator flag...?
 		 */
-		public function RenderModerator(Person $objPerson) {
-			$objParticipations = GroupParticipation::LoadArrayByPersonIdGroupId($objPerson->Id, $this->objGroup->Id, array(
-				QQ::OrderBy(QQN::GroupParticipation()->GroupRole->Name),
-				QQ::Expand(QQN::GroupParticipation()->GroupRole->Name)));
-
-			foreach ($objParticipations as $objParticipation) {
-				if($objParticipation->__get('ModeratorFlag'))
-					return 'Y';
-				else 
-					return 'N';
-			}
+		public function RenderAuthorizedSender(Person $objPerson) {
+			$groupAuthorizedsender = GroupAuthorizedSender::LoadByGroupIdPersonId($this->objGroup->Id,$objPerson->Id);
+			if ($groupAuthorizedsender)
+				return 'Y';
+			else 
+				return 'N';
 		}
 		
 		public function RenderMember(Person $objPerson) {
