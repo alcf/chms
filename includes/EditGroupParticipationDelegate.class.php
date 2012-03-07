@@ -39,7 +39,6 @@
 			);
 			
 			$this->chkIsAuthorizedSender = new QCheckBox($this->pnlContent);
-			$this->chkIsAuthorizedSender->Text = '  Is Authorized Sender';
 			$this->chkIsAuthorizedSender->Name = '  Is Authorized Sender';
 
 			if (GroupAuthorizedSender::LoadByGroupIdPersonId($this->pnlContent->objGroup->Id, $this->pnlContent->objPerson->Id)) {
