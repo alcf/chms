@@ -248,6 +248,11 @@
 						$objSource = $objPerson;
 						break;
 					}
+					// If authorized sender then allow send also
+					if (GroupAuthorizedSender::LoadByGroupIdPersonId($objGroup->Id, $objPerson->Id)) {
+						$objSource = $objPerson;
+						break;
+					}
 				}
 
 				// If a Valid Source, or if a PublicList, create the EmailRoute for the group,

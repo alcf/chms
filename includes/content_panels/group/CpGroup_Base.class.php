@@ -398,11 +398,11 @@
 		 * GJS - render the moderator flag...?
 		 */
 		public function RenderAuthorizedSender(Person $objPerson) {
-			$groupAuthorizedsender = GroupAuthorizedSender::LoadByGroupIdPersonId($this->objGroup->Id,$objPerson->Id);
-			if ($groupAuthorizedsender)
+			$objGroupAuthorizedsender = GroupAuthorizedSender::LoadByGroupIdPersonId($this->objGroup->Id,$objPerson->Id);
+			if ($objGroupAuthorizedsender)
 				return 'Y';
 			else 
-				return 'N';
+				return '';
 		}
 		
 		public function RenderMember(Person $objPerson) {

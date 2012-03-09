@@ -162,16 +162,7 @@
 			$this->strRole = null;
 			$this->dtgParticipations->DataSource = $this->objParticipationArray;
 		}
-
-		public function refreshIsAuthorizedSender($strFormId, $strControlId, $strParameter) {
-			if ($this->chkIsAuthorizedSender->Checked) {
-				$groupAuthorizedSender = new GroupAuthorizedSender();
-				$groupAuthorizedSender->__set('GroupId', $this->pnlContent->objGroup->Id);
-				$groupAuthorizedSender->__set('PersonId', $this->pnlContent->objPerson->Id); 
-				$groupAuthorizedSender->Save();
-			}
-		}
-		
+				
 		public function pxyEdit_Click($strFormId, $strControlId, $strParameter) {
 			$this->dlgEdit->ShowDialogBox();
 			$this->lstEditRole->ValidationReset();
@@ -293,12 +284,12 @@
 			foreach ($objArrayToDelete as $objParticipation) $objParticipation->Delete();
 
 			// Update groupAuthorizedSender table
-			if ($this->chkIsAuthorizedSender->Checked) {
-				$groupAuthorizedSender = new GroupAuthorizedSender();
-				$groupAuthorizedSender->__set('GroupId', $this->pnlContent->objGroup->Id);
-				$groupAuthorizedSender->__set('PersonId', $this->pnlContent->objPerson->Id);
-				$groupAuthorizedSender->Save();
-			}else {
+			if (($this->chkIsAuthorizedSender->Checked) &&  !(GroupAuthorizedSender::LoadByGroupIdPersonId($this->pnlContent->objGroup->Id, $this->pnlContent->objPerson->Id))) {
+				$objGroupAuthorizedSender = new GroupAuthorizedSender();
+				$objGroupAuthorizedSender->GroupId = $this->pnlContent->objGroup->Id;
+				$objGroupAuthorizedSender->PersonId = $this->pnlContent->objPerson->Id;
+				$objGroupAuthorizedSender->Save();
+			}else if (!$this->chkIsAuthorizedSender->Checked) {
 				GroupAuthorizedSender::LoadByGroupIdPersonId($this->pnlContent->objGroup->Id, $this->pnlContent->objPerson->Id)->Delete();
 			}
 			
