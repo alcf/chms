@@ -3,8 +3,17 @@
 <?php if (!$_CONTROL->dtgParentPagerIndividuals) { ?>
 	<div class="section">
 		<p><em>Not currently associated with a ParentPager record.</em></p>
-		<p><a href="#sk/select">Associate a ParentPager Record</a> to <?php _p($this->objPerson->Name); ?>'s NOAH Account.</p>
+		<?php if (QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids)) { ?>
+			<p><a href="#sk/select">Associate a ParentPager Record</a> to <?php _p($this->objPerson->Name); ?>'s NOAH Account.</p>
+		<?php } ?>
 	</div>
+	
+	
+
+	
+	
+	
+
 <?php } else { ?>
 
 	<?php if ($_CONTROL->dtgAttendantHistory) { ?>
@@ -25,8 +34,11 @@
 		<?php $_CONTROL->dtgParentPagerIndividuals->Render(); ?>
 	</div>
 
-	<div class="buttonBar">
-		<a href="#sk/select" class="cancel">Associate <em>another</em> ParentPager Record to <?php _p($this->objPerson->Name); ?>'s NOAH Account.</a>
-	</div>
+
+	<?php if (QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids)) { ?>
+		<div class="buttonBar">
+			<a href="#sk/select" class="cancel">Associate <em>another</em> ParentPager Record to <?php _p($this->objPerson->Name); ?>'s NOAH Account.</a>
+		</div>
+	<?php } ?>
 
 <?php } ?>

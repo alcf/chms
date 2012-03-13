@@ -65,7 +65,10 @@
 		}
 
 		public function RenderIdentifier(ParentPagerIndividual $objIndividual) {
-			return sprintf('<a href="#" %s>%s</a>', $this->pxyUnassociate->RenderAsEvents($objIndividual->Id, false), $objIndividual->Id);
+			if (QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids))
+				return sprintf('<a href="#" %s>%s</a>', $this->pxyUnassociate->RenderAsEvents($objIndividual->Id, false), $objIndividual->Id);
+			else 
+				return $objIndividual->Id;
 		}
 
 		public function RenderAddresses(ParentPagerIndividual $objIndividual) {

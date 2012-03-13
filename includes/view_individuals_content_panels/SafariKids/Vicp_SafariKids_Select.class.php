@@ -12,6 +12,8 @@
 		public $btnCancel;
 
 		protected function SetupPanel() {
+			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids)) $this->ReturnTo('#sk');
+
 			$this->dtgParentPagerIndividuals = new ParentPagerIndividualDataGrid($this);
 			$this->dtgParentPagerIndividuals->Paginator = new QPaginator($this->dtgParentPagerIndividuals);
 			$this->dtgParentPagerIndividuals->MetaAddColumn('ServerIdentifier', 'Name=Parent Pager ID', 'Html=<?= $_CONTROL->ParentControl->RenderIdentifier($_ITEM); ?>', 'Width=120px', 'HtmlEntities=false');
