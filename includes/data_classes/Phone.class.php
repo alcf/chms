@@ -35,6 +35,20 @@
 					else
 						return PhoneType::$NameArray[$this->intPhoneTypeId];
 
+				case 'SmsEmailAddress':
+					if ($this->IsSmsEnabled()) {
+						$strNumber = $this->Number;
+						$strNumber = str_replace('-', '', $strNumber);
+						$strNumber = str_replace('(', '', $strNumber);
+						$strNumber = str_replace(')', '', $strNumber);
+						$strNumber = str_replace(' ', '', $strNumber);
+						$strNumber = str_replace('x', '', $strNumber);
+						$strNumber = substr($strNumber, 0, 10);
+						if (strlen($strNumber) == 10) return sprintf('%s@%s', $strNumber, $this->MobileProvider->Domain);
+					} else {
+						return null;
+					}
+
 				default:
 					try {
 						return parent::__get($strName);
@@ -91,6 +105,23 @@
 				$this->Person->PrimaryPhone = $this;
 				$this->Person->Save();
 				$this->Person->RefreshPrimaryContactInfo();
+			}
+		}
+
+		/**
+		 * Specifies whether this phone is "SMS Enabled".  To qualify, *all* of the conditions must be true:
+		 *   - PhoneType is Mobile
+		 *   - A MobileProvider is defined for this Phone
+		 *   - This phone must be the Primary Phone for the Person
+		 * @return boolean
+		 */
+		public function IsSmsEnabled() {
+			if (($this->PhoneTypeId == PhoneType::Mobile) &&
+				($this->MobileProviderId) &&
+				($this->CountPeopleAsPrimary() > 0)) {
+				return true;
+			} else {
+				return false;
 			}
 		}
 

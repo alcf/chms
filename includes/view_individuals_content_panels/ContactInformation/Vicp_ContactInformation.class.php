@@ -103,8 +103,11 @@
 		public function RenderPhoneNumber(Phone $objPhone) {
 			if ($objPhone->Address)
 				return $objPhone->Number;
-			else
+			else if ($objPhone->IsSmsEnabled()) {
+				return sprintf('<a href="#contact/edit_phone/%s">%s</a><br/><span class="na" style="font-size: 10px;">SMS Enabled: %s</span>', $objPhone->Id, $objPhone->Number, QApplication::HtmlEntities($objPhone->MobileProvider->Name));
+			} else {
 				return sprintf('<a href="#contact/edit_phone/%s">%s</a>', $objPhone->Id, $objPhone->Number);
+			}
 		}
 		
 		public function RenderPhoneType(Phone $objPhone) {
