@@ -33,3 +33,21 @@
 	<div class="section"><?php $_CONTROL->dtgEmailMessageRoute->Render(); ?></div>
 	<?php $_CONTROL->dlgEmailMessage->Render(); ?>
 <?php } ?>
+
+<?php if ($_CONTROL->dtgSmsMessage) { ?>
+	<br/>
+	<h3>SMS Messages</h3>
+	<div class="section">
+		<?php $_CONTROL->dtgSmsMessage->Render(); ?>
+		
+		<div style="padding: 15px; border: 1px solid #999; margin-top: 15px;">
+			<h3>Send an SMS Message</h3>
+			<?php $_CONTROL->txtSmsTitle->RenderWithName(); ?>
+			<?php $_CONTROL->txtSmsBody->RenderWithName(); ?>
+			<div class="buttonBar">
+				<?php $_CONTROL->btnSmsSend->Render(); ?>
+			</div>
+		</div>
+	</div>
+<?php } ?>
+

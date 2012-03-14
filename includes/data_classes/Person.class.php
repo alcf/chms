@@ -981,7 +981,7 @@
 		 * 
 		 */
 		public function GetSmsEnabledPhone() {
-			if ($this->PrimaryPhone->IsSmsEnabled()) return $this->PrimaryPhone;
+			if ($this->PrimaryPhone && $this->PrimaryPhone->IsSmsEnabled()) return $this->PrimaryPhone;
 			return null;
 		}
 
