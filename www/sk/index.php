@@ -139,7 +139,7 @@
 		}
 
 		public function RenderIdentifier(ParentPagerIndividual $objIndividual) {
-			return sprintf('<a href="/sk/link.php/%s">%s</a>', $objIndividual->Id, $objIndividual->ServerIdentifier);
+			return sprintf('<a href="/sk/link.php/%s" onclick="alert(&quot;Not Yet Implemented&quot;); return false;">%s</a>', $objIndividual->Id, $objIndividual->ServerIdentifier);
 		}
 
 		public function RenderAddresses(ParentPagerIndividual $objIndividual) {
