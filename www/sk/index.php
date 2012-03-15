@@ -31,15 +31,18 @@
 			
 			$this->txtServerIdentifier = new QTextBox($this);
 			$this->txtServerIdentifier->Text = QApplication::QueryString('id');
-			$this->txtServerIdentifier->AddAction(new QChangeEvent(), new QAjaxAction('Filter_Change'));
-			
+			$this->txtServerIdentifier->AddAction(new QEnterKeyEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtServerIdentifier->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+
 			$this->txtFirstName = new QTextBox($this);
 			$this->txtFirstName->Text = QApplication::QueryString('fn');
-			$this->txtFirstName->AddAction(new QChangeEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 			$this->txtLastName = new QTextBox($this);
 			$this->txtLastName->Text = QApplication::QueryString('ln');
-			$this->txtLastName->AddAction(new QChangeEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 
 			$this->lstParentPagerSyncStatusTypeId = new QListBox($this);
 			$this->lstParentPagerSyncStatusTypeId->AddItem('- View All -');
@@ -58,6 +61,8 @@
 			$this->txtGraduationYear = new QTextBox($this);
 			$this->txtGraduationYear->Text = QApplication::QueryString('year');
 			$this->txtGraduationYear->AddAction(new QChangeEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtGraduationYear->AddAction(new QEnterKeyEvent(), new QAjaxAction('Filter_Change'));
+			$this->txtGraduationYear->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 		}
 
 		public function Filter_Change() {
@@ -139,7 +144,19 @@
 		}
 
 		public function RenderIdentifier(ParentPagerIndividual $objIndividual) {
-			return sprintf('<a href="/sk/link.php/%s" onclick="alert(&quot;Not Yet Implemented&quot;); return false;">%s</a>', $objIndividual->Id, $objIndividual->ServerIdentifier);
+			if ($objIndividual->HiddenFlag) {
+				$objStyle = new QDataGridRowStyle();
+				$objStyle->ForeColor = '#666';
+				$objStyle->BackColor = '#ccc';
+				$this->dtgParentPagerIndividuals->OverrideRowStyle($this->dtgParentPagerIndividuals->CurrentRowIndex, $objStyle);
+				
+			} else {
+				$this->dtgParentPagerIndividuals->OverrideRowStyle($this->dtgParentPagerIndividuals->CurrentRowIndex, null);
+			}
+			if ($objIndividual->PersonId)
+				return sprintf('<a href="/sk/link.php/%s" onclick="return confirm(&quot;Are you SURE you want to make changes to this already-linked to NOAH record?&quot;);">%s</a>', $objIndividual->Id, $objIndividual->ServerIdentifier);
+			else
+				return sprintf('<a href="/sk/link.php/%s">%s</a>', $objIndividual->Id, $objIndividual->ServerIdentifier);
 		}
 
 		public function RenderAddresses(ParentPagerIndividual $objIndividual) {

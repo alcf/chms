@@ -2,7 +2,6 @@
 	class Vicp_SafariKids extends Vicp_Base {
 		public $dtgAttendantHistory;
 		public $dtgChildHistory;
-		public $dtgParentHistory;
 		public $dtgParentPagerIndividuals;
 		public $pxyUnassociate;
 		
@@ -22,9 +21,10 @@
 					$this->dtgAttendantHistory->FontSize = '11px';
 				}
 				
-				if (ParentPagerChildHistory::QueryCount(QQ::Equal(QQN::ParentPagerChildHistory()->ParentPagerIndividual->PersonId, $this->objPerson->Id)) ||
-					ParentPagerChildHistory::QueryCount(QQ::Equal(QQN::ParentPagerChildHistory()->PickupByParentPagerIndividual->PersonId, $this->objPerson->Id)) ||
-					ParentPagerChildHistory::QueryCount(QQ::Equal(QQN::ParentPagerChildHistory()->DropoffByParentPagerIndividual->PersonId, $this->objPerson->Id))) {
+				if (QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids) &&
+					(ParentPagerChildHistory::QueryCount(QQ::Equal(QQN::ParentPagerChildHistory()->ParentPagerIndividual->PersonId, $this->objPerson->Id)) ||
+					 ParentPagerChildHistory::QueryCount(QQ::Equal(QQN::ParentPagerChildHistory()->PickupByParentPagerIndividual->PersonId, $this->objPerson->Id)) ||
+					 ParentPagerChildHistory::QueryCount(QQ::Equal(QQN::ParentPagerChildHistory()->DropoffByParentPagerIndividual->PersonId, $this->objPerson->Id)))) {
 					$this->dtgChildHistory = new ParentPagerChildHistoryDataGrid($this);
 					$this->dtgChildHistory->MetaAddColumn('DateIn', 'Width=125px', 'FontSize=10px');
 					$this->dtgChildHistory->MetaAddColumn('DateOut', 'Width=125px', 'FontSize=10px');

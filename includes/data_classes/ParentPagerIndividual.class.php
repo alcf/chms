@@ -27,6 +27,20 @@
 			return sprintf('ParentPagerIndividual Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Name': return $this->strFirstName . ' ' . $this->strMiddleName . ' ' . $this->strLastName;
+		
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		/**
 		 * This will create a new record or update an existing record given the MS SQL Data Row
 		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
