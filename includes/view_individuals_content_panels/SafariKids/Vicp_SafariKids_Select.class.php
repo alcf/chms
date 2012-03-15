@@ -77,11 +77,11 @@
 
 			// If the person is already associated, but to someone ELSE, offer the ability to link but show a warning
 			if ($objIndividual->PersonId) {
-				return sprintf('<a href="#" %s>%s</a>', $this->pxyLinkIndividualWithWarning->RenderAsEvents($objIndividual->Id, false), $objIndividual->Id);
+				return sprintf('<a href="#" %s>%s</a>', $this->pxyLinkIndividualWithWarning->RenderAsEvents($objIndividual->Id, false), $objIndividual->ServerIdentifier);
 			}
 
 			// If we are here, then the PP Individual is not linked ... offer the action
-			return sprintf('<a href="#" %s>%s</a>', $this->pxyLinkIndividual->RenderAsEvents($objIndividual->Id, false), $objIndividual->Id);
+			return sprintf('<a href="#" %s>%s</a>', $this->pxyLinkIndividual->RenderAsEvents($objIndividual->Id, false), $objIndividual->ServerIdentifier);
 		}
 
 		public function RenderAddresses(ParentPagerIndividual $objIndividual) {
@@ -100,6 +100,7 @@
 			$objIndividual = ParentPagerIndividual::Load($strParameter);
 			$objIndividual->Person = $this->objPerson;
 			$objIndividual->Save();
+			$objIndividual->RefreshParentPagerSyncStatusType();
 			
 			$this->ReturnTo('#sk');
 		}

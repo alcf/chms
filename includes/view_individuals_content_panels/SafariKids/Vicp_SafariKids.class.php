@@ -61,12 +61,13 @@
 			$objIndividual = ParentPagerIndividual::Load($strParameter);
 			$objIndividual->Person = null;
 			$objIndividual->Save();
+			$objIndividual->RefreshParentPagerSyncStatusType();
 			$this->Refresh();
 		}
 
 		public function RenderIdentifier(ParentPagerIndividual $objIndividual) {
 			if (QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids))
-				return sprintf('<a href="#" %s>%s</a>', $this->pxyUnassociate->RenderAsEvents($objIndividual->Id, false), $objIndividual->Id);
+				return sprintf('<a href="#" %s>%s</a>', $this->pxyUnassociate->RenderAsEvents($objIndividual->Id, false), $objIndividual->ServerIdentifier);
 			else 
 				return $objIndividual->Id;
 		}
