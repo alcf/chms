@@ -412,7 +412,12 @@
 					return false;
 
 				case EmailBroadcastType::AnnouncementOnly:
-					return false;
+					// If authorized sender then allow send
+					if (GroupAuthorizedSender::LoadByGroupIdPersonId($this->Id, $objPerson->Id)) {
+						return true;
+					} else {
+						return false;
+					}
 
 				default:
 					return false;
