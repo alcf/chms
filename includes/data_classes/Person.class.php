@@ -970,6 +970,22 @@
 			return $objPerson;
 		}
 
+
+		/**
+		 * *IF* this person can receive SMS Messages, this will return the Phone object
+		 * to which SMS messages can be received.
+		 * 
+		 * Otherwise, this will return NULL.
+		 * 
+		 * @return Phone phone object that can receive SMS messages for this person or NULL if not applicable
+		 * 
+		 */
+		public function GetSmsEnabledPhone() {
+			if ($this->PrimaryPhone && $this->PrimaryPhone->IsSmsEnabled()) return $this->PrimaryPhone;
+			return null;
+		}
+
+
 		/**
 		 * Similar to the codegenned GetPhoneArray -- however this will retrieve ALL current and associated
 		 * phones.  Not just personal phone numbers, but phone numbers attributed to the current home

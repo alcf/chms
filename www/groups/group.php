@@ -123,6 +123,7 @@
 				$objGroup = new Group();
 				$objGroup->GroupTypeId = constant('GroupType::' . $strConstantName);
 				$objGroup->Ministry = $objMinistry;
+				$objGroup->ActiveFlag = true;
 			} else {
 				// Get the Group from the Hash and Refresh the Label
 				$objGroup = Group::Load($strUrlHashTokens[0]);

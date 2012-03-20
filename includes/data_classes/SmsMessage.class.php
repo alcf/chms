@@ -27,6 +27,67 @@
 			return sprintf('SmsMessage Object %s',  $this->intId);
 		}
 
+		/**
+		 * Queues a new SMS Message to be sent out
+		 * @param Group $objGroup
+		 * @param Login $objLogin
+		 * @param string $strSubject can be null/blank
+		 * @param string $strBody
+		 * @return SmsMessage the queued message that has been queued
+		 */
+		public static function QueueSmsForGroup(Group $objGroup, Login $objLogin, $strSubject, $strBody) {
+			$objSmsMessage = new SmsMessage();
+			$objSmsMessage->Group = $objGroup;
+			$objSmsMessage->Login = $objLogin;
+			$objSmsMessage->Subject = trim($strSubject);
+			$objSmsMessage->Body = trim($strBody);
+			$objSmsMessage->DateQueued = QDateTime::Now();
+			$objSmsMessage->Save();
+			return $objSmsMessage;
+		}
+
+		public function Send() {
+			// Do **NOT** send again if it has already been sent!
+			if ($this->dttDateSent) return;
+
+			// Store an array of email addresses (SMS-based) to send to
+			$strBccArray = array();
+
+			// Get the Group, and get the array for CcArray
+			$intPersonIdArray = array();
+			foreach ($this->Group->GetActiveGroupParticipationArray() as $objGroupParticipation) {
+				// ONly at most one per person
+				if (!array_key_exists($objGroupParticipation->PersonId, $intPersonIdArray)) {
+					// Get the Person
+					$objPerson = $objGroupParticipation->Person;
+
+					// Do we have an SMS?
+					if ($objPhone = $objPerson->GetSmsEnabledPhone()) {
+						// Yep!  Add it to the list
+						$strBccArray[] = $objPhone->SmsEmailAddress;
+					}
+
+					// Finally, let's make sure it only gets sent (at most) once per person
+					$intPersonIdArray[$objGroupParticipation->PersonId] = $objGroupParticipation->PersonId;
+				}
+			}
+
+			// Do we have any to send to?
+			if (count($strBccArray)) {
+				// Yes -- let's send it
+				$objEmailMessage = new QEmailMessage($this->Login->Email, $this->Login->Email, $this->strSubject, $this->strBody);
+				$objEmailMessage->Bcc = implode(', ', $strBccArray);
+				QEmailServer::Send($objEmailMessage);
+
+				$this->DateSent = QDateTime::Now();
+				$this->Save();
+			} else {
+				// No -- let's report it
+				$objEmailMessage = new QEmailMessage($this->Login->Email, $this->Login->Email, '[Failed to Send] ' . $this->strSubject, 'The following SMS did NOT send because there were no SMS-enabled group participants: ' . $this->strBody);
+				QEmailServer::Send($objEmailMessage);
+				$this->Delete();
+			}
+		}
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

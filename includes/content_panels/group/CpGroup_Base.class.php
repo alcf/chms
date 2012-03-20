@@ -56,6 +56,26 @@
 		 * @var EmailMessageRoute
 		 */
 		public $objSelectedEmailMessageRoute;
+		
+		/**
+		 * @var SmsMessageDataGrid
+		 */
+		public $dtgSmsMessage;
+
+		/**
+		 * @var QTextBox
+		 */
+		public $txtSmsTitle;
+
+		/**
+		 * @var QTextBox
+		 */
+		public $txtSmsBody;
+
+		/**
+		 * @var QButton
+		 */
+		public $btnSmsSend;
 
 		public $lblMinistry;
 		public $lblType;
@@ -105,6 +125,66 @@
 			$this->btnCancel->AddAction(new QClickEvent(), new QTerminateAction());
 
 			$this->SetupPanel();
+		}
+
+		/**
+		 * Sets up the SmsMessageDataGrid, and related controls to allow sending of SMSes
+		 * @return void
+		 */
+		protected function SetupSmsControls() {
+			$this->dtgSmsMessage = new SmsMessageDataGrid($this);
+			$objColumn = $this->dtgSmsMessage->MetaAddColumn('DateQueued', 'Width=120px', 'FontSize=10px', 'Name=Date Sent', 'Html=<?= $_CONTROL->ParentControl->RenderSmsDateSent($_ITEM); ?>');
+			$this->dtgSmsMessage->MetaAddColumn(QQN::SmsMessage()->Login->FirstName, 'Name=Sent By', 'Html=<?= $_ITEM->Login->Name; ?>', 'Width=150px', 'FontSize=10px');
+			$this->dtgSmsMessage->MetaAddColumn('Subject', 'Width=150px');
+			$this->dtgSmsMessage->MetaAddColumn('Body', 'Width=300px');
+			$this->dtgSmsMessage->SetDataBinder('dtgSmsMessage_Bind', $this);
+			$this->dtgSmsMessage->Paginator = new QPaginator($this->dtgSmsMessage);
+			$this->dtgSmsMessage->SortColumnIndex = 0;
+			$this->dtgSmsMessage->SortDirection = 1;
+			$this->dtgSmsMessage->NoDataHtml = '<em>No SMS Messages have yet been sent to this group.</em>';
+			
+			$this->txtSmsTitle = new QTextBox($this);
+			$this->txtSmsTitle->Name = 'Subject';
+			$this->txtSmsTitle->HtmlAfter = '<br/><span class="na" style="font-size: 10px;">While it is recommended that you provide a subject,<br/>please note that some mobile providers do <strong>NOT</strong> show the subject to the recipient</span>';
+			$this->txtSmsTitle->MaxLength = 40;
+			
+			$this->txtSmsBody = new QTextBox($this);
+			$this->txtSmsBody->Name = 'Message';
+			$this->txtSmsBody->Required = true;
+			$this->txtSmsBody->MaxLength = 140;
+			$this->txtSmsBody->HtmlAfter = '<br/><span class="na" style="font-size: 10px;">Please limit to 140 characters</span>';
+				
+			$this->btnSmsSend = new QButton($this);
+			$this->btnSmsSend->Text = 'Send SMS';
+			$this->btnSmsSend->CssClass = 'primary';
+			$this->btnSmsSend->CausesValidation = $this->txtSmsBody;
+			$this->btnSmsSend->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSmsSend_Click'));
+		}
+
+		public function dtgSmsMessage_Bind() {
+			$objCondition = QQ::Equal(QQN::SmsMessage()->GroupId, $this->objGroup->Id);
+			$this->dtgSmsMessage->MetaDataBinder($objCondition);
+		}
+
+		public function RenderSmsDateSent(SmsMessage $objSmsMessage) {
+			if ($objSmsMessage->DateSent) {
+				return $objSmsMessage->DateSent->ToString('MMM D YYYY, h:mmz'); 
+			} else {
+				return 'sending...';
+			}
+		}
+
+		public function btnSmsSend_Click($strFormId, $strControlId, $strParameter) {
+			if (!QApplication::$Login->Email) {
+				QApplication::DisplayAlert('Your NOAH Account was not set up with your @alcf.net email address, so unfortunately you cannot yet send a SMS Message.  Please contact it@alcf.net to have this fixed.');
+				return;
+			}
+
+			SmsMessage::QueueSmsForGroup($this->objGroup, QApplication::$Login, $this->txtSmsTitle->Text, $this->txtSmsBody->Text);
+			$this->dtgSmsMessage->Refresh();
+			$this->txtSmsTitle->Text = null;
+			$this->txtSmsBody->Text = null;
+			QApplication::DisplayAlert('Your SMS Message was queued to be sent!  You will receive a copy of this SMS to your email at ' . QApplication::$Login->Email . '.');
 		}
 
 		/**

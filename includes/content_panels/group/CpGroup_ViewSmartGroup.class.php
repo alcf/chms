@@ -14,6 +14,7 @@
 			$this->lblQuery->HtmlEntities = false;
 			
 			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
+			$this->SetupSmsControls();
 		}
 
 		public function dtgMembers_Bind() {

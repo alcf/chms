@@ -10,16 +10,18 @@
 		const NavSectionCommunications = 5;
 		const NavSectionStewardship = 6;
 		const NavSectionClassifieds = 7;
-		const NavSectionAdministration = 8;
+		const NavSectionSafariKids = 8;
+		const NavSectionAdministration = 9;
 
 		public static $NavSectionArray = array(
 			ChmsForm::NavSectionPeople => array('Individuals', '/individuals/'),
 			ChmsForm::NavSectionHouseholds => array('Households', '/households/'),
 			ChmsForm::NavSectionGroups => array('Groups', '/groups/'),
-			ChmsForm::NavSectionEvents => array('Events / Classes', '/events/'),
+			ChmsForm::NavSectionEvents => array('Events &amp; Classes', '/events/'),
 			ChmsForm::NavSectionCommunications => array('Email Lists', '/communications/'),
 			ChmsForm::NavSectionStewardship => array('Stewardship', '/stewardship/'),
 			ChmsForm::NavSectionClassifieds => array('Classifieds', '/classifieds/'),
+			ChmsForm::NavSectionSafariKids => array('Safari Kids', '/sk/'),
 			ChmsForm::NavSectionAdministration => array('Admin', '/admin/')
 		);
 	}

@@ -65,7 +65,6 @@
 			// Unset based on Permissions
 			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::AccessStewardship)) unset($this->strSubNavItemArray['stewardship']);
 			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::MergeIndividuals)) unset($this->strSubNavItemArray['merge']);
-			if (!QApplication::$Login->IsPermissionAllowed(PermissionType::ManageSafariKids)) unset($this->strSubNavItemArray['sk']);
 
 			// Alter Inactive/Active based on whether or not the person has a login
 			if ($this->objPerson->PublicLogin) $this->strSubNavItemArray['online'][2] = null;

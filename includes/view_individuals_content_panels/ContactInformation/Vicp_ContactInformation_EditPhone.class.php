@@ -38,6 +38,7 @@
 			$this->lstPhoneType = $this->mctPhone->lstPhoneType_Create();
 			$this->lstPhoneType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstPhoneType_Change'));
 			$this->lstMobileProvider = $this->mctPhone->lstMobileProvider_Create(null, null, QQ::OrderBy(QQN::MobileProvider()->Name));
+			$this->lstMobileProvider->HtmlAfter = '<br/><span class="na" style="font-size: 10px;">To allow Group SMS\'s to be sent to this Mobile, please specify the Mobile Provider used.<br/>Also be sure that this Mobile Phone is the person\'s <strong>PRIMARY</strong> phone contact.</span>';
 			$this->lstPhoneType_Change();
 
 			// Fixup "Phone Type"

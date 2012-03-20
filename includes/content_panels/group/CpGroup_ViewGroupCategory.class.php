@@ -23,6 +23,7 @@
 			$this->dtgGroups->SetDataBinder('dtgGroups_Bind', $this);
 			
 			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
+			$this->SetupSmsControls();
 		}
 
 		public function RenderGroupName(Group $objGroup) {

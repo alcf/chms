@@ -27,6 +27,20 @@
 			return sprintf('ParentPagerIndividual Object %s',  $this->intId);
 		}
 
+		public function __get($strName) {
+			switch ($strName) {
+				case 'Name': return $this->strFirstName . ' ' . $this->strMiddleName . ' ' . $this->strLastName;
+		
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+
 		/**
 		 * This will create a new record or update an existing record given the MS SQL Data Row
 		 * @param string[] $objRow the mssql_fetch_assoc row result from MS SQL Server
@@ -72,6 +86,30 @@
 			$objParentPagerIndividual->Save();
 
 			return $objParentPagerIndividual;
+		}
+
+		/**
+		 * This will refresh the ParentPagerSyncStatusTypeId to be the appropriate value based on
+		 * the linked NOAH record to this PP Individual record (if any)
+		 * @return void
+		 */
+		public function RefreshParentPagerSyncStatusType() {
+			if ($this->intPersonId) {
+				// TODO: Implement logic to see when we are "Out of Sync"
+				// This would also be when we checked for "Ignore", which is when we ignore whether or not we are synced properly or not
+				
+				// For now, we will always set to "Synced"
+				$this->intParentPagerSyncStatusTypeId = ParentPagerSyncStatusType::Synced;
+
+				// We also want to make sure to unhide this record since we know we're linked to an actual record
+				$this->blnHiddenFlag = false;
+
+			} else {
+				// Since we are not linked to a record, let's set this to NotYetSynced
+				$this->intParentPagerSyncStatusTypeId = ParentPagerSyncStatusType::NotYetSynced;
+			}
+
+			$this->Save();
 		}
 
 		// Override or Create New Load/Count methods
