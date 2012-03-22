@@ -1646,11 +1646,12 @@
 				} else {
 					foreach ($objExistingAddressListArray as $objExistingAddress) {
 						if ($objExistingAddress->IsEqualTo($objAddress)) {
-							print "Deleting - " . $objAddress->__get('AddressFullLine') ."from ".$this->FirstName." ".$this->LastName."\r\n";
+							print "PERSON: ". $this->FirstName." ".$this->LastName."\r\n";
+							print "    Deleting Redundant Address: " . $objAddress->AddressFullLine."\r\n \r\n";
 							// now to figure out which one to delete.
-							if ($objAddress->__get('PersonId') && !$objExistingAddress->__get('PersonId')) {
+							if ($objAddress->PersonId && !$objExistingAddress->PersonId) {
 								$objAddress->delete();
-							} elseif (!$objAddress->__get('CurrentFlag')) {
+							} elseif (!$objAddress->CurrentFlag) {
 								$objAddress->delete();
 							} else {
 								$objExistingAddress->delete();
