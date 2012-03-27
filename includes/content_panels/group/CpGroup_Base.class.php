@@ -423,6 +423,10 @@
 				'Width=' . ($blnDisplayRoleColumn ? '120px' : '200px'));
 			$this->dtgMembers->MetaAddColumn('LastName', 'Html=<?= $_CONTROL->ParentControl->RenderLastName($_ITEM); ?>', 'HtmlEntities=false',
 				'Width=' . ($blnDisplayRoleColumn ? '120px' : '200px'));
+			
+			$this->dtgMembers->MetaAddColumn('Nickname', 'Html=<?= $_CONTROL->ParentControl->RenderNickname($_ITEM); ?>', 'HtmlEntities=false',
+							'Width=' . ($blnDisplayRoleColumn ? '120px' : '200px'));
+			
 			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email',
 				'Width=' . ($blnDisplayRoleColumn ? '190px' : '220px'));
 			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>',
@@ -474,9 +478,10 @@
 			return sprintf('<a href="/individuals/view.php/%s#general">%s</a>', $objPerson->Id, QApplication::HtmlEntities($objPerson->LastName));
 		}
 		
-		/*
-		 * GJS - render the moderator flag...?
-		 */
+		public function RenderNickname(Person $objPerson) {
+			return sprintf('<a href="/individuals/view.php/%s#general">%s</a>', $objPerson->Id, QApplication::HtmlEntities($objPerson->Nickname));
+		}
+		
 		public function RenderAuthorizedSender(Person $objPerson) {
 			$objGroupAuthorizedsender = GroupAuthorizedSender::LoadByGroupIdPersonId($this->objGroup->Id,$objPerson->Id);
 			if ($objGroupAuthorizedsender)

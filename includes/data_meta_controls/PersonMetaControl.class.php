@@ -23,6 +23,31 @@
 		protected $lstGender;
 
 		/**
+		* Override txtPriorLastNames
+		* @param string $strControlId optional ControlId to use
+		* @return QTextBox
+		*/
+		public function txtPriorLastNames_Create($strControlId = null) {
+			$this->txtPriorLastNames = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtPriorLastNames->Name = QApplication::Translate('Alternative Last Names');
+			$this->txtPriorLastNames->Text = $this->objPerson->PriorLastNames;
+			$this->txtPriorLastNames->MaxLength = Person::PriorLastNamesMaxLength;
+			return $this->txtPriorLastNames;
+		}
+		
+		/**
+		 * Override QLabel lblPriorLastNames
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblPriorLastNames_Create($strControlId = null) {
+			$this->lblPriorLastNames = new QLabel($this->objParentObject, $strControlId);
+			$this->lblPriorLastNames->Name = QApplication::Translate('Alternative Last Names');
+			$this->lblPriorLastNames->Text = $this->objPerson->PriorLastNames;
+			return $this->lblPriorLastNames;
+		}
+		
+		/**
 		 * Create and setup QDateTimePicker calDateOfBirth
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
