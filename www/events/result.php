@@ -889,9 +889,10 @@
 					$this->dtgPayments->Refresh();
 					break;
 				case self::EditTagClassAttendance:
-					$this->objClassAttendance->PresentFlag = $this->lstListbox->SelectedValue;
+					$this->objClassAttendance->PresentFlag = $this->lstListbox->SelectedValue; 
 					$this->objClassAttendance->Save();
-					$this->dtgClassAttendance->Refresh();
+					$this->mctClassRegistration->ClassRegistration->RefreshClassAttendance();
+					$this->dtgClassAttendance->Refresh(); 
 					break;
 				case self::EditTagClassGrade:
 					$this->mctClassRegistration->SaveClassRegistration();

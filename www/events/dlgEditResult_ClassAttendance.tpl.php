@@ -6,5 +6,5 @@
 <div class="buttonBar">
 	<?php $_FORM->btnSave->Render(); ?>
 	&nbsp;or&nbsp;
-	<?php $_FORM->btnCancel->Render(); ?>
+	<?php $_FORM->btnCancel->Render();?>
 </div>
