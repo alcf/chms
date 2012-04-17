@@ -108,11 +108,21 @@
 				$this->dtgSignupForms->OverrideRowStyle($this->dtgSignupForms->CurrentRowIndex, $objStyle);
 			}
 			// GJS - Add a link here
-			$strName = sprintf('%s %s<br/><span class="sublinks"><a href="/events/form.php/%s">Form Details</a> | <a href="/events/results.php/%s">Results</a> | <a href="/events/attendence.php/%s">Attendence</a></span>',
-				QApplication::HtmlEntities($objSignupForm->Name),
-				($objSignupForm->ConfidentialFlag) ? '<img src="/assets/images/confidential.png" title="Confidential Event" style="width: 89px; height: 13px; position: relative; top: 2px;"/>' : null,
-				$objSignupForm->Id, $objSignupForm->Id, $objSignupForm->Id);
-
+			switch ($objSignupForm->SignupFormTypeId) {
+				case SignupFormType::Event:
+					$strName = sprintf('%s %s<br/><span class="sublinks"><a href="/events/form.php/%s">Form Details</a> | <a href="/events/results.php/%s">Results</a></span>',
+						QApplication::HtmlEntities($objSignupForm->Name),
+						($objSignupForm->ConfidentialFlag) ? '<img src="/assets/images/confidential.png" title="Confidential Event" style="width: 89px; height: 13px; position: relative; top: 2px;"/>' : null,
+						$objSignupForm->Id, $objSignupForm->Id);
+					break;
+				case SignupFormType::Course:
+					$strName = sprintf('%s %s<br/><span class="sublinks"><a href="/events/form.php/%s">Form Details</a> | <a href="/events/results.php/%s">Results</a> | <a href="/events/attendence.php/%s">Attendence</a></span>',
+						QApplication::HtmlEntities($objSignupForm->Name),
+						($objSignupForm->ConfidentialFlag) ? '<img src="/assets/images/confidential.png" title="Confidential Event" style="width: 89px; height: 13px; position: relative; top: 2px;"/>' : null,
+						$objSignupForm->Id, $objSignupForm->Id, $objSignupForm->Id);
+					break;
+			}
+			
 			return $strName;
 		}
 
