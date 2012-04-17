@@ -31,6 +31,7 @@
 	<br/>
 
 	<h3>List Manifest
+	<span class="subhead"><a target="_blank" href="/communications/export_to_excel.php/<?php _p($this->objList->Id); ?>/<?php _p($this->objList->CsvFilename); ?>"/>Export to Excel</a></span>
 <?php if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) { ?>
 		<button class="primary" onclick="document.location = '/communications/add.php/<?php _p($this->objList->Id); ?>'; return false;">Add to List</button>
 <?php } ?>

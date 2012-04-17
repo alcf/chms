@@ -20,6 +20,7 @@
 
 <h3>
 	Group Participants
+	<span class="subhead"><a target="_blank" href="/groups/export_to_excel.php/<?php _p($_CONTROL->objGroup->Id); ?>/<?php _p($_CONTROL->objGroup->CsvFilename); ?>"/>Export to Excel</a></span>
 </h3>
 <div class="section">
 	<?php $_CONTROL->dtgMembers->Render(); ?>

@@ -209,6 +209,32 @@
 			}
 		}
 
+		protected $strSomeNewProperty;
+		
+		public function __get($strName) {
+			switch ($strName) {
+				case 'CsvFilename': 
+					$strName = $this->strName;
+					$strToReturn = null;
+					for ($i = 0; $i < strlen($strName); $i++) {
+						$intOrd = ord($strName[$i]);
+						if ((($intOrd >= ord('a')) && ($intOrd <= ord('z'))) ||
+							(($intOrd >= ord('A')) && ($intOrd <= ord('Z'))) ||
+							(($intOrd >= ord('0')) && ($intOrd <= ord('9'))))
+							$strToReturn .= $strName[$i];
+					}
+					return $strToReturn . '.csv';
+		
+				default:
+					try {
+					return parent::__get($strName);
+				} catch (QCallerException $objExc) {
+					$objExc->IncrementOffset();
+					throw $objExc;
+				}
+			}
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
