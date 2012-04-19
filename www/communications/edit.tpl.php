@@ -15,4 +15,13 @@
 		<?php $this->btnCancel->Render(); ?>
 		<?php if ($this->btnDelete) $this->btnDelete->Render(); ?>
 	</div>
+	
+	<div class="helpdlg" id="helpEmailBroadcastType" title="Help Information">
+	<ul>
+	<li>Public List - ANYONE can email to this group </li>
+	<li>Private List - Only group members can email to this group </li>
+	<li>Announcement Only - Only group administrators can email to this group </li>
+	</ul>
+	</div>
+	
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

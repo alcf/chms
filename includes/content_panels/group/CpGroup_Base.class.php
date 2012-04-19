@@ -285,7 +285,8 @@
 			$this->lstParentGroup = $this->mctGroup->lstParentGroup_Create();
 			$this->lstParentGroup->Name = 'In Group Category';
 
-			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();
+			$this->lstEmailBroadcastType = $this->mctGroup->lstEmailBroadcastType_Create();	
+			$this->lstEmailBroadcastType->Instructions = '<span class="help" onclick="displayHelp(\'helpEmailBroadcastType\')"><img src="/assets/images/icons/help.png" alt="help"></span>';
 			$this->txtToken = $this->mctGroup->txtToken_Create();
 			$this->txtToken->Name = 'Email Address';
 			$this->txtToken->HtmlAfter= '<span> @ groups.alcf.net</span>';

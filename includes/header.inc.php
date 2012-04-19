@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>NOAH<?php _p($this->strPageTitle ? ' - ' . $this->strPageTitle : null); ?></title>
 <style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/chms.css");</style>
+<style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/jquery-ui-1.8.19.custom.css");</style>
 <?php if (SERVER_INSTANCE != 'prod') { ?>
 <style type="text/css">
 	div.contentBackground { background: url(/assets/images/main_content_background_<?php _p(SERVER_INSTANCE); ?>.png); }
@@ -11,6 +12,9 @@
 <?php } ?>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/chms.js"></script>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/_core/_qc_packed.js"></script>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/jquery-ui-1.8.19.custom.min.js"></script>
+
 </head><body>
 <?php $this->RenderBegin(); ?>
 

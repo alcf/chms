@@ -33,6 +33,7 @@
 			$this->txtToken->HtmlAfter = '<span> @ groups.alcf.net</span>';
 			
 			$this->lstType = $this->mctList->lstEmailBroadcastType_Create();
+			$this->lstType->Instructions = '<span class="help" onclick="displayHelp(\'helpEmailBroadcastType\')"><img src="/assets/images/icons/help.png" alt="help"></span>';
 
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
 				$this->lstMinistry = $this->mctList->lstMinistry_Create(null, null, QQ::OrderBy(QQN::Ministry()->Name));

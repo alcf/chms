@@ -41,3 +41,15 @@ function ScrollDivToBottom(strControlId) {
 function OpenInNewWindow(strUrl) {
 	window.open(strUrl, 'CheckImage', 'height=500px,width=1100px,menubar=no,scrollbars=no,status=no,toolbar=no,directories=no,resizable=no');
 };
+
+function displayHelp(strID) {
+	$.fx.speeds._default = 1000;
+	
+	$( "#"+strID ).dialog({
+		autoOpen: false,
+		show: "blind",
+		hide: "explode"
+	});
+	
+	$( "#"+strID ).dialog( "open" );		
+}
