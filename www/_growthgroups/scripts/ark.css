@@ -2,11 +2,13 @@
 			a { color: #321; }
 			a:hover { text-decoration: none; }
 			
+			div.logo { height: 93px; background: url('/assets/images/my_logo.png') no-repeat; }
+			
 			div.navbar ul { list-style: none; margin: 0; padding: 0; }
 			div.navbar li { float: left; padding-top: 2px; padding-bottom: 2px;}
-			div.navbar li a { margin-right: 8px; padding: 2px 10px 2px 10px; font-weight: bold; color: #dcb; text-decoration: none; background-color: #544; }
-			div.navbar li a.selected { background-color: #dcb; color: #321; }
-			div.navbar li a:hover { background-color: #fed; color: #321; }
+			div.navbar li a { margin-right: 8px; padding: 2px 10px 2px 10px; font-weight: bold; color: #dcb; text-decoration: none; background-color: #1E586F; }
+			div.navbar li a.selected { background-color: #1E586F; color: #321; }
+			div.navbar li a:hover { background-color: #1E586F; color: #321; }
 			
 			div.navbar a { color: #dcb; }
 			
@@ -27,9 +29,9 @@
 		div.filterBy select { font-size: 10px; }
 
 		ul.mapnav { margin: 0; padding: 0; width: 980px; margin: auto; }
-		ul.mapnav li { float: left; list-style: none; width: 153px; padding: 3px 5px; margin: 0; height: 32px; font-size: 11px; background-color: #321; color: #fff; font-weight: bold; }
-		ul.mapnav li.selected { background-color: #e3d8ba; color: #321; border-top: 1px solid #321; border-bottom: 1px solid #321; height: 30px; }
-		ul.mapnav li a {color: #fff; font-weight: normal; background-color: #321; }
+		ul.mapnav li { float: left; list-style: none; width: 153px; padding: 3px 5px; margin: 0; height: 60px; font-size: 14px; background-color: #317065; color: #fff; font-weight: bold; }
+		ul.mapnav li.selected { background-color: #F5F8F7; color: #666666; border-bottom: 1px solid #321; height: 60px; font-size: 14px; }
+		ul.mapnav li a {color: #fff; font-weight: normal; background-color: #317065; font-size:14px; text-decoration:none;}
 		
 		div#dtrgg { width: 351px; height: 538px; border: 1px solid black; overflow: auto; padding: 5px; }
 		div#pnlnone { font-size: 11px; margin-top: 12px; }

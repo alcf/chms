@@ -6,23 +6,22 @@
 		<script type="text/javascript" src="/assets/js/_core/_qc_packed.js"></script>
 		<style type="text/css">@import url("/scripts/styles.css");</style>
 		<style type="text/css">@import url("/scripts/ark.css");</style>
-	</head><body>
+	</head><body style="background-image:url(/images/bkgd_GG.png)" >
 
-	<div style="background-color: #e3d8ba; width: 100%; height: 94px; border-top: 1px solid #321;">
+	<div style="width: 100%; height: 100px; border-top: 1px solid #321;">
 		<div style="width: 980px; margin: auto;">
-			<a href="http://www.alcf.net/" title="ALCF Home"><div style="width: 250px; cursor: pointer; background: url(/images/alcf_logo_full.jpg) no-repeat; height: 94px; float: left; ">
+			<a href="http://www.alcf.net/" title="ALCF Home"><div style="width: 250px; cursor: pointer; background: url(/images/alcf_logo_full.png) no-repeat; height: 80px; float: left; margin-top:20px; ">
 				&nbsp;
 			</div></a>
-			<div style="float: left; color: #321; font-family: verdana, arial, sans-serif; font-size: 36px; line-height: 26px; padding-top: 24px;">
-				<span style="font-weight: bold;">ALCF Growth Groups</span><br/>
-				<span style="font-size: 18px;">Bay Area Map</span><br/>
+			<div style="float: left;  padding-top: 10px;">
+				<img src="/images/GG_title.png"></img>
 			</div>	
 		</div>
 <?php if (!QApplication::IsBrowser(QBrowserType::InternetExplorer)) { ?>
 		<br clear="all"/>
 <?php } ?>
 	</div>
-	<div style="background-color: #321; width: 100%; height: 38px;">
+	<div style="background-color: #317065; width: 100%; height: 60px;">
 		<ul class="mapnav">
 		<?php
 			foreach (GrowthGroupLocation::LoadAll(QQ::OrderBy(QQN::GrowthGroupLocation()->Id)) as $objLocation) {
@@ -30,7 +29,7 @@
 
 				if ($objLocation->Id == $this->objLocation->Id) {
 					$strLocation = QApplication::HtmlEntities($objLocation->Location);
-					$strLocation = str_replace(' (', '<br/><span style="font-size: 10px; font-weight: normal; font-family: arial;">(', $strLocation);
+					$strLocation = str_replace(' (', '<br/><span style="font-size: 14px; font-weight: normal; font-family: arial;">(', $strLocation);
 					$strLocation = str_replace(')', ')</span>', $strLocation);
 					$strLocation = str_replace('including', 'incl.', $strLocation);
 					$strLocation = str_replace('to San', 'to<br/>San', $strLocation);
@@ -38,7 +37,7 @@
 				} else {
 					$strLocation = QApplication::HtmlEntities($objLocation->Location);
 					if (strpos($strLocation, '(')) {
-						$strLocation = str_replace(' (', '</a><br/><span style="font-size: 10px; font-weight: normal; font-family: arial; ">(', $strLocation);
+						$strLocation = str_replace(' (', '</a><br/><span style="font-size: 14px; font-weight: normal; font-family: arial; ">(', $strLocation);
 						$strLocation = str_replace(')', ')</span>', $strLocation);
 						$strLocation = str_replace('including', 'incl.', $strLocation);
 						printf('<li%s><a href="/index.php/%s">%s</li>', $strStyle, $objLocation->Id, $strLocation);

@@ -5,7 +5,7 @@
 	
 	<div class="section">
 		<div class="sectionButtons" style="font-family: arial; font-size: 12px;">
-			Genearte Bulk PDFs For:
+			Generate Bulk PDFs For:
 			&nbsp;
 			<?php $this->btnGenerate->Render('CssClass=primary'); ?> 
 			&nbsp;			&nbsp;
