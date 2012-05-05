@@ -21,7 +21,7 @@
 		<br clear="all"/>
 <?php } ?>
 	</div>
-	<div style="background-color: #317065; width: 100%; height: 60px;">
+	<div style="background-color: #2F6C61; width: 100%; height: 60px;">
 		<ul class="mapnav">
 		<?php
 			foreach (GrowthGroupLocation::LoadAll(QQ::OrderBy(QQN::GrowthGroupLocation()->Id)) as $objLocation) {

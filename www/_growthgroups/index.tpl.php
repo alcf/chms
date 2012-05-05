@@ -20,7 +20,7 @@
 
 <div id="map_canvas" style="width: 600px; height: 600px; border: 1px solid black; float: left;"></div>
 <div style="float: left; margin-left: 15px; ">
-	<div style="background-color: #317065; padding: 10px; color: #fff; font-size: 12px; ">
+	<div style="background-color: #2F6C61; padding: 10px; color: #fff; font-size: 12px; ">
 		<strong>Filter Results:</strong><br/>
 		<?php $this->lstDays->Render('Width=160px'); ?> &nbsp; <?php $this->lstTypes->Render('Width=160px'); ?>
 	</div>
