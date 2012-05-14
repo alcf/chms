@@ -185,13 +185,15 @@
 		}
 		
 		protected function SetupLabelsForEvent() {
-			$mctEventSignupForm = new EventSignupFormMetaControl($this, $this->mctSignupForm->SignupForm->EventSignupForm);
-			$this->lblDateStart = $mctEventSignupForm->lblDateStart_Create();
-			$this->lblDateEnd = $mctEventSignupForm->lblDateEnd_Create();
-			$this->lblLocation = $mctEventSignupForm->lblLocation_Create();
-			if (!strlen(trim($this->lblDateStart->Text))) $this->lblDateStart->Visible = false;
-			if (!strlen(trim($this->lblDateEnd->Text))) $this->lblDateEnd->Visible = false;
-			if (!strlen(trim($this->lblLocation->Text))) $this->lblLocation->Visible = false;
+			if (null != $this->mctSignupForm->SignupForm->EventSignupForm) {
+				$mctEventSignupForm = new EventSignupFormMetaControl($this, $this->mctSignupForm->SignupForm->EventSignupForm);
+				$this->lblDateStart = $mctEventSignupForm->lblDateStart_Create();
+				$this->lblDateEnd = $mctEventSignupForm->lblDateEnd_Create();
+				$this->lblLocation = $mctEventSignupForm->lblLocation_Create();
+				if (!strlen(trim($this->lblDateStart->Text))) $this->lblDateStart->Visible = false;
+				if (!strlen(trim($this->lblDateEnd->Text))) $this->lblDateEnd->Visible = false;
+				if (!strlen(trim($this->lblLocation->Text))) $this->lblLocation->Visible = false;
+			}
 		}
 
 		protected function SetupLabelsForCourse() {

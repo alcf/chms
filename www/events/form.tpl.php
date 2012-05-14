@@ -70,9 +70,17 @@
 	<?php if ($this->lstCreateNew) { ?>
 		<div class="buttonBar">
 			<?php $this->lstCreateNew->Render(); ?>
+			<span class="help" onclick="displayHelp('helpProducts')"><img src="/assets/images/icons/help.png" alt="help"></span>
 		</div>
 		<br clear="all"/>
 	<?php } ?>
 	
 	<br clear="all"/>
+	<div class="helpdlg" id="helpProducts" title="Help Information">
+	<ul>
+	<li><b>Required Products</b> - When registering, users MUST select this product. User can only purchase one Required Product. </li>
+	<li><b>Required Product With Choice</b> - When registering, users MUST select one option from the list of Required With Choice products. </li>
+	<li><b>Optional Products</b> - When registering, users can select multiple Optional Products in multiple quantities. Cost will be calculated accordingly.</li>
+	</ul>
+	</div>
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>

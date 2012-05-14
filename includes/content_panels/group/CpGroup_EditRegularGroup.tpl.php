@@ -21,8 +21,8 @@
 
 <div class="helpdlg" id="helpEmailBroadcastType" title="Help Information">
 	<ul>
-		<li>Public List - ANYONE can email to this group </li>
-    	<li>Private List - Only group members can email to this group </li>
-    	<li>Announcement Only - Only group administrators can email to this group </li>
+		<li><b>Public List</b> - ANYONE can email to this group </li>
+    	<li><b>Private List</b> - Only group members can email to this group </li>
+    	<li><b>Announcement Only</b> - Only group administrators can email to this group </li>
     </ul>	
 </div>
