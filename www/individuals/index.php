@@ -135,11 +135,14 @@
 			}
 
 			if ($strName = trim($this->txtPhone->Text)) {
+				$strFormatted = sprintf("%s-%s-%s",substr($strName,0,3), substr($strName,3,3), substr($strName,6));
 				$objClauses[] = QQ::Distinct();
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::OrCondition(
 						QQ::Like( QQN::Person()->Phone->Number, $strName . '%'),
-						QQ::Like( QQN::Person()->HouseholdParticipation->Household->Address->Phone->Number, $strName . '%')
+						QQ::Like( QQN::Person()->HouseholdParticipation->Household->Address->Phone->Number, $strName . '%'),
+						QQ::Like( QQN::Person()->Phone->Number, $strFormatted . '%'),
+						QQ::Like( QQN::Person()->HouseholdParticipation->Household->Address->Phone->Number, $strFormatted . '%')
 					)
 				);
 			}
