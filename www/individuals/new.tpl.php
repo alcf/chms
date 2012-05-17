@@ -102,6 +102,14 @@
 </div>
 </div>
 
+<h3>Attribute Information</h3>
+<div class="section">
+	<?php $this->txtAttributePreviousChurch->RenderWithName(); ?>
+	<?php $this->txtAttributeOccupation->RenderWithName(); ?>
+	<?php $this->lstAttributeMethodJoin->RenderWithName(); ?>
+	
+</div>
+
 <div class="buttonBar">
 	<?php $this->btnSave->Render(); ?> &nbsp;or&nbsp; <?php $this->btnCancel->Render(); ?>
 </div>

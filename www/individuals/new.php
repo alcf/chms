@@ -36,6 +36,10 @@
 		protected $txtSpouseWorkPhone;
 		protected $txtSpouseEmail;
 
+		protected $lstAttributeMethodJoin;
+		protected $txtAttributePreviousChurch;
+		protected $txtAttributeOccupation;
+		
 		protected $lstMarriageStatusType;
 		protected $dtxDateOfMarriage;
 		protected $calDateOfMarriage;
@@ -58,6 +62,7 @@
 		protected $mctAddress;
 		protected $mctMarriage;
 		protected $mctMembership;
+		protected $mctAttribute;
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -65,6 +70,26 @@
 		protected $dlgMessage;
 
 		protected $objHomePhone;
+		
+		protected function CreateControlsForAttributes() {			
+			$this->txtAttributePreviousChurch = new QTextBox($this);
+			$this->txtAttributePreviousChurch->Name = 'Previous Church';
+			$this->txtAttributeOccupation = new QTextBox($this);
+			$this->txtAttributeOccupation->Name = 'Occupation';
+			
+			$this->lstAttributeMethodJoin = new QListBox($this);
+			$this->lstAttributeMethodJoin->Name = 'Method of Joining ALCF';
+			$this->lstAttributeMethodJoin->AddItem('- Select One -', null);
+			
+			$this->mctAttribute = AttributeMetaControl::Create($this, QApplication::PathInfo(0));
+			
+			$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Method of Joining ALCF"));	
+			$attributeOptionArray =AttributeOption::LoadArrayByAttributeId($objAttribute->Id);
+			foreach ($attributeOptionArray as $objAttributeOption){
+				$this->lstAttributeMethodJoin->AddItem($objAttributeOption->Name, $objAttributeOption->Id);
+			}
+		
+		}
 		
 		protected function CreateControlsForPerson() {
 			// Fields for "Person"
@@ -225,6 +250,7 @@
 			$this->mctAddress = new AddressMetaControl($this, new Address());
 			$this->mctMarriage = new MarriageMetaControl($this, new Marriage());
 			$this->mctMembership = new MembershipMetaControl($this, new Membership());
+			$this->mctAttribute = new AttributeMetaControl($this, new Attribute());
 
 			$this->mctPerson->Person->CanEmailFlag = true;
 			$this->mctPerson->Person->CanPhoneFlag = true;
@@ -238,6 +264,7 @@
 			$this->CreateControlsForSpouse();
 			$this->CreateControlsForMembership();
 			$this->CreateControlsForMarriage();
+			$this->CreateControlsForAttributes();
 
 			$this->dlgMessage = new MessageDialog($this);
 			$this->dlgMessage_Reset();
@@ -295,6 +322,7 @@
 			$this->SavePerson();
 			$this->SaveMembership();
 			$this->SaveMarriage();
+			$this->SaveAttribute();
 
 			$this->mctPerson->Person->RefreshPrimaryContactInfo(true);
 			if ($this->mctSpouse->Person->Id) $this->mctSpouse->Person->RefreshPrimaryContactInfo(true);
@@ -302,6 +330,38 @@
 			$this->RedirectBack(true);
 		}
 
+		protected function SaveAttribute() {		
+			if($this->txtAttributePreviousChurch != null) {
+				$objAttributeValue = new AttributeValue();
+				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Previous Church"));
+				$objAttributeValue->AttributeId = $objAttribute->Id;
+				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
+				$objAttributeValue->TextValue = $this->txtAttributePreviousChurch->Text;
+				$objAttributeValue->DatetimeValue = QDateTime::Now();
+				$objAttributeValue->Save();
+			}
+			if($this->txtAttributeOccupation != null) {
+				$objAttributeValue = new AttributeValue();
+				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Occupation"));
+				$objAttributeValue->AttributeId = $objAttribute->Id;
+				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
+				$objAttributeValue->TextValue = $this->txtAttributeOccupation->Text;
+				$objAttributeValue->DatetimeValue = QDateTime::Now();
+				$objAttributeValue->Save();
+			}
+			
+			if($this->lstAttributeMethodJoin != null) {
+				$objAttributeValue = new AttributeValue();
+				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Method of Joining ALCF"));
+				$objAttributeValue->AttributeId = $objAttribute->Id;
+				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
+				$objAttributeValue->TextValue = $this->lstAttributeMethodJoin->SelectedName;
+				$objAttributeValue->DatetimeValue = QDateTime::Now();
+				$objAttributeValue->SingleAttributeOptionId = $this->lstAttributeMethodJoin->SelectedValue;
+				$objAttributeValue->Save();
+			}			
+		}
+		
 		protected function SaveMembership() {
 			if ($this->chkMembershipFlag->Checked) {
 				$this->mctMembership->Membership->Person = $this->mctPerson->Person;
