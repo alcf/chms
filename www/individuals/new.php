@@ -62,7 +62,7 @@
 		protected $mctAddress;
 		protected $mctMarriage;
 		protected $mctMembership;
-		protected $mctAttribute;
+		//protected $mctAttribute;
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -80,8 +80,6 @@
 			$this->lstAttributeMethodJoin = new QListBox($this);
 			$this->lstAttributeMethodJoin->Name = 'Method of Joining ALCF';
 			$this->lstAttributeMethodJoin->AddItem('- Select One -', null);
-			
-			$this->mctAttribute = AttributeMetaControl::Create($this, QApplication::PathInfo(0));
 			
 			$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Method of Joining ALCF"));	
 			$attributeOptionArray =AttributeOption::LoadArrayByAttributeId($objAttribute->Id);
@@ -250,7 +248,7 @@
 			$this->mctAddress = new AddressMetaControl($this, new Address());
 			$this->mctMarriage = new MarriageMetaControl($this, new Marriage());
 			$this->mctMembership = new MembershipMetaControl($this, new Membership());
-			$this->mctAttribute = new AttributeMetaControl($this, new Attribute());
+			//$this->mctAttribute = new AttributeMetaControl($this, new Attribute());
 
 			$this->mctPerson->Person->CanEmailFlag = true;
 			$this->mctPerson->Person->CanPhoneFlag = true;
