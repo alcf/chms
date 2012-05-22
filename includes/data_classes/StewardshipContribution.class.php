@@ -631,8 +631,8 @@
 			}
 
 			
-			$intX = 6.625 * 72;
-			$intXRight = 8.125 * 72;
+			$intX = 6.625 * 72 +10;
+			$intXRight = 8.125 * 72 +10;
 			$intY = STEWARDSHIP_TOP - ((3.5) * 72);
 			$intYBottom = 2.0625 * 72;
 
@@ -685,7 +685,7 @@
 		}
 
 		protected static function DrawItems(Zend_Pdf_Page $objPage, $objContributionAmountArray, $intY) {
-			$intXArray = array(20, 92, 200, 308, 452);
+			$intXArray = array(20, 92, 200, 308, 465);
 
 			$objPage->setLineColor(new Zend_Pdf_Color_GrayScale(0.2));
 			$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0.2));
@@ -714,7 +714,7 @@
 				$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 9);
 				
 				$strAmount = QApplication::DisplayCurrency($objAmount->Amount);
-				if ($objAmount->StewardshipContribution->NonDeductibleFlag) $strAmount = '(*) ' . $strAmount;
+				if ($objAmount->StewardshipContribution->NonDeductibleFlag) $strAmount = $strAmount . ' (*)' ;
 				self::DrawTextRight($objPage, 																	$intXArray[4], $intY, $strAmount);
 			}
 		}
