@@ -39,6 +39,9 @@
 		protected $lstAttributeMethodJoin;
 		protected $txtAttributePreviousChurch;
 		protected $txtAttributeOccupation;
+		protected $lstAttributeEthnicity;
+		protected $dtxAttributeDateAcceptedChrist;
+		protected $calAttributeDateAcceptedChrist;
 		
 		protected $lstMarriageStatusType;
 		protected $dtxDateOfMarriage;
@@ -62,7 +65,6 @@
 		protected $mctAddress;
 		protected $mctMarriage;
 		protected $mctMembership;
-		//protected $mctAttribute;
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -86,7 +88,19 @@
 			foreach ($attributeOptionArray as $objAttributeOption){
 				$this->lstAttributeMethodJoin->AddItem($objAttributeOption->Name, $objAttributeOption->Id);
 			}
-		
+			$this->lstAttributeEthnicity = new QListBox($this);
+			$this->lstAttributeEthnicity->Name = 'Ethnicity';
+			$this->lstAttributeEthnicity->AddItem('- Select One -', null);
+				
+			$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Ethnicity"));
+			$attributeOptionArray =AttributeOption::LoadArrayByAttributeId($objAttribute->Id);
+			foreach ($attributeOptionArray as $objAttributeOption){
+				$this->lstAttributeEthnicity->AddItem($objAttributeOption->Name, $objAttributeOption->Id);
+			}
+			
+			$this->dtxAttributeDateAcceptedChrist = new QDateTimeTextBox($this);
+			$this->dtxAttributeDateAcceptedChrist->Name = 'Date Accepted Christ';
+			$this->calAttributeDateAcceptedChrist = new QCalendar($this, $this->dtxAttributeDateAcceptedChrist);
 		}
 		
 		protected function CreateControlsForPerson() {
@@ -248,7 +262,6 @@
 			$this->mctAddress = new AddressMetaControl($this, new Address());
 			$this->mctMarriage = new MarriageMetaControl($this, new Marriage());
 			$this->mctMembership = new MembershipMetaControl($this, new Membership());
-			//$this->mctAttribute = new AttributeMetaControl($this, new Attribute());
 
 			$this->mctPerson->Person->CanEmailFlag = true;
 			$this->mctPerson->Person->CanPhoneFlag = true;
@@ -329,7 +342,7 @@
 		}
 
 		protected function SaveAttribute() {		
-			if($this->txtAttributePreviousChurch != null) {
+			if(($this->txtAttributePreviousChurch != null) && ($this->txtAttributeOccupation->Text != "")) {
 				$objAttributeValue = new AttributeValue();
 				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Previous Church"));
 				$objAttributeValue->AttributeId = $objAttribute->Id;
@@ -338,7 +351,7 @@
 				$objAttributeValue->DatetimeValue = QDateTime::Now();
 				$objAttributeValue->Save();
 			}
-			if($this->txtAttributeOccupation != null) {
+			if(($this->txtAttributeOccupation != null) && ($this->txtAttributeOccupation->Text!= "")) {
 				$objAttributeValue = new AttributeValue();
 				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Occupation"));
 				$objAttributeValue->AttributeId = $objAttribute->Id;
@@ -348,7 +361,7 @@
 				$objAttributeValue->Save();
 			}
 			
-			if($this->lstAttributeMethodJoin != null) {
+			if (($this->lstAttributeMethodJoin != null)&& ($this->lstAttributeMethodJoin->SelectedName != '- Select One -')) {
 				$objAttributeValue = new AttributeValue();
 				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Method of Joining ALCF"));
 				$objAttributeValue->AttributeId = $objAttribute->Id;
@@ -356,8 +369,31 @@
 				$objAttributeValue->TextValue = $this->lstAttributeMethodJoin->SelectedName;
 				$objAttributeValue->DatetimeValue = QDateTime::Now();
 				$objAttributeValue->SingleAttributeOptionId = $this->lstAttributeMethodJoin->SelectedValue;
+				$objAttributeValue->SingleAttributeOption->Name = $this->lstAttributeMethodJoin->SelectedName;
 				$objAttributeValue->Save();
-			}			
+			}
+
+			if (($this->lstAttributeEthnicity != null)&& ($this->lstAttributeEthnicity->SelectedName != '- Select One -')) {
+				$objAttributeValue = new AttributeValue();
+				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Ethnicity"));
+				$objAttributeValue->AttributeId = $objAttribute->Id;
+				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
+				$objAttributeValue->TextValue = $this->lstAttributeEthnicity->SelectedName;
+				$objAttributeValue->DatetimeValue = QDateTime::Now();
+				$objAttributeValue->SingleAttributeOptionId = $this->lstAttributeEthnicity->SelectedValue;
+				$objAttributeValue->SingleAttributeOption->Name = $this->lstAttributeEthnicity->SelectedName;
+				$objAttributeValue->Save();
+			}
+			
+			if (($this->dtxAttributeDateAcceptedChrist != null) && ($this->dtxAttributeDateAcceptedChrist->DateTime != null)) {
+				$objAttributeValue = new AttributeValue();
+				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Date Accepted Christ"));
+				$objAttributeValue->AttributeId = $objAttribute->Id;
+				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
+				$objAttributeValue->DatetimeValue = $this->dtxAttributeDateAcceptedChrist->DateTime;
+				$objAttributeValue->DateValue = $this->dtxAttributeDateAcceptedChrist->DateTime;
+				$objAttributeValue->Save();
+			}
 		}
 		
 		protected function SaveMembership() {
@@ -559,6 +595,17 @@
 			$this->RedirectBack(false);
 		}
 
+		/**
+		* Create and setup QDateTimePicker $calAttributeDateAcceptedChrist
+		* @return QDateTimePicker
+		*/
+		protected function calDateAcceptedChrist_Create() {
+				$this->calAttributeDateAcceptedChrist = new QCalendar($this->calAttributeDateAcceptedChrist, $this->calAttributeDateAcceptedChrist);
+				$this->calAttributeDateAcceptedChrist->RemoveAllActions(QClickEvent::EventName);
+				return $this->calAttributeDateAcceptedChrist;
+			
+		}
+		
 		protected function RedirectBack($blnSave = false) {
 			// From StewradshipSelectPersonDialogBox.class.php:
 			//
@@ -588,6 +635,6 @@
 			}
 		}
 	}
-
+	
 	CreateIndividualForm::Run('CreateIndividualForm');
 ?>

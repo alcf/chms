@@ -107,6 +107,11 @@
 	<?php $this->txtAttributePreviousChurch->RenderWithName(); ?>
 	<?php $this->txtAttributeOccupation->RenderWithName(); ?>
 	<?php $this->lstAttributeMethodJoin->RenderWithName(); ?>
+	<?php $this->lstAttributeEthnicity->RenderWithName(); ?>
+	<?php 
+		$this->dtxAttributeDateAcceptedChrist->HtmlAfter = '&nbsp;' . $this->calAttributeDateAcceptedChrist->Render(false);
+		$this->dtxAttributeDateAcceptedChrist->RenderWithName('Width=150px');
+	?>
 	
 </div>
 

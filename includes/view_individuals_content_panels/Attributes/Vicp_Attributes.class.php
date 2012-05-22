@@ -25,7 +25,7 @@
 
 					case AttributeDataType::ImmutableSingleDropdown:
 				case AttributeDataType::MutableSingleDropdown:
-					return QApplication::HtmlEntities($objValue->SingleAttributeOption->Name);
+						return QApplication::HtmlEntities($objValue->SingleAttributeOption->Name);
 
 				case AttributeDataType::ImmutableMultipleDropdown:
 				case AttributeDataType::MutableMultipleDropdown:
