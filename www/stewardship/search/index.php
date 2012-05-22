@@ -185,13 +185,15 @@
 			if ($this->lstFund->SelectedValue) {
 				$fltAmount = 0;
 				foreach ($objStewardshipContribution->GetStewardshipContributionAmountArray() as $objAmount) {
-					if ($objAmount->StewardshipFundId == $this->lstFund->SelectedValue)
-						$fltAmount += $objAmount->Amount;
+					if (($objAmount->StewardshipFundId == $this->lstFund->SelectedValue) && 
+						($objAmount->StewardshipContributionId == $objStewardshipContribution->Id)) {
+					    $fltAmount = $objAmount->Amount; // Don't display the total. Just the specific ID amount
+					}
 				}
 			} else {
 				$fltAmount = $objStewardshipContribution->TotalAmount;
 			}
-
+	
 			$this->fltTotal += $fltAmount;
 
 			return sprintf('<a href="/stewardship/batch.php/%s#%s/view_contribution/%s">%s</a>',
