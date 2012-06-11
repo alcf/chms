@@ -84,6 +84,13 @@
 
 			$this->mctStewardshipBatch->StewardshipBatch->ReportedTotalAmount = $fltTotalAmount;
 			$this->mctStewardshipBatch->SaveStewardshipBatch();
+			
+			// iterate through Stewardship contributions in the batch and set the date credited
+			$objContributionArray = $this->objBatch->GetStewardshipContributionArray();
+			foreach ($objContributionArray as $objContribution) {
+				$objContribution->DateCredited = $this->calDateCredited->DateTime;
+				$objContribution->save();
+			} 
 			$this->objForm->pnlBatchTitle->Refresh();
 			$this->objForm->pnlStacks_Refresh();
 			return $this->ReturnTo('#1');
