@@ -22,6 +22,7 @@
 		const FormerMember = 2;
 		const Member = 3;
 		const ChildOfMember = 4;
+		const Deceased = 5;
 
 		const MaxId = 4;
 
@@ -29,13 +30,15 @@
 			1 => 'Non-Member',
 			2 => 'Former Member',
 			3 => 'Member',
-			4 => 'Child Of Member');
+			4 => 'Child Of Member',
+			5 => 'Deceased');
 
 		public static $TokenArray = array(
 			1 => 'NonMember',
 			2 => 'FormerMember',
 			3 => 'Member',
-			4 => 'ChildOfMember');
+			4 => 'ChildOfMember',
+			5 => 'Deceased');
 
 		public static function ToString($intMembershipStatusTypeId) {
 			switch ($intMembershipStatusTypeId) {
@@ -43,6 +46,7 @@
 				case 2: return 'Former Member';
 				case 3: return 'Member';
 				case 4: return 'Child Of Member';
+				case 5: return 'Deceased';
 				default:
 					throw new QCallerException(sprintf('Invalid intMembershipStatusTypeId: %s', $intMembershipStatusTypeId));
 			}
@@ -54,6 +58,7 @@
 				case 2: return 'FormerMember';
 				case 3: return 'Member';
 				case 4: return 'ChildOfMember';
+				case 5: return 'Deceased';
 				default:
 					throw new QCallerException(sprintf('Invalid intMembershipStatusTypeId: %s', $intMembershipStatusTypeId));
 			}

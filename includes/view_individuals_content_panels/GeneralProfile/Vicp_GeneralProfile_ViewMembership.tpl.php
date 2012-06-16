@@ -4,3 +4,4 @@
 	<?php if ($_CONTROL->btnAdd) $_CONTROL->btnAdd->Render('CssClass=primary','Text=Add New Membership'); ?></h3>
 
 <div class="section"><?php $_CONTROL->dtgMemberships->Render();?></div>
+

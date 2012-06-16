@@ -441,3 +441,13 @@ div.shopInfo div.shopLeft { float: left; }
 	span.help { cursor:pointer;  }
 	div.helpdlg { display:none; font-size: 10px; font-weight:normal; }
 	div.helpdlg li {line-height:1.5;}
+	
+	/* Attribute Panel */
+	.attributeLbl {font-weight:bold; font-size:14px; font-family: arial; display:block; margin-bottom:5px; }
+	.attributeBtn {
+		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
+		font-size: 12px; font-family: arial; color: #fff;
+		text-transform: uppercase; display:block; margin:5px;
+	}
+	.attributePanel {-moz-border-radius: 5px 5px 5px 5px; border-radius: 5px 5px 5px 5px; }
+	

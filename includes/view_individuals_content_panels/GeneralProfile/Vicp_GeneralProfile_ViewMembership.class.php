@@ -2,7 +2,8 @@
 	class Vicp_GeneralProfile_ViewMembership extends Vicp_Base {
 		public $dtgMemberships;
 		public $btnAdd;
-
+	public $strDebug;
+	
 		protected function SetupPanel() {
 			if (!QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus)) {
 				$this->strTemplate = null;
@@ -21,6 +22,7 @@
 			$this->dtgMemberships->AddColumn(new QDataGridColumn('Reason', '<?= $_ITEM->TerminationReason; ?>'));
 			$this->dtgMemberships->SetDataBinder('dtgMemberships_Bind', $this);
 			
+			$strdebug = sprintf("MembershipStatusTypeID = %d",$this->objPerson->MembershipStatusTypeId);
 			// Add a "Add a New Membership" button if applicable
 			if (QApplication::IsLoginHasPermission(PermissionType::EditMembershipStatus) &&
 				(!$this->objPerson->CurrentMembershipInfo)) {

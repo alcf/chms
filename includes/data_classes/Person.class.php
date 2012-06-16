@@ -686,6 +686,12 @@
 				return $this->intMembershipStatusTypeId;
 			}
 
+			// Check to see if we're deceased
+			if ($objMembership->TerminationReason == MembershipStatusType::ToString(MembershipStatusType::Deceased)) {
+				$this->intMembershipStatusTypeId = MembershipStatusType::Deceased;
+				return $this->intMembershipStatusTypeId;
+			}
+			
 			// Otherwise, we are a Past member
 			$this->intMembershipStatusTypeId = MembershipStatusType::FormerMember;
 			if ($blnSave) $this->Save();

@@ -196,6 +196,7 @@
 			// Use It!
 			new $strClassName($this->pnlMainContent, 'content', $this->objPerson, $this->strUrlHashArgument);
 		}
+		
 	}
 
 	ViewIndividualForm::Run('ViewIndividualForm');
