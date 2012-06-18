@@ -150,11 +150,7 @@
 			return $blnToReturn;
 		}
 
-		public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-			// debug file
-			$myFile = "debug.txt";
-			$fh = fopen($myFile, 'w') or die("can't open file");
-					
+		public function btnSave_Click($strFormId, $strControlId, $strParameter) {			
 			$this->objMembership->DateStart = $this->dtxDateStart->DateTime;
 			$this->objMembership->DateEnd = $this->dtxDateEnd->DateTime;
 
@@ -172,27 +168,12 @@
 				}
 			} else {
 				$this->objMembership->TerminationReason = null;
-			}
-			
-			$stringData = "Termination Reason = ".$this->objMembership->TerminationReason ."\n";
-			fwrite($fh, $stringData);
-			
+			}					
 			$this->objMembership->Save();
-			
-			$stringData = "Before:MembershipStatus = ".$this->objPerson->MembershipStatus ."\n";
-			fwrite($fh, $stringData);
-			
+						
 			// Important!  Remember to Update the Person's Membership STatus
 			$returnValue = $this->objPerson->RefreshMembershipStatusTypeId();
-			
-			$stringData = "Return MembershipStatus from  RefreshMembershipStatusTypeId = ".$returnValue ."\n";
-			fwrite($fh, $stringData);
-			$stringData = "After:MembershipStatusID = ".$this->objPerson->MembershipStatusTypeId ."\n";
-			$stringData = "After:MembershipStatus = ".$this->objPerson->MembershipStatus ."\n";
-			fwrite($fh, $stringData);
-			
-			fclose($fh);
-			
+						
 			return $this->ReturnTo('#general/view_membership');
 		}
 	}
