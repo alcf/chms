@@ -117,16 +117,16 @@
 			
 				case AttributeDataType::Date:
 				case AttributeDataType::DateTime:
-					if ($this->objAttributeValue->Attribute->AttributeDataTypeId == AttributeDataType::Date) {
-						$this->dtxValue->Text = ($this->objAttributeValue->DateValue) ? $this->objAttributeValue->DateValue->ToString() : null;
-					} else {
-						$this->dtxValue->Text = ($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->DatetimeValue->ToString() : null;
-					}
 					$this->dtxValue = new QDateTimeTextBox($this->pnlRight);
 					$this->dtxValue->Name = $paramArray[2];
 					$this->dtxValue->Required = true;
 					$this->calValue = new QCalendar($this->pnlRight, $this->dtxValue);			
 					$this->dtxValue->RemoveAllActions(QClickEvent::EventName);
+					if ($this->objAttributeValue->Attribute->AttributeDataTypeId == AttributeDataType::Date) {
+						$this->dtxValue->Text = ($this->objAttributeValue->DateValue) ? $this->objAttributeValue->DateValue->ToString() : null;
+					} else {
+						$this->dtxValue->Text = ($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->DatetimeValue->ToString() : null;
+					}
 					break;
 			
 				case AttributeDataType::Text:
