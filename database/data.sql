@@ -211,6 +211,7 @@ INSERT INTO membership_status_type VALUES(1, 'Non-Member');
 INSERT INTO membership_status_type VALUES(2, 'Former Member');
 INSERT INTO membership_status_type VALUES(3, 'Member');
 INSERT INTO membership_status_type VALUES(4, 'Child Of Member');
+INSERT INTO membership_status_type VALUES(5, 'Deceased');
 
 INSERT INTO parent_pager_sync_status_type VALUES(1, 'Not Yet Synced');
 INSERT INTO parent_pager_sync_status_type VALUES(2, 'Synced');

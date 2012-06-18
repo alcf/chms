@@ -24,7 +24,7 @@
 		const ChildOfMember = 4;
 		const Deceased = 5;
 
-		const MaxId = 4;
+		const MaxId = 5;
 
 		public static $NameArray = array(
 			1 => 'Non-Member',

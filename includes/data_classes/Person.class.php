@@ -689,6 +689,7 @@
 			// Check to see if we're deceased
 			if ($objMembership->TerminationReason == MembershipStatusType::ToString(MembershipStatusType::Deceased)) {
 				$this->intMembershipStatusTypeId = MembershipStatusType::Deceased;
+				if ($blnSave) $this->Save();
 				return $this->intMembershipStatusTypeId;
 			}
 			
