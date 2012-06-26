@@ -108,6 +108,17 @@
 			return false;
 		}
 
+		public static function LoadArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objOptionalClauses = null) {
+			// This will return an array of Membership objects
+			return Membership::QueryArray(
+			QQ::AndCondition(
+			QQ::GreaterOrEqual(QQN::Membership()->DateStart, $dttAfterDateStart),
+			QQ::LessOrEqual(QQN::Membership()->DateStart, $dttBeforeDateStart)
+			),
+			$objOptionalClauses
+			);
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
