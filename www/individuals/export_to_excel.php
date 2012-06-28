@@ -19,6 +19,7 @@
 	header('Content-Type: text/csv');
 	header('Content-Disposition: attachment; filename=newMemberReport.csv');
 
+	print "New Members Report From ".QApplication::PathInfo(0) . " to ". QApplication::PathInfo(1)."  \r\n";
 	print "Name,Membership Start Date\r\n";
 	
 
