@@ -188,7 +188,7 @@
 		}
 
 		public function RenderName(Person $objPerson) {
-			if ($objPerson->Id) return QApplication::HtmlEntities($objPerson->FullName);
+			if ($objPerson->Id) return  sprintf('<a href="%s">%s</a>', $objPerson->LinkUrl, QApplication::HtmlEntities($objPerson->FullName));
 		}
 
 		public function RenderSelect(Person $objPerson) {
