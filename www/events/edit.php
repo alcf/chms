@@ -131,7 +131,7 @@
 
 			$this->txtToken = $this->mctSignupForm->txtToken_Create();
 			$this->txtToken->Name = 'Custom Signup Web Address';
-			$this->txtToken->HtmlBefore = '<span>https://my.alcf.net/signup/form.php / </span>';
+			$this->txtToken->HtmlBefore = '<span>https://my.alcf.net/signup/event.php / </span>';
 
 			$this->chkConfidentialFlag = $this->mctSignupForm->chkConfidentialFlag_Create();
 			$this->chkConfidentialFlag->Name = 'Confidential?';

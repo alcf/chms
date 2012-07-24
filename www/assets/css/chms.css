@@ -269,6 +269,9 @@
 	div.lastSection { margin-bottom: 0; }
 	div.section div.sectionButtons { height: 1px; text-align: right; }
 
+	div.section button {margin-right: 20px;}
+	div.section ul {margin: 0 0 12px 18px; padding: 0; list-style:none; }
+	
 	div.indivGenProfPhoto div.photo { float: left; width: 160px; }
 		div.indivGenProfPhoto div.photo button { margin-top: 4px; }
 	div.indivGenProfPhoto div.photoRightContent { float: left; width: 606px; }
