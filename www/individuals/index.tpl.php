@@ -5,7 +5,7 @@
 		<button type="primary" onclick="document.location='/individuals/new.php'; return false;" class="primary">Add New Individual</button>
 	<?php } ?>
 	<?php if (QApplication::IsLoginHasPermission(PermissionType::AddNewIndividual)) { ?>
-		<button type="primary" onclick="document.location='/individuals/reports.php'; return false;" class="primary">Generate Reports</button>
+		<button type="primary" onclick="document.location='/individuals/reports_list.php'; return false;" class="primary">Generate Reports</button>
 	<?php } ?>
 	</h1>
 
