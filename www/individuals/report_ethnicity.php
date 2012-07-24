@@ -156,7 +156,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$objEuropeanArray[] = $objEthnicityItem;
 			$objEthnicityItem = new ethnicityItem("Swiss", $this->ethnicityArray["swiss"]);
 			$objEuropeanArray[] = $objEthnicityItem;
-			$this->dtgEuropeanGroup->DataSource = $objHispanicArray;
+			$this->dtgEuropeanGroup->DataSource = $objEuropeanArray;
 			
 				
 			// Pacific Islander Group
