@@ -19,6 +19,8 @@
 			<a href="/stewardship/reports/monthly_giving.php" class="cancel">Monthly Giving Report</a>
 			&nbsp;|&nbsp;
 			<a href="/stewardship/pledges/" class="cancel">View Outstanding Pledges</a>
+			&nbsp;|&nbsp;
+			<a href="/stewardship/reports/giving_statistics.php" class="cancel">Stewardship Giving Statistics</a>
 		</p>
 	</div>
 

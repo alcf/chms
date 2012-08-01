@@ -789,6 +789,17 @@
 			$objPage->drawImage(self::$ZendImage, 424, STEWARDSHIP_TOP - 108, 576, STEWARDSHIP_TOP - 36);
 		}
 
+		public static function LoadArrayByDateRange($dttAfter, $dttBefore, $objOptionalClauses = null) {
+			// This will return an array of StewardshipContribution objects
+			return StewardshipContribution::QueryArray(
+			QQ::AndCondition(
+			QQ::GreaterOrEqual(QQN::StewardshipContribution()->DateCredited, $dttAfter),
+			QQ::LessOrEqual(QQN::StewardshipContribution()->DateCredited, $dttBefore)
+			),
+			$objOptionalClauses
+			);
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

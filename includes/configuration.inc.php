@@ -178,6 +178,7 @@
 
 	define ('LDAP_PATH', 'ldap://ldap.alcf.net/');
 	define ('RECEIPT_PDF_PATH', __DOCROOT__ . '/../file_assets/receipt_pdf');
+	define ('STATISTICS_PDF_PATH', __DOCROOT__ . '/../file_assets/statistics');
 
 	define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/../cli');
 	define ('__INCLUDES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/../includes');
