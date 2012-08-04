@@ -38,12 +38,13 @@
 	));
 	
 	// Setup the data holders
-	$fltTotalGivers = 0;
+	$fltTotalGifts = 0;
 	$fltTotalAdditionalUniqueGivers = 0;
 	$fltTotalGiftsOver1000 = 0;
 	$fltTotalGiftsOver10000 = 0;
 	$fltTotalAverageGiftSize = 0;
 	$fltTotalGiftAmount = 0;
+	$fltTotalGivers = 0;
 	
 	$objDataGridArray = array();
 	$objMonthlyTotal = array(0,0,0,0,0,0,0,0,0,0,0,0);
@@ -51,11 +52,13 @@
 	$objOver1000 = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	$objOver10000 = array(0,0,0,0,0,0,0,0,0,0,0,0);
 	$objUniqueGiver = array(0,0,0,0,0,0,0,0,0,0,0,0);
+	$objGiverCount = array(array(),array(),array(),array(),array(),array(),array(),array(),array(),array(),array(),array());
+	$objGiverList = array();
 	
 	while ($objContribution = StewardshipContribution::InstantiateCursor($objContributionCursor)) {
 		$iMonth = 0;
 		$fltTotalGiftAmount += $objContribution->TotalAmount;
-		$fltTotalGivers++;
+		$fltTotalGifts++;
 	
 		if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("1/1/".$intYear))) &&
 		($objContribution->DateCredited->IsEarlierThan(new QDateTime("2/1/".$intYear)))) {
@@ -103,17 +106,26 @@
 		$objOver10000[$iMonth]++;
 	
 		$objMonthlyCount[$iMonth]++;
-	
+		
+		// Calculate number of givers (as opposed to gifts)
+		if (!in_array($objContribution->PersonId,$objGiverList)) {
+			$objGiverList[] = $objContribution->PersonId;
+		}
+		if (!in_array($objContribution->PersonId,$objGiverCount[$iMonth])) {
+			$objGiverCount[$iMonth][] = $objContribution->PersonId;
+		}
+		
 		if(StewardshipContribution::CountByPersonId($objContribution->PersonId) <= 1) {
 			$fltTotalAdditionalUniqueGivers++;
 			$objUniqueGiver[$iMonth]++;
 		}
+		
 	}
 	$fltTotalGiftsOver1000 = array_sum($objOver1000);
 	$fltTotalGiftsOver10000 = array_sum($objOver10000);
 	$fltTotalAdditionalUniqueGivers = array_sum($objUniqueGiver);
-	if ($fltTotalGivers != 0)
-	$fltTotalAverageGiftSize = round($fltTotalGiftAmount/$fltTotalGivers,2);
+	if ($fltTotalGifts != 0)
+	$fltTotalAverageGiftSize = round($fltTotalGiftAmount/$fltTotalGifts,2);
 	
 	// Now fill in the Datagrid Array
 	for($i=0; $i<12; $i++) {
@@ -162,12 +174,12 @@
 	
 		$objDataGridArray[$i] = array($strMonth, QApplication::DisplayCurrency($objMonthlyTotal[$i]),
 		$objMonthlyCount[$i],$objOver1000[$i],$objOver10000[$i],$objUniqueGiver[$i],
-		QApplication::DisplayCurrency($fltAverage));
+		QApplication::DisplayCurrency($fltAverage), count($objGiverCount[$i]));
 	
 		print("Month : ".$objDataGridArray[$i][0] . " total: ".$objDataGridArray[$i][1].
-			" Count: ". $objDataGridArray[$i][2]. " Over $1000: ".$objDataGridArray[$i][3].
+			" Gift Count: ". $objDataGridArray[$i][2]. " Over $1000: ".$objDataGridArray[$i][3].
 			" Over $10,000: " . $objDataGridArray[$i][4]. " Unique Givers: ".$objDataGridArray[$i][5].
-			" Average Gift: ". $objDataGridArray[$i][6]."\n");
+			" Average Gift: ". $objDataGridArray[$i][6]. "total givers: ". $objDataGridArray[$i][7]."\n");
 	}
 	
 	// Create PDF with the extracted information
@@ -186,8 +198,13 @@
 	
 	$intY -= 15.2;
 	$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8);
+	$objPage->drawText("Total Number of Gifts: ", 36, $intY, 'UTF-8');
+	$objPage->drawText($fltTotalGifts, 310, $intY, 'UTF-8');
+	
+	$intY -= 10.2;
+	$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8);
 	$objPage->drawText("Total Number of Givers: ", 36, $intY, 'UTF-8');
-	$objPage->drawText($fltTotalGivers, 310, $intY, 'UTF-8');
+	$objPage->drawText(count($objGiverList), 310, $intY, 'UTF-8');
 	
 	$intY -= 10.2;
 	$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8);
@@ -216,31 +233,33 @@
 	
 	// Print the table
 	$intY -= 15.2;
-	$intXArray = array(20, 80, 150, 210, 260, 312, 398);
+	$intXArray = array(20, 80, 150, 210, 260, 312, 398, 498);
 	$objPage->setLineColor(new Zend_Pdf_Color_GrayScale(0.2));
 	$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0.2));
-	$objPage->drawRectangle($intXArray[0] - 6, $intY, $intXArray[6] + 90, $intY-10);
+	$objPage->drawRectangle($intXArray[0] - 6, $intY, $intXArray[7] + 90, $intY-10);
 	$intY -= 7.5;
 	$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(1));
 	$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8);
 	$objPage->drawText("Month", $intXArray[0], $intY, 'UTF-8');
 	$objPage->drawText("Average Gift Size", $intXArray[1], $intY, 'UTF-8');
 	$objPage->drawText("Total", $intXArray[2], $intY, 'UTF-8');
-	$objPage->drawText("# Givers", $intXArray[3], $intY, 'UTF-8');
-	$objPage->drawText("New Givers", $intXArray[4], $intY, 'UTF-8');
-	$objPage->drawText("# Gifts Over $1000", $intXArray[5], $intY, 'UTF-8');
-	$objPage->drawText("# Gifts Over $10000", $intXArray[6], $intY, 'UTF-8');
+	$objPage->drawText("# Gifts", $intXArray[3], $intY, 'UTF-8');
+	$objPage->drawText("# Givers", $intXArray[4], $intY, 'UTF-8');
+	$objPage->drawText("New Givers", $intXArray[5], $intY, 'UTF-8');
+	$objPage->drawText("# Gifts Over $1000", $intXArray[6], $intY, 'UTF-8');
+	$objPage->drawText("# Gifts Over $10000", $intXArray[7], $intY, 'UTF-8');
 	$objPage->setFillColor(new Zend_Pdf_Color_GrayScale(0));
 	$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 8);
 	for($i=0; $i<12; $i++) {
 		$intY -= 12;
 		$objPage->drawText($objDataGridArray[$i][0], $intXArray[0], $intY, 'UTF-8');
 		$objPage->drawText($objDataGridArray[$i][6], $intXArray[1], $intY, 'UTF-8');
-		$objPage->drawText($objDataGridArray[$i][1], $intXArray[2], $intY, 'UTF-8');
+		$objPage->drawText($objDataGridArray[$i][1], $intXArray[2], $intY, 'UTF-8');		
 		$objPage->drawText($objDataGridArray[$i][2], $intXArray[3], $intY, 'UTF-8');
-		$objPage->drawText($objDataGridArray[$i][5], $intXArray[4], $intY, 'UTF-8');
-		$objPage->drawText($objDataGridArray[$i][3], $intXArray[5], $intY, 'UTF-8');
-		$objPage->drawText($objDataGridArray[$i][4], $intXArray[6], $intY, 'UTF-8');
+		$objPage->drawText($objDataGridArray[$i][7], $intXArray[4], $intY, 'UTF-8');
+		$objPage->drawText($objDataGridArray[$i][5], $intXArray[5], $intY, 'UTF-8');
+		$objPage->drawText($objDataGridArray[$i][3], $intXArray[6], $intY, 'UTF-8');
+		$objPage->drawText($objDataGridArray[$i][4], $intXArray[7], $intY, 'UTF-8');
 	}
 	
 	$objStatisticPdf->save(STATISTICS_PDF_PATH . '/StatisticsFor' . $intYear . '.pdf');
