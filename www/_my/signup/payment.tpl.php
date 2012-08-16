@@ -25,12 +25,12 @@
 				<li>Class Meetings: <strong>Meets <?php _p($this->objChild->MeetsOnInfo); ?></strong></li>
 			</ul>
 			<?php if ($this->objSignupForm->InformationUrl) _p($this->objSignupForm->InformationLinkHtml, false); ?>
-			(*) Fields in <strong>BOLD</strong> are required.
+			Fields in <strong>BOLD</strong> are required.
 <?php
 			break;
 	}
 ?>
-	(*) Fields in <strong>BOLD</strong> are required.
+	Fields in <strong>BOLD</strong> are required.
 	<br/>
 	<br/>
 
