@@ -513,23 +513,22 @@
 								$strAnswerArray[$strAnswer] = $strAnswer;
 							}
 						}
-						$lstAnswer = new QListBox($this, $strControlId);
-						$lstAnswer->Name = $objFormQuestion->Question;
-						$lstAnswer->SelectionMode = QSelectionMode::Multiple;
-						$lstAnswer->Rows = 10;
-						$lstAnswer->Required = $objFormQuestion->RequiredFlag;
-						$lstAnswer->RenderMethod = 'RenderWithName';
-						$this->objFormQuestionControlArray[] = $lstAnswer;
+
+						// GJS - Change to check boxes instead of multi select
+						$chkAnswer = new QCheckBoxList($this, $strControlId);
+						$chkAnswer->Name = $objFormQuestion->Question;
+						$chkAnswer->RenderMethod = 'RenderWithName';
+						$this->objFormQuestionControlArray[] = $chkAnswer;
+						
 						foreach (explode("\n", trim($objFormQuestion->Options)) as $strItem) {
 							if (strlen($strItem = trim($strItem))) {
-								$lstAnswer->AddItem($strItem, $strItem, array_key_exists($strItem, $strAnswerArray));
+								$chkAnswer->AddItem($strItem, $strItem, array_key_exists($strItem, $strAnswerArray));
 								$strAnswerArray[$strItem] = null;
 								unset($strAnswerArray[$strItem]);
 							}
 						}
-
 						foreach ($strAnswerArray as $strAnswer)
-							$lstAnswer->AddItem($strAnswer, $strAnswer, true);
+						$chkAnswer->AddItem($strAnswer, $strAnswer, true);
 						
 						if ($objFormQuestion->AllowOtherFlag) {
 							$txtAnswer = new QTextBox($this, $strControlId . 'other');
@@ -793,11 +792,18 @@
 						break;
 
 					case FormQuestionType::MultipleSelect:
-						$lstAnswer = $this->GetControl($strControlId);
-						$strSelectedArray = $lstAnswer->SelectedValues;
-						if (count($strSelectedArray)) {
+						//GJS - changing to multiple check boxes
+						$chkAnswer = $this->GetControl($strControlId);
+						$objItemsArray = $chkAnswer->GetAllItems();
+						if (count($objItemsArray)) {
+							$strSelectedArray = array();
+							foreach ($objItemsArray as $objItem) {
+								if ($objItem->Selected) {
+									$strSelectedArray[] = $objItem->Name;
+								} 
+							}
 							$objFormAnswer->TextValue = implode("\r\n", $strSelectedArray);
-						} else {
+						}else {
 							$objFormAnswer->TextValue = null;
 						}
 						break;

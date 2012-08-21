@@ -39,7 +39,7 @@
 			break;
 
 		case FormQuestionType::MultipleSelect:
-			$this->lstListbox->RenderWithName('Required=true');
+			$this->chkAnswer->RenderWithName('Required=true');
 			if ($_FORM->objAnswer->FormQuestion->AllowOtherFlag) $this->txtTextbox->RenderWithName();
 			break;
 

@@ -55,6 +55,7 @@
 		protected $objAnswer;
 		protected $txtTextbox;
 		protected $lstListbox;
+		protected $chkAnswer;
 		protected $txtInteger;
 		protected $txtFloat;
 		protected $chkBoolean;
@@ -308,6 +309,7 @@
 
 			$this->txtTextbox = new QTextBox($this->dlgEdit);
 			$this->lstListbox = new QListBox($this->dlgEdit);
+			$this->chkAnswer = new QCheckBoxList($this->dlgEdit);
 			$this->txtInteger = new QIntegerTextBox($this->dlgEdit);
 			$this->txtFloat = new QFloatTextBox($this->dlgEdit);
 			$this->chkBoolean = new QCheckBox($this->dlgEdit);
@@ -355,6 +357,7 @@
 			$this->txtTextbox->Required = false;
 			$this->txtTextbox->Enabled = true;
 			$this->lstListbox->Required = false;
+			$this->chkAnswer->Required = false;
 			$this->txtInteger->Required = false;
 			$this->txtFloat->Required = false;
 			$this->chkBoolean->Required = false;
@@ -366,6 +369,9 @@
 			$this->lstListbox->RemoveAllActions(QChangeEvent::EventName);
 			$this->lstListbox->RemoveAllItems();
 
+			$this->chkAnswer->RemoveAllActions(QChangeEvent::EventName);
+			$this->chkAnswer->RemoveAllItems();
+			
 			$this->txtTextbox->RemoveAllActions(QEnterKeyEvent::EventName);
 			$this->txtTextbox->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtTextbox->Instructions = null;		
@@ -441,7 +447,7 @@
 			}
 
 			if (strlen($strToReturn)) {
-				// If we are here, nothing was answered!
+				// If we are here, create a link to the details
 				return (sprintf('<a href="#" style="font-weight: bold;" %s>%s</a>', $this->pxyEditFormQuestion->RenderAsEvents($objFormQuestion->Id, false), $strToReturn));
 			} else {
 				// If we are here, nothing was answered!
@@ -742,27 +748,24 @@
 					break;
 
 				case FormQuestionType::MultipleSelect:
-					$this->lstListbox->SelectionMode = QSelectionMode::Multiple;
-					$this->lstListbox->Height = '100px';
-					$this->lstListbox->Width = '200px';
-					$this->lstListbox->RemoveAllItems();
-					$this->lstListbox->Name = $objFormQuestion->ShortDescription;
+					//GJS - changing to multiple check boxes
+					$this->chkAnswer->Name = $objFormQuestion->ShortDescription;
+					$this->chkAnswer->RemoveAllItems();
 					
 					// Get the answers
 					$strAnswerArray = $this->objAnswer->GetSelectedMultipleChoiceArray();
-					foreach ($objFormQuestion->GetOptionsAsArray() as $strOption) {
-						if (array_key_exists($strOption, $strAnswerArray)) {
-							$blnSelected = true;
-							unset($strAnswerArray[$strOption]);
-						} else
-							$blnSelected = false;
-						$this->lstListbox->AddItem($strOption, $strOption, $blnSelected);
+					foreach (explode("\n", trim($objFormQuestion->Options)) as $strItem) {
+						if (strlen($strItem = trim($strItem))) {
+							$this->chkAnswer->AddItem($strItem, $strItem, array_key_exists($strItem, $strAnswerArray));
+							$strAnswerArray[$strItem] = null;
+							unset($strAnswerArray[$strItem]);
+						}
 					}
 					
-					// Add "others" for any remaining answers
 					foreach ($strAnswerArray as $strAnswer)
-						$this->lstListbox->AddItem($strAnswer, $strAnswer, true);
-						
+					$this->chkAnswer->AddItem($strAnswer, $strAnswer, true);
+					
+					
 					// Are we allowing "others"?
 					if ($objFormQuestion->AllowOtherFlag) {
 						$this->txtTextbox->Name = 'Other...';
@@ -1024,11 +1027,19 @@
 					break;
 
 				case FormQuestionType::MultipleSelect:
-					$strArray = array();
-					foreach ($this->lstListbox->SelectedValues as $strValue) {
-						$strArray[] = trim($strValue);
+					//GJS - changing to multiple check boxes
+					$objItemsArray = $this->chkAnswer->GetAllItems();
+					if (count($objItemsArray)) {
+						$strSelectedArray = array();
+						foreach ($objItemsArray as $objItem) {
+							if ($objItem->Selected) {
+								$strSelectedArray[] = $objItem->Name;
+							}
+						}
+						$this->objAnswer->TextValue = implode("\n", $strSelectedArray);
+					}else {
+						$this->objAnswer->TextValue = null;
 					}
-					$this->objAnswer->TextValue = implode("\n", $strArray);
 					break;
 
 				case FormQuestionType::Number:
