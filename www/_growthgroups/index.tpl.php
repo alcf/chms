@@ -11,9 +11,13 @@
 		<?php _p($this->objLocation->Zoom); ?>);
 
 		initializeMarkerArray(<?php _p($this->objLocation->CountGrowthGroups()); ?>);
-<?php foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) { ?>
-		addMarker(<?php _p($objGroup->Latitude); ?>, <?php _p($objGroup->Longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
-<?php }; ?>
+<?php
+	// Filter Out "inactive" groups
+	foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) { ?>
+<?php	if ($objGroup->Group->ActiveFlag == true){ ?>
+	addMarker(<?php _p($objGroup->Latitude); ?>, <?php _p($objGroup->Longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
+<?php 	}
+	}; ?>
 	};
 </script>
 <script type="text/javascript" src="/scripts/growthgroups.js"></script>

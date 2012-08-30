@@ -22,9 +22,14 @@
 
 			$this->intMarkerArray = array();
 			$intMarkerNumber = 0;
+			// Filter Out "inactive" groups			
+			//foreach ($this->objLocation->GetGrowthGroupArray(QQ::Equal(QQN::GrowthGroup()->Group->ActiveFlag, true),
+			//QQ::Clause(QQ::OrderBy(QQN::GrowthGroup()->Group->Name))) as $objGroup) {
 			foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) {
-				$intMarkerNumber++;
-				$this->intMarkerArray[$objGroup->GroupId] = $intMarkerNumber;
+				if ($objGroup->Group->ActiveFlag == true){
+					$intMarkerNumber++;
+					$this->intMarkerArray[$objGroup->GroupId] = $intMarkerNumber;
+				}
 			}
 
 			$this->lstDays = new QListBox($this);
