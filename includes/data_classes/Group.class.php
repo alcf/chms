@@ -97,19 +97,20 @@
 		 */
 		public function GetThisAndChildren() {
 			$objGroupArray = Group::QueryArray(QQ::AndCondition(
-				QQ::Equal(QQN::Group()->MinistryId, $this->intMinistryId),
+				QQ::Equal(QQN::Group()->MinistryId, $this->intMinistryId),			
 				QQ::GreaterOrEqual(QQN::Group()->HierarchyOrderNumber, $this->intHierarchyOrderNumber)
 			), QQ::OrderBy(QQN::Group()->HierarchyOrderNumber));
 
-			$objToReturn = array($objGroupArray[0]);
+			//$objToReturn = array($objGroupArray[0]);
+			$objToReturn = array();
 			for ($intIndex = 1; $intIndex < count($objGroupArray); $intIndex++) {
 				if ($objGroupArray[$intIndex]->HierarchyLevel > $this->intHierarchyLevel) {
-					$objToReturn[] = $objGroupArray[$intIndex];
+					if($objGroupArray[$intIndex]->ActiveFlag == true)
+						$objToReturn[] = $objGroupArray[$intIndex];
 				} else {
 					return $objToReturn;
 				}
 			}
-
 			return $objToReturn;
 		}
 

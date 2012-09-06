@@ -16,6 +16,11 @@
 
 		protected $dtgGroups;
 		protected $lblStartText;
+		
+		protected $btnGroupReport;
+		
+		protected $bIsGrowthGroup;
+		public $strDebug;
 
 		protected function Form_Create() {
 			$this->pnlMinistries = new QPanel($this);
@@ -63,6 +68,13 @@
 			
 //			$this->dtgGroups->Visible = false;
 
+			$this->btnGroupReport = new QButton($this);
+			$this->btnGroupReport->CssClass = 'primary';
+			$this->btnGroupReport->AddAction(new QClickEvent(), new QAjaxAction('btnGroupReport_Click'));
+			$this->btnGroupReport->Name = "Growth Group Report";
+			$this->btnGroupReport->Text = "Growth Group Report";
+			$this->btnGroupReport->Visible = false;
+			
 			$this->lblStartText = new QLabel($this);
 			$this->lblStartText->Text = '<h3>Groups and Ministries</h3><p>Please select a ministry from the list on the right.</p>';
 			$this->lblStartText->HtmlEntities = false;
@@ -150,20 +162,37 @@
 			if ($objMinistry) {
 				$this->lblMinistry->Visible = true;
 				$this->lblMinistry->Text = 'Groups in ' . $objMinistry->Name;
+				if ($objMinistry->Name == 'Growth Groups')
+					$this->btnGroupReport->Visible = true;
+				else
+				$this->btnGroupReport->Visible = false;
 			} else {
 				$this->lblMinistry->Visible = false;
 			}
 		}
 
+		protected function btnGroupReport_Click() {
+			QApplication::Redirect('/groups/gg_report.php');
+		}
+		
 		protected function pxyMinistry_Click($strFormId, $strControlId, $strParameter) {
 			QApplication::Redirect('#' . $strParameter);
 		}
-
+		
+		protected function Form_Run() {
+			$this->strDebug = "running Form_run() id = ". $this->strUrlHash;
+			if ($this->intMinistryId == 17)
+					$this->bIsGrowthGroup = true;
+				else
+					$this->bIsGrowthGroup = false;
+		}
+		
 		protected function Form_ProcessHash() {
 			$strParameter = $this->strUrlHash;
 			if ($strParameter != $this->intMinistryId) {
 				$intOldMinistryId = $this->intMinistryId;
 				$this->intMinistryId = $strParameter;
+							
 				$this->pnlMinistry_Refresh($intOldMinistryId);
 				$this->pnlMinistry_Refresh($this->intMinistryId);
 				$this->lblMinistry_Refresh();

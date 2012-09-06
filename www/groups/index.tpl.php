@@ -4,6 +4,11 @@
 	<?php $this->pnlMinistries->Render(); ?>
 	<div class="subnavContent">
 		<?php $this->lblMinistry->Render(); ?>
+
+	    <div style="float:right; position:relative; top:-10px;">
+	    <?php $this->btnGroupReport->Render(); ?>
+	    </div>
+		<br>
 		<div class="section">
 			<?php $this->dtgGroups->Render(); ?>
 			<?php $this->lblStartText->Render(); ?>
