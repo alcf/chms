@@ -6,11 +6,18 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		protected $strPageTitle = 'Growth Group Report';
 		protected $intNavSectionId = ChmsForm::NavSectionGroups;
 		protected $dtgGroups;
+		protected $btnReturnToGroup;
 		protected $strDebug;
 				
 		protected function Form_Create() {	
-			$this->dtgGroups = new QDataGrid($this);
+			$this->btnReturnToGroup = new QButton($this);
+			$this->btnReturnToGroup->CssClass = 'primary';
+			$this->btnReturnToGroup->AddAction(new QClickEvent(), new QAjaxAction('btnReturnToGroup_Click'));
+			$this->btnReturnToGroup->Name = "Return to Growth Groups";
+			$this->btnReturnToGroup->Text = "Return to Growth Groups";
+			$this->btnReturnToGroup->Visible = true;
 			
+			$this->dtgGroups = new QDataGrid($this);			
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Name', '<?= $_FORM->RenderName($_ITEM); ?>', 'HtmlEntities=false','Width=270px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Group Type', '<?= $_ITEM->Type; ?>', 'Width=270px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Count', '<?= $_FORM->RenderCount($_ITEM); ?>', 'HtmlEntities=false','Width=270px'));
@@ -20,6 +27,10 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$this->dtgGroups->DataSource = $groupArray;	
 		}
 
+		protected function btnReturnToGroup_Click() {
+			QApplication::Redirect('/groups/#17');
+		}
+		
 		public function RenderName($objGroup) {
 			if ($objGroup->Type == GroupType::$NameArray[GroupType::GroupCategory]) {
 				return "<span style='font-weight:bold;'>". $objGroup->Name . "</span>";
