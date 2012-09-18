@@ -3,6 +3,7 @@
 	<div class="section">
 		<h3>Users and Ministries</h3>
 		<button class="primary" style="margin-left:  0px;" onclick="document.location=     '/admin/users/'; return false;">ChMS Users</button>
+		<button class="primary" style="margin-left:  0px;" onclick="document.location=     '/admin/externusers/'; return false;">External Users</button>
 		<button class="primary" style="margin-left: 25px;" onclick="document.location='/admin/ministries/'; return false;">Ministries</button>
 		<br/><br/>
 		

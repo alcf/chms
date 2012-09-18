@@ -107,11 +107,16 @@
 		
 		/**
 		 * Returns whether or not this Login user is currently allowed to use the Chms
-		 * based on DomainActiveFlag and LoginActiveFlag settings
+		 * based on DomainActiveFlag and LoginActiveFlag settings.
+		 * If a volunteer, just check LoginActive Settings.
 		 * @return boolean
 		 */
 		public function IsAllowedToUseChms() {
-			return $this->blnDomainActiveFlag && $this->blnLoginActiveFlag;
+			if ($this->RoleTypeId == RoleType::Volunteer) {
+				return $this->blnLoginActiveFlag;
+			} else {
+				return $this->blnDomainActiveFlag && $this->blnLoginActiveFlag;
+			}
 		}
 
 		/**

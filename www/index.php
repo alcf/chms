@@ -65,7 +65,6 @@
 		protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
 			$objLogin = Login::LoadByUsernamePassword(trim(strtolower($this->txtUsername->Text)), $this->txtPassword->Text);
 				
-
 			if (!$objLogin || !$objLogin->IsAllowedToUseChms()) {
 				$this->lblMessage->Text = 'Invalid email, username or password.';
 				$this->txtUsername->Blink();
