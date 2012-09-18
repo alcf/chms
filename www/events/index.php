@@ -29,17 +29,20 @@
 
 			$blnFirst = true;
 			foreach (Ministry::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::Ministry()->Name)) as $objMinistry) {
-				$pnlMinistry = new QPanel($this->pnlMinistries, 'pnlMinistry' . $objMinistry->Id);
-				$pnlMinistry->TagName = 'li';
-				$pnlMinistry->ActionParameter = $objMinistry->Id;
-				if ($blnFirst) {
-					$blnFirst = false;
-					$pnlMinistry->CssClass = 'first';
+				if ($objMinistry->IsLoginCanViewMinistry(QApplication::$Login)) {
+					$pnlMinistry = new QPanel($this->pnlMinistries, 'pnlMinistry' . $objMinistry->Id);
+					$pnlMinistry->TagName = 'li';
+					$pnlMinistry->ActionParameter = $objMinistry->Id;
+					if ($blnFirst) {
+						$blnFirst = false;
+						$pnlMinistry->CssClass = 'first';
+					}
+					$this->pnlMinistry_Refresh($objMinistry);
 				}
-				$this->pnlMinistry_Refresh($objMinistry);
 			}
 			// Last
-			$pnlMinistry->CssClass = 'last';
+			if ($blnFirst != true) // only set if non-empty panel variable
+				$pnlMinistry->CssClass = 'last';
 
 			$this->lstSignupFormType = new QListBox($this);
 			$this->lstSignupFormType->AddAction(new QChangeEvent(), new QAjaxAction('lstSignupFormType_Change'));

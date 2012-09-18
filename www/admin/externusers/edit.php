@@ -119,7 +119,9 @@
 		
 		public function btnSave_Click() {
 			if ($this->strPassword->Text == $this->strConfirmPassword->Text) {
-				$this->objLogin->SetPasswordCache($this->strPassword->Text);
+				if (strlen(trim($this->strPassword->Text)) != 0) {
+					$this->objLogin->SetPasswordCache($this->strPassword->Text);
+				}
 				$this->objLogin->LoginActiveFlag = $this->rblLoginActive->SelectedValue;
 				$this->objLogin->Save();
 					

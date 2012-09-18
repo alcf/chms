@@ -46,6 +46,22 @@
 			return $objLogin->IsMinistryAssociated($this);
 		}
 
+		/**
+		* In short, does this login have privileges to view this ministry?
+		* To cater for volunteers, who we want to restrict to just viewing the ministries
+		* in which they're assisting 
+		*
+		* @param Login $objLogin
+		* @return boolean
+		*/
+		public function IsLoginCanViewMinistry(Login $objLogin) {
+			if ($objLogin->RoleTypeId == RoleType::Volunteer) {
+				return $objLogin->IsMinistryAssociated($this);
+			} else {
+				return true;
+			}
+		}
+		
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)
