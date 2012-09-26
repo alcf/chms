@@ -47,10 +47,16 @@
 		}
 
 		public function ValidateAddress() {
-			$this->ValidateAddressUsps();
+			// Just directly attempt to validate using CDyne Web Service.
+			// The ValidateAddressUsps() method attempts to screen scrape and 
+			// is currently running very slow
+			$this->ValidateAddressCdyne();
+			/*
+			 $this->ValidateAddressUsps();
 			if (!$this->blnAddressValidFlag) {
 				$this->ValidateAddressCdyne();
 			}
+			*/
 		}
 
 		public function ValidateAddressUsps() {
@@ -68,16 +74,16 @@
 			$strRequest .= '&pagenumber=0';
 			$strRequest .= '&firmname=';
 			$strRequest .= '&urbanization=';
-
+			
 			curl_setopt($objCurl, CURLOPT_POST, true);
 			curl_setopt($objCurl, CURLOPT_POSTFIELDS, $strRequest);
 			curl_setopt($objCurl, CURLOPT_HEADER, false); 
 			curl_setopt($objCurl, CURLOPT_REFERER, 'http://zip4.usps.com/zip4/welcome.jsp');
 			curl_setopt($objCurl, CURLOPT_RETURNTRANSFER, true);
 
-			$strResponse = curl_exec($objCurl);
+			$strResurl_exec($objCurl);
 			curl_close($objCurl);
-
+			
 			// Are there multiple?
 			$intPosition = strpos($strResponse, 'We returned more than one result based');
 			if ($intPosition !== false)
@@ -85,7 +91,8 @@
 			else
 				$this->blnSecondaryValidFlag = true;
 
-			// Find at least ONE address
+			
+			// Find at leddress
 			$intPosition = strpos($strResponse, 'style="background:url(images/table_gray.gif); padding:5px 10px;">');
 			if ($intPosition === false) {
 				$this->blnSecondaryValidFlag = false;

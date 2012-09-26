@@ -257,8 +257,8 @@
 		 */
 		public function ValidateUsps() {
 			$objValidator = new AddressValidator($this->strAddress1, $this->strAddress2, $this->strCity, $this->strState, $this->strZipCode);
-
 			$objValidator->ValidateAddress();
+			
 			if ($objValidator->AddressValidFlag) {
 				$this->strAddress1 = $objValidator->PrimaryAddressLine;
 				$this->strAddress2 = $objValidator->SecondaryAddressLine;
