@@ -290,7 +290,10 @@
 				$objGroupAuthorizedSender->PersonId = $this->pnlContent->objPerson->Id;
 				$objGroupAuthorizedSender->Save();
 			}else if (!$this->chkIsAuthorizedSender->Checked) {
-				GroupAuthorizedSender::LoadByGroupIdPersonId($this->pnlContent->objGroup->Id, $this->pnlContent->objPerson->Id)->Delete();
+				$objGroupAuthorizedSender = GroupAuthorizedSender::LoadByGroupIdPersonId($this->pnlContent->objGroup->Id, $this->pnlContent->objPerson->Id);
+				if ($objGroupAuthorizedSender) {
+					$objGroupAuthorizedSender->Delete();
+				}
 			}
 			
 			$this->pnlContent->ReturnTo($this->strReturnUrl);
