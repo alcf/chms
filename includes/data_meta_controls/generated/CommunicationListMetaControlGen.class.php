@@ -26,6 +26,10 @@
 	 * property-read QLabel $NameLabel
 	 * property QTextBox $TokenControl
 	 * property-read QLabel $TokenLabel
+	 * property QTextBox $DescriptionControl
+	 * property-read QLabel $DescriptionLabel
+	 * property QCheckBox $SubscribableControl
+	 * property-read QLabel $SubscribableLabel
 	 * property QListBox $CommunicationListEntryControl
 	 * property-read QLabel $CommunicationListEntryLabel
 	 * property QListBox $PersonControl
@@ -91,6 +95,18 @@
          */
 		protected $txtToken;
 
+        /**
+         * @var QTextBox txtDescription;
+         * @access protected
+         */
+		protected $txtDescription;
+
+        /**
+         * @var QCheckBox chkSubscribable;
+         * @access protected
+         */
+		protected $chkSubscribable;
+
 
 		// Controls that allow the viewing of CommunicationList's individual data fields
         /**
@@ -116,6 +132,18 @@
          * @access protected
          */
 		protected $lblToken;
+
+        /**
+         * @var QLabel lblDescription
+         * @access protected
+         */
+		protected $lblDescription;
+
+        /**
+         * @var QLabel lblSubscribable
+         * @access protected
+         */
+		protected $lblSubscribable;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -361,6 +389,55 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtDescription_Create($strControlId = null) {
+			$this->txtDescription = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtDescription->Name = QApplication::Translate('Description');
+			$this->txtDescription->Text = $this->objCommunicationList->Description;
+			$this->txtDescription->MaxLength = CommunicationList::DescriptionMaxLength;
+			return $this->txtDescription;
+		}
+
+		/**
+		 * Create and setup QLabel lblDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDescription_Create($strControlId = null) {
+			$this->lblDescription = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDescription->Name = QApplication::Translate('Description');
+			$this->lblDescription->Text = $this->objCommunicationList->Description;
+			return $this->lblDescription;
+		}
+
+		/**
+		 * Create and setup QCheckBox chkSubscribable
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkSubscribable_Create($strControlId = null) {
+			$this->chkSubscribable = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkSubscribable->Name = QApplication::Translate('Subscribable');
+			$this->chkSubscribable->Checked = $this->objCommunicationList->Subscribable;
+			return $this->chkSubscribable;
+		}
+
+		/**
+		 * Create and setup QLabel lblSubscribable
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblSubscribable_Create($strControlId = null) {
+			$this->lblSubscribable = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSubscribable->Name = QApplication::Translate('Subscribable');
+			$this->lblSubscribable->Text = ($this->objCommunicationList->Subscribable) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblSubscribable;
+		}
+
+		/**
 		 * Create and setup QListBox lstCommunicationListEntries
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -498,6 +575,12 @@
 			if ($this->txtToken) $this->txtToken->Text = $this->objCommunicationList->Token;
 			if ($this->lblToken) $this->lblToken->Text = $this->objCommunicationList->Token;
 
+			if ($this->txtDescription) $this->txtDescription->Text = $this->objCommunicationList->Description;
+			if ($this->lblDescription) $this->lblDescription->Text = $this->objCommunicationList->Description;
+
+			if ($this->chkSubscribable) $this->chkSubscribable->Checked = $this->objCommunicationList->Subscribable;
+			if ($this->lblSubscribable) $this->lblSubscribable->Text = ($this->objCommunicationList->Subscribable) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->lstCommunicationListEntries) {
 				$this->lstCommunicationListEntries->RemoveAllItems();
 				$objAssociatedArray = $this->objCommunicationList->GetCommunicationListEntryArray();
@@ -587,6 +670,8 @@
 				if ($this->lstMinistry) $this->objCommunicationList->MinistryId = $this->lstMinistry->SelectedValue;
 				if ($this->txtName) $this->objCommunicationList->Name = $this->txtName->Text;
 				if ($this->txtToken) $this->objCommunicationList->Token = $this->txtToken->Text;
+				if ($this->txtDescription) $this->objCommunicationList->Description = $this->txtDescription->Text;
+				if ($this->chkSubscribable) $this->objCommunicationList->Subscribable = $this->chkSubscribable->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -663,6 +748,18 @@
 				case 'TokenLabel':
 					if (!$this->lblToken) return $this->lblToken_Create();
 					return $this->lblToken;
+				case 'DescriptionControl':
+					if (!$this->txtDescription) return $this->txtDescription_Create();
+					return $this->txtDescription;
+				case 'DescriptionLabel':
+					if (!$this->lblDescription) return $this->lblDescription_Create();
+					return $this->lblDescription;
+				case 'SubscribableControl':
+					if (!$this->chkSubscribable) return $this->chkSubscribable_Create();
+					return $this->chkSubscribable;
+				case 'SubscribableLabel':
+					if (!$this->lblSubscribable) return $this->lblSubscribable_Create();
+					return $this->lblSubscribable;
 				case 'CommunicationListEntryControl':
 					if (!$this->lstCommunicationListEntries) return $this->lstCommunicationListEntries_Create();
 					return $this->lstCommunicationListEntries;
@@ -707,6 +804,10 @@
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
 					case 'TokenControl':
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
+					case 'DescriptionControl':
+						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
+					case 'SubscribableControl':
+						return ($this->chkSubscribable = QType::Cast($mixValue, 'QControl'));
 					case 'CommunicationListEntryControl':
 						return ($this->lstCommunicationListEntries = QType::Cast($mixValue, 'QControl'));
 					case 'PersonControl':

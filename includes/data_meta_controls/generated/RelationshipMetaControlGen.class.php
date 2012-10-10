@@ -18,7 +18,7 @@
 	 * property-read Relationship $Relationship the actual Relationship data class being edited
 	 * property QLabel $IdControl
 	 * property-read QLabel $IdLabel
-	 * property QListBox $PersonIdControl
+	 * property QIntegerTextBox $PersonIdControl
 	 * property-read QLabel $PersonIdLabel
 	 * property QListBox $RelatedToPersonIdControl
 	 * property-read QLabel $RelatedToPersonIdLabel
@@ -62,10 +62,10 @@
 		protected $lblId;
 
         /**
-         * @var QListBox lstPerson;
+         * @var QIntegerTextBox txtPersonId;
          * @access protected
          */
-		protected $lstPerson;
+		protected $txtPersonId;
 
         /**
          * @var QListBox lstRelatedToPerson;
@@ -213,45 +213,30 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstPerson
+		 * Create and setup QIntegerTextBox txtPersonId
 		 * @param string $strControlId optional ControlId to use
-		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
-		 * @return QListBox
+		 * @return QIntegerTextBox
 		 */
-		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
-			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
-			$this->lstPerson->Name = QApplication::Translate('Person');
-			$this->lstPerson->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-
-			// Setup and perform the Query
-			if (is_null($objCondition)) $objCondition = QQ::All();
-			$objPersonCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
-
-			// Iterate through the Cursor
-			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
-				$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
-				if (($this->objRelationship->Person) && ($this->objRelationship->Person->Id == $objPerson->Id))
-					$objListItem->Selected = true;
-				$this->lstPerson->AddItem($objListItem);
-			}
-
-			// Return the QListBox
-			return $this->lstPerson;
+		public function txtPersonId_Create($strControlId = null) {
+			$this->txtPersonId = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtPersonId->Name = QApplication::Translate('Person Id');
+			$this->txtPersonId->Text = $this->objRelationship->PersonId;
+			$this->txtPersonId->Required = true;
+			return $this->txtPersonId;
 		}
 
 		/**
 		 * Create and setup QLabel lblPersonId
 		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
 		 * @return QLabel
 		 */
-		public function lblPersonId_Create($strControlId = null) {
+		public function lblPersonId_Create($strControlId = null, $strFormat = null) {
 			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPersonId->Name = QApplication::Translate('Person');
-			$this->lblPersonId->Text = ($this->objRelationship->Person) ? $this->objRelationship->Person->__toString() : null;
+			$this->lblPersonId->Name = QApplication::Translate('Person Id');
+			$this->lblPersonId->Text = $this->objRelationship->PersonId;
 			$this->lblPersonId->Required = true;
+			$this->lblPersonId->Format = $strFormat;
 			return $this->lblPersonId;
 		}
 
@@ -338,19 +323,8 @@
 
 			if ($this->lblId) if ($this->blnEditMode) $this->lblId->Text = $this->objRelationship->Id;
 
-			if ($this->lstPerson) {
-					$this->lstPerson->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
-				$objPersonArray = Person::LoadAll();
-				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
-					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
-					if (($this->objRelationship->Person) && ($this->objRelationship->Person->Id == $objPerson->Id))
-						$objListItem->Selected = true;
-					$this->lstPerson->AddItem($objListItem);
-				}
-			}
-			if ($this->lblPersonId) $this->lblPersonId->Text = ($this->objRelationship->Person) ? $this->objRelationship->Person->__toString() : null;
+			if ($this->txtPersonId) $this->txtPersonId->Text = $this->objRelationship->PersonId;
+			if ($this->lblPersonId) $this->lblPersonId->Text = $this->objRelationship->PersonId;
 
 			if ($this->lstRelatedToPerson) {
 					$this->lstRelatedToPerson->RemoveAllItems();
@@ -392,7 +366,7 @@
 		public function SaveRelationship() {
 			try {
 				// Update any fields for controls that have been created
-				if ($this->lstPerson) $this->objRelationship->PersonId = $this->lstPerson->SelectedValue;
+				if ($this->txtPersonId) $this->objRelationship->PersonId = $this->txtPersonId->Text;
 				if ($this->lstRelatedToPerson) $this->objRelationship->RelatedToPersonId = $this->lstRelatedToPerson->SelectedValue;
 				if ($this->lstRelationshipType) $this->objRelationship->RelationshipTypeId = $this->lstRelationshipType->SelectedValue;
 
@@ -444,8 +418,8 @@
 					if (!$this->lblId) return $this->lblId_Create();
 					return $this->lblId;
 				case 'PersonIdControl':
-					if (!$this->lstPerson) return $this->lstPerson_Create();
-					return $this->lstPerson;
+					if (!$this->txtPersonId) return $this->txtPersonId_Create();
+					return $this->txtPersonId;
 				case 'PersonIdLabel':
 					if (!$this->lblPersonId) return $this->lblPersonId_Create();
 					return $this->lblPersonId;
@@ -486,7 +460,7 @@
 					case 'IdControl':
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'PersonIdControl':
-						return ($this->lstPerson = QType::Cast($mixValue, 'QControl'));
+						return ($this->txtPersonId = QType::Cast($mixValue, 'QControl'));
 					case 'RelatedToPersonIdControl':
 						return ($this->lstRelatedToPerson = QType::Cast($mixValue, 'QControl'));
 					case 'RelationshipTypeIdControl':

@@ -299,6 +299,8 @@
 				case 'Ministry': return QQN::CommunicationList()->Ministry;
 				case 'Name': return QQN::CommunicationList()->Name;
 				case 'Token': return QQN::CommunicationList()->Token;
+				case 'Description': return QQN::CommunicationList()->Description;
+				case 'Subscribable': return QQN::CommunicationList()->Subscribable;
 				default: throw new QCallerException('Simple Property not found in CommunicationListDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

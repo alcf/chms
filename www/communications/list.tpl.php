@@ -27,6 +27,19 @@
 			<div class="right"><a href="mailto:<?php _p($this->objList->Token); ?>@groups.alcf.net"><?php _p($this->objList->Token); ?>@groups.alcf.net</a></div>
 			<div class="cleaner">&nbsp;</div>
 		</div>
+		<div class="lvp">
+			<div class="left">Description</div>
+			<div class="right"><?php _p($this->objList->Description); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
+		<div class="lvp">
+			<div class="left">Is this List Subscribable?</div>
+			<div class="right"><?php if($this->objList->Subscribable)
+										_p('Yes');
+									else 
+										_p('No'); ?></div>
+			<div class="cleaner">&nbsp;</div>
+		</div>
 	</div>
 	<br/>
 

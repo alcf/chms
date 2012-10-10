@@ -12,6 +12,8 @@
 		protected $txtToken;
 		protected $lstMinistry;
 		protected $lstType;
+		protected $txtDescription;
+		protected $chkSubscribable;
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -28,6 +30,11 @@
 			$this->txtName = $this->mctList->txtName_Create();
 			$this->txtName->Required = true;
 			
+			$this->txtDescription = $this->mctList->txtDescription_Create();
+			$this->txtDescription->Required = false;
+			$this->txtDescription->TextMode = QTextMode::MultiLine;
+			$this->txtDescription->Height = '50px';
+			
 			$this->txtToken = $this->mctList->txtToken_Create();
 			$this->txtToken->Name = 'Email Address';
 			$this->txtToken->HtmlAfter = '<span> @ groups.alcf.net</span>';
@@ -35,6 +42,8 @@
 			$this->lstType = $this->mctList->lstEmailBroadcastType_Create();
 			$this->lstType->Instructions = '<span class="help" onclick="displayHelp(\'helpEmailBroadcastType\')"><img src="/assets/images/icons/help.png" alt="help"></span>';
 
+			$this->chkSubscribable = $this->mctList->chkSubscribable_Create();
+			
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
 				$this->lstMinistry = $this->mctList->lstMinistry_Create(null, null, QQ::OrderBy(QQN::Ministry()->Name));
 			} else {

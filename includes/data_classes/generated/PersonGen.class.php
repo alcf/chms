@@ -94,8 +94,6 @@
 	 * @property ParentPagerIndividual[] $_ParentPagerIndividualArray the value for the private _objParentPagerIndividualArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_individual.person_id reverse relationship
 	 * @property Phone $_Phone the value for the private _objPhone (Read-Only) if set due to an expansion on the phone.person_id reverse relationship
 	 * @property Phone[] $_PhoneArray the value for the private _objPhoneArray (Read-Only) if set due to an ExpandAsArray on the phone.person_id reverse relationship
-	 * @property Relationship $_Relationship the value for the private _objRelationship (Read-Only) if set due to an expansion on the relationship.person_id reverse relationship
-	 * @property Relationship[] $_RelationshipArray the value for the private _objRelationshipArray (Read-Only) if set due to an ExpandAsArray on the relationship.person_id reverse relationship
 	 * @property Relationship $_RelationshipAsRelatedTo the value for the private _objRelationshipAsRelatedTo (Read-Only) if set due to an expansion on the relationship.related_to_person_id reverse relationship
 	 * @property Relationship[] $_RelationshipAsRelatedToArray the value for the private _objRelationshipAsRelatedToArray (Read-Only) if set due to an ExpandAsArray on the relationship.related_to_person_id reverse relationship
 	 * @property SearchQuery $_SearchQuery the value for the private _objSearchQuery (Read-Only) if set due to an expansion on the search_query.person_id reverse relationship
@@ -707,22 +705,6 @@
 		 * @var Phone[] _objPhoneArray;
 		 */
 		private $_objPhoneArray = array();
-
-		/**
-		 * Private member variable that stores a reference to a single Relationship object
-		 * (of type Relationship), if this Person object was restored with
-		 * an expansion on the relationship association table.
-		 * @var Relationship _objRelationship;
-		 */
-		private $_objRelationship;
-
-		/**
-		 * Private member variable that stores a reference to an array of Relationship objects
-		 * (of type Relationship[]), if this Person object was restored with
-		 * an ExpandAsArray on the relationship association table.
-		 * @var Relationship[] _objRelationshipArray;
-		 */
-		private $_objRelationshipArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single RelationshipAsRelatedTo object
@@ -1604,20 +1586,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				$strAlias = $strAliasPrefix . 'relationship__id';
-				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasName)))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objRelationshipArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objRelationshipArray[$intPreviousChildItemCount - 1];
-						$objChildItem = Relationship::InstantiateDbRow($objDbRow, $strAliasPrefix . 'relationship__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
-						if ($objChildItem)
-							$objPreviousItem->_objRelationshipArray[] = $objChildItem;
-					} else
-						$objPreviousItem->_objRelationshipArray[] = Relationship::InstantiateDbRow($objDbRow, $strAliasPrefix . 'relationship__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-					$blnExpandedViaArray = true;
-				}
-
 				$strAlias = $strAliasPrefix . 'relationshipasrelatedto__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -2059,16 +2027,6 @@
 					$objToReturn->_objPhoneArray[] = Phone::InstantiateDbRow($objDbRow, $strAliasPrefix . 'phone__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objPhone = Phone::InstantiateDbRow($objDbRow, $strAliasPrefix . 'phone__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
-
-			// Check for Relationship Virtual Binding
-			$strAlias = $strAliasPrefix . 'relationship__id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
-					$objToReturn->_objRelationshipArray[] = Relationship::InstantiateDbRow($objDbRow, $strAliasPrefix . 'relationship__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objRelationship = Relationship::InstantiateDbRow($objDbRow, $strAliasPrefix . 'relationship__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for RelationshipAsRelatedTo Virtual Binding
@@ -3469,18 +3427,6 @@
 					// if set due to an ExpandAsArray on the phone.person_id reverse relationship
 					// @return Phone[]
 					return (array) $this->_objPhoneArray;
-
-				case '_Relationship':
-					// Gets the value for the private _objRelationship (Read-Only)
-					// if set due to an expansion on the relationship.person_id reverse relationship
-					// @return Relationship
-					return $this->_objRelationship;
-
-				case '_RelationshipArray':
-					// Gets the value for the private _objRelationshipArray (Read-Only)
-					// if set due to an ExpandAsArray on the relationship.person_id reverse relationship
-					// @return Relationship[]
-					return (array) $this->_objRelationshipArray;
 
 				case '_RelationshipAsRelatedTo':
 					// Gets the value for the private _objRelationshipAsRelatedTo (Read-Only)
@@ -7290,188 +7236,6 @@
 
 			
 		
-		// Related Objects' Methods for Relationship
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated Relationships as an array of Relationship objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Relationship[]
-		*/ 
-		public function GetRelationshipArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return Relationship::LoadArrayByPersonId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated Relationships
-		 * @return int
-		*/ 
-		public function CountRelationships() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return Relationship::CountByPersonId($this->intId);
-		}
-
-		/**
-		 * Associates a Relationship
-		 * @param Relationship $objRelationship
-		 * @return void
-		*/ 
-		public function AssociateRelationship(Relationship $objRelationship) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateRelationship on this unsaved Person.');
-			if ((is_null($objRelationship->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateRelationship on this Person with an unsaved Relationship.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`relationship`
-				SET
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objRelationship->Id) . '
-			');
-
-			// Journaling (if applicable)
-			if ($objDatabase->JournalingDatabase) {
-				$objRelationship->PersonId = $this->intId;
-				$objRelationship->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates a Relationship
-		 * @param Relationship $objRelationship
-		 * @return void
-		*/ 
-		public function UnassociateRelationship(Relationship $objRelationship) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRelationship on this unsaved Person.');
-			if ((is_null($objRelationship->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRelationship on this Person with an unsaved Relationship.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`relationship`
-				SET
-					`person_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objRelationship->Id) . ' AND
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objRelationship->PersonId = null;
-				$objRelationship->Journal('UPDATE');
-			}
-		}
-
-		/**
-		 * Unassociates all Relationships
-		 * @return void
-		*/ 
-		public function UnassociateAllRelationships() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRelationship on this unsaved Person.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (Relationship::LoadArrayByPersonId($this->intId) as $objRelationship) {
-					$objRelationship->PersonId = null;
-					$objRelationship->Journal('UPDATE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`relationship`
-				SET
-					`person_id` = null
-				WHERE
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated Relationship
-		 * @param Relationship $objRelationship
-		 * @return void
-		*/ 
-		public function DeleteAssociatedRelationship(Relationship $objRelationship) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRelationship on this unsaved Person.');
-			if ((is_null($objRelationship->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRelationship on this Person with an unsaved Relationship.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`relationship`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objRelationship->Id) . ' AND
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				$objRelationship->Journal('DELETE');
-			}
-		}
-
-		/**
-		 * Deletes all associated Relationships
-		 * @return void
-		*/ 
-		public function DeleteAllRelationships() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRelationship on this unsaved Person.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Person::GetDatabase();
-
-			// Journaling
-			if ($objDatabase->JournalingDatabase) {
-				foreach (Relationship::LoadArrayByPersonId($this->intId) as $objRelationship) {
-					$objRelationship->Journal('DELETE');
-				}
-			}
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`relationship`
-				WHERE
-					`person_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for RelationshipAsRelatedTo
 		//-------------------------------------------------------------------
 
@@ -9643,7 +9407,6 @@
 	 * @property-read QQReverseReferenceNodeParentPagerIndividual $ParentPagerIndividual
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
-	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
 	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
 	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntry
@@ -9776,8 +9539,6 @@
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
 				case 'PublicLogin':
 					return new QQReverseReferenceNodePublicLogin($this, 'publiclogin', 'reverse_reference', 'person_id', 'PublicLogin');
-				case 'Relationship':
-					return new QQReverseReferenceNodeRelationship($this, 'relationship', 'reverse_reference', 'person_id');
 				case 'RelationshipAsRelatedTo':
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
 				case 'SearchQuery':
@@ -9866,7 +9627,6 @@
 	 * @property-read QQReverseReferenceNodeParentPagerIndividual $ParentPagerIndividual
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
-	 * @property-read QQReverseReferenceNodeRelationship $Relationship
 	 * @property-read QQReverseReferenceNodeRelationship $RelationshipAsRelatedTo
 	 * @property-read QQReverseReferenceNodeSearchQuery $SearchQuery
 	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntry
@@ -10000,8 +9760,6 @@
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
 				case 'PublicLogin':
 					return new QQReverseReferenceNodePublicLogin($this, 'publiclogin', 'reverse_reference', 'person_id', 'PublicLogin');
-				case 'Relationship':
-					return new QQReverseReferenceNodeRelationship($this, 'relationship', 'reverse_reference', 'person_id');
 				case 'RelationshipAsRelatedTo':
 					return new QQReverseReferenceNodeRelationship($this, 'relationshipasrelatedto', 'reverse_reference', 'related_to_person_id');
 				case 'SearchQuery':

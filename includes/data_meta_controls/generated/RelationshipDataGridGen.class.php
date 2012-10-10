@@ -295,7 +295,6 @@
 			} else if (is_string($mixContent)) switch ($mixContent) {
 				case 'Id': return QQN::Relationship()->Id;
 				case 'PersonId': return QQN::Relationship()->PersonId;
-				case 'Person': return QQN::Relationship()->Person;
 				case 'RelatedToPersonId': return QQN::Relationship()->RelatedToPersonId;
 				case 'RelatedToPerson': return QQN::Relationship()->RelatedToPerson;
 				case 'RelationshipTypeId': return QQN::Relationship()->RelationshipTypeId;

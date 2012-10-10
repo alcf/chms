@@ -20,6 +20,8 @@
 	 * @property integer $MinistryId the value for intMinistryId (Not Null)
 	 * @property string $Name the value for strName 
 	 * @property string $Token the value for strToken (Unique)
+	 * @property string $Description the value for strDescription 
+	 * @property boolean $Subscribable the value for blnSubscribable 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property CommunicationListEntry $_CommunicationListEntry the value for the private _objCommunicationListEntry (Read-Only) if set due to an expansion on the communicationlist_communicationlistentry_assn association table
 	 * @property CommunicationListEntry[] $_CommunicationListEntryArray the value for the private _objCommunicationListEntryArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_communicationlistentry_assn association table
@@ -75,6 +77,23 @@
 		protected $strToken;
 		const TokenMaxLength = 100;
 		const TokenDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column communication_list.description
+		 * @var string strDescription
+		 */
+		protected $strDescription;
+		const DescriptionMaxLength = 512;
+		const DescriptionDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column communication_list.subscribable
+		 * @var boolean blnSubscribable
+		 */
+		protected $blnSubscribable;
+		const SubscribableDefault = null;
 
 
 		/**
@@ -472,6 +491,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'ministry_id', $strAliasPrefix . 'ministry_id');
 			$objBuilder->AddSelectItem($strTableName, 'name', $strAliasPrefix . 'name');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
+			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
+			$objBuilder->AddSelectItem($strTableName, 'subscribable', $strAliasPrefix . 'subscribable');
 		}
 
 
@@ -573,6 +594,10 @@
 			$objToReturn->strName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'token', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'token'] : $strAliasPrefix . 'token';
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
+			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'subscribable', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subscribable'] : $strAliasPrefix . 'subscribable';
+			$objToReturn->blnSubscribable = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -789,6 +814,40 @@
 			, $objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load an array of CommunicationList objects,
+		 * by Subscribable Index(es)
+		 * @param boolean $blnSubscribable
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return CommunicationList[]
+		*/
+		public static function LoadArrayBySubscribable($blnSubscribable, $objOptionalClauses = null) {
+			// Call CommunicationList::QueryArray to perform the LoadArrayBySubscribable query
+			try {
+				return CommunicationList::QueryArray(
+					QQ::Equal(QQN::CommunicationList()->Subscribable, $blnSubscribable),
+					$objOptionalClauses
+					);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count CommunicationLists
+		 * by Subscribable Index(es)
+		 * @param boolean $blnSubscribable
+		 * @return int
+		*/
+		public static function CountBySubscribable($blnSubscribable, $objOptionalClauses = null) {
+			// Call CommunicationList::QueryCount to perform the CountBySubscribable query
+			return CommunicationList::QueryCount(
+				QQ::Equal(QQN::CommunicationList()->Subscribable, $blnSubscribable)
+			, $objOptionalClauses
+			);
+		}
 
 
 
@@ -887,12 +946,16 @@
 							`email_broadcast_type_id`,
 							`ministry_id`,
 							`name`,
-							`token`
+							`token`,
+							`description`,
+							`subscribable`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							' . $objDatabase->SqlVariable($this->strName) . ',
-							' . $objDatabase->SqlVariable($this->strToken) . '
+							' . $objDatabase->SqlVariable($this->strToken) . ',
+							' . $objDatabase->SqlVariable($this->strDescription) . ',
+							' . $objDatabase->SqlVariable($this->blnSubscribable) . '
 						)
 					');
 
@@ -915,7 +978,9 @@
 							`email_broadcast_type_id` = ' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 							`ministry_id` = ' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 							`name` = ' . $objDatabase->SqlVariable($this->strName) . ',
-							`token` = ' . $objDatabase->SqlVariable($this->strToken) . '
+							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
+							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . ',
+							`subscribable` = ' . $objDatabase->SqlVariable($this->blnSubscribable) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1004,6 +1069,8 @@
 			$this->MinistryId = $objReloaded->MinistryId;
 			$this->strName = $objReloaded->strName;
 			$this->strToken = $objReloaded->strToken;
+			$this->strDescription = $objReloaded->strDescription;
+			$this->blnSubscribable = $objReloaded->blnSubscribable;
 		}
 
 		/**
@@ -1021,6 +1088,8 @@
 					`ministry_id`,
 					`name`,
 					`token`,
+					`description`,
+					`subscribable`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1030,6 +1099,8 @@
 					' . $objDatabase->SqlVariable($this->intMinistryId) . ',
 					' . $objDatabase->SqlVariable($this->strName) . ',
 					' . $objDatabase->SqlVariable($this->strToken) . ',
+					' . $objDatabase->SqlVariable($this->strDescription) . ',
+					' . $objDatabase->SqlVariable($this->blnSubscribable) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1104,6 +1175,16 @@
 					// Gets the value for strToken (Unique)
 					// @return string
 					return $this->strToken;
+
+				case 'Description':
+					// Gets the value for strDescription 
+					// @return string
+					return $this->strDescription;
+
+				case 'Subscribable':
+					// Gets the value for blnSubscribable 
+					// @return boolean
+					return $this->blnSubscribable;
 
 
 				///////////////////
@@ -1230,6 +1311,28 @@
 					// @return string
 					try {
 						return ($this->strToken = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Description':
+					// Sets the value for strDescription 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strDescription = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Subscribable':
+					// Sets the value for blnSubscribable 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnSubscribable = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1859,6 +1962,8 @@
 			$strToReturn .= '<element name="Ministry" type="xsd1:Ministry"/>';
 			$strToReturn .= '<element name="Name" type="xsd:string"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
+			$strToReturn .= '<element name="Description" type="xsd:string"/>';
+			$strToReturn .= '<element name="Subscribable" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1893,6 +1998,10 @@
 				$objToReturn->strName = $objSoapObject->Name;
 			if (property_exists($objSoapObject, 'Token'))
 				$objToReturn->strToken = $objSoapObject->Token;
+			if (property_exists($objSoapObject, 'Description'))
+				$objToReturn->strDescription = $objSoapObject->Description;
+			if (property_exists($objSoapObject, 'Subscribable'))
+				$objToReturn->blnSubscribable = $objSoapObject->Subscribable;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2000,6 +2109,8 @@
 	 * @property-read QQNodeMinistry $Ministry
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Token
+	 * @property-read QQNode $Description
+	 * @property-read QQNode $Subscribable
 	 * @property-read QQNodeCommunicationListCommunicationListEntry $CommunicationListEntry
 	 * @property-read QQNodeCommunicationListPerson $Person
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
@@ -2022,6 +2133,10 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'Description':
+					return new QQNode('description', 'Description', 'string', $this);
+				case 'Subscribable':
+					return new QQNode('subscribable', 'Subscribable', 'boolean', $this);
 				case 'CommunicationListEntry':
 					return new QQNodeCommunicationListCommunicationListEntry($this);
 				case 'Person':
@@ -2049,6 +2164,8 @@
 	 * @property-read QQNodeMinistry $Ministry
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $Token
+	 * @property-read QQNode $Description
+	 * @property-read QQNode $Subscribable
 	 * @property-read QQNodeCommunicationListCommunicationListEntry $CommunicationListEntry
 	 * @property-read QQNodeCommunicationListPerson $Person
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
@@ -2072,6 +2189,10 @@
 					return new QQNode('name', 'Name', 'string', $this);
 				case 'Token':
 					return new QQNode('token', 'Token', 'string', $this);
+				case 'Description':
+					return new QQNode('description', 'Description', 'string', $this);
+				case 'Subscribable':
+					return new QQNode('subscribable', 'Subscribable', 'boolean', $this);
 				case 'CommunicationListEntry':
 					return new QQNodeCommunicationListCommunicationListEntry($this);
 				case 'Person':

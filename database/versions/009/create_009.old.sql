@@ -610,21 +610,6 @@ CREATE TABLE `marital_status_type`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `public_login`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`person_id` INTEGER UNSIGNED UNIQUE,
-`active_flag` BOOLEAN,
-`username` VARCHAR(20) NOT NULL UNIQUE,
-`password` VARCHAR(32),
-`lost_password_question` VARCHAR(255),
-`lost_password_answer` VARCHAR(255),
-`temporary_password_flag` BOOLEAN,
-`date_registered` DATETIME NOT NULL,
-`date_last_login` DATETIME,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `provisional_public_login`
 (
 `public_login_id` INTEGER UNSIGNED NOT NULL,
@@ -634,24 +619,6 @@ CREATE TABLE `provisional_public_login`
 `url_hash` VARCHAR(32),
 `confirmation_code` VARCHAR(8),
 PRIMARY KEY (`public_login_id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `email`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`person_id` INTEGER UNSIGNED NOT NULL,
-`address` VARCHAR(200),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `household`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(200),
-`head_person_id` INTEGER UNSIGNED NOT NULL UNIQUE,
-`combined_stewardship_flag` BOOLEAN,
-`members` VARCHAR(255),
-PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `household_split`
@@ -671,6 +638,99 @@ CREATE TABLE `parent_pager_household`
 `hidden_flag` BOOLEAN NOT NULL,
 `parent_pager_sync_status_type_id` INTEGER UNSIGNED NOT NULL,
 `name` VARCHAR(75),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `query_condition`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`search_query_id` INTEGER UNSIGNED,
+`or_query_condition_id` INTEGER UNSIGNED UNIQUE,
+`query_operation_id` INTEGER UNSIGNED NOT NULL,
+`query_node_id` INTEGER UNSIGNED NOT NULL,
+`value` VARCHAR(255),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `parent_pager_child_history`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
+`parent_pager_individual_id` INTEGER UNSIGNED NOT NULL,
+`parent_pager_station_id` INTEGER UNSIGNED,
+`parent_pager_period_id` INTEGER UNSIGNED,
+`dropoff_by_parent_pager_individual_id` INTEGER UNSIGNED,
+`pickup_by_parent_pager_individual_id` INTEGER UNSIGNED,
+`date_in` DATETIME NOT NULL,
+`date_out` DATETIME NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `parent_pager_attendant_history`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
+`parent_pager_individual_id` INTEGER UNSIGNED NOT NULL,
+`parent_pager_station_id` INTEGER UNSIGNED,
+`parent_pager_period_id` INTEGER UNSIGNED,
+`parent_pager_program_id` INTEGER UNSIGNED,
+`date_in` DATETIME NOT NULL,
+`date_out` DATETIME NOT NULL,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `parent_pager_address`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
+`parent_pager_individual_id` INTEGER UNSIGNED,
+`parent_pager_household_id` INTEGER UNSIGNED,
+`address_1` VARCHAR(100),
+`address_2` VARCHAR(100),
+`address_3` VARCHAR(100),
+`city` VARCHAR(50),
+`state` VARCHAR(2),
+`zip_code` VARCHAR(10),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `attributevalue_multipleattributeoption_assn`
+(
+`attribute_value_id` INTEGER UNSIGNED NOT NULL,
+`attribute_option_id` INTEGER UNSIGNED NOT NULL,
+PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `public_login`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`person_id` INTEGER UNSIGNED UNIQUE,
+`active_flag` BOOLEAN,
+`username` VARCHAR(20) NOT NULL UNIQUE,
+`password` VARCHAR(32),
+`lost_password_question` VARCHAR(255),
+`lost_password_answer` VARCHAR(255),
+`temporary_password_flag` BOOLEAN,
+`date_registered` DATETIME NOT NULL,
+`date_last_login` DATETIME,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `email`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`person_id` INTEGER UNSIGNED NOT NULL,
+`address` VARCHAR(200),
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `household`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`name` VARCHAR(200),
+`head_person_id` INTEGER UNSIGNED NOT NULL UNIQUE,
+`combined_stewardship_flag` BOOLEAN,
+`members` VARCHAR(255),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -771,17 +831,6 @@ CREATE TABLE `search_query`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `query_condition`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`search_query_id` INTEGER UNSIGNED,
-`or_query_condition_id` INTEGER UNSIGNED UNIQUE,
-`query_operation_id` INTEGER UNSIGNED NOT NULL,
-`query_node_id` INTEGER UNSIGNED NOT NULL,
-`value` VARCHAR(255),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `parent_pager_individual`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -799,48 +848,6 @@ CREATE TABLE `parent_pager_individual`
 `graduation_year` INTEGER,
 `gender` VARCHAR(1),
 `date_of_birth` DATE,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `parent_pager_child_history`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
-`parent_pager_individual_id` INTEGER UNSIGNED NOT NULL,
-`parent_pager_station_id` INTEGER UNSIGNED,
-`parent_pager_period_id` INTEGER UNSIGNED,
-`dropoff_by_parent_pager_individual_id` INTEGER UNSIGNED,
-`pickup_by_parent_pager_individual_id` INTEGER UNSIGNED,
-`date_in` DATETIME NOT NULL,
-`date_out` DATETIME NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `parent_pager_attendant_history`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
-`parent_pager_individual_id` INTEGER UNSIGNED NOT NULL,
-`parent_pager_station_id` INTEGER UNSIGNED,
-`parent_pager_period_id` INTEGER UNSIGNED,
-`parent_pager_program_id` INTEGER UNSIGNED,
-`date_in` DATETIME NOT NULL,
-`date_out` DATETIME NOT NULL,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `parent_pager_address`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`server_identifier` INTEGER UNSIGNED NOT NULL UNIQUE,
-`parent_pager_individual_id` INTEGER UNSIGNED,
-`parent_pager_household_id` INTEGER UNSIGNED,
-`address_1` VARCHAR(100),
-`address_2` VARCHAR(100),
-`address_3` VARCHAR(100),
-`city` VARCHAR(50),
-`state` VARCHAR(2),
-`zip_code` VARCHAR(10),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -865,18 +872,43 @@ CREATE TABLE `attribute_value`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `attributevalue_multipleattributeoption_assn`
-(
-`attribute_value_id` INTEGER UNSIGNED NOT NULL,
-`attribute_option_id` INTEGER UNSIGNED NOT NULL,
-PRIMARY KEY (`attribute_value_id`,`attribute_option_id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `communicationlist_person_assn`
 (
 `communication_list_id` INTEGER UNSIGNED NOT NULL,
 `person_id` INTEGER UNSIGNED NOT NULL,
 PRIMARY KEY (`communication_list_id`,`person_id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `address`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`address_type_id` INTEGER UNSIGNED NOT NULL,
+`person_id` INTEGER UNSIGNED,
+`household_id` INTEGER UNSIGNED,
+`primary_phone_id` INTEGER UNSIGNED,
+`address_1` VARCHAR(200),
+`address_2` VARCHAR(200),
+`address_3` VARCHAR(200),
+`city` VARCHAR(100),
+`state` VARCHAR(100),
+`zip_code` VARCHAR(10),
+`country` VARCHAR(2),
+`current_flag` BOOLEAN,
+`invalid_flag` BOOLEAN,
+`verification_checked_flag` BOOLEAN,
+`date_until_when` DATE,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `phone`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`phone_type_id` INTEGER UNSIGNED NOT NULL,
+`address_id` INTEGER UNSIGNED,
+`person_id` INTEGER UNSIGNED,
+`mobile_provider_id` INTEGER UNSIGNED,
+`number` VARCHAR(20),
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
 CREATE TABLE `person`
@@ -913,38 +945,6 @@ CREATE TABLE `person`
 `primary_zip_code_text` VARCHAR(10),
 `primary_phone_text` VARCHAR(20),
 `public_creation_flag` BOOLEAN,
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `phone`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`phone_type_id` INTEGER UNSIGNED NOT NULL,
-`address_id` INTEGER UNSIGNED,
-`person_id` INTEGER UNSIGNED,
-`mobile_provider_id` INTEGER UNSIGNED,
-`number` VARCHAR(20),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `address`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`address_type_id` INTEGER UNSIGNED NOT NULL,
-`person_id` INTEGER UNSIGNED,
-`household_id` INTEGER UNSIGNED,
-`primary_phone_id` INTEGER UNSIGNED,
-`address_1` VARCHAR(200),
-`address_2` VARCHAR(200),
-`address_3` VARCHAR(200),
-`city` VARCHAR(100),
-`state` VARCHAR(100),
-`zip_code` VARCHAR(10),
-`country` VARCHAR(2),
-`current_flag` BOOLEAN,
-`invalid_flag` BOOLEAN,
-`verification_checked_flag` BOOLEAN,
-`date_until_when` DATE,
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -1079,6 +1079,17 @@ CREATE TABLE `sms_message`
 `body` VARCHAR(200),
 `date_queued` DATETIME NOT NULL,
 `date_sent` DATETIME,
+PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `online_donation_line_item`
+(
+`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+`online_donation_id` INTEGER UNSIGNED NOT NULL,
+`amount` DECIMAL(10,2),
+`donation_flag` BOOLEAN NOT NULL,
+`stewardship_fund_id` INTEGER UNSIGNED,
+`other` VARCHAR(255),
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -1241,17 +1252,6 @@ CREATE TABLE `online_donation`
 PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `online_donation_line_item`
-(
-`id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-`online_donation_id` INTEGER UNSIGNED NOT NULL,
-`amount` DECIMAL(10,2),
-`donation_flag` BOOLEAN NOT NULL,
-`stewardship_fund_id` INTEGER UNSIGNED,
-`other` VARCHAR(255),
-PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
 CREATE TABLE `group_role_type`
 (
 `id` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -1371,7 +1371,6 @@ ALTER TABLE `communication_list` ADD FOREIGN KEY email_broadcast_type_id_idxfk_1
 CREATE INDEX `ministry_id_idx` ON `communication_list`(`ministry_id`);
 ALTER TABLE `communication_list` ADD FOREIGN KEY ministry_id_idxfk_3 (`ministry_id`) REFERENCES `ministry` (`id`);
 
-CREATE INDEX `subscribable_idx` ON `communication_list`(`subscribable`);
 ALTER TABLE `communicationlist_communicationlistentry_assn` ADD FOREIGN KEY communication_list_id_idxfk (`communication_list_id`) REFERENCES `communication_list` (`id`);
 
 ALTER TABLE `communicationlist_communicationlistentry_assn` ADD FOREIGN KEY communication_list_entry_id_idxfk (`communication_list_entry_id`) REFERENCES `communication_list_entry` (`id`);
@@ -1395,15 +1394,7 @@ CREATE INDEX `classified_post_idx` ON `classified_post` (`classified_category_id
 CREATE INDEX `classified_category_id_idx` ON `classified_post`(`classified_category_id`);
 ALTER TABLE `classified_post` ADD FOREIGN KEY classified_category_id_idxfk (`classified_category_id`) REFERENCES `classified_category` (`id`);
 
-ALTER TABLE `public_login` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
-
 ALTER TABLE `provisional_public_login` ADD FOREIGN KEY public_login_id_idxfk (`public_login_id`) REFERENCES `public_login` (`id`);
-
-CREATE INDEX `person_id_idx` ON `email`(`person_id`);
-ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `address_idx` ON `email`(`address`);
-ALTER TABLE `household` ADD FOREIGN KEY head_person_id_idxfk (`head_person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `household_id_idx` ON `household_split`(`household_id`);
 ALTER TABLE `household_split` ADD FOREIGN KEY household_id_idxfk (`household_id`) REFERENCES `household` (`id`);
@@ -1417,6 +1408,62 @@ ALTER TABLE `parent_pager_household` ADD FOREIGN KEY household_id_idxfk_1 (`hous
 CREATE INDEX `hidden_flag_idx` ON `parent_pager_household`(`hidden_flag`);
 CREATE INDEX `parent_pager_sync_status_type_id_idx` ON `parent_pager_household`(`parent_pager_sync_status_type_id`);
 ALTER TABLE `parent_pager_household` ADD FOREIGN KEY parent_pager_sync_status_type_id_idxfk (`parent_pager_sync_status_type_id`) REFERENCES `parent_pager_sync_status_type` (`id`);
+
+CREATE INDEX `search_query_id_idx` ON `query_condition`(`search_query_id`);
+ALTER TABLE `query_condition` ADD FOREIGN KEY search_query_id_idxfk (`search_query_id`) REFERENCES `search_query` (`id`);
+
+ALTER TABLE `query_condition` ADD FOREIGN KEY or_query_condition_id_idxfk (`or_query_condition_id`) REFERENCES `query_condition` (`id`);
+
+CREATE INDEX `query_operation_id_idx` ON `query_condition`(`query_operation_id`);
+ALTER TABLE `query_condition` ADD FOREIGN KEY query_operation_id_idxfk (`query_operation_id`) REFERENCES `query_operation` (`id`);
+
+CREATE INDEX `query_node_id_idx` ON `query_condition`(`query_node_id`);
+ALTER TABLE `query_condition` ADD FOREIGN KEY query_node_id_idxfk (`query_node_id`) REFERENCES `query_node` (`id`);
+
+CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_child_history`(`parent_pager_individual_id`);
+ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY parent_pager_individual_id_idxfk (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
+
+CREATE INDEX `parent_pager_station_id_idx` ON `parent_pager_child_history`(`parent_pager_station_id`);
+ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY parent_pager_station_id_idxfk (`parent_pager_station_id`) REFERENCES `parent_pager_station` (`id`);
+
+CREATE INDEX `parent_pager_period_id_idx` ON `parent_pager_child_history`(`parent_pager_period_id`);
+ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY parent_pager_period_id_idxfk (`parent_pager_period_id`) REFERENCES `parent_pager_period` (`id`);
+
+CREATE INDEX `dropoff_by_parent_pager_individual_id_idx` ON `parent_pager_child_history`(`dropoff_by_parent_pager_individual_id`);
+ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY dropoff_by_parent_pager_individual_id_idxfk (`dropoff_by_parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
+
+CREATE INDEX `pickup_by_parent_pager_individual_id_idx` ON `parent_pager_child_history`(`pickup_by_parent_pager_individual_id`);
+ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY pickup_by_parent_pager_individual_id_idxfk (`pickup_by_parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
+
+CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_attendant_history`(`parent_pager_individual_id`);
+ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_individual_id_idxfk_1 (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
+
+CREATE INDEX `parent_pager_station_id_idx` ON `parent_pager_attendant_history`(`parent_pager_station_id`);
+ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_station_id_idxfk_1 (`parent_pager_station_id`) REFERENCES `parent_pager_station` (`id`);
+
+CREATE INDEX `parent_pager_period_id_idx` ON `parent_pager_attendant_history`(`parent_pager_period_id`);
+ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_period_id_idxfk_1 (`parent_pager_period_id`) REFERENCES `parent_pager_period` (`id`);
+
+CREATE INDEX `parent_pager_program_id_idx` ON `parent_pager_attendant_history`(`parent_pager_program_id`);
+ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_program_id_idxfk (`parent_pager_program_id`) REFERENCES `parent_pager_program` (`id`);
+
+CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_address`(`parent_pager_individual_id`);
+ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_individual_id_idxfk_2 (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
+
+CREATE INDEX `parent_pager_household_id_idx` ON `parent_pager_address`(`parent_pager_household_id`);
+ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_household_id_idxfk (`parent_pager_household_id`) REFERENCES `parent_pager_household` (`id`);
+
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
+
+ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
+
+ALTER TABLE `public_login` ADD FOREIGN KEY person_id_idxfk (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `person_id_idx` ON `email`(`person_id`);
+ALTER TABLE `email` ADD FOREIGN KEY person_id_idxfk_1 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `address_idx` ON `email`(`address`);
+ALTER TABLE `household` ADD FOREIGN KEY head_person_id_idxfk (`head_person_id`) REFERENCES `person` (`id`);
 
 ALTER TABLE `marriage` ADD FOREIGN KEY linked_marriage_id_idxfk (`linked_marriage_id`) REFERENCES `marriage` (`id`);
 
@@ -1487,17 +1534,6 @@ ALTER TABLE `search_query` ADD FOREIGN KEY smart_group_id_idxfk (`smart_group_id
 CREATE INDEX `person_id_idx` ON `search_query`(`person_id`);
 ALTER TABLE `search_query` ADD FOREIGN KEY person_id_idxfk_10 (`person_id`) REFERENCES `person` (`id`);
 
-CREATE INDEX `search_query_id_idx` ON `query_condition`(`search_query_id`);
-ALTER TABLE `query_condition` ADD FOREIGN KEY search_query_id_idxfk (`search_query_id`) REFERENCES `search_query` (`id`);
-
-ALTER TABLE `query_condition` ADD FOREIGN KEY or_query_condition_id_idxfk (`or_query_condition_id`) REFERENCES `query_condition` (`id`);
-
-CREATE INDEX `query_operation_id_idx` ON `query_condition`(`query_operation_id`);
-ALTER TABLE `query_condition` ADD FOREIGN KEY query_operation_id_idxfk (`query_operation_id`) REFERENCES `query_operation` (`id`);
-
-CREATE INDEX `query_node_id_idx` ON `query_condition`(`query_node_id`);
-ALTER TABLE `query_condition` ADD FOREIGN KEY query_node_id_idxfk (`query_node_id`) REFERENCES `query_node` (`id`);
-
 CREATE INDEX `person_id_idx` ON `parent_pager_individual`(`person_id`);
 ALTER TABLE `parent_pager_individual` ADD FOREIGN KEY person_id_idxfk_11 (`person_id`) REFERENCES `person` (`id`);
 
@@ -1506,40 +1542,7 @@ CREATE INDEX `parent_pager_sync_status_type_id_idx` ON `parent_pager_individual`
 ALTER TABLE `parent_pager_individual` ADD FOREIGN KEY parent_pager_sync_status_type_id_idxfk_1 (`parent_pager_sync_status_type_id`) REFERENCES `parent_pager_sync_status_type` (`id`);
 
 CREATE INDEX `parent_pager_household_id_idx` ON `parent_pager_individual`(`parent_pager_household_id`);
-ALTER TABLE `parent_pager_individual` ADD FOREIGN KEY parent_pager_household_id_idxfk (`parent_pager_household_id`) REFERENCES `parent_pager_household` (`id`);
-
-CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_child_history`(`parent_pager_individual_id`);
-ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY parent_pager_individual_id_idxfk (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
-
-CREATE INDEX `parent_pager_station_id_idx` ON `parent_pager_child_history`(`parent_pager_station_id`);
-ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY parent_pager_station_id_idxfk (`parent_pager_station_id`) REFERENCES `parent_pager_station` (`id`);
-
-CREATE INDEX `parent_pager_period_id_idx` ON `parent_pager_child_history`(`parent_pager_period_id`);
-ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY parent_pager_period_id_idxfk (`parent_pager_period_id`) REFERENCES `parent_pager_period` (`id`);
-
-CREATE INDEX `dropoff_by_parent_pager_individual_id_idx` ON `parent_pager_child_history`(`dropoff_by_parent_pager_individual_id`);
-ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY dropoff_by_parent_pager_individual_id_idxfk (`dropoff_by_parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
-
-CREATE INDEX `pickup_by_parent_pager_individual_id_idx` ON `parent_pager_child_history`(`pickup_by_parent_pager_individual_id`);
-ALTER TABLE `parent_pager_child_history` ADD FOREIGN KEY pickup_by_parent_pager_individual_id_idxfk (`pickup_by_parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
-
-CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_attendant_history`(`parent_pager_individual_id`);
-ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_individual_id_idxfk_1 (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
-
-CREATE INDEX `parent_pager_station_id_idx` ON `parent_pager_attendant_history`(`parent_pager_station_id`);
-ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_station_id_idxfk_1 (`parent_pager_station_id`) REFERENCES `parent_pager_station` (`id`);
-
-CREATE INDEX `parent_pager_period_id_idx` ON `parent_pager_attendant_history`(`parent_pager_period_id`);
-ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_period_id_idxfk_1 (`parent_pager_period_id`) REFERENCES `parent_pager_period` (`id`);
-
-CREATE INDEX `parent_pager_program_id_idx` ON `parent_pager_attendant_history`(`parent_pager_program_id`);
-ALTER TABLE `parent_pager_attendant_history` ADD FOREIGN KEY parent_pager_program_id_idxfk (`parent_pager_program_id`) REFERENCES `parent_pager_program` (`id`);
-
-CREATE INDEX `parent_pager_individual_id_idx` ON `parent_pager_address`(`parent_pager_individual_id`);
-ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_individual_id_idxfk_2 (`parent_pager_individual_id`) REFERENCES `parent_pager_individual` (`id`);
-
-CREATE INDEX `parent_pager_household_id_idx` ON `parent_pager_address`(`parent_pager_household_id`);
-ALTER TABLE `parent_pager_address` ADD FOREIGN KEY parent_pager_household_id_idxfk_1 (`parent_pager_household_id`) REFERENCES `parent_pager_household` (`id`);
+ALTER TABLE `parent_pager_individual` ADD FOREIGN KEY parent_pager_household_id_idxfk_1 (`parent_pager_household_id`) REFERENCES `parent_pager_household` (`id`);
 
 CREATE UNIQUE INDEX `group_authorized_sender_idx` ON `group_authorized_sender` (`group_id`,`person_id`);
 
@@ -1560,14 +1563,38 @@ ALTER TABLE `attribute_value` ADD FOREIGN KEY person_id_idxfk_13 (`person_id`) R
 CREATE INDEX `single_attribute_option_id_idx` ON `attribute_value`(`single_attribute_option_id`);
 ALTER TABLE `attribute_value` ADD FOREIGN KEY single_attribute_option_id_idxfk (`single_attribute_option_id`) REFERENCES `attribute_option` (`id`);
 
-ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_value_id_idxfk (`attribute_value_id`) REFERENCES `attribute_value` (`id`);
-
-ALTER TABLE `attributevalue_multipleattributeoption_assn` ADD FOREIGN KEY attribute_option_id_idxfk (`attribute_option_id`) REFERENCES `attribute_option` (`id`);
-
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY communication_list_id_idxfk_1 (`communication_list_id`) REFERENCES `communication_list` (`id`);
 
 ALTER TABLE `communicationlist_person_assn` ADD FOREIGN KEY person_id_idxfk_14 (`person_id`) REFERENCES `person` (`id`);
 
+CREATE INDEX `address_idx` ON `address` (`household_id`,`current_flag`);
+
+CREATE INDEX `address_type_id_idx` ON `address`(`address_type_id`);
+ALTER TABLE `address` ADD FOREIGN KEY address_type_id_idxfk (`address_type_id`) REFERENCES `address_type` (`id`);
+
+CREATE INDEX `person_id_idx` ON `address`(`person_id`);
+ALTER TABLE `address` ADD FOREIGN KEY person_id_idxfk_15 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `household_id_idx` ON `address`(`household_id`);
+ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_3 (`household_id`) REFERENCES `household` (`id`);
+
+CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
+ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
+
+CREATE INDEX `verification_checked_flag_idx` ON `address`(`verification_checked_flag`);
+CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY phone_type_id_idxfk (`phone_type_id`) REFERENCES `phone_type` (`id`);
+
+CREATE INDEX `address_id_idx` ON `phone`(`address_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
+
+CREATE INDEX `person_id_idx` ON `phone`(`person_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY person_id_idxfk_16 (`person_id`) REFERENCES `person` (`id`);
+
+CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
+ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
+
+CREATE INDEX `number_idx` ON `phone`(`number`);
 CREATE INDEX `membership_status_type_id_idx` ON `person`(`membership_status_type_id`);
 ALTER TABLE `person` ADD FOREIGN KEY membership_status_type_id_idxfk (`membership_status_type_id`) REFERENCES `membership_status_type` (`id`);
 
@@ -1583,38 +1610,10 @@ CREATE INDEX `stewardship_address_id_idx` ON `person`(`stewardship_address_id`);
 ALTER TABLE `person` ADD FOREIGN KEY stewardship_address_id_idxfk (`stewardship_address_id`) REFERENCES `address` (`id`);
 
 CREATE INDEX `primary_phone_id_idx` ON `person`(`primary_phone_id`);
-ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk (`primary_phone_id`) REFERENCES `phone` (`id`);
+ALTER TABLE `person` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
 
 ALTER TABLE `person` ADD FOREIGN KEY primary_email_id_idxfk (`primary_email_id`) REFERENCES `email` (`id`);
 
-CREATE INDEX `phone_type_id_idx` ON `phone`(`phone_type_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY phone_type_id_idxfk (`phone_type_id`) REFERENCES `phone_type` (`id`);
-
-CREATE INDEX `address_id_idx` ON `phone`(`address_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY address_id_idxfk (`address_id`) REFERENCES `address` (`id`);
-
-CREATE INDEX `person_id_idx` ON `phone`(`person_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY person_id_idxfk_15 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `mobile_provider_id_idx` ON `phone`(`mobile_provider_id`);
-ALTER TABLE `phone` ADD FOREIGN KEY mobile_provider_id_idxfk (`mobile_provider_id`) REFERENCES `mobile_provider` (`id`);
-
-CREATE INDEX `number_idx` ON `phone`(`number`);
-CREATE INDEX `address_idx` ON `address` (`household_id`,`current_flag`);
-
-CREATE INDEX `address_type_id_idx` ON `address`(`address_type_id`);
-ALTER TABLE `address` ADD FOREIGN KEY address_type_id_idxfk (`address_type_id`) REFERENCES `address_type` (`id`);
-
-CREATE INDEX `person_id_idx` ON `address`(`person_id`);
-ALTER TABLE `address` ADD FOREIGN KEY person_id_idxfk_16 (`person_id`) REFERENCES `person` (`id`);
-
-CREATE INDEX `household_id_idx` ON `address`(`household_id`);
-ALTER TABLE `address` ADD FOREIGN KEY household_id_idxfk_3 (`household_id`) REFERENCES `household` (`id`);
-
-CREATE INDEX `primary_phone_id_idx` ON `address`(`primary_phone_id`);
-ALTER TABLE `address` ADD FOREIGN KEY primary_phone_id_idxfk_1 (`primary_phone_id`) REFERENCES `phone` (`id`);
-
-CREATE INDEX `verification_checked_flag_idx` ON `address`(`verification_checked_flag`);
 CREATE INDEX `signup_entry_idx` ON `signup_entry` (`signup_form_id`,`person_id`,`signup_entry_status_type_id`);
 
 CREATE INDEX `signup_entry_idx_1` ON `signup_entry` (`signup_form_id`,`signup_entry_status_type_id`);
@@ -1714,6 +1713,12 @@ CREATE INDEX `login_id_idx` ON `sms_message`(`login_id`);
 ALTER TABLE `sms_message` ADD FOREIGN KEY login_id_idxfk_2 (`login_id`) REFERENCES `login` (`id`);
 
 CREATE INDEX `date_sent_idx` ON `sms_message`(`date_sent`);
+CREATE INDEX `online_donation_id_idx` ON `online_donation_line_item`(`online_donation_id`);
+ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY online_donation_id_idxfk (`online_donation_id`) REFERENCES `online_donation` (`id`);
+
+CREATE INDEX `stewardship_fund_id_idx` ON `online_donation_line_item`(`stewardship_fund_id`);
+ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_1 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+
 CREATE INDEX `email_message_id_idx` ON `email_message_route`(`email_message_id`);
 ALTER TABLE `email_message_route` ADD FOREIGN KEY email_message_id_idxfk_1 (`email_message_id`) REFERENCES `email_message` (`id`);
 
@@ -1759,7 +1764,7 @@ CREATE INDEX `stewardship_post_id_idx` ON `stewardship_post_amount`(`stewardship
 ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_post_id_idxfk (`stewardship_post_id`) REFERENCES `stewardship_post` (`id`);
 
 CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_post_amount`(`stewardship_fund_id`);
-ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk_1 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+ALTER TABLE `stewardship_post_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk_2 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 CREATE INDEX `stewardship_contribution_idx` ON `stewardship_contribution` (`person_id`,`stewardship_contribution_type_id`);
 
@@ -1793,13 +1798,13 @@ CREATE INDEX `person_id_idx` ON `stewardship_post_line_item`(`person_id`);
 ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY person_id_idxfk_22 (`person_id`) REFERENCES `person` (`id`);
 
 CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_post_line_item`(`stewardship_fund_id`);
-ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_2 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+ALTER TABLE `stewardship_post_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_3 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 CREATE INDEX `stewardship_contribution_id_idx` ON `stewardship_contribution_amount`(`stewardship_contribution_id`);
 ALTER TABLE `stewardship_contribution_amount` ADD FOREIGN KEY stewardship_contribution_id_idxfk_1 (`stewardship_contribution_id`) REFERENCES `stewardship_contribution` (`id`);
 
 CREATE INDEX `stewardship_fund_id_idx` ON `stewardship_contribution_amount`(`stewardship_fund_id`);
-ALTER TABLE `stewardship_contribution_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk_3 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
+ALTER TABLE `stewardship_contribution_amount` ADD FOREIGN KEY stewardship_fund_id_idxfk_4 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 CREATE INDEX `credit_card_payment_idx` ON `credit_card_payment` (`paypal_batch_id`,`unlinked_flag`);
 
@@ -1830,12 +1835,6 @@ CREATE INDEX `person_id_idx` ON `online_donation`(`person_id`);
 ALTER TABLE `online_donation` ADD FOREIGN KEY person_id_idxfk_23 (`person_id`) REFERENCES `person` (`id`);
 
 ALTER TABLE `online_donation` ADD FOREIGN KEY credit_card_payment_id_idxfk_1 (`credit_card_payment_id`) REFERENCES `credit_card_payment` (`id`);
-
-CREATE INDEX `online_donation_id_idx` ON `online_donation_line_item`(`online_donation_id`);
-ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY online_donation_id_idxfk (`online_donation_id`) REFERENCES `online_donation` (`id`);
-
-CREATE INDEX `stewardship_fund_id_idx` ON `online_donation_line_item`(`stewardship_fund_id`);
-ALTER TABLE `online_donation_line_item` ADD FOREIGN KEY stewardship_fund_id_idxfk_4 (`stewardship_fund_id`) REFERENCES `stewardship_fund` (`id`);
 
 CREATE INDEX `ministry_id_idx` ON `group_role`(`ministry_id`);
 ALTER TABLE `group_role` ADD FOREIGN KEY ministry_id_idxfk_5 (`ministry_id`) REFERENCES `ministry` (`id`);

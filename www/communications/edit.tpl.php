@@ -7,6 +7,8 @@
 		<?php $this->lstMinistry->RenderWithName(); ?>
 		<?php $this->lstType->RenderWithName(); ?>
 		<?php $this->txtToken->RenderWithName(); ?>
+		<?php $this->txtDescription->RenderWithName(); ?>
+		<?php $this->chkSubscribable->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">
