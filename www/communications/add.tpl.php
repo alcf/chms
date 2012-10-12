@@ -15,6 +15,13 @@
 		&nbsp;<br/>
 	</div>
 
+	<h3>Initialize Email List with a Database Query</h3>
+	<div class="section">
+		<?php $this->pnlSearchQuery->Render(); ?>
+		<div class="sectionButtons"><?php $this->btnQuery->Render(); ?></div>
+		&nbsp;<br/>
+	</div>
+	
 	<h3>People to Add</h3>
 	<div class="section">
 		<?php $this->dtgMembers->Render(); ?>

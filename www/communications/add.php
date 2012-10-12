@@ -18,15 +18,29 @@
 		
 		protected $btnSave;
 		protected $btnCancel;
+		
+		protected $pnlSearchQuery;
+		protected $objSearchQuery;
+		protected $btnQuery;
 
 		protected $objArrayToAdd = array();
 		
-		protected function Form_Create() {
+		protected function Form_Create() {			
 			$this->objList = CommunicationList::LoadById(QApplication::PathInfo(0));
 			if (!$this->objList) QApplication::Redirect('/communications/');
 			if (!$this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login)) $this->RedirectToView();
 
+			$this->objSearchQuery = new SearchQuery();
+			$this->pnlSearchQuery = new SearchQueryPanel($this->objSearchQuery, $this);
+			$this->btnQuery = new QButton($this);
+			$this->btnQuery->Text = 'Initialize with Query';
+			$this->btnQuery->CssClass = 'primary';
+			$this->btnQuery->CausesValidation = false;
+			$this->btnQuery->AddAction(new QClickEvent(), new QAjaxAction('btnQuery_Click', null, true));
+						
 			$this->dtgMembers = new QDataGrid($this);
+			$this->dtgMembers->UseAjax = true;
+			$this->dtgMembers->Paginator = new QPaginator($this->dtgMembers);
 			if ($this->objList->Ministry->IsLoginCanAdminMinistry(QApplication::$Login))
 				$this->dtgMembers->AddColumn(new QDataGridColumn('&nbsp;', '<?= $_FORM->RenderEdit($_ITEM); ?>', 'HtmlEntities=false', 'Width=140px', 'FontSize=10px'));
 			$this->dtgMembers->AddColumn(new QDataGridColumn('First Name', '<?= $_ITEM->FirstName; ?>', 'Width=170px'));
@@ -46,14 +60,14 @@
 		
 			$this->txtEmail = new QEmailTextBox($this);
 			$this->txtEmail->Name = 'Email';
-			$this->txtEmail->CausesValidation = true;
-			$this->txtEmail->Required = true;
+			$this->txtEmail->CausesValidation = false;
+			$this->txtEmail->Required = false;
 
 			$this->btnAdd = new QButton($this);
 			$this->btnAdd->Text = 'Add';
 			$this->btnAdd->CssClass = 'primary';
-			$this->btnAdd->CausesValidation = true;
-
+			$this->btnAdd->CausesValidation = true;		
+			
 			$this->pxyUndo = new QControlProxy($this);
 			$this->pxyUndo->AddAction(new QClickEvent(), new QAjaxAction('pxyUndo_Click'));
 			$this->pxyUndo->AddAction(new QClickEvent(), new QTerminateAction());
@@ -95,9 +109,22 @@
 				$blnToReturn = false;
 			}
 
-			return $blnToReturn;
+			return $blnToReturn;			
 		}
 
+		public function btnQuery_Click() {
+			$this->objArrayToAdd = array(); // clear the array and start again
+			$this->objSearchQuery->Save();
+			$this->pnlSearchQuery->Save();
+			$this->objSearchQuery->RefreshDescription();
+			$objPersonCursor = $this->objSearchQuery->Execute();
+			while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
+				// Add to email List
+				$this->objArrayToAdd[] = $objPerson;
+			}
+			$this->dtgMembers->Refresh();			
+		}
+		
 		public function btnAdd_Click() {
 			$strEmail = trim(strtolower($this->txtEmail->Text));
 			
