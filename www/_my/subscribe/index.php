@@ -14,47 +14,23 @@
 		protected $btnSubscribe;
 		protected $btnUnsubscribe;
 		protected $lblMessage;
+		protected $chkBtnListArray;
 		
 		protected function Form_Create() {
 			$this->strInitialToken = QApplication::PathInfo(0);
 			if ($this->strInitialToken)
 				$this->objList = CommunicationList::LoadByToken($this->strInitialToken);
-	
-			$this->lstEmailLists = new QListBox($this);
-			$select = false;
-			$initialName = '';
-			$initialDescription = '';
+				
+			$this->chkBtnListArray = array();
 			foreach (CommunicationList::LoadArrayBySubscribable(true, QQ::OrderBy(QQN::CommunicationList()->Token)) as $objEmailList) {
-				if (!$this->strInitialToken && !$select) {
-					$this->lstEmailLists->AddItem($objEmailList->Name,$objEmailList->Token,true);
-					$select = true;
-					$initialName = $objEmailList->Name;
-					$initialDescription = $objEmailList->Description;
-					$this->objList = CommunicationList::LoadByToken($objEmailList->Token);
-				} else {
-					if ($objEmailList->Token == $this->strInitialToken) {
-						$this->lstEmailLists->AddItem($objEmailList->Name,$objEmailList->Token,true);
-						$initialName = $objEmailList->Name;
-						$initialDescription = $objEmailList->Description;
-					} else
-						$this->lstEmailLists->AddItem($objEmailList->Name,$objEmailList->Token);
+				$objItemList = new QCheckBox($this);
+				$objItemList->Name = $objEmailList->Token;
+				$objItemList->Text = $objEmailList->Name .' - '.$objEmailList->Description. "\n";
+				if ($objEmailList->Token == $this->strInitialToken) {
+					$objItemList->Checked = true;
 				}
+				$this->chkBtnListArray[] = $objItemList;
 			}
-			$this->lstEmailLists->AddAction(new QClickEvent(), new QAjaxAction('lstEmailLists_Change'));		
-			
-			$this->lblListName = new QLabel($this);
-			$this->lblListName->Name = 'List Name';
-			$this->lblListName->Text = $initialName;
-			
-			$this->lblListDecription = new QLabel($this);
-			$this->lblListDecription->Name = 'List description';
-			$this->lblListDecription->Text = $initialDescription;
-
-			$this->rbnSubscribeSelection = new QRadioButtonList($this);
-			$this->rbnSubscribeSelection->AddAction(new QClickEvent(), new QAjaxAction('lstSubscription_Change'));
-			$this->rbnSubscribeSelection->Name = 'Leave or Join the Mailing List';
-			$this->rbnSubscribeSelection->AddItem('Opt-in to the Mailing List', 1, true);
-			$this->rbnSubscribeSelection->AddItem('Opt-Out of the Mailing List', 2);
 			
 			$this->txtEmail = new QTextBox($this);
 			$this->txtEmail->Name = 'Email: ';
@@ -71,14 +47,9 @@
 			$this->btnSubscribe = new QButton($this);
 			$this->btnSubscribe->Name = 'Subscribe';
 			$this->btnSubscribe->Text = 'Subscribe';
+			$this->btnSubscribe->CssClass = 'primary';
 			$this->btnSubscribe->Visible = true;
 			$this->btnSubscribe->AddAction(new QClickEvent(), new QAjaxAction('btnSubscribe_Click'));
-			
-			$this->btnUnsubscribe = new QButton($this);
-			$this->btnUnsubscribe->Name = 'Unsubscribe';
-			$this->btnUnsubscribe->Text = 'Unsubscribe';
-			$this->btnUnsubscribe->Visible = false;
-			$this->btnUnsubscribe->AddAction(new QClickEvent(), new QAjaxAction('btnUnsubscribe_Click'));
 			
 			$this->lblMessage = new QLabel($this);
 			$this->lblMessage->FontBold = true;
@@ -94,67 +65,41 @@
 			}
 		}
 		
-		protected function lstSubscription_Change() {
-			switch ($this->rbnSubscribeSelection->SelectedValue) {
-				case 1: // Opt-In
-					$this->txtEmail->Visible = true;
-					$this->txtFirstName->Visible = true;
-					$this->txtLastName->Visible = true;
-					$this->btnSubscribe->Visible = true;
-					$this->btnUnsubscribe->Visible = false;
-					$this->lblMessage->Visible = false;
-					break;
-				case 2: // Opt- Out
-					$this->txtEmail->Visible = true;
-					$this->txtFirstName->Visible = false;
-					$this->txtLastName->Visible = false;
-					$this->btnSubscribe->Visible = false;
-					$this->btnUnsubscribe->Visible = true;
-					$this->lblMessage->Visible = false;
-					break;
-				default:
-				break;
-			}
-		}
-		
 		protected function btnSubscribe_Click() {
 			$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->txtEmail->Text);
-			if ($objCommunicationListEntry) {
-				if($this->objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
-					$this->lblMessage->Text = 'You are already subscribed to this list';
-					$this->lblMessage->ForeColor = 'red';
-					$this->lblMessage->Visible = true;
-				} else {
-					$this->objList->AssociateCommunicationListEntry($objCommunicationListEntry);
-					QApplication::Redirect('/subscribe/success.php/Subscribed/'.urlencode($this->lblListName->Text));					
-				}
-			} else {
+			if (!$objCommunicationListEntry) {
 				// create new entry and add to the communications list
 				$objCommunicationListEntry = new CommunicationListEntry();
 				$objCommunicationListEntry->Email = $this->txtEmail->Text;
 				$objCommunicationListEntry->FirstName = $this->txtFirstName->Text;
 				$objCommunicationListEntry->LastName = $this->txtLastName->Text;
 				$objCommunicationListEntry->Save();
-				$this->objList->AssociateCommunicationListEntry($objCommunicationListEntry);
-				QApplication::Redirect('/subscribe/success.php/Subscribed/'.urlencode($this->lblListName->Text));
+			}
+			
+			$strSubscribedList = '';
+			$success = false;
+			foreach ($this->chkBtnListArray as $objItem) {
+				if ($objItem->Checked) {
+					$this->objList = CommunicationList::LoadByToken($objItem->Name);
+					if ($this->objList){
+						if($this->objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
+							$this->lblMessage->Text .= 'You are already subscribed to the "'.$objItem->Name.'" list';
+							$this->lblMessage->ForeColor = 'red';
+							$this->lblMessage->Visible = true;
+						} else {
+							$this->objList->AssociateCommunicationListEntry($objCommunicationListEntry);
+							$strSubscribedList .= $objItem->Name .',';
+							$success = true;
+						}
+					}
+				}
+			}
+			if ($success) {
+				$strSubscribedList = substr($strSubscribedList,0,strlen($strSubscribedList)-1);
+				QApplication::Redirect('/subscribe/success.php/Subscribed/'.urlencode($strSubscribedList));
 			}
 		}
 		
-		protected function btnUnsubscribe_Click() {
-			$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->txtEmail->Text);
-			if ($objCommunicationListEntry) {
-				if($this->objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
-					$this->objList->UnassociateCommunicationListEntry($objCommunicationListEntry);
-					QApplication::Redirect('/subscribe/success.php/Unsubscribed/'.urlencode($this->lblListName->Text));
-				} else {
-					$this->lblMessage->Text = 'You cannot Opt-Out because you are not subscribed to this list.';
-					$this->lblMessage->Visible = true;
-				}
-			} else {
-				$this->lblMessage->Text = 'You cannot Opt-Out because you are not subscribed to this list.';
-				$this->lblMessage->Visible = true;
-			}
-		}
 	}
 	
 	subscriptionListsForm::Run('subscriptionListsForm');

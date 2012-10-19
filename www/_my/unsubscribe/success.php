@@ -7,8 +7,7 @@
 		
 		protected function Form_Create() {
 			$this->lblMessage = new QLabel($this);
-			$this->lblMessage->Text = 'You have successfully ' . QApplication::PathInfo(0)
-				.' to the '. urldecode(QApplication::PathInfo(1)) . ' Email List/s';
+			$this->lblMessage->Text = 'You have successfully unsubscribed from the '. urldecode(QApplication::PathInfo(0)) . ' Email List/s';
 			$this->btnReturnToSubscribe = new QButton($this);
 			$this->btnReturnToSubscribe->Text = 'Subscribe to additional Mailing Lists';
 			$this->btnReturnToSubscribe->CssClass = 'primary';
