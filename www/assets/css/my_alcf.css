@@ -207,6 +207,8 @@
 	div.sectionBatchInfo { background-color: #5a768e; color: #fff; }
 
 	div.section p { font-family: arial, helvetica, sans-serif; font-size: 14px; color: #333; }
+	div.section ul { font-family: arial, helvetica, sans-serif; font-size: 14px; color: #333;}
+	div.section li { font-family: arial, helvetica, sans-serif; font-size: 14px; color: #333; padding-top:5px;}
 
 	div.filterBy { margin-left: 15px; float: left; color: #5a768e; font-size: 11px; font-style: italic; font-family: trebuchet ms, verdana, arial, helvetica, sans-serif; }
 	div.filterByFirst { margin-left: 0; }
