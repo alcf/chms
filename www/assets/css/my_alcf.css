@@ -183,7 +183,7 @@
 
 	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
 
-	span.na, div.renderWithName div.right span.na { color: #aaa; font-style: italic; font-size: 10px; }
+	span.na, div.renderWithName div.right span.na { color: #555; font-style: italic; font-size: 10px; }
 	span.detail { color: #888; font-size: 10px; }
 	span.sublinks { color: #ccc; font-size: 10px; }
 
