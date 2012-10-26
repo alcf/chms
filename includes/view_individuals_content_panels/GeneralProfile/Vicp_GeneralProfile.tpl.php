@@ -167,7 +167,7 @@
 	<div class="lvp">
 		<div class="left">Family Members</div>
 		<div class="right">
-<?php
+<?php  //
 			foreach ($_FORM->objPerson->GetRelationshipArray(QQ::OrderBy(QQN::Relationship()->RelatedToPerson->LastName, QQN::Relationship()->RelatedToPerson->FirstName)) as $objRelationship) {
 				printf('%s: %s<br/>', $objRelationship->Relation, $objRelationship->RelatedToPerson->LinkHtml);
 			}

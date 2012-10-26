@@ -19,6 +19,7 @@
 	 * @property integer $PersonId the value for intPersonId (Not Null)
 	 * @property integer $RelatedToPersonId the value for intRelatedToPersonId (Not Null)
 	 * @property integer $RelationshipTypeId the value for intRelationshipTypeId (Not Null)
+	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Person $RelatedToPerson the value for the Person object referenced by intRelatedToPersonId (Not Null)
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -81,6 +82,16 @@
 		///////////////////////////////
 		// PROTECTED MEMBER OBJECTS
 		///////////////////////////////
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column relationship.person_id.
+		 *
+		 * NOTE: Always use the Person property getter to correctly retrieve this Person object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Person objPerson
+		 */
+		protected $objPerson;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
@@ -458,6 +469,12 @@
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'relationship__';
 
+			// Check for Person Early Binding
+			$strAlias = $strAliasPrefix . 'person_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
 			// Check for RelatedToPerson Early Binding
 			$strAlias = $strAliasPrefix . 'related_to_person_id__id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -813,7 +830,7 @@
 			$objReloaded = Relationship::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->intPersonId = $objReloaded->intPersonId;
+			$this->PersonId = $objReloaded->PersonId;
 			$this->RelatedToPersonId = $objReloaded->RelatedToPersonId;
 			$this->RelationshipTypeId = $objReloaded->RelationshipTypeId;
 		}
@@ -914,6 +931,18 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'Person':
+					// Gets the value for the Person object referenced by intPersonId (Not Null)
+					// @return Person
+					try {
+						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
+							$this->objPerson = Person::Load($this->intPersonId);
+						return $this->objPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'RelatedToPerson':
 					// Gets the value for the Person object referenced by intRelatedToPersonId (Not Null)
 					// @return Person
@@ -964,6 +993,7 @@
 					// @param integer $mixValue
 					// @return integer
 					try {
+						$this->objPerson = null;
 						return ($this->intPersonId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -997,6 +1027,36 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'Person':
+					// Sets the value for the Person object referenced by intPersonId (Not Null)
+					// @param Person $mixValue
+					// @return Person
+					if (is_null($mixValue)) {
+						$this->intPersonId = null;
+						$this->objPerson = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Person object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Person');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Person object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved Person for this Relationship');
+
+						// Update Local Member Variables
+						$this->objPerson = $mixValue;
+						$this->intPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				case 'RelatedToPerson':
 					// Sets the value for the Person object referenced by intRelatedToPersonId (Not Null)
 					// @param Person $mixValue
@@ -1065,7 +1125,7 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="Relationship"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
-			$strToReturn .= '<element name="PersonId" type="xsd:int"/>';
+			$strToReturn .= '<element name="Person" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="RelatedToPerson" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="RelationshipTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1076,6 +1136,7 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('Relationship', $strComplexTypeArray)) {
 				$strComplexTypeArray['Relationship'] = Relationship::GetSoapComplexTypeXml();
+				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1093,8 +1154,9 @@
 			$objToReturn = new Relationship();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
-			if (property_exists($objSoapObject, 'PersonId'))
-				$objToReturn->intPersonId = $objSoapObject->PersonId;
+			if ((property_exists($objSoapObject, 'Person')) &&
+				($objSoapObject->Person))
+				$objToReturn->Person = Person::GetObjectFromSoapObject($objSoapObject->Person);
 			if ((property_exists($objSoapObject, 'RelatedToPerson')) &&
 				($objSoapObject->RelatedToPerson))
 				$objToReturn->RelatedToPerson = Person::GetObjectFromSoapObject($objSoapObject->RelatedToPerson);
@@ -1118,6 +1180,10 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
+			if ($objObject->objPerson)
+				$objObject->objPerson = Person::GetSoapObjectFromObject($objObject->objPerson, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intPersonId = null;
 			if ($objObject->objRelatedToPerson)
 				$objObject->objRelatedToPerson = Person::GetSoapObjectFromObject($objObject->objRelatedToPerson, false);
 			else if (!$blnBindRelatedObjects)
@@ -1139,6 +1205,7 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $RelatedToPersonId
 	 * @property-read QQNodePerson $RelatedToPerson
 	 * @property-read QQNode $RelationshipTypeId
@@ -1153,6 +1220,8 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'PersonId':
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
+				case 'Person':
+					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'RelatedToPersonId':
 					return new QQNode('related_to_person_id', 'RelatedToPersonId', 'integer', $this);
 				case 'RelatedToPerson':
@@ -1176,6 +1245,7 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $PersonId
+	 * @property-read QQNodePerson $Person
 	 * @property-read QQNode $RelatedToPersonId
 	 * @property-read QQNodePerson $RelatedToPerson
 	 * @property-read QQNode $RelationshipTypeId
@@ -1191,6 +1261,8 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'PersonId':
 					return new QQNode('person_id', 'PersonId', 'integer', $this);
+				case 'Person':
+					return new QQNodePerson('person_id', 'Person', 'integer', $this);
 				case 'RelatedToPersonId':
 					return new QQNode('related_to_person_id', 'RelatedToPersonId', 'integer', $this);
 				case 'RelatedToPerson':
