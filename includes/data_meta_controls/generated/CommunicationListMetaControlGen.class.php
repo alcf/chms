@@ -397,7 +397,7 @@
 			$this->txtDescription = new QTextBox($this->objParentObject, $strControlId);
 			$this->txtDescription->Name = QApplication::Translate('Description');
 			$this->txtDescription->Text = $this->objCommunicationList->Description;
-			$this->txtDescription->TextMode = QTextMode::MultiLine;
+			$this->txtDescription->MaxLength = CommunicationList::DescriptionMaxLength;
 			return $this->txtDescription;
 		}
 

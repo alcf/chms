@@ -84,6 +84,7 @@
 		 * @var string strDescription
 		 */
 		protected $strDescription;
+		const DescriptionMaxLength = 512;
 		const DescriptionDefault = null;
 
 
@@ -594,7 +595,7 @@
 			$strAliasName = array_key_exists($strAliasPrefix . 'token', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'token'] : $strAliasPrefix . 'token';
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
-			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'subscribable', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'subscribable'] : $strAliasPrefix . 'subscribable';
 			$objToReturn->blnSubscribable = $objDbRow->GetColumn($strAliasName, 'Bit');
 
