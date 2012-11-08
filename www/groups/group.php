@@ -171,6 +171,10 @@
 						$strClassName = sprintf('CpGroup_%s', QString::ConvertToCamelCase($strUrlHashTokens[1]));
 						break;
 
+					case 'clone_group':
+						$strClassName = sprintf('CpGroup_%s', QString::ConvertToCamelCase($strUrlHashTokens[1]));
+						break;
+						
 					default:
 						QApplication::Redirect('/groups/');
 				}
