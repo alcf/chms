@@ -3,7 +3,7 @@
 	<a name="give"></a>
 	<h1>Give Online</h1>
 	<span style="font-size: 14px;">
-	You can use this online form to safely, securely contirbute your financial gift to Abundant Life Christian Fellowship.
+	You can use this online form to safely, securely contribute your financial gift to Abundant Life Christian Fellowship.
 	<?php if (!QApplication::$PublicLogin) { ?>
 		<br/><br/>
 		If you have a <strong>my.alcf account</strong>, <a style="font-weight: bold;" href="/index.php?r=/give">Log In</a> to have the system pre-fill out the form for you, or
