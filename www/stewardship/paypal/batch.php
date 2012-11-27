@@ -36,8 +36,16 @@
 		protected $dlgEditFund;
 		protected $btnDialogSave;
 		protected $btnDialogCancel;
+		protected $lblDialogFund;
 		protected $lstDialogFund;
 		protected $txtDialogOther;
+		
+		protected $rbtnUpdateFundSelection;
+		protected $lblDialogSplitFund;
+		protected $lblDialogSplitFundTitle;
+		protected $lstDialogSplitFund;
+		protected $txtDialogSplitOther;
+		protected $txtDialogSplitAmount;
 
 		protected function btnPost_Click() {
 			if (!$this->dtxDateCredited->DateTime) $this->dtxDateCredited->Warning = 'Invalid Date';
@@ -58,7 +66,8 @@
 				else
 					$this->lstDialogFund->SelectedValue = -1;
 				$this->txtDialogOther->Text = $objOnlineDonationLineItem->Other;
-				$this->dlgEditFund->ShowDialogBox();
+				$this->lblDialogSplitFund->Text = 'Please specify the Funding account Details for the two separate line items you wish to split into The amount to be split is: $'.$objOnlineDonationLineItem->Amount;
+				$this->dlgEditFund->ShowDialogBox(); //GJS We change this dialog box
 				$this->lstDialogFund_Change();
 			}
 		}
@@ -68,6 +77,7 @@
 			$objSignupPayment = SignupPayment::Load(substr($strParameter, 1));
 			if (($objSignupPayment->CreditCardPayment->PaypalBatchId == $this->objBatch->Id)) {
 				$this->objEditing = $objSignupPayment;
+				$this->lblDialogSplitFund->Text = 'Please specify the Funding account Details for the two separate line items you wish to split into The amount to be split is: $'.$objSignupPayment->Amount;				
 				if ($this->strEditingCode == 'd')
 					$this->lstDialogFund->SelectedValue = $objSignupPayment->DonationStewardshipFundId;
 				else {
@@ -78,24 +88,78 @@
 			}
 		}
 
-		protected function btnDialogSave_Click() {
-			if ($this->objEditing instanceof OnlineDonationLineItem) {
-				if ($this->lstDialogFund->SelectedValue == -1) {
-					$this->objEditing->DonationFlag = false;
-					$this->objEditing->StewardshipFundId = null;
-					$this->objEditing->Other = trim($this->txtDialogOther->Text);
-				} else {
-					$this->objEditing->DonationFlag = true;
-					$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
-					$this->objEditing->Other = null;
+		protected function Form_Validate() {
+			if($this->rbtnUpdateFundSelection->SelectedValue == 2){
+				// Validate that the sum amount is equal to the initial amount
+				if($this->objEditing->Amount != ($this->txtDialogSplitAmount[0]->Text +$this->txtDialogSplitAmount[1]->Text )) {
+					$this->txtDialogSplitAmount[0]->Warning = 'The sum of the individual line item amounts do not match the initial amount specified';
+					return false;
 				}
-				$this->objEditing->Save();
-			} else if ($this->strEditingCode == 'd') {
-				$this->objEditing->DonationStewardshipFundId = $this->lstDialogFund->SelectedValue;
-				$this->objEditing->Save();
-			} else {
-				$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
-				$this->objEditing->Save();
+			}			
+			return true;
+		}
+		
+		protected function btnDialogSave_Click() {
+			// GJS Save according to radio button selection
+			switch($this->rbtnUpdateFundSelection->SelectedValue) {
+				case 1:
+					if ($this->objEditing instanceof OnlineDonationLineItem) {
+						if ($this->lstDialogFund->SelectedValue == -1) {
+							$this->objEditing->DonationFlag = false;
+							$this->objEditing->StewardshipFundId = null;
+							$this->objEditing->Other = trim($this->txtDialogOther->Text);
+						} else {
+							$this->objEditing->DonationFlag = true;
+							$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
+							$this->objEditing->Other = null;
+						}
+						$this->objEditing->Save();
+					} else if ($this->strEditingCode == 'd') {
+						$this->objEditing->DonationStewardshipFundId = $this->lstDialogFund->SelectedValue;
+						$this->objEditing->Save();
+					} else {
+						$this->objEditing->StewardshipFundId = $this->lstDialogFund->SelectedValue;
+						$this->objEditing->Save();
+					}
+					break;
+				case 2: 
+					// Save existing line Item
+					if ($this->objEditing instanceof OnlineDonationLineItem) {
+						if ($this->lstDialogSplitFund[0]->SelectedValue == -1) {
+							$this->objEditing->DonationFlag = false;
+							$this->objEditing->StewardshipFundId = null;
+							$this->objEditing->Other = trim($this->txtDialogSplitOther[0]->Text);
+						} else {
+							$this->objEditing->DonationFlag = true;
+							$this->objEditing->StewardshipFundId = $this->lstDialogSplitFund[0]->SelectedValue;
+							$this->objEditing->Other = null;
+						}
+						$this->objEditing->Amount = $this->txtDialogSplitAmount[0]->Text;
+						$this->objEditing->Save();
+					} else if ($this->strEditingCode == 'd') {
+						$this->objEditing->DonationStewardshipFundId = $this->lstDialogSplitFund[0]->SelectedValue;
+						$this->objEditing->Amount = $this->txtDialogSplitAmount[0]->Text;
+						$this->objEditing->Save();
+					} else {
+						$this->objEditing->StewardshipFundId = $this->lstDialogSplitFund->SelectedValue;
+						$this->objEditing->Amount = $this->txtDialogSplitAmount[0]->Text;
+						$this->objEditing->Save();
+					}
+					// Create a new line item - Lets just make it an online donation for now
+					$objNewLineItem = new OnlineDonationLineItem();
+					$objNewLineItem->Amount = $this->txtDialogSplitAmount[1]->Text;
+					if ($this->lstDialogSplitFund[1]->SelectedValue == -1) {
+						$objNewLineItem->DonationFlag = false;
+						$$objNewLineItem->StewardshipFundId = null;
+						$objNewLineItem->Other = trim($this->txtDialogSplitOther[1]->Text);
+					} else {
+						$objNewLineItem->DonationFlag = true;
+						$objNewLineItem->StewardshipFundId = $this->lstDialogSplitFund[1]->SelectedValue;
+						$objNewLineItem->Other = null;
+					}
+					$objNewLineItem->OnlineDonationId = $this->objEditing->OnlineDonationId;
+					$objNewLineItem->Save();
+					break;
 			}
 
 			$this->dlgEditFund->HideDialogBox();
@@ -185,6 +249,10 @@
 			$this->dlgEditFund->HideDialogBox();
 			$this->dlgEditFund->Template = dirname(__FILE__) . '/dlgEditFund.tpl.php';
 
+			$this->lblDialogFund = new QLabel($this->dlgEditFund);
+			$this->lblDialogFund->Text = 'Please specify the appropriate Stewardship Funding Account for this line item.';
+			$this->lblDialogFund->Visible = false;
+			
 			$this->lstDialogFund = new QListBox($this->dlgEditFund);
 			$this->lstDialogFund->Name = 'Stewardship Fund';
 			$this->lstDialogFund->AddItem('- Select One -', null);
@@ -193,9 +261,49 @@
 				$this->lstDialogFund->AddItem($objFund->Name, $objFund->Id);
 			$this->lstDialogFund->AddItem('- Other (Non-Donation)... -', -1);
 			$this->lstDialogFund->AddAction(new QChangeEvent(), new QAjaxAction('lstDialogFund_Change'));
+			$this->lstDialogFund->Visible = false;
 
 			$this->txtDialogOther = new QTextBox($this->dlgEditFund);
 			$this->txtDialogOther->Name = 'Non-Donation Funding Account';
+			$this->txtDialogOther->Visible = false;
+			
+			$this->lblDialogSplitFund = new QLabel($this->dlgEditFund);
+			$this->lblDialogSplitFund->Visible = false;
+			$this->lstDialogSplitFund = array();
+			$this->txtDialogSplitOther = array();
+			$this->txtDialogSplitAmount = array();
+			$this->lblDialogSplitFundTitle = array();
+			for($i=0; $i<2;$i++) {
+				$this->lblDialogSplitFundTitle[$i] = new QLabel($this->dlgEditFund);
+				$this->lblDialogSplitFundTitle[$i]->HtmlEntities = false;
+				$this->lblDialogSplitFundTitle[$i]->Text = '<h4>Line Item '.($i+1).'</h4>';
+				$this->lblDialogSplitFundTitle[$i]->Visible = false;
+				$this->lstDialogSplitFund[$i] = new QListBox($this->dlgEditFund);
+				$this->lstDialogSplitFund[$i]->Name = 'Stewardship Fund';
+				$this->lstDialogSplitFund[$i]->AddItem('- Select One -', null);
+				$this->lstDialogSplitFund[$i]->Required = true;
+				foreach (StewardshipFund::LoadArrayByActiveFlag(true, QQ::OrderBy(QQN::StewardshipFund()->Name)) as $objFund)
+					$this->lstDialogSplitFund[$i]->AddItem($objFund->Name, $objFund->Id);
+				$this->lstDialogSplitFund[$i]->AddItem('- Other (Non-Donation)... -', -1);
+				$this->lstDialogSplitFund[$i]->ActionParameter = $i;
+				$this->lstDialogSplitFund[$i]->AddAction(new QChangeEvent(), new QAjaxAction('lstDialogSplitFund_Change'));
+				$this->lstDialogSplitFund[$i]->Visible = false; 
+				
+				$this->txtDialogSplitOther[$i] = new QTextBox($this->dlgEditFund);
+				$this->txtDialogSplitOther[$i]->Name = 'Non-Donation Funding Account';
+				$this->txtDialogSplitOther[$i]->Visible = false;
+				
+				$this->txtDialogSplitAmount[$i] = new QFloatTextBox($this->dlgEditFund); 
+				$this->txtDialogSplitAmount[$i]->Name = 'Funding Amount';
+				$this->txtDialogSplitAmount[$i]->Visible = false;
+			}
+
+			
+			$this->rbtnUpdateFundSelection = new QRadioButtonList($this->dlgEditFund);
+			$this->rbtnUpdateFundSelection->AddItem('Change Stewardship Funding Account of the Line Item',1);
+			$this->rbtnUpdateFundSelection->AddItem('Split this Line Item into two separate Funding Accounts',2);
+			$this->rbtnUpdateFundSelection->HtmlBefore = 'Select how you would like to update this Stewardship Fund';
+			$this->rbtnUpdateFundSelection->AddAction(new QChangeEvent(), new QAjaxAction('rbtnUpdateFundSelection_Change'));
 			
 			$this->btnDialogSave = new QButton($this->dlgEditFund);
 			$this->btnDialogSave->CssClass = 'primary';
@@ -243,6 +351,53 @@
 			$this->btnSplitCancel->AddAction(new QClickEvent(), new QTerminateAction());
 			
 			$this->Transactions_Refresh();
+		}
+		public function rbtnUpdateFundSelection_Change() {
+			switch($this->rbtnUpdateFundSelection->SelectedValue) {
+				case 1:
+					$this->txtDialogOther->Visible = true;
+					$this->lstDialogFund->Visible = true;
+					$this->lblDialogFund->Visible = true;
+					
+					$this->lblDialogSplitFund->Visible = false;
+					for($i=0; $i<2;$i++) {
+						$this->lblDialogSplitFundTitle[$i]->Visible = false;
+						$this->lstDialogSplitFund[$i]->Visible = false;
+						$this->txtDialogSplitOther[$i]->Visible = false;
+						$this->txtDialogSplitAmount[$i]->Visible = false;
+					}			
+					break;
+				case 2:
+					$this->txtDialogOther->Visible = false;
+					$this->lstDialogFund->Visible = false;
+					$this->lblDialogFund->Visible = false;
+					
+					$this->lblDialogSplitFund->Visible = true;
+					for($i=0; $i<2;$i++) {
+						$this->lblDialogSplitFundTitle[$i]->Visible = true;
+						$this->lstDialogSplitFund[$i]->Visible = true;
+						$this->txtDialogSplitOther[$i]->Visible = true;
+						$this->txtDialogSplitAmount[$i]->Visible = true;
+					}
+					// Default the first one to the original value
+					if ($this->objEditing->DonationFlag)
+						$this->lstDialogSplitFund[0]->SelectedValue = $this->objEditing->StewardshipFundId;
+					else
+					$this->lstDialogSplitFund[0]->SelectedValue = -1;
+					break;
+				default:
+			}	
+		}
+		
+		public function lstDialogSplitFund_Change($strFormId, $strControlId, $strParameter) {
+			$index = $strParameter;
+			if ($this->lstDialogSplitFund[$index]->SelectedValue == -1) {
+				$this->txtDialogSplitOther[$index]->Visible = true;
+				$this->txtDialogSplitOther[$index]->Required = true;
+			} else {
+				$this->txtDialogSplitOther[$index]->Visible = false;
+				$this->txtDialogSplitOther[$index]->Required = false;
+			}
 		}
 		
 		public function lstDialogFund_Change(){ 
