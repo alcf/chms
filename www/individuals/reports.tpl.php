@@ -32,6 +32,15 @@
 		<?php 
 			}
 		?>
+		<div style='clear:both;'><br></div>
+		<h4>Age Statistics - New Member's Age is:</h4>
+		<?php 
+			foreach($this->iAge as $key=>$value) {
+		?>
+		<p style='float:left; margin-left:30px; margin-bottom:10px; margin-top:5px; width:200px;'><?php _p($key)?>: <?php _p($value)?></p>
+		<?php 
+			}
+		?>
 	</div>
 	<div style='clear:both;'><br></div>
 	<div style='margin-left:20px; position:relative;'>

@@ -17,6 +17,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		public 	  $iEthnicity;
 		public 	  $iFromPreviousChurch;
 		public 	  $iSalvationDate;
+		public 	  $iAge;
 		public    $dtgNewMembers;
 		public    $lblTitle;
 		public 	  $iheight;
@@ -34,6 +35,14 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 										'Thirty Years' => 0,
 										'Forty Years' =>0,
 										'Fifty Years Or More' =>0);
+			$this->iAge = array('Not Specified' => 0,
+								'0-10 Years Old' => 0,
+								'10-20  Years Old' => 0,
+								'20-30 Years Old' => 0,
+								'30-40 Years Old' =>0,
+								'40-50 Years Old' =>0,
+								'50-60 Years Old' =>0,
+								'60+ Years Old' =>0);
 			
 			$this->lblLabel = new QLabel($this);
 			$this->lblLabel->Text = "New Members after ";
@@ -58,6 +67,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->Person->FullName; ?>', 'Width=270px'));
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Membership Start Date', '<?= $_ITEM->DateStart; ?>', 'Width=270px'));
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Marital Status', '<?= $_FORM->RenderMaritalStatus($_ITEM) ?>', 'Width=270px'));
+			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Age', '<?= $_ITEM->Person->Age; ?>', 'Width=270px'));	
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Ethnicity', '<?= $_FORM->RenderEthnicity($_ITEM) ?>', 'Width=270px'));
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Prior Church', '<?= $_FORM->RenderPriorChurch($_ITEM) ?>', 'Width=270px'));
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Salvation Date', '<?= $_FORM->RenderSalvationDate($_ITEM) ?>', 'Width=270px'));
@@ -67,11 +77,11 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue );
 			$this->iTotalCount = count($objMembershipArray);
 			$this->dtgNewMembers->DataSource = $objMembershipArray;
-			$this->CalculateMaritalStatus($objMembershipArray);
+			$this->CalculateMaritalAndAgeStatus($objMembershipArray);
 			$this->CalculateAttributeStatistics($objMembershipArray);
 		}
 		
-		protected function CalculateMaritalStatus($objMembershipArray) {
+		protected function CalculateMaritalAndAgeStatus($objMembershipArray) {
 			$this->iMaritalStatus['Not Specified'] = 0;
 			$this->iMaritalStatus['Single'] = 0;
 			$this->iMaritalStatus['Married'] = 0;
@@ -93,6 +103,25 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 						break;
 						default:
 							$this->iMaritalStatus['Not Specified']++;
+				}
+				$iAge = $objPerson->Age;
+				if ($iAge != null) {
+					if ($iAge<10)
+					$this->iAge['0-10 Years Old']++;
+					elseif ($iAge<20)
+					$this->iAge['10-20  Years Old']++;
+					elseif ($iAge<30)
+					$this->iAge['20-30 Years Old']++;
+					elseif ($iAge<40)
+					$this->iAge['30-40 Years Old']++;
+					elseif ($iAge<50)
+					$this->iAge['40-50 Years Old']++;
+					elseif ($iAge<60)
+					$this->iAge['50-60 Years Old']++;
+					else
+					$this->iAge['60+ Years Old']++;
+				} else {
+					$this->iAge['Not Specified']++;
 				}
 			}
 		}
@@ -154,7 +183,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			}
 			ksort($this->iEthnicity);
 			$this->iSalvationDate['Not Specified'] = $this->iTotalCount - array_sum($this->iSalvationDate);
-			$this->iheight = 400 + (count($this->iEthnicity)/3)*30;
+			$this->iheight = 600 + (count($this->iEthnicity)/3)*30;
 		}
 		
 		public function RenderEthnicity($objMembership) {

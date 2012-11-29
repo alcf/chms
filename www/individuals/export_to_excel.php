@@ -43,7 +43,7 @@
 		print "Total Member Count: ".$iTotalCount ."\r\n";
 		// Calculate and print
 		CalculateAttributeStatistics($objMembershipArray,$iTotalCount);
-		print "Name,Membership Start Date,Marital Status, Ethnicity, Prior Church, Salvation Date\r\n";
+		print "Name,Membership Start Date,Marital Status,Age,Ethnicity, Prior Church, Salvation Date\r\n";
 	}
 	
 
@@ -51,6 +51,11 @@
 		return '"' . str_replace('"', '""', $strString) . '"';
 	}
 
+	function GetAge($objMembership) {
+		$objPerson = $objMembership->Person;
+		return $objPerson->Age;
+	}
+	
 	function GetMaritalStatus($objMembership) {
 		$objPerson = $objMembership->Person;
 		switch ($objPerson->MaritalStatusTypeId) {
@@ -114,6 +119,14 @@
 									'Single' => 0,
 									'Married' => 0,
 									'Separated' => 0);
+		$iAgeStatus = array('Not Specified' => 0,
+								'0-10 Years Old' => 0,
+								'10-20  Years Old' => 0,
+								'20-30 Years Old' => 0,
+								'30-40 Years Old' =>0,
+								'40-50 Years Old' =>0,
+								'50-60 Years Old' =>0,
+								'60+ Years Old' =>0);
 		foreach($objMembershipArray as $objMembership) {
 			$objPerson = $objMembership->Person;
 			switch ($objPerson->MaritalStatusTypeId) {
@@ -131,6 +144,25 @@
 				break;
 				default:
 					$iMaritalStatus['Not Specified']++;
+			}
+			$iAge = $objPerson->Age;
+			if ($iAge != null) {
+				if ($iAge<10)
+				$iAgeStatus['0-10 Years Old']++;
+				elseif ($iAge<20)
+				$iAgeStatus['10-20  Years Old']++;
+				elseif ($iAge<30)
+				$iAgeStatus['20-30 Years Old']++;
+				elseif ($iAge<40)
+				$iAgeStatus['30-40 Years Old']++;
+				elseif ($iAge<50)
+				$iAgeStatus['40-50 Years Old']++;
+				elseif ($iAge<60)
+				$iAgeStatus['50-60 Years Old']++;
+				else
+				$iAgeStatus['60+ Years Old']++;
+			} else {
+				$iAgeStatus['Not Specified']++;
 			}
 			$attributeArray = $objPerson->GetAttributeValueArray(QQ::OrderBy(QQN::AttributeValue()->Attribute->Name));
 			foreach($attributeArray as $objAttribute) {
@@ -176,6 +208,11 @@
 		foreach($iMaritalStatus as $key=>$value){
 			print $key.': ,'.$value ."\r\n";
 		} 
+		print "Age Statistics:\r\n";
+		foreach($iAgeStatus as $key=>$value){
+			print $key.': ,'.$value ."\r\n";
+		}
+	
 		print "Ethnicity BreakDown:\r\n";
 		foreach($iEthnicity as $key=>$value){
 			print $key.': ,'.$value ."\r\n";
@@ -193,6 +230,8 @@
 			print EscapeCsv($objMembership->DateStart);
 			print ",";
 			print EscapeCsv(GetMaritalStatus($objMembership));
+			print ",";
+			print EscapeCsv(GetAge($objMembership));
 			print ",";
 			print EscapeCsv(GetEthnicity($objMembership));
 			print ",";
