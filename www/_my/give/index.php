@@ -76,6 +76,19 @@
 				$blnFirst = false;
 			}
 
+			// Add validation for credit card numbers
+			if (($this->pnlPayment->lstCcType->SelectedName == 'Discover') &&
+				substr($this->pnlPayment->txtCcNumber->Text,0,1) != '6'){
+				$strMissingArray[] = 'The Account Number specified is not a valid Discover Card number';
+			}
+			if (($this->pnlPayment->lstCcType->SelectedName == 'Mastercard') &&
+			substr($this->pnlPayment->txtCcNumber->Text,0,1) != '5'){
+				$strMissingArray[] = 'The Account Number specified is not a valid Mastercard number';
+			}
+			if (($this->pnlPayment->lstCcType->SelectedName == 'Visa') &&
+			substr($this->pnlPayment->txtCcNumber->Text,0,1) != '4'){
+				$strMissingArray[] = 'The Account Number specified is not a valid Visa number';
+			}
 			foreach ($this->GetErrorControls() as $objControl) {
 				$objControl->Blink();
 				if ($objControl->ValidationError) $strMissingArray[] = $objControl->ValidationError;
