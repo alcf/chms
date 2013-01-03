@@ -11,6 +11,9 @@
 			<h3>Indicate Which Ministries This Volunteer Will Be Assisting with</h3>
 			<?php foreach ($this->rblMinistryArray as $rblMinistry) $rblMinistry->RenderWithName(); ?>
 			<br>
+			<h3>Specify the Permissions for this external user</h3>
+			<?php foreach ($this->rblPermissionArray as $rblPermission) $rblPermission->RenderWithName(); ?>
+						
 			<?php $this->btnSubmit->Render('CssClass=primary'); ?>
 			<?php $this->btnCancel->Render('CssClass=primary'); ?>
 		</div>

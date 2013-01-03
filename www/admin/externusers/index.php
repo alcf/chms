@@ -31,7 +31,10 @@
 			$this->dtgVolunteers->MetaAddColumn(QQN::Login()->Username, 'Width=75px');
 			$this->dtgVolunteers->MetaAddColumn(QQN::Login()->FirstName, 'Name=Name', 'Html=<?= $_ITEM->Name; ?>', 'Width=110px');
 			$this->dtgVolunteers->AddColumn(new QDataGridColumn('Acct Disabled', '<?= (!$_ITEM->LoginActiveFlag) ? "Disabled":""; ?>', 'Width=60px'));
-						
+			
+			foreach (PermissionType::$NameArray as $intId => $strName) {
+				$this->dtgVolunteers->AddColumn(new QDataGridColumn('<span style="font-size: 10px;">' . $strName . '</span>', '<?= $_FORM->RenderPermission(' . $intId . ', $_ITEM); ?>', 'Width=50px', 'HtmlEntities=false'));
+			}			
 			$this->dtgVolunteers->SetDataBinder('dtgVolunteers_Bind');
 			$this->dtgVolunteers->SortColumnIndex = 1;
 			$this->dtgVolunteers->SortDirection = 0;
@@ -74,7 +77,12 @@
 			$this->dtgVolunteers->PageNumber = 1;
 			$this->dtgVolunteers->Refresh();
 		}
-			
+
+		public function RenderPermission($intPermissionId, Login $objLogin) {
+			if ($objLogin->IsPermissionAllowed($intPermissionId)) return '<img src="/assets/images/icons/' . $this->strIconArray[$intPermissionId] .
+						'" title="This user can ' . strtolower(PermissionType::$NameArray[$intPermissionId]) . '."/>';
+		}
+		
 		public function dtgVolunteers_Bind() {
 			$objConditions = QQ::All();
 			

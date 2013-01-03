@@ -24,6 +24,7 @@
 		protected $lblDateLastLogin;
 
 		protected $rblMinistryArray = array();
+		protected $rblPermissionArray = array();
 		
 		protected $btnSave;
 		protected $btnCancel;
@@ -75,6 +76,15 @@
 				$this->rblMinistryArray[] = $rblMinistry;
 			}
 			
+			foreach (PermissionType::$NameArray as $intId => $strName) {
+				$rblPermission = new QRadioButtonList($this);
+				$rblPermission->Name = 'Can ' . $strName;
+				$rblPermission->AddItem('Yes', $intId, ($this->objLogin->IsPermissionAllowed($intId)));
+				$rblPermission->AddItem('No', 0, (!$this->objLogin->IsPermissionAllowed($intId)));
+				$rblPermission->RepeatColumns = 2;
+				$this->rblPermissionArray[] = $rblPermission;
+			}
+			
 			$this->lblRoleType = new QLabel($this);
 			$this->lblRoleType->Name = 'Role';
 			$this->lblRoleType->Text = "Volunteer"; //not going to let this change to anything different
@@ -123,6 +133,12 @@
 					$this->objLogin->SetPasswordCache($this->strPassword->Text);
 				}
 				$this->objLogin->LoginActiveFlag = $this->rblLoginActive->SelectedValue;
+				
+				$intBitmap = 0;
+				foreach ($this->rblPermissionArray as $rblPermission) {
+					$intBitmap = $intBitmap | $rblPermission->SelectedValue;
+				}
+				$this->objLogin->PermissionBitmap = $intBitmap;
 				$this->objLogin->Save();
 					
 				// Update ministries associated

@@ -16,6 +16,7 @@
 		protected $btnCancel;
 		
 		protected $rblMinistryArray = array();
+		protected $rblPermissionArray = array();
 
 		protected function Form_Create() {
 			$this->strFirstName = new QTextBox($this);
@@ -51,6 +52,15 @@
 				$this->rblMinistryArray[] = $rblMinistry;
 			}
 			
+			foreach (PermissionType::$NameArray as $intId => $strName) {
+				$rblPermission = new QRadioButtonList($this);
+				$rblPermission->Name = 'Can ' . $strName;
+				$rblPermission->AddItem('Yes', $intId, false);
+				$rblPermission->AddItem('No', 0, true);
+				$rblPermission->RepeatColumns = 2;
+				$this->rblPermissionArray[] = $rblPermission;
+			}
+			
 			$this->btnSubmit = new QButton($this);
 			$this->btnSubmit->Text = "Submit";
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
@@ -73,7 +83,13 @@
 			$objLogin->SetPasswordCache($this->strPassword->Text);
 			$objLogin->LoginActiveFlag = $this->lstActiveFlag->SelectedValue;
 			$objLogin->DomainActiveFlag = false;
-					
+
+			$intBitmap = 0;
+			foreach ($this->rblPermissionArray as $rblPermission) {
+				$intBitmap = $intBitmap | $rblPermission->SelectedValue;
+			}
+			$objLogin->PermissionBitmap = $intBitmap;
+			
 			$objLogin->Save();
 			
 			// Update ministries associated
