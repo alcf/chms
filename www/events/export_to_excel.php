@@ -25,7 +25,13 @@
 	// Get Column Titles
 	print "First Name,Last Name";
 	foreach ($objFormQuestionArray as $objFormQuestion) {
-		print ("," . EscapeCsv($objFormQuestion->ShortDescription));
+		if($objFormQuestion->FormQuestionTypeId == FormQuestionType::Address) {
+			print (", Street");
+			print (", City");
+			print (", State And Zip Code");
+		} else {
+			print ("," . EscapeCsv($objFormQuestion->ShortDescription));
+		}
 	}
 	if ($objSignupForm->CountFormProducts() > 0) {
 		print ",Total,Paid,Balance";
@@ -49,7 +55,6 @@
 						break;
 
 					case FormQuestionType::SpouseName:
-					case FormQuestionType::Address:
 					case FormQuestionType::Phone:
 					case FormQuestionType::Email:
 					case FormQuestionType::Gender:
@@ -60,6 +65,14 @@
 						print EscapeCsv($objAnswer->TextValue);
 						break;
 
+					case FormQuestionType::Address:
+						$addressArray = explode(',',$objAnswer->TextValue);
+						print EscapeCsv($addressArray[0]);
+						print ",";
+						print EscapeCsv($addressArray[1]);
+						print ",";
+						print EscapeCsv($addressArray[2]);
+						break;
 					case FormQuestionType::Number:
 					case FormQuestionType::Age:
 						print $objAnswer->IntegerValue;
