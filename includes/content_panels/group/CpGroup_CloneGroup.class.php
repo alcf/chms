@@ -35,6 +35,9 @@
 				$objCloneGroup->AddPerson(Person::Load($objGroupParticipation->PersonId), $objGroupParticipation->GroupRoleId);
 			}
 
+			Group::RefreshHierarchyDataForMinistry($objCloneGroup->MinistryId);
+			$this->objForm->pnlGroups_Refresh();
+			
 			// Go to new Group.
 			$this->ReturnTo('#' . $objCloneGroup->Id);
 		}
