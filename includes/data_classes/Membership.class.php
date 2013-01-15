@@ -108,6 +108,17 @@
 			return false;
 		}
 
+		public static function CountArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objOptionalClauses = null) {
+			// This will return an array of Membership objects
+			return Membership::QueryCount(
+			QQ::AndCondition(
+			QQ::GreaterOrEqual(QQN::Membership()->DateStart, $dttAfterDateStart),
+			QQ::LessOrEqual(QQN::Membership()->DateStart, $dttBeforeDateStart)
+			),
+			$objOptionalClauses
+			);
+		}
+		
 		public static function LoadArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objOptionalClauses = null) {
 			// This will return an array of Membership objects
 			return Membership::QueryArray(

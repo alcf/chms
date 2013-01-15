@@ -64,6 +64,10 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$this->dtxAfterValue->Text = QApplication::PathInfo(0);
 					
 			$this->dtgNewMembers = new QDataGrid($this);
+			$objPaginator = new QPaginator($this->dtgNewMembers);
+			$this->dtgNewMembers->Paginator = $objPaginator;
+			$this->dtgNewMembers->ItemsPerPage = 20;
+			
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Name', '<?= $_ITEM->Person->FullName; ?>', 'Width=270px'));
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Membership Start Date', '<?= $_ITEM->DateStart; ?>', 'Width=270px'));
 			$this->dtgNewMembers->AddColumn(new QDataGridColumn('Marital Status', '<?= $_FORM->RenderMaritalStatus($_ITEM) ?>', 'Width=270px'));
@@ -74,13 +78,20 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			
 			$dtAfterValue = new QDateTime($this->dtxAfterValue->Text);
 			$dtBeforeValue = new QDateTime($this->dtxBeforeValue->Text);
-			$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue );
+			$this->dtgNewMembers->SetDataBinder('dtgNewMembers_Bind');
+			$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue);
 			$this->iTotalCount = count($objMembershipArray);
-			$this->dtgNewMembers->DataSource = $objMembershipArray;
 			$this->CalculateMaritalAndAgeStatus($objMembershipArray);
 			$this->CalculateAttributeStatistics($objMembershipArray);
 		}
 		
+		protected function dtgNewMembers_Bind() {
+			$dtAfterValue = new QDateTime($this->dtxAfterValue->Text);
+			$dtBeforeValue = new QDateTime($this->dtxBeforeValue->Text);
+			$this->dtgNewMembers->TotalItemCount = Membership::CountArrayByStartDateRange($dtAfterValue,$dtBeforeValue);
+			$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue,$this->dtgNewMembers->LimitClause);
+			$this->dtgNewMembers->DataSource = $objMembershipArray;
+		}
 		protected function CalculateMaritalAndAgeStatus($objMembershipArray) {
 			$this->iMaritalStatus['Not Specified'] = 0;
 			$this->iMaritalStatus['Single'] = 0;
