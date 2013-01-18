@@ -35,7 +35,7 @@
 	$objMultiplePagePdf = new Zend_Pdf();
 	$objInvalidAddressPdf = new Zend_Pdf();
 	
-	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->HeadPerson->PrimaryZipCodeText));
+	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
 	QDataGen::DisplayForEachTaskStart('Generating Receipt for Household', Household::CountAll());
 	while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
 		QDataGen::DisplayForEachTaskNext('Generating Receipt for Household');
