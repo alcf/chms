@@ -15,7 +15,7 @@
 	$objFile = fopen($strFolder . '/contributors.csv', 'w');
 	fwrite($objFile, 'Salutation,MailingName,CompanyFacilityEtc,Address1,Address2,City,State,ZipCode' . "\r\n");
 
-	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->Id));
+	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
 	QDataGen::DisplayForEachTaskStart('Generating CSV Row(s) for Household', Household::CountAll());
 	while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
 		QDataGen::DisplayForEachTaskNext('Generating CSV Row(s) for Household');
