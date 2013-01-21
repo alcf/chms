@@ -29,7 +29,7 @@
 	$objStatisticPdf = new Zend_Pdf();
 	
 	$dtxAfterValue = new QDateTime("1/1/".$intYear);
-	$dtxBeforeValue = new QDateTime("12/30/". $intYear);
+	$dtxBeforeValue = new QDateTime("12/31/". $intYear);
 	
 	// Get the Data
 	$objContributionCursor = StewardshipContribution::QueryCursor(QQ::AndCondition(
