@@ -56,70 +56,75 @@
 	$objGiverList = array();
 	
 	while ($objContribution = StewardshipContribution::InstantiateCursor($objContributionCursor)) {
-		$iMonth = 0;
-		$fltTotalGiftAmount += $objContribution->TotalAmount;
-		$fltTotalGifts++;
-	
-		if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("1/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("2/1/".$intYear)))) {
-			$iMonth = 0;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("2/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("3/1/".$intYear)))) {
-			$iMonth = 1;
-		}else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("3/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("4/1/".$intYear)))) {
-			$iMonth = 2;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("4/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("5/1/".$intYear)))) {
-			$iMonth = 3;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("5/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("6/1/".$intYear)))) {
-			$iMonth = 4;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("6/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("7/1/".$intYear)))) {
-			$iMonth = 5;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("7/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("8/1/".$intYear)))) {
-			$iMonth = 6;
-		}else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("8/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("9/1/".$intYear)))) {
-			$iMonth = 7;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("9/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("10/1/".$intYear)))) {
-			$iMonth = 8;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("10/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("11/1/".$intYear)))) {
-			$iMonth = 9;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("11/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierThan(new QDateTime("12/1/".$intYear)))) {
-			$iMonth = 10;
-		} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("12/1/".$intYear))) &&
-		($objContribution->DateCredited->IsEarlierOrEqualTo(new QDateTime("12/31/".$intYear)))) {
-			$iMonth = 11;
+		$objContributionAmtArray = StewardshipContributionAmount::LoadArrayByStewardshipContributionId($objContribution->Id);
+		foreach($objContributionAmtArray as $objContributionAmt) {
+			$strAccountNumber = StewardshipFund::Load($objContributionAmt->StewardshipFundId)->AccountNumber;
+			if(($strAccountNumber == '7011.010') || (substr($strAccountNumber,0,1) == '4')) {
+				$iMonth = 0;
+				$fltTotalGiftAmount += $objContributionAmt->Amount; 
+				$fltTotalGifts++;
+			
+				if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("1/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("2/1/".$intYear)))) {
+					$iMonth = 0;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("2/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("3/1/".$intYear)))) {
+					$iMonth = 1;
+				}else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("3/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("4/1/".$intYear)))) {
+					$iMonth = 2;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("4/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("5/1/".$intYear)))) {
+					$iMonth = 3;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("5/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("6/1/".$intYear)))) {
+					$iMonth = 4;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("6/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("7/1/".$intYear)))) {
+					$iMonth = 5;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("7/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("8/1/".$intYear)))) {
+					$iMonth = 6;
+				}else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("8/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("9/1/".$intYear)))) {
+					$iMonth = 7;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("9/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("10/1/".$intYear)))) {
+					$iMonth = 8;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("10/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("11/1/".$intYear)))) {
+					$iMonth = 9;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("11/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierThan(new QDateTime("12/1/".$intYear)))) {
+					$iMonth = 10;
+				} else if (($objContribution->DateCredited->IsLaterOrEqualTo(new QDateTime("12/1/".$intYear))) &&
+				($objContribution->DateCredited->IsEarlierOrEqualTo(new QDateTime("12/31/".$intYear)))) {
+					$iMonth = 11;
+				}
+			
+				// Increment Monthly Values
+				$objMonthlyTotal[$iMonth] += $objContributionAmt->Amount;
+				if ($objContributionAmt->Amount > 1000)
+				$objOver1000[$iMonth]++;
+				if ($objContributionAmt->Amount > 10000)
+				$objOver10000[$iMonth]++;
+			
+				$objMonthlyCount[$iMonth]++;
+				
+				// Calculate number of givers (as opposed to gifts)
+				if (!in_array($objContribution->PersonId,$objGiverList)) {
+					$objGiverList[] = $objContribution->PersonId;
+				}
+				if (!in_array($objContribution->PersonId,$objGiverCount[$iMonth])) {
+					$objGiverCount[$iMonth][] = $objContribution->PersonId;
+				}
+				
+				if(StewardshipContribution::CountByPersonId($objContribution->PersonId) <= 1) {
+					$fltTotalAdditionalUniqueGivers++;
+					$objUniqueGiver[$iMonth]++;
+				}
+			}
 		}
-	
-		// Increment Monthly Values
-		$objMonthlyTotal[$iMonth] += $objContribution->TotalAmount;
-		if ($objContribution->TotalAmount > 1000)
-		$objOver1000[$iMonth]++;
-		if ($objContribution->TotalAmount > 10000)
-		$objOver10000[$iMonth]++;
-	
-		$objMonthlyCount[$iMonth]++;
-		
-		// Calculate number of givers (as opposed to gifts)
-		if (!in_array($objContribution->PersonId,$objGiverList)) {
-			$objGiverList[] = $objContribution->PersonId;
-		}
-		if (!in_array($objContribution->PersonId,$objGiverCount[$iMonth])) {
-			$objGiverCount[$iMonth][] = $objContribution->PersonId;
-		}
-		
-		if(StewardshipContribution::CountByPersonId($objContribution->PersonId) <= 1) {
-			$fltTotalAdditionalUniqueGivers++;
-			$objUniqueGiver[$iMonth]++;
-		}
-		
 	}
 	$fltTotalGiftsOver1000 = array_sum($objOver1000);
 	$fltTotalGiftsOver10000 = array_sum($objOver10000);
