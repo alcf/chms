@@ -47,16 +47,24 @@
 			$objArray = array();
 
 			foreach ($objReportArray as $objLineItem) {
-				$this->fltTotal += $objLineItem[1];
-				$objArray[$objLineItem[0]] = array($objLineItem[0], $objLineItem[1], null);
+				$objFund = StewardshipFund::Load($objLineItem[0]);
+				if(($objFund->AccountNumber == '7011.010') ||
+					(substr($objFund->AccountNumber,0,1) == '4')) {
+					$this->fltTotal += $objLineItem[1];
+					$objArray[$objLineItem[0]] = array($objLineItem[0], $objLineItem[1], null);
+				}
 			}
 
 			foreach ($objReportYtdArray as $objLineItem) {
-				$this->fltTotalYtd += $objLineItem[1];
-				if (array_key_exists($objLineItem[0], $objArray))
-					$objArray[$objLineItem[0]][2] = $objLineItem[1];
-				else
-					$objArray[$objLineItem[0]] = array($objLineItem[0], null, $objLineItem[1]);
+				$objFund = StewardshipFund::Load($objLineItem[0]);
+				if(($objFund->AccountNumber == '7011.010') ||
+				(substr($objFund->AccountNumber,0,1) == '4')) {
+					$this->fltTotalYtd += $objLineItem[1];
+					if (array_key_exists($objLineItem[0], $objArray))
+						$objArray[$objLineItem[0]][2] = $objLineItem[1];
+					else
+						$objArray[$objLineItem[0]] = array($objLineItem[0], null, $objLineItem[1]);
+				}
 			}
 
 			// Bind the data
