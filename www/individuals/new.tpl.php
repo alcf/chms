@@ -101,6 +101,12 @@
 	<div class="cleaner">&nbsp;</div>
 </div>
 </div>
+<h3>Contact Preferences</h3>
+<div class="section">
+<?php $this->lstCanMail->RenderWithName(); ?>
+<?php $this->lstCanEmail->RenderWithName(); ?>
+<?php $this->lstCanPhone->RenderWithName(); ?>
+</div>
 
 <h3>Attribute Information</h3>
 <div class="section">

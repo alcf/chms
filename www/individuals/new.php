@@ -20,6 +20,10 @@
 		protected $lstPersonMobileProvider;
 		protected $txtPersonWorkPhone;
 		protected $txtPersonEmail;
+		
+		protected $lstCanMail;
+		protected $lstCanEmail;
+		protected $lstCanPhone;
 
 		protected $txtSpouseFirstName;
 		protected $txtSpouseMiddleName;
@@ -135,6 +139,21 @@
 
 			$this->txtPersonEmail = new QEmailTextBox($this);
 			$this->txtPersonEmail->Name = 'Email Address';
+			
+			$this->lstCanMail = new QListBox($this);
+			$this->lstCanMail->Name = 'Okay to Mail';
+			$this->lstCanMail->AddItem('Yes', true, $this->mctPerson->Person->CanMailFlag);
+			$this->lstCanMail->AddItem('No', false, !$this->mctPerson->Person->CanMailFlag);
+			
+			$this->lstCanEmail = new QListBox($this);
+			$this->lstCanEmail->Name = 'Okay to Email';
+			$this->lstCanEmail->AddItem('Yes', true, $this->mctPerson->Person->CanEmailFlag);
+			$this->lstCanEmail->AddItem('No', false, !$this->mctPerson->Person->CanEmailFlag);
+			
+			$this->lstCanPhone = new QListBox($this);
+			$this->lstCanPhone->Name = 'Okay to Phone';
+			$this->lstCanPhone->AddItem('Yes', true, $this->mctPerson->Person->CanPhoneFlag);
+			$this->lstCanPhone->AddItem('No', false, !$this->mctPerson->Person->CanPhoneFlag);
 		}
 
 		protected function CreateControlsForSpouse() {
@@ -334,7 +353,7 @@
 			$this->SaveMembership();
 			$this->SaveMarriage();
 			$this->SaveAttribute();
-
+			$this->AddToChurchEmailList();
 			$this->mctPerson->Person->RefreshPrimaryContactInfo(true);
 			if ($this->mctSpouse->Person->Id) $this->mctSpouse->Person->RefreshPrimaryContactInfo(true);
 			if ($objHousehold = Household::LoadByHeadPersonId($this->mctPerson->Person->Id)) $objHousehold->RefreshMembers();
@@ -449,6 +468,11 @@
 			$this->mctPerson->Person->MembershipStatusTypeId = MembershipStatusType::NonMember;
 			$this->mctPerson->Person->MaritalStatusTypeId = MaritalStatusType::NotSpecified;
 			$this->mctPerson->Person->DeceasedFlag = false;
+			
+			$this->mctPerson->Person->CanEmailFlag = $this->lstCanEmail->SelectedValue;
+			$this->mctPerson->Person->CanPhoneFlag = $this->lstCanPhone->SelectedValue;
+			$this->mctPerson->Person->CanMailFlag = $this->lstCanMail->SelectedValue;
+						
 			$this->mctPerson->SavePerson();
 			$this->mctPerson->Person->RefreshNameItemAssociations();
 
@@ -591,6 +615,27 @@
 			}
 		}
 
+		protected function AddToChurchEmailList() {
+			if($this->mctPerson->Person->CanEmailFlag) {
+				// First create a CommunicationListEntry for the person
+				$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->txtPersonEmail->Text);
+
+				// Then add person to the church newsletter list
+				$objList = CommunicationList::LoadByToken('allchurch_nl'); // NOTE: this is the hard coded token of the congregational newsletter.
+				if ($objList){
+					if(!$objList->IsPersonAssociated($this->mctPerson->Person)) {
+						if ($objCommunicationListEntry) {
+							if(!$objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
+								// unassociate the communications entry if it exists because we'll associate the person directly instead.
+								$objList->UnassociateCommunicationListEntry($objCommunicationListEntry); 
+							}
+						}
+						$objList->AssociatePerson($this->mctPerson->Person);
+					}
+				}
+			}
+		}
+		
 		protected function btnCancel_Click() {
 			$this->RedirectBack(false);
 		}
@@ -612,22 +657,23 @@
 			// New.php should take the StackId as the first PathInfo
 			// PathInfo(1) should be either "new", "check", or the Id of the Contribution
 			// PathInfo(2) should be the check hash (if applicable)
-			
-			if ($objStack = StewardshipStack::Load(QApplication::PathInfo(0))) {
-				switch (strtolower(trim(QApplication::PathInfo(1)))) {
-					case 'new':
-						QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/new/0/%s',
-							$objStack->StewardshipBatchId, $objStack->StackNumber, ($blnSave ? $this->mctPerson->Person->Id : null)));
-						break;
-					case 'check':
-						QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/0/%s/%s',
-							$objStack->StewardshipBatchId, $objStack->StackNumber, QApplication::PathInfo(2), ($blnSave ? $this->mctPerson->Person->Id : null)));
-						break;
-					default:
-						QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/%s/0/%s',
-							$objStack->StewardshipBatchId, $objStack->StackNumber, QApplication::PathInfo(1), ($blnSave ? $this->mctPerson->Person->Id : null)));
-						break;
-				}
+			if ((null != QApplication::PathInfo(0))&& (null != QApplication::PathInfo(1))) {
+				if ($objStack = StewardshipStack::Load(QApplication::PathInfo(0))) {
+					switch (strtolower(trim(QApplication::PathInfo(1)))) {
+						case 'new':
+							QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/new/0/%s',
+								$objStack->StewardshipBatchId, $objStack->StackNumber, ($blnSave ? $this->mctPerson->Person->Id : null)));
+							break;
+						case 'check':
+							QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/0/%s/%s',
+								$objStack->StewardshipBatchId, $objStack->StackNumber, QApplication::PathInfo(2), ($blnSave ? $this->mctPerson->Person->Id : null)));
+							break;
+						default:
+							QApplication::Redirect(sprintf('/stewardship/batch.php/%s#%s/edit_contribution/%s/0/%s',
+								$objStack->StewardshipBatchId, $objStack->StackNumber, QApplication::PathInfo(1), ($blnSave ? $this->mctPerson->Person->Id : null)));
+							break;
+					}
+				} 
 			} else if ($blnSave) {
 				QApplication::Redirect($this->mctPerson->Person->LinkUrl);
 			} else {

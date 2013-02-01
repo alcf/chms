@@ -46,6 +46,36 @@
 		
 		protected function btnUnsubscribe_Click() {
 			$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->txtEmail->Text);
+			$objEmailArray = Email::LoadArrayByAddress($this->txtEmail->Text);
+			foreach($objEmailArray as $objEmail) {
+				$objPerson = Person::LoadByPrimaryEmailId($objEmail->Id);
+				if($objPerson != null) {
+					$strUnsubscribedList = '';
+					$success = false;
+					foreach ($this->chkBtnListArray as $objItem) {
+						if ($objItem->Checked) {
+							$this->objList = CommunicationList::LoadByToken($objItem->Name);
+							if ($this->objList){
+								$bFound = false;
+								if($this->objList->IsPersonAssociated($objPerson)) {
+									$this->objList->UnassociatePerson($objPerson);
+									$strUnsubscribedList .= $objItem->Text .',';
+									$success = true;
+									$bFound = true;
+								}
+								if(!$bFound) {
+									$this->lblMessage->Text = '(Person Entry) You cannot Unsubscribe because you are not subscribed to the '.$objItem->Text.' Mailing List.';
+									$this->lblMessage->Visible = true;
+								}
+							}
+						}
+					}
+					if ($success) {
+						$strUnsubscribedList = substr($strUnsubscribedList,0,strlen($strUnsubscribedList)-1);
+						QApplication::Redirect('/unsubscribe/success.php/'.urlencode($strUnsubscribedList));
+					}
+				}
+			}
 			if ($objCommunicationListEntry) {
 				$strUnsubscribedList = '';
 				$success = false;
@@ -53,12 +83,17 @@
 					if ($objItem->Checked) {
 						$this->objList = CommunicationList::LoadByToken($objItem->Name);
 						if ($this->objList){
-							if($this->objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
-								$this->objList->UnassociateCommunicationListEntry($objCommunicationListEntry);
-								$strUnsubscribedList .= $objItem->Text .',';
-								$success = true;
-							} else {
-								$this->lblMessage->Text = 'You cannot Unsubscribe because you are not subscribed to the '.$objItem->Text.' Mailing List.';	
+							$bFound = false;
+							if($objCommunicationListEntry != null){
+								if($this->objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
+									$this->objList->UnassociateCommunicationListEntry($objCommunicationListEntry);
+									$strUnsubscribedList .= $objItem->Text .',';
+									$success = true;
+									$bFound = true;
+								} 
+							}	
+							if(!$bFound) {
+								$this->lblMessage->Text = '(CommunicationsEntry) You cannot Unsubscribe because you are not subscribed to the '.$objItem->Text.' Mailing List.';
 								$this->lblMessage->Visible = true;
 							}
 						}
@@ -68,10 +103,7 @@
 					$strUnsubscribedList = substr($strUnsubscribedList,0,strlen($strUnsubscribedList)-1);
 					QApplication::Redirect('/unsubscribe/success.php/'.urlencode($strUnsubscribedList));
 				}
-			} else {
-				$this->lblMessage->Text = 'You cannot Unsubscribe because you are not subscribed to any email lists.';
-				$this->lblMessage->Visible = true;
-			}
+			}						
 		}
 	}
 	

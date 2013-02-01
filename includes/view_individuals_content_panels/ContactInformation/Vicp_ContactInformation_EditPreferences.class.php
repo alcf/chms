@@ -62,6 +62,24 @@
 			$this->objPerson->CanPhoneFlag = $this->lstCanPhone->SelectedValue;
 
 			$this->objPerson->Save();
+			
+			// Check to see if we need to remove person from email.
+			if(!$this->objPerson->CanEmailFlag) {
+				$objList = CommunicationList::LoadByToken('allchurch_nl'); // NOTE: this is the hard coded token of the congregational newsletter.
+				if ($objList){
+					// Check communications list for an existing communications entry
+					$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->objPerson->PrimaryEmail->Address);
+					if ($objCommunicationListEntry) {
+						if($objList->IsCommunicationListEntryAssociated($objCommunicationListEntry)) {
+							$objList->UnassociateCommunicationListEntry($objCommunicationListEntry);
+						}
+					}
+					//Check communications list for existing person entry
+					if($objList->IsPersonAssociated($this->objPerson)) {				
+						$objList->UnassociatePerson($this->objPerson);
+					}
+				}
+			}
 			$this->objPerson->RefreshPrimaryContactInfo();
 			QApplication::ExecuteJavaScript('document.location="#contact";');
 		}
