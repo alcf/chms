@@ -4,6 +4,7 @@
 		public $dtgEvents;
 		public $dtgCommunicationLists;
 		public $pxyUnsubscribe;
+		public $chkViewAll;
 
 		protected function SetupPanel() {
 			$this->dtgGroups = new QDataGrid($this);
@@ -13,6 +14,10 @@
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderGroupRoles($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=125px'));
 			$this->dtgGroups->AddColumn(new QDataGridColumn('Date(s) of Involvement', '<?= $_CONTROL->ParentControl->RenderGroupDates($_ITEM); ?>', 'HtmlEntities=false', 'VerticalAlign=' . QVerticalAlign::Top, 'Width=155px'));
 
+			$this->chkViewAll = new QCheckBox($this);
+			$this->chkViewAll->Text = 'View "Inactive" Groups as well';
+			$this->chkViewAll->AddAction(new QClickEvent(), new QAjaxControlAction($this,'chkViewAll_Click'));
+			
 			$this->dtgEvents = new SignupEntryDataGrid($this);
 			$this->dtgEvents->MetaAddColumn(QQN::SignupEntry()->SignupForm->Ministry->Name, 'Width=150px', 'Name=Ministry');
 			$this->dtgEvents->MetaAddColumn(QQN::SignupEntry()->SignupForm->Name, 'Width=320px', 'Name=Event Name', 'Html=<?= $_CONTROL->ParentControl->RenderEventName($_ITEM); ?>', 'HtmlEntities=false');
@@ -56,12 +61,18 @@
 		}
 
 		public function dtgGroups_Bind() {
-			$objClause = QQ::AndCondition(
+			if($this->chkViewAll->Checked) {
+				$objClause = QQ::AndCondition(
+				QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id),
+				QQ::In(QQN::Group()->GroupTypeId, array(GroupType::RegularGroup, GroupType::GrowthGroup))
+				);
+			} else {
+				$objClause = QQ::AndCondition(
 				QQ::Equal(QQN::Group()->GroupParticipation->PersonId, $this->objPerson->Id),
 				QQ::IsNull(QQN::Group()->GroupParticipation->DateEnd),
 				QQ::In(QQN::Group()->GroupTypeId, array(GroupType::RegularGroup, GroupType::GrowthGroup))
-			);
-
+				);
+			}
 			// Admins can view anything
 			if (QApplication::$Login->RoleTypeId == RoleType::ChMSAdministrator) {
 				
@@ -81,6 +92,10 @@
 			$this->dtgGroups->DataSource = Group::QueryArray($objClause, QQ::Distinct());
 		}
 
+		public function chkViewAll_Click() {
+			$this->dtgGroups->Refresh();
+		}
+		
 		protected $objParticipationArray;
 
 		public function RenderEventName(SignupEntry $objSignupEntry) {

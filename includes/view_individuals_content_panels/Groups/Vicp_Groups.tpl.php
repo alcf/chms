@@ -4,6 +4,7 @@
 	<p>The following are groups and ministries that this person is <strong>explicitly</strong> a part of.
 	<br/>Smart Groups and Group Categories will not be listed here.</p>
 <?php $_CONTROL->dtgGroups->Render(); ?>
+<div class="buttonBar buttonBarLeft" style="color: #333; margin-top:20px;"><?php $_CONTROL->chkViewAll->Render(); ?></div>
 </div>
 <br/>
 

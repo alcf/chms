@@ -32,6 +32,8 @@
 </h3>
 <div class="section">
 	<?php $_CONTROL->dtgMembers->Render(); ?>
+	
+	<div class="buttonBar buttonBarLeft" style="color: #333; margin-top:20px;"><?php $_CONTROL->chkViewAll->Render(); ?></div>	
 </div>
 
 <?php if ($_CONTROL->dtgEmailMessageRoute) { ?>
