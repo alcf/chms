@@ -165,7 +165,7 @@
 
 			if (array_key_exists('HTTP_HOST', $_SERVER) && ($_SERVER['HTTP_HOST'] == 'my.alcf.net')) {
 				define('ERROR_FRIENDLY_PAGE_PATH', __DOCROOT__ . '/_my/error_page.html');
-				define('ERROR_FRIENDLY_AJAX_MESSAGE', 'Oops!  An error has occurred.\r\n\r\nThe error was logged, and we will take a look into this right away.  If you have any questions, please contact Melissa Look at melissa.look@alcf.net or call 650-625-1500.');
+				define('ERROR_FRIENDLY_AJAX_MESSAGE', 'Oops!  An error has occurred.\r\n\r\nThe error was logged, and we will take a look into this right away.  If you have any questions, please contact Gareth Seeto at gareth.seeto@alcf.net or call 650-625-1500.');
 			}
 			break;
 	}
