@@ -25,6 +25,12 @@
 			return new QQNodeAttributeValue('attribute_value', null, null);
 		}
 		/**
+		 * @return QQNodeAvailabilityStatus
+		 */
+		static public function AvailabilityStatus() {
+			return new QQNodeAvailabilityStatus('availability_status', null, null);
+		}
+		/**
 		 * @return QQNodeCheckingAccountLookup
 		 */
 		static public function CheckingAccountLookup() {
@@ -191,6 +197,12 @@
 		 */
 		static public function GroupParticipation() {
 			return new QQNodeGroupParticipation('group_participation', null, null);
+		}
+		/**
+		 * @return QQNodeGroupRegistrations
+		 */
+		static public function GroupRegistrations() {
+			return new QQNodeGroupRegistrations('group_registrations', null, null);
 		}
 		/**
 		 * @return QQNodeGroupRole
@@ -455,6 +467,12 @@
 		 */
 		static public function SmsMessage() {
 			return new QQNodeSmsMessage('sms_message', null, null);
+		}
+		/**
+		 * @return QQNodeSourceList
+		 */
+		static public function SourceList() {
+			return new QQNodeSourceList('source_list', null, null);
 		}
 		/**
 		 * @return QQNodeStewardshipBatch

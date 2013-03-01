@@ -6,6 +6,7 @@
 		public $lblMeeting;
 		public $lblAddress;
 		public $lblStructure;
+		public $lblStatus;
 		public $chkViewAll;
 
 		protected function SetupPanel() {
@@ -65,6 +66,12 @@
 			$this->lblStructure->Name = 'Structure';
 			$this->lblStructure->Text = $this->objGroup->GrowthGroup->StructuresHtml;
 			$this->lblStructure->HtmlEntities = false;
+			
+			$this->lblStatus = new QLabel($this);
+			$this->lblStatus->Name = 'Availability Status';
+			$this->lblStatus->Text = AvailabilityStatus::Load($this->objGroup->Status)? AvailabilityStatus::Load($this->objGroup->Status)->Name : 'None';
+			$this->lblStatus->HtmlEntities = false;
+			
 
 			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 			$this->SetupSmsControls();

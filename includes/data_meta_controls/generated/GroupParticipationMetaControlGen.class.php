@@ -28,6 +28,10 @@
 	 * property-read QLabel $DateStartLabel
 	 * property QDateTimePicker $DateEndControl
 	 * property-read QLabel $DateEndLabel
+	 * property QIntegerTextBox $StatusControl
+	 * property-read QLabel $StatusLabel
+	 * property QDateTimePicker $DateFollowupControl
+	 * property-read QLabel $DateFollowupLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -95,6 +99,18 @@
          */
 		protected $calDateEnd;
 
+        /**
+         * @var QIntegerTextBox txtStatus;
+         * @access protected
+         */
+		protected $txtStatus;
+
+        /**
+         * @var QDateTimePicker calDateFollowup;
+         * @access protected
+         */
+		protected $calDateFollowup;
+
 
 		// Controls that allow the viewing of GroupParticipation's individual data fields
         /**
@@ -126,6 +142,18 @@
          * @access protected
          */
 		protected $lblDateEnd;
+
+        /**
+         * @var QLabel lblStatus
+         * @access protected
+         */
+		protected $lblStatus;
+
+        /**
+         * @var QLabel lblDateFollowup
+         * @access protected
+         */
+		protected $lblDateFollowup;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -426,6 +454,61 @@
 
 		protected $strDateEndDateTimeFormat;
 
+		/**
+		 * Create and setup QIntegerTextBox txtStatus
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtStatus_Create($strControlId = null) {
+			$this->txtStatus = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtStatus->Name = QApplication::Translate('Status');
+			$this->txtStatus->Text = $this->objGroupParticipation->Status;
+			return $this->txtStatus;
+		}
+
+		/**
+		 * Create and setup QLabel lblStatus
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblStatus_Create($strControlId = null, $strFormat = null) {
+			$this->lblStatus = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStatus->Name = QApplication::Translate('Status');
+			$this->lblStatus->Text = $this->objGroupParticipation->Status;
+			$this->lblStatus->Format = $strFormat;
+			return $this->lblStatus;
+		}
+
+		/**
+		 * Create and setup QDateTimePicker calDateFollowup
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateFollowup_Create($strControlId = null) {
+			$this->calDateFollowup = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateFollowup->Name = QApplication::Translate('Date Followup');
+			$this->calDateFollowup->DateTime = $this->objGroupParticipation->DateFollowup;
+			$this->calDateFollowup->DateTimePickerType = QDateTimePickerType::Date;
+			return $this->calDateFollowup;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateFollowup
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateFollowup_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateFollowup = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateFollowup->Name = QApplication::Translate('Date Followup');
+			$this->strDateFollowupDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateFollowup->Text = sprintf($this->objGroupParticipation->DateFollowup) ? $this->objGroupParticipation->DateFollowup->__toString($this->strDateFollowupDateTimeFormat) : null;
+			return $this->lblDateFollowup;
+		}
+
+		protected $strDateFollowupDateTimeFormat;
+
 
 
 		/**
@@ -486,6 +569,12 @@
 			if ($this->calDateEnd) $this->calDateEnd->DateTime = $this->objGroupParticipation->DateEnd;
 			if ($this->lblDateEnd) $this->lblDateEnd->Text = sprintf($this->objGroupParticipation->DateEnd) ? $this->objGroupParticipation->__toString($this->strDateEndDateTimeFormat) : null;
 
+			if ($this->txtStatus) $this->txtStatus->Text = $this->objGroupParticipation->Status;
+			if ($this->lblStatus) $this->lblStatus->Text = $this->objGroupParticipation->Status;
+
+			if ($this->calDateFollowup) $this->calDateFollowup->DateTime = $this->objGroupParticipation->DateFollowup;
+			if ($this->lblDateFollowup) $this->lblDateFollowup->Text = sprintf($this->objGroupParticipation->DateFollowup) ? $this->objGroupParticipation->__toString($this->strDateFollowupDateTimeFormat) : null;
+
 		}
 
 
@@ -514,6 +603,8 @@
 				if ($this->lstGroupRole) $this->objGroupParticipation->GroupRoleId = $this->lstGroupRole->SelectedValue;
 				if ($this->calDateStart) $this->objGroupParticipation->DateStart = $this->calDateStart->DateTime;
 				if ($this->calDateEnd) $this->objGroupParticipation->DateEnd = $this->calDateEnd->DateTime;
+				if ($this->txtStatus) $this->objGroupParticipation->Status = $this->txtStatus->Text;
+				if ($this->calDateFollowup) $this->objGroupParticipation->DateFollowup = $this->calDateFollowup->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -592,6 +683,18 @@
 				case 'DateEndLabel':
 					if (!$this->lblDateEnd) return $this->lblDateEnd_Create();
 					return $this->lblDateEnd;
+				case 'StatusControl':
+					if (!$this->txtStatus) return $this->txtStatus_Create();
+					return $this->txtStatus;
+				case 'StatusLabel':
+					if (!$this->lblStatus) return $this->lblStatus_Create();
+					return $this->lblStatus;
+				case 'DateFollowupControl':
+					if (!$this->calDateFollowup) return $this->calDateFollowup_Create();
+					return $this->calDateFollowup;
+				case 'DateFollowupLabel':
+					if (!$this->lblDateFollowup) return $this->lblDateFollowup_Create();
+					return $this->lblDateFollowup;
 				default:
 					try {
 						return parent::__get($strName);
@@ -626,6 +729,10 @@
 						return ($this->calDateStart = QType::Cast($mixValue, 'QControl'));
 					case 'DateEndControl':
 						return ($this->calDateEnd = QType::Cast($mixValue, 'QControl'));
+					case 'StatusControl':
+						return ($this->txtStatus = QType::Cast($mixValue, 'QControl'));
+					case 'DateFollowupControl':
+						return ($this->calDateFollowup = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

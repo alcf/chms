@@ -7,6 +7,7 @@
 
 	    <div style="float:right; position:relative; top:-10px;">
 	    <?php $this->btnGroupReport->Render(); ?>
+	    <?php $this->btnGroupRegistrations->Render(); ?>
 	    </div>
 		<br>
 		<div class="section">

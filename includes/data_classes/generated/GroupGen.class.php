@@ -27,8 +27,10 @@
 	 * @property integer $EmailBroadcastTypeId the value for intEmailBroadcastTypeId 
 	 * @property string $Token the value for strToken (Unique)
 	 * @property boolean $ActiveFlag the value for blnActiveFlag 
+	 * @property integer $Status the value for intStatus 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property Group $ParentGroup the value for the Group object referenced by intParentGroupId 
+	 * @property AvailabilityStatus $StatusObject the value for the AvailabilityStatus object referenced by intStatus 
 	 * @property GroupCategory $GroupCategory the value for the GroupCategory object that uniquely references this Group
 	 * @property GrowthGroup $GrowthGroup the value for the GrowthGroup object that uniquely references this Group
 	 * @property SmartGroup $SmartGroup the value for the SmartGroup object that uniquely references this Group
@@ -146,6 +148,14 @@
 		 */
 		protected $blnActiveFlag;
 		const ActiveFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group.status
+		 * @var integer intStatus
+		 */
+		protected $intStatus;
+		const StatusDefault = null;
 
 
 		/**
@@ -269,6 +279,16 @@
 		 * @var Group objParentGroup
 		 */
 		protected $objParentGroup;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column group.status.
+		 *
+		 * NOTE: Always use the StatusObject property getter to correctly retrieve this AvailabilityStatus object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var AvailabilityStatus objStatusObject
+		 */
+		protected $objStatusObject;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -646,6 +666,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'email_broadcast_type_id', $strAliasPrefix . 'email_broadcast_type_id');
 			$objBuilder->AddSelectItem($strTableName, 'token', $strAliasPrefix . 'token');
 			$objBuilder->AddSelectItem($strTableName, 'active_flag', $strAliasPrefix . 'active_flag');
+			$objBuilder->AddSelectItem($strTableName, 'status', $strAliasPrefix . 'status');
 		}
 
 
@@ -789,6 +810,8 @@
 			$objToReturn->strToken = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active_flag'] : $strAliasPrefix . 'active_flag';
 			$objToReturn->blnActiveFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'status', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'status'] : $strAliasPrefix . 'status';
+			$objToReturn->intStatus = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -813,6 +836,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objParentGroup = Group::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parent_group_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for StatusObject Early Binding
+			$strAlias = $strAliasPrefix . 'status__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objStatusObject = AvailabilityStatus::InstantiateDbRow($objDbRow, $strAliasPrefix . 'status__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 			// Check for GroupCategory Unique ReverseReference Binding
@@ -1135,6 +1164,40 @@
 			, $objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load an array of Group objects,
+		 * by Status Index(es)
+		 * @param integer $intStatus
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Group[]
+		*/
+		public static function LoadArrayByStatus($intStatus, $objOptionalClauses = null) {
+			// Call Group::QueryArray to perform the LoadArrayByStatus query
+			try {
+				return Group::QueryArray(
+					QQ::Equal(QQN::Group()->Status, $intStatus),
+					$objOptionalClauses
+					);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Groups
+		 * by Status Index(es)
+		 * @param integer $intStatus
+		 * @return int
+		*/
+		public static function CountByStatus($intStatus, $objOptionalClauses = null) {
+			// Call Group::QueryCount to perform the CountByStatus query
+			return Group::QueryCount(
+				QQ::Equal(QQN::Group()->Status, $intStatus)
+			, $objOptionalClauses
+			);
+		}
 
 
 
@@ -1176,7 +1239,8 @@
 							`confidential_flag`,
 							`email_broadcast_type_id`,
 							`token`,
-							`active_flag`
+							`active_flag`,
+							`status`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intGroupTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
@@ -1188,7 +1252,8 @@
 							' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 							' . $objDatabase->SqlVariable($this->strToken) . ',
-							' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
+							' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+							' . $objDatabase->SqlVariable($this->intStatus) . '
 						)
 					');
 
@@ -1218,7 +1283,8 @@
 							`confidential_flag` = ' . $objDatabase->SqlVariable($this->blnConfidentialFlag) . ',
 							`email_broadcast_type_id` = ' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 							`token` = ' . $objDatabase->SqlVariable($this->strToken) . ',
-							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . '
+							`active_flag` = ' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+							`status` = ' . $objDatabase->SqlVariable($this->intStatus) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1401,6 +1467,7 @@
 			$this->EmailBroadcastTypeId = $objReloaded->EmailBroadcastTypeId;
 			$this->strToken = $objReloaded->strToken;
 			$this->blnActiveFlag = $objReloaded->blnActiveFlag;
+			$this->Status = $objReloaded->Status;
 		}
 
 		/**
@@ -1425,6 +1492,7 @@
 					`email_broadcast_type_id`,
 					`token`,
 					`active_flag`,
+					`status`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1441,6 +1509,7 @@
 					' . $objDatabase->SqlVariable($this->intEmailBroadcastTypeId) . ',
 					' . $objDatabase->SqlVariable($this->strToken) . ',
 					' . $objDatabase->SqlVariable($this->blnActiveFlag) . ',
+					' . $objDatabase->SqlVariable($this->intStatus) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1551,6 +1620,11 @@
 					// @return boolean
 					return $this->blnActiveFlag;
 
+				case 'Status':
+					// Gets the value for intStatus 
+					// @return integer
+					return $this->intStatus;
+
 
 				///////////////////
 				// Member Objects
@@ -1574,6 +1648,18 @@
 						if ((!$this->objParentGroup) && (!is_null($this->intParentGroupId)))
 							$this->objParentGroup = Group::Load($this->intParentGroupId);
 						return $this->objParentGroup;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'StatusObject':
+					// Gets the value for the AvailabilityStatus object referenced by intStatus 
+					// @return AvailabilityStatus
+					try {
+						if ((!$this->objStatusObject) && (!is_null($this->intStatus)))
+							$this->objStatusObject = AvailabilityStatus::Load($this->intStatus);
+						return $this->objStatusObject;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1849,6 +1935,18 @@
 						throw $objExc;
 					}
 
+				case 'Status':
+					// Sets the value for intStatus 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objStatusObject = null;
+						return ($this->intStatus = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1907,6 +2005,36 @@
 						// Update Local Member Variables
 						$this->objParentGroup = $mixValue;
 						$this->intParentGroupId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'StatusObject':
+					// Sets the value for the AvailabilityStatus object referenced by intStatus 
+					// @param AvailabilityStatus $mixValue
+					// @return AvailabilityStatus
+					if (is_null($mixValue)) {
+						$this->intStatus = null;
+						$this->objStatusObject = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a AvailabilityStatus object
+						try {
+							$mixValue = QType::Cast($mixValue, 'AvailabilityStatus');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED AvailabilityStatus object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved StatusObject for this Group');
+
+						// Update Local Member Variables
+						$this->objStatusObject = $mixValue;
+						$this->intStatus = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -2983,6 +3111,7 @@
 			$strToReturn .= '<element name="EmailBroadcastTypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Token" type="xsd:string"/>';
 			$strToReturn .= '<element name="ActiveFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="StatusObject" type="xsd1:AvailabilityStatus"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2993,6 +3122,7 @@
 				$strComplexTypeArray['Group'] = Group::GetSoapComplexTypeXml();
 				Ministry::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Group::AlterSoapComplexTypeArray($strComplexTypeArray);
+				AvailabilityStatus::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -3033,6 +3163,9 @@
 				$objToReturn->strToken = $objSoapObject->Token;
 			if (property_exists($objSoapObject, 'ActiveFlag'))
 				$objToReturn->blnActiveFlag = $objSoapObject->ActiveFlag;
+			if ((property_exists($objSoapObject, 'StatusObject')) &&
+				($objSoapObject->StatusObject))
+				$objToReturn->StatusObject = AvailabilityStatus::GetObjectFromSoapObject($objSoapObject->StatusObject);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -3059,6 +3192,10 @@
 				$objObject->objParentGroup = Group::GetSoapObjectFromObject($objObject->objParentGroup, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intParentGroupId = null;
+			if ($objObject->objStatusObject)
+				$objObject->objStatusObject = AvailabilityStatus::GetSoapObjectFromObject($objObject->objStatusObject, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intStatus = null;
 			return $objObject;
 		}
 
@@ -3088,6 +3225,8 @@
 	 * @property-read QQNode $EmailBroadcastTypeId
 	 * @property-read QQNode $Token
 	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNode $Status
+	 * @property-read QQNodeAvailabilityStatus $StatusObject
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
 	 * @property-read QQReverseReferenceNodeGroupAuthorizedSender $GroupAuthorizedSender
@@ -3131,6 +3270,10 @@
 					return new QQNode('token', 'Token', 'string', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
+				case 'Status':
+					return new QQNode('status', 'Status', 'integer', $this);
+				case 'StatusObject':
+					return new QQNodeAvailabilityStatus('status', 'StatusObject', 'integer', $this);
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'group_id');
 				case 'ChildGroup':
@@ -3176,6 +3319,8 @@
 	 * @property-read QQNode $EmailBroadcastTypeId
 	 * @property-read QQNode $Token
 	 * @property-read QQNode $ActiveFlag
+	 * @property-read QQNode $Status
+	 * @property-read QQNodeAvailabilityStatus $StatusObject
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
 	 * @property-read QQReverseReferenceNodeGroup $ChildGroup
 	 * @property-read QQReverseReferenceNodeGroupAuthorizedSender $GroupAuthorizedSender
@@ -3220,6 +3365,10 @@
 					return new QQNode('token', 'Token', 'string', $this);
 				case 'ActiveFlag':
 					return new QQNode('active_flag', 'ActiveFlag', 'boolean', $this);
+				case 'Status':
+					return new QQNode('status', 'Status', 'integer', $this);
+				case 'StatusObject':
+					return new QQNodeAvailabilityStatus('status', 'StatusObject', 'integer', $this);
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'group_id');
 				case 'ChildGroup':

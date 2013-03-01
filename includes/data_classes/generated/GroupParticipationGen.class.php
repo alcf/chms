@@ -21,6 +21,8 @@
 	 * @property integer $GroupRoleId the value for intGroupRoleId 
 	 * @property QDateTime $DateStart the value for dttDateStart (Not Null)
 	 * @property QDateTime $DateEnd the value for dttDateEnd 
+	 * @property integer $Status the value for intStatus 
+	 * @property QDateTime $DateFollowup the value for dttDateFollowup 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property Group $Group the value for the Group object referenced by intGroupId (Not Null)
 	 * @property GroupRole $GroupRole the value for the GroupRole object referenced by intGroupRoleId 
@@ -78,6 +80,22 @@
 		 */
 		protected $dttDateEnd;
 		const DateEndDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group_participation.status
+		 * @var integer intStatus
+		 */
+		protected $intStatus;
+		const StatusDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group_participation.date_followup
+		 * @var QDateTime dttDateFollowup
+		 */
+		protected $dttDateFollowup;
+		const DateFollowupDefault = null;
 
 
 		/**
@@ -448,6 +466,8 @@
 			$objBuilder->AddSelectItem($strTableName, 'group_role_id', $strAliasPrefix . 'group_role_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_start', $strAliasPrefix . 'date_start');
 			$objBuilder->AddSelectItem($strTableName, 'date_end', $strAliasPrefix . 'date_end');
+			$objBuilder->AddSelectItem($strTableName, 'status', $strAliasPrefix . 'status');
+			$objBuilder->AddSelectItem($strTableName, 'date_followup', $strAliasPrefix . 'date_followup');
 		}
 
 
@@ -491,6 +511,10 @@
 			$objToReturn->dttDateStart = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_end', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_end'] : $strAliasPrefix . 'date_end';
 			$objToReturn->dttDateEnd = $objDbRow->GetColumn($strAliasName, 'Date');
+			$strAliasName = array_key_exists($strAliasPrefix . 'status', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'status'] : $strAliasPrefix . 'status';
+			$objToReturn->intStatus = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'date_followup', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_followup'] : $strAliasPrefix . 'date_followup';
+			$objToReturn->dttDateFollowup = $objDbRow->GetColumn($strAliasName, 'Date');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -820,6 +844,40 @@
 			, $objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load an array of GroupParticipation objects,
+		 * by DateFollowup Index(es)
+		 * @param QDateTime $dttDateFollowup
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupParticipation[]
+		*/
+		public static function LoadArrayByDateFollowup($dttDateFollowup, $objOptionalClauses = null) {
+			// Call GroupParticipation::QueryArray to perform the LoadArrayByDateFollowup query
+			try {
+				return GroupParticipation::QueryArray(
+					QQ::Equal(QQN::GroupParticipation()->DateFollowup, $dttDateFollowup),
+					$objOptionalClauses
+					);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count GroupParticipations
+		 * by DateFollowup Index(es)
+		 * @param QDateTime $dttDateFollowup
+		 * @return int
+		*/
+		public static function CountByDateFollowup($dttDateFollowup, $objOptionalClauses = null) {
+			// Call GroupParticipation::QueryCount to perform the CountByDateFollowup query
+			return GroupParticipation::QueryCount(
+				QQ::Equal(QQN::GroupParticipation()->DateFollowup, $dttDateFollowup)
+			, $objOptionalClauses
+			);
+		}
 
 
 
@@ -855,13 +913,17 @@
 							`group_id`,
 							`group_role_id`,
 							`date_start`,
-							`date_end`
+							`date_end`,
+							`status`,
+							`date_followup`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupId) . ',
 							' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							' . $objDatabase->SqlVariable($this->dttDateEnd) . '
+							' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+							' . $objDatabase->SqlVariable($this->intStatus) . ',
+							' . $objDatabase->SqlVariable($this->dttDateFollowup) . '
 						)
 					');
 
@@ -885,7 +947,9 @@
 							`group_id` = ' . $objDatabase->SqlVariable($this->intGroupId) . ',
 							`group_role_id` = ' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
 							`date_start` = ' . $objDatabase->SqlVariable($this->dttDateStart) . ',
-							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . '
+							`date_end` = ' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+							`status` = ' . $objDatabase->SqlVariable($this->intStatus) . ',
+							`date_followup` = ' . $objDatabase->SqlVariable($this->dttDateFollowup) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -975,6 +1039,8 @@
 			$this->GroupRoleId = $objReloaded->GroupRoleId;
 			$this->dttDateStart = $objReloaded->dttDateStart;
 			$this->dttDateEnd = $objReloaded->dttDateEnd;
+			$this->intStatus = $objReloaded->intStatus;
+			$this->dttDateFollowup = $objReloaded->dttDateFollowup;
 		}
 
 		/**
@@ -993,6 +1059,8 @@
 					`group_role_id`,
 					`date_start`,
 					`date_end`,
+					`status`,
+					`date_followup`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1003,6 +1071,8 @@
 					' . $objDatabase->SqlVariable($this->intGroupRoleId) . ',
 					' . $objDatabase->SqlVariable($this->dttDateStart) . ',
 					' . $objDatabase->SqlVariable($this->dttDateEnd) . ',
+					' . $objDatabase->SqlVariable($this->intStatus) . ',
+					' . $objDatabase->SqlVariable($this->dttDateFollowup) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1082,6 +1152,16 @@
 					// Gets the value for dttDateEnd 
 					// @return QDateTime
 					return $this->dttDateEnd;
+
+				case 'Status':
+					// Gets the value for intStatus 
+					// @return integer
+					return $this->intStatus;
+
+				case 'DateFollowup':
+					// Gets the value for dttDateFollowup 
+					// @return QDateTime
+					return $this->dttDateFollowup;
 
 
 				///////////////////
@@ -1209,6 +1289,28 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateEnd = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Status':
+					// Sets the value for intStatus 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intStatus = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DateFollowup':
+					// Sets the value for dttDateFollowup 
+					// @param QDateTime $mixValue
+					// @return QDateTime
+					try {
+						return ($this->dttDateFollowup = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1351,6 +1453,8 @@
 			$strToReturn .= '<element name="GroupRole" type="xsd1:GroupRole"/>';
 			$strToReturn .= '<element name="DateStart" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="DateEnd" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="Status" type="xsd:int"/>';
+			$strToReturn .= '<element name="DateFollowup" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1391,6 +1495,10 @@
 				$objToReturn->dttDateStart = new QDateTime($objSoapObject->DateStart);
 			if (property_exists($objSoapObject, 'DateEnd'))
 				$objToReturn->dttDateEnd = new QDateTime($objSoapObject->DateEnd);
+			if (property_exists($objSoapObject, 'Status'))
+				$objToReturn->intStatus = $objSoapObject->Status;
+			if (property_exists($objSoapObject, 'DateFollowup'))
+				$objToReturn->dttDateFollowup = new QDateTime($objSoapObject->DateFollowup);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1425,6 +1533,8 @@
 				$objObject->dttDateStart = $objObject->dttDateStart->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateEnd)
 				$objObject->dttDateEnd = $objObject->dttDateEnd->__toString(QDateTime::FormatSoap);
+			if ($objObject->dttDateFollowup)
+				$objObject->dttDateFollowup = $objObject->dttDateFollowup->__toString(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1449,6 +1559,8 @@
 	 * @property-read QQNodeGroupRole $GroupRole
 	 * @property-read QQNode $DateStart
 	 * @property-read QQNode $DateEnd
+	 * @property-read QQNode $Status
+	 * @property-read QQNode $DateFollowup
 	 */
 	class QQNodeGroupParticipation extends QQNode {
 		protected $strTableName = 'group_participation';
@@ -1474,6 +1586,10 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
+				case 'Status':
+					return new QQNode('status', 'Status', 'integer', $this);
+				case 'DateFollowup':
+					return new QQNode('date_followup', 'DateFollowup', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1498,6 +1614,8 @@
 	 * @property-read QQNodeGroupRole $GroupRole
 	 * @property-read QQNode $DateStart
 	 * @property-read QQNode $DateEnd
+	 * @property-read QQNode $Status
+	 * @property-read QQNode $DateFollowup
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeGroupParticipation extends QQReverseReferenceNode {
@@ -1524,6 +1642,10 @@
 					return new QQNode('date_start', 'DateStart', 'QDateTime', $this);
 				case 'DateEnd':
 					return new QQNode('date_end', 'DateEnd', 'QDateTime', $this);
+				case 'Status':
+					return new QQNode('status', 'Status', 'integer', $this);
+				case 'DateFollowup':
+					return new QQNode('date_followup', 'DateFollowup', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

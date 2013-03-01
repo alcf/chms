@@ -27,6 +27,13 @@
 		QApplicationBase::$ClassFile['attributevaluemetacontrol'] = __DATA_META_CONTROLS__ . '/AttributeValueMetaControl.class.php';
 		QApplicationBase::$ClassFile['attributevaluedatagrid'] = __DATA_META_CONTROLS__ . '/AttributeValueDataGrid.class.php';
 
+	// ClassPaths for the AvailabilityStatus class
+		QApplicationBase::$ClassFile['availabilitystatus'] = __DATA_CLASSES__ . '/AvailabilityStatus.class.php';
+		QApplicationBase::$ClassFile['qqnodeavailabilitystatus'] = __DATA_CLASSES__ . '/AvailabilityStatus.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeavailabilitystatus'] = __DATA_CLASSES__ . '/AvailabilityStatus.class.php';
+		QApplicationBase::$ClassFile['availabilitystatusmetacontrol'] = __DATA_META_CONTROLS__ . '/AvailabilityStatusMetaControl.class.php';
+		QApplicationBase::$ClassFile['availabilitystatusdatagrid'] = __DATA_META_CONTROLS__ . '/AvailabilityStatusDataGrid.class.php';
+
 	// ClassPaths for the CheckingAccountLookup class
 		QApplicationBase::$ClassFile['checkingaccountlookup'] = __DATA_CLASSES__ . '/CheckingAccountLookup.class.php';
 		QApplicationBase::$ClassFile['qqnodecheckingaccountlookup'] = __DATA_CLASSES__ . '/CheckingAccountLookup.class.php';
@@ -222,6 +229,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodegroupparticipation'] = __DATA_CLASSES__ . '/GroupParticipation.class.php';
 		QApplicationBase::$ClassFile['groupparticipationmetacontrol'] = __DATA_META_CONTROLS__ . '/GroupParticipationMetaControl.class.php';
 		QApplicationBase::$ClassFile['groupparticipationdatagrid'] = __DATA_META_CONTROLS__ . '/GroupParticipationDataGrid.class.php';
+
+	// ClassPaths for the GroupRegistrations class
+		QApplicationBase::$ClassFile['groupregistrations'] = __DATA_CLASSES__ . '/GroupRegistrations.class.php';
+		QApplicationBase::$ClassFile['qqnodegroupregistrations'] = __DATA_CLASSES__ . '/GroupRegistrations.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodegroupregistrations'] = __DATA_CLASSES__ . '/GroupRegistrations.class.php';
+		QApplicationBase::$ClassFile['groupregistrationsmetacontrol'] = __DATA_META_CONTROLS__ . '/GroupRegistrationsMetaControl.class.php';
+		QApplicationBase::$ClassFile['groupregistrationsdatagrid'] = __DATA_META_CONTROLS__ . '/GroupRegistrationsDataGrid.class.php';
 
 	// ClassPaths for the GroupRole class
 		QApplicationBase::$ClassFile['grouprole'] = __DATA_CLASSES__ . '/GroupRole.class.php';
@@ -530,6 +544,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodesmsmessage'] = __DATA_CLASSES__ . '/SmsMessage.class.php';
 		QApplicationBase::$ClassFile['smsmessagemetacontrol'] = __DATA_META_CONTROLS__ . '/SmsMessageMetaControl.class.php';
 		QApplicationBase::$ClassFile['smsmessagedatagrid'] = __DATA_META_CONTROLS__ . '/SmsMessageDataGrid.class.php';
+
+	// ClassPaths for the SourceList class
+		QApplicationBase::$ClassFile['sourcelist'] = __DATA_CLASSES__ . '/SourceList.class.php';
+		QApplicationBase::$ClassFile['qqnodesourcelist'] = __DATA_CLASSES__ . '/SourceList.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodesourcelist'] = __DATA_CLASSES__ . '/SourceList.class.php';
+		QApplicationBase::$ClassFile['sourcelistmetacontrol'] = __DATA_META_CONTROLS__ . '/SourceListMetaControl.class.php';
+		QApplicationBase::$ClassFile['sourcelistdatagrid'] = __DATA_META_CONTROLS__ . '/SourceListDataGrid.class.php';
 
 	// ClassPaths for the StewardshipBatch class
 		QApplicationBase::$ClassFile['stewardshipbatch'] = __DATA_CLASSES__ . '/StewardshipBatch.class.php';

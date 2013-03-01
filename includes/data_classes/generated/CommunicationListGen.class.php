@@ -84,7 +84,7 @@
 		 * @var string strDescription
 		 */
 		protected $strDescription;
-		const DescriptionMaxLength = 512;
+		const DescriptionMaxLength = 1024;
 		const DescriptionDefault = null;
 
 

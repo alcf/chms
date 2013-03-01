@@ -18,6 +18,7 @@
 		protected $lblStartText;
 		
 		protected $btnGroupReport;
+		protected $btnGroupRegistrations;
 		
 		protected $bIsGrowthGroup;
 		public $strDebug;
@@ -77,6 +78,13 @@
 			$this->btnGroupReport->Name = "Growth Group Report";
 			$this->btnGroupReport->Text = "Growth Group Report";
 			$this->btnGroupReport->Visible = false;
+					
+			$this->btnGroupRegistrations = new QButton($this);
+			$this->btnGroupRegistrations->CssClass = 'primary';
+			$this->btnGroupRegistrations->AddAction(new QClickEvent(), new QAjaxAction('btnGroupRegistrations_Click'));
+			$this->btnGroupRegistrations->Name = "Process New Growth Group Registrations";
+			$this->btnGroupRegistrations->Text = "Process New Growth Group Registrations";
+			$this->btnGroupRegistrations->Visible = false;
 			
 			$this->lblStartText = new QLabel($this);
 			$this->lblStartText->Text = '<h3>Groups and Ministries</h3><p>Please select a ministry from the list on the right.</p>';
@@ -165,10 +173,13 @@
 			if ($objMinistry) {
 				$this->lblMinistry->Visible = true;
 				$this->lblMinistry->Text = 'Groups in ' . $objMinistry->Name;
-				if ($objMinistry->Name == 'Growth Groups')
+				if ($objMinistry->Name == 'Growth Groups') {
 					$this->btnGroupReport->Visible = true;
-				else
+					$this->btnGroupRegistrations->Visible = true;
+				}else {
 				$this->btnGroupReport->Visible = false;
+				$this->btnGroupRegistrations->Visible = false;
+				}
 			} else {
 				$this->lblMinistry->Visible = false;
 			}
@@ -177,6 +188,10 @@
 		protected function btnGroupReport_Click() {
 			QApplication::Redirect('/groups/gg_report.php');
 		}
+		protected function btnGroupRegistrations_Click() {
+			QApplication::Redirect('/groups/process_gg_registrations.php');
+		}
+		
 		
 		protected function pxyMinistry_Click($strFormId, $strControlId, $strParameter) {
 			QApplication::Redirect('#' . $strParameter);

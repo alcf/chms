@@ -40,6 +40,8 @@
 	 * property-read QLabel $TokenLabel
 	 * property QCheckBox $ActiveFlagControl
 	 * property-read QLabel $ActiveFlagLabel
+	 * property QListBox $StatusControl
+	 * property-read QLabel $StatusLabel
 	 * property QListBox $GroupCategoryControl
 	 * property-read QLabel $GroupCategoryLabel
 	 * property QListBox $GrowthGroupControl
@@ -149,6 +151,12 @@
          */
 		protected $chkActiveFlag;
 
+        /**
+         * @var QListBox lstStatusObject;
+         * @access protected
+         */
+		protected $lstStatusObject;
+
 
 		// Controls that allow the viewing of Group's individual data fields
         /**
@@ -216,6 +224,12 @@
          * @access protected
          */
 		protected $lblActiveFlag;
+
+        /**
+         * @var QLabel lblStatus
+         * @access protected
+         */
+		protected $lblStatus;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -678,6 +692,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstStatusObject
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstStatusObject_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstStatusObject = new QListBox($this->objParentObject, $strControlId);
+			$this->lstStatusObject->Name = QApplication::Translate('Status Object');
+			$this->lstStatusObject->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objStatusObjectCursor = AvailabilityStatus::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objStatusObject = AvailabilityStatus::InstantiateCursor($objStatusObjectCursor)) {
+				$objListItem = new QListItem($objStatusObject->__toString(), $objStatusObject->Id);
+				if (($this->objGroup->StatusObject) && ($this->objGroup->StatusObject->Id == $objStatusObject->Id))
+					$objListItem->Selected = true;
+				$this->lstStatusObject->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstStatusObject;
+		}
+
+		/**
+		 * Create and setup QLabel lblStatus
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblStatus_Create($strControlId = null) {
+			$this->lblStatus = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStatus->Name = QApplication::Translate('Status Object');
+			$this->lblStatus->Text = ($this->objGroup->StatusObject) ? $this->objGroup->StatusObject->__toString() : null;
+			return $this->lblStatus;
+		}
+
+		/**
 		 * Create and setup QListBox lstGroupCategory
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -876,6 +930,19 @@
 			if ($this->chkActiveFlag) $this->chkActiveFlag->Checked = $this->objGroup->ActiveFlag;
 			if ($this->lblActiveFlag) $this->lblActiveFlag->Text = ($this->objGroup->ActiveFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->lstStatusObject) {
+					$this->lstStatusObject->RemoveAllItems();
+				$this->lstStatusObject->AddItem(QApplication::Translate('- Select One -'), null);
+				$objStatusObjectArray = AvailabilityStatus::LoadAll();
+				if ($objStatusObjectArray) foreach ($objStatusObjectArray as $objStatusObject) {
+					$objListItem = new QListItem($objStatusObject->__toString(), $objStatusObject->Id);
+					if (($this->objGroup->StatusObject) && ($this->objGroup->StatusObject->Id == $objStatusObject->Id))
+						$objListItem->Selected = true;
+					$this->lstStatusObject->AddItem($objListItem);
+				}
+			}
+			if ($this->lblStatus) $this->lblStatus->Text = ($this->objGroup->StatusObject) ? $this->objGroup->StatusObject->__toString() : null;
+
 			if ($this->lstGroupCategory) {
 				$this->lstGroupCategory->RemoveAllItems();
 				$this->lstGroupCategory->AddItem(QApplication::Translate('- Select One -'), null);
@@ -964,6 +1031,7 @@
 				if ($this->lstEmailBroadcastType) $this->objGroup->EmailBroadcastTypeId = $this->lstEmailBroadcastType->SelectedValue;
 				if ($this->txtToken) $this->objGroup->Token = $this->txtToken->Text;
 				if ($this->chkActiveFlag) $this->objGroup->ActiveFlag = $this->chkActiveFlag->Checked;
+				if ($this->lstStatusObject) $this->objGroup->Status = $this->lstStatusObject->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstGroupCategory) $this->objGroup->GroupCategory = GroupCategory::Load($this->lstGroupCategory->SelectedValue);
@@ -1081,6 +1149,12 @@
 				case 'ActiveFlagLabel':
 					if (!$this->lblActiveFlag) return $this->lblActiveFlag_Create();
 					return $this->lblActiveFlag;
+				case 'StatusControl':
+					if (!$this->lstStatusObject) return $this->lstStatusObject_Create();
+					return $this->lstStatusObject;
+				case 'StatusLabel':
+					if (!$this->lblStatus) return $this->lblStatus_Create();
+					return $this->lblStatus;
 				case 'GroupCategoryControl':
 					if (!$this->lstGroupCategory) return $this->lstGroupCategory_Create();
 					return $this->lstGroupCategory;
@@ -1145,6 +1219,8 @@
 						return ($this->txtToken = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveFlagControl':
 						return ($this->chkActiveFlag = QType::Cast($mixValue, 'QControl'));
+					case 'StatusControl':
+						return ($this->lstStatusObject = QType::Cast($mixValue, 'QControl'));
 					case 'GroupCategoryControl':
 						return ($this->lstGroupCategory = QType::Cast($mixValue, 'QControl'));
 					case 'GrowthGroupControl':

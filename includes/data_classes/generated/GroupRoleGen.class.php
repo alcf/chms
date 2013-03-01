@@ -22,6 +22,8 @@
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property GroupParticipation $_GroupParticipation the value for the private _objGroupParticipation (Read-Only) if set due to an expansion on the group_participation.group_role_id reverse relationship
 	 * @property GroupParticipation[] $_GroupParticipationArray the value for the private _objGroupParticipationArray (Read-Only) if set due to an ExpandAsArray on the group_participation.group_role_id reverse relationship
+	 * @property GroupRegistrations $_GroupRegistrations the value for the private _objGroupRegistrations (Read-Only) if set due to an expansion on the group_registrations.group_role_id reverse relationship
+	 * @property GroupRegistrations[] $_GroupRegistrationsArray the value for the private _objGroupRegistrationsArray (Read-Only) if set due to an ExpandAsArray on the group_registrations.group_role_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class GroupRoleGen extends QBaseClass {
@@ -78,6 +80,22 @@
 		 * @var GroupParticipation[] _objGroupParticipationArray;
 		 */
 		private $_objGroupParticipationArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single GroupRegistrations object
+		 * (of type GroupRegistrations), if this GroupRole object was restored with
+		 * an expansion on the group_registrations association table.
+		 * @var GroupRegistrations _objGroupRegistrations;
+		 */
+		private $_objGroupRegistrations;
+
+		/**
+		 * Private member variable that stores a reference to an array of GroupRegistrations objects
+		 * (of type GroupRegistrations[]), if this GroupRole object was restored with
+		 * an ExpandAsArray on the group_registrations association table.
+		 * @var GroupRegistrations[] _objGroupRegistrationsArray;
+		 */
+		private $_objGroupRegistrationsArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -477,6 +495,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'groupregistrations__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupRegistrationsArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupRegistrationsArray[$intPreviousChildItemCount - 1];
+						$objChildItem = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrations__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupRegistrationsArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupRegistrationsArray[] = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrations__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -526,6 +558,16 @@
 					$objToReturn->_objGroupParticipationArray[] = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objGroupParticipation = GroupParticipation::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupparticipation__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for GroupRegistrations Virtual Binding
+			$strAlias = $strAliasPrefix . 'groupregistrations__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupRegistrationsArray[] = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrations__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroupRegistrations = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrations__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -954,6 +996,18 @@
 					// @return GroupParticipation[]
 					return (array) $this->_objGroupParticipationArray;
 
+				case '_GroupRegistrations':
+					// Gets the value for the private _objGroupRegistrations (Read-Only)
+					// if set due to an expansion on the group_registrations.group_role_id reverse relationship
+					// @return GroupRegistrations
+					return $this->_objGroupRegistrations;
+
+				case '_GroupRegistrationsArray':
+					// Gets the value for the private _objGroupRegistrationsArray (Read-Only)
+					// if set due to an ExpandAsArray on the group_registrations.group_role_id reverse relationship
+					// @return GroupRegistrations[]
+					return (array) $this->_objGroupRegistrationsArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1258,6 +1312,188 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for GroupRegistrations
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated GroupRegistrationses as an array of GroupRegistrations objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupRegistrations[]
+		*/ 
+		public function GetGroupRegistrationsArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return GroupRegistrations::LoadArrayByGroupRoleId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated GroupRegistrationses
+		 * @return int
+		*/ 
+		public function CountGroupRegistrationses() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return GroupRegistrations::CountByGroupRoleId($this->intId);
+		}
+
+		/**
+		 * Associates a GroupRegistrations
+		 * @param GroupRegistrations $objGroupRegistrations
+		 * @return void
+		*/ 
+		public function AssociateGroupRegistrations(GroupRegistrations $objGroupRegistrations) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupRegistrations on this unsaved GroupRole.');
+			if ((is_null($objGroupRegistrations->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupRegistrations on this GroupRole with an unsaved GroupRegistrations.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GroupRole::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_registrations`
+				SET
+					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupRegistrations->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupRegistrations->GroupRoleId = $this->intId;
+				$objGroupRegistrations->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a GroupRegistrations
+		 * @param GroupRegistrations $objGroupRegistrations
+		 * @return void
+		*/ 
+		public function UnassociateGroupRegistrations(GroupRegistrations $objGroupRegistrations) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrations on this unsaved GroupRole.');
+			if ((is_null($objGroupRegistrations->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrations on this GroupRole with an unsaved GroupRegistrations.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GroupRole::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_registrations`
+				SET
+					`group_role_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupRegistrations->Id) . ' AND
+					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupRegistrations->GroupRoleId = null;
+				$objGroupRegistrations->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all GroupRegistrationses
+		 * @return void
+		*/ 
+		public function UnassociateAllGroupRegistrationses() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrations on this unsaved GroupRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GroupRole::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupRegistrations::LoadArrayByGroupRoleId($this->intId) as $objGroupRegistrations) {
+					$objGroupRegistrations->GroupRoleId = null;
+					$objGroupRegistrations->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`group_registrations`
+				SET
+					`group_role_id` = null
+				WHERE
+					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated GroupRegistrations
+		 * @param GroupRegistrations $objGroupRegistrations
+		 * @return void
+		*/ 
+		public function DeleteAssociatedGroupRegistrations(GroupRegistrations $objGroupRegistrations) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrations on this unsaved GroupRole.');
+			if ((is_null($objGroupRegistrations->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrations on this GroupRole with an unsaved GroupRegistrations.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GroupRole::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_registrations`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objGroupRegistrations->Id) . ' AND
+					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objGroupRegistrations->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated GroupRegistrationses
+		 * @return void
+		*/ 
+		public function DeleteAllGroupRegistrationses() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrations on this unsaved GroupRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GroupRole::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (GroupRegistrations::LoadArrayByGroupRoleId($this->intId) as $objGroupRegistrations) {
+					$objGroupRegistrations->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`group_registrations`
+				WHERE
+					`group_role_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
 
 
 
@@ -1347,6 +1583,7 @@
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $GroupRoleTypeId
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQReverseReferenceNodeGroupRegistrations $GroupRegistrations
 	 */
 	class QQNodeGroupRole extends QQNode {
 		protected $strTableName = 'group_role';
@@ -1366,6 +1603,8 @@
 					return new QQNode('group_role_type_id', 'GroupRoleTypeId', 'integer', $this);
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'group_role_id');
+				case 'GroupRegistrations':
+					return new QQReverseReferenceNodeGroupRegistrations($this, 'groupregistrations', 'reverse_reference', 'group_role_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1387,6 +1626,7 @@
 	 * @property-read QQNode $Name
 	 * @property-read QQNode $GroupRoleTypeId
 	 * @property-read QQReverseReferenceNodeGroupParticipation $GroupParticipation
+	 * @property-read QQReverseReferenceNodeGroupRegistrations $GroupRegistrations
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeGroupRole extends QQReverseReferenceNode {
@@ -1407,6 +1647,8 @@
 					return new QQNode('group_role_type_id', 'GroupRoleTypeId', 'integer', $this);
 				case 'GroupParticipation':
 					return new QQReverseReferenceNodeGroupParticipation($this, 'groupparticipation', 'reverse_reference', 'group_role_id');
+				case 'GroupRegistrations':
+					return new QQReverseReferenceNodeGroupRegistrations($this, 'groupregistrations', 'reverse_reference', 'group_role_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

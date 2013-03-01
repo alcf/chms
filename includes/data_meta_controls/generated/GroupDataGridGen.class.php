@@ -307,6 +307,8 @@
 				case 'EmailBroadcastTypeId': return QQN::Group()->EmailBroadcastTypeId;
 				case 'Token': return QQN::Group()->Token;
 				case 'ActiveFlag': return QQN::Group()->ActiveFlag;
+				case 'Status': return QQN::Group()->Status;
+				case 'StatusObject': return QQN::Group()->StatusObject;
 				case 'GroupCategory': return QQN::Group()->GroupCategory;
 
 				case 'GrowthGroup': return QQN::Group()->GrowthGroup;

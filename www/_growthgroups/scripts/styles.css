@@ -137,3 +137,13 @@
 		div#dashboard div#right { float: left; margin-left: 10px; width: 760px;}
 		div#dashboard div#right div#pnlList { margin-bottom: 10px; border: 1px solid #000; padding: 5px; height: 300px; overflow: auto; }
 		div#dashboard div#right div#pnlEdit { border: 1px solid #000; padding: 5px; background-color: #eef; height: 240px; overflow: auto; }
+		
+	div.section { background-color: #fff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px; border-radius: 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
+	input.primary, button.primary {
+		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
+		font-size: 12px; font-family: arial; color: #fff;
+		text-transform: uppercase;
+	}
+	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
+	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #666; color: #999; }
+	.indentedsection { margin-left: 230px;}

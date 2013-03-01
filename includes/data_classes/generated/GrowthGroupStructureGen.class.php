@@ -17,6 +17,8 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property string $Name the value for strName 
+	 * @property GroupRegistrations $_GroupRegistrationsAsGroupstructure the value for the private _objGroupRegistrationsAsGroupstructure (Read-Only) if set due to an expansion on the groupregistrations_groupstructure_assn association table
+	 * @property GroupRegistrations[] $_GroupRegistrationsAsGroupstructureArray the value for the private _objGroupRegistrationsAsGroupstructureArray (Read-Only) if set due to an ExpandAsArray on the groupregistrations_groupstructure_assn association table
 	 * @property GrowthGroup $_GrowthGroup the value for the private _objGrowthGroup (Read-Only) if set due to an expansion on the growthgroupstructure_growthgroup_assn association table
 	 * @property GrowthGroup[] $_GrowthGroupArray the value for the private _objGrowthGroupArray (Read-Only) if set due to an ExpandAsArray on the growthgroupstructure_growthgroup_assn association table
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -43,6 +45,22 @@
 		const NameMaxLength = 100;
 		const NameDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single GroupRegistrationsAsGroupstructure object
+		 * (of type GroupRegistrations), if this GrowthGroupStructure object was restored with
+		 * an expansion on the groupregistrations_groupstructure_assn association table.
+		 * @var GroupRegistrations _objGroupRegistrationsAsGroupstructure;
+		 */
+		private $_objGroupRegistrationsAsGroupstructure;
+
+		/**
+		 * Private member variable that stores a reference to an array of GroupRegistrationsAsGroupstructure objects
+		 * (of type GroupRegistrations[]), if this GrowthGroupStructure object was restored with
+		 * an ExpandAsArray on the groupregistrations_groupstructure_assn association table.
+		 * @var GroupRegistrations[] _objGroupRegistrationsAsGroupstructureArray;
+		 */
+		private $_objGroupRegistrationsAsGroupstructureArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single GrowthGroup object
@@ -431,6 +449,20 @@
 				if (!$strAliasPrefix)
 					$strAliasPrefix = 'growth_group_structure__';
 
+				$strAlias = $strAliasPrefix . 'groupregistrationsasgroupstructure__group_registrations_id__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objGroupRegistrationsAsGroupstructureArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objGroupRegistrationsAsGroupstructureArray[$intPreviousChildItemCount - 1];
+						$objChildItem = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrationsasgroupstructure__group_registrations_id__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objGroupRegistrationsAsGroupstructureArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objGroupRegistrationsAsGroupstructureArray[] = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrationsasgroupstructure__group_registrations_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'growthgroup__growth_group_id__group_id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -475,6 +507,16 @@
 				$strAliasPrefix = 'growth_group_structure__';
 
 
+
+			// Check for GroupRegistrationsAsGroupstructure Virtual Binding
+			$strAlias = $strAliasPrefix . 'groupregistrationsasgroupstructure__group_registrations_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objGroupRegistrationsAsGroupstructureArray[] = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrationsasgroupstructure__group_registrations_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objGroupRegistrationsAsGroupstructure = GroupRegistrations::InstantiateDbRow($objDbRow, $strAliasPrefix . 'groupregistrationsasgroupstructure__group_registrations_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
 
 			// Check for GrowthGroup Virtual Binding
 			$strAlias = $strAliasPrefix . 'growthgroup__growth_group_id__group_id';
@@ -576,6 +618,38 @@
 		////////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Array via Many to Many)
 		////////////////////////////////////////////////////
+			/**
+		 * Load an array of GroupRegistrations objects for a given GroupRegistrationsAsGroupstructure
+		 * via the groupregistrations_groupstructure_assn table
+		 * @param integer $intGroupRegistrationsId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GrowthGroupStructure[]
+		*/
+		public static function LoadArrayByGroupRegistrationsAsGroupstructure($intGroupRegistrationsId, $objOptionalClauses = null) {
+			// Call GrowthGroupStructure::QueryArray to perform the LoadArrayByGroupRegistrationsAsGroupstructure query
+			try {
+				return GrowthGroupStructure::QueryArray(
+					QQ::Equal(QQN::GrowthGroupStructure()->GroupRegistrationsAsGroupstructure->GroupRegistrationsId, $intGroupRegistrationsId),
+					$objOptionalClauses
+				);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count GrowthGroupStructures for a given GroupRegistrationsAsGroupstructure
+		 * via the groupregistrations_groupstructure_assn table
+		 * @param integer $intGroupRegistrationsId
+		 * @return int
+		*/
+		public static function CountByGroupRegistrationsAsGroupstructure($intGroupRegistrationsId, $objOptionalClauses = null) {
+			return GrowthGroupStructure::QueryCount(
+				QQ::Equal(QQN::GrowthGroupStructure()->GroupRegistrationsAsGroupstructure->GroupRegistrationsId, $intGroupRegistrationsId),
+				$objOptionalClauses
+			);
+		}
 			/**
 		 * Load an array of GrowthGroup objects for a given GrowthGroup
 		 * via the growthgroupstructure_growthgroup_assn table
@@ -831,6 +905,18 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_GroupRegistrationsAsGroupstructure':
+					// Gets the value for the private _objGroupRegistrationsAsGroupstructure (Read-Only)
+					// if set due to an expansion on the groupregistrations_groupstructure_assn association table
+					// @return GroupRegistrations
+					return $this->_objGroupRegistrationsAsGroupstructure;
+
+				case '_GroupRegistrationsAsGroupstructureArray':
+					// Gets the value for the private _objGroupRegistrationsAsGroupstructureArray (Read-Only)
+					// if set due to an ExpandAsArray on the groupregistrations_groupstructure_assn association table
+					// @return GroupRegistrations[]
+					return (array) $this->_objGroupRegistrationsAsGroupstructureArray;
+
 				case '_GrowthGroup':
 					// Gets the value for the private _objGrowthGroup (Read-Only)
 					// if set due to an expansion on the growthgroupstructure_growthgroup_assn association table
@@ -912,6 +998,189 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
+			
+		// Related Many-to-Many Objects' Methods for GroupRegistrationsAsGroupstructure
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all many-to-many associated GroupRegistrationsesAsGroupstructure as an array of GroupRegistrations objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GroupRegistrations[]
+		*/ 
+		public function GetGroupRegistrationsAsGroupstructureArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return GroupRegistrations::LoadArrayByGrowthGroupStructureAsGroupstructure($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all many-to-many associated GroupRegistrationsesAsGroupstructure
+		 * @return int
+		*/ 
+		public function CountGroupRegistrationsesAsGroupstructure() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return GroupRegistrations::CountByGrowthGroupStructureAsGroupstructure($this->intId);
+		}
+
+		/**
+		 * Checks to see if an association exists with a specific GroupRegistrationsAsGroupstructure
+		 * @param GroupRegistrations $objGroupRegistrations
+		 * @return bool
+		*/
+		public function IsGroupRegistrationsAsGroupstructureAssociated(GroupRegistrations $objGroupRegistrations) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsGroupRegistrationsAsGroupstructureAssociated on this unsaved GrowthGroupStructure.');
+			if ((is_null($objGroupRegistrations->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call IsGroupRegistrationsAsGroupstructureAssociated on this GrowthGroupStructure with an unsaved GroupRegistrations.');
+
+			$intRowCount = GrowthGroupStructure::QueryCount(
+				QQ::AndCondition(
+					QQ::Equal(QQN::GrowthGroupStructure()->Id, $this->intId),
+					QQ::Equal(QQN::GrowthGroupStructure()->GroupRegistrationsAsGroupstructure->GroupRegistrationsId, $objGroupRegistrations->Id)
+				)
+			);
+
+			return ($intRowCount > 0);
+		}
+
+		/**
+		 * Journals the GroupRegistrationsAsGroupstructure relationship into the Log database.
+		 * Used internally as a helper method.
+		 * @param string $strJournalCommand
+		 */
+		public function JournalGroupRegistrationsAsGroupstructureAssociation($intAssociatedId, $strJournalCommand) {
+			$objDatabase = GrowthGroupStructure::GetDatabase()->JournalingDatabase;
+
+			$objDatabase->NonQuery('
+				INSERT INTO `groupregistrations_groupstructure_assn` (
+					`group_structure_id`,
+					`group_registrations_id`,
+					__sys_login_id,
+					__sys_action,
+					__sys_date
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($intAssociatedId) . ',
+					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
+					' . $objDatabase->SqlVariable($strJournalCommand) . ',
+					NOW()
+				);
+			');
+		}
+
+		/**
+		 * Gets the historical journal for an object's GroupRegistrationsAsGroupstructure relationship from the log database.
+		 * @param integer intId
+		 * @return QDatabaseResult $objResult
+		 */
+		public static function GetJournalGroupRegistrationsAsGroupstructureAssociationForId($intId) {
+			$objDatabase = GrowthGroupStructure::GetDatabase()->JournalingDatabase;
+
+			return $objDatabase->Query('SELECT * FROM groupregistrations_groupstructure_assn WHERE group_structure_id = ' .
+				$objDatabase->SqlVariable($intId) . ' ORDER BY __sys_date');
+		}
+
+		/**
+		 * Gets the historical journal for this object's GroupRegistrationsAsGroupstructure relationship from the log database.
+		 * @return QDatabaseResult $objResult
+		 */
+		public function GetJournalGroupRegistrationsAsGroupstructureAssociation() {
+			return GrowthGroupStructure::GetJournalGroupRegistrationsAsGroupstructureAssociationForId($this->intId);
+		}
+
+		/**
+		 * Associates a GroupRegistrationsAsGroupstructure
+		 * @param GroupRegistrations $objGroupRegistrations
+		 * @return void
+		*/ 
+		public function AssociateGroupRegistrationsAsGroupstructure(GroupRegistrations $objGroupRegistrations) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupRegistrationsAsGroupstructure on this unsaved GrowthGroupStructure.');
+			if ((is_null($objGroupRegistrations->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGroupRegistrationsAsGroupstructure on this GrowthGroupStructure with an unsaved GroupRegistrations.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GrowthGroupStructure::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				INSERT INTO `groupregistrations_groupstructure_assn` (
+					`group_structure_id`,
+					`group_registrations_id`
+				) VALUES (
+					' . $objDatabase->SqlVariable($this->intId) . ',
+					' . $objDatabase->SqlVariable($objGroupRegistrations->Id) . '
+				)
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalGroupRegistrationsAsGroupstructureAssociation($objGroupRegistrations->Id, 'INSERT');
+		}
+
+		/**
+		 * Unassociates a GroupRegistrationsAsGroupstructure
+		 * @param GroupRegistrations $objGroupRegistrations
+		 * @return void
+		*/ 
+		public function UnassociateGroupRegistrationsAsGroupstructure(GroupRegistrations $objGroupRegistrations) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrationsAsGroupstructure on this unsaved GrowthGroupStructure.');
+			if ((is_null($objGroupRegistrations->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGroupRegistrationsAsGroupstructure on this GrowthGroupStructure with an unsaved GroupRegistrations.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GrowthGroupStructure::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`groupregistrations_groupstructure_assn`
+				WHERE
+					`group_structure_id` = ' . $objDatabase->SqlVariable($this->intId) . ' AND
+					`group_registrations_id` = ' . $objDatabase->SqlVariable($objGroupRegistrations->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase)
+				$this->JournalGroupRegistrationsAsGroupstructureAssociation($objGroupRegistrations->Id, 'DELETE');
+		}
+
+		/**
+		 * Unassociates all GroupRegistrationsesAsGroupstructure
+		 * @return void
+		*/ 
+		public function UnassociateAllGroupRegistrationsesAsGroupstructure() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateAllGroupRegistrationsAsGroupstructureArray on this unsaved GrowthGroupStructure.');
+
+			// Get the Database Object for this Class
+			$objDatabase = GrowthGroupStructure::GetDatabase();
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objResult = $objDatabase->Query('SELECT `group_registrations_id` AS associated_id FROM `groupregistrations_groupstructure_assn` WHERE `group_structure_id` = ' . $objDatabase->SqlVariable($this->intId));
+				while ($objRow = $objResult->GetNextRow()) {
+					$this->JournalGroupRegistrationsAsGroupstructureAssociation($objRow->GetColumn('associated_id'), 'DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`groupregistrations_groupstructure_assn`
+				WHERE
+					`group_structure_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
 			
 		// Related Many-to-Many Objects' Methods for GrowthGroup
 		//-------------------------------------------------------------------
@@ -1166,6 +1435,38 @@
 	/////////////////////////////////////
 
 	/**
+	 * @property-read QQNode $GroupRegistrationsId
+	 * @property-read QQNodeGroupRegistrations $GroupRegistrations
+	 * @property-read QQNodeGroupRegistrations $_ChildTableNode
+	 */
+	class QQNodeGrowthGroupStructureGroupRegistrationsAsGroupstructure extends QQAssociationNode {
+		protected $strType = 'association';
+		protected $strName = 'groupregistrationsasgroupstructure';
+
+		protected $strTableName = 'groupregistrations_groupstructure_assn';
+		protected $strPrimaryKey = 'group_structure_id';
+		protected $strClassName = 'GroupRegistrations';
+
+		public function __get($strName) {
+			switch ($strName) {
+				case 'GroupRegistrationsId':
+					return new QQNode('group_registrations_id', 'GroupRegistrationsId', 'integer', $this);
+				case 'GroupRegistrations':
+					return new QQNodeGroupRegistrations('group_registrations_id', 'GroupRegistrationsId', 'integer', $this);
+				case '_ChildTableNode':
+					return new QQNodeGroupRegistrations('group_registrations_id', 'GroupRegistrationsId', 'integer', $this);
+				default:
+					try {
+						return parent::__get($strName);
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+			}
+		}
+	}
+
+	/**
 	 * @property-read QQNode $GrowthGroupId
 	 * @property-read QQNodeGrowthGroup $GrowthGroup
 	 * @property-read QQNodeGrowthGroup $_ChildTableNode
@@ -1200,6 +1501,7 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Name
+	 * @property-read QQNodeGrowthGroupStructureGroupRegistrationsAsGroupstructure $GroupRegistrationsAsGroupstructure
 	 * @property-read QQNodeGrowthGroupStructureGrowthGroup $GrowthGroup
 	 */
 	class QQNodeGrowthGroupStructure extends QQNode {
@@ -1212,6 +1514,8 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'GroupRegistrationsAsGroupstructure':
+					return new QQNodeGrowthGroupStructureGroupRegistrationsAsGroupstructure($this);
 				case 'GrowthGroup':
 					return new QQNodeGrowthGroupStructureGrowthGroup($this);
 
@@ -1231,6 +1535,7 @@
 	/**
 	 * @property-read QQNode $Id
 	 * @property-read QQNode $Name
+	 * @property-read QQNodeGrowthGroupStructureGroupRegistrationsAsGroupstructure $GroupRegistrationsAsGroupstructure
 	 * @property-read QQNodeGrowthGroupStructureGrowthGroup $GrowthGroup
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1244,6 +1549,8 @@
 					return new QQNode('id', 'Id', 'integer', $this);
 				case 'Name':
 					return new QQNode('name', 'Name', 'string', $this);
+				case 'GroupRegistrationsAsGroupstructure':
+					return new QQNodeGrowthGroupStructureGroupRegistrationsAsGroupstructure($this);
 				case 'GrowthGroup':
 					return new QQNodeGrowthGroupStructureGrowthGroup($this);
 

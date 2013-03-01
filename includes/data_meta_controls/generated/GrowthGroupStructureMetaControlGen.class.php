@@ -20,6 +20,8 @@
 	 * property-read QLabel $IdLabel
 	 * property QTextBox $NameControl
 	 * property-read QLabel $NameLabel
+	 * property QListBox $GroupRegistrationsAsGroupstructureControl
+	 * property-read QLabel $GroupRegistrationsAsGroupstructureLabel
 	 * property QListBox $GrowthGroupControl
 	 * property-read QLabel $GrowthGroupLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -75,10 +77,14 @@
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
+		protected $lstGroupRegistrationsesAsGroupstructure;
+
 		protected $lstGrowthGroups;
 
 
 		// QLabel Controls (if applicable) to view Unique ReverseReferences and ManyToMany References
+		protected $lblGroupRegistrationsesAsGroupstructure;
+
 		protected $lblGrowthGroups;
 
 
@@ -216,6 +222,57 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstGroupRegistrationsesAsGroupstructure
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstGroupRegistrationsesAsGroupstructure_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstGroupRegistrationsesAsGroupstructure = new QListBox($this->objParentObject, $strControlId);
+			$this->lstGroupRegistrationsesAsGroupstructure->Name = QApplication::Translate('Group Registrationses As Groupstructure');
+			$this->lstGroupRegistrationsesAsGroupstructure->SelectionMode = QSelectionMode::Multiple;
+
+			// We need to know which items to "Pre-Select"
+			$objAssociatedArray = $this->objGrowthGroupStructure->GetGroupRegistrationsAsGroupstructureArray();
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objGroupRegistrationsCursor = GroupRegistrations::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objGroupRegistrations = GroupRegistrations::InstantiateCursor($objGroupRegistrationsCursor)) {
+				$objListItem = new QListItem($objGroupRegistrations->__toString(), $objGroupRegistrations->Id);
+				foreach ($objAssociatedArray as $objAssociated) {
+					if ($objAssociated->Id == $objGroupRegistrations->Id)
+						$objListItem->Selected = true;
+				}
+				$this->lstGroupRegistrationsesAsGroupstructure->AddItem($objListItem);
+			}
+
+			// Return the QListControl
+			return $this->lstGroupRegistrationsesAsGroupstructure;
+		}
+
+		/**
+		 * Create and setup QLabel lblGroupRegistrationsesAsGroupstructure
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strGlue glue to display in between each associated object
+		 * @return QLabel
+		 */
+		public function lblGroupRegistrationsesAsGroupstructure_Create($strControlId = null, $strGlue = ', ') {
+			$this->lblGroupRegistrationsesAsGroupstructure = new QLabel($this->objParentObject, $strControlId);
+			$this->lstGroupRegistrationsesAsGroupstructure->Name = QApplication::Translate('Group Registrationses As Groupstructure');
+			
+			$objAssociatedArray = $this->objGrowthGroupStructure->GetGroupRegistrationsAsGroupstructureArray();
+			$strItems = array();
+			foreach ($objAssociatedArray as $objAssociated)
+				$strItems[] = $objAssociated->__toString();
+			$this->lblGroupRegistrationsesAsGroupstructure->Text = implode($strGlue, $strItems);
+			return $this->lblGroupRegistrationsesAsGroupstructure;
+		}
+
+		/**
 		 * Create and setup QListBox lstGrowthGroups
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -282,6 +339,27 @@
 			if ($this->txtName) $this->txtName->Text = $this->objGrowthGroupStructure->Name;
 			if ($this->lblName) $this->lblName->Text = $this->objGrowthGroupStructure->Name;
 
+			if ($this->lstGroupRegistrationsesAsGroupstructure) {
+				$this->lstGroupRegistrationsesAsGroupstructure->RemoveAllItems();
+				$objAssociatedArray = $this->objGrowthGroupStructure->GetGroupRegistrationsAsGroupstructureArray();
+				$objGroupRegistrationsArray = GroupRegistrations::LoadAll();
+				if ($objGroupRegistrationsArray) foreach ($objGroupRegistrationsArray as $objGroupRegistrations) {
+					$objListItem = new QListItem($objGroupRegistrations->__toString(), $objGroupRegistrations->Id);
+					foreach ($objAssociatedArray as $objAssociated) {
+						if ($objAssociated->Id == $objGroupRegistrations->Id)
+							$objListItem->Selected = true;
+					}
+					$this->lstGroupRegistrationsesAsGroupstructure->AddItem($objListItem);
+				}
+			}
+			if ($this->lblGroupRegistrationsesAsGroupstructure) {
+				$objAssociatedArray = $this->objGrowthGroupStructure->GetGroupRegistrationsAsGroupstructureArray();
+				$strItems = array();
+				foreach ($objAssociatedArray as $objAssociated)
+					$strItems[] = $objAssociated->__toString();
+				$this->lblGroupRegistrationsesAsGroupstructure->Text = implode($strGlue, $strItems);
+			}
+
 			if ($this->lstGrowthGroups) {
 				$this->lstGrowthGroups->RemoveAllItems();
 				$objAssociatedArray = $this->objGrowthGroupStructure->GetGrowthGroupArray();
@@ -310,6 +388,16 @@
 		///////////////////////////////////////////////
 		// PROTECTED UPDATE METHODS for ManyToManyReferences (if any)
 		///////////////////////////////////////////////
+
+		protected function lstGroupRegistrationsesAsGroupstructure_Update() {
+			if ($this->lstGroupRegistrationsesAsGroupstructure) {
+				$this->objGrowthGroupStructure->UnassociateAllGroupRegistrationsesAsGroupstructure();
+				$objSelectedListItems = $this->lstGroupRegistrationsesAsGroupstructure->SelectedItems;
+				if ($objSelectedListItems) foreach ($objSelectedListItems as $objListItem) {
+					$this->objGrowthGroupStructure->AssociateGroupRegistrationsAsGroupstructure(GroupRegistrations::Load($objListItem->Value));
+				}
+			}
+		}
 
 		protected function lstGrowthGroups_Update() {
 			if ($this->lstGrowthGroups) {
@@ -344,6 +432,7 @@
 				$this->objGrowthGroupStructure->Save();
 
 				// Finally, update any ManyToManyReferences (if any)
+				$this->lstGroupRegistrationsesAsGroupstructure_Update();
 				$this->lstGrowthGroups_Update();
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -356,6 +445,7 @@
 		 * It will also unassociate itself from any ManyToManyReferences.
 		 */
 		public function DeleteGrowthGroupStructure() {
+			$this->objGrowthGroupStructure->UnassociateAllGroupRegistrationsesAsGroupstructure();
 			$this->objGrowthGroupStructure->UnassociateAllGrowthGroups();
 			$this->objGrowthGroupStructure->Delete();
 		}		
@@ -393,6 +483,12 @@
 				case 'NameLabel':
 					if (!$this->lblName) return $this->lblName_Create();
 					return $this->lblName;
+				case 'GroupRegistrationsAsGroupstructureControl':
+					if (!$this->lstGroupRegistrationsesAsGroupstructure) return $this->lstGroupRegistrationsesAsGroupstructure_Create();
+					return $this->lstGroupRegistrationsesAsGroupstructure;
+				case 'GroupRegistrationsAsGroupstructureLabel':
+					if (!$this->lblGroupRegistrationsesAsGroupstructure) return $this->lblGroupRegistrationsesAsGroupstructure_Create();
+					return $this->lblGroupRegistrationsesAsGroupstructure;
 				case 'GrowthGroupControl':
 					if (!$this->lstGrowthGroups) return $this->lstGrowthGroups_Create();
 					return $this->lstGrowthGroups;
@@ -425,6 +521,8 @@
 						return ($this->lblId = QType::Cast($mixValue, 'QControl'));
 					case 'NameControl':
 						return ($this->txtName = QType::Cast($mixValue, 'QControl'));
+					case 'GroupRegistrationsAsGroupstructureControl':
+						return ($this->lstGroupRegistrationsesAsGroupstructure = QType::Cast($mixValue, 'QControl'));
 					case 'GrowthGroupControl':
 						return ($this->lstGrowthGroups = QType::Cast($mixValue, 'QControl'));
 					default:

@@ -20,6 +20,7 @@
 	<?php $_CONTROL->lblMeeting->RenderWithName(); ?>
 	<?php $_CONTROL->lblAddress->RenderWithName(); ?>
 	<?php $_CONTROL->lblStructure->RenderWithName(); ?>
+	<?php $_CONTROL->lblStatus->RenderWithName(); ?>
 </div>
 <br/>
 

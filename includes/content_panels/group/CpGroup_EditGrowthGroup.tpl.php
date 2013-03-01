@@ -16,6 +16,7 @@
 
 <?php $_CONTROL->lstGrowthGroupLocation->RenderWithName('Name=Region'); ?>
 <?php $_CONTROL->lstGrowthGroupStructure->RenderWithName('Name=Type'); ?>
+<?php $_CONTROL->lstGrowthGroupStatus->RenderWithName('Name=Availability'); ?>
 
 <br/>
 

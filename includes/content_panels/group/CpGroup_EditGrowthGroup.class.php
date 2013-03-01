@@ -7,6 +7,7 @@
 
 		public $lstGrowthGroupLocation;
 		public $lstGrowthGroupStructure;
+		public $lstGrowthGroupStatus;
 		public $lstGrowthGroupDayType;
 		public $cblMeetings;
 		public $txtStartTime;
@@ -39,6 +40,12 @@
 			$this->lstGrowthGroupLocation = $this->mctGrowthGroup->lstGrowthGroupLocation_Create();
 			$this->lstGrowthGroupStructure = $this->mctGrowthGroup->lstGrowthGroupStructures_Create();
 			$this->lstGrowthGroupStructure->Rows = 10;
+			
+			$this->lstGrowthGroupStatus = new QListBox($this);
+			foreach(AvailabilityStatus::LoadAll()as $objStatus) {
+				$this->lstGrowthGroupStatus->AddItem($objStatus->Name, $objStatus->Id);
+			}
+		
 			$this->lstGrowthGroupDayType = $this->mctGrowthGroup->lstGrowthGroupDayType_Create();
 			$this->txtStartTime = $this->mctGrowthGroup->txtStartTime_Create();
 			$this->txtEndTime = $this->mctGrowthGroup->txtEndTime_Create();
@@ -102,6 +109,8 @@
 			$this->btnRefresh_Click();
 			if (!$this->mctGrowthGroup->EditMode) $this->mctGrowthGroup->GrowthGroup->Group = $this->mctGroup->Group;
 			$this->mctGrowthGroup->SaveGrowthGroup();
+			$this->objGroup->Status = $this->lstGrowthGroupStatus->SelectedValue;
+			$this->objGroup->Save();
 
 			// Refresh
 			if ($blnRefreshGroups) {
