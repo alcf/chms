@@ -210,7 +210,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		// Setup Plaintext Message
 		$strBody = "Dear ".$this->objRegistrant->FirstName .",\r\n\r\n";
 		$strBody .= "Thank you so much for your patience! Below is the information on two Growth Groups in your area. Please contact the facilitators below for more information about visiting. I've copied them on this e-mail so that they will know of your interest.";
-		$strBody .= sprintf("%s %s\r\n%s\r\n%s\r\n",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
+		$strBody .= sprintf("%s %s\r\n%s\r\n%s\r\n\r\n",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
 			$this->objRegistrant->Phone, $this->objRegistrant->Email);
 		
 		if(count($groupInfo) >= 1) {
@@ -236,16 +236,16 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 					'in your area. <br>Please contact the facilitators below for more information about visiting.'.
 					' I have copied them on this e-mail so that they will know of your interest.<br><br>';
 		
-		$strBody .= sprintf("%s %s<br>%s<br>%s<br>",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
+		$strBody .= sprintf("%s %s<br>%s<br>%s<br><br>",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
 		$this->objRegistrant->Phone, $this->objRegistrant->Email);
 		
 		if(count($groupInfo) >= 1) {
-			$strBody .= sprintf("%s, %s, %s\<br>Facilitator: %s %s<br>%s<br>", $groupInfo[0][0],
+			$strBody .= sprintf("<b>Option 1</b><br>%s, %s, %s\<br>Facilitator: %s %s<br>%s<br>", $groupInfo[0][0],
 			$groupInfo[0][1], $groupInfo[0][2], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
 			Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
 		}
 		if(count($groupInfo) >= 2) {
-			$strBody .= sprintf("%s, %s, %s<br><b>Facilitator:</b> %s %s<br>%s<br>", $groupInfo[1][0],
+			$strBody .= sprintf("<b>Option 2</b><br>%s, %s, %s<br><b>Facilitator:</b> %s %s<br>%s<br>", $groupInfo[1][0],
 			$groupInfo[1][1], $groupInfo[1][2], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
 			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
 		}

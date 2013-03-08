@@ -249,25 +249,25 @@
 		
 			// Setup Plaintext Message
 			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!\r\n\r\n";
-			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! Attached is a '.
-			'facilitator application we ask all potential facilitators (for either curriculum) to complete. '.
-			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). You may also fax '.
+			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! \r\nAttached is a '.
+			'facilitator application we ask all potential facilitators (for either curriculum) to complete. \r\n'.
+			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). \r\nYou may also fax '.
 			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
-			'center. Once we receive your application, Pastor John will follow up with you for a short '.
+			'center. \r\nOnce we receive your application, Pastor John will follow up with you for a short '.
 			'interview.\r\n';			
-			$strBody .= 'If you have any questions or concerns please feel free to contact me.\r\n';			
+			$strBody .= 'If you have any questions or concerns please feel free to contact me.\r\n\r\n';			
 			$strBody .= 'Blessings,\r\n Andrea';		
 			$objMessage->Body = $strBody;
 		
 			// Also setup HTML message (optional)
 			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!<br><br>";
-			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! Attached is a '.
-			'facilitator application we ask all potential facilitators (for either curriculum) to complete. '.
-			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). You may also fax '.
+			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! <br>Attached is a '.
+			'facilitator application we ask all potential facilitators (for either curriculum) to complete. <br>'.
+			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). <br>You may also fax '.
 			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
-			'center. Once we receive your application, Pastor John will follow up with you for a short '.
-			'interview.<br>';			
-			$strBody .= 'If you have any questions or concerns please feel free to contact me.<br>';			
+			'center. <br>Once we receive your application, Pastor John will follow up with you for a short '.
+			'interview.<br><br>';			
+			$strBody .= 'If you have any questions or concerns please feel free to contact me.<br><br>';			
 			$strBody .= 'Blessings,<br> Andrea';	
 			$objMessage->HtmlBody = $strBody;
 		
