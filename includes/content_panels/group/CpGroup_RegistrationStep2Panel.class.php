@@ -11,6 +11,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 	public $chkDayOfWeek;
 	public $chkAvailability;
 	public $lblRegistrantInfo;
+	public $intFacilitatorRoleId;
 	protected $strMethodCallBack;
 	
 	public function __construct($objParentObject,$objRegistrant,$intPersonId, $strMethodCallBack, $strControlId = null) {
@@ -76,6 +77,14 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		$this->btnAssign->Text = 'Assign '.$this->objRegistrant->FirstName.' '.$this->objRegistrant->LastName. ' to the selected groups';
 		$this->btnAssign->CssClass = 'primary';
 		$this->btnAssign->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAssign_Click'));
+		
+		$this->intFacilitatorRoleId = 0;
+		foreach(GroupRole::LoadAll() as $objGroupRole) {
+			if(($objGroupRole->Name == 'Facilitator')&&
+			($objGroupRole->MinistryId == Ministry::LoadByToken('growth')->Id)) {
+				$this->intFacilitatorRoleId = $objGroupRole->Id;
+			}
+		}
 	}
 	
 	public function dtgGroups_Refresh() {
@@ -120,17 +129,10 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		return GrowthGroupLocation::Load($objGrowthGroup->GrowthGroupLocationId)->Location;
 	}
 	public function RenderFacilitator(GrowthGroup $objGrowthGroup) {
-		$intFacilitatorRoleId = 0;
-		foreach(GroupRole::LoadAll() as $objGroupRole) {
-			if(($objGroupRole->Name == 'Facilitator')&&
-			    ($objGroupRole->MinistryId == Ministry::LoadByToken('growth')->Id)) {
-				$intFacilitatorRoleId = $objGroupRole->Id;
-			}
-		}
 		$strReturn = '';
 		$objGroupParticipants = GroupParticipation::LoadArrayByGroupId($objGrowthGroup->GroupId);
 		foreach($objGroupParticipants as $objParticipant) {
-			if($objParticipant->GroupRoleId == $intFacilitatorRoleId) {
+			if($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) {
 				$objPerson = Person::Load($objParticipant->PersonId);
 				$strReturn = sprintf('%s %s',$objPerson->FirstName, $objPerson->LastName );
 			}			
@@ -161,12 +163,96 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		$this->objRegistrant->ProcessedFlag = true;
 		$this->objRegistrant->Save();
 		
+		// GJS: Send email to both Person and facilitator. CC Andrea
+		$this->SendMessage();
+		
 		// Hide panels and refresh the participants page
 		// by calling the Form's Method CallBack, passing in "true" to state that we've made an update
         $strMethodCallBack = $this->strMethodCallBack;
         $this->objForm->$strMethodCallBack(true);
 	}
 	
+	public function SendMessage() {
+		$facilitatorList = array();
+		$groupInfo = array();
+		// Get information for each selected group
+		foreach($this->rbtnSelectArray as $rbtnSelect) {
+			if($rbtnSelect->Checked) {
+				$objGroup = Group::Load($rbtnSelect->ActionParameter);
+				$objGroupParticipants = GroupParticipation::LoadArrayByGroupId($objGroup->Id);
+				foreach($objGroupParticipants as $objParticipant) {
+					if($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) {
+						$objPerson = Person::Load($objParticipant->PersonId);
+						$facilitatorList[] = $objPerson;
+					}
+				}
+				$ggGroup = GrowthGroup::Load($rbtnSelect->ActionParameter);				
+				$groupInfo[] = array($ggGroup->GrowthGroupLocation->Location,
+					GrowthGroupDayType::ToString($ggGroup->GrowthGroupDayTypeId),
+					$ggGroup->StartTime);
+			}
+		}
+		
+		// Set debug mode
+		//QEmailServer::$TestMode = true;
+		//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+		
+		QEmailServer::$SmtpServer = SMTP_SERVER;
+		
+		// Create a new message
+		// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
+		$objMessage = new QEmailMessage();
+		$objMessage->From = 'Andrea Alo <andrea.alo@alcf.net>';
+		$objMessage->To = $this->objRegistrant->Email;
+		$objMessage->Bcc = 'andrea.alo@alcf.net';
+		$objMessage->Subject = 'Invitation to Growth Groups';
+		
+		// Setup Plaintext Message
+		$strBody = "Dear ".$this->objRegistrant->FirstName .",\r\n\r\n";
+		$strBody .= "Thank you so much for your patience! Below is the information on two Growth Groups in your area. Please contact the facilitators below for more information about visiting. I've copied them on this e-mail so that they will know of your interest.";
+		$strBody .= sprintf("%s %s\r\n%s\r\n%s\r\n",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
+			$this->objRegistrant->Phone, $this->objRegistrant->Email);
+		
+		if(count($groupInfo) >= 1) {
+			$strBody .= sprintf("%s, %s, %s\r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[0][0],
+				$groupInfo[0][1], $groupInfo[0][2], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
+				Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
+				$objMessage->Cc = Email::Load($facilitatorList[0]->PrimaryEmailId)->Address;
+		}
+		if(count($groupInfo) >= 2) {
+			$strBody .= sprintf("%s, %s, %s\r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[1][0],
+			$groupInfo[1][1], $groupInfo[1][2], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
+			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
+			$objMessage->Cc .= ', '.Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
+		}
+		$strBody .= 'Regards, \r\nAndrea Alo';
+		$objMessage->Body = $strBody;
+		
+		// Also setup HTML message (optional)
+		$strBody = "Dear ".$this->objRegistrant->FirstName .',<br/><br/>';
+		$strBody .= "Thank you so much for your patience! Below is the information on two Growth Groups
+in your area. <br>Please contact the facilitators below for more information about visiting. I have copied them on this e-mail so that they will know of your interest.<br><br>";
+		
+		$strBody .= sprintf("%s %s<br>%s<br>%s<br>",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
+		$this->objRegistrant->Phone, $this->objRegistrant->Email);
+		
+		if(count($groupInfo) >= 1) {
+			$strBody .= sprintf("%s, %s, %s\<br>Facilitator: %s %s<br>%s<br>", $groupInfo[0][0],
+			$groupInfo[0][1], $groupInfo[0][2], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
+			Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
+		}
+		if(count($groupInfo) >= 2) {
+			$strBody .= sprintf("%s, %s, %s<br><b>Facilitator:</b> %s %s<br>%s<br>", $groupInfo[1][0],
+			$groupInfo[1][1], $groupInfo[1][2], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
+			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
+		}
+		$strBody .= 'Regards,<br/><b>Andrea Alo</b>';
+		$objMessage->HtmlBody = $strBody;
+		
+		// Add random/custom email headers
+		$objMessage->SetHeader('x-application', 'Growth Groups Ministry');	
+		QEmailServer::Send($objMessage);
+	}
 	public function dtgGroups_Bind() {
 		$objConditions = QQ::All();
 		$objClauses = array();
