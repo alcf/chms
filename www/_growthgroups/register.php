@@ -211,6 +211,10 @@
 					$this->objGroupRegistration->AssociateGrowthGroupStructureAsGroupstructure(GrowthGroupStructure::Load($chkGroup->Name));
 				}
 			}
+			// Send Facilitator Application if user selected to be a Facilitator
+			if($this->lstParticipationType->SelectedName == 'Facilitator') {
+				$this->SendMessage();
+			}
 			QApplication::Redirect('/success.php');
 		}
 		
@@ -226,6 +230,54 @@
 			   ($this->lstParticipationType->SelectedName == 'Visitor')) {
 				$this->lblMessage->Text = '';
 			}
+		}
+		
+		public function SendMessage() {			
+			// Set debug mode
+			//QEmailServer::$TestMode = true;
+			//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+		
+			QEmailServer::$SmtpServer = SMTP_SERVER;
+		
+			// Create a new message
+			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
+			$objMessage = new QEmailMessage();
+			$objMessage->From = 'Andrea Alo <andrea.alo@alcf.net>';
+			$objMessage->To = $this->objGroupRegistration->Email;
+			$objMessage->Bcc = 'andrea.alo@alcf.net';
+			$objMessage->Subject = 'Invitation to Growth Groups';
+		
+			// Setup Plaintext Message
+			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!\r\n\r\n";
+			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! Attached is a '.
+			'facilitator application we ask all potential facilitators (for either curriculum) to complete. '.
+			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). You may also fax '.
+			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
+			'center. Once we receive your application, Pastor John will follow up with you for a short '.
+			'interview.\r\n';			
+			$strBody .= 'If you have any questions or concerns please feel free to contact me.\r\n';			
+			$strBody .= 'Blessings,\r\n Andrea';		
+			$objMessage->Body = $strBody;
+		
+			// Also setup HTML message (optional)
+			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!<br><br>";
+			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! Attached is a '.
+			'facilitator application we ask all potential facilitators (for either curriculum) to complete. '.
+			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). You may also fax '.
+			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
+			'center. Once we receive your application, Pastor John will follow up with you for a short '.
+			'interview.<br>';			
+			$strBody .= 'If you have any questions or concerns please feel free to contact me.<br>';			
+			$strBody .= 'Blessings,<br> Andrea';	
+			$objMessage->HtmlBody = $strBody;
+		
+			// Add the attachment
+			$objFile = new QEmailAttachment( __DOCROOT__ . '/../file_assets/FacilitatorApplication.doc');
+			$objMessage->AddAttachment($objFile);
+			
+			// Add random/custom email headers
+			$objMessage->SetHeader('x-application', 'Growth Groups Ministry');
+			QEmailServer::Send($objMessage);
 		}
 	}
 	

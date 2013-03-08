@@ -225,13 +225,16 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
 			$objMessage->Cc .= ', '.Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
 		}
+		$strBody .= '\r\n* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the'.
+					'group is a good fit for you.\r\n';
 		$strBody .= 'Regards, \r\nAndrea Alo';
 		$objMessage->Body = $strBody;
 		
 		// Also setup HTML message (optional)
 		$strBody = "Dear ".$this->objRegistrant->FirstName .',<br/><br/>';
-		$strBody .= "Thank you so much for your patience! Below is the information on two Growth Groups
-in your area. <br>Please contact the facilitators below for more information about visiting. I have copied them on this e-mail so that they will know of your interest.<br><br>";
+		$strBody .= 'Thank you so much for your patience! Below is the information on two Growth Groups'.
+					'in your area. <br>Please contact the facilitators below for more information about visiting.'.
+					' I have copied them on this e-mail so that they will know of your interest.<br><br>';
 		
 		$strBody .= sprintf("%s %s<br>%s<br>%s<br>",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
 		$this->objRegistrant->Phone, $this->objRegistrant->Email);
@@ -246,6 +249,8 @@ in your area. <br>Please contact the facilitators below for more information abo
 			$groupInfo[1][1], $groupInfo[1][2], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
 			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
 		}
+		$strBody .= '<br>* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the'.
+					'group is a good fit for you.<br>';
 		$strBody .= 'Regards,<br/><b>Andrea Alo</b>';
 		$objMessage->HtmlBody = $strBody;
 		
