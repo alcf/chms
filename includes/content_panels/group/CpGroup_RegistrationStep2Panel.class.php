@@ -188,8 +188,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 				}
 				$ggGroup = GrowthGroup::Load($rbtnSelect->ActionParameter);				
 				$groupInfo[] = array($ggGroup->GrowthGroupLocation->Location,
-					GrowthGroupDayType::ToString($ggGroup->GrowthGroupDayTypeId),
-					$ggGroup->StartTime);
+					$ggGroup->MeetingInfo);
 			}
 		}
 		
@@ -209,19 +208,19 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		
 		// Setup Plaintext Message
 		$strBody = "Dear ".$this->objRegistrant->FirstName .",\r\n\r\n";
-		$strBody .= "Thank you so much for your patience! Below is the information on two Growth Groups in your area. Please contact the facilitators below for more information about visiting. I've copied them on this e-mail so that they will know of your interest.";
+		$strBody .= "Thank you for your interest in Growth Groups! Below is the information on two Growth Groups in your area. Please contact the facilitators below for more information about visiting. I've copied them on this e-mail so that they will know of your interest.";
 		$strBody .= sprintf("%s %s\r\n%s\r\n%s\r\n\r\n",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
 			$this->objRegistrant->Phone, $this->objRegistrant->Email);
 		
 		if(count($groupInfo) >= 1) {
-			$strBody .= sprintf("%s, %s, %s\r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[0][0],
-				$groupInfo[0][1], $groupInfo[0][2], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
+			$strBody .= sprintf("%s, %s \r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[0][0],
+				$groupInfo[0][1], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
 				Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
 				$objMessage->Cc = Email::Load($facilitatorList[0]->PrimaryEmailId)->Address;
 		}
 		if(count($groupInfo) >= 2) {
-			$strBody .= sprintf("%s, %s, %s\r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[1][0],
-			$groupInfo[1][1], $groupInfo[1][2], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
+			$strBody .= sprintf("%s, %s \r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[1][0],
+			$groupInfo[1][1], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
 			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
 			$objMessage->Cc .= ', '.Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
 		}
@@ -232,7 +231,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		
 		// Also setup HTML message (optional)
 		$strBody = "Dear ".$this->objRegistrant->FirstName .',<br/><br/>';
-		$strBody .= 'Thank you so much for your patience! Below is the information on two Growth Groups'.
+		$strBody .= 'Thank you for your interest in Growth Groups! Below is the information on two Growth Groups'.
 					'in your area. <br>Please contact the facilitators below for more information about visiting.'.
 					' I have copied them on this e-mail so that they will know of your interest.<br><br>';
 		
@@ -240,13 +239,13 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		$this->objRegistrant->Phone, $this->objRegistrant->Email);
 		
 		if(count($groupInfo) >= 1) {
-			$strBody .= sprintf("<b>Option 1</b><br>%s, %s, %s\<br>Facilitator: %s %s<br>%s<br>", $groupInfo[0][0],
-			$groupInfo[0][1], $groupInfo[0][2], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
+			$strBody .= sprintf("<b>Option 1</b><br>%s, %s<br>Facilitator: %s %s<br>%s<br>", $groupInfo[0][0],
+			$groupInfo[0][1], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
 			Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
 		}
 		if(count($groupInfo) >= 2) {
-			$strBody .= sprintf("<b>Option 2</b><br>%s, %s, %s<br><b>Facilitator:</b> %s %s<br>%s<br>", $groupInfo[1][0],
-			$groupInfo[1][1], $groupInfo[1][2], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
+			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Facilitator:</b> %s %s<br>%s<br>", $groupInfo[1][0],
+			$groupInfo[1][1], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
 			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
 		}
 		$strBody .= '<br>* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the'.
