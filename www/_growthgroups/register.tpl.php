@@ -3,13 +3,13 @@
 	<h1>Sign Up For a Growth Group</h1>
 	
 	<?php $this->txtFirstName->RenderWithName(); ?>
-	<?php $this->txtLastName->RenderWithName(); ?>	<?php $this->lstGender->RenderWithName(); ?>
+	<?php $this->txtLastName->RenderWithName(); ?>
 	<?php $this->txtAddress->RenderWithName(); ?>
 	<?php $this->txtCity->RenderWithName(); ?>
 	<?php $this->txtZipCode->RenderWithName(); ?>
-	<?php $this->txtComments->RenderWithName(); ?>
 	<?php $this->txtPhoneNumber->RenderWithName(); ?>
-	<?php $this->txtEmail->RenderWithName(); ?>
+	<?php $this->txtEmail->RenderWithName(); ?>	<?php $this->txtComments->RenderWithName(); ?>
+	<?php $this->lstGender->RenderWithName(); ?>
 	<?php $this->lstSource->RenderWithName(); ?>
 
 	<?php  $this->lstParticipationType->RenderWithName();?>
