@@ -119,9 +119,12 @@
 
 		public function RefreshGeoCode() {
 			$xmlGeocode = GoogleGeoCoder::GeoCode(sprintf('%s and %s, %s', $this->CrossStreet1, $this->CrossStreet2, $this->ZipCode));
-			$this->Latitude = $xmlGeocode['lat'];
-			$this->Longitude = $xmlGeocode['lng'];
-			$this->Accuracy = $xmlGeocode['accuracy'];
+			if(array_key_exists('lat',$xmlGeocode))
+				$this->Latitude = $xmlGeocode['lat'];
+			if(array_key_exists('lng',$xmlGeocode))
+				$this->Longitude = $xmlGeocode['lng'];
+			if(array_key_exists('accuracy',$xmlGeocode))
+				$this->Accuracy = $xmlGeocode['accuracy'];
 		}
 		
 		// Override or Create New Load/Count methods
