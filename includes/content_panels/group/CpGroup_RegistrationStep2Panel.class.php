@@ -231,9 +231,9 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		
 		// Also setup HTML message (optional)
 		$strBody = "Dear ".$this->objRegistrant->FirstName .',<br/><br/>';
-		$strBody .= 'Thank you for your interest in Growth Groups! Below is the information on two Growth Groups'.
-					'in your area. <br>Please contact the facilitators below for more information about visiting.'.
-					' I have copied them on this e-mail so that they will know of your interest.<br><br>';
+		$strBody .= 'Thank you for your interest in Growth Groups! Below is the information on two Growth Groups '.
+					'in your area. <br>Please contact the facilitators below for more information about visiting. '.
+					'I have copied them on this e-mail so that they will know of your interest.<br><br>';
 		
 		$strBody .= sprintf("%s %s<br>%s<br>%s<br><br>",$this->objRegistrant->FirstName, $this->objRegistrant->LastName,
 		$this->objRegistrant->Phone, $this->objRegistrant->Email);
