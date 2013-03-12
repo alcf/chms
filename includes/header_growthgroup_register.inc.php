@@ -14,7 +14,7 @@
 				&nbsp;
 			</div></a>
 			<div style="float: left;  padding-top: 10px;">
-				<img src="/images/GG_title.png"></img>
+				<img src="/images/GG_register_title.png"></img>
 			</div>	
 		</div>
 <?php if (!QApplication::IsBrowser(QBrowserType::InternetExplorer)) { ?>
