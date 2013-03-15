@@ -215,16 +215,19 @@
 			if($this->lstParticipationType->SelectedName == 'Facilitator') {
 				$this->SendMessage();
 			}
+			//Send notification
+			$this->SendNotification();
+			
 			QApplication::Redirect('/success.php');
 		}
 		
 		public function lstParticipationType_Change($strFormId, $strControlId, $strParameter) {
 			if($this->lstParticipationType->SelectedName == 'Host') {
-				$this->lblMessage->Text = 'Note: You must be an ALCF Member to host a Growth Group.';
+				$this->lblMessage->Text = 'Note: You should be an ALCF Member to host a Growth Group.';
 			}
 			if($this->lstParticipationType->SelectedName == 'Facilitator') {
-				$this->lblMessage->Text = 'Note: You must be an ALCF Member to facilitate a Growth Group.';
-				$this->lblMessage->Text .= '<br>You must also fill out a Growth Groups Ministry Facilitation Application which will be sent to you shortly after submitting this Registration Form.';
+				$this->lblMessage->Text = 'Note: You should be an ALCF Member to facilitate a Growth Group.';
+				$this->lblMessage->Text .= '<br>You should also fill out a Growth Groups Ministry Facilitation Application which will be sent to you shortly after submitting this Registration Form.';
 			}
 			if(($this->lstParticipationType->SelectedName == 'Participant') ||
 			   ($this->lstParticipationType->SelectedName == 'Visitor')) {
@@ -232,6 +235,40 @@
 			}
 		}
 		
+		public function SendNotification() {
+			// Set debug mode
+			//QEmailServer::$TestMode = true;
+			//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+			
+			QEmailServer::$SmtpServer = SMTP_SERVER;
+			
+			// Create a new message
+			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
+			$objMessage = new QEmailMessage();
+			$objMessage->From = 'Andrea Alo <andrea.alo@alcf.net>';
+			$objMessage->To = 'Andrea Alo <andrea.alo@alcf.net>';
+			$objMessage->Subject = 'Notification of Growth Group Registration';
+			
+			// Setup Plaintext Message
+			$strBody = "Hello Growth Group Director (Andrea)!\r\n\r\n";
+			$strBody .= 'r\n';			
+			$strBody .= 'Someone just registered to join a Growth Group!\r\n\r\n';
+			$strBody .= sprintf("Their Details:\r\n%s %s\r\nemail: %s \r\n\r\n",$this->objGroupRegistration->FirstName,$this->objGroupRegistration->LastName,$this->objGroupRegistration->Email);
+			$strBody .= 'Blessings,\r\n Noah.';
+			$objMessage->Body = $strBody;
+			
+			// Also setup HTML message (optional)
+			$strBody = "Hello Growth Group Director (Andrea)!!<br><br>";
+			$strBody .= 'Someone just registered to join a Growth Group!<br><br>';			
+			$strBody .= sprintf("Their Details:<br>%s %s<br>email: %s<br><br>",$this->objGroupRegistration->FirstName,$this->objGroupRegistration->LastName,$this->objGroupRegistration->Email);
+			$strBody .= 'Blessings,<br> Noah.';
+			
+			$objMessage->HtmlBody = $strBody;
+			
+			// Add random/custom email headers
+			$objMessage->SetHeader('x-application', 'Growth Groups Ministry');
+			QEmailServer::Send($objMessage);
+		}
 		public function SendMessage() {			
 			// Set debug mode
 			//QEmailServer::$TestMode = true;

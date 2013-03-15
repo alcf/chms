@@ -433,7 +433,6 @@ INSERT INTO source_list(id, name) VALUES (10, 'Abundant Living Magazine');
 INSERT INTO growth_group_structure(id, name) VALUES (1, 'Co-ed');
 INSERT INTO growth_group_structure(id, name) VALUES (2, 'Womens');
 INSERT INTO growth_group_structure(id, name) VALUES (3, 'Family-Friendly');
-INSERT INTO growth_group_structure(id, name) VALUES (4, 'Living Lesson');
 INSERT INTO growth_group_structure(id, name) VALUES (5, 'Spanish Speaking');
 INSERT INTO growth_group_structure(id, name) VALUES (6, 'Young Adults');
 INSERT INTO growth_group_structure(id, name) VALUES (7, 'Men\'s');
@@ -441,7 +440,7 @@ INSERT INTO growth_group_structure(id, name) VALUES (8, 'Seniors');
 INSERT INTO growth_group_structure(id, name) VALUES (9, 'Singles');
 INSERT INTO growth_group_structure(id, name) VALUES (10, 'Single Moms');
 INSERT INTO growth_group_structure(id, name) VALUES (11, 'Couples');
-INSERT INTO growth_group_structure(id, name) VALUES (12, 'Discipleship');
+INSERT INTO growth_group_structure(id, name) VALUES (12, '6-week Discipleship Group');
 
 INSERT INTO availability_status(id, name) VALUES (1,'Open');
 INSERT INTO availability_status(id, name) VALUES (2,'Closed');
