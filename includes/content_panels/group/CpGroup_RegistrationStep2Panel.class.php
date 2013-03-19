@@ -12,6 +12,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 	public $chkAvailability;
 	public $lblRegistrantInfo;
 	public $intFacilitatorRoleId;
+	public $intGroupContactRoleId;
 	protected $strMethodCallBack;
 	
 	public function __construct($objParentObject,$objRegistrant,$intPersonId, $strMethodCallBack, $strControlId = null) {
@@ -79,10 +80,15 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		$this->btnAssign->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAssign_Click'));
 		
 		$this->intFacilitatorRoleId = 0;
+		$this->intGroupContactRoleId = 0;
 		foreach(GroupRole::LoadAll() as $objGroupRole) {
 			if(($objGroupRole->Name == 'Facilitator')&&
 			($objGroupRole->MinistryId == Ministry::LoadByToken('growth')->Id)) {
 				$this->intFacilitatorRoleId = $objGroupRole->Id;
+			}
+			if(($objGroupRole->Name == 'Group Contact')&&
+			($objGroupRole->MinistryId == Ministry::LoadByToken('growth')->Id)) {
+				$this->intGroupContactRoleId = $objGroupRole->Id;
 			}
 		}
 	}
@@ -180,13 +186,29 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			if($rbtnSelect->Checked) {
 				$objGroup = Group::Load($rbtnSelect->ActionParameter);
 				$objGroupParticipants = GroupParticipation::LoadArrayByGroupId($objGroup->Id);
+				$bFoundContact = false;
+				// Check for Contact person first
 				foreach($objGroupParticipants as $objParticipant) {
-					if(($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) && 
-						($objParticipant->DateEnd == null)) {
-						$objPerson = Person::Load($objParticipant->PersonId);
-						$facilitatorList[] = $objPerson;
+					if(($objParticipant->GroupRoleId == $this->intGroupContactRoleId) &&
+					($objParticipant->DateEnd == null)) {
+						$objContact = Person::Load($objParticipant->PersonId);
+						$facilitatorList[] = $objContact;
+						$bFoundContact = true;
+						break;
 					}
 				}
+				// If contact person not found, grab facilitator
+				if (!$bFoundContact) {
+					foreach($objGroupParticipants as $objParticipant) {
+						if(($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) &&
+						($objParticipant->DateEnd == null)) {
+							$objFacilitator = Person::Load($objParticipant->PersonId);
+							$facilitatorList[] = $objFacilitator;
+							break;
+						}
+					}
+				}				
+				
 				$ggGroup = GrowthGroup::Load($rbtnSelect->ActionParameter);				
 				$groupInfo[] = array(trim(str_replace(range(0,9),'',$objGroup->Name)),
 					$ggGroup->MeetingInfo);
@@ -214,16 +236,28 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			$this->objRegistrant->Phone, $this->objRegistrant->Email);
 		
 		if(count($groupInfo) >= 1) {
-			$strBody .= sprintf("%s, %s \r\nFacilitator: %s %s\r\n%s\r\n\r\n", $groupInfo[0][0],
+			if($facilitatorList[0]->PrimaryEmailId == null) {
+				$emailArray = Email::LoadArrayByPersonId($facilitatorList[0]->Id);
+				$email = $emailArray[0]->Address; // just grab the first one we find
+			} else {
+				$email = Email::Load($facilitatorList[0]->PrimaryEmailId)->Address;
+			}
+			$strBody .= sprintf("%s, %s \r\Contact: %s %s\r\n%s\r\n\r\n", $groupInfo[0][0],
 				$groupInfo[0][1], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
-				Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
-				$objMessage->Cc = Email::Load($facilitatorList[0]->PrimaryEmailId)->Address;
+				$email);
+				$objMessage->Cc = $email;
 		}
 		if(count($groupInfo) >= 2) {
-			$strBody .= sprintf("%s, %s \r\nFacilitator: %s %s\r\n%s\r\n", $groupInfo[1][0],
+			if($facilitatorList[1]->PrimaryEmailId == null) {
+				$emailArray = Email::LoadArrayByPersonId($facilitatorList[1]->Id);
+				$email = $emailArray[0]->Address; // just grab the first one we find
+			} else {
+				$email = Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
+			}
+			$strBody .= sprintf("%s, %s \r\Contact: %s %s\r\n%s\r\n", $groupInfo[1][0],
 			$groupInfo[1][1], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
-			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
-			$objMessage->Cc .= ', '.Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
+			$email);
+			$objMessage->Cc .= ', '.$email;
 		}
 		$strBody .= '\r\n* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the '.
 					'group is a good fit for you.\r\n\r\n';
@@ -240,14 +274,28 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		$this->objRegistrant->Phone, $this->objRegistrant->Email);
 		
 		if(count($groupInfo) >= 1) {
-			$strBody .= sprintf("<b>Option 1</b><br>%s, %s<br>Facilitator: %s %s<br>%s<br><br>", $groupInfo[0][0],
+			if($facilitatorList[0]->PrimaryEmailId == null) {
+				$emailArray = Email::LoadArrayByPersonId($facilitatorList[0]->Id);
+				$email = $emailArray[0]->Address; // just grab the first one we find
+			} else {
+				$email = Email::Load($facilitatorList[0]->PrimaryEmailId)->Address;
+			}
+			$strBody .= sprintf("<b>Option 1</b><br>%s, %s<br>Contact: %s %s<br>%s<br><br>", $groupInfo[0][0],
 			$groupInfo[0][1], $facilitatorList[0]->FirstName, $facilitatorList[0]->LastName,
-			Email::Load($facilitatorList[0]->PrimaryEmailId)->Address);
+			$email);
+			$objMessage->Cc .= ', '.$email;
 		}
 		if(count($groupInfo) >= 2) {
-			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Facilitator:</b> %s %s<br>%s<br>", $groupInfo[1][0],
+			if($facilitatorList[1]->PrimaryEmailId == null) {
+				$emailArray = Email::LoadArrayByPersonId($facilitatorList[1]->Id);
+				$email = $emailArray[0]->Address; // just grab the first one we find
+			} else {
+				$email = Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
+			}
+			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Contact:</b> %s %s<br>%s<br>", $groupInfo[1][0],
 			$groupInfo[1][1], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
-			Email::Load($facilitatorList[1]->PrimaryEmailId)->Address);
+			$email);
+			$objMessage->Cc .= ', '.$email;
 		}
 		$strBody .= '<br>* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the '.
 					'group is a good fit for you.<br><br>';
