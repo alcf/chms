@@ -5,11 +5,11 @@
 	function EscapeCsv($strString) {
 		return '"' . str_replace('"', '""', $strString) . '"';
 	}
-
+	
 	$objSignupForm = SignupForm::Load(QApplication::PathInfo(0));
-	if (!$objSignupForm) QApplication::Redirect('/');
+	if (!$objSignupForm) QApplication::Redirect('/events/');
 
-	if (!$objSignupForm->IsLoginCanView(QApplication::$Login)) QApplication::Redirect('/');
+	if (!$objSignupForm->IsLoginCanView(QApplication::$Login)) QApplication::Redirect('/events/');
 
 	// Disable strict no-cache for IE due to IE issues with downloading no-cache items
 	if (QApplication::IsBrowser(QBrowserType::InternetExplorer)) {
@@ -69,9 +69,15 @@
 						$addressArray = explode(',',$objAnswer->TextValue);
 						print EscapeCsv($addressArray[0]);
 						print ",";
-						print EscapeCsv($addressArray[1]);
+						if(count($addressArray)>=2)
+							print EscapeCsv($addressArray[1]); 
+						else
+							print " ";
 						print ",";
-						print EscapeCsv($addressArray[2]);
+						if(count($addressArray)>=3)
+							print EscapeCsv($addressArray[2]);	
+						else 
+							print " ";					
 						break;
 					case FormQuestionType::Number:
 					case FormQuestionType::Age:
