@@ -181,7 +181,8 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 				$objGroup = Group::Load($rbtnSelect->ActionParameter);
 				$objGroupParticipants = GroupParticipation::LoadArrayByGroupId($objGroup->Id);
 				foreach($objGroupParticipants as $objParticipant) {
-					if($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) {
+					if(($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) && 
+						($objParticipant->DateEnd == null)) {
 						$objPerson = Person::Load($objParticipant->PersonId);
 						$facilitatorList[] = $objPerson;
 					}
