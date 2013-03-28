@@ -58,3 +58,44 @@
 
 	google.load("maps", 2);
 	google.setOnLoadCallback(initialize);
+	/**************************/
+	/* New functions for google maps API V3
+	 **************************/
+	var gmarkers; // Global holder for markers
+	
+	function initializeGmarkers(size) {
+		gmarkers = Array(size);
+	}
+	
+	// This function picks up the click and opens the corresponding info window
+	function markerclick(i) {
+		google.maps.event.trigger(gmarkers[i], "click");
+	} 
+	
+	function addNewMarker(map, number,latitude, longitude, name, meetings, times, type) {
+		var contentString = '<div id="content">'+
+			'<div id="siteNotice">'+
+			'</div>'+ 
+			'<b>' + name + '<b><br>' +
+			'<div id="bodyContent">'+
+			meetings + '<br>' +
+			times + '<br>' +
+			type + '<br>' +
+			'</div>'+
+			'</div>';
+		var infowindow = new google.maps.InfoWindow({
+			content: contentString
+			}); 
+				
+		gmarkers[number-1] = new google.maps.Marker({
+			position: new google.maps.LatLng(latitude,longitude),
+			map: map,
+			animation: google.maps.Animation.DROP,
+			icon : "/images/mapfiles/marker" + number + ".png",
+			title: name
+			});
+		
+			google.maps.event.addListener(gmarkers[number-1], 'click', function() {
+			infowindow.open(map,gmarkers[number-1]);
+			}); 
+	}

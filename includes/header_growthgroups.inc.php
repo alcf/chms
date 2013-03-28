@@ -2,6 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=<?php _p(QApplication::$EncodingType); ?>" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<style type="text/css">
+		      html { height: 100% }
+		      body { height: 100%; margin: 0; padding: 0 }
+		      #map_canvas { height: 100% }
+	    </style>
+			
 		<title>Growth Groups (Abundant Life Christian Fellowship)</title>
 		<script type="text/javascript" src="/assets/js/_core/_qc_packed.js"></script>
 		<style type="text/css">@import url("/scripts/styles.css");</style>

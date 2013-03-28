@@ -239,5 +239,8 @@
 	require(__INCLUDES__ . '/../paypal.local');
 
 	// GMAP (Google Map API)
-	define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
+	//define('GMAP_API_KEY', 'ABQIAAAARBD-e-iQ4SzMmgbx6HWZ2xSpYc8sBaHMR4mhrgLb4OClzEcQdhQqmqHclkjMssBLIb4UArC5EKWvKg');
+	define('GMAP_API_KEY', 'AIzaSyAX4_z5pkjYxueK_tuL3cBXkzTgP8Gj5Hk'); // Just so I can access from my local.
+	
+	define('GMAP_API_KEY_V3', 'AIzaSyAX4_z5pkjYxueK_tuL3cBXkzTgP8Gj5Hk');
 ?>
