@@ -14,10 +14,10 @@
 	    initializeGmarkers(<?php _p($this->objLocation->CountGrowthGroups()); ?>);
 	    <?php
 	    		// Filter Out "inactive" groups
-	    		$i = 0;
+	    		$i = 0; 
 	    		foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) { ?>
 	    	<?php	if ($objGroup->Group->ActiveFlag == true){ 
-	    			$i++;
+	    			$i++; 
 	    	?>
 	    	addNewMarker(map,<?php _p($i);?>,<?php _p($objGroup->Latitude); ?>, <?php _p($objGroup->Longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
 	    	<?php 	}
