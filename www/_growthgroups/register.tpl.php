@@ -1,6 +1,6 @@
 <?php require(__INCLUDES__ . '/header_growthgroup_register.inc.php'); ?>
 <div class='section'>
-	<h1>Sign Up For a Growth Group</h1>
+	<h1>Sign Up For a Growth Group or a 6-Week Discipleship Group</h1>
 	
 	<?php $this->txtFirstName->RenderWithName(); ?>
 	<?php $this->txtLastName->RenderWithName(); ?>

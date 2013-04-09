@@ -147,3 +147,4 @@
 	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
 	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #666; color: #999; }
 	.indentedsection { margin-left: 230px;}
+	div.section h1 { font:'sans-serif','Helvetica', 'Times' 28px; font-weight: 100;}
