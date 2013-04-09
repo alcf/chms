@@ -41,6 +41,7 @@
 			
 			$this->lblMessage = new QLabel($this);
 			$this->lblMessage->FontBold = true;
+			$this->lblMessage->ForeColor = 'red';
 			$this->lblMessage->Visible = false;
 		}
 		
@@ -69,7 +70,7 @@
 								}
 							}
 						}
-					}
+					}					
 					if ($success) {
 						$strUnsubscribedList = substr($strUnsubscribedList,0,strlen($strUnsubscribedList)-1);
 						QApplication::Redirect('/unsubscribe/success.php/'.urlencode($strUnsubscribedList));
@@ -79,6 +80,7 @@
 			if ($objCommunicationListEntry) {
 				$strUnsubscribedList = '';
 				$success = false;
+				$bChecked = false;
 				foreach ($this->chkBtnListArray as $objItem) {
 					if ($objItem->Checked) {
 						$this->objList = CommunicationList::LoadByToken($objItem->Name);
@@ -98,12 +100,26 @@
 							}
 						}
 					}
-				}
+				}			
 				if ($success) {
 					$strUnsubscribedList = substr($strUnsubscribedList,0,strlen($strUnsubscribedList)-1);
 					QApplication::Redirect('/unsubscribe/success.php/'.urlencode($strUnsubscribedList));
 				}
-			}						
+			}
+			$bChecked = false;
+			foreach ($this->chkBtnListArray as $objItem) {
+				if ($objItem->Checked) {
+					$bChecked = true;
+					break;
+				}
+			}
+			if(!$bChecked) {
+				$this->lblMessage->Text = 'You must select a list to subscribe to.';
+				$this->lblMessage->Visible = true;
+			} else {
+				$this->lblMessage->Text = 'Failed to unsubscribe from the list. The email may not exist.';
+				$this->lblMessage->Visible = true;
+			}
 		}
 	}
 	

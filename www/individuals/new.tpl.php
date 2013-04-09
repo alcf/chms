@@ -106,6 +106,7 @@
 <?php $this->lstCanMail->RenderWithName(); ?>
 <?php $this->lstCanEmail->RenderWithName(); ?>
 <?php $this->lstCanPhone->RenderWithName(); ?>
+<?php $this->chkAddToNewsletter->RenderWithName(); ?>
 </div>
 
 <h3>Attribute Information</h3>

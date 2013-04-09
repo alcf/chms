@@ -24,6 +24,7 @@
 		protected $lstCanMail;
 		protected $lstCanEmail;
 		protected $lstCanPhone;
+		protected $chkAddToNewsletter;
 
 		protected $txtSpouseFirstName;
 		protected $txtSpouseMiddleName;
@@ -154,6 +155,10 @@
 			$this->lstCanPhone->Name = 'Okay to Phone';
 			$this->lstCanPhone->AddItem('Yes', true, $this->mctPerson->Person->CanPhoneFlag);
 			$this->lstCanPhone->AddItem('No', false, !$this->mctPerson->Person->CanPhoneFlag);
+			
+			$this->chkAddToNewsletter = new QCheckBox($this);
+			$this->chkAddToNewsletter->Name = 'Add to Church Newsletter Email';
+			$this->chkAddToNewsletter->Checked = true;
 		}
 
 		protected function CreateControlsForSpouse() {
@@ -616,7 +621,7 @@
 		}
 
 		protected function AddToChurchEmailList() {
-			if($this->mctPerson->Person->CanEmailFlag) {
+			if($this->chkAddToNewsletter->Checked) {
 				// First create a CommunicationListEntry for the person
 				$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->txtPersonEmail->Text);
 

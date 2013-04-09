@@ -87,11 +87,33 @@
 							$this->lblMessage->ForeColor = 'red';
 							$this->lblMessage->Visible = true;
 						} else {
-							$this->objList->AssociateCommunicationListEntry($objCommunicationListEntry);
+							// See if Person exists in Noah, and if so, then associate. Else associate the Communications Entry
+							$bFoundPerson = false;
+							$emailArray = Email::LoadArrayByAddress($this->txtEmail->Text);
+							foreach($emailArray as $email) {
+								$objPerson = Person::LoadByPrimaryEmailId($email->Id);
+								if($objPerson) {
+									if(!$this->objList->IsPersonAssociated($objPerson)) {
+										$bFoundPerson = true;
+										$this->objList->AssociatePerson($objPerson);
+									} else {
+										$this->lblMessage->Text .= 'You are already subscribed to the "'.$objItem->Name.'" list';
+										$this->lblMessage->ForeColor = 'red';
+										$this->lblMessage->Visible = true;
+									}
+								}								
+							}
+							if(!$bFoundPerson){
+								$this->objList->AssociateCommunicationListEntry($objCommunicationListEntry);
+							}
 							$strSubscribedList .= $objItem->Name .',';
 							$success = true;
 						}
 					}
+				} else {
+					$this->lblMessage->Text .= 'You must select a list to subscribe to.';
+					$this->lblMessage->ForeColor = 'red';
+					$this->lblMessage->Visible = true;
 				}
 			}
 			if ($success) {
