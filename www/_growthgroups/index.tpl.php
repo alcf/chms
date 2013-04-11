@@ -15,11 +15,22 @@
 	    <?php
 	    		// Filter Out "inactive" groups
 	    		$i = 0; 
+	    		$locationArray = array();
 	    		foreach ($this->objLocation->GetGrowthGroupArray(QQ::OrderBy(QQN::GrowthGroup()->Group->Name)) as $objGroup) { ?>
 	    	<?php	if ($objGroup->Group->ActiveFlag == true){ 
 	    			$i++; 
+	    			$latitude = $objGroup->Latitude;
+	    			$longitude = $objGroup->Longitude;
+	    			// Check for duplicate locations and if exists, move slightly
+	    			if(array_key_exists(strval($objGroup->Latitude), $locationArray)) {
+	    				if($locationArray[strval($objGroup->Latitude)]== $objGroup->Longitude) {
+	    					$latitude += 0.005;
+	    					$longitude += 0.005;
+	    				}
+	    			}
+	    			$locationArray[strval($objGroup->Latitude)] = $objGroup->Longitude;
 	    	?>
-	    	addNewMarker(map,<?php _p($i);?>,<?php _p($objGroup->Latitude); ?>, <?php _p($objGroup->Longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
+	    	addNewMarker(map,<?php _p($i);?>,<?php _p($latitude); ?>, <?php _p($longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
 	    	<?php 	}
 	    		}; ?>
 	  }
