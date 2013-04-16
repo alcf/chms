@@ -17,6 +17,8 @@
 </div>
 <div class='section'>
 		<?php $this->txtEmail->RenderWithName();?>
+		<?php $this->lstTerminationReason->RenderWithName();?>
+		<?php $this->txtOther->RenderWithName();?>
 		<?php $this->btnUnsubscribe->Render();?>
 		<br><br>
 		<?php $this->lblMessage->Render(); ?>

@@ -8,8 +8,11 @@
 		protected $lblListName;
 		protected $lblListDecription;
 		protected $txtEmail;
+		protected $lstTerminationReason;
+		protected $txtOther;
 		protected $btnUnsubscribe;
 		protected $lblMessage;
+		protected $objAttribute;
 		
 		protected $chkBtnListArray;
 		
@@ -32,7 +35,19 @@
 			$this->txtEmail = new QTextBox($this);
 			$this->txtEmail->Name = 'Email: ';
 			$this->txtEmail->Visible = true;
-									
+			
+			$this->lstTerminationReason = new QListBox($this);
+			$this->lstTerminationReason->Name = 'Reason for unsubscribing: ';
+			$this->objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, 'Unsubscribe From Church Newsletter'));
+			foreach ($this->objAttribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
+					$this->lstTerminationReason->AddItem($objOption->Name, $objOption->Id);
+			$this->lstTerminationReason->AddItem('- Other... -', -1);
+			$this->lstTerminationReason->AddAction(new QChangeEvent(), new QAjaxAction('lstTerminationReason_Change'));
+
+			$this->txtOther = new QTextBox($this);
+			$this->txtOther->Name = 'Other';
+			$this->txtOther->Visible = false;
+			
 			$this->btnUnsubscribe = new QButton($this);
 			$this->btnUnsubscribe->Name = 'Unsubscribe';
 			$this->btnUnsubscribe->Text = 'Unsubscribe';
@@ -43,6 +58,14 @@
 			$this->lblMessage->FontBold = true;
 			$this->lblMessage->ForeColor = 'red';
 			$this->lblMessage->Visible = false;
+		}
+		
+		protected function lstTerminationReason_Change() {
+			if($this->lstTerminationReason->SelectedValue == -1) {
+				$this->txtOther->Visible = true;
+			} else {
+				$this->txtOther->Visible = false;
+			}
 		}
 		
 		protected function btnUnsubscribe_Click() {
@@ -60,6 +83,40 @@
 								$bFound = false;
 								if($this->objList->IsPersonAssociated($objPerson)) {
 									$this->objList->UnassociatePerson($objPerson);
+									
+									// If church newletter is the one being unsubscribed, document reason.	
+									if ($this->lstTerminationReason->SelectedValue == -1) {
+										$objAttributeOption = new AttributeOption();
+										$objAttributeOption->AttributeId = $this->objAttributeValue->AttributeId;
+										$objAttributeOption->Name = trim($this->txtOther->Text);
+										$objAttributeOption->Save();
+										
+										$objAttributeValue = AttributeValue::LoadByAttributeIdPersonId($this->objAttribute->Id, $objPerson->Id);
+										if($objAttributeValue) {
+											$objAttributeValue->SingleAttributeOption = $objAttributeOption;
+											$objAttributeValue->Save();
+										} else {
+											$objAttributeValue = new AttributeValue();
+											$objAttributeValue->AttributeId = $this->objAttribute->Id;
+											$objAttributeValue->PersonId = $objPerson->Id;
+											$objAttributeValue->SingleAttributeOption = $objAttributeOption;
+											$objAttributeValue->Save();
+											$objPerson->AssociateAttributeValue($objAttributeValue);											
+										}
+									} else {
+										$objAttributeValue = AttributeValue::LoadByAttributeIdPersonId($this->objAttribute->Id, $objPerson->Id);
+										if($objAttributeValue) { 
+											$objAttributeValue->SingleAttributeOptionId = $this->lstTerminationReason->SelectedValue;
+											$objAttributeValue->Save();
+										} else {
+											$objAttributeValue = new AttributeValue();
+											$objAttributeValue->AttributeId = $this->objAttribute->Id;
+											$objAttributeValue->PersonId = $objPerson->Id;
+											$objAttributeValue->SingleAttributeOptionId = $this->lstTerminationReason->SelectedValue;
+											$objAttributeValue->Save();
+											$objPerson->AssociateAttributeValue($objAttributeValue);
+										}
+									}
 									$strUnsubscribedList .= $objItem->Text .',';
 									$success = true;
 									$bFound = true;
@@ -73,7 +130,7 @@
 					}					
 					if ($success) {
 						$strUnsubscribedList = substr($strUnsubscribedList,0,strlen($strUnsubscribedList)-1);
-						QApplication::Redirect('/unsubscribe/success.php/'.urlencode($strUnsubscribedList));
+						QApplication::Redirect('/unsubscribe/success.php/'.urlencode($strUnsubscribedList).'/'.$objPerson->Id);
 					}
 				}
 			}
