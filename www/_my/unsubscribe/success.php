@@ -128,8 +128,8 @@
 				$email = $objPerson->_Email->Address;
 			
 			// Set debug mode
-			QEmailServer::$TestMode = true;
-			QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+			//QEmailServer::$TestMode = true;
+			//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
 				
 			QEmailServer::$SmtpServer = SMTP_SERVER;
 				
