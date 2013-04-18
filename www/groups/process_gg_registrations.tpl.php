@@ -6,7 +6,9 @@
 	<p><?php $this->dtgGroupRegistrations->Render(); ?></p>
 	<p><?php $this->chkShowInactive->Render() ?></p>
 </div>
-
+<div class="section">
+<span class="subhead"><a target="_blank" href="/groups/export_registrations_to_excel.php">Export to Excel</a></span>
+</div>
 <?php $this->pnlStep1->Render(); ?>
 <?php $this->pnlStep2->Render(); ?>
 <!--  

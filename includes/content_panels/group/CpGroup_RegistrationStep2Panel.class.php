@@ -149,7 +149,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 	public function btnAssign_Click($strFormId, $strControlId, $strParameter) {
 		$objPerson = Person::Load($this->intPersonId);
 		$intRoleId = $this->objRegistrant->GroupRoleId;
-		 			
+		$this->objRegistrant->GroupsPlaced = '';
 		foreach($this->rbtnSelectArray as $rbtnSelect) {
 			if($rbtnSelect->Checked) {
 				$objGroup = Group::Load($rbtnSelect->ActionParameter);	
@@ -162,10 +162,13 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 				$dttDateArray[] = array($dtDateStart, null);
 										
 				// Go ahead and create the record
-				$objGroup->AddPerson($objPerson, $intRoleId, $dtDateStart, null);				
+				$objGroup->AddPerson($objPerson, $intRoleId, $dtDateStart, null);	
+				$this->objRegistrant->GroupsPlaced .= $objGroup->Name . ',';
 			}
 			
 		}
+		$this->objRegistrant->GroupsPlaced = substr($this->objRegistrant->GroupsPlaced,0,strlen($this->objRegistrant->GroupsPlaced)-1);
+		$this->objRegistrant->DateProcessed = new QDateTime(QDateTime::Now);
 		$this->objRegistrant->ProcessedFlag = true;
 		$this->objRegistrant->Save();
 		

@@ -35,22 +35,25 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$this->dtgGroupRegistrations->MetaAddColumn('Gender');
 			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Address', '<?= $_FORM->RenderAddress($_ITEM); ?>', 'HtmlEntities=false'));
 			$this->dtgGroupRegistrations->MetaAddColumn('Email','Width=100px');
-			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Source', '<?= $_FORM->RenderSource($_ITEM); ?>', 'HtmlEntities=false','Width=200px'));						
+			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Source', '<?= $_FORM->RenderSource($_ITEM); ?>', 'HtmlEntities=false','Width=200px',array('OrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->SourceList->Name), 'ReverseOrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->SourceList->Name, false))));						
 			$this->dtgGroupRegistrations->MetaAddColumn('DateReceived');
-			$this->dtgGroupRegistrations->MetaAddColumn('PreferredLocation1');
-			$this->dtgGroupRegistrations->MetaAddColumn('PreferredLocation2');			
-			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Requested Group Role', '<?= $_FORM->RenderGroupRole($_ITEM); ?>', 'HtmlEntities=false'));				
+			$this->dtgGroupRegistrations->MetaAddColumn('PreferredLocation1',array('OrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->PreferredLocation1), 'ReverseOrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->PreferredLocation1, false)));
+			$this->dtgGroupRegistrations->MetaAddColumn('PreferredLocation2',array('OrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->PreferredLocation2), 'ReverseOrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->PreferredLocation2, false)));			
+			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Requested Group Role', '<?= $_FORM->RenderGroupRole($_ITEM); ?>', 'HtmlEntities=false',array('OrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->GroupRole->Name), 'ReverseOrderByClause' => QQ::OrderBy(QQN::GroupRegistrations()->GroupRole->Name, false))));				
 			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Requested Group Types', '<?= $_FORM->RenderGroupTypes($_ITEM); ?>', 'HtmlEntities=false','Width=150px'));				
 			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Requested Group Days', '<?= $_FORM->RenderGroupDay($_ITEM); ?>', 'HtmlEntities=false','Width=100px'));
 			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Process', '<?= $_FORM->RenderProcess($_ITEM); ?>', 'HtmlEntities=false'));
-
+			$this->dtgGroupRegistrations->AddColumn(new QDataGridColumn('Delete', '<?= $_FORM->RenderDelete($_ITEM); ?>', 'HtmlEntities=false'));
+			$this->dtgGroupRegistrations->MetaAddColumn('GroupsPlaced');
+			$this->dtgGroupRegistrations->MetaAddColumn('DateProcessed');
+			$this->dtgGroupRegistrations->GridLines = QGridLines::Both;
 			$this->dtgGroupRegistrations->NoDataHtml = 'No Registrants to Process.';
 			$this->dtgGroupRegistrations->SetDataBinder('dtgGroupRegistration_Bind',$this);
 		}
 
 		protected function dtgGroupRegistration_Bind() {
 			$objConditions = QQ::All();
-			$objClauses = array();
+			$objClauses = QQ::Clause($this->dtgGroupRegistrations->OrderByClause);
 			
 			if(!$this->chkShowInactive->Checked) {
 				$objConditions = QQ::AndCondition($objConditions,
@@ -58,7 +61,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 						QQ::IsNull((QQN::GroupRegistrations()->ProcessedFlag)))
 					);
 			}
-			$this->dtgGroupRegistrations->DataSource = GroupRegistrations::QueryArray($objConditions);
+			$this->dtgGroupRegistrations->DataSource = GroupRegistrations::QueryArray($objConditions,$objClauses);
 		}
 		protected function dtgGroupRegistration_Refresh() {
 			$this->dtgGroupRegistrations->Refresh();
@@ -72,7 +75,13 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		}
 		public function RenderName(GroupRegistrations $objGroupRegistration) {
 			if($objGroupRegistration->ProcessedFlag) {
-				$strReturn = sprintf('<span style="color:green">%s %s</span>',$objGroupRegistration->FirstName,$objGroupRegistration->LastName);
+				// Grab Person and if found provide a link.
+				$personArray = Person::LoadArrayByNameMatch($objGroupRegistration->FirstName, $objGroupRegistration->LastName);
+				if($personArray) {
+					$strReturn = sprintf('<a href="%s" style="color:green">%s %s</a>',$personArray[0]->LinkUrl,$objGroupRegistration->FirstName,$objGroupRegistration->LastName);
+				} else {
+					$strReturn = sprintf('<span style="color:green">%s %s</span>',$objGroupRegistration->FirstName,$objGroupRegistration->LastName);
+				}
 			} else {
 				$strReturn = sprintf('%s %s',$objGroupRegistration->FirstName,$objGroupRegistration->LastName);
 			}
@@ -107,6 +116,25 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 				$btnProcess->AddAction(new QClickEvent(), new QAjaxAction('btnProcess_Clicked'));
 			}
 			return $btnProcess->Render(false);
+		}
+		
+		public function RenderDelete(GroupRegistrations $objGroupRegistration) {
+			$strControlId = 'delete'.$objGroupRegistration->Id;
+			$btnDelete = $this->GetControl($strControlId);
+			if(!$btnDelete) {
+				$btnDelete = new QButton($this->dtgGroupRegistrations,$strControlId);
+				$btnDelete->Text = 'Delete';
+				$btnDelete->ActionParameter = $objGroupRegistration->Id;
+				$btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Clicked'));
+			}
+			return $btnDelete->Render(false);
+		}
+		
+		public function btnDelete_Clicked($strFormId, $strControlId, $strParameter) {
+			$objGroupRegistrant = GroupRegistrations::Load($strParameter);
+			$objGroupRegistrant->UnassociateAllGrowthGroupStructuresAsGroupstructure();
+			$objGroupRegistrant->Delete();
+			$this->dtgGroupRegistration_Refresh();
 		}
 		
 		public function btnProcess_Clicked($strFormId, $strControlId, $strParameter) {

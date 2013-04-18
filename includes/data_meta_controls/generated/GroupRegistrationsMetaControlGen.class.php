@@ -50,6 +50,10 @@
 	 * property-read QLabel $GroupDayLabel
 	 * property QCheckBox $ProcessedFlagControl
 	 * property-read QLabel $ProcessedFlagLabel
+	 * property QTextBox $GroupsPlacedControl
+	 * property-read QLabel $GroupsPlacedLabel
+	 * property QDateTimePicker $DateProcessedControl
+	 * property-read QLabel $DateProcessedLabel
 	 * property QListBox $GrowthGroupStructureAsGroupstructureControl
 	 * property-read QLabel $GrowthGroupStructureAsGroupstructureLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -185,6 +189,18 @@
          */
 		protected $chkProcessedFlag;
 
+        /**
+         * @var QTextBox txtGroupsPlaced;
+         * @access protected
+         */
+		protected $txtGroupsPlaced;
+
+        /**
+         * @var QDateTimePicker calDateProcessed;
+         * @access protected
+         */
+		protected $calDateProcessed;
+
 
 		// Controls that allow the viewing of GroupRegistrations's individual data fields
         /**
@@ -282,6 +298,18 @@
          * @access protected
          */
 		protected $lblProcessedFlag;
+
+        /**
+         * @var QLabel lblGroupsPlaced
+         * @access protected
+         */
+		protected $lblGroupsPlaced;
+
+        /**
+         * @var QLabel lblDateProcessed
+         * @access protected
+         */
+		protected $lblDateProcessed;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -837,6 +865,60 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtGroupsPlaced
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtGroupsPlaced_Create($strControlId = null) {
+			$this->txtGroupsPlaced = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtGroupsPlaced->Name = QApplication::Translate('Groups Placed');
+			$this->txtGroupsPlaced->Text = $this->objGroupRegistrations->GroupsPlaced;
+			$this->txtGroupsPlaced->TextMode = QTextMode::MultiLine;
+			return $this->txtGroupsPlaced;
+		}
+
+		/**
+		 * Create and setup QLabel lblGroupsPlaced
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblGroupsPlaced_Create($strControlId = null) {
+			$this->lblGroupsPlaced = new QLabel($this->objParentObject, $strControlId);
+			$this->lblGroupsPlaced->Name = QApplication::Translate('Groups Placed');
+			$this->lblGroupsPlaced->Text = $this->objGroupRegistrations->GroupsPlaced;
+			return $this->lblGroupsPlaced;
+		}
+
+		/**
+		 * Create and setup QDateTimePicker calDateProcessed
+		 * @param string $strControlId optional ControlId to use
+		 * @return QDateTimePicker
+		 */
+		public function calDateProcessed_Create($strControlId = null) {
+			$this->calDateProcessed = new QDateTimePicker($this->objParentObject, $strControlId);
+			$this->calDateProcessed->Name = QApplication::Translate('Date Processed');
+			$this->calDateProcessed->DateTime = $this->objGroupRegistrations->DateProcessed;
+			$this->calDateProcessed->DateTimePickerType = QDateTimePickerType::Date;
+			return $this->calDateProcessed;
+		}
+
+		/**
+		 * Create and setup QLabel lblDateProcessed
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strDateTimeFormat optional DateTimeFormat to use
+		 * @return QLabel
+		 */
+		public function lblDateProcessed_Create($strControlId = null, $strDateTimeFormat = null) {
+			$this->lblDateProcessed = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDateProcessed->Name = QApplication::Translate('Date Processed');
+			$this->strDateProcessedDateTimeFormat = $strDateTimeFormat;
+			$this->lblDateProcessed->Text = sprintf($this->objGroupRegistrations->DateProcessed) ? $this->objGroupRegistrations->DateProcessed->__toString($this->strDateProcessedDateTimeFormat) : null;
+			return $this->lblDateProcessed;
+		}
+
+		protected $strDateProcessedDateTimeFormat;
+
+		/**
 		 * Create and setup QListBox lstGrowthGroupStructuresAsGroupstructure
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -969,6 +1051,12 @@
 			if ($this->chkProcessedFlag) $this->chkProcessedFlag->Checked = $this->objGroupRegistrations->ProcessedFlag;
 			if ($this->lblProcessedFlag) $this->lblProcessedFlag->Text = ($this->objGroupRegistrations->ProcessedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->txtGroupsPlaced) $this->txtGroupsPlaced->Text = $this->objGroupRegistrations->GroupsPlaced;
+			if ($this->lblGroupsPlaced) $this->lblGroupsPlaced->Text = $this->objGroupRegistrations->GroupsPlaced;
+
+			if ($this->calDateProcessed) $this->calDateProcessed->DateTime = $this->objGroupRegistrations->DateProcessed;
+			if ($this->lblDateProcessed) $this->lblDateProcessed->Text = sprintf($this->objGroupRegistrations->DateProcessed) ? $this->objGroupRegistrations->__toString($this->strDateProcessedDateTimeFormat) : null;
+
 			if ($this->lstGrowthGroupStructuresAsGroupstructure) {
 				$this->lstGrowthGroupStructuresAsGroupstructure->RemoveAllItems();
 				$objAssociatedArray = $this->objGroupRegistrations->GetGrowthGroupStructureAsGroupstructureArray();
@@ -1039,6 +1127,8 @@
 				if ($this->txtZipcode) $this->objGroupRegistrations->Zipcode = $this->txtZipcode->Text;
 				if ($this->txtGroupDay) $this->objGroupRegistrations->GroupDay = $this->txtGroupDay->Text;
 				if ($this->chkProcessedFlag) $this->objGroupRegistrations->ProcessedFlag = $this->chkProcessedFlag->Checked;
+				if ($this->txtGroupsPlaced) $this->objGroupRegistrations->GroupsPlaced = $this->txtGroupsPlaced->Text;
+				if ($this->calDateProcessed) $this->objGroupRegistrations->DateProcessed = $this->calDateProcessed->DateTime;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -1185,6 +1275,18 @@
 				case 'ProcessedFlagLabel':
 					if (!$this->lblProcessedFlag) return $this->lblProcessedFlag_Create();
 					return $this->lblProcessedFlag;
+				case 'GroupsPlacedControl':
+					if (!$this->txtGroupsPlaced) return $this->txtGroupsPlaced_Create();
+					return $this->txtGroupsPlaced;
+				case 'GroupsPlacedLabel':
+					if (!$this->lblGroupsPlaced) return $this->lblGroupsPlaced_Create();
+					return $this->lblGroupsPlaced;
+				case 'DateProcessedControl':
+					if (!$this->calDateProcessed) return $this->calDateProcessed_Create();
+					return $this->calDateProcessed;
+				case 'DateProcessedLabel':
+					if (!$this->lblDateProcessed) return $this->lblDateProcessed_Create();
+					return $this->lblDateProcessed;
 				case 'GrowthGroupStructureAsGroupstructureControl':
 					if (!$this->lstGrowthGroupStructuresAsGroupstructure) return $this->lstGrowthGroupStructuresAsGroupstructure_Create();
 					return $this->lstGrowthGroupStructuresAsGroupstructure;
@@ -1247,6 +1349,10 @@
 						return ($this->txtGroupDay = QType::Cast($mixValue, 'QControl'));
 					case 'ProcessedFlagControl':
 						return ($this->chkProcessedFlag = QType::Cast($mixValue, 'QControl'));
+					case 'GroupsPlacedControl':
+						return ($this->txtGroupsPlaced = QType::Cast($mixValue, 'QControl'));
+					case 'DateProcessedControl':
+						return ($this->calDateProcessed = QType::Cast($mixValue, 'QControl'));
 					case 'GrowthGroupStructureAsGroupstructureControl':
 						return ($this->lstGrowthGroupStructuresAsGroupstructure = QType::Cast($mixValue, 'QControl'));
 					default:
