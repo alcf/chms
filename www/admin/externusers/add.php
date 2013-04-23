@@ -79,7 +79,8 @@
 			
 			$objLogin->Username = $this->strUserName->Text;
 			$objLogin->RoleTypeId = RoleType::Volunteer;
-			$objLogin->Email = $this->strEmail->Text;
+			if(strlen(trim($this->strEmail->Text)) >0)
+				$objLogin->Email = $this->strEmail->Text;
 			$objLogin->SetPasswordCache($this->strPassword->Text);
 			$objLogin->LoginActiveFlag = $this->lstActiveFlag->SelectedValue;
 			$objLogin->DomainActiveFlag = false;

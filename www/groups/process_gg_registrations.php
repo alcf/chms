@@ -94,7 +94,10 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			return SourceList::Load($objGroupRegistration->SourceListId)->Name;
 		}
 		public function RenderGroupRole(GroupRegistrations $objGroupRegistration) {
-			return GroupRole::Load($objGroupRegistration->GroupRoleId)->Name;
+			if($objGroupRegistration->GroupRoleId)
+				return GroupRole::Load($objGroupRegistration->GroupRoleId)->Name;
+			else 
+				return 'Not Selected';
 		}
 		public function RenderGroupTypes(GroupRegistrations $objGroupRegistration) {
 			$strReturn = '';

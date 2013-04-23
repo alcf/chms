@@ -38,7 +38,7 @@
 			
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
-			$this->lstGender->AddItem('- Select One -', null);
+			$this->lstGender->AddItem('- Select One -');
 			$this->lstGender->AddItem('Female', 'F');
 			$this->lstGender->AddItem('Male', 'M');
 			
@@ -168,12 +168,29 @@
 			$this->btnSubmit->Text = 'Submit';
 			$this->btnSubmit->CssClass = 'primary';
 			$this->btnSubmit->AddAction(new QClickEvent(), new QAjaxAction('btnSubmit_Click'));
+			$this->btnSubmit->CausesValidation = true;
 			
 			$this->btnCancel = new QButton($this);
 			$this->btnCancel->Name = 'Cancel';
 			$this->btnCancel->Text = 'Cancel';
 			$this->btnCancel->CssClass = 'primary';
 		}	
+		
+		protected function Form_Validate() {
+			if ($this->lstParticipationType->SelectedName == '-Select One-') {
+				$this->lstParticipationType->Warning = 'You must select a Role';
+				return false;
+			}
+			if($this->lstSource->SelectedName == 'Choose...') {
+				$this->lstSource->Warning = 'You must select How you heard from us';
+				return false;
+			}
+			if(($this->lstGender->SelectedName != 'Female') && ($this->lstGender->SelectedName != 'Male')){
+				$this->lstGender->Warning = 'You must select Gender';
+				return false;
+			}
+			return true;
+		}
 		
 		public function btnSubmit_Click($strFormId, $strControlId, $strParameter) {
 			$this->objGroupRegistration->DateReceived = new QDateTime(QDateTime::Now);
