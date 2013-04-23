@@ -204,6 +204,7 @@
 			$this->txtCity->Required = true;
 			$this->lstState = $this->mctAddress->lstState_Create();
 			$this->lstState->Required = true;
+			$this->lstState->AddItem('International (Non US)', 'International');
 			$this->txtZipCode = $this->mctAddress->txtZipCode_Create();
 			$this->txtZipCode->Required = true;
 		}
