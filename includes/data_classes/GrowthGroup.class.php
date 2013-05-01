@@ -118,13 +118,13 @@
 		}
 
 		public function RefreshGeoCode() {
-			$xmlGeocode = GoogleGeoCoder::GeoCode(sprintf('%s and %s, %s', $this->CrossStreet1, $this->CrossStreet2, $this->ZipCode));
-			if(array_key_exists('lat',$xmlGeocode))
-				$this->Latitude = $xmlGeocode['lat'];
-			if(array_key_exists('lng',$xmlGeocode))
-				$this->Longitude = $xmlGeocode['lng'];
-			if(array_key_exists('accuracy',$xmlGeocode))
-				$this->Accuracy = $xmlGeocode['accuracy'];
+			$xmlGeocode = GoogleGeoCoder::GeoCodeV3(sprintf('%s and %s, %s', $this->CrossStreet1, $this->CrossStreet2, $this->ZipCode));
+			$geo_result =  $xmlGeocode->results[0];
+			$coordinates = $geo_result->geometry->location;
+			if($coordinates) {
+				$this->Latitude = $coordinates->lat;
+				$this->Longitude = $coordinates->lng;
+			}
 		}
 		
 		// Override or Create New Load/Count methods

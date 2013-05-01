@@ -410,6 +410,7 @@ INSERT INTO query_node VALUES (null, 'Group Participation - Ministry',   1, 'Gro
 #INSERT INTO query_node VALUES (null, 'Ministry Involvement - Status', 2, null,                         1024, '11');
 #INSERT INTO query_node VALUES (null, 'Ministry Involvement - Status of Letter', 2, null,               1024, '12');
 INSERT INTO query_node VALUES (null, 'Email Blast Opt Out - Mens Fellowship',               1, 'EmailOptOutMensFellowship',                                   16,  null);
+INSERT INTO query_node VALUES (null, 'Email Blast Opt Out - Young Adults', 1, 'EmailOptOutYoungAdults',16,  null);
 ####
 
 

@@ -13,6 +13,22 @@ class GoogleGeoCoder
     const ResultAddressNotFound2 = "603";
     const ResultTooManyRequests = "620";
     
+    /**
+    *
+    * @param string $strAddress
+    * @return a json object containing lat and long
+    */
+    public static function GeoCodeV3 ($address)
+    {
+    	$ret = array ();
+    	if (trim ($address))
+    	{
+    		$response = file_get_contents('http://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address).',+CA&sensor=false');
+    		$ret = json_decode($response);
+    	}
+    	return $ret;
+    }
+    
     
 	/**
 	 * status codes: http://code.google.com/apis/maps/documentation/reference.html#GGeoStatusCode
