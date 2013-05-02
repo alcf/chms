@@ -57,12 +57,16 @@
 				$this->dtgPeople->MetaAddColumn('LastName', 'Name=Name', 'Html=<?= $_CONTROL->ParentControl->RenderName($_ITEM); ?>', 'HtmlEntities=false', 'Width=220px', 'FontSize=11px');
 				$this->dtgPeople->MetaAddColumn('PrimaryAddressText', 'Name=Primary Address and City', 'Html=<?= $_ITEM->PrimaryAddressText . ", " . $_ITEM->PrimaryCityText; ?>', 'Width=310px', 'FontSize=11px');
 				$this->dtgPeople->MetaAddColumn('PrimaryPhoneText', 'Name=Phone', 'Width=80px', 'FontSize=10px');
+				$this->dtgPeople->AddColumn(new QDataGridColumn('Select', '<?= $_CONTROL->ParentControl->RenderSelect($_ITEM, $_CONTROL->CurrentRowIndex); ?>', 'HtmlEntities=false', 'Width=120px')); 
 				$this->dtgPeople->SetDataBinder('dtgPeople_Bind', $this);
 				$this->dtgPeople->NoDataHtml = '<p>Enter in a search criteria above.</p>';
 
 				$this->dtgPeople->SortColumnIndex = 0;
 				$this->dtgPeople->ItemsPerPage = 20;
-
+				
+				//$this->AddAction(new QInsertKeyEvent(), new QAjaxControlAction($this, 'btnSelect_Click'));
+				//$this->dtgPeople->AddAction(new QInsertKeyEvent(), new QAjaxControlAction($this, 'btnSelect_Click'));
+				
 				$this->txtName = new QTextBox($this);
 				$this->txtName->Name = 'Name';
 				$this->txtName->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'dtgPeople_Refresh'));
@@ -263,7 +267,25 @@
 			return sprintf('<a href="#" %s>%s</a>', $this->pxySelectPerson->RenderAsEvents($objPerson->Id, false), $objPerson->FullName);
 		}
 
+		public function RenderSelect(Person $objPerson, $intRow) {
+			$strControlId = 'chkSelected' . $objPerson->Id.$intRow;
+			
+			$btnSelect = $this->objForm->GetControl($strControlId);
+			if(!$btnSelect) {
+				$btnSelect = new QButton($this->dtgPeople,$strControlId);
+				$btnSelect->Text = 'Select';
+				$btnSelect->CssClass = 'primary';
+				$btnSelect->ActionParameter = $objPerson->Id;
+				$btnSelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'pxySelect_Click'));
+				$btnSelect->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSelect_Click'));
+			}	
+			return $btnSelect->Render(false);
+		}
+		public function pxySelect_Click($strFormId, $strControlId, $strParameter) {
+			$this->pxySelectPerson_Click(null, null, $strParameter);
+		}
 		public function dtgPeople_Refresh($strFormId, $strControlId, $strParameter) {
+			//$this->dtgPeople->RemoveChildControls(true);
 			$this->dtgPeople->PageNumber = 1;
 			$this->dtgPeople->Refresh();
 		}
