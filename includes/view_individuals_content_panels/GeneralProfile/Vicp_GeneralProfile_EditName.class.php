@@ -321,6 +321,11 @@
 			// Deceased Flag and Date
 			if ($this->objPerson->DeceasedFlag = $this->chkDeceased->Checked) {
 				$this->objPerson->DateDeceased = $this->dtxDateDeceased->DateTime;
+				// Also unsubscribe from church newsletter
+				$objList = CommunicationList::LoadByToken('allchurch_nl');
+				if($objList->IsPersonAssociated($this->objPerson)) {
+					$objList->UnassociatePerson($this->objPerson);
+				}
 			} else {
 				$this->objPerson->DateDeceased = null;
 			}
