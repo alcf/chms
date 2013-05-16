@@ -34,6 +34,7 @@
 	$objSinglePagePdf = new Zend_Pdf();
 	$objMultiplePagePdf = new Zend_Pdf();
 	$objInvalidAddressPdf = new Zend_Pdf();
+	$objDeceasedPdf = new Zend_Pdf();
 	
 	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
 	QDataGen::DisplayForEachTaskStart('Generating Receipt for Household', Household::CountAll());
@@ -47,12 +48,15 @@
 				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter);
 				$intEntryCount = count($objContributionAmountArray);
 				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
-
-				if ($fltAmount > $fltMinimumAmount) {
-					if ($intEntryCount > 38)
-						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
-					else if ($intEntryCount)
-						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
+				if($objHousehold->HeadPerson->DeceasedFlag) {
+					StewardshipContribution::GenerateReceiptInPdf($objDeceasedPdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
+				} else {
+					if ($fltAmount > $fltMinimumAmount) {
+						if ($intEntryCount > 38)
+							StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
+						else if ($intEntryCount)
+							StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
+					}
 				}
 			} else {
 				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
@@ -66,11 +70,15 @@
 				$intEntryCount = count($objContributionAmountArray);
 				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
 
-				if ($fltAmount > $fltMinimumAmount) {
-					if ($intEntryCount > 38)
-						StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
-					else if ($intEntryCount)
-						StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
+				if($objParticipation->Person->DeceasedFlag) {
+					StewardshipContribution::GenerateReceiptInPdf($objDeceasedPdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
+				} else {
+					if ($fltAmount > $fltMinimumAmount) {
+						if ($intEntryCount > 38)
+							StewardshipContribution::GenerateReceiptInPdf($objMultiplePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
+						else if ($intEntryCount)
+							StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
+					}
 				}
 			} else {
 				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
@@ -95,4 +103,7 @@
 
 	$objInvalidAddressPdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_InvalidAddress.pdf');
 	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_InvalidAddress.pdf', 0777);
+	
+	$objDeceasedPdf->save(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Deceased.pdf');
+	chmod(RECEIPT_PDF_PATH . '/ReceiptsFor' . $intYear . $strFileToken . '_Deceased.pdf', 0777);
 ?>
