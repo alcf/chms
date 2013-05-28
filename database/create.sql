@@ -827,9 +827,10 @@ CREATE TABLE `address`
 `city` VARCHAR(100),
 `state` VARCHAR(100),
 `zip_code` VARCHAR(10),
-`country` VARCHAR(2),
+`country` VARCHAR(100),
 `current_flag` BOOLEAN,
 `invalid_flag` BOOLEAN,
+`international_flag` BOOLEAN,
 `verification_checked_flag` BOOLEAN,
 `date_until_when` DATE,
 PRIMARY KEY (`id`)

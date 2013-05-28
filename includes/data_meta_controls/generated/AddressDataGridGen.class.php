@@ -310,6 +310,7 @@
 				case 'Country': return QQN::Address()->Country;
 				case 'CurrentFlag': return QQN::Address()->CurrentFlag;
 				case 'InvalidFlag': return QQN::Address()->InvalidFlag;
+				case 'InternationalFlag': return QQN::Address()->InternationalFlag;
 				case 'VerificationCheckedFlag': return QQN::Address()->VerificationCheckedFlag;
 				case 'DateUntilWhen': return QQN::Address()->DateUntilWhen;
 				default: throw new QCallerException('Simple Property not found in AddressDataGrid content: ' . $mixContent);

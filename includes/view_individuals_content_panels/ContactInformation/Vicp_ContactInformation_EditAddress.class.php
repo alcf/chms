@@ -8,12 +8,16 @@
 		public $chkCurrentFlag;
 
 		public $chkInvalidFlag;
+		public $chkInternationalFlag;
 		public $txtAddress1;
 		public $txtAddress2;
 		public $txtAddress3;
 		public $txtCity;
 		public $lstState;
 		public $txtZipCode;
+		
+		public $txtInternationalState;
+		public $txtCountry;
 		
 		public $dlgMessage;
 
@@ -65,7 +69,12 @@
 			$this->txtCity = $this->mctAddress->txtCity_Create();
 			$this->lstState = $this->mctAddress->lstState_Create();
 			$this->txtZipCode = $this->mctAddress->txtZipCode_Create();
-
+			$this->txtCountry = $this->mctAddress->txtCountry_Create();
+			$this->txtInternationalState = $this->mctAddress->txtState_Create();
+			$this->txtInternationalState->Visible = false;
+			$this->chkInternationalFlag = $this->mctAddress->chkInternationalFlag_Create();
+			$this->chkInternationalFlag->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkInternationalFlag_Click'));
+			
 			// Add Actions
 			$this->lstAddressType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstAddressType_Change'));
 
@@ -86,6 +95,18 @@
 			$this->dlgMessage->HideDialogBox();
 		}
 
+		public function chkInternationalFlag_Click() {
+			if($this->chkInternationalFlag->Checked) {
+				$this->lstState->Visible = false;
+				$this->txtInternationalState->Visible = true;
+				$this->txtCountry->Visible = true;
+			} else {
+				$this->lstState->Visible = true;
+				$this->txtInternationalState->Visible = false;
+				$this->txtCountry->Visible = false;
+			}
+		}
+		
 		public function lstAddressType_Change() {
 			$this->chkCurrentFlag->Visible = false;
 			$this->calDateUntilWhen->Visible = false;
@@ -138,7 +159,7 @@
 
 			$this->mctAddress->UpdateFields();
 
-			if (!$this->chkInvalidFlag->Checked) {
+			if ((!$this->chkInvalidFlag->Checked) && (!$this->chkInternationalFlag->Checked)){
 				if (!$this->mctAddress->Address->ValidateUsps()) {
 					$this->dlgMessage->MessageHtml = '<p style="font-weight: bold;">This address is considered invalid with the USPS.</p><p style="font-size: 13px; color: #999;">Please make corrections or select <strong>"this is an INVALID address"</strong>.</p>';
 					$this->dlgMessage->AddButton('Okay', MessageDialog::ButtonPrimary, 'dlgMessage_Reset', $this);

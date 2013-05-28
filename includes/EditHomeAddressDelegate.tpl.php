@@ -10,8 +10,11 @@
 <?php $_CONTROL->objDelegate->txtAddress3->RenderWithName('Name=School, Nursing Home, etc.'); ?>
 <?php $_CONTROL->objDelegate->txtCity->RenderWithName('Required=true'); ?>
 <?php $_CONTROL->objDelegate->lstState->RenderWithName('Required=true'); ?>
+<?php $_CONTROL->objDelegate->txtInternationalState->RenderWithName(); ?>
 <?php $_CONTROL->objDelegate->txtZipCode->RenderWithName(); ?>
+<?php $_CONTROL->objDelegate->txtCountry->RenderWithName(); ?>
 <br/>
+<?php $_CONTROL->objDelegate->chkInternationalFlag->RenderWithName('Name=International?','Text=Check if this is an International address'); ?>
 <?php $_CONTROL->objDelegate->chkInvalidFlag->RenderWithName('Name=Invalid?','Text=Check if this is an INVALID address'); ?>
 </div>
 

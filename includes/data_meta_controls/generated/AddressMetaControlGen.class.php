@@ -44,6 +44,8 @@
 	 * property-read QLabel $CurrentFlagLabel
 	 * property QCheckBox $InvalidFlagControl
 	 * property-read QLabel $InvalidFlagLabel
+	 * property QCheckBox $InternationalFlagControl
+	 * property-read QLabel $InternationalFlagLabel
 	 * property QCheckBox $VerificationCheckedFlagControl
 	 * property-read QLabel $VerificationCheckedFlagLabel
 	 * property QDateTimePicker $DateUntilWhenControl
@@ -164,6 +166,12 @@
 		protected $chkInvalidFlag;
 
         /**
+         * @var QCheckBox chkInternationalFlag;
+         * @access protected
+         */
+		protected $chkInternationalFlag;
+
+        /**
          * @var QCheckBox chkVerificationCheckedFlag;
          * @access protected
          */
@@ -254,6 +262,12 @@
          * @access protected
          */
 		protected $lblInvalidFlag;
+
+        /**
+         * @var QLabel lblInternationalFlag
+         * @access protected
+         */
+		protected $lblInternationalFlag;
 
         /**
          * @var QLabel lblVerificationCheckedFlag
@@ -751,6 +765,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkInternationalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkInternationalFlag_Create($strControlId = null) {
+			$this->chkInternationalFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkInternationalFlag->Name = QApplication::Translate('International Flag');
+			$this->chkInternationalFlag->Checked = $this->objAddress->InternationalFlag;
+			return $this->chkInternationalFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblInternationalFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblInternationalFlag_Create($strControlId = null) {
+			$this->lblInternationalFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblInternationalFlag->Name = QApplication::Translate('International Flag');
+			$this->lblInternationalFlag->Text = ($this->objAddress->InternationalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblInternationalFlag;
+		}
+
+		/**
 		 * Create and setup QCheckBox chkVerificationCheckedFlag
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -885,6 +923,9 @@
 			if ($this->chkInvalidFlag) $this->chkInvalidFlag->Checked = $this->objAddress->InvalidFlag;
 			if ($this->lblInvalidFlag) $this->lblInvalidFlag->Text = ($this->objAddress->InvalidFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->chkInternationalFlag) $this->chkInternationalFlag->Checked = $this->objAddress->InternationalFlag;
+			if ($this->lblInternationalFlag) $this->lblInternationalFlag->Text = ($this->objAddress->InternationalFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->chkVerificationCheckedFlag) $this->chkVerificationCheckedFlag->Checked = $this->objAddress->VerificationCheckedFlag;
 			if ($this->lblVerificationCheckedFlag) $this->lblVerificationCheckedFlag->Text = ($this->objAddress->VerificationCheckedFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -927,6 +968,7 @@
 				if ($this->txtCountry) $this->objAddress->Country = $this->txtCountry->Text;
 				if ($this->chkCurrentFlag) $this->objAddress->CurrentFlag = $this->chkCurrentFlag->Checked;
 				if ($this->chkInvalidFlag) $this->objAddress->InvalidFlag = $this->chkInvalidFlag->Checked;
+				if ($this->chkInternationalFlag) $this->objAddress->InternationalFlag = $this->chkInternationalFlag->Checked;
 				if ($this->chkVerificationCheckedFlag) $this->objAddress->VerificationCheckedFlag = $this->chkVerificationCheckedFlag->Checked;
 				if ($this->calDateUntilWhen) $this->objAddress->DateUntilWhen = $this->calDateUntilWhen->DateTime;
 
@@ -1055,6 +1097,12 @@
 				case 'InvalidFlagLabel':
 					if (!$this->lblInvalidFlag) return $this->lblInvalidFlag_Create();
 					return $this->lblInvalidFlag;
+				case 'InternationalFlagControl':
+					if (!$this->chkInternationalFlag) return $this->chkInternationalFlag_Create();
+					return $this->chkInternationalFlag;
+				case 'InternationalFlagLabel':
+					if (!$this->lblInternationalFlag) return $this->lblInternationalFlag_Create();
+					return $this->lblInternationalFlag;
 				case 'VerificationCheckedFlagControl':
 					if (!$this->chkVerificationCheckedFlag) return $this->chkVerificationCheckedFlag_Create();
 					return $this->chkVerificationCheckedFlag;
@@ -1117,6 +1165,8 @@
 						return ($this->chkCurrentFlag = QType::Cast($mixValue, 'QControl'));
 					case 'InvalidFlagControl':
 						return ($this->chkInvalidFlag = QType::Cast($mixValue, 'QControl'));
+					case 'InternationalFlagControl':
+						return ($this->chkInternationalFlag = QType::Cast($mixValue, 'QControl'));
 					case 'VerificationCheckedFlagControl':
 						return ($this->chkVerificationCheckedFlag = QType::Cast($mixValue, 'QControl'));
 					case 'DateUntilWhenControl':
