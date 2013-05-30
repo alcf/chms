@@ -750,6 +750,10 @@
 
 				$intY -= 12.1;
 				$objPage->drawText(sprintf('%s, %s  %s', $objAddress->City, $objAddress->State, $objAddress->ZipCode), 36, $intY, 'UTF-8');
+				if($objAddress->InternationalFlag) {
+					$intY -= 12.1;
+					$objPage->drawText(sprintf('%s', $objAddress->Country), 36, $intY, 'UTF-8');
+				}
 			}
 		}
 
