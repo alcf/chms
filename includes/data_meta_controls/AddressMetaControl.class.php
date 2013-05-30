@@ -51,6 +51,7 @@
 			if ($this->txtCountry) $this->objAddress->Country = $this->txtCountry->Text;
 			if ($this->chkCurrentFlag) $this->objAddress->CurrentFlag = $this->chkCurrentFlag->Checked;
 			if ($this->chkInvalidFlag) $this->objAddress->InvalidFlag = $this->chkInvalidFlag->Checked;
+			if ($this->chkInternationalFlag) $this->objAddress->InternationalFlag = $this->chkInternationalFlag->Checked;
 			if ($this->chkVerificationCheckedFlag) $this->objAddress->VerificationCheckedFlag = $this->chkVerificationCheckedFlag->Checked;
 			if ($this->calDateUntilWhen) $this->objAddress->DateUntilWhen = $this->calDateUntilWhen->DateTime;
 			$this->objAddress->VerificationCheckedFlag = false;

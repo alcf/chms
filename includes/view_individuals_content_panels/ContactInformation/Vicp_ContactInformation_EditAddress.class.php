@@ -74,6 +74,7 @@
 			$this->txtInternationalState->Visible = false;
 			$this->chkInternationalFlag = $this->mctAddress->chkInternationalFlag_Create();
 			$this->chkInternationalFlag->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkInternationalFlag_Click'));
+			$this->chkInternationalFlag_Click();
 			
 			// Add Actions
 			$this->lstAddressType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstAddressType_Change'));

@@ -97,7 +97,7 @@
 			$this->txtInternationalState->Visible = false;
 			$this->chkInternationalFlag = $this->mctAddress->chkInternationalFlag_Create();
 			$this->chkInternationalFlag->AddAction(new QClickEvent(), new QAjaxControlAction($this->pnlContent, 'chkInternationalFlag_Click'));
-			
+			$this->chkInternationalFlag_Click();
 			
 
 			// PHone Numbers
