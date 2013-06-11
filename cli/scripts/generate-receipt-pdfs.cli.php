@@ -35,8 +35,8 @@
 	$objMultiplePagePdf = new Zend_Pdf();
 	$objInvalidAddressPdf = new Zend_Pdf();
 	$objDeceasedPdf = new Zend_Pdf();
-	
-	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
+	//QQ::All()
+	$objHouseholdCursor = Household::QueryCursor(QQ::Equal(QQN::Household()->HeadPerson->CanMailFlag, true), QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
 	QDataGen::DisplayForEachTaskStart('Generating Receipt for Household', Household::CountAll());
 	while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
 		QDataGen::DisplayForEachTaskNext('Generating Receipt for Household');
@@ -47,7 +47,7 @@
 				$intPersonIdArray = StewardshipContribution::GetPersonIdArrayForPersonOrHousehold($objHousehold);
 				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter);
 				$intEntryCount = count($objContributionAmountArray);
-				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);
+				$fltAmount = StewardshipContribution::GetContributionAmountTotalForContributionAmountArray($objContributionAmountArray);				
 				if($objHousehold->HeadPerson->DeceasedFlag) {
 					StewardshipContribution::GenerateReceiptInPdf($objDeceasedPdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
 				} else {
@@ -58,13 +58,14 @@
 							StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
 					}
 				}
+				
 			} else {
 				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objHousehold, $intYear, $blnAnnual, $intQuarter);
 			}
 
 		// Generate for each individual in the household
 		} else foreach ($objHousehold->GetHouseholdParticipationArray() as $objParticipation) {
-			if ($objParticipation->Person->GetStewardshipAddress()) {
+			if ($objParticipation->Person->GetStewardshipAddress()) {				
 				$intPersonIdArray = array($objParticipation->Person->Id);
 				$objContributionAmountArray = StewardshipContribution::GetContributionAmountArrayForPersonArray($intPersonIdArray, $intYear, $intQuarter);
 				$intEntryCount = count($objContributionAmountArray);
@@ -79,7 +80,7 @@
 						else if ($intEntryCount)
 							StewardshipContribution::GenerateReceiptInPdf($objSinglePagePdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
 					}
-				}
+				}				
 			} else {
 				StewardshipContribution::GenerateReceiptInPdf($objInvalidAddressPdf, $objParticipation->Person, $intYear, $blnAnnual, $intQuarter);
 			}
