@@ -766,7 +766,9 @@
 				$objPage->drawText(STEWARDSHIP_FOOTER_LEGAL_LINE_2, $intX, (72 * 1/4), 'UTF-8');
 			}
 
-			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 10); 
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_ITALIC), 8); 		
+			$objPage->drawText(STEWARDSHIP_FOOTER_TAX_ID, $intX, (72 * 5/8) + 23, 'UTF-8');
+			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 10);
 			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_1, $intX, (72 * 5/8) + 11.5, 'UTF-8');
 			$objPage->drawText(STEWARDSHIP_FOOTER_MESSAGE_LINE_2, $intX, (72 * 5/8), 'UTF-8');
 		}
