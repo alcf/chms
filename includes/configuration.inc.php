@@ -220,6 +220,7 @@
 	define('STEWARDSHIP_STATEMENT_LINE_4', 'Mountain View, CA  94043-1613');
 	define('STEWARDSHIP_TOP', '792');
 
+	define('STEWARDSHIP_FOOTER_TAX_ID', 'Tax ID # 77.0013 414');
 	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_1', 'Thank you for your generous contributions.  If you have any questions regarding your statement, please call');
 	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_2', 'Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.  Thank you again and God Bless.');
 
