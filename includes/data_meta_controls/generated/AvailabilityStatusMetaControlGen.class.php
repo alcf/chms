@@ -193,7 +193,6 @@
 			$this->txtName = new QTextBox($this->objParentObject, $strControlId);
 			$this->txtName->Name = QApplication::Translate('Name');
 			$this->txtName->Text = $this->objAvailabilityStatus->Name;
-			$this->txtName->Required = true;
 			$this->txtName->MaxLength = AvailabilityStatus::NameMaxLength;
 			return $this->txtName;
 		}
@@ -207,7 +206,6 @@
 			$this->lblName = new QLabel($this->objParentObject, $strControlId);
 			$this->lblName->Name = QApplication::Translate('Name');
 			$this->lblName->Text = $this->objAvailabilityStatus->Name;
-			$this->lblName->Required = true;
 			return $this->lblName;
 		}
 

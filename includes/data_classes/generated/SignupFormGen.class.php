@@ -34,6 +34,7 @@
 	 * @property string $FundingAccount the value for strFundingAccount 
 	 * @property integer $DonationStewardshipFundId the value for intDonationStewardshipFundId 
 	 * @property QDateTime $DateCreated the value for dttDateCreated (Not Null)
+	 * @property boolean $LoginNotRequiredFlag the value for blnLoginNotRequiredFlag 
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId (Not Null)
 	 * @property StewardshipFund $DonationStewardshipFund the value for the StewardshipFund object referenced by intDonationStewardshipFundId 
 	 * @property ClassMeeting $ClassMeeting the value for the ClassMeeting object that uniquely references this SignupForm
@@ -207,6 +208,14 @@
 		 */
 		protected $dttDateCreated;
 		const DateCreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column signup_form.login_not_required_flag
+		 * @var boolean blnLoginNotRequiredFlag
+		 */
+		protected $blnLoginNotRequiredFlag;
+		const LoginNotRequiredFlagDefault = null;
 
 
 		/**
@@ -664,6 +673,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'funding_account', $strAliasPrefix . 'funding_account');
 			$objBuilder->AddSelectItem($strTableName, 'donation_stewardship_fund_id', $strAliasPrefix . 'donation_stewardship_fund_id');
 			$objBuilder->AddSelectItem($strTableName, 'date_created', $strAliasPrefix . 'date_created');
+			$objBuilder->AddSelectItem($strTableName, 'login_not_required_flag', $strAliasPrefix . 'login_not_required_flag');
 		}
 
 
@@ -793,6 +803,8 @@
 			$objToReturn->intDonationStewardshipFundId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_created'] : $strAliasPrefix . 'date_created';
 			$objToReturn->dttDateCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'login_not_required_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'login_not_required_flag'] : $strAliasPrefix . 'login_not_required_flag';
+			$objToReturn->blnLoginNotRequiredFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -1121,7 +1133,8 @@
 							`signup_female_limit`,
 							`funding_account`,
 							`donation_stewardship_fund_id`,
-							`date_created`
+							`date_created`,
+							`login_not_required_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupFormTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMinistryId) . ',
@@ -1140,7 +1153,8 @@
 							' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
 							' . $objDatabase->SqlVariable($this->strFundingAccount) . ',
 							' . $objDatabase->SqlVariable($this->intDonationStewardshipFundId) . ',
-							' . $objDatabase->SqlVariable($this->dttDateCreated) . '
+							' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
+							' . $objDatabase->SqlVariable($this->blnLoginNotRequiredFlag) . '
 						)
 					');
 
@@ -1177,7 +1191,8 @@
 							`signup_female_limit` = ' . $objDatabase->SqlVariable($this->intSignupFemaleLimit) . ',
 							`funding_account` = ' . $objDatabase->SqlVariable($this->strFundingAccount) . ',
 							`donation_stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intDonationStewardshipFundId) . ',
-							`date_created` = ' . $objDatabase->SqlVariable($this->dttDateCreated) . '
+							`date_created` = ' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
+							`login_not_required_flag` = ' . $objDatabase->SqlVariable($this->blnLoginNotRequiredFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1338,6 +1353,7 @@
 			$this->strFundingAccount = $objReloaded->strFundingAccount;
 			$this->DonationStewardshipFundId = $objReloaded->DonationStewardshipFundId;
 			$this->dttDateCreated = $objReloaded->dttDateCreated;
+			$this->blnLoginNotRequiredFlag = $objReloaded->blnLoginNotRequiredFlag;
 		}
 
 		/**
@@ -1369,6 +1385,7 @@
 					`funding_account`,
 					`donation_stewardship_fund_id`,
 					`date_created`,
+					`login_not_required_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1392,6 +1409,7 @@
 					' . $objDatabase->SqlVariable($this->strFundingAccount) . ',
 					' . $objDatabase->SqlVariable($this->intDonationStewardshipFundId) . ',
 					' . $objDatabase->SqlVariable($this->dttDateCreated) . ',
+					' . $objDatabase->SqlVariable($this->blnLoginNotRequiredFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1536,6 +1554,11 @@
 					// Gets the value for dttDateCreated (Not Null)
 					// @return QDateTime
 					return $this->dttDateCreated;
+
+				case 'LoginNotRequiredFlag':
+					// Gets the value for blnLoginNotRequiredFlag 
+					// @return boolean
+					return $this->blnLoginNotRequiredFlag;
 
 
 				///////////////////
@@ -1865,6 +1888,17 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateCreated = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'LoginNotRequiredFlag':
+					// Sets the value for blnLoginNotRequiredFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnLoginNotRequiredFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2610,6 +2644,7 @@
 			$strToReturn .= '<element name="FundingAccount" type="xsd:string"/>';
 			$strToReturn .= '<element name="DonationStewardshipFund" type="xsd1:StewardshipFund"/>';
 			$strToReturn .= '<element name="DateCreated" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="LoginNotRequiredFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2674,6 +2709,8 @@
 				$objToReturn->DonationStewardshipFund = StewardshipFund::GetObjectFromSoapObject($objSoapObject->DonationStewardshipFund);
 			if (property_exists($objSoapObject, 'DateCreated'))
 				$objToReturn->dttDateCreated = new QDateTime($objSoapObject->DateCreated);
+			if (property_exists($objSoapObject, 'LoginNotRequiredFlag'))
+				$objToReturn->blnLoginNotRequiredFlag = $objSoapObject->LoginNotRequiredFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2738,6 +2775,7 @@
 	 * @property-read QQNode $DonationStewardshipFundId
 	 * @property-read QQNodeStewardshipFund $DonationStewardshipFund
 	 * @property-read QQNode $DateCreated
+	 * @property-read QQNode $LoginNotRequiredFlag
 	 * @property-read QQReverseReferenceNodeClassMeeting $ClassMeeting
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
 	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
@@ -2792,6 +2830,8 @@
 					return new QQNodeStewardshipFund('donation_stewardship_fund_id', 'DonationStewardshipFund', 'integer', $this);
 				case 'DateCreated':
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
+				case 'LoginNotRequiredFlag':
+					return new QQNode('login_not_required_flag', 'LoginNotRequiredFlag', 'boolean', $this);
 				case 'ClassMeeting':
 					return new QQReverseReferenceNodeClassMeeting($this, 'classmeeting', 'reverse_reference', 'signup_form_id', 'ClassMeeting');
 				case 'EventSignupForm':
@@ -2838,6 +2878,7 @@
 	 * @property-read QQNode $DonationStewardshipFundId
 	 * @property-read QQNodeStewardshipFund $DonationStewardshipFund
 	 * @property-read QQNode $DateCreated
+	 * @property-read QQNode $LoginNotRequiredFlag
 	 * @property-read QQReverseReferenceNodeClassMeeting $ClassMeeting
 	 * @property-read QQReverseReferenceNodeEventSignupForm $EventSignupForm
 	 * @property-read QQReverseReferenceNodeFormProduct $FormProduct
@@ -2893,6 +2934,8 @@
 					return new QQNodeStewardshipFund('donation_stewardship_fund_id', 'DonationStewardshipFund', 'integer', $this);
 				case 'DateCreated':
 					return new QQNode('date_created', 'DateCreated', 'QDateTime', $this);
+				case 'LoginNotRequiredFlag':
+					return new QQNode('login_not_required_flag', 'LoginNotRequiredFlag', 'boolean', $this);
 				case 'ClassMeeting':
 					return new QQReverseReferenceNodeClassMeeting($this, 'classmeeting', 'reverse_reference', 'signup_form_id', 'ClassMeeting');
 				case 'EventSignupForm':

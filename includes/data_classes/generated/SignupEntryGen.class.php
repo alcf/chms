@@ -17,8 +17,8 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
 	 * @property integer $SignupFormId the value for intSignupFormId (Not Null)
-	 * @property integer $PersonId the value for intPersonId (Not Null)
-	 * @property integer $SignupByPersonId the value for intSignupByPersonId (Not Null)
+	 * @property integer $PersonId the value for intPersonId 
+	 * @property integer $SignupByPersonId the value for intSignupByPersonId 
 	 * @property integer $SignupEntryStatusTypeId the value for intSignupEntryStatusTypeId (Not Null)
 	 * @property QDateTime $DateCreated the value for dttDateCreated (Not Null)
 	 * @property QDateTime $DateSubmitted the value for dttDateSubmitted 
@@ -26,9 +26,11 @@
 	 * @property double $AmountPaid the value for fltAmountPaid 
 	 * @property double $AmountBalance the value for fltAmountBalance 
 	 * @property string $InternalNotes the value for strInternalNotes 
+	 * @property integer $CommunicationsEntryId the value for intCommunicationsEntryId 
 	 * @property SignupForm $SignupForm the value for the SignupForm object referenced by intSignupFormId (Not Null)
-	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
-	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId (Not Null)
+	 * @property Person $Person the value for the Person object referenced by intPersonId 
+	 * @property Person $SignupByPerson the value for the Person object referenced by intSignupByPersonId 
+	 * @property CommunicationListEntry $CommunicationsEntry the value for the CommunicationListEntry object referenced by intCommunicationsEntryId 
 	 * @property ClassRegistration $ClassRegistration the value for the ClassRegistration object that uniquely references this SignupEntry
 	 * @property FormAnswer $_FormAnswer the value for the private _objFormAnswer (Read-Only) if set due to an expansion on the form_answer.signup_entry_id reverse relationship
 	 * @property FormAnswer[] $_FormAnswerArray the value for the private _objFormAnswerArray (Read-Only) if set due to an ExpandAsArray on the form_answer.signup_entry_id reverse relationship
@@ -133,6 +135,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column signup_entry.communications_entry_id
+		 * @var integer intCommunicationsEntryId
+		 */
+		protected $intCommunicationsEntryId;
+		const CommunicationsEntryIdDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single FormAnswer object
 		 * (of type FormAnswer), if this SignupEntry object was restored with
 		 * an expansion on the form_answer association table.
@@ -231,6 +241,16 @@
 		 * @var Person objSignupByPerson
 		 */
 		protected $objSignupByPerson;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column signup_entry.communications_entry_id.
+		 *
+		 * NOTE: Always use the CommunicationsEntry property getter to correctly retrieve this CommunicationListEntry object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var CommunicationListEntry objCommunicationsEntry
+		 */
+		protected $objCommunicationsEntry;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -571,6 +591,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'amount_paid', $strAliasPrefix . 'amount_paid');
 			$objBuilder->AddSelectItem($strTableName, 'amount_balance', $strAliasPrefix . 'amount_balance');
 			$objBuilder->AddSelectItem($strTableName, 'internal_notes', $strAliasPrefix . 'internal_notes');
+			$objBuilder->AddSelectItem($strTableName, 'communications_entry_id', $strAliasPrefix . 'communications_entry_id');
 		}
 
 
@@ -684,6 +705,8 @@
 			$objToReturn->fltAmountBalance = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'internal_notes', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'internal_notes'] : $strAliasPrefix . 'internal_notes';
 			$objToReturn->strInternalNotes = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'communications_entry_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'communications_entry_id'] : $strAliasPrefix . 'communications_entry_id';
+			$objToReturn->intCommunicationsEntryId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -714,6 +737,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objSignupByPerson = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signup_by_person_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for CommunicationsEntry Early Binding
+			$strAlias = $strAliasPrefix . 'communications_entry_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objCommunicationsEntry = CommunicationListEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'communications_entry_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 			// Check for ClassRegistration Unique ReverseReference Binding
@@ -1067,6 +1096,40 @@
 			, $objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load an array of SignupEntry objects,
+		 * by CommunicationsEntryId Index(es)
+		 * @param integer $intCommunicationsEntryId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupEntry[]
+		*/
+		public static function LoadArrayByCommunicationsEntryId($intCommunicationsEntryId, $objOptionalClauses = null) {
+			// Call SignupEntry::QueryArray to perform the LoadArrayByCommunicationsEntryId query
+			try {
+				return SignupEntry::QueryArray(
+					QQ::Equal(QQN::SignupEntry()->CommunicationsEntryId, $intCommunicationsEntryId),
+					$objOptionalClauses
+					);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SignupEntries
+		 * by CommunicationsEntryId Index(es)
+		 * @param integer $intCommunicationsEntryId
+		 * @return int
+		*/
+		public static function CountByCommunicationsEntryId($intCommunicationsEntryId, $objOptionalClauses = null) {
+			// Call SignupEntry::QueryCount to perform the CountByCommunicationsEntryId query
+			return SignupEntry::QueryCount(
+				QQ::Equal(QQN::SignupEntry()->CommunicationsEntryId, $intCommunicationsEntryId)
+			, $objOptionalClauses
+			);
+		}
 
 
 
@@ -1107,7 +1170,8 @@
 							`amount_total`,
 							`amount_paid`,
 							`amount_balance`,
-							`internal_notes`
+							`internal_notes`,
+							`communications_entry_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSignupFormId) . ',
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
@@ -1118,7 +1182,8 @@
 							' . $objDatabase->SqlVariable($this->fltAmountTotal) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 							' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
-							' . $objDatabase->SqlVariable($this->strInternalNotes) . '
+							' . $objDatabase->SqlVariable($this->strInternalNotes) . ',
+							' . $objDatabase->SqlVariable($this->intCommunicationsEntryId) . '
 						)
 					');
 
@@ -1147,7 +1212,8 @@
 							`amount_total` = ' . $objDatabase->SqlVariable($this->fltAmountTotal) . ',
 							`amount_paid` = ' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 							`amount_balance` = ' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
-							`internal_notes` = ' . $objDatabase->SqlVariable($this->strInternalNotes) . '
+							`internal_notes` = ' . $objDatabase->SqlVariable($this->strInternalNotes) . ',
+							`communications_entry_id` = ' . $objDatabase->SqlVariable($this->intCommunicationsEntryId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1271,6 +1337,7 @@
 			$this->fltAmountPaid = $objReloaded->fltAmountPaid;
 			$this->fltAmountBalance = $objReloaded->fltAmountBalance;
 			$this->strInternalNotes = $objReloaded->strInternalNotes;
+			$this->CommunicationsEntryId = $objReloaded->CommunicationsEntryId;
 		}
 
 		/**
@@ -1294,6 +1361,7 @@
 					`amount_paid`,
 					`amount_balance`,
 					`internal_notes`,
+					`communications_entry_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1309,6 +1377,7 @@
 					' . $objDatabase->SqlVariable($this->fltAmountPaid) . ',
 					' . $objDatabase->SqlVariable($this->fltAmountBalance) . ',
 					' . $objDatabase->SqlVariable($this->strInternalNotes) . ',
+					' . $objDatabase->SqlVariable($this->intCommunicationsEntryId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1370,12 +1439,12 @@
 					return $this->intSignupFormId;
 
 				case 'PersonId':
-					// Gets the value for intPersonId (Not Null)
+					// Gets the value for intPersonId 
 					// @return integer
 					return $this->intPersonId;
 
 				case 'SignupByPersonId':
-					// Gets the value for intSignupByPersonId (Not Null)
+					// Gets the value for intSignupByPersonId 
 					// @return integer
 					return $this->intSignupByPersonId;
 
@@ -1414,6 +1483,11 @@
 					// @return string
 					return $this->strInternalNotes;
 
+				case 'CommunicationsEntryId':
+					// Gets the value for intCommunicationsEntryId 
+					// @return integer
+					return $this->intCommunicationsEntryId;
+
 
 				///////////////////
 				// Member Objects
@@ -1431,7 +1505,7 @@
 					}
 
 				case 'Person':
-					// Gets the value for the Person object referenced by intPersonId (Not Null)
+					// Gets the value for the Person object referenced by intPersonId 
 					// @return Person
 					try {
 						if ((!$this->objPerson) && (!is_null($this->intPersonId)))
@@ -1443,12 +1517,24 @@
 					}
 
 				case 'SignupByPerson':
-					// Gets the value for the Person object referenced by intSignupByPersonId (Not Null)
+					// Gets the value for the Person object referenced by intSignupByPersonId 
 					// @return Person
 					try {
 						if ((!$this->objSignupByPerson) && (!is_null($this->intSignupByPersonId)))
 							$this->objSignupByPerson = Person::Load($this->intSignupByPersonId);
 						return $this->objSignupByPerson;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CommunicationsEntry':
+					// Gets the value for the CommunicationListEntry object referenced by intCommunicationsEntryId 
+					// @return CommunicationListEntry
+					try {
+						if ((!$this->objCommunicationsEntry) && (!is_null($this->intCommunicationsEntryId)))
+							$this->objCommunicationsEntry = CommunicationListEntry::Load($this->intCommunicationsEntryId);
+						return $this->objCommunicationsEntry;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1554,7 +1640,7 @@
 					}
 
 				case 'PersonId':
-					// Sets the value for intPersonId (Not Null)
+					// Sets the value for intPersonId 
 					// @param integer $mixValue
 					// @return integer
 					try {
@@ -1566,7 +1652,7 @@
 					}
 
 				case 'SignupByPersonId':
-					// Sets the value for intSignupByPersonId (Not Null)
+					// Sets the value for intSignupByPersonId 
 					// @param integer $mixValue
 					// @return integer
 					try {
@@ -1654,6 +1740,18 @@
 						throw $objExc;
 					}
 
+				case 'CommunicationsEntryId':
+					// Sets the value for intCommunicationsEntryId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objCommunicationsEntry = null;
+						return ($this->intCommunicationsEntryId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1689,7 +1787,7 @@
 					break;
 
 				case 'Person':
-					// Sets the value for the Person object referenced by intPersonId (Not Null)
+					// Sets the value for the Person object referenced by intPersonId 
 					// @param Person $mixValue
 					// @return Person
 					if (is_null($mixValue)) {
@@ -1719,7 +1817,7 @@
 					break;
 
 				case 'SignupByPerson':
-					// Sets the value for the Person object referenced by intSignupByPersonId (Not Null)
+					// Sets the value for the Person object referenced by intSignupByPersonId 
 					// @param Person $mixValue
 					// @return Person
 					if (is_null($mixValue)) {
@@ -1742,6 +1840,36 @@
 						// Update Local Member Variables
 						$this->objSignupByPerson = $mixValue;
 						$this->intSignupByPersonId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'CommunicationsEntry':
+					// Sets the value for the CommunicationListEntry object referenced by intCommunicationsEntryId 
+					// @param CommunicationListEntry $mixValue
+					// @return CommunicationListEntry
+					if (is_null($mixValue)) {
+						$this->intCommunicationsEntryId = null;
+						$this->objCommunicationsEntry = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a CommunicationListEntry object
+						try {
+							$mixValue = QType::Cast($mixValue, 'CommunicationListEntry');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED CommunicationListEntry object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved CommunicationsEntry for this SignupEntry');
+
+						// Update Local Member Variables
+						$this->objCommunicationsEntry = $mixValue;
+						$this->intCommunicationsEntryId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -2379,6 +2507,7 @@
 			$strToReturn .= '<element name="AmountPaid" type="xsd:float"/>';
 			$strToReturn .= '<element name="AmountBalance" type="xsd:float"/>';
 			$strToReturn .= '<element name="InternalNotes" type="xsd:string"/>';
+			$strToReturn .= '<element name="CommunicationsEntry" type="xsd1:CommunicationListEntry"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2390,6 +2519,7 @@
 				SignupForm::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
+				CommunicationListEntry::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -2429,6 +2559,9 @@
 				$objToReturn->fltAmountBalance = $objSoapObject->AmountBalance;
 			if (property_exists($objSoapObject, 'InternalNotes'))
 				$objToReturn->strInternalNotes = $objSoapObject->InternalNotes;
+			if ((property_exists($objSoapObject, 'CommunicationsEntry')) &&
+				($objSoapObject->CommunicationsEntry))
+				$objToReturn->CommunicationsEntry = CommunicationListEntry::GetObjectFromSoapObject($objSoapObject->CommunicationsEntry);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2463,6 +2596,10 @@
 				$objObject->dttDateCreated = $objObject->dttDateCreated->__toString(QDateTime::FormatSoap);
 			if ($objObject->dttDateSubmitted)
 				$objObject->dttDateSubmitted = $objObject->dttDateSubmitted->__toString(QDateTime::FormatSoap);
+			if ($objObject->objCommunicationsEntry)
+				$objObject->objCommunicationsEntry = CommunicationListEntry::GetSoapObjectFromObject($objObject->objCommunicationsEntry, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intCommunicationsEntryId = null;
 			return $objObject;
 		}
 
@@ -2492,6 +2629,8 @@
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
 	 * @property-read QQNode $InternalNotes
+	 * @property-read QQNode $CommunicationsEntryId
+	 * @property-read QQNodeCommunicationListEntry $CommunicationsEntry
 	 * @property-read QQReverseReferenceNodeClassRegistration $ClassRegistration
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
@@ -2531,6 +2670,10 @@
 					return new QQNode('amount_balance', 'AmountBalance', 'double', $this);
 				case 'InternalNotes':
 					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
+				case 'CommunicationsEntryId':
+					return new QQNode('communications_entry_id', 'CommunicationsEntryId', 'integer', $this);
+				case 'CommunicationsEntry':
+					return new QQNodeCommunicationListEntry('communications_entry_id', 'CommunicationsEntry', 'integer', $this);
 				case 'ClassRegistration':
 					return new QQReverseReferenceNodeClassRegistration($this, 'classregistration', 'reverse_reference', 'signup_entry_id', 'ClassRegistration');
 				case 'FormAnswer':
@@ -2568,6 +2711,8 @@
 	 * @property-read QQNode $AmountPaid
 	 * @property-read QQNode $AmountBalance
 	 * @property-read QQNode $InternalNotes
+	 * @property-read QQNode $CommunicationsEntryId
+	 * @property-read QQNodeCommunicationListEntry $CommunicationsEntry
 	 * @property-read QQReverseReferenceNodeClassRegistration $ClassRegistration
 	 * @property-read QQReverseReferenceNodeFormAnswer $FormAnswer
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPayment
@@ -2608,6 +2753,10 @@
 					return new QQNode('amount_balance', 'AmountBalance', 'double', $this);
 				case 'InternalNotes':
 					return new QQNode('internal_notes', 'InternalNotes', 'string', $this);
+				case 'CommunicationsEntryId':
+					return new QQNode('communications_entry_id', 'CommunicationsEntryId', 'integer', $this);
+				case 'CommunicationsEntry':
+					return new QQNodeCommunicationListEntry('communications_entry_id', 'CommunicationsEntry', 'integer', $this);
 				case 'ClassRegistration':
 					return new QQReverseReferenceNodeClassRegistration($this, 'classregistration', 'reverse_reference', 'signup_entry_id', 'ClassRegistration');
 				case 'FormAnswer':

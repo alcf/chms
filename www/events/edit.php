@@ -17,6 +17,7 @@
 		protected $txtToken;
 		protected $chkActiveFlag;
 		protected $chkConfidentialFlag;
+		protected $chkNoLoginSupportFlag;
 		protected $txtDescription;
 		protected $txtInformationUrl;
 		protected $chkAllowOtherFlag;
@@ -136,7 +137,11 @@
 			$this->chkConfidentialFlag = $this->mctSignupForm->chkConfidentialFlag_Create();
 			$this->chkConfidentialFlag->Name = 'Confidential?';
 			$this->chkConfidentialFlag->Text = 'Check if this form is considered a "Confidential" form.';
-
+			
+			$this->chkNoLoginSupportFlag = $this->mctSignupForm->chkLoginNotRequiredFlag_Create();
+			$this->chkNoLoginSupportFlag->Name = 'Support No Login?';
+			$this->chkNoLoginSupportFlag->Text = 'Check if you would like to allow users to signup without having to log in.';
+				
 			$this->txtFundingAccount = $this->mctSignupForm->txtFundingAccount_Create();
 			if ($this->mctSignupForm->SignupForm->CountFormProducts()) $this->txtFundingAccount->Required = true;
 			

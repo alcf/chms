@@ -61,6 +61,7 @@
 		protected $chkBoolean;
 		protected $dtxDateValue;
 		protected $lblInstructions;
+		protected $lblPersonName;
 
 		const EditTagNote = 1;
 		const EditTagPayment = 2;
@@ -102,8 +103,16 @@
 			$this->lblPerson = new QLabel($this);
 			$this->lblPerson->Name = 'Person';
 			$this->lblPerson->HtmlEntities = false;
-			$this->lblPerson->Text = $this->mctSignupEntry->SignupEntry->Person->LinkHtml;
-
+			$this->lblPersonName = new QLabel($this);
+			$this->lblPersonName->Name = 'Person Name';
+			$this->lblPersonName->HtmlEntities = true;
+			if($this->mctSignupEntry->SignupEntry->Person) {
+				$this->lblPerson->Text = $this->mctSignupEntry->SignupEntry->Person->LinkHtml;
+				$this->lblPersonName->Text = $this->mctSignupEntry->SignupEntry->Person->Name;
+			} else {
+				$this->lblPerson->Text = sprintf("%s %s",$objSignupEntry->CommunicationsEntry->FirstName, $objSignupEntry->CommunicationsEntry->LastName);
+				$this->lblPersonName->Text = $this->lblPerson->Text;
+			}
 			$this->lblSignupEntryStatusType = $this->mctSignupEntry->lblSignupEntryStatusTypeId_Create();
 			$this->lblDateCreated = $this->mctSignupEntry->lblDateCreated_Create();
 			$this->lblDateSubmitted = $this->mctSignupEntry->lblDateSubmitted_Create();
@@ -403,24 +412,31 @@
 
 					case FormQuestionType::Address:
 						if ($objFormAnswer->Address) $strToReturn = $objFormAnswer->Address->AddressShortLine;
+						else $strToReturn = $objFormAnswer->TextValue;
 						break;
 
 					case FormQuestionType::Phone:
 						if ($objFormAnswer->Phone) $strToReturn = $objFormAnswer->Phone->Number;
+						else $strToReturn = $objFormAnswer->TextValue;
 						break;
 
 					case FormQuestionType::Email:
 						if ($objFormAnswer->Email) $strToReturn = $objFormAnswer->Email->Address;
+						else $strToReturn = $objFormAnswer->TextValue;
 						break;
 
 					case FormQuestionType::Gender:
-						switch ($objPerson->Gender) {
-							case 'M':
-								$strToReturn = 'Male';
-								break;
-							case 'F':
-								$strToReturn = 'Female';
-								break;
+						if ($objPerson) {
+							switch ($objPerson->Gender) {
+								case 'M':
+									$strToReturn = 'Male';
+									break;
+								case 'F':
+									$strToReturn = 'Female';
+									break;
+							}
+						} else {
+							$strToReturn = $objFormAnswer->TextValue;
 						}
 						break;
 
@@ -437,18 +453,28 @@
 						break;
 						
 					case FormQuestionType::Age:
-						$strToReturn = $objPerson->Age;
+						if ($objPerson)
+							$strToReturn = $objPerson->Age;
+						else 
+							$strToReturn = $objFormAnswer->IntegerValue;
+						
 						break;
 
 					case FormQuestionType::DateofBirth:
-						if ($objPerson->DateOfBirth) $strToReturn = $objPerson->DateOfBirth->ToString('MMM D YYYY');
+						if ($objPerson) {
+							if ($objPerson->DateOfBirth) $strToReturn = $objPerson->DateOfBirth->ToString('MMM D YYYY');
+						} else
+							$strToReturn = $objFormAnswer->DateValue;					
 						break;
 				}
 			}
 
 			if (strlen($strToReturn)) {
-				// If we are here, create a link to the details
-				return (sprintf('<a href="#" style="font-weight: bold;" %s>%s</a>', $this->pxyEditFormQuestion->RenderAsEvents($objFormQuestion->Id, false), $strToReturn));
+				// If we are here, create a link to the details (only if a person object exists!)
+				if($objPerson)
+					return (sprintf('<a href="#" style="font-weight: bold;" %s>%s</a>', $this->pxyEditFormQuestion->RenderAsEvents($objFormQuestion->Id, false), $strToReturn));
+				else 
+					return (sprintf('<span style="font-weight: bold;" >%s</span>',  $strToReturn));
 			} else {
 				// If we are here, nothing was answered!
 				return (sprintf('<a href="#" style="color: #999; font-size: 10px;" %s>Not Answered</a>', $this->pxyEditFormQuestion->RenderAsEvents($objFormQuestion->Id, false)));

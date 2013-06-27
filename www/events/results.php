@@ -124,8 +124,12 @@
 			
 			// Show a link if we can edit
 			if ($this->objSignupForm->Ministry->IsLoginCanAdminMinistry(QApplicatioN::$Login)) {
-				return sprintf('<a href="/events/result.php/%s/%s" title="View and Edit this signup" %s>%s</a>',
-					$this->objSignupForm->Id, $objSignupEntry->Id, $strASpan, QApplication::HtmlEntities($objSignupEntry->Person->Name));
+				if($objSignupEntry->Person)
+					return sprintf('<a href="/events/result.php/%s/%s" title="View and Edit this signup" %s>%s</a>',
+						$this->objSignupForm->Id, $objSignupEntry->Id, $strASpan, QApplication::HtmlEntities($objSignupEntry->Person->Name));
+				else 
+					return sprintf('<a href="/events/result.php/%s/%s" title="View and Edit this signup" %s>%s %s</a>',
+						$this->objSignupForm->Id, $objSignupEntry->Id, $strASpan, QApplication::HtmlEntities($objSignupEntry->CommunicationsEntry->FirstName),QApplication::HtmlEntities($objSignupEntry->CommunicationsEntry->LastName));
 			} else {
 				return QApplication::HtmlEntities($objSignupEntry->Person->Name);
 			}

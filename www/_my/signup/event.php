@@ -1,6 +1,6 @@
 <?php
 	require(dirname(__FILE__) . '/../../../includes/prepend.inc.php');
-	QApplication::AuthenticatePublic();
+	//QApplication::AuthenticatePublic();
 	require(dirname(__FILE__) . '/SignupQForm.class.php');
 
 	class EventSignupQForm extends SignupQForm {

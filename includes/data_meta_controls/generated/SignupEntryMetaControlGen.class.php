@@ -38,6 +38,8 @@
 	 * property-read QLabel $AmountBalanceLabel
 	 * property QTextBox $InternalNotesControl
 	 * property-read QLabel $InternalNotesLabel
+	 * property QListBox $CommunicationsEntryIdControl
+	 * property-read QLabel $CommunicationsEntryIdLabel
 	 * property QListBox $ClassRegistrationControl
 	 * property-read QLabel $ClassRegistrationLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -137,6 +139,12 @@
          */
 		protected $txtInternalNotes;
 
+        /**
+         * @var QListBox lstCommunicationsEntry;
+         * @access protected
+         */
+		protected $lstCommunicationsEntry;
+
 
 		// Controls that allow the viewing of SignupEntry's individual data fields
         /**
@@ -198,6 +206,12 @@
          * @access protected
          */
 		protected $lblInternalNotes;
+
+        /**
+         * @var QLabel lblCommunicationsEntryId
+         * @access protected
+         */
+		protected $lblCommunicationsEntryId;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -377,9 +391,7 @@
 		public function lstPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPerson->Name = QApplication::Translate('Person');
-			$this->lstPerson->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -406,7 +418,6 @@
 			$this->lblPersonId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblPersonId->Name = QApplication::Translate('Person');
 			$this->lblPersonId->Text = ($this->objSignupEntry->Person) ? $this->objSignupEntry->Person->__toString() : null;
-			$this->lblPersonId->Required = true;
 			return $this->lblPersonId;
 		}
 
@@ -420,9 +431,7 @@
 		public function lstSignupByPerson_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstSignupByPerson = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSignupByPerson->Name = QApplication::Translate('Signup By Person');
-			$this->lstSignupByPerson->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
+			$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
 
 			// Setup and perform the Query
 			if (is_null($objCondition)) $objCondition = QQ::All();
@@ -449,7 +458,6 @@
 			$this->lblSignupByPersonId = new QLabel($this->objParentObject, $strControlId);
 			$this->lblSignupByPersonId->Name = QApplication::Translate('Signup By Person');
 			$this->lblSignupByPersonId->Text = ($this->objSignupEntry->SignupByPerson) ? $this->objSignupEntry->SignupByPerson->__toString() : null;
-			$this->lblSignupByPersonId->Required = true;
 			return $this->lblSignupByPersonId;
 		}
 
@@ -644,6 +652,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstCommunicationsEntry
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstCommunicationsEntry_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCommunicationsEntry = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCommunicationsEntry->Name = QApplication::Translate('Communications Entry');
+			$this->lstCommunicationsEntry->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCommunicationsEntryCursor = CommunicationListEntry::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCommunicationsEntry = CommunicationListEntry::InstantiateCursor($objCommunicationsEntryCursor)) {
+				$objListItem = new QListItem($objCommunicationsEntry->__toString(), $objCommunicationsEntry->Id);
+				if (($this->objSignupEntry->CommunicationsEntry) && ($this->objSignupEntry->CommunicationsEntry->Id == $objCommunicationsEntry->Id))
+					$objListItem->Selected = true;
+				$this->lstCommunicationsEntry->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstCommunicationsEntry;
+		}
+
+		/**
+		 * Create and setup QLabel lblCommunicationsEntryId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCommunicationsEntryId_Create($strControlId = null) {
+			$this->lblCommunicationsEntryId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCommunicationsEntryId->Name = QApplication::Translate('Communications Entry');
+			$this->lblCommunicationsEntryId->Text = ($this->objSignupEntry->CommunicationsEntry) ? $this->objSignupEntry->CommunicationsEntry->__toString() : null;
+			return $this->lblCommunicationsEntryId;
+		}
+
+		/**
 		 * Create and setup QListBox lstClassRegistration
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -716,8 +764,7 @@
 
 			if ($this->lstPerson) {
 					$this->lstPerson->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstPerson->AddItem(QApplication::Translate('- Select One -'), null);
 				$objPersonArray = Person::LoadAll();
 				if ($objPersonArray) foreach ($objPersonArray as $objPerson) {
 					$objListItem = new QListItem($objPerson->__toString(), $objPerson->Id);
@@ -730,8 +777,7 @@
 
 			if ($this->lstSignupByPerson) {
 					$this->lstSignupByPerson->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
+				$this->lstSignupByPerson->AddItem(QApplication::Translate('- Select One -'), null);
 				$objSignupByPersonArray = Person::LoadAll();
 				if ($objSignupByPersonArray) foreach ($objSignupByPersonArray as $objSignupByPerson) {
 					$objListItem = new QListItem($objSignupByPerson->__toString(), $objSignupByPerson->Id);
@@ -762,6 +808,19 @@
 
 			if ($this->txtInternalNotes) $this->txtInternalNotes->Text = $this->objSignupEntry->InternalNotes;
 			if ($this->lblInternalNotes) $this->lblInternalNotes->Text = $this->objSignupEntry->InternalNotes;
+
+			if ($this->lstCommunicationsEntry) {
+					$this->lstCommunicationsEntry->RemoveAllItems();
+				$this->lstCommunicationsEntry->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCommunicationsEntryArray = CommunicationListEntry::LoadAll();
+				if ($objCommunicationsEntryArray) foreach ($objCommunicationsEntryArray as $objCommunicationsEntry) {
+					$objListItem = new QListItem($objCommunicationsEntry->__toString(), $objCommunicationsEntry->Id);
+					if (($this->objSignupEntry->CommunicationsEntry) && ($this->objSignupEntry->CommunicationsEntry->Id == $objCommunicationsEntry->Id))
+						$objListItem->Selected = true;
+					$this->lstCommunicationsEntry->AddItem($objListItem);
+				}
+			}
+			if ($this->lblCommunicationsEntryId) $this->lblCommunicationsEntryId->Text = ($this->objSignupEntry->CommunicationsEntry) ? $this->objSignupEntry->CommunicationsEntry->__toString() : null;
 
 			if ($this->lstClassRegistration) {
 				$this->lstClassRegistration->RemoveAllItems();
@@ -814,6 +873,7 @@
 				if ($this->txtAmountPaid) $this->objSignupEntry->AmountPaid = $this->txtAmountPaid->Text;
 				if ($this->txtAmountBalance) $this->objSignupEntry->AmountBalance = $this->txtAmountBalance->Text;
 				if ($this->txtInternalNotes) $this->objSignupEntry->InternalNotes = $this->txtInternalNotes->Text;
+				if ($this->lstCommunicationsEntry) $this->objSignupEntry->CommunicationsEntryId = $this->lstCommunicationsEntry->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstClassRegistration) $this->objSignupEntry->ClassRegistration = ClassRegistration::Load($this->lstClassRegistration->SelectedValue);
@@ -923,6 +983,12 @@
 				case 'InternalNotesLabel':
 					if (!$this->lblInternalNotes) return $this->lblInternalNotes_Create();
 					return $this->lblInternalNotes;
+				case 'CommunicationsEntryIdControl':
+					if (!$this->lstCommunicationsEntry) return $this->lstCommunicationsEntry_Create();
+					return $this->lstCommunicationsEntry;
+				case 'CommunicationsEntryIdLabel':
+					if (!$this->lblCommunicationsEntryId) return $this->lblCommunicationsEntryId_Create();
+					return $this->lblCommunicationsEntryId;
 				case 'ClassRegistrationControl':
 					if (!$this->lstClassRegistration) return $this->lstClassRegistration_Create();
 					return $this->lstClassRegistration;
@@ -973,6 +1039,8 @@
 						return ($this->txtAmountBalance = QType::Cast($mixValue, 'QControl'));
 					case 'InternalNotesControl':
 						return ($this->txtInternalNotes = QType::Cast($mixValue, 'QControl'));
+					case 'CommunicationsEntryIdControl':
+						return ($this->lstCommunicationsEntry = QType::Cast($mixValue, 'QControl'));
 					case 'ClassRegistrationControl':
 						return ($this->lstClassRegistration = QType::Cast($mixValue, 'QControl'));
 					default:

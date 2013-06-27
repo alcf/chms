@@ -1,6 +1,6 @@
 <?php
 	require(dirname(__FILE__) . '/../../../includes/prepend.inc.php');
-	QApplication::AuthenticatePublic();
+	//QApplication::AuthenticatePublic();
 
 	class ConfirmationSignupQForm extends ChmsForm {
 		protected $strPageTitle = 'Main Menu';
@@ -37,12 +37,22 @@
 			$this->objSignupEntry = SignupEntry::Load(QApplication::PathInfo(1));
 			
 			// Ensure it is correct for the form and the signup person
-			if (!$this->objSignupEntry ||
+			if($this->objSignupEntry->SignupByPersonId) {
+				if (!$this->objSignupEntry ||
+					($this->objSignupEntry->SignupFormId != $this->objSignupForm->Id) ||
+					($this->objSignupEntry->SignupByPersonId != QApplication::$PublicLogin->PersonId) ||
+					($this->objSignupEntry->SignupEntryStatusTypeId != SignupEntryStatusType::Complete)) {
+					$this->strHtmlIncludeFilePath = '_notfound.tpl.php';
+					return;
+				}
+			} else {
+				if (!$this->objSignupEntry ||
 				($this->objSignupEntry->SignupFormId != $this->objSignupForm->Id) ||
-				($this->objSignupEntry->SignupByPersonId != QApplication::$PublicLogin->PersonId) ||
+				(!$this->objSignupEntry->CommunicationsEntryId) ||
 				($this->objSignupEntry->SignupEntryStatusTypeId != SignupEntryStatusType::Complete)) {
-				$this->strHtmlIncludeFilePath = '_notfound.tpl.php';
-				return;
+					$this->strHtmlIncludeFilePath = '_notfound.tpl.php';
+					return;
+				}
 			}
 		}
 		

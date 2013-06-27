@@ -311,9 +311,9 @@
 				case 'City': return QQN::GroupRegistrations()->City;
 				case 'Zipcode': return QQN::GroupRegistrations()->Zipcode;
 				case 'GroupDay': return QQN::GroupRegistrations()->GroupDay;
-				case 'ProcessedFlag': return QQN::GroupRegistrations()->ProcessedFlag;
 				case 'GroupsPlaced': return QQN::GroupRegistrations()->GroupsPlaced;
 				case 'DateProcessed': return QQN::GroupRegistrations()->DateProcessed;
+				case 'ProcessedFlag': return QQN::GroupRegistrations()->ProcessedFlag;
 				default: throw new QCallerException('Simple Property not found in GroupRegistrationsDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

@@ -314,6 +314,7 @@
 				case 'DonationStewardshipFundId': return QQN::SignupForm()->DonationStewardshipFundId;
 				case 'DonationStewardshipFund': return QQN::SignupForm()->DonationStewardshipFund;
 				case 'DateCreated': return QQN::SignupForm()->DateCreated;
+				case 'LoginNotRequiredFlag': return QQN::SignupForm()->LoginNotRequiredFlag;
 				case 'ClassMeeting': return QQN::SignupForm()->ClassMeeting;
 
 				case 'EventSignupForm': return QQN::SignupForm()->EventSignupForm;

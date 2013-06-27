@@ -31,9 +31,9 @@
 	 * @property string $City the value for strCity 
 	 * @property string $Zipcode the value for strZipcode 
 	 * @property string $GroupDay the value for strGroupDay 
-	 * @property boolean $ProcessedFlag the value for blnProcessedFlag 
 	 * @property string $GroupsPlaced the value for strGroupsPlaced 
 	 * @property QDateTime $DateProcessed the value for dttDateProcessed 
+	 * @property boolean $ProcessedFlag the value for blnProcessedFlag 
 	 * @property SourceList $SourceList the value for the SourceList object referenced by intSourceListId (Not Null)
 	 * @property GroupRole $GroupRole the value for the GroupRole object referenced by intGroupRoleId 
 	 * @property GrowthGroupStructure $_GrowthGroupStructureAsGroupstructure the value for the private _objGrowthGroupStructureAsGroupstructure (Read-Only) if set due to an expansion on the groupregistrations_groupstructure_assn association table
@@ -187,18 +187,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column group_registrations.processed_flag
-		 * @var boolean blnProcessedFlag
-		 */
-		protected $blnProcessedFlag;
-		const ProcessedFlagDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column group_registrations.groups_placed
 		 * @var string strGroupsPlaced
 		 */
 		protected $strGroupsPlaced;
+		const GroupsPlacedMaxLength = 512;
 		const GroupsPlacedDefault = null;
 
 
@@ -208,6 +201,14 @@
 		 */
 		protected $dttDateProcessed;
 		const DateProcessedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column group_registrations.processed_flag
+		 * @var boolean blnProcessedFlag
+		 */
+		protected $blnProcessedFlag;
+		const ProcessedFlagDefault = null;
 
 
 		/**
@@ -594,9 +595,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'city', $strAliasPrefix . 'city');
 			$objBuilder->AddSelectItem($strTableName, 'zipcode', $strAliasPrefix . 'zipcode');
 			$objBuilder->AddSelectItem($strTableName, 'group_day', $strAliasPrefix . 'group_day');
-			$objBuilder->AddSelectItem($strTableName, 'processed_flag', $strAliasPrefix . 'processed_flag');
 			$objBuilder->AddSelectItem($strTableName, 'groups_placed', $strAliasPrefix . 'groups_placed');
 			$objBuilder->AddSelectItem($strTableName, 'date_processed', $strAliasPrefix . 'date_processed');
+			$objBuilder->AddSelectItem($strTableName, 'processed_flag', $strAliasPrefix . 'processed_flag');
 		}
 
 
@@ -692,12 +693,12 @@
 			$objToReturn->strZipcode = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'group_day', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'group_day'] : $strAliasPrefix . 'group_day';
 			$objToReturn->strGroupDay = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'processed_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'processed_flag'] : $strAliasPrefix . 'processed_flag';
-			$objToReturn->blnProcessedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'groups_placed', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'groups_placed'] : $strAliasPrefix . 'groups_placed';
-			$objToReturn->strGroupsPlaced = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$objToReturn->strGroupsPlaced = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'date_processed', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date_processed'] : $strAliasPrefix . 'date_processed';
 			$objToReturn->dttDateProcessed = $objDbRow->GetColumn($strAliasName, 'Date');
+			$strAliasName = array_key_exists($strAliasPrefix . 'processed_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'processed_flag'] : $strAliasPrefix . 'processed_flag';
+			$objToReturn->blnProcessedFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -965,9 +966,9 @@
 							`city`,
 							`zipcode`,
 							`group_day`,
-							`processed_flag`,
 							`groups_placed`,
-							`date_processed`
+							`date_processed`,
+							`processed_flag`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSourceListId) . ',
 							' . $objDatabase->SqlVariable($this->dttDateReceived) . ',
@@ -984,9 +985,9 @@
 							' . $objDatabase->SqlVariable($this->strCity) . ',
 							' . $objDatabase->SqlVariable($this->strZipcode) . ',
 							' . $objDatabase->SqlVariable($this->strGroupDay) . ',
-							' . $objDatabase->SqlVariable($this->blnProcessedFlag) . ',
 							' . $objDatabase->SqlVariable($this->strGroupsPlaced) . ',
-							' . $objDatabase->SqlVariable($this->dttDateProcessed) . '
+							' . $objDatabase->SqlVariable($this->dttDateProcessed) . ',
+							' . $objDatabase->SqlVariable($this->blnProcessedFlag) . '
 						)
 					');
 
@@ -1021,9 +1022,9 @@
 							`city` = ' . $objDatabase->SqlVariable($this->strCity) . ',
 							`zipcode` = ' . $objDatabase->SqlVariable($this->strZipcode) . ',
 							`group_day` = ' . $objDatabase->SqlVariable($this->strGroupDay) . ',
-							`processed_flag` = ' . $objDatabase->SqlVariable($this->blnProcessedFlag) . ',
 							`groups_placed` = ' . $objDatabase->SqlVariable($this->strGroupsPlaced) . ',
-							`date_processed` = ' . $objDatabase->SqlVariable($this->dttDateProcessed) . '
+							`date_processed` = ' . $objDatabase->SqlVariable($this->dttDateProcessed) . ',
+							`processed_flag` = ' . $objDatabase->SqlVariable($this->blnProcessedFlag) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1123,9 +1124,9 @@
 			$this->strCity = $objReloaded->strCity;
 			$this->strZipcode = $objReloaded->strZipcode;
 			$this->strGroupDay = $objReloaded->strGroupDay;
-			$this->blnProcessedFlag = $objReloaded->blnProcessedFlag;
 			$this->strGroupsPlaced = $objReloaded->strGroupsPlaced;
 			$this->dttDateProcessed = $objReloaded->dttDateProcessed;
+			$this->blnProcessedFlag = $objReloaded->blnProcessedFlag;
 		}
 
 		/**
@@ -1154,9 +1155,9 @@
 					`city`,
 					`zipcode`,
 					`group_day`,
-					`processed_flag`,
 					`groups_placed`,
 					`date_processed`,
+					`processed_flag`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1177,9 +1178,9 @@
 					' . $objDatabase->SqlVariable($this->strCity) . ',
 					' . $objDatabase->SqlVariable($this->strZipcode) . ',
 					' . $objDatabase->SqlVariable($this->strGroupDay) . ',
-					' . $objDatabase->SqlVariable($this->blnProcessedFlag) . ',
 					' . $objDatabase->SqlVariable($this->strGroupsPlaced) . ',
 					' . $objDatabase->SqlVariable($this->dttDateProcessed) . ',
+					' . $objDatabase->SqlVariable($this->blnProcessedFlag) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1310,11 +1311,6 @@
 					// @return string
 					return $this->strGroupDay;
 
-				case 'ProcessedFlag':
-					// Gets the value for blnProcessedFlag 
-					// @return boolean
-					return $this->blnProcessedFlag;
-
 				case 'GroupsPlaced':
 					// Gets the value for strGroupsPlaced 
 					// @return string
@@ -1324,6 +1320,11 @@
 					// Gets the value for dttDateProcessed 
 					// @return QDateTime
 					return $this->dttDateProcessed;
+
+				case 'ProcessedFlag':
+					// Gets the value for blnProcessedFlag 
+					// @return boolean
+					return $this->blnProcessedFlag;
 
 
 				///////////////////
@@ -1565,17 +1566,6 @@
 						throw $objExc;
 					}
 
-				case 'ProcessedFlag':
-					// Sets the value for blnProcessedFlag 
-					// @param boolean $mixValue
-					// @return boolean
-					try {
-						return ($this->blnProcessedFlag = QType::Cast($mixValue, QType::Boolean));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'GroupsPlaced':
 					// Sets the value for strGroupsPlaced 
 					// @param string $mixValue
@@ -1593,6 +1583,17 @@
 					// @return QDateTime
 					try {
 						return ($this->dttDateProcessed = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ProcessedFlag':
+					// Sets the value for blnProcessedFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnProcessedFlag = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1898,9 +1899,9 @@
 			$strToReturn .= '<element name="City" type="xsd:string"/>';
 			$strToReturn .= '<element name="Zipcode" type="xsd:string"/>';
 			$strToReturn .= '<element name="GroupDay" type="xsd:string"/>';
-			$strToReturn .= '<element name="ProcessedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="GroupsPlaced" type="xsd:string"/>';
 			$strToReturn .= '<element name="DateProcessed" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="ProcessedFlag" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1959,12 +1960,12 @@
 				$objToReturn->strZipcode = $objSoapObject->Zipcode;
 			if (property_exists($objSoapObject, 'GroupDay'))
 				$objToReturn->strGroupDay = $objSoapObject->GroupDay;
-			if (property_exists($objSoapObject, 'ProcessedFlag'))
-				$objToReturn->blnProcessedFlag = $objSoapObject->ProcessedFlag;
 			if (property_exists($objSoapObject, 'GroupsPlaced'))
 				$objToReturn->strGroupsPlaced = $objSoapObject->GroupsPlaced;
 			if (property_exists($objSoapObject, 'DateProcessed'))
 				$objToReturn->dttDateProcessed = new QDateTime($objSoapObject->DateProcessed);
+			if (property_exists($objSoapObject, 'ProcessedFlag'))
+				$objToReturn->blnProcessedFlag = $objSoapObject->ProcessedFlag;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2060,9 +2061,9 @@
 	 * @property-read QQNode $City
 	 * @property-read QQNode $Zipcode
 	 * @property-read QQNode $GroupDay
-	 * @property-read QQNode $ProcessedFlag
 	 * @property-read QQNode $GroupsPlaced
 	 * @property-read QQNode $DateProcessed
+	 * @property-read QQNode $ProcessedFlag
 	 * @property-read QQNodeGroupRegistrationsGrowthGroupStructureAsGroupstructure $GrowthGroupStructureAsGroupstructure
 	 */
 	class QQNodeGroupRegistrations extends QQNode {
@@ -2107,12 +2108,12 @@
 					return new QQNode('zipcode', 'Zipcode', 'string', $this);
 				case 'GroupDay':
 					return new QQNode('group_day', 'GroupDay', 'string', $this);
-				case 'ProcessedFlag':
-					return new QQNode('processed_flag', 'ProcessedFlag', 'boolean', $this);
 				case 'GroupsPlaced':
 					return new QQNode('groups_placed', 'GroupsPlaced', 'string', $this);
 				case 'DateProcessed':
 					return new QQNode('date_processed', 'DateProcessed', 'QDateTime', $this);
+				case 'ProcessedFlag':
+					return new QQNode('processed_flag', 'ProcessedFlag', 'boolean', $this);
 				case 'GrowthGroupStructureAsGroupstructure':
 					return new QQNodeGroupRegistrationsGrowthGroupStructureAsGroupstructure($this);
 
@@ -2148,9 +2149,9 @@
 	 * @property-read QQNode $City
 	 * @property-read QQNode $Zipcode
 	 * @property-read QQNode $GroupDay
-	 * @property-read QQNode $ProcessedFlag
 	 * @property-read QQNode $GroupsPlaced
 	 * @property-read QQNode $DateProcessed
+	 * @property-read QQNode $ProcessedFlag
 	 * @property-read QQNodeGroupRegistrationsGrowthGroupStructureAsGroupstructure $GrowthGroupStructureAsGroupstructure
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -2196,12 +2197,12 @@
 					return new QQNode('zipcode', 'Zipcode', 'string', $this);
 				case 'GroupDay':
 					return new QQNode('group_day', 'GroupDay', 'string', $this);
-				case 'ProcessedFlag':
-					return new QQNode('processed_flag', 'ProcessedFlag', 'boolean', $this);
 				case 'GroupsPlaced':
 					return new QQNode('groups_placed', 'GroupsPlaced', 'string', $this);
 				case 'DateProcessed':
 					return new QQNode('date_processed', 'DateProcessed', 'QDateTime', $this);
+				case 'ProcessedFlag':
+					return new QQNode('processed_flag', 'ProcessedFlag', 'boolean', $this);
 				case 'GrowthGroupStructureAsGroupstructure':
 					return new QQNodeGroupRegistrationsGrowthGroupStructureAsGroupstructure($this);
 

@@ -16,7 +16,7 @@
 	 * @package ALCF ChMS
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $Id the value for intId (Read-Only PK)
-	 * @property string $Name the value for strName (Not Null)
+	 * @property string $Name the value for strName 
 	 * @property Group $_GroupAsStatus the value for the private _objGroupAsStatus (Read-Only) if set due to an expansion on the group.status reverse relationship
 	 * @property Group[] $_GroupAsStatusArray the value for the private _objGroupAsStatusArray (Read-Only) if set due to an ExpandAsArray on the group.status reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -785,7 +785,7 @@
 					return $this->intId;
 
 				case 'Name':
-					// Gets the value for strName (Not Null)
+					// Gets the value for strName 
 					// @return string
 					return $this->strName;
 
@@ -839,7 +839,7 @@
 				// Member Variables
 				///////////////////
 				case 'Name':
-					// Sets the value for strName (Not Null)
+					// Sets the value for strName 
 					// @param string $mixValue
 					// @return string
 					try {

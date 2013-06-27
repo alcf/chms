@@ -54,6 +54,8 @@
 	 * property-read QLabel $DonationStewardshipFundIdLabel
 	 * property QDateTimePicker $DateCreatedControl
 	 * property-read QLabel $DateCreatedLabel
+	 * property QCheckBox $LoginNotRequiredFlagControl
+	 * property-read QLabel $LoginNotRequiredFlagLabel
 	 * property QListBox $ClassMeetingControl
 	 * property-read QLabel $ClassMeetingLabel
 	 * property QListBox $EventSignupFormControl
@@ -203,6 +205,12 @@
          */
 		protected $calDateCreated;
 
+        /**
+         * @var QCheckBox chkLoginNotRequiredFlag;
+         * @access protected
+         */
+		protected $chkLoginNotRequiredFlag;
+
 
 		// Controls that allow the viewing of SignupForm's individual data fields
         /**
@@ -312,6 +320,12 @@
          * @access protected
          */
 		protected $lblDateCreated;
+
+        /**
+         * @var QLabel lblLoginNotRequiredFlag
+         * @access protected
+         */
+		protected $lblLoginNotRequiredFlag;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -943,6 +957,30 @@
 		protected $strDateCreatedDateTimeFormat;
 
 		/**
+		 * Create and setup QCheckBox chkLoginNotRequiredFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkLoginNotRequiredFlag_Create($strControlId = null) {
+			$this->chkLoginNotRequiredFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkLoginNotRequiredFlag->Name = QApplication::Translate('Login Not Required Flag');
+			$this->chkLoginNotRequiredFlag->Checked = $this->objSignupForm->LoginNotRequiredFlag;
+			return $this->chkLoginNotRequiredFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblLoginNotRequiredFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblLoginNotRequiredFlag_Create($strControlId = null) {
+			$this->lblLoginNotRequiredFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblLoginNotRequiredFlag->Name = QApplication::Translate('Login Not Required Flag');
+			$this->lblLoginNotRequiredFlag->Text = ($this->objSignupForm->LoginNotRequiredFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblLoginNotRequiredFlag;
+		}
+
+		/**
 		 * Create and setup QListBox lstClassMeeting
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -1118,6 +1156,9 @@
 			if ($this->calDateCreated) $this->calDateCreated->DateTime = $this->objSignupForm->DateCreated;
 			if ($this->lblDateCreated) $this->lblDateCreated->Text = sprintf($this->objSignupForm->DateCreated) ? $this->objSignupForm->__toString($this->strDateCreatedDateTimeFormat) : null;
 
+			if ($this->chkLoginNotRequiredFlag) $this->chkLoginNotRequiredFlag->Checked = $this->objSignupForm->LoginNotRequiredFlag;
+			if ($this->lblLoginNotRequiredFlag) $this->lblLoginNotRequiredFlag->Text = ($this->objSignupForm->LoginNotRequiredFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->lstClassMeeting) {
 				$this->lstClassMeeting->RemoveAllItems();
 				$this->lstClassMeeting->AddItem(QApplication::Translate('- Select One -'), null);
@@ -1195,6 +1236,7 @@
 				if ($this->txtFundingAccount) $this->objSignupForm->FundingAccount = $this->txtFundingAccount->Text;
 				if ($this->lstDonationStewardshipFund) $this->objSignupForm->DonationStewardshipFundId = $this->lstDonationStewardshipFund->SelectedValue;
 				if ($this->calDateCreated) $this->objSignupForm->DateCreated = $this->calDateCreated->DateTime;
+				if ($this->chkLoginNotRequiredFlag) $this->objSignupForm->LoginNotRequiredFlag = $this->chkLoginNotRequiredFlag->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstClassMeeting) $this->objSignupForm->ClassMeeting = ClassMeeting::Load($this->lstClassMeeting->SelectedValue);
@@ -1353,6 +1395,12 @@
 				case 'DateCreatedLabel':
 					if (!$this->lblDateCreated) return $this->lblDateCreated_Create();
 					return $this->lblDateCreated;
+				case 'LoginNotRequiredFlagControl':
+					if (!$this->chkLoginNotRequiredFlag) return $this->chkLoginNotRequiredFlag_Create();
+					return $this->chkLoginNotRequiredFlag;
+				case 'LoginNotRequiredFlagLabel':
+					if (!$this->lblLoginNotRequiredFlag) return $this->lblLoginNotRequiredFlag_Create();
+					return $this->lblLoginNotRequiredFlag;
 				case 'ClassMeetingControl':
 					if (!$this->lstClassMeeting) return $this->lstClassMeeting_Create();
 					return $this->lstClassMeeting;
@@ -1425,6 +1473,8 @@
 						return ($this->lstDonationStewardshipFund = QType::Cast($mixValue, 'QControl'));
 					case 'DateCreatedControl':
 						return ($this->calDateCreated = QType::Cast($mixValue, 'QControl'));
+					case 'LoginNotRequiredFlagControl':
+						return ($this->chkLoginNotRequiredFlag = QType::Cast($mixValue, 'QControl'));
 					case 'ClassMeetingControl':
 						return ($this->lstClassMeeting = QType::Cast($mixValue, 'QControl'));
 					case 'EventSignupFormControl':

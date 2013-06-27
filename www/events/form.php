@@ -29,6 +29,7 @@
 		protected $lblInformationUrl;
 		protected $lblActive;
 		protected $lblConfidential;
+		protected $lblAllowNoLogin;
 		protected $lblDescription;
 		protected $lblAllowOtherFlag;
 		protected $lblAllowMultipleFlag;
@@ -112,7 +113,28 @@
 					$this->SetupLabelsForCourse();
 					break;
 			}
-
+			// Add email automatically if "Allow No Login" is selected
+			// and if email is not already there.
+			$bHasEmail = false;
+			$objQuestionArray = FormQuestion::LoadArrayBySignupFormId($this->objSignupForm->Id);
+			foreach($objQuestionArray as $objQuestionItem) {
+				if($objQuestionItem->FormQuestionTypeId == 7){
+					$bHasEmail = true;
+					break;
+				}
+			}
+			if(($this->objSignupForm->LoginNotRequiredFlag)&& (!$bHasEmail)) {
+				$objQuestion = new FormQuestion();
+				$objQuestion->SignupForm = $this->objSignupForm;
+				$objQuestion->FormQuestionTypeId = 7; // email
+				$objQuestion->OrderNumber = 100000;
+				$objQuestion->ShortDescription = 'Email Address';
+				$objQuestion->Question = 'Email Address';
+				$objQuestion->RequiredFlag = true;
+				$objQuestion->ViewFlag = true;
+				$objQuestion->Save();
+			}
+			
 			$this->pxyMoveDownQuestion = new QControlProxy($this);
 			$this->pxyMoveDownQuestion->AddAction(new QClickEvent(), new QAjaxAction('pxyMoveDownQuestion_Click'));
 			$this->pxyMoveDownQuestion->AddAction(new QClickEvent(), new QTerminateAction());
@@ -143,7 +165,7 @@
 			$this->lblConfidential->HtmlEntities = false;
 			$this->lblConfidential->Text = '<img src="/assets/images/confidential.png"/>';
 			$this->lblConfidential->Visible = $this->objSignupForm->ConfidentialFlag;
-
+			
 			$this->lblActive = new QLabel($this);
 			$this->lblActive->Name = 'Active?';
 			$this->lblActive->HtmlEntities = false;
@@ -157,6 +179,7 @@
 			$this->lblInformationUrl = $this->mctSignupForm->lblInformationUrl_Create();
 			if (!$this->lblInformationUrl->Text) $this->lblInformationUrl->Visible = false;
 			$this->lblAllowMultipleFlag = $this->mctSignupForm->lblAllowMultipleFlag_Create();
+			$this->lblAllowNoLogin = $this->mctSignupForm->lblLoginNotRequiredFlag_Create();
 			$this->lblAllowOtherFlag = $this->mctSignupForm->lblAllowOtherFlag_Create();
 			$this->lblAllowOtherFlag->Visible = false;
 			$this->lblDateCreated = $this->mctSignupForm->lblDateCreated_Create();

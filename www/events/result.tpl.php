@@ -3,7 +3,7 @@
 	<h1><?php _p($this->objSignupForm->Name); ?>
 		<button class="primary" onclick="document.location=&quot;/events/results.php/<?php _p($this->objSignupForm->Id); ?>&quot;; return false;">Back to All Results</button>
 	</h1>
-	<h3>Signup: <?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?></h3>
+	<h3>Signup: <?php _p($this->lblPersonName->Text); ?></h3>
 
 	<div class="section">
 		<?php $this->lblPerson->RenderWithName('Name=Registrant'); ?>
@@ -28,14 +28,14 @@
 	</div>
 <?php } ?>
 
-	<h3><?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?>'s Signup Details</h3>
+	<h3><?php _p($this->lblPersonName->Text); ?>'s Signup Details</h3>
 	<div class="section">
 		<?php $this->dtgFormQuestions->Render();?>
 		<br/>
 		<?php $this->dtgFormProducts->Render();?>
 	</div>
 
-	<h3><?php _p($this->mctSignupEntry->SignupEntry->Person->Name); ?>'s Payments</h3>
+	<h3><?php _p($this->lblPersonName->Text); ?>'s Payments</h3>
 	<div class="section">
 		<?php $this->dtgPayments->Render();?>
 	</div>

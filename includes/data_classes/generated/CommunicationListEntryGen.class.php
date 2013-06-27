@@ -24,6 +24,8 @@
 	 * @property CommunicationList[] $_CommunicationListArray the value for the private _objCommunicationListArray (Read-Only) if set due to an ExpandAsArray on the communicationlist_communicationlistentry_assn association table
 	 * @property EmailMessageRoute $_EmailMessageRoute the value for the private _objEmailMessageRoute (Read-Only) if set due to an expansion on the email_message_route.communication_list_entry_id reverse relationship
 	 * @property EmailMessageRoute[] $_EmailMessageRouteArray the value for the private _objEmailMessageRouteArray (Read-Only) if set due to an ExpandAsArray on the email_message_route.communication_list_entry_id reverse relationship
+	 * @property SignupEntry $_SignupEntryAsCommunicationsEntry the value for the private _objSignupEntryAsCommunicationsEntry (Read-Only) if set due to an expansion on the signup_entry.communications_entry_id reverse relationship
+	 * @property SignupEntry[] $_SignupEntryAsCommunicationsEntryArray the value for the private _objSignupEntryAsCommunicationsEntryArray (Read-Only) if set due to an ExpandAsArray on the signup_entry.communications_entry_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class CommunicationListEntryGen extends QBaseClass {
@@ -107,6 +109,22 @@
 		 * @var EmailMessageRoute[] _objEmailMessageRouteArray;
 		 */
 		private $_objEmailMessageRouteArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single SignupEntryAsCommunicationsEntry object
+		 * (of type SignupEntry), if this CommunicationListEntry object was restored with
+		 * an expansion on the signup_entry association table.
+		 * @var SignupEntry _objSignupEntryAsCommunicationsEntry;
+		 */
+		private $_objSignupEntryAsCommunicationsEntry;
+
+		/**
+		 * Private member variable that stores a reference to an array of SignupEntryAsCommunicationsEntry objects
+		 * (of type SignupEntry[]), if this CommunicationListEntry object was restored with
+		 * an ExpandAsArray on the signup_entry association table.
+		 * @var SignupEntry[] _objSignupEntryAsCommunicationsEntryArray;
+		 */
+		private $_objSignupEntryAsCommunicationsEntryArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -511,6 +529,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'signupentryascommunicationsentry__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objSignupEntryAsCommunicationsEntryArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objSignupEntryAsCommunicationsEntryArray[$intPreviousChildItemCount - 1];
+						$objChildItem = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryascommunicationsentry__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objSignupEntryAsCommunicationsEntryArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objSignupEntryAsCommunicationsEntryArray[] = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryascommunicationsentry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -566,6 +598,16 @@
 					$objToReturn->_objEmailMessageRouteArray[] = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objEmailMessageRoute = EmailMessageRoute::InstantiateDbRow($objDbRow, $strAliasPrefix . 'emailmessageroute__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for SignupEntryAsCommunicationsEntry Virtual Binding
+			$strAlias = $strAliasPrefix . 'signupentryascommunicationsentry__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objSignupEntryAsCommunicationsEntryArray[] = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryascommunicationsentry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objSignupEntryAsCommunicationsEntry = SignupEntry::InstantiateDbRow($objDbRow, $strAliasPrefix . 'signupentryascommunicationsentry__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -982,6 +1024,18 @@
 					// @return EmailMessageRoute[]
 					return (array) $this->_objEmailMessageRouteArray;
 
+				case '_SignupEntryAsCommunicationsEntry':
+					// Gets the value for the private _objSignupEntryAsCommunicationsEntry (Read-Only)
+					// if set due to an expansion on the signup_entry.communications_entry_id reverse relationship
+					// @return SignupEntry
+					return $this->_objSignupEntryAsCommunicationsEntry;
+
+				case '_SignupEntryAsCommunicationsEntryArray':
+					// Gets the value for the private _objSignupEntryAsCommunicationsEntryArray (Read-Only)
+					// if set due to an ExpandAsArray on the signup_entry.communications_entry_id reverse relationship
+					// @return SignupEntry[]
+					return (array) $this->_objSignupEntryAsCommunicationsEntryArray;
+
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1263,6 +1317,188 @@
 					`email_message_route`
 				WHERE
 					`communication_list_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for SignupEntryAsCommunicationsEntry
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated SignupEntriesAsCommunicationsEntry as an array of SignupEntry objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SignupEntry[]
+		*/ 
+		public function GetSignupEntryAsCommunicationsEntryArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return SignupEntry::LoadArrayByCommunicationsEntryId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated SignupEntriesAsCommunicationsEntry
+		 * @return int
+		*/ 
+		public function CountSignupEntriesAsCommunicationsEntry() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return SignupEntry::CountByCommunicationsEntryId($this->intId);
+		}
+
+		/**
+		 * Associates a SignupEntryAsCommunicationsEntry
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function AssociateSignupEntryAsCommunicationsEntry(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupEntryAsCommunicationsEntry on this unsaved CommunicationListEntry.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateSignupEntryAsCommunicationsEntry on this CommunicationListEntry with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`communications_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->CommunicationsEntryId = $this->intId;
+				$objSignupEntry->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a SignupEntryAsCommunicationsEntry
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function UnassociateSignupEntryAsCommunicationsEntry(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsCommunicationsEntry on this unsaved CommunicationListEntry.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsCommunicationsEntry on this CommunicationListEntry with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`communications_entry_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . ' AND
+					`communications_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->CommunicationsEntryId = null;
+				$objSignupEntry->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all SignupEntriesAsCommunicationsEntry
+		 * @return void
+		*/ 
+		public function UnassociateAllSignupEntriesAsCommunicationsEntry() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsCommunicationsEntry on this unsaved CommunicationListEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupEntry::LoadArrayByCommunicationsEntryId($this->intId) as $objSignupEntry) {
+					$objSignupEntry->CommunicationsEntryId = null;
+					$objSignupEntry->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`signup_entry`
+				SET
+					`communications_entry_id` = null
+				WHERE
+					`communications_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated SignupEntryAsCommunicationsEntry
+		 * @param SignupEntry $objSignupEntry
+		 * @return void
+		*/ 
+		public function DeleteAssociatedSignupEntryAsCommunicationsEntry(SignupEntry $objSignupEntry) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsCommunicationsEntry on this unsaved CommunicationListEntry.');
+			if ((is_null($objSignupEntry->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsCommunicationsEntry on this CommunicationListEntry with an unsaved SignupEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_entry`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objSignupEntry->Id) . ' AND
+					`communications_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objSignupEntry->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated SignupEntriesAsCommunicationsEntry
+		 * @return void
+		*/ 
+		public function DeleteAllSignupEntriesAsCommunicationsEntry() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateSignupEntryAsCommunicationsEntry on this unsaved CommunicationListEntry.');
+
+			// Get the Database Object for this Class
+			$objDatabase = CommunicationListEntry::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (SignupEntry::LoadArrayByCommunicationsEntryId($this->intId) as $objSignupEntry) {
+					$objSignupEntry->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`signup_entry`
+				WHERE
+					`communications_entry_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
 		}
 
@@ -1568,6 +1804,7 @@
 	 * @property-read QQNode $Email
 	 * @property-read QQNodeCommunicationListEntryCommunicationList $CommunicationList
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntryAsCommunicationsEntry
 	 */
 	class QQNodeCommunicationListEntry extends QQNode {
 		protected $strTableName = 'communication_list_entry';
@@ -1589,6 +1826,8 @@
 					return new QQNodeCommunicationListEntryCommunicationList($this);
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'communication_list_entry_id');
+				case 'SignupEntryAsCommunicationsEntry':
+					return new QQReverseReferenceNodeSignupEntry($this, 'signupentryascommunicationsentry', 'reverse_reference', 'communications_entry_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);
@@ -1611,6 +1850,7 @@
 	 * @property-read QQNode $Email
 	 * @property-read QQNodeCommunicationListEntryCommunicationList $CommunicationList
 	 * @property-read QQReverseReferenceNodeEmailMessageRoute $EmailMessageRoute
+	 * @property-read QQReverseReferenceNodeSignupEntry $SignupEntryAsCommunicationsEntry
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
 	class QQReverseReferenceNodeCommunicationListEntry extends QQReverseReferenceNode {
@@ -1633,6 +1873,8 @@
 					return new QQNodeCommunicationListEntryCommunicationList($this);
 				case 'EmailMessageRoute':
 					return new QQReverseReferenceNodeEmailMessageRoute($this, 'emailmessageroute', 'reverse_reference', 'communication_list_entry_id');
+				case 'SignupEntryAsCommunicationsEntry':
+					return new QQReverseReferenceNodeSignupEntry($this, 'signupentryascommunicationsentry', 'reverse_reference', 'communications_entry_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

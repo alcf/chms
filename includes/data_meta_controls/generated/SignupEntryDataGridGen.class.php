@@ -307,6 +307,8 @@
 				case 'AmountPaid': return QQN::SignupEntry()->AmountPaid;
 				case 'AmountBalance': return QQN::SignupEntry()->AmountBalance;
 				case 'InternalNotes': return QQN::SignupEntry()->InternalNotes;
+				case 'CommunicationsEntryId': return QQN::SignupEntry()->CommunicationsEntryId;
+				case 'CommunicationsEntry': return QQN::SignupEntry()->CommunicationsEntry;
 				case 'ClassRegistration': return QQN::SignupEntry()->ClassRegistration;
 
 				default: throw new QCallerException('Simple Property not found in SignupEntryDataGrid content: ' . $mixContent);

@@ -76,7 +76,11 @@
 			$strArray = array();
 
 			// Setup Always-Used Fields
-			$strArray['PERSON_NAME'] = $this->Person->Name;
+			if(!$this->PersonId) {
+				$strArray['PERSON_NAME'] = sprintf("%s %s",$this->CommunicationsEntry->FirstName,$this->CommunicationsEntry->LastName);
+			} else {
+				$strArray['PERSON_NAME'] = $this->Person->Name;
+			}
 			$strArray['SIGNUP_FORM_NAME'] = $this->SignupForm->Name;
 			$strArray['SIGNUP_ENTRY_ID'] = sprintf('%05s', $this->Id);
 			$strArray['SUPPORT_EMAIL'] = $this->SignupForm->SupportEmail;
