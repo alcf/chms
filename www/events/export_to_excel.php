@@ -41,67 +41,69 @@
 	$objCursor = SignupEntry::QueryCursor(QQ::Equal(QQN::SignupEntry()->SignupFormId, $objSignupForm->Id), QQ::OrderBy(QQN::SignupEntry()->DateSubmitted));
 
 	while ($objSignupEntry = SignupEntry::InstantiateCursor($objCursor)) {
-		print EscapeCsv($objSignupEntry->Person->FirstName);
-		print ",";
-		print EscapeCsv($objSignupEntry->Person->LastName);
-		print ",";
-
-		foreach ($objFormQuestionArray as $objFormQuestion) {
-			$objAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($objSignupEntry->Id, $objFormQuestion->Id);
-			if ($objAnswer) {
-				switch ($objFormQuestion->FormQuestionTypeId) {
-					case FormQuestionType::YesNo:
-						if ($objAnswer->BooleanValue) print 'Yes';
-						break;
-
-					case FormQuestionType::SpouseName:
-					case FormQuestionType::Phone:
-					case FormQuestionType::Email:
-					case FormQuestionType::Gender:
-					case FormQuestionType::ShortText:
-					case FormQuestionType::LongText:
-					case FormQuestionType::SingleSelect:
-					case FormQuestionType::MultipleSelect:
-						print EscapeCsv($objAnswer->TextValue);
-						break;
-
-					case FormQuestionType::Address:
-						$addressArray = explode(',',$objAnswer->TextValue);
-						print EscapeCsv($addressArray[0]);
-						print ",";
-						if(count($addressArray)>=2)
-							print EscapeCsv($addressArray[1]); 
-						else
-							print " ";
-						print ",";
-						if(count($addressArray)>=3)
-							print EscapeCsv($addressArray[2]);	
-						else 
-							print " ";					
-						break;
-					case FormQuestionType::Number:
-					case FormQuestionType::Age:
-						print $objAnswer->IntegerValue;
-						break;
-						
-					case FormQuestionType::DateofBirth:
-						if ($objAnswer->DateValue) print $objAnswer->DateValue->ToString('M/D/YYYY');
-						break;
+		if($objSignupEntry->SignupEntryStatusTypeId == SignupEntryStatusType::Complete) {
+			print EscapeCsv($objSignupEntry->Person->FirstName);
+			print ",";
+			print EscapeCsv($objSignupEntry->Person->LastName);
+			print ",";
+	
+			foreach ($objFormQuestionArray as $objFormQuestion) {
+				$objAnswer = FormAnswer::LoadBySignupEntryIdFormQuestionId($objSignupEntry->Id, $objFormQuestion->Id);
+				if ($objAnswer) {
+					switch ($objFormQuestion->FormQuestionTypeId) {
+						case FormQuestionType::YesNo:
+							if ($objAnswer->BooleanValue) print 'Yes';
+							break;
+	
+						case FormQuestionType::SpouseName:
+						case FormQuestionType::Phone:
+						case FormQuestionType::Email:
+						case FormQuestionType::Gender:
+						case FormQuestionType::ShortText:
+						case FormQuestionType::LongText:
+						case FormQuestionType::SingleSelect:
+						case FormQuestionType::MultipleSelect:
+							print EscapeCsv($objAnswer->TextValue);
+							break;
+	
+						case FormQuestionType::Address:
+							$addressArray = explode(',',$objAnswer->TextValue);
+							print EscapeCsv($addressArray[0]);
+							print ",";
+							if(count($addressArray)>=2)
+								print EscapeCsv($addressArray[1]); 
+							else
+								print " ";
+							print ",";
+							if(count($addressArray)>=3)
+								print EscapeCsv($addressArray[2]);	
+							else 
+								print " ";					
+							break;
+						case FormQuestionType::Number:
+						case FormQuestionType::Age:
+							print $objAnswer->IntegerValue;
+							break;
+							
+						case FormQuestionType::DateofBirth:
+							if ($objAnswer->DateValue) print $objAnswer->DateValue->ToString('M/D/YYYY');
+							break;
+					}
 				}
+				print ",";
 			}
-			print ",";
+	
+			if ($objSignupForm->CountFormProducts() > 0) {
+				print QApplication::DisplayCurrency($objSignupEntry->AmountTotal);
+				print ",";
+				print QApplication::DisplayCurrency($objSignupEntry->AmountPaid);
+				print ",";
+				print QApplication::DisplayCurrency($objSignupEntry->AmountBalance);
+				print ",";
+			}
+	
+			if ($objSignupEntry->DateSubmitted) print EscapeCsv($objSignupEntry->DateSubmitted->ToString('M/D/YYYY'));
+			print "\r\n";
 		}
-
-		if ($objSignupForm->CountFormProducts() > 0) {
-			print QApplication::DisplayCurrency($objSignupEntry->AmountTotal);
-			print ",";
-			print QApplication::DisplayCurrency($objSignupEntry->AmountPaid);
-			print ",";
-			print QApplication::DisplayCurrency($objSignupEntry->AmountBalance);
-			print ",";
-		}
-
-		if ($objSignupEntry->DateSubmitted) print EscapeCsv($objSignupEntry->DateSubmitted->ToString('M/D/YYYY'));
-		print "\r\n";
 	}
 ?>
