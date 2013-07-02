@@ -23,6 +23,11 @@
 	<span class="subhead"><a target="_blank" href="/groups/export_to_excel.php/<?php _p($_CONTROL->objGroup->Id); ?>/<?php _p($_CONTROL->objGroup->CsvFilename); ?>"/>Export to Excel</a></span>
 </h3>
 <div class="section">
+<h3>Filter Results</h3>
+	<div class="filterBy filterByFirst">First Name (Exact)<br/><?php $_CONTROL->txtFirstName->Render('Width=150px'); ?></div>
+	<div class="filterBy">Last Name (Exact)<br/><?php $_CONTROL->txtLastName->Render('Width=150px'); ?></div>
+	<div class="cleaner">&nbsp;</div>
+	<br>
 	<?php $_CONTROL->dtgMembers->Render(); ?>
 </div>
 
