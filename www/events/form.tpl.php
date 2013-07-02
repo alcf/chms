@@ -32,7 +32,7 @@
 		<?php $this->lblInformationUrl->RenderWithName(); ?>
 		<?php $this->lblAllowMultipleFlag->RenderWithName('Name=Allow Multiple Registrations'); ?>
 
-		<?php $this->lblAllowNoLogin->RenderWithName('Name=Allow No Login registrations?'); ?>
+		<?php /* $this->lblAllowNoLogin->RenderWithName('Name=Allow No Login registrations?'); */?>
 		<?php $this->lblAllowOtherFlag->RenderWithName('Name=Allow Registering for Others'); ?>
 		<?php $this->lblLimitInfo->RenderWithName(); ?>
 		<?php $this->lblFundingAccount->RenderWithName('Name=Funding Account'); ?>

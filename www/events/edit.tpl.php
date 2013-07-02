@@ -40,7 +40,7 @@
 		<?php $this->chkActiveFlag->RenderWithName(); ?>
 		<?php $this->chkConfidentialFlag->RenderWithName(); ?>
 		<?php $this->chkAllowMultipleFlag->RenderWithName(); ?>
-		<?php $this->chkNoLoginSupportFlag->RenderWithName(); ?>
+		<?php /* $this->chkNoLoginSupportFlag->RenderWithName(); */?>
 		<?php $this->chkAllowOtherFlag->RenderWithName(); ?>
 	</div>
 
