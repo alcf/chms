@@ -538,7 +538,7 @@
 
 				// Draw Page Info
 				$intY = ($intPageNumber == 1) ? STEWARDSHIP_TOP - (1.7125 * 72) : STEWARDSHIP_TOP - (.5 * 72);
-				self::DrawInfo($objPage, $objPersonOrHousehold, $intYear, $intY, $intPageNumber, $intTotalPages);
+				self::DrawInfo($objPage, $objPersonOrHousehold, $intYear, $intQuarter,$intY, $intPageNumber, $intTotalPages);
 
 				// Draw Items
 				$intY = ($intPageNumber == 1) ? STEWARDSHIP_TOP - ((3.5) * 72) : STEWARDSHIP_TOP - ((1.5) * 72);
@@ -598,7 +598,7 @@
 				self::DrawTextRight($objPage, 														$intXArray[6], $intY, QApplication::DisplayCurrency($objPledge->RemainingAmount));
 			}
 		}
-		protected static function DrawInfo(Zend_Pdf_Page $objPage, $objPersonOrHousehold, $intYear, $intY, $intPageNumber, $intTotalPages) {
+		protected static function DrawInfo(Zend_Pdf_Page $objPage, $objPersonOrHousehold, $intYear, $intQuarter, $intY, $intPageNumber, $intTotalPages) {
 			$intXRight = 8 * 72;
 
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_BOLD), 12);
@@ -606,7 +606,23 @@
 
 			$intY -= 13.2;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA), 12);
-			self::DrawTextRight($objPage, $intXRight, $intY, 'Reflects ' . $intYear . ' Gifts');
+			if($intQuarter) {
+				$strQuarter = '';
+				switch ($intQuarter) {
+					case 1:
+						$strQuarter = '1st Quarter';
+						break;
+					case 2:
+						$strQuarter = '2nd Quarter';
+						break;
+					case 3:
+						$strQuarter = '3rd Quarter';
+						break;
+				}
+				self::DrawTextRight($objPage, $intXRight, $intY, 'Reflects ' . $intYear . ' Gifts for '.$strQuarter);
+			} else {
+				self::DrawTextRight($objPage, $intXRight, $intY, 'Reflects ' . $intYear . ' Gifts');
+			}
 
 			$intY -= 15;
 			$objPage->setFont(Zend_Pdf_Font::fontWithName(Zend_Pdf_Font::FONT_HELVETICA_ITALIC), 8);
