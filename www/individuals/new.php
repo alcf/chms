@@ -47,6 +47,7 @@
 		protected $lstAttributeEthnicity;
 		protected $dtxAttributeDateAcceptedChrist;
 		protected $calAttributeDateAcceptedChrist;
+		protected $chkAcceptedChristAtALCF;
 		
 		protected $lstMarriageStatusType;
 		protected $dtxDateOfMarriage;
@@ -106,6 +107,10 @@
 			$this->dtxAttributeDateAcceptedChrist = new QDateTimeTextBox($this);
 			$this->dtxAttributeDateAcceptedChrist->Name = 'Date Accepted Christ';
 			$this->calAttributeDateAcceptedChrist = new QCalendar($this, $this->dtxAttributeDateAcceptedChrist);
+			
+			$this->chkAcceptedChristAtALCF = new QCheckBox($this);
+			$this->chkAcceptedChristAtALCF->Name = 'Accepted Christ at ALCF?';
+			$this->chkAcceptedChristAtALCF->Text = 'Click if this person accepted Christ at ALCF';				
 		}
 		
 		protected function CreateControlsForPerson() {
@@ -417,6 +422,14 @@
 				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
 				$objAttributeValue->DatetimeValue = $this->dtxAttributeDateAcceptedChrist->DateTime;
 				$objAttributeValue->DateValue = $this->dtxAttributeDateAcceptedChrist->DateTime;
+				$objAttributeValue->Save();
+			}
+			if ($this->chkAcceptedChristAtALCF->Checked) {
+				$objAttributeValue = new AttributeValue();
+				$objAttribute = Attribute::QuerySingle(QQ::Equal(QQN::Attribute()->Name, "Accepted Christ At ALCF"));
+				$objAttributeValue->AttributeId = $objAttribute->Id;
+				$objAttributeValue->PersonId = $this->mctPerson->Person->Id;
+				$objAttributeValue->BooleanValue = true;
 				$objAttributeValue->Save();
 			}
 		}

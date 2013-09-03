@@ -33,6 +33,8 @@
 			}
 		?>
 		<div style='clear:both;'><br></div>
+		<p>Number of New Members who accepted Christ at ALCF: <?php _p($this->iAcceptedChristAtALCF) ?></p>
+		<div style='clear:both;'><br></div>
 		<h4>Age Statistics - New Member's Age is:</h4>
 		<?php 
 			foreach($this->iAge as $key=>$value) {

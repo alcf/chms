@@ -18,6 +18,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		public 	  $iFromPreviousChurch;
 		public 	  $iSalvationDate;
 		public 	  $iAge;
+		public    $iAcceptedChristAtALCF;
 		public    $dtgNewMembers;
 		public    $lblTitle;
 		public 	  $iheight;
@@ -159,6 +160,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		
 		protected function CalculateAttributeStatistics($objMembershipArray) {
 			$this->iFromPreviousChurch = 0;
+			$this->iAcceptedChristAtALCF = 0;
 			foreach($objMembershipArray as $objMembership) {
 				$objPerson = $objMembership->Person;
 				$attributeArray = $objPerson->GetAttributeValueArray(QQ::OrderBy(QQN::AttributeValue()->Attribute->Name));
@@ -189,6 +191,9 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 								$this->iSalvationDate['Fifty Years Or More']++;
 							
 						}
+					}
+					if($objAttribute->Attribute->Name == "Accepted Christ At ALCF") {
+						$this->iAcceptedChristAtALCF++;
 					}
 				}
 			}

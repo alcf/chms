@@ -119,6 +119,7 @@
 		$this->dtxAttributeDateAcceptedChrist->HtmlAfter = '&nbsp;' . $this->calAttributeDateAcceptedChrist->Render(false);
 		$this->dtxAttributeDateAcceptedChrist->RenderWithName('Width=150px');
 	?>
+	<?php $this->chkAcceptedChristAtALCF->RenderWithName(); ?>
 	
 </div>
 
