@@ -15,7 +15,9 @@
 	$objFile = fopen($strFolder . '/contributors.csv', 'w');
 	fwrite($objFile, 'Salutation,MailingName,CompanyFacilityEtc,Address1,Address2,City,State,ZipCode' . "\r\n");
 
-	$objHouseholdCursor = Household::QueryCursor(QQ::All(), QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
+	$objConditions = QQ::All();
+//	$objConditions = QQ::AndCondition($objConditions,QQ::Equal(QQN::Household()->HeadPerson->CanMailFlag, true));
+	$objHouseholdCursor = Household::QueryCursor($objConditions, QQ::OrderBy(QQN::Household()->HeadPerson->LastName));
 	QDataGen::DisplayForEachTaskStart('Generating CSV Row(s) for Household', Household::CountAll());
 	while ($objHousehold = Household::InstantiateCursor($objHouseholdCursor)) {
 		QDataGen::DisplayForEachTaskNext('Generating CSV Row(s) for Household');
@@ -29,16 +31,47 @@
 
 				if ($fltAmount > $fltMinimumAmount) {
 					$objSpouse = $objHousehold->SpousePerson;
-					fwrite($objFile,
-						EscapeCsv($objSpouse ? $objHousehold->HeadPerson->FirstName . ' and ' . $objSpouse->FirstName
-											 : $objHousehold->HeadPerson->FirstName) . ',' .
-						EscapeCsv($objHousehold->StewardshipHouseholdName) . ',' .
-						EscapeCsv($objAddress->Address3) . ',' .
-						EscapeCsv($objAddress->Address1) . ',' .
-						EscapeCsv($objAddress->Address2) . ',' .
-						EscapeCsv($objAddress->City) . ',' .
-						EscapeCsv($objAddress->State) . ',' .
-						EscapeCsv($objAddress->ZipCode) . "\r\n");
+					if($objSpouse){
+						// Head person says do not mail, but spouse says mail
+						// Or if Head person is deceased and spouse says mail
+						if(((!$objHousehold->HeadPerson->CanMailFlag)&&($objSpouse->CanMailFlag))||
+							 (($objHousehold->HeadPerson->DeceasedFlag)&&($objSpouse->CanMailFlag)))
+						 {
+							fwrite($objFile,
+							EscapeCsv($objSpouse->FirstName) . ',' .
+							EscapeCsv($objHousehold->StewardshipHouseholdName) . ',' .
+							EscapeCsv($objAddress->Address3) . ',' .
+							EscapeCsv($objAddress->Address1) . ',' .
+							EscapeCsv($objAddress->Address2) . ',' .
+							EscapeCsv($objAddress->City) . ',' .
+							EscapeCsv($objAddress->State) . ',' .
+							EscapeCsv($objAddress->ZipCode) . "\r\n");
+						} else {
+							if($objSpouse->DeceasedFlag)
+								$objSpouse = null;
+							fwrite($objFile,
+								EscapeCsv($objSpouse ? $objHousehold->HeadPerson->FirstName . ' and ' . $objSpouse->FirstName
+								: $objHousehold->HeadPerson->FirstName) . ',' .
+								EscapeCsv($objHousehold->StewardshipHouseholdName) . ',' .
+								EscapeCsv($objAddress->Address3) . ',' .
+								EscapeCsv($objAddress->Address1) . ',' .
+								EscapeCsv($objAddress->Address2) . ',' .
+								EscapeCsv($objAddress->City) . ',' .
+								EscapeCsv($objAddress->State) . ',' .
+								EscapeCsv($objAddress->ZipCode) . "\r\n");
+						}
+					} else {
+						if($objHousehold->HeadPerson->CanMailFlag && !$objHousehold->HeadPerson->DeceasedFlag)
+							fwrite($objFile,
+								EscapeCsv($objHousehold->HeadPerson->FirstName) . ',' .
+								EscapeCsv($objHousehold->StewardshipHouseholdName) . ',' .
+								EscapeCsv($objAddress->Address3) . ',' .
+								EscapeCsv($objAddress->Address1) . ',' .
+								EscapeCsv($objAddress->Address2) . ',' .
+								EscapeCsv($objAddress->City) . ',' .
+								EscapeCsv($objAddress->State) . ',' .
+								EscapeCsv($objAddress->ZipCode) . "\r\n");
+					}
 				}
 			}
 
@@ -51,15 +84,16 @@
 
 				if ($fltAmount > $fltMinimumAmount) {
 					$objPerson = $objParticipation->Person;
-					fwrite($objFile,
-						EscapeCsv($objPerson->FirstName) . ',' .
-						EscapeCsv($objPerson->ActiveMailingLabel) . ',' .
-						EscapeCsv($objAddress->Address3) . ',' .
-						EscapeCsv($objAddress->Address1) . ',' .
-						EscapeCsv($objAddress->Address2) . ',' .
-						EscapeCsv($objAddress->City) . ',' .
-						EscapeCsv($objAddress->State) . ',' .
-						EscapeCsv($objAddress->ZipCode) . "\r\n");
+					if($objPerson->CanMailFlag && !$objPerson->DeceasedFlag)
+						fwrite($objFile,
+							EscapeCsv($objPerson->FirstName) . ',' .
+							EscapeCsv($objPerson->ActiveMailingLabel) . ',' .
+							EscapeCsv($objAddress->Address3) . ',' .
+							EscapeCsv($objAddress->Address1) . ',' .
+							EscapeCsv($objAddress->Address2) . ',' .
+							EscapeCsv($objAddress->City) . ',' .
+							EscapeCsv($objAddress->State) . ',' .
+							EscapeCsv($objAddress->ZipCode) . "\r\n");
 				}
 			}
 		}
