@@ -16,7 +16,7 @@
 	header('Content-Type: text/csv');
 	header('Content-Disposition: attachment; filename=' . $objGroup->CsvFilename);
 
-	print "First Name,Last Name,E-mail,Phone,Address,City,State,Zip Code,Birthdate\r\n";
+	print "First Name,Last Name,E-mail,Phone,Address,City,State,Zip Code,Ok to Mail, Deceased,Birthdate\r\n";
 	$objPersonCursor = Person::QueryCursor(
 		QQ::AndCondition(
 			QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $objGroup->Id),
@@ -47,7 +47,12 @@
 		print ",";
 		print EscapeCsv($objPerson->PrimaryZipCodeText);
 		print ",";
-
+		
+		print EscapeCsv($objPerson->CanMailFlag? "Yes":"No");
+		print ",";
+		print EscapeCsv($objPerson->DeceasedFlag? "Yes":"No");
+		print ",";
+		
 		if ($objPerson->DateOfBirth && !$objPerson->DobGuessedFlag) {
 			if ($objPerson->DobYearApproximateFlag) {
 				print EscapeCsv($objPerson->DateOfBirth->ToString('DD-MMM'));
