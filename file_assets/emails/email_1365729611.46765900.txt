@@ -1,0 +1,46 @@
+telnet 127.0.0.1 25
+EHLO 127.0.0.1
+MAIL FROM:<christina.alo@alcf.net>
+RCPT TO:<christina.alo@alcf.net>
+DATA
+X-Mailer: Qcodo v0.4.21
+x-application: Church Newsletter Administration
+From: Christina Alo <christina.alo@alcf.net>
+To: Christina <christina.alo@alcf.net>
+Date: Thu, 11 Apr 2013 18:20:11 -0700
+Subject: Notification of Exiting Members
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="qcodo_mixed_3ceb6d172735ad933a8fbbefb956aa7d"
+
+This is a multipart message in MIME format.
+
+--qcodo_mixed_3ceb6d172735ad933a8fbbefb956aa7d
+Content-Type: multipart/alternative;
+ boundary="qcodo_alt_24c4327ddbc86b0a53b80b9c56e51339"
+
+--qcodo_alt_24c4327ddbc86b0a53b80b9c56e51339
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Administrator (Christina)!
+
+r\nSomeone just unsubscribed from the church newsletter and closed their me=
+mbership.\r\n\r\nTheir Details:
+Gareth Seeto
+email: gareths@inst.net=20
+
+Blessings,\r\n Noah.
+
+--qcodo_alt_24c4327ddbc86b0a53b80b9c56e51339
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Administrator (Christina)!<br><br>Someone just unsubscribed from the =
+church newsletter and closed their membership.<br><br>Their Details:<br>Gar=
+eth Seeto<br>email: gareths@inst.net<br><br>Blessings,<br> Noah.
+
+--qcodo_alt_24c4327ddbc86b0a53b80b9c56e51339--
+
+--qcodo_mixed_3ceb6d172735ad933a8fbbefb956aa7d--
+.
+QUIT
