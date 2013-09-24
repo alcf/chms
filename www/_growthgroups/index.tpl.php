@@ -30,7 +30,7 @@
 	    			}
 	    			$locationArray[strval($objGroup->Latitude)] = $objGroup->Longitude;
 	    	?>
-	    	addNewMarker(map,<?php _p($i);?>,<?php _p($latitude); ?>, <?php _p($longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>");		
+	    	addNewMarker(map,<?php _p($i);?>,<?php _p($latitude); ?>, <?php _p($longitude); ?>, "<?php _p($objGroup->Group->Name); ?>", "<?php _p($objGroup->Meetings); ?>", "<?php _p($objGroup->Times); ?>", "<?php _p($objGroup->StructuresHtml, false); ?>","<?php _p($objGroup->Description); ?>");		
 	    	<?php 	}
 	    		}; ?>
 	  }
