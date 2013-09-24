@@ -44,6 +44,8 @@
 	 * property-read QLabel $LatitudeLabel
 	 * property QIntegerTextBox $AccuracyControl
 	 * property-read QLabel $AccuracyLabel
+	 * property QTextBox $DescriptionControl
+	 * property-read QLabel $DescriptionLabel
 	 * property QListBox $GrowthGroupStructureControl
 	 * property-read QLabel $GrowthGroupStructureLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -161,6 +163,12 @@
          */
 		protected $txtAccuracy;
 
+        /**
+         * @var QTextBox txtDescription;
+         * @access protected
+         */
+		protected $txtDescription;
+
 
 		// Controls that allow the viewing of GrowthGroup's individual data fields
         /**
@@ -246,6 +254,12 @@
          * @access protected
          */
 		protected $lblAccuracy;
+
+        /**
+         * @var QLabel lblDescription
+         * @access protected
+         */
+		protected $lblDescription;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -743,6 +757,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtDescription_Create($strControlId = null) {
+			$this->txtDescription = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtDescription->Name = QApplication::Translate('Description');
+			$this->txtDescription->Text = $this->objGrowthGroup->Description;
+			$this->txtDescription->MaxLength = GrowthGroup::DescriptionMaxLength;
+			return $this->txtDescription;
+		}
+
+		/**
+		 * Create and setup QLabel lblDescription
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblDescription_Create($strControlId = null) {
+			$this->lblDescription = new QLabel($this->objParentObject, $strControlId);
+			$this->lblDescription->Name = QApplication::Translate('Description');
+			$this->lblDescription->Text = $this->objGrowthGroup->Description;
+			return $this->lblDescription;
+		}
+
+		/**
 		 * Create and setup QListBox lstGrowthGroupStructures
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -868,6 +907,9 @@
 			if ($this->txtAccuracy) $this->txtAccuracy->Text = $this->objGrowthGroup->Accuracy;
 			if ($this->lblAccuracy) $this->lblAccuracy->Text = $this->objGrowthGroup->Accuracy;
 
+			if ($this->txtDescription) $this->txtDescription->Text = $this->objGrowthGroup->Description;
+			if ($this->lblDescription) $this->lblDescription->Text = $this->objGrowthGroup->Description;
+
 			if ($this->lstGrowthGroupStructures) {
 				$this->lstGrowthGroupStructures->RemoveAllItems();
 				$objAssociatedArray = $this->objGrowthGroup->GetGrowthGroupStructureArray();
@@ -936,6 +978,7 @@
 				if ($this->txtLongitude) $this->objGrowthGroup->Longitude = $this->txtLongitude->Text;
 				if ($this->txtLatitude) $this->objGrowthGroup->Latitude = $this->txtLatitude->Text;
 				if ($this->txtAccuracy) $this->objGrowthGroup->Accuracy = $this->txtAccuracy->Text;
+				if ($this->txtDescription) $this->objGrowthGroup->Description = $this->txtDescription->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -1064,6 +1107,12 @@
 				case 'AccuracyLabel':
 					if (!$this->lblAccuracy) return $this->lblAccuracy_Create();
 					return $this->lblAccuracy;
+				case 'DescriptionControl':
+					if (!$this->txtDescription) return $this->txtDescription_Create();
+					return $this->txtDescription;
+				case 'DescriptionLabel':
+					if (!$this->lblDescription) return $this->lblDescription_Create();
+					return $this->lblDescription;
 				case 'GrowthGroupStructureControl':
 					if (!$this->lstGrowthGroupStructures) return $this->lstGrowthGroupStructures_Create();
 					return $this->lstGrowthGroupStructures;
@@ -1120,6 +1169,8 @@
 						return ($this->txtLatitude = QType::Cast($mixValue, 'QControl'));
 					case 'AccuracyControl':
 						return ($this->txtAccuracy = QType::Cast($mixValue, 'QControl'));
+					case 'DescriptionControl':
+						return ($this->txtDescription = QType::Cast($mixValue, 'QControl'));
 					case 'GrowthGroupStructureControl':
 						return ($this->lstGrowthGroupStructures = QType::Cast($mixValue, 'QControl'));
 					default:
