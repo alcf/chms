@@ -32,6 +32,7 @@
 <?php $_CONTROL->txtCrossStreet1->RenderWithName(); ?>
 <?php $_CONTROL->txtCrossStreet2->RenderWithName(); ?>
 <?php $_CONTROL->txtZipCode->RenderWithName(); ?>
+<?php $_CONTROL->txtDescription->RenderWithName(); ?>
 </div>
 
 <h3>Google Map Lookup</h3>
