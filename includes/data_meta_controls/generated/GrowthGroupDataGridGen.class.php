@@ -309,6 +309,7 @@
 				case 'Longitude': return QQN::GrowthGroup()->Longitude;
 				case 'Latitude': return QQN::GrowthGroup()->Latitude;
 				case 'Accuracy': return QQN::GrowthGroup()->Accuracy;
+				case 'Description': return QQN::GrowthGroup()->Description;
 				default: throw new QCallerException('Simple Property not found in GrowthGroupDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');
