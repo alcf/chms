@@ -32,7 +32,7 @@
 	function displayMarkerHtml(number) {
 		marker = markerArray[number];
 		marker.openInfoWindowHtml(
-				"<strong>" + marker.name + "</strong><br/>" + marker.meetings + "<br/>" + marker.times + "<br/>" + marker.type
+				"<strong>" + marker.name + "</strong><br/>" + marker.meetings + "<br/>" + marker.times + "<br/>" + marker.type + "<br/>" 
 		);
 	}
 
@@ -72,7 +72,7 @@
 		google.maps.event.trigger(gmarkers[i], "click");
 	} 
 	
-	function addNewMarker(map, number,latitude, longitude, name, meetings, times, type) {
+	function addNewMarker(map, number,latitude, longitude, name, meetings, times, type, description) {
 		var contentString = '<div id="content">'+
 			'<div id="siteNotice">'+
 			'</div>'+ 
@@ -81,21 +81,33 @@
 			meetings + '<br>' +
 			times + '<br>' +
 			type + '<br>' +
+			description + '<br>' +
 			'</div>'+
 			'</div>';
 		var infowindow = new google.maps.InfoWindow({
 			content: contentString
 			}); 
-				
-		gmarkers[number-1] = new google.maps.Marker({
-			position: new google.maps.LatLng(latitude,longitude),
-			map: map,
-			animation: google.maps.Animation.DROP,
-			icon : "/images/mapfiles/marker" + number + ".png",
-			title: name
-			});
-		
-			google.maps.event.addListener(gmarkers[number-1], 'click', function() {
+		if(description.length > 0)	{	
+			gmarkers[number-1] = new google.maps.Marker({
+				position: new google.maps.LatLng(latitude,longitude),
+				map: map,
+				animation: google.maps.Animation.DROP,
+				icon : "/images/mapfiles/marker" + number + ".png",
+				title: name + ' - '+description
+				});
+			
+		} else {
+			gmarkers[number-1] = new google.maps.Marker({
+				position: new google.maps.LatLng(latitude,longitude),
+				map: map,
+				animation: google.maps.Animation.DROP,
+				icon : "/images/mapfiles/marker" + number + ".png",
+				title: name
+				});
+						
+		}
+		google.maps.event.addListener(gmarkers[number-1], 'click', function() {
 			infowindow.open(map,gmarkers[number-1]);
 			}); 
 	}
+	
