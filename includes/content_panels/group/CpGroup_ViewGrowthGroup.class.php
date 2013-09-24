@@ -8,6 +8,7 @@
 		public $lblStructure;
 		public $lblStatus;
 		public $chkViewAll;
+		public $lblDescription;
 
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
@@ -71,6 +72,11 @@
 			$this->lblStatus->Name = 'Availability Status';
 			$this->lblStatus->Text = AvailabilityStatus::Load($this->objGroup->Status)? AvailabilityStatus::Load($this->objGroup->Status)->Name : 'None';
 			$this->lblStatus->HtmlEntities = false;
+			
+			$this->lblDescription = new QLabel($this);
+			$this->lblDescription->Name = 'Description';
+			$this->lblDescription->Text = $this->objGroup->GrowthGroup->Description;
+			$this->lblDescription->HtmlEntities = false;
 			
 
 			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
