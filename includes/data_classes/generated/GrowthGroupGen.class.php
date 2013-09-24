@@ -29,6 +29,7 @@
 	 * @property double $Longitude the value for fltLongitude 
 	 * @property double $Latitude the value for fltLatitude 
 	 * @property integer $Accuracy the value for intAccuracy 
+	 * @property string $Description the value for strDescription 
 	 * @property Group $Group the value for the Group object referenced by intGroupId (PK)
 	 * @property GrowthGroupLocation $GrowthGroupLocation the value for the GrowthGroupLocation object referenced by intGrowthGroupLocationId (Not Null)
 	 * @property GrowthGroupStructure $_GrowthGroupStructure the value for the private _objGrowthGroupStructure (Read-Only) if set due to an expansion on the growthgroupstructure_growthgroup_assn association table
@@ -163,6 +164,15 @@
 		 */
 		protected $intAccuracy;
 		const AccuracyDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column growth_group.description
+		 * @var string strDescription
+		 */
+		protected $strDescription;
+		const DescriptionMaxLength = 1024;
+		const DescriptionDefault = null;
 
 
 		/**
@@ -547,6 +557,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'longitude', $strAliasPrefix . 'longitude');
 			$objBuilder->AddSelectItem($strTableName, 'latitude', $strAliasPrefix . 'latitude');
 			$objBuilder->AddSelectItem($strTableName, 'accuracy', $strAliasPrefix . 'accuracy');
+			$objBuilder->AddSelectItem($strTableName, 'description', $strAliasPrefix . 'description');
 		}
 
 
@@ -639,6 +650,8 @@
 			$objToReturn->fltLatitude = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'accuracy', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'accuracy'] : $strAliasPrefix . 'accuracy';
 			$objToReturn->intAccuracy = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'description'] : $strAliasPrefix . 'description';
+			$objToReturn->strDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -904,7 +917,8 @@
 							`zip_code`,
 							`longitude`,
 							`latitude`,
-							`accuracy`
+							`accuracy`,
+							`description`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intGroupId) . ',
 							' . $objDatabase->SqlVariable($this->intGrowthGroupLocationId) . ',
@@ -919,7 +933,8 @@
 							' . $objDatabase->SqlVariable($this->strZipCode) . ',
 							' . $objDatabase->SqlVariable($this->fltLongitude) . ',
 							' . $objDatabase->SqlVariable($this->fltLatitude) . ',
-							' . $objDatabase->SqlVariable($this->intAccuracy) . '
+							' . $objDatabase->SqlVariable($this->intAccuracy) . ',
+							' . $objDatabase->SqlVariable($this->strDescription) . '
 						)
 					');
 
@@ -951,7 +966,8 @@
 							`zip_code` = ' . $objDatabase->SqlVariable($this->strZipCode) . ',
 							`longitude` = ' . $objDatabase->SqlVariable($this->fltLongitude) . ',
 							`latitude` = ' . $objDatabase->SqlVariable($this->fltLatitude) . ',
-							`accuracy` = ' . $objDatabase->SqlVariable($this->intAccuracy) . '
+							`accuracy` = ' . $objDatabase->SqlVariable($this->intAccuracy) . ',
+							`description` = ' . $objDatabase->SqlVariable($this->strDescription) . '
 						WHERE
 							`group_id` = ' . $objDatabase->SqlVariable($this->__intGroupId) . '
 					');
@@ -1052,6 +1068,7 @@
 			$this->fltLongitude = $objReloaded->fltLongitude;
 			$this->fltLatitude = $objReloaded->fltLatitude;
 			$this->intAccuracy = $objReloaded->intAccuracy;
+			$this->strDescription = $objReloaded->strDescription;
 		}
 
 		/**
@@ -1078,6 +1095,7 @@
 					`longitude`,
 					`latitude`,
 					`accuracy`,
+					`description`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -1096,6 +1114,7 @@
 					' . $objDatabase->SqlVariable($this->fltLongitude) . ',
 					' . $objDatabase->SqlVariable($this->fltLatitude) . ',
 					' . $objDatabase->SqlVariable($this->intAccuracy) . ',
+					' . $objDatabase->SqlVariable($this->strDescription) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -1215,6 +1234,11 @@
 					// Gets the value for intAccuracy 
 					// @return integer
 					return $this->intAccuracy;
+
+				case 'Description':
+					// Gets the value for strDescription 
+					// @return string
+					return $this->strDescription;
 
 
 				///////////////////
@@ -1440,6 +1464,17 @@
 					// @return integer
 					try {
 						return ($this->intAccuracy = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Description':
+					// Sets the value for strDescription 
+					// @param string $mixValue
+					// @return string
+					try {
+						return ($this->strDescription = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1743,6 +1778,7 @@
 			$strToReturn .= '<element name="Longitude" type="xsd:float"/>';
 			$strToReturn .= '<element name="Latitude" type="xsd:float"/>';
 			$strToReturn .= '<element name="Accuracy" type="xsd:int"/>';
+			$strToReturn .= '<element name="Description" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1797,6 +1833,8 @@
 				$objToReturn->fltLatitude = $objSoapObject->Latitude;
 			if (property_exists($objSoapObject, 'Accuracy'))
 				$objToReturn->intAccuracy = $objSoapObject->Accuracy;
+			if (property_exists($objSoapObject, 'Description'))
+				$objToReturn->strDescription = $objSoapObject->Description;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1886,6 +1924,7 @@
 	 * @property-read QQNode $Longitude
 	 * @property-read QQNode $Latitude
 	 * @property-read QQNode $Accuracy
+	 * @property-read QQNode $Description
 	 * @property-read QQNodeGrowthGroupGrowthGroupStructure $GrowthGroupStructure
 	 */
 	class QQNodeGrowthGroup extends QQNode {
@@ -1926,6 +1965,8 @@
 					return new QQNode('latitude', 'Latitude', 'double', $this);
 				case 'Accuracy':
 					return new QQNode('accuracy', 'Accuracy', 'integer', $this);
+				case 'Description':
+					return new QQNode('description', 'Description', 'string', $this);
 				case 'GrowthGroupStructure':
 					return new QQNodeGrowthGroupGrowthGroupStructure($this);
 
@@ -1959,6 +2000,7 @@
 	 * @property-read QQNode $Longitude
 	 * @property-read QQNode $Latitude
 	 * @property-read QQNode $Accuracy
+	 * @property-read QQNode $Description
 	 * @property-read QQNodeGrowthGroupGrowthGroupStructure $GrowthGroupStructure
 	 * @property-read QQNodeGroup $_PrimaryKeyNode
 	 */
@@ -2000,6 +2042,8 @@
 					return new QQNode('latitude', 'Latitude', 'double', $this);
 				case 'Accuracy':
 					return new QQNode('accuracy', 'Accuracy', 'integer', $this);
+				case 'Description':
+					return new QQNode('description', 'Description', 'string', $this);
 				case 'GrowthGroupStructure':
 					return new QQNodeGrowthGroupGrowthGroupStructure($this);
 
