@@ -21,6 +21,7 @@
 	<?php $_CONTROL->lblAddress->RenderWithName(); ?>
 	<?php $_CONTROL->lblStructure->RenderWithName(); ?>
 	<?php $_CONTROL->lblStatus->RenderWithName(); ?>
+	<?php $_CONTROL->lblDescription->RenderWithName(); ?>
 </div>
 <br/>
 
