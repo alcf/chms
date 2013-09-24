@@ -20,6 +20,7 @@
 		public $txtLongitude;
 		public $txtLatitude;
 		public $txtAccuracy;
+		public $txtDescription;
 
 		public $btnRefresh;
 
@@ -59,6 +60,8 @@
 			$this->txtAccuracy = $this->mctGrowthGroup->txtAccuracy_Create();
 			$this->txtAccuracy->Instructions = 'as reported by Google Maps -- this should ideally be 7';
 
+			$this->txtDescription = $this->mctGrowthGroup->txtDescription_Create();
+			
 			$this->btnRefresh = new QButton($this);
 			$this->btnRefresh->Text = 'Lookup Using Google Maps';
 			$this->btnRefresh->AddAction(new QClickEvent(), new QToggleEnableAction($this->btnRefresh));
