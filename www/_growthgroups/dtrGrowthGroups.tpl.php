@@ -4,6 +4,7 @@
 		<strong><?php _p($_ITEM->Group->Name); ?></strong><br/>
 		<?php _p($_ITEM->Meetings); ?><br/>
 		<?php _p($_ITEM->Times); ?><br/>
-		<?php _p($_ITEM->StructuresHtml, false); ?>
+		<?php _p($_ITEM->StructuresHtml, false); ?><br/>
+		<?php _p($_ITEM->Description); ?>
 	</div>
 </div>
