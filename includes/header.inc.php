@@ -14,7 +14,9 @@
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/_core/_qc_packed.js"></script>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/jquery-ui-1.8.19.custom.min.js"></script>
-
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/amcharts/amcharts.js"></script>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/amcharts/serial.js"></script>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/amcharts/pie.js"></script>
 </head><body>
 <?php $this->RenderBegin(); ?>
 
