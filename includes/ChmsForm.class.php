@@ -11,7 +11,8 @@
 		const NavSectionStewardship = 6;
 		const NavSectionClassifieds = 7;
 		const NavSectionSafariKids = 8;
-		const NavSectionAdministration = 9;
+		const NavSectionReports = 9;
+		const NavSectionAdministration = 10;
 
 		public static $NavSectionArray = array(
 			ChmsForm::NavSectionPeople => array('Individuals', '/individuals/'),
@@ -22,6 +23,7 @@
 			ChmsForm::NavSectionStewardship => array('Stewardship', '/stewardship/'),
 			ChmsForm::NavSectionClassifieds => array('Classifieds', '/classifieds/'),
 			ChmsForm::NavSectionSafariKids => array('Safari Kids', '/sk/'),
+			ChmsForm::NavSectionReports => array('Reports', '/reports/'),
 			ChmsForm::NavSectionAdministration => array('Admin', '/admin/')
 		);
 	}
