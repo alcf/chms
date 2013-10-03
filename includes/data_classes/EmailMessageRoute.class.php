@@ -95,6 +95,22 @@
 				foreach ($this->Group->GetActiveGroupParticipationArray() as $objParticipation) {
 					$objPerson = $objParticipation->Person;
 					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objPerson);
+					// GJS: At this point, also check if there is a co-primary and include them to the list
+					if($objPerson->DateOfBirth) {
+						$objAttributeArray = $objPerson->GetAttributeValueArray();
+						foreach ($objAttributeArray as $objAttributeValue) {	
+							// If a co-primary found, try to identify them as a person.
+							// else they are not going to be added.						
+							if($objAttributeValue->Attribute->Name == 'Co-Primary') {
+								$objCoPrimary = Person::LoadByPrimaryEmailId($objAttributeValue->TextValue);
+								if($objCoPrimary) {
+									EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objCoPrimary);
+								} 
+								break;
+							}
+						}
+						
+					}
 				}
 				foreach ($this->Group->Ministry->GetLoginArray() as $objLogin) {
 					if ($objLogin->DomainActiveFlag && $objLogin->LoginActiveFlag) EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objLogin);
