@@ -34,7 +34,7 @@
 		}
 	}
 	if ($objSignupForm->CountFormProducts() > 0) {
-		print ",Total,Paid,Balance";
+		print ",Total,Paid,Balance,Payment Type";
 	}
 	print ",Date Submitted\r\n";
 
@@ -99,6 +99,15 @@
 				print QApplication::DisplayCurrency($objSignupEntry->AmountPaid);
 				print ",";
 				print QApplication::DisplayCurrency($objSignupEntry->AmountBalance);
+				print ",";
+				$strReturn = '';
+				if($objSignupEntry->CountSignupPayments()) {
+					$objArray = $objSignupEntry->GetSignupPaymentArray();
+					$strReturn .= SignupPaymentType::ToString($objArray[0]->SignupPaymentTypeId);
+				} else {
+					$strReturn = 'No payment';
+				}
+				print EscapeCsv($strReturn);
 				print ",";
 			}
 	
