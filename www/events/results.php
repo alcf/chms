@@ -105,6 +105,7 @@
 			if ($this->objSignupForm->CountFormProducts()) {
 				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountPaid, 'Name=Paid', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountPaid); ?>');
 				$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->AmountBalance, 'Name=Balance', 'Html=<?= $_FORM->RenderAmount($_ITEM->AmountBalance); ?>');
+				$this->dtgSignupEntries->AddColumn(new QDataGridColumn('Payment Type', '<?= $_FORM->RenderPaymentType($_ITEM); ?>', 'HtmlEntities=false'));
 			}
 			
 			$this->dtgSignupEntries->MetaAddColumn(QQN::SignupEntry()->DateSubmitted, 'Name=Submitted', 'Html=<?= $_ITEM->DateSubmitted ? $_ITEM->DateSubmitted->ToString("MMM D YYYY") : null; ?>');
@@ -135,6 +136,17 @@
 			}
 		}
 
+		public function RenderPaymentType(SignupEntry $objSignupEntry) {
+			$strReturn = '';
+			if($objSignupEntry->CountSignupPayments()) {
+				$objArray = $objSignupEntry->GetSignupPaymentArray();
+				$strReturn .= SignupPaymentType::ToString($objArray[0]->SignupPaymentTypeId);
+			} else {
+				$strReturn = 'No payment';
+			}
+			return $strReturn;			
+		}
+		
 		public function RenderAmount($fltAmount, $blnDisplayNullAsZero = true) {
 			if ($blnDisplayNullAsZero || !is_null($fltAmount))
 				return QApplication::DisplayCurrency($fltAmount);
