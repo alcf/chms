@@ -93,131 +93,142 @@
 			// See the note in _constructor, above, for more information
 			/*new Vicp_Attributes_Edit($this->pnlRight, null, $this->objPerson,$this->strUrlHashArgument);*/
 			// Test to see if it works
-			$this->objAttributeValue = AttributeValue::LoadByAttributeIdPersonId($strParameter, $this->objPerson->Id);
-			if (!$this->objAttributeValue) {
-				$this->objAttributeValue = new AttributeValue();
-				$this->objAttributeValue->AttributeId = $paramArray[0];
-				$this->objAttributeValue->Person = $this->objPerson;
-				$this->objAttributeValue->Attribute = Attribute::Load($paramArray[0]);
-			}
-			
-			// Determine what to display
-			$this->lblTitle = new QLabel($this->pnlRight);
-			$this->lblTitle->Text = $paramArray[2];
-			$this->lblTitle->CssClass = 'attributeLbl';
-			
-			switch ($paramArray[1]) {
-				case AttributeDataType::Checkbox:
-					$this->chkValue = new QRadioButtonList($this->pnlRight);
-					$this->chkValue->Name = $paramArray[2];
-					$this->chkValue->Required = true;
-					$this->chkValue->AddItem('Yes', true, $this->objAttributeValue->BooleanValue === true);
-					$this->chkValue->AddItem('No', false, $this->objAttributeValue->BooleanValue === false);
-					break;
-			
-				case AttributeDataType::Date:
-				case AttributeDataType::DateTime:
-					$this->dtxValue = new QDateTimeTextBox($this->pnlRight);
-					$this->dtxValue->Name = $paramArray[2];
-					$this->dtxValue->Required = true;
-					$this->calValue = new QCalendar($this->pnlRight, $this->dtxValue);			
-					$this->dtxValue->RemoveAllActions(QClickEvent::EventName);
-					if ($this->objAttributeValue->Attribute->AttributeDataTypeId == AttributeDataType::Date) {
-						$this->dtxValue->Text = ($this->objAttributeValue->DateValue) ? $this->objAttributeValue->DateValue->ToString() : null;
-					} else {
-						$this->dtxValue->Text = ($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->DatetimeValue->ToString() : null;
-					}
-					break;
-			
-				case AttributeDataType::Text:
-					$this->txtValue = new QTextBox($this->pnlRight);
-					$this->txtValue->Name = $paramArray[2];
-					$this->txtValue->Required = true;
-					$this->txtValue->TextMode = QTextMode::MultiLine;
-					$this->txtValue->Text = trim($this->objAttributeValue->TextValue);
-					$this->txtValue->FontNames = QFontFamily::Arial;
-					$this->txtValue->FontSize = '11px';
-					$this->txtValue->Width = '380px';
-					$this->txtValue->Height = '200px';
-					break;
-			
-				case AttributeDataType::ImmutableSingleDropdown:
-					$this->lstValue = new QListBox($this->pnlRight);
-					$this->lstValue->Name = $paramArray[2];
-					$this->lstValue->Required = true;
-					if (!$this->objAttributeValue->SingleAttributeOptionId)
-						$this->lstValue->AddItem('- Select One -');
-					foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
+			// Special case for Co-Primary. If co-primary, then ensure there is a date of birth
+			if($paramArray[2] == 'Co-Primary'&& !$this->objPerson->DateOfBirth) {
+				$this->lblTitle = new QLabel($this->pnlRight);
+				$this->lblTitle->HtmlEntities = false;
+				$this->lblTitle->Text = "You cannot specify a Co-primary email unless the person has a Date Of Birth specified. <br>Please ensure that this is the case before setting this attribute.";
+			} else {			
+				$this->objAttributeValue = AttributeValue::LoadByAttributeIdPersonId($strParameter, $this->objPerson->Id);
+				if (!$this->objAttributeValue) {
+					$this->objAttributeValue = new AttributeValue();
+					$this->objAttributeValue->AttributeId = $paramArray[0];
+					$this->objAttributeValue->Person = $this->objPerson;
+					$this->objAttributeValue->Attribute = Attribute::Load($paramArray[0]);
+				}
+				
+				// Determine what to display
+				$this->lblTitle = new QLabel($this->pnlRight);
+				$this->lblTitle->Text = $paramArray[2];
+				if($paramArray[2] == 'Co-Primary') {
+					$this->lblTitle->HtmlEntities = false;
+					$this->lblTitle->Text .= '<br>Please not that the Co-Primary email entered MUST be an existing person in noah.';
+				}
+				$this->lblTitle->CssClass = 'attributeLbl';
+				
+				switch ($paramArray[1]) {
+					case AttributeDataType::Checkbox:
+						$this->chkValue = new QRadioButtonList($this->pnlRight);
+						$this->chkValue->Name = $paramArray[2];
+						$this->chkValue->Required = true;
+						$this->chkValue->AddItem('Yes', true, $this->objAttributeValue->BooleanValue === true);
+						$this->chkValue->AddItem('No', false, $this->objAttributeValue->BooleanValue === false);
+						break;
+				
+					case AttributeDataType::Date:
+					case AttributeDataType::DateTime:
+						$this->dtxValue = new QDateTimeTextBox($this->pnlRight);
+						$this->dtxValue->Name = $paramArray[2];
+						$this->dtxValue->Required = true;
+						$this->calValue = new QCalendar($this->pnlRight, $this->dtxValue);			
+						$this->dtxValue->RemoveAllActions(QClickEvent::EventName);
+						if ($this->objAttributeValue->Attribute->AttributeDataTypeId == AttributeDataType::Date) {
+							$this->dtxValue->Text = ($this->objAttributeValue->DateValue) ? $this->objAttributeValue->DateValue->ToString() : null;
+						} else {
+							$this->dtxValue->Text = ($this->objAttributeValue->DatetimeValue) ? $this->objAttributeValue->DatetimeValue->ToString() : null;
+						}
+						break;
+				
+					case AttributeDataType::Text:
+						$this->txtValue = new QTextBox($this->pnlRight);
+						$this->txtValue->Name = $paramArray[2];
+						$this->txtValue->Required = true;
+						$this->txtValue->TextMode = QTextMode::MultiLine;
+						$this->txtValue->Text = trim($this->objAttributeValue->TextValue);
+						$this->txtValue->FontNames = QFontFamily::Arial;
+						$this->txtValue->FontSize = '11px';
+						$this->txtValue->Width = '380px';
+						$this->txtValue->Height = '200px';
+						break;
+				
+					case AttributeDataType::ImmutableSingleDropdown:
+						$this->lstValue = new QListBox($this->pnlRight);
+						$this->lstValue->Name = $paramArray[2];
+						$this->lstValue->Required = true;
+						if (!$this->objAttributeValue->SingleAttributeOptionId)
+							$this->lstValue->AddItem('- Select One -');
+						foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
+							$this->lstValue->AddItem($objOption->Name, $objOption->Id, $objOption->Id == $this->objAttributeValue->SingleAttributeOptionId);
+						break;
+				
+					case AttributeDataType::ImmutableMultipleDropdown:
+						$this->lstValue = new QListBox($this->pnlRight);
+						$this->lstValue->Name = $paramArray[2];
+						$this->lstValue->Required = true;
+						$this->lstValue->SelectionMode = QSelectionMode::Multiple;
+						$this->lstValue->Width = '200px';
+						$this->lstValue->Height = '200px';
+				
+						$intSelectedIdArray = array();
+						if ($this->objAttributeValue->Id) {
+							foreach ($this->objAttributeValue->GetAttributeOptionAsMultipleArray() as $objOption)
+							$intSelectedIdArray[$objOption->Id] = $objOption->Id;
+						}
+				
+						foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
+						$this->lstValue->AddItem($objOption->Name, $objOption->Id, array_key_exists($objOption->Id, $intSelectedIdArray));
+						break;
+				
+					case AttributeDataType::MutableSingleDropdown:
+						$this->lstValue = new QListBox($this->pnlRight);
+						$this->lstValue->Name = $paramArray[2];
+						$this->lstValue->Required = true;
+						
+						foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
 						$this->lstValue->AddItem($objOption->Name, $objOption->Id, $objOption->Id == $this->objAttributeValue->SingleAttributeOptionId);
-					break;
-			
-				case AttributeDataType::ImmutableMultipleDropdown:
-					$this->lstValue = new QListBox($this->pnlRight);
-					$this->lstValue->Name = $paramArray[2];
-					$this->lstValue->Required = true;
-					$this->lstValue->SelectionMode = QSelectionMode::Multiple;
-					$this->lstValue->Width = '200px';
-					$this->lstValue->Height = '200px';
-			
-					$intSelectedIdArray = array();
-					if ($this->objAttributeValue->Id) {
-						foreach ($this->objAttributeValue->GetAttributeOptionAsMultipleArray() as $objOption)
-						$intSelectedIdArray[$objOption->Id] = $objOption->Id;
-					}
-			
-					foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
-					$this->lstValue->AddItem($objOption->Name, $objOption->Id, array_key_exists($objOption->Id, $intSelectedIdArray));
-					break;
-			
-				case AttributeDataType::MutableSingleDropdown:
-					$this->lstValue = new QListBox($this->pnlRight);
-					$this->lstValue->Name = $paramArray[2];
-					$this->lstValue->Required = true;
-					
-					foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
-					$this->lstValue->AddItem($objOption->Name, $objOption->Id, $objOption->Id == $this->objAttributeValue->SingleAttributeOptionId);
-					$this->lstValue->AddItem('- Other... -', -1);
-			
-					$this->txtAddItem = new QTextBox($this->pnlRight);
-					$this->txtAddItem->Name = 'Add a Value';
-					$this->txtAddItem->Visible = false;
-			
-					$this->lstValue->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstValue_Change'));
-					$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-					break;
-			
-				case AttributeDataType::MutableMultipleDropdown:
-					$this->lstValue = new QListBox($this->pnlRight);
-					$this->lstValue->Name = $paramArray[2];
-					$this->lstValue->Required = true;
-					$this->lstValue->SelectionMode = QSelectionMode::Multiple;
-					$this->lstValue->Width = '200px';
-					$this->lstValue->Height = '200px';
-			
-					$intSelectedIdArray = array();
-					if ($this->objAttributeValue->Id) {
-						foreach ($this->objAttributeValue->GetAttributeOptionAsMultipleArray() as $objOption)
-						$intSelectedIdArray[$objOption->Id] = $objOption->Id;
-					}
-			
-					foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
-					$this->lstValue->AddItem($objOption->Name, $objOption->Id, array_key_exists($objOption->Id, $intSelectedIdArray));
-			
-					$this->txtAddItem = new QTextBox($this->pnlRight);
-					$this->txtAddItem->Name = 'Add a Value';
-					$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtAddItem_Enter'));
-					$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QTerminateAction());
-					break;
-			
-				default:
-					throw new Exception('Unhandled AttributeDataTypeId: ' . $this->objAttributeValue->Attribute->AttributeDataTypeId);
+						$this->lstValue->AddItem('- Other... -', -1);
+				
+						$this->txtAddItem = new QTextBox($this->pnlRight);
+						$this->txtAddItem->Name = 'Add a Value';
+						$this->txtAddItem->Visible = false;
+				
+						$this->lstValue->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstValue_Change'));
+						$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+						break;
+				
+					case AttributeDataType::MutableMultipleDropdown:
+						$this->lstValue = new QListBox($this->pnlRight);
+						$this->lstValue->Name = $paramArray[2];
+						$this->lstValue->Required = true;
+						$this->lstValue->SelectionMode = QSelectionMode::Multiple;
+						$this->lstValue->Width = '200px';
+						$this->lstValue->Height = '200px';
+				
+						$intSelectedIdArray = array();
+						if ($this->objAttributeValue->Id) {
+							foreach ($this->objAttributeValue->GetAttributeOptionAsMultipleArray() as $objOption)
+							$intSelectedIdArray[$objOption->Id] = $objOption->Id;
+						}
+				
+						foreach ($this->objAttributeValue->Attribute->GetAttributeOptionArray(QQ::OrderBy(QQN::AttributeOption()->Name)) as $objOption)
+						$this->lstValue->AddItem($objOption->Name, $objOption->Id, array_key_exists($objOption->Id, $intSelectedIdArray));
+				
+						$this->txtAddItem = new QTextBox($this->pnlRight);
+						$this->txtAddItem->Name = 'Add a Value';
+						$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'txtAddItem_Enter'));
+						$this->txtAddItem->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+						break;
+				
+					default:
+						throw new Exception('Unhandled AttributeDataTypeId: ' . $this->objAttributeValue->Attribute->AttributeDataTypeId);
+				}
+				// Add a save button
+				$this->btnSaveEdit = new QButton($this->pnlRight);
+				$this->btnSaveEdit->Text = 'Save';
+				$this->btnSaveEdit->CssClass = 'attributeBtn';
+				$this->btnSaveEdit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSaveEdit_Click'));
+				$this->btnSaveEdit->CausesValidation = $this;
 			}
-			// Add a save button
-			$this->btnSaveEdit = new QButton($this->pnlRight);
-			$this->btnSaveEdit->Text = 'Save';
-			$this->btnSaveEdit->CssClass = 'attributeBtn';
-			$this->btnSaveEdit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSaveEdit_Click'));
-			$this->btnSaveEdit->CausesValidation = $this;
 		}
 		
 		public function lstValue_Change($strFormId, $strControlId, $strParameter) {
