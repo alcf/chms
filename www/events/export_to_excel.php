@@ -34,6 +34,12 @@
 		}
 	}
 	if ($objSignupForm->CountFormProducts() > 0) {
+		foreach ($objSignupForm->GetFormProductArray(QQ::OrderBy(QQN::FormProduct()->FormProductTypeId, QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
+			if ($objFormProduct->ViewFlag) {
+				print ",";
+				print $objFormProduct->Name;
+			}
+		}
 		print ",Total,Paid,Balance,Payment Type";
 	}
 	print ",Date Submitted\r\n";
@@ -94,6 +100,16 @@
 			}
 	
 			if ($objSignupForm->CountFormProducts() > 0) {
+				foreach ($objSignupForm->GetFormProductArray(QQ::OrderBy(QQN::FormProduct()->FormProductTypeId, QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
+					if ($objFormProduct->ViewFlag) {
+						$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($objSignupEntry->Id, $objFormProduct->Id);
+						if($objSignupProduct)
+							print QApplication::DisplayCurrency($objSignupProduct->Amount);
+						else 
+							print " ";
+						print ",";
+					}
+				}
 				print QApplication::DisplayCurrency($objSignupEntry->AmountTotal);
 				print ",";
 				print QApplication::DisplayCurrency($objSignupEntry->AmountPaid);
