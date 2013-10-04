@@ -98,7 +98,8 @@
 						
 			foreach ($this->objSignupForm->GetFormProductArray(QQ::OrderBy(QQN::FormProduct()->FormProductTypeId, QQN::FormProduct()->OrderNumber)) as $objFormProduct) {
 				if ($objFormProduct->ViewFlag) {
-					$this->dtgSignupEntries->AddColumn(new QDataGridColumn($objFormProduct->Name, '<?= $_FORM->RenderProductQuantity($_ITEM, ' . $objFormProduct->Id . '); ?>', 'HtmlEntities=false'));
+					/* $this->dtgSignupEntries->AddColumn(new QDataGridColumn($objFormProduct->Name. ' Quantity', '<?= $_FORM->RenderProductQuantity($_ITEM, ' . $objFormProduct->Id . '); ?>', 'HtmlEntities=false'));*/
+					$this->dtgSignupEntries->AddColumn(new QDataGridColumn($objFormProduct->Name , '<?= $_FORM->RenderProductAmount($_ITEM, ' . $objFormProduct->Id . '); ?>', 'HtmlEntities=false'));
 				}
 			}
 			
@@ -152,6 +153,12 @@
 				return QApplication::DisplayCurrency($fltAmount);
 		}
 
+		public function RenderProductAmount(SignupEntry $objSignupEntry, $intFormProductId) {
+			$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($objSignupEntry->Id, $intFormProductId);
+			if (!$objSignupProduct) return;
+			return QApplication::DisplayCurrency($objSignupProduct->Amount);
+		}
+		
 		public function RenderProductQuantity(SignupEntry $objSignupEntry, $intFormProductId) {
 			$objSignupProduct = SignupProduct::LoadBySignupEntryIdFormProductId($objSignupEntry->Id, $intFormProductId);
 			if (!$objSignupProduct) return;
