@@ -29,13 +29,20 @@
 		div.filterBy select { font-size: 10px; }
 
 		ul.mapnav { margin: 0; padding: 0; width: 980px; margin: auto; }
-		ul.mapnav li { float: left; list-style: none; width: 153px; padding: 3px 5px; margin: 0; height: 60px; font-size: 14px; background-color: #2F6C61; color: #fff; font-weight: bold; }
-		ul.mapnav li.selected { background-color: #EAF0EF; color: #2F6C61; border-bottom: 1px solid #321; height: 60px; font-size: 14px; }
+		ul.mapnav li { float: left; list-style: none; width: 150px; padding: 3px 5px; margin: 0; height: 65px; font-size: 14px; background-color: #2F6C61; color: #fff; font-weight: bold; }
+		ul.mapnav li.selected { background-color: #EAF0EF; color: #2F6C61; border-bottom: 1px solid #321; height: 65px; font-size: 14px; }
 		ul.mapnav li a {color: #fff; font-weight: normal; background-color: #2F6C61; font-size:14px; text-decoration:none;}
 		
-		div#dtrgg { width: 351px; height: 538px; border: 1px solid black; overflow: auto; padding: 5px; }
+		div#dtrgg { width: 968px; height: 538px; border: 1px solid black; overflow: auto; padding: 5px; }
 		div#pnlnone { font-size: 11px; margin-top: 12px; }
 		
-		div.gglocation { width: 168px; float: left; height: 125px; }
+		div.gglocation { width: 950px; float: left; height: 70px; }
 		div.gglocation div.marker { float: left; width: 25px;}
-		div.gglocation div.content { float: left; font-size: 10px; width: 143px;}
+		div.gglocation div.content { float: left; font-size: 10px; width: 980px;}
+		
+		div.name {width:150px;  padding:6px; float:left;}
+		div.description {width:200px;   padding:6px; float:left;}
+		div.days {width:150px;   padding:6px; float:left;}
+		div.times {width:80px;   padding:6px; float:left;}
+		div.type {width:150px;  float:left; padding:6px;}
+		div.signup {width:80px;  float:left; padding:6px;}
