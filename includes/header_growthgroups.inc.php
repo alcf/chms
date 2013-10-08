@@ -28,36 +28,7 @@
 		<br clear="all"/>
 <?php } ?>
 	</div>
-	<div style="background-color: #2F6C61; width: 100%; height: 60px;">
-		<ul class="mapnav">
-		<?php
-			foreach (GrowthGroupLocation::LoadAll(QQ::OrderBy(QQN::GrowthGroupLocation()->Id)) as $objLocation) {
-				$strStyle = null;
 
-				if ($objLocation->Id == $this->objLocation->Id) {
-					$strLocation = QApplication::HtmlEntities($objLocation->Location);
-					$strLocation = str_replace(' (', '<br/><span style="font-size: 14px; font-weight: normal; font-family: arial;">(', $strLocation);
-					$strLocation = str_replace(')', ')</span>', $strLocation);
-					$strLocation = str_replace('including', 'incl.', $strLocation);
-					$strLocation = str_replace('to San', 'to<br/>San', $strLocation);
-					printf('<li class="selected"%s>%s</li>', $strStyle, $strLocation);
-				} else {
-					$strLocation = QApplication::HtmlEntities($objLocation->Location);
-					if (strpos($strLocation, '(')) {
-						$strLocation = str_replace(' (', '</a><br/><span style="font-size: 14px; font-weight: normal; font-family: arial; ">(', $strLocation);
-						$strLocation = str_replace(')', ')</span>', $strLocation);
-						$strLocation = str_replace('including', 'incl.', $strLocation);
-						printf('<li%s><a href="/index.php/%s">%s</li>', $strStyle, $objLocation->Id, $strLocation);
-					} else {
-						$strLocation = str_replace('to Mountain', 'to<br/>Mountain', $strLocation);
-						$strLocation = str_replace('to San', 'to<br/>San', $strLocation);
-						printf('<li%s><a href="/index.php/%s">%s</a></li>', $strStyle, $objLocation->Id, $strLocation);
-					}
-				}
-			}
-		?>
-		</ul>
-	</div>
 
 <?php if (QApplication::$Login) { ?>
 	<div class="navbar" style="background-color: #766; width: 100%; border-top: 2px solid #766; border-bottom: 2px solid #766; height: 19px;">
