@@ -15,7 +15,7 @@
 			
 			$this->dtrGrowthGroups = new QDataRepeater($this, 'dtrgg');
 			$this->dtrGrowthGroups->Template = dirname(__FILE__) . '/dtrGrowthGroups.tpl.php';
-			$this->dtrGrowthGroups->SetDataBinder('dtrGrowthGroups_Bind');
+			$this->dtrGrowthGroups->SetDataBinder('dtrGrowthGroups_Bind');		
 
 			$this->pnlNone = new QPanel($this, 'pnlnone');
 			$this->pnlNone->Text = 'No results found.  Please use a less restrictive filter.';
