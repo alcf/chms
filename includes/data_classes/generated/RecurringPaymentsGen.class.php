@@ -151,7 +151,7 @@
 		 * @var string strZip
 		 */
 		protected $strZip;
-		const ZipMaxLength = 10;
+		const ZipMaxLength = 15;
 		const ZipDefault = null;
 
 

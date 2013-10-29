@@ -367,6 +367,12 @@
 			return new QQNodeParentPagerStation('parent_pager_station', null, null);
 		}
 		/**
+		 * @return QQNodePaymentPeriod
+		 */
+		static public function PaymentPeriod() {
+			return new QQNodePaymentPeriod('payment_period', null, null);
+		}
+		/**
 		 * @return QQNodePaypalBatch
 		 */
 		static public function PaypalBatch() {
@@ -413,6 +419,24 @@
 		 */
 		static public function QueryOperation() {
 			return new QQNodeQueryOperation('query_operation', null, null);
+		}
+		/**
+		 * @return QQNodeRecurringDonation
+		 */
+		static public function RecurringDonation() {
+			return new QQNodeRecurringDonation('recurring_donation', null, null);
+		}
+		/**
+		 * @return QQNodeRecurringDonationItems
+		 */
+		static public function RecurringDonationItems() {
+			return new QQNodeRecurringDonationItems('recurring_donation_items', null, null);
+		}
+		/**
+		 * @return QQNodeRecurringPayments
+		 */
+		static public function RecurringPayments() {
+			return new QQNodeRecurringPayments('recurring_payments', null, null);
 		}
 		/**
 		 * @return QQNodeRegistry

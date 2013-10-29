@@ -20,8 +20,12 @@
 	 * @property string $ConfirmationEmail the value for strConfirmationEmail 
 	 * @property double $Amount the value for fltAmount 
 	 * @property integer $CreditCardPaymentId the value for intCreditCardPaymentId (Unique)
+	 * @property boolean $IsRecurringFlag the value for blnIsRecurringFlag 
+	 * @property integer $Status the value for intStatus 
+	 * @property integer $RecurringPaymentId the value for intRecurringPaymentId 
 	 * @property Person $Person the value for the Person object referenced by intPersonId (Not Null)
 	 * @property CreditCardPayment $CreditCardPayment the value for the CreditCardPayment object referenced by intCreditCardPaymentId (Unique)
+	 * @property RecurringPayments $RecurringPayment the value for the RecurringPayments object referenced by intRecurringPaymentId 
 	 * @property OnlineDonationLineItem $_OnlineDonationLineItem the value for the private _objOnlineDonationLineItem (Read-Only) if set due to an expansion on the online_donation_line_item.online_donation_id reverse relationship
 	 * @property OnlineDonationLineItem[] $_OnlineDonationLineItemArray the value for the private _objOnlineDonationLineItemArray (Read-Only) if set due to an ExpandAsArray on the online_donation_line_item.online_donation_id reverse relationship
 	 * @property boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -71,6 +75,30 @@
 		 */
 		protected $intCreditCardPaymentId;
 		const CreditCardPaymentIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column online_donation.is_recurring_flag
+		 * @var boolean blnIsRecurringFlag
+		 */
+		protected $blnIsRecurringFlag;
+		const IsRecurringFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column online_donation.status
+		 * @var integer intStatus
+		 */
+		protected $intStatus;
+		const StatusDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column online_donation.recurring_payment_id
+		 * @var integer intRecurringPaymentId
+		 */
+		protected $intRecurringPaymentId;
+		const RecurringPaymentIdDefault = null;
 
 
 		/**
@@ -130,6 +158,16 @@
 		 * @var CreditCardPayment objCreditCardPayment
 		 */
 		protected $objCreditCardPayment;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column online_donation.recurring_payment_id.
+		 *
+		 * NOTE: Always use the RecurringPayment property getter to correctly retrieve this RecurringPayments object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var RecurringPayments objRecurringPayment
+		 */
+		protected $objRecurringPayment;
 
 
 
@@ -446,6 +484,9 @@
 			$objBuilder->AddSelectItem($strTableName, 'confirmation_email', $strAliasPrefix . 'confirmation_email');
 			$objBuilder->AddSelectItem($strTableName, 'amount', $strAliasPrefix . 'amount');
 			$objBuilder->AddSelectItem($strTableName, 'credit_card_payment_id', $strAliasPrefix . 'credit_card_payment_id');
+			$objBuilder->AddSelectItem($strTableName, 'is_recurring_flag', $strAliasPrefix . 'is_recurring_flag');
+			$objBuilder->AddSelectItem($strTableName, 'status', $strAliasPrefix . 'status');
+			$objBuilder->AddSelectItem($strTableName, 'recurring_payment_id', $strAliasPrefix . 'recurring_payment_id');
 		}
 
 
@@ -519,6 +560,12 @@
 			$objToReturn->fltAmount = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAliasName = array_key_exists($strAliasPrefix . 'credit_card_payment_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'credit_card_payment_id'] : $strAliasPrefix . 'credit_card_payment_id';
 			$objToReturn->intCreditCardPaymentId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'is_recurring_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'is_recurring_flag'] : $strAliasPrefix . 'is_recurring_flag';
+			$objToReturn->blnIsRecurringFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'status', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'status'] : $strAliasPrefix . 'status';
+			$objToReturn->intStatus = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'recurring_payment_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'recurring_payment_id'] : $strAliasPrefix . 'recurring_payment_id';
+			$objToReturn->intRecurringPaymentId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -543,6 +590,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objCreditCardPayment = CreditCardPayment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'credit_card_payment_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for RecurringPayment Early Binding
+			$strAlias = $strAliasPrefix . 'recurring_payment_id__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objRecurringPayment = RecurringPayments::InstantiateDbRow($objDbRow, $strAliasPrefix . 'recurring_payment_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -687,6 +740,40 @@
 			, $objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load an array of OnlineDonation objects,
+		 * by RecurringPaymentId Index(es)
+		 * @param integer $intRecurringPaymentId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return OnlineDonation[]
+		*/
+		public static function LoadArrayByRecurringPaymentId($intRecurringPaymentId, $objOptionalClauses = null) {
+			// Call OnlineDonation::QueryArray to perform the LoadArrayByRecurringPaymentId query
+			try {
+				return OnlineDonation::QueryArray(
+					QQ::Equal(QQN::OnlineDonation()->RecurringPaymentId, $intRecurringPaymentId),
+					$objOptionalClauses
+					);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count OnlineDonations
+		 * by RecurringPaymentId Index(es)
+		 * @param integer $intRecurringPaymentId
+		 * @return int
+		*/
+		public static function CountByRecurringPaymentId($intRecurringPaymentId, $objOptionalClauses = null) {
+			// Call OnlineDonation::QueryCount to perform the CountByRecurringPaymentId query
+			return OnlineDonation::QueryCount(
+				QQ::Equal(QQN::OnlineDonation()->RecurringPaymentId, $intRecurringPaymentId)
+			, $objOptionalClauses
+			);
+		}
 
 
 
@@ -721,12 +808,18 @@
 							`person_id`,
 							`confirmation_email`,
 							`amount`,
-							`credit_card_payment_id`
+							`credit_card_payment_id`,
+							`is_recurring_flag`,
+							`status`,
+							`recurring_payment_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							' . $objDatabase->SqlVariable($this->strConfirmationEmail) . ',
 							' . $objDatabase->SqlVariable($this->fltAmount) . ',
-							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
+							' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
+							' . $objDatabase->SqlVariable($this->blnIsRecurringFlag) . ',
+							' . $objDatabase->SqlVariable($this->intStatus) . ',
+							' . $objDatabase->SqlVariable($this->intRecurringPaymentId) . '
 						)
 					');
 
@@ -749,7 +842,10 @@
 							`person_id` = ' . $objDatabase->SqlVariable($this->intPersonId) . ',
 							`confirmation_email` = ' . $objDatabase->SqlVariable($this->strConfirmationEmail) . ',
 							`amount` = ' . $objDatabase->SqlVariable($this->fltAmount) . ',
-							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . '
+							`credit_card_payment_id` = ' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
+							`is_recurring_flag` = ' . $objDatabase->SqlVariable($this->blnIsRecurringFlag) . ',
+							`status` = ' . $objDatabase->SqlVariable($this->intStatus) . ',
+							`recurring_payment_id` = ' . $objDatabase->SqlVariable($this->intRecurringPaymentId) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -838,6 +934,9 @@
 			$this->strConfirmationEmail = $objReloaded->strConfirmationEmail;
 			$this->fltAmount = $objReloaded->fltAmount;
 			$this->CreditCardPaymentId = $objReloaded->CreditCardPaymentId;
+			$this->blnIsRecurringFlag = $objReloaded->blnIsRecurringFlag;
+			$this->intStatus = $objReloaded->intStatus;
+			$this->RecurringPaymentId = $objReloaded->RecurringPaymentId;
 		}
 
 		/**
@@ -855,6 +954,9 @@
 					`confirmation_email`,
 					`amount`,
 					`credit_card_payment_id`,
+					`is_recurring_flag`,
+					`status`,
+					`recurring_payment_id`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -864,6 +966,9 @@
 					' . $objDatabase->SqlVariable($this->strConfirmationEmail) . ',
 					' . $objDatabase->SqlVariable($this->fltAmount) . ',
 					' . $objDatabase->SqlVariable($this->intCreditCardPaymentId) . ',
+					' . $objDatabase->SqlVariable($this->blnIsRecurringFlag) . ',
+					' . $objDatabase->SqlVariable($this->intStatus) . ',
+					' . $objDatabase->SqlVariable($this->intRecurringPaymentId) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -939,6 +1044,21 @@
 					// @return integer
 					return $this->intCreditCardPaymentId;
 
+				case 'IsRecurringFlag':
+					// Gets the value for blnIsRecurringFlag 
+					// @return boolean
+					return $this->blnIsRecurringFlag;
+
+				case 'Status':
+					// Gets the value for intStatus 
+					// @return integer
+					return $this->intStatus;
+
+				case 'RecurringPaymentId':
+					// Gets the value for intRecurringPaymentId 
+					// @return integer
+					return $this->intRecurringPaymentId;
+
 
 				///////////////////
 				// Member Objects
@@ -962,6 +1082,18 @@
 						if ((!$this->objCreditCardPayment) && (!is_null($this->intCreditCardPaymentId)))
 							$this->objCreditCardPayment = CreditCardPayment::Load($this->intCreditCardPaymentId);
 						return $this->objCreditCardPayment;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'RecurringPayment':
+					// Gets the value for the RecurringPayments object referenced by intRecurringPaymentId 
+					// @return RecurringPayments
+					try {
+						if ((!$this->objRecurringPayment) && (!is_null($this->intRecurringPaymentId)))
+							$this->objRecurringPayment = RecurringPayments::Load($this->intRecurringPaymentId);
+						return $this->objRecurringPayment;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1058,6 +1190,40 @@
 						throw $objExc;
 					}
 
+				case 'IsRecurringFlag':
+					// Sets the value for blnIsRecurringFlag 
+					// @param boolean $mixValue
+					// @return boolean
+					try {
+						return ($this->blnIsRecurringFlag = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Status':
+					// Sets the value for intStatus 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						return ($this->intStatus = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'RecurringPaymentId':
+					// Sets the value for intRecurringPaymentId 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objRecurringPayment = null;
+						return ($this->intRecurringPaymentId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1116,6 +1282,36 @@
 						// Update Local Member Variables
 						$this->objCreditCardPayment = $mixValue;
 						$this->intCreditCardPaymentId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'RecurringPayment':
+					// Sets the value for the RecurringPayments object referenced by intRecurringPaymentId 
+					// @param RecurringPayments $mixValue
+					// @return RecurringPayments
+					if (is_null($mixValue)) {
+						$this->intRecurringPaymentId = null;
+						$this->objRecurringPayment = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a RecurringPayments object
+						try {
+							$mixValue = QType::Cast($mixValue, 'RecurringPayments');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED RecurringPayments object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved RecurringPayment for this OnlineDonation');
+
+						// Update Local Member Variables
+						$this->objRecurringPayment = $mixValue;
+						$this->intRecurringPaymentId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1346,6 +1542,9 @@
 			$strToReturn .= '<element name="ConfirmationEmail" type="xsd:string"/>';
 			$strToReturn .= '<element name="Amount" type="xsd:float"/>';
 			$strToReturn .= '<element name="CreditCardPayment" type="xsd1:CreditCardPayment"/>';
+			$strToReturn .= '<element name="IsRecurringFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="Status" type="xsd:int"/>';
+			$strToReturn .= '<element name="RecurringPayment" type="xsd1:RecurringPayments"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1356,6 +1555,7 @@
 				$strComplexTypeArray['OnlineDonation'] = OnlineDonation::GetSoapComplexTypeXml();
 				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 				CreditCardPayment::AlterSoapComplexTypeArray($strComplexTypeArray);
+				RecurringPayments::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1382,6 +1582,13 @@
 			if ((property_exists($objSoapObject, 'CreditCardPayment')) &&
 				($objSoapObject->CreditCardPayment))
 				$objToReturn->CreditCardPayment = CreditCardPayment::GetObjectFromSoapObject($objSoapObject->CreditCardPayment);
+			if (property_exists($objSoapObject, 'IsRecurringFlag'))
+				$objToReturn->blnIsRecurringFlag = $objSoapObject->IsRecurringFlag;
+			if (property_exists($objSoapObject, 'Status'))
+				$objToReturn->intStatus = $objSoapObject->Status;
+			if ((property_exists($objSoapObject, 'RecurringPayment')) &&
+				($objSoapObject->RecurringPayment))
+				$objToReturn->RecurringPayment = RecurringPayments::GetObjectFromSoapObject($objSoapObject->RecurringPayment);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1408,6 +1615,10 @@
 				$objObject->objCreditCardPayment = CreditCardPayment::GetSoapObjectFromObject($objObject->objCreditCardPayment, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intCreditCardPaymentId = null;
+			if ($objObject->objRecurringPayment)
+				$objObject->objRecurringPayment = RecurringPayments::GetSoapObjectFromObject($objObject->objRecurringPayment, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intRecurringPaymentId = null;
 			return $objObject;
 		}
 
@@ -1430,6 +1641,10 @@
 	 * @property-read QQNode $Amount
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
+	 * @property-read QQNode $IsRecurringFlag
+	 * @property-read QQNode $Status
+	 * @property-read QQNode $RecurringPaymentId
+	 * @property-read QQNodeRecurringPayments $RecurringPayment
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
 	 */
 	class QQNodeOnlineDonation extends QQNode {
@@ -1452,6 +1667,14 @@
 					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
 				case 'CreditCardPayment':
 					return new QQNodeCreditCardPayment('credit_card_payment_id', 'CreditCardPayment', 'integer', $this);
+				case 'IsRecurringFlag':
+					return new QQNode('is_recurring_flag', 'IsRecurringFlag', 'boolean', $this);
+				case 'Status':
+					return new QQNode('status', 'Status', 'integer', $this);
+				case 'RecurringPaymentId':
+					return new QQNode('recurring_payment_id', 'RecurringPaymentId', 'integer', $this);
+				case 'RecurringPayment':
+					return new QQNodeRecurringPayments('recurring_payment_id', 'RecurringPayment', 'integer', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'online_donation_id');
 
@@ -1476,6 +1699,10 @@
 	 * @property-read QQNode $Amount
 	 * @property-read QQNode $CreditCardPaymentId
 	 * @property-read QQNodeCreditCardPayment $CreditCardPayment
+	 * @property-read QQNode $IsRecurringFlag
+	 * @property-read QQNode $Status
+	 * @property-read QQNode $RecurringPaymentId
+	 * @property-read QQNodeRecurringPayments $RecurringPayment
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
 	 * @property-read QQNode $_PrimaryKeyNode
 	 */
@@ -1499,6 +1726,14 @@
 					return new QQNode('credit_card_payment_id', 'CreditCardPaymentId', 'integer', $this);
 				case 'CreditCardPayment':
 					return new QQNodeCreditCardPayment('credit_card_payment_id', 'CreditCardPayment', 'integer', $this);
+				case 'IsRecurringFlag':
+					return new QQNode('is_recurring_flag', 'IsRecurringFlag', 'boolean', $this);
+				case 'Status':
+					return new QQNode('status', 'Status', 'integer', $this);
+				case 'RecurringPaymentId':
+					return new QQNode('recurring_payment_id', 'RecurringPaymentId', 'integer', $this);
+				case 'RecurringPayment':
+					return new QQNodeRecurringPayments('recurring_payment_id', 'RecurringPayment', 'integer', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'online_donation_id');
 

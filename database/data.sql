@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('013');
+INSERT INTO _version VALUES('014');
 
 
 
@@ -445,3 +445,11 @@ INSERT INTO growth_group_structure(id, name) VALUES (12, '6-week Discipleship Gr
 
 INSERT INTO availability_status(id, name) VALUES (1,'Open');
 INSERT INTO availability_status(id, name) VALUES (2,'Closed');
+
+############################
+# Inserted for version 014
+############################
+INSERT INTO payment_period  VALUES(1, 'Weekly');
+INSERT INTO payment_period  VALUES(2, 'Bi-weekly');
+INSERT INTO payment_period  VALUES(3, 'Monthly');
+INSERT INTO payment_period  VALUES(4, 'Quarterly');

@@ -26,6 +26,8 @@
 	 * @property Ministry $Ministry the value for the Ministry object referenced by intMinistryId 
 	 * @property OnlineDonationLineItem $_OnlineDonationLineItem the value for the private _objOnlineDonationLineItem (Read-Only) if set due to an expansion on the online_donation_line_item.stewardship_fund_id reverse relationship
 	 * @property OnlineDonationLineItem[] $_OnlineDonationLineItemArray the value for the private _objOnlineDonationLineItemArray (Read-Only) if set due to an ExpandAsArray on the online_donation_line_item.stewardship_fund_id reverse relationship
+	 * @property RecurringDonationItems $_RecurringDonationItems the value for the private _objRecurringDonationItems (Read-Only) if set due to an expansion on the recurring_donation_items.stewardship_fund_id reverse relationship
+	 * @property RecurringDonationItems[] $_RecurringDonationItemsArray the value for the private _objRecurringDonationItemsArray (Read-Only) if set due to an ExpandAsArray on the recurring_donation_items.stewardship_fund_id reverse relationship
 	 * @property SignupForm $_SignupFormAsDonation the value for the private _objSignupFormAsDonation (Read-Only) if set due to an expansion on the signup_form.donation_stewardship_fund_id reverse relationship
 	 * @property SignupForm[] $_SignupFormAsDonationArray the value for the private _objSignupFormAsDonationArray (Read-Only) if set due to an ExpandAsArray on the signup_form.donation_stewardship_fund_id reverse relationship
 	 * @property SignupPayment $_SignupPaymentAsDonation the value for the private _objSignupPaymentAsDonation (Read-Only) if set due to an expansion on the signup_payment.donation_stewardship_fund_id reverse relationship
@@ -129,6 +131,22 @@
 		 * @var OnlineDonationLineItem[] _objOnlineDonationLineItemArray;
 		 */
 		private $_objOnlineDonationLineItemArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single RecurringDonationItems object
+		 * (of type RecurringDonationItems), if this StewardshipFund object was restored with
+		 * an expansion on the recurring_donation_items association table.
+		 * @var RecurringDonationItems _objRecurringDonationItems;
+		 */
+		private $_objRecurringDonationItems;
+
+		/**
+		 * Private member variable that stores a reference to an array of RecurringDonationItems objects
+		 * (of type RecurringDonationItems[]), if this StewardshipFund object was restored with
+		 * an ExpandAsArray on the recurring_donation_items association table.
+		 * @var RecurringDonationItems[] _objRecurringDonationItemsArray;
+		 */
+		private $_objRecurringDonationItemsArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single SignupFormAsDonation object
@@ -628,6 +646,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'recurringdonationitems__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objRecurringDonationItemsArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objRecurringDonationItemsArray[$intPreviousChildItemCount - 1];
+						$objChildItem = RecurringDonationItems::InstantiateDbRow($objDbRow, $strAliasPrefix . 'recurringdonationitems__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objRecurringDonationItemsArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objRecurringDonationItemsArray[] = RecurringDonationItems::InstantiateDbRow($objDbRow, $strAliasPrefix . 'recurringdonationitems__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'signupformasdonation__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -769,6 +801,16 @@
 					$objToReturn->_objOnlineDonationLineItemArray[] = OnlineDonationLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonationlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objOnlineDonationLineItem = OnlineDonationLineItem::InstantiateDbRow($objDbRow, $strAliasPrefix . 'onlinedonationlineitem__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for RecurringDonationItems Virtual Binding
+			$strAlias = $strAliasPrefix . 'recurringdonationitems__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objRecurringDonationItemsArray[] = RecurringDonationItems::InstantiateDbRow($objDbRow, $strAliasPrefix . 'recurringdonationitems__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objRecurringDonationItems = RecurringDonationItems::InstantiateDbRow($objDbRow, $strAliasPrefix . 'recurringdonationitems__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for SignupFormAsDonation Virtual Binding
@@ -1335,6 +1377,18 @@
 					// @return OnlineDonationLineItem[]
 					return (array) $this->_objOnlineDonationLineItemArray;
 
+				case '_RecurringDonationItems':
+					// Gets the value for the private _objRecurringDonationItems (Read-Only)
+					// if set due to an expansion on the recurring_donation_items.stewardship_fund_id reverse relationship
+					// @return RecurringDonationItems
+					return $this->_objRecurringDonationItems;
+
+				case '_RecurringDonationItemsArray':
+					// Gets the value for the private _objRecurringDonationItemsArray (Read-Only)
+					// if set due to an ExpandAsArray on the recurring_donation_items.stewardship_fund_id reverse relationship
+					// @return RecurringDonationItems[]
+					return (array) $this->_objRecurringDonationItemsArray;
+
 				case '_SignupFormAsDonation':
 					// Gets the value for the private _objSignupFormAsDonation (Read-Only)
 					// if set due to an expansion on the signup_form.donation_stewardship_fund_id reverse relationship
@@ -1750,6 +1804,188 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`online_donation_line_item`
+				WHERE
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for RecurringDonationItems
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated RecurringDonationItemses as an array of RecurringDonationItems objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return RecurringDonationItems[]
+		*/ 
+		public function GetRecurringDonationItemsArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return RecurringDonationItems::LoadArrayByStewardshipFundId($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated RecurringDonationItemses
+		 * @return int
+		*/ 
+		public function CountRecurringDonationItemses() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return RecurringDonationItems::CountByStewardshipFundId($this->intId);
+		}
+
+		/**
+		 * Associates a RecurringDonationItems
+		 * @param RecurringDonationItems $objRecurringDonationItems
+		 * @return void
+		*/ 
+		public function AssociateRecurringDonationItems(RecurringDonationItems $objRecurringDonationItems) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateRecurringDonationItems on this unsaved StewardshipFund.');
+			if ((is_null($objRecurringDonationItems->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateRecurringDonationItems on this StewardshipFund with an unsaved RecurringDonationItems.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`recurring_donation_items`
+				SET
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objRecurringDonationItems->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objRecurringDonationItems->StewardshipFundId = $this->intId;
+				$objRecurringDonationItems->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a RecurringDonationItems
+		 * @param RecurringDonationItems $objRecurringDonationItems
+		 * @return void
+		*/ 
+		public function UnassociateRecurringDonationItems(RecurringDonationItems $objRecurringDonationItems) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRecurringDonationItems on this unsaved StewardshipFund.');
+			if ((is_null($objRecurringDonationItems->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRecurringDonationItems on this StewardshipFund with an unsaved RecurringDonationItems.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`recurring_donation_items`
+				SET
+					`stewardship_fund_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objRecurringDonationItems->Id) . ' AND
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objRecurringDonationItems->StewardshipFundId = null;
+				$objRecurringDonationItems->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all RecurringDonationItemses
+		 * @return void
+		*/ 
+		public function UnassociateAllRecurringDonationItemses() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRecurringDonationItems on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (RecurringDonationItems::LoadArrayByStewardshipFundId($this->intId) as $objRecurringDonationItems) {
+					$objRecurringDonationItems->StewardshipFundId = null;
+					$objRecurringDonationItems->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`recurring_donation_items`
+				SET
+					`stewardship_fund_id` = null
+				WHERE
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated RecurringDonationItems
+		 * @param RecurringDonationItems $objRecurringDonationItems
+		 * @return void
+		*/ 
+		public function DeleteAssociatedRecurringDonationItems(RecurringDonationItems $objRecurringDonationItems) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRecurringDonationItems on this unsaved StewardshipFund.');
+			if ((is_null($objRecurringDonationItems->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRecurringDonationItems on this StewardshipFund with an unsaved RecurringDonationItems.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`recurring_donation_items`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objRecurringDonationItems->Id) . ' AND
+					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objRecurringDonationItems->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated RecurringDonationItemses
+		 * @return void
+		*/ 
+		public function DeleteAllRecurringDonationItemses() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateRecurringDonationItems on this unsaved StewardshipFund.');
+
+			// Get the Database Object for this Class
+			$objDatabase = StewardshipFund::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (RecurringDonationItems::LoadArrayByStewardshipFundId($this->intId) as $objRecurringDonationItems) {
+					$objRecurringDonationItems->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`recurring_donation_items`
 				WHERE
 					`stewardship_fund_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -2952,6 +3188,7 @@
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNode $ExternalFlag
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
+	 * @property-read QQReverseReferenceNodeRecurringDonationItems $RecurringDonationItems
 	 * @property-read QQReverseReferenceNodeSignupForm $SignupFormAsDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPaymentAsDonation
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
@@ -2985,6 +3222,8 @@
 					return new QQNode('external_flag', 'ExternalFlag', 'boolean', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'stewardship_fund_id');
+				case 'RecurringDonationItems':
+					return new QQReverseReferenceNodeRecurringDonationItems($this, 'recurringdonationitems', 'reverse_reference', 'stewardship_fund_id');
 				case 'SignupFormAsDonation':
 					return new QQReverseReferenceNodeSignupForm($this, 'signupformasdonation', 'reverse_reference', 'donation_stewardship_fund_id');
 				case 'SignupPaymentAsDonation':
@@ -3022,6 +3261,7 @@
 	 * @property-read QQNode $ActiveFlag
 	 * @property-read QQNode $ExternalFlag
 	 * @property-read QQReverseReferenceNodeOnlineDonationLineItem $OnlineDonationLineItem
+	 * @property-read QQReverseReferenceNodeRecurringDonationItems $RecurringDonationItems
 	 * @property-read QQReverseReferenceNodeSignupForm $SignupFormAsDonation
 	 * @property-read QQReverseReferenceNodeSignupPayment $SignupPaymentAsDonation
 	 * @property-read QQReverseReferenceNodeStewardshipContributionAmount $StewardshipContributionAmount
@@ -3056,6 +3296,8 @@
 					return new QQNode('external_flag', 'ExternalFlag', 'boolean', $this);
 				case 'OnlineDonationLineItem':
 					return new QQReverseReferenceNodeOnlineDonationLineItem($this, 'onlinedonationlineitem', 'reverse_reference', 'stewardship_fund_id');
+				case 'RecurringDonationItems':
+					return new QQReverseReferenceNodeRecurringDonationItems($this, 'recurringdonationitems', 'reverse_reference', 'stewardship_fund_id');
 				case 'SignupFormAsDonation':
 					return new QQReverseReferenceNodeSignupForm($this, 'signupformasdonation', 'reverse_reference', 'donation_stewardship_fund_id');
 				case 'SignupPaymentAsDonation':

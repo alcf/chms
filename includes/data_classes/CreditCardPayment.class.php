@@ -100,7 +100,8 @@
 				$objPaymentObject->Save();
 
 				// Make a call to save children (if applicable)
-				call_user_func($arrPaymentObjectSaveChildrenCallback, $objPaymentObject);
+				if($arrPaymentObjectSaveChildrenCallback != null)
+					call_user_func($arrPaymentObjectSaveChildrenCallback, $objPaymentObject);
 
 				$strClassName = get_class($objPaymentObject);
 				switch ($strClassName) {

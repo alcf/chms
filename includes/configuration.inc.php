@@ -236,6 +236,9 @@
 
 	define('QCODO_LOG_LEVEL', 6);
 
+	// Crypto key for DB encryption
+	define('CRYPTO_KEY','QxcdfgYtr7');
+	
 	// Add PayPal Constants
 	require(__INCLUDES__ . '/../paypal.local');
 
