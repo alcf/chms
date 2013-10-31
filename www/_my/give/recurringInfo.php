@@ -229,7 +229,7 @@
 			}
 			$this->objRecurringDonation->Amount = $this->GetAmount();
 			$this->objRecurringDonation->Save();
-			$fh = fopen("logfile.txt", 'a');
+			$fh = fopen("/var/www/noah-stage.alcf.net/www/logfile.txt", 'a');
 			fwrite($fh,"Saved Recurringdonation\n");
 			//Create RecurringPayment object - and associate with RecurringDonation.
 			if(!$this->isEdit) {
