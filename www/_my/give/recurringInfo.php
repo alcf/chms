@@ -178,12 +178,14 @@
 				$strMissingArray[] = 'The Account Number specified is not a valid Visa number';
 			}
 			foreach ($this->GetErrorControls() as $objControl) {
-				$objControl->Blink();
-				if ($objControl->ValidationError) $strMissingArray[] = $objControl->ValidationError;
-				else $strMissingArray[] = $objControl->Warning;
-				if ($blnFirst) {
-					$objControl->Focus();
-					$blnFirst = false;
+				if($objControl) {
+					$objControl->Blink();
+					if ($objControl->ValidationError) $strMissingArray[] = $objControl->ValidationError;
+					else $strMissingArray[] = $objControl->Warning;
+					if ($blnFirst) {
+						$objControl->Focus();
+						$blnFirst = false;
+					}
 				}
 			}
 				
