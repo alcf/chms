@@ -24,6 +24,7 @@
 	<div class="section">
 		<h3>Recurring Payment History</h3>
 		<?php $this->dtgPaymentHistory->Render(); ?>
+		<?php _p($this->txtDebug);?>
 	</div>
 	<div class="buttonBar">	<?php $this->btnCancel->Render(); ?>	
 	<?php $this->btnAdd->Render(); ?>

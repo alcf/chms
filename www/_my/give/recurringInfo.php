@@ -22,12 +22,16 @@
 		protected $objRecurringDonation;
 		protected $objDonationItemArray;
 		protected $lblTotal;
+		protected $txtDebug;
 		
 		protected function Form_Run() {
 			if (QApplication::$PublicLogin && !QApplication::$PublicLogin->Person) QApplication::PublicLogout(false);
 		}
 
 		protected function Form_Create() {
+			$this->txtDebug = new QLabel($this);
+			$this->txtDebug->HtmlEntities = false;
+			
 			if(QApplication::PathInfo(0) == 'edit') {
 				$this->isEdit = true;
 				$this->objRecurringDonation = RecurringDonation::Load(QApplication::PathInfo(1));
@@ -229,7 +233,7 @@
 			}
 			$this->objRecurringDonation->Amount = $this->GetAmount();
 			$this->objRecurringDonation->Save();
-			
+			$this->txtDebug->Text = "Saved Recurringdonation<br>";
 			//Create RecurringPayment object - and associate with RecurringDonation.
 			if(!$this->isEdit) {
 				$objRecurringPayment = new RecurringPayments();
@@ -237,30 +241,47 @@
 				$objRecurringPayment = RecurringPayments::Load($this->objRecurringDonation->RecurringPaymentId);
 			}
 			
+			$this->txtDebug->Text .= "Initialized RecurringPayments<br>";
 			QCryptography::$Key = CRYPTO_KEY;
 			$objCrypto = new QCryptography(null, false);			
 			$objRecurringPayment->Address1 = $objCrypto->Encrypt(trim($this->pnlPayment->txtAddress1->Text));
 			$objRecurringPayment->Address2 = $objCrypto->Encrypt(trim($this->pnlPayment->txtAddress2->Text));
+			$this->txtDebug->Text .= "Set Address<br>";
 			$objRecurringPayment->City = $objCrypto->Encrypt(trim($this->pnlPayment->txtCity->Text));
+			$this->txtDebug->Text .= "Set City<br>";
 			$objRecurringPayment->State = trim($this->pnlPayment->lstState->SelectedValue);
+			$this->txtDebug->Text .= "Set State<br>";
 			$objRecurringPayment->Zip = $objCrypto->Encrypt(trim($this->pnlPayment->txtZipCode->Text));
+			$this->txtDebug->Text .= "Set Zip<br>";
 			$objRecurringPayment->ExpirationDate = sprintf('%02d%02d', $this->pnlPayment->lstCcExpMonth->SelectedValue, substr($this->pnlPayment->lstCcExpYear->SelectedValue, 2)); //$objCrypto->Encrypt(sprintf('%02d%02d', $this->pnlPayment->lstCcExpMonth->SelectedValue, substr($this->pnlPayment->lstCcExpYear->SelectedValue, 2)));			
+			$this->txtDebug->Text .= "Set Expiration Date<br>";
 			$objRecurringPayment->SecurityCode = $objCrypto->Encrypt($this->pnlPayment->txtCcCsc->Text);
+			$this->txtDebug->Text .= "Set Security code<br>";
 			$objRecurringPayment->CreditCardTypeId = $this->pnlPayment->lstCcType->SelectedValue;
+			$this->txtDebug->Text .= "Set Credit Card Type<br>";
 			$objRecurringPayment->CardHolderName = $objCrypto->Encrypt(sprintf('%s %s',$this->pnlPayment->txtFirstName->Text, $this->pnlPayment->txtLastName->Text));
+			$this->txtDebug->Text .= "Set Card Holder name<br>";
 			$objRecurringPayment->AccountNumber = $objCrypto->Encrypt($this->pnlPayment->txtCcNumber->Text);
-
-			$objRecurringPayment->AuthorizeFlag = $this->chkAgreement->Checked;
-			$objRecurringPayment->StartDate = $this->dtxStartDate->DateTime;
-			$objRecurringPayment->EndDate = $this->dtxEndDate->DateTime;
-			$objRecurringPayment->Amount = $this->GetAmount();
-			$objRecurringPayment->PaymentPeriodId = $this->lstPaymentPeriod->SelectedValue;
-			$objRecurringPayment->Name = $this->txtPaymentName->Text;
-			$intRecurringPaymentId = $objRecurringPayment->Save();
+			$this->txtDebug->Text .= "Set Account Number<br>";
 			
+			$objRecurringPayment->AuthorizeFlag = $this->chkAgreement->Checked;
+			$this->txtDebug->Text .= "Set Authorize Falg<br>";
+			$objRecurringPayment->StartDate = $this->dtxStartDate->DateTime;
+			$this->txtDebug->Text .= "Set Start date<br>";
+			$objRecurringPayment->EndDate = $this->dtxEndDate->DateTime;
+			$this->txtDebug->Text .= "Set End Date<br>";
+			$objRecurringPayment->Amount = $this->GetAmount();
+			$this->txtDebug->Text .= "Set Amount<br>";
+			$objRecurringPayment->PaymentPeriodId = $this->lstPaymentPeriod->SelectedValue;
+			$this->txtDebug->Text .= "Set Payment Period<br>";
+			$objRecurringPayment->Name = $this->txtPaymentName->Text;
+			$this->txtDebug->Text .= "Set Recurring Payment name<br>";
+			$intRecurringPaymentId = $objRecurringPayment->Save();
+			$this->txtDebug->Text .= "Saved recurring Payment<br>";
 			if(!$this->isEdit) {
 				$this->objRecurringDonation->RecurringPaymentId = $intRecurringPaymentId;
 				$this->objRecurringDonation->Save();
+				$this->txtDebug->Text .= "Assigned Recurring Payment to Recurring donation<br>";
 			}
 						
 
@@ -273,6 +294,7 @@
 					$objOnlineDonationLineItem->Save();
 				}
 			}
+			$this->txtDebug->Text .= "Associated Recurring Donation Items with Recurring donation <br>";
 			QApplication::Redirect('/give/recurring.php');
 		}
 		
