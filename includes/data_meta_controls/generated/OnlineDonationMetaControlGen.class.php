@@ -26,6 +26,12 @@
 	 * property-read QLabel $AmountLabel
 	 * property QListBox $CreditCardPaymentIdControl
 	 * property-read QLabel $CreditCardPaymentIdLabel
+	 * property QCheckBox $IsRecurringFlagControl
+	 * property-read QLabel $IsRecurringFlagLabel
+	 * property QIntegerTextBox $StatusControl
+	 * property-read QLabel $StatusLabel
+	 * property QListBox $RecurringPaymentIdControl
+	 * property-read QLabel $RecurringPaymentIdLabel
 	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -87,6 +93,24 @@
          */
 		protected $lstCreditCardPayment;
 
+        /**
+         * @var QCheckBox chkIsRecurringFlag;
+         * @access protected
+         */
+		protected $chkIsRecurringFlag;
+
+        /**
+         * @var QIntegerTextBox txtStatus;
+         * @access protected
+         */
+		protected $txtStatus;
+
+        /**
+         * @var QListBox lstRecurringPayment;
+         * @access protected
+         */
+		protected $lstRecurringPayment;
+
 
 		// Controls that allow the viewing of OnlineDonation's individual data fields
         /**
@@ -112,6 +136,24 @@
          * @access protected
          */
 		protected $lblCreditCardPaymentId;
+
+        /**
+         * @var QLabel lblIsRecurringFlag
+         * @access protected
+         */
+		protected $lblIsRecurringFlag;
+
+        /**
+         * @var QLabel lblStatus
+         * @access protected
+         */
+		protected $lblStatus;
+
+        /**
+         * @var QLabel lblRecurringPaymentId
+         * @access protected
+         */
+		protected $lblRecurringPaymentId;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -360,6 +402,96 @@
 			return $this->lblCreditCardPaymentId;
 		}
 
+		/**
+		 * Create and setup QCheckBox chkIsRecurringFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkIsRecurringFlag_Create($strControlId = null) {
+			$this->chkIsRecurringFlag = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkIsRecurringFlag->Name = QApplication::Translate('Is Recurring Flag');
+			$this->chkIsRecurringFlag->Checked = $this->objOnlineDonation->IsRecurringFlag;
+			return $this->chkIsRecurringFlag;
+		}
+
+		/**
+		 * Create and setup QLabel lblIsRecurringFlag
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblIsRecurringFlag_Create($strControlId = null) {
+			$this->lblIsRecurringFlag = new QLabel($this->objParentObject, $strControlId);
+			$this->lblIsRecurringFlag->Name = QApplication::Translate('Is Recurring Flag');
+			$this->lblIsRecurringFlag->Text = ($this->objOnlineDonation->IsRecurringFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblIsRecurringFlag;
+		}
+
+		/**
+		 * Create and setup QIntegerTextBox txtStatus
+		 * @param string $strControlId optional ControlId to use
+		 * @return QIntegerTextBox
+		 */
+		public function txtStatus_Create($strControlId = null) {
+			$this->txtStatus = new QIntegerTextBox($this->objParentObject, $strControlId);
+			$this->txtStatus->Name = QApplication::Translate('Status');
+			$this->txtStatus->Text = $this->objOnlineDonation->Status;
+			return $this->txtStatus;
+		}
+
+		/**
+		 * Create and setup QLabel lblStatus
+		 * @param string $strControlId optional ControlId to use
+		 * @param string $strFormat optional sprintf format to use
+		 * @return QLabel
+		 */
+		public function lblStatus_Create($strControlId = null, $strFormat = null) {
+			$this->lblStatus = new QLabel($this->objParentObject, $strControlId);
+			$this->lblStatus->Name = QApplication::Translate('Status');
+			$this->lblStatus->Text = $this->objOnlineDonation->Status;
+			$this->lblStatus->Format = $strFormat;
+			return $this->lblStatus;
+		}
+
+		/**
+		 * Create and setup QListBox lstRecurringPayment
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstRecurringPayment_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstRecurringPayment = new QListBox($this->objParentObject, $strControlId);
+			$this->lstRecurringPayment->Name = QApplication::Translate('Recurring Payment');
+			$this->lstRecurringPayment->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objRecurringPaymentCursor = RecurringPayments::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objRecurringPayment = RecurringPayments::InstantiateCursor($objRecurringPaymentCursor)) {
+				$objListItem = new QListItem($objRecurringPayment->__toString(), $objRecurringPayment->Id);
+				if (($this->objOnlineDonation->RecurringPayment) && ($this->objOnlineDonation->RecurringPayment->Id == $objRecurringPayment->Id))
+					$objListItem->Selected = true;
+				$this->lstRecurringPayment->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstRecurringPayment;
+		}
+
+		/**
+		 * Create and setup QLabel lblRecurringPaymentId
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblRecurringPaymentId_Create($strControlId = null) {
+			$this->lblRecurringPaymentId = new QLabel($this->objParentObject, $strControlId);
+			$this->lblRecurringPaymentId->Name = QApplication::Translate('Recurring Payment');
+			$this->lblRecurringPaymentId->Text = ($this->objOnlineDonation->RecurringPayment) ? $this->objOnlineDonation->RecurringPayment->__toString() : null;
+			return $this->lblRecurringPaymentId;
+		}
+
 
 
 		/**
@@ -406,6 +538,25 @@
 			}
 			if ($this->lblCreditCardPaymentId) $this->lblCreditCardPaymentId->Text = ($this->objOnlineDonation->CreditCardPayment) ? $this->objOnlineDonation->CreditCardPayment->__toString() : null;
 
+			if ($this->chkIsRecurringFlag) $this->chkIsRecurringFlag->Checked = $this->objOnlineDonation->IsRecurringFlag;
+			if ($this->lblIsRecurringFlag) $this->lblIsRecurringFlag->Text = ($this->objOnlineDonation->IsRecurringFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
+			if ($this->txtStatus) $this->txtStatus->Text = $this->objOnlineDonation->Status;
+			if ($this->lblStatus) $this->lblStatus->Text = $this->objOnlineDonation->Status;
+
+			if ($this->lstRecurringPayment) {
+					$this->lstRecurringPayment->RemoveAllItems();
+				$this->lstRecurringPayment->AddItem(QApplication::Translate('- Select One -'), null);
+				$objRecurringPaymentArray = RecurringPayments::LoadAll();
+				if ($objRecurringPaymentArray) foreach ($objRecurringPaymentArray as $objRecurringPayment) {
+					$objListItem = new QListItem($objRecurringPayment->__toString(), $objRecurringPayment->Id);
+					if (($this->objOnlineDonation->RecurringPayment) && ($this->objOnlineDonation->RecurringPayment->Id == $objRecurringPayment->Id))
+						$objListItem->Selected = true;
+					$this->lstRecurringPayment->AddItem($objListItem);
+				}
+			}
+			if ($this->lblRecurringPaymentId) $this->lblRecurringPaymentId->Text = ($this->objOnlineDonation->RecurringPayment) ? $this->objOnlineDonation->RecurringPayment->__toString() : null;
+
 		}
 
 
@@ -433,6 +584,9 @@
 				if ($this->txtConfirmationEmail) $this->objOnlineDonation->ConfirmationEmail = $this->txtConfirmationEmail->Text;
 				if ($this->txtAmount) $this->objOnlineDonation->Amount = $this->txtAmount->Text;
 				if ($this->lstCreditCardPayment) $this->objOnlineDonation->CreditCardPaymentId = $this->lstCreditCardPayment->SelectedValue;
+				if ($this->chkIsRecurringFlag) $this->objOnlineDonation->IsRecurringFlag = $this->chkIsRecurringFlag->Checked;
+				if ($this->txtStatus) $this->objOnlineDonation->Status = $this->txtStatus->Text;
+				if ($this->lstRecurringPayment) $this->objOnlineDonation->RecurringPaymentId = $this->lstRecurringPayment->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -505,6 +659,24 @@
 				case 'CreditCardPaymentIdLabel':
 					if (!$this->lblCreditCardPaymentId) return $this->lblCreditCardPaymentId_Create();
 					return $this->lblCreditCardPaymentId;
+				case 'IsRecurringFlagControl':
+					if (!$this->chkIsRecurringFlag) return $this->chkIsRecurringFlag_Create();
+					return $this->chkIsRecurringFlag;
+				case 'IsRecurringFlagLabel':
+					if (!$this->lblIsRecurringFlag) return $this->lblIsRecurringFlag_Create();
+					return $this->lblIsRecurringFlag;
+				case 'StatusControl':
+					if (!$this->txtStatus) return $this->txtStatus_Create();
+					return $this->txtStatus;
+				case 'StatusLabel':
+					if (!$this->lblStatus) return $this->lblStatus_Create();
+					return $this->lblStatus;
+				case 'RecurringPaymentIdControl':
+					if (!$this->lstRecurringPayment) return $this->lstRecurringPayment_Create();
+					return $this->lstRecurringPayment;
+				case 'RecurringPaymentIdLabel':
+					if (!$this->lblRecurringPaymentId) return $this->lblRecurringPaymentId_Create();
+					return $this->lblRecurringPaymentId;
 				default:
 					try {
 						return parent::__get($strName);
@@ -537,6 +709,12 @@
 						return ($this->txtAmount = QType::Cast($mixValue, 'QControl'));
 					case 'CreditCardPaymentIdControl':
 						return ($this->lstCreditCardPayment = QType::Cast($mixValue, 'QControl'));
+					case 'IsRecurringFlagControl':
+						return ($this->chkIsRecurringFlag = QType::Cast($mixValue, 'QControl'));
+					case 'StatusControl':
+						return ($this->txtStatus = QType::Cast($mixValue, 'QControl'));
+					case 'RecurringPaymentIdControl':
+						return ($this->lstRecurringPayment = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

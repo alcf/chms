@@ -426,6 +426,13 @@
 		QApplicationBase::$ClassFile['parentpagerstationmetacontrol'] = __DATA_META_CONTROLS__ . '/ParentPagerStationMetaControl.class.php';
 		QApplicationBase::$ClassFile['parentpagerstationdatagrid'] = __DATA_META_CONTROLS__ . '/ParentPagerStationDataGrid.class.php';
 
+	// ClassPaths for the PaymentPeriod class
+		QApplicationBase::$ClassFile['paymentperiod'] = __DATA_CLASSES__ . '/PaymentPeriod.class.php';
+		QApplicationBase::$ClassFile['qqnodepaymentperiod'] = __DATA_CLASSES__ . '/PaymentPeriod.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodepaymentperiod'] = __DATA_CLASSES__ . '/PaymentPeriod.class.php';
+		QApplicationBase::$ClassFile['paymentperiodmetacontrol'] = __DATA_META_CONTROLS__ . '/PaymentPeriodMetaControl.class.php';
+		QApplicationBase::$ClassFile['paymentperioddatagrid'] = __DATA_META_CONTROLS__ . '/PaymentPeriodDataGrid.class.php';
+
 	// ClassPaths for the PaypalBatch class
 		QApplicationBase::$ClassFile['paypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
 		QApplicationBase::$ClassFile['qqnodepaypalbatch'] = __DATA_CLASSES__ . '/PaypalBatch.class.php';
@@ -481,6 +488,27 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodequeryoperation'] = __DATA_CLASSES__ . '/QueryOperation.class.php';
 		QApplicationBase::$ClassFile['queryoperationmetacontrol'] = __DATA_META_CONTROLS__ . '/QueryOperationMetaControl.class.php';
 		QApplicationBase::$ClassFile['queryoperationdatagrid'] = __DATA_META_CONTROLS__ . '/QueryOperationDataGrid.class.php';
+
+	// ClassPaths for the RecurringDonation class
+		QApplicationBase::$ClassFile['recurringdonation'] = __DATA_CLASSES__ . '/RecurringDonation.class.php';
+		QApplicationBase::$ClassFile['qqnoderecurringdonation'] = __DATA_CLASSES__ . '/RecurringDonation.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenoderecurringdonation'] = __DATA_CLASSES__ . '/RecurringDonation.class.php';
+		QApplicationBase::$ClassFile['recurringdonationmetacontrol'] = __DATA_META_CONTROLS__ . '/RecurringDonationMetaControl.class.php';
+		QApplicationBase::$ClassFile['recurringdonationdatagrid'] = __DATA_META_CONTROLS__ . '/RecurringDonationDataGrid.class.php';
+
+	// ClassPaths for the RecurringDonationItems class
+		QApplicationBase::$ClassFile['recurringdonationitems'] = __DATA_CLASSES__ . '/RecurringDonationItems.class.php';
+		QApplicationBase::$ClassFile['qqnoderecurringdonationitems'] = __DATA_CLASSES__ . '/RecurringDonationItems.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenoderecurringdonationitems'] = __DATA_CLASSES__ . '/RecurringDonationItems.class.php';
+		QApplicationBase::$ClassFile['recurringdonationitemsmetacontrol'] = __DATA_META_CONTROLS__ . '/RecurringDonationItemsMetaControl.class.php';
+		QApplicationBase::$ClassFile['recurringdonationitemsdatagrid'] = __DATA_META_CONTROLS__ . '/RecurringDonationItemsDataGrid.class.php';
+
+	// ClassPaths for the RecurringPayments class
+		QApplicationBase::$ClassFile['recurringpayments'] = __DATA_CLASSES__ . '/RecurringPayments.class.php';
+		QApplicationBase::$ClassFile['qqnoderecurringpayments'] = __DATA_CLASSES__ . '/RecurringPayments.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenoderecurringpayments'] = __DATA_CLASSES__ . '/RecurringPayments.class.php';
+		QApplicationBase::$ClassFile['recurringpaymentsmetacontrol'] = __DATA_META_CONTROLS__ . '/RecurringPaymentsMetaControl.class.php';
+		QApplicationBase::$ClassFile['recurringpaymentsdatagrid'] = __DATA_META_CONTROLS__ . '/RecurringPaymentsDataGrid.class.php';
 
 	// ClassPaths for the Registry class
 		QApplicationBase::$ClassFile['registry'] = __DATA_CLASSES__ . '/Registry.class.php';

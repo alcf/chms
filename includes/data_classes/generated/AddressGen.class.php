@@ -150,7 +150,7 @@
 		 * @var string strCountry
 		 */
 		protected $strCountry;
-		const CountryMaxLength = 2;
+		const CountryMaxLength = 35;
 		const CountryDefault = null;
 
 

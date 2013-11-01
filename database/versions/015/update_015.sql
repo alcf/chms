@@ -19,5 +19,6 @@ SET foreign_key_checks=1;
 ##############################
 SET foreign_key_checks=0;
 ALTER TABLE growth_group ADD COLUMN description text DEFAULT NULL;
+ALTER TABLE address MODIFY country VARCHAR(35);
 SET foreign_key_checks=1;
 COMMIT;

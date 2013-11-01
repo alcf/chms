@@ -300,6 +300,10 @@
 				case 'Amount': return QQN::OnlineDonation()->Amount;
 				case 'CreditCardPaymentId': return QQN::OnlineDonation()->CreditCardPaymentId;
 				case 'CreditCardPayment': return QQN::OnlineDonation()->CreditCardPayment;
+				case 'IsRecurringFlag': return QQN::OnlineDonation()->IsRecurringFlag;
+				case 'Status': return QQN::OnlineDonation()->Status;
+				case 'RecurringPaymentId': return QQN::OnlineDonation()->RecurringPaymentId;
+				case 'RecurringPayment': return QQN::OnlineDonation()->RecurringPayment;
 				default: throw new QCallerException('Simple Property not found in OnlineDonationDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

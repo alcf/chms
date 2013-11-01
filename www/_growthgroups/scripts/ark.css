@@ -36,7 +36,7 @@
 		div#dtrgg { width: 968px; height: 538px; border: 1px solid black; overflow: auto; padding: 5px; }
 		div#pnlnone { font-size: 11px; margin-top: 12px; }
 		
-		div.gglocation { width: 950px; float: left; height: 70px; }
+		div.gglocation { width: 950px; float: left; height: auto; }
 		div.gglocation div.marker { float: left; width: 25px;}
 		div.gglocation div.content { float: left; font-size: 10px; width: 980px;}
 		

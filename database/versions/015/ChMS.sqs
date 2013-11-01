@@ -2606,7 +2606,7 @@
         </SQLField>
         <SQLField>
             <name><![CDATA[country]]></name>
-            <type><![CDATA[VARCHAR(2)]]></type>
+            <type><![CDATA[VARCHAR(35)]]></type>
             <didChangeNameDuringValidation><![CDATA[0]]></didChangeNameDuringValidation>
             <uid><![CDATA[93905773-A49B-4D7E-9514-47B133A47B3B]]></uid>
         </SQLField>
