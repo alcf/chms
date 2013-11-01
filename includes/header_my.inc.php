@@ -42,7 +42,7 @@
 				<li class="first"><a href="http://www.alcf.net/" title="Back to ALCF.net">ALCF.net Home</a></li>
 		<?php if (QApplication::$PublicLogin) { ?>
 				<li><a href="/main/" title="My Profile">Profile</a></li>
-				<li><a href="/give/" title="Give Online">Give Online</a></li>
+				<li><a href="/give/base.php" title="Give Online">Give Online</a></li>
 				<li><a href="/stewardship/" title="View Receipt">Giving Receipt</a></li>
 				<li><a href="/classifieds/" title="Classified Acts">Classified Acts</a></li>
 		<?php } else { ?>
