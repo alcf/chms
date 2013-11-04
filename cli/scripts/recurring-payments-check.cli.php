@@ -125,8 +125,8 @@ function sendSuccessEmail($intPersonId,
 					$strPaymentItems,
 					$intAmount) {
 	// Set debug mode
-	QEmailServer::$TestMode = true;
-	QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+	//QEmailServer::$TestMode = true;
+	//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
 	
 	QEmailServer::$SmtpServer = SMTP_SERVER;
 	
@@ -191,8 +191,8 @@ $strPaymentItems,
 $intAmount, 
 $status) {
 	// Set debug mode
-	QEmailServer::$TestMode = true;
-	QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+	//QEmailServer::$TestMode = true;
+	//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
 
 	QEmailServer::$SmtpServer = SMTP_SERVER;
 
