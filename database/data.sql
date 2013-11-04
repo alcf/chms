@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('013');
+INSERT INTO _version VALUES('016');
 
 
 
@@ -184,6 +184,7 @@ INSERT INTO group_type VALUES (8, 'Growth Group');
 
 INSERT INTO group_role_type VALUES (1, 'Volunteer');
 INSERT INTO group_role_type VALUES (2, 'Participant');
+INSERT INTO group_role_type VALUES (3, 'Volunteer-Leader');
 
 INSERT INTO growth_group_day_type VALUES (1, 'Monday');
 INSERT INTO growth_group_day_type VALUES (2, 'Tuesday');

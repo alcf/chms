@@ -1353,7 +1353,6 @@ CREATE TABLE `online_donation`
 `confirmation_email` VARCHAR(255),
 `amount` DECIMAL(10,2),
 `credit_card_payment_id` INTEGER UNSIGNED UNIQUE,
-`is_recurring_flag` BOOLEAN,
 `status` INTEGER,
 `recurring_payment_id` INTEGER UNSIGNED,
 PRIMARY KEY (`id`)
