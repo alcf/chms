@@ -81,3 +81,16 @@
 <h3>Other Contact Info for <?php _p($_FORM->objPerson->Name); ?>
 	<button class="primary" onclick="document.location='#contact/edit_other'; return false;">Add New</button></h3>
 <div class="section"><?php $_CONTROL->dtgOthers->Render(); ?></div>
+
+<?php 
+// Hide co-Primary unless the DOB of the person has been specified.
+			if($this->objPerson->DateOfBirth) {
+				
+?>
+<br/>
+<h3>Co-Primary
+	<button class="primary" onclick="document.location='#contact/edit_coprimary'; return false;">Add New</button></h3>
+<div class="section"><?php $_CONTROL->txtCoprimary->Render(); ?></div>
+<br/>
+<?php  }?>
+

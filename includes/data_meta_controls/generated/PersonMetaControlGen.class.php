@@ -80,6 +80,8 @@
 	 * property-read QLabel $PrimaryPhoneTextLabel
 	 * property QCheckBox $PublicCreationFlagControl
 	 * property-read QLabel $PublicCreationFlagLabel
+	 * property QListBox $CoPrimaryControl
+	 * property-read QLabel $CoPrimaryLabel
 	 * property QListBox $HouseholdAsHeadControl
 	 * property-read QLabel $HouseholdAsHeadLabel
 	 * property QListBox $PublicLoginControl
@@ -313,6 +315,12 @@
          */
 		protected $chkPublicCreationFlag;
 
+        /**
+         * @var QListBox lstCoPrimaryObject;
+         * @access protected
+         */
+		protected $lstCoPrimaryObject;
+
 
 		// Controls that allow the viewing of Person's individual data fields
         /**
@@ -500,6 +508,12 @@
          * @access protected
          */
 		protected $lblPublicCreationFlag;
+
+        /**
+         * @var QLabel lblCoPrimary
+         * @access protected
+         */
+		protected $lblCoPrimary;
 
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -1507,6 +1521,46 @@
 		}
 
 		/**
+		 * Create and setup QListBox lstCoPrimaryObject
+		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
+		 * @return QListBox
+		 */
+		public function lstCoPrimaryObject_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
+			$this->lstCoPrimaryObject = new QListBox($this->objParentObject, $strControlId);
+			$this->lstCoPrimaryObject->Name = QApplication::Translate('Co Primary Object');
+			$this->lstCoPrimaryObject->AddItem(QApplication::Translate('- Select One -'), null);
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objCoPrimaryObjectCursor = Person::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objCoPrimaryObject = Person::InstantiateCursor($objCoPrimaryObjectCursor)) {
+				$objListItem = new QListItem($objCoPrimaryObject->__toString(), $objCoPrimaryObject->Id);
+				if (($this->objPerson->CoPrimaryObject) && ($this->objPerson->CoPrimaryObject->Id == $objCoPrimaryObject->Id))
+					$objListItem->Selected = true;
+				$this->lstCoPrimaryObject->AddItem($objListItem);
+			}
+
+			// Return the QListBox
+			return $this->lstCoPrimaryObject;
+		}
+
+		/**
+		 * Create and setup QLabel lblCoPrimary
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCoPrimary_Create($strControlId = null) {
+			$this->lblCoPrimary = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCoPrimary->Name = QApplication::Translate('Co Primary Object');
+			$this->lblCoPrimary->Text = ($this->objPerson->CoPrimaryObject) ? $this->objPerson->CoPrimaryObject->__toString() : null;
+			return $this->lblCoPrimary;
+		}
+
+		/**
 		 * Create and setup QListBox lstHouseholdAsHead
 		 * @param string $strControlId optional ControlId to use
 		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
@@ -1899,6 +1953,19 @@
 			if ($this->chkPublicCreationFlag) $this->chkPublicCreationFlag->Checked = $this->objPerson->PublicCreationFlag;
 			if ($this->lblPublicCreationFlag) $this->lblPublicCreationFlag->Text = ($this->objPerson->PublicCreationFlag) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
+			if ($this->lstCoPrimaryObject) {
+					$this->lstCoPrimaryObject->RemoveAllItems();
+				$this->lstCoPrimaryObject->AddItem(QApplication::Translate('- Select One -'), null);
+				$objCoPrimaryObjectArray = Person::LoadAll();
+				if ($objCoPrimaryObjectArray) foreach ($objCoPrimaryObjectArray as $objCoPrimaryObject) {
+					$objListItem = new QListItem($objCoPrimaryObject->__toString(), $objCoPrimaryObject->Id);
+					if (($this->objPerson->CoPrimaryObject) && ($this->objPerson->CoPrimaryObject->Id == $objCoPrimaryObject->Id))
+						$objListItem->Selected = true;
+					$this->lstCoPrimaryObject->AddItem($objListItem);
+				}
+			}
+			if ($this->lblCoPrimary) $this->lblCoPrimary->Text = ($this->objPerson->CoPrimaryObject) ? $this->objPerson->CoPrimaryObject->__toString() : null;
+
 			if ($this->lstHouseholdAsHead) {
 				$this->lstHouseholdAsHead->RemoveAllItems();
 				$this->lstHouseholdAsHead->AddItem(QApplication::Translate('- Select One -'), null);
@@ -2077,6 +2144,7 @@
 				if ($this->txtPrimaryZipCodeText) $this->objPerson->PrimaryZipCodeText = $this->txtPrimaryZipCodeText->Text;
 				if ($this->txtPrimaryPhoneText) $this->objPerson->PrimaryPhoneText = $this->txtPrimaryPhoneText->Text;
 				if ($this->chkPublicCreationFlag) $this->objPerson->PublicCreationFlag = $this->chkPublicCreationFlag->Checked;
+				if ($this->lstCoPrimaryObject) $this->objPerson->CoPrimary = $this->lstCoPrimaryObject->SelectedValue;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 				if ($this->lstHouseholdAsHead) $this->objPerson->HouseholdAsHead = Household::Load($this->lstHouseholdAsHead->SelectedValue);
@@ -2319,6 +2387,12 @@
 				case 'PublicCreationFlagLabel':
 					if (!$this->lblPublicCreationFlag) return $this->lblPublicCreationFlag_Create();
 					return $this->lblPublicCreationFlag;
+				case 'CoPrimaryControl':
+					if (!$this->lstCoPrimaryObject) return $this->lstCoPrimaryObject_Create();
+					return $this->lstCoPrimaryObject;
+				case 'CoPrimaryLabel':
+					if (!$this->lblCoPrimary) return $this->lblCoPrimary_Create();
+					return $this->lblCoPrimary;
 				case 'HouseholdAsHeadControl':
 					if (!$this->lstHouseholdAsHead) return $this->lstHouseholdAsHead_Create();
 					return $this->lstHouseholdAsHead;
@@ -2435,6 +2509,8 @@
 						return ($this->txtPrimaryPhoneText = QType::Cast($mixValue, 'QControl'));
 					case 'PublicCreationFlagControl':
 						return ($this->chkPublicCreationFlag = QType::Cast($mixValue, 'QControl'));
+					case 'CoPrimaryControl':
+						return ($this->lstCoPrimaryObject = QType::Cast($mixValue, 'QControl'));
 					case 'HouseholdAsHeadControl':
 						return ($this->lstHouseholdAsHead = QType::Cast($mixValue, 'QControl'));
 					case 'PublicLoginControl':

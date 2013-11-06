@@ -20,21 +20,25 @@
 	abstract class GroupRoleTypeGen extends QBaseClass {
 		const Volunteer = 1;
 		const Participant = 2;
+		const VolunteerLeader = 3;
 
-		const MaxId = 2;
+		const MaxId = 3;
 
 		public static $NameArray = array(
 			1 => 'Volunteer',
-			2 => 'Participant');
+			2 => 'Participant',
+			3 => 'Volunteer-Leader');
 
 		public static $TokenArray = array(
 			1 => 'Volunteer',
-			2 => 'Participant');
+			2 => 'Participant',
+			3 => 'VolunteerLeader');
 
 		public static function ToString($intGroupRoleTypeId) {
 			switch ($intGroupRoleTypeId) {
 				case 1: return 'Volunteer';
 				case 2: return 'Participant';
+				case 3: return 'Volunteer-Leader';
 				default:
 					throw new QCallerException(sprintf('Invalid intGroupRoleTypeId: %s', $intGroupRoleTypeId));
 			}
@@ -44,6 +48,7 @@
 			switch ($intGroupRoleTypeId) {
 				case 1: return 'Volunteer';
 				case 2: return 'Participant';
+				case 3: return 'VolunteerLeader';
 				default:
 					throw new QCallerException(sprintf('Invalid intGroupRoleTypeId: %s', $intGroupRoleTypeId));
 			}

@@ -330,6 +330,8 @@
 				case 'PrimaryZipCodeText': return QQN::Person()->PrimaryZipCodeText;
 				case 'PrimaryPhoneText': return QQN::Person()->PrimaryPhoneText;
 				case 'PublicCreationFlag': return QQN::Person()->PublicCreationFlag;
+				case 'CoPrimary': return QQN::Person()->CoPrimary;
+				case 'CoPrimaryObject': return QQN::Person()->CoPrimaryObject;
 				case 'HouseholdAsHead': return QQN::Person()->HouseholdAsHead;
 
 				case 'PublicLogin': return QQN::Person()->PublicLogin;

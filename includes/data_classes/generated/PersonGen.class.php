@@ -47,11 +47,13 @@
 	 * @property string $PrimaryZipCodeText the value for strPrimaryZipCodeText 
 	 * @property string $PrimaryPhoneText the value for strPrimaryPhoneText 
 	 * @property boolean $PublicCreationFlag the value for blnPublicCreationFlag 
+	 * @property integer $CoPrimary the value for intCoPrimary 
 	 * @property HeadShot $CurrentHeadShot the value for the HeadShot object referenced by intCurrentHeadShotId (Unique)
 	 * @property Address $MailingAddress the value for the Address object referenced by intMailingAddressId 
 	 * @property Address $StewardshipAddress the value for the Address object referenced by intStewardshipAddressId 
 	 * @property Phone $PrimaryPhone the value for the Phone object referenced by intPrimaryPhoneId 
 	 * @property Email $PrimaryEmail the value for the Email object referenced by intPrimaryEmailId (Unique)
+	 * @property Person $CoPrimaryObject the value for the Person object referenced by intCoPrimary 
 	 * @property Household $HouseholdAsHead the value for the Household object that uniquely references this Person
 	 * @property PublicLogin $PublicLogin the value for the PublicLogin object that uniquely references this Person
 	 * @property CheckingAccountLookup $_CheckingAccountLookup the value for the private _objCheckingAccountLookup (Read-Only) if set due to an expansion on the checkingaccountlookup_person_assn association table
@@ -92,6 +94,8 @@
 	 * @property OtherContactInfo[] $_OtherContactInfoArray the value for the private _objOtherContactInfoArray (Read-Only) if set due to an ExpandAsArray on the other_contact_info.person_id reverse relationship
 	 * @property ParentPagerIndividual $_ParentPagerIndividual the value for the private _objParentPagerIndividual (Read-Only) if set due to an expansion on the parent_pager_individual.person_id reverse relationship
 	 * @property ParentPagerIndividual[] $_ParentPagerIndividualArray the value for the private _objParentPagerIndividualArray (Read-Only) if set due to an ExpandAsArray on the parent_pager_individual.person_id reverse relationship
+	 * @property Person $_PersonAsCoPrimary the value for the private _objPersonAsCoPrimary (Read-Only) if set due to an expansion on the person.co_primary reverse relationship
+	 * @property Person[] $_PersonAsCoPrimaryArray the value for the private _objPersonAsCoPrimaryArray (Read-Only) if set due to an ExpandAsArray on the person.co_primary reverse relationship
 	 * @property Phone $_Phone the value for the private _objPhone (Read-Only) if set due to an expansion on the phone.person_id reverse relationship
 	 * @property Phone[] $_PhoneArray the value for the private _objPhoneArray (Read-Only) if set due to an ExpandAsArray on the phone.person_id reverse relationship
 	 * @property Relationship $_Relationship the value for the private _objRelationship (Read-Only) if set due to an expansion on the relationship.person_id reverse relationship
@@ -386,6 +390,14 @@
 		 */
 		protected $blnPublicCreationFlag;
 		const PublicCreationFlagDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column person.co_primary
+		 * @var integer intCoPrimary
+		 */
+		protected $intCoPrimary;
+		const CoPrimaryDefault = null;
 
 
 		/**
@@ -693,6 +705,22 @@
 		private $_objParentPagerIndividualArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single PersonAsCoPrimary object
+		 * (of type Person), if this Person object was restored with
+		 * an expansion on the person association table.
+		 * @var Person _objPersonAsCoPrimary;
+		 */
+		private $_objPersonAsCoPrimary;
+
+		/**
+		 * Private member variable that stores a reference to an array of PersonAsCoPrimary objects
+		 * (of type Person[]), if this Person object was restored with
+		 * an ExpandAsArray on the person association table.
+		 * @var Person[] _objPersonAsCoPrimaryArray;
+		 */
+		private $_objPersonAsCoPrimaryArray = array();
+
+		/**
 		 * Private member variable that stores a reference to a single Phone object
 		 * (of type Phone), if this Person object was restored with
 		 * an expansion on the phone association table.
@@ -907,6 +935,16 @@
 		 * @var Email objPrimaryEmail
 		 */
 		protected $objPrimaryEmail;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column person.co_primary.
+		 *
+		 * NOTE: Always use the CoPrimaryObject property getter to correctly retrieve this Person object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Person objCoPrimaryObject
+		 */
+		protected $objCoPrimaryObject;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -1286,6 +1324,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'primary_zip_code_text', $strAliasPrefix . 'primary_zip_code_text');
 			$objBuilder->AddSelectItem($strTableName, 'primary_phone_text', $strAliasPrefix . 'primary_phone_text');
 			$objBuilder->AddSelectItem($strTableName, 'public_creation_flag', $strAliasPrefix . 'public_creation_flag');
+			$objBuilder->AddSelectItem($strTableName, 'co_primary', $strAliasPrefix . 'co_primary');
 		}
 
 
@@ -1590,6 +1629,20 @@
 					$blnExpandedViaArray = true;
 				}
 
+				$strAlias = $strAliasPrefix . 'personascoprimary__id';
+				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasName)))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objPersonAsCoPrimaryArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objPersonAsCoPrimaryArray[$intPreviousChildItemCount - 1];
+						$objChildItem = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personascoprimary__', $strExpandAsArrayNodes, $objPreviousChildItem, $strColumnAliasArray);
+						if ($objChildItem)
+							$objPreviousItem->_objPersonAsCoPrimaryArray[] = $objChildItem;
+					} else
+						$objPreviousItem->_objPersonAsCoPrimaryArray[] = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personascoprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+					$blnExpandedViaArray = true;
+				}
+
 				$strAlias = $strAliasPrefix . 'phone__id';
 				$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 				if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
@@ -1791,6 +1844,8 @@
 			$objToReturn->strPrimaryPhoneText = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'public_creation_flag', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'public_creation_flag'] : $strAliasPrefix . 'public_creation_flag';
 			$objToReturn->blnPublicCreationFlag = $objDbRow->GetColumn($strAliasName, 'Bit');
+			$strAliasName = array_key_exists($strAliasPrefix . 'co_primary', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'co_primary'] : $strAliasPrefix . 'co_primary';
+			$objToReturn->intCoPrimary = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -1833,6 +1888,12 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objPrimaryEmail = Email::InstantiateDbRow($objDbRow, $strAliasPrefix . 'primary_email_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+
+			// Check for CoPrimaryObject Early Binding
+			$strAlias = $strAliasPrefix . 'co_primary__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName)))
+				$objToReturn->objCoPrimaryObject = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'co_primary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 			// Check for HouseholdAsHead Unique ReverseReference Binding
@@ -2049,6 +2110,16 @@
 					$objToReturn->_objParentPagerIndividualArray[] = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerindividual__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objParentPagerIndividual = ParentPagerIndividual::InstantiateDbRow($objDbRow, $strAliasPrefix . 'parentpagerindividual__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for PersonAsCoPrimary Virtual Binding
+			$strAlias = $strAliasPrefix . 'personascoprimary__id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+					$objToReturn->_objPersonAsCoPrimaryArray[] = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personascoprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objPersonAsCoPrimary = Person::InstantiateDbRow($objDbRow, $strAliasPrefix . 'personascoprimary__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for Phone Virtual Binding
@@ -2420,6 +2491,40 @@
 			, $objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load an array of Person objects,
+		 * by CoPrimary Index(es)
+		 * @param integer $intCoPrimary
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Person[]
+		*/
+		public static function LoadArrayByCoPrimary($intCoPrimary, $objOptionalClauses = null) {
+			// Call Person::QueryArray to perform the LoadArrayByCoPrimary query
+			try {
+				return Person::QueryArray(
+					QQ::Equal(QQN::Person()->CoPrimary, $intCoPrimary),
+					$objOptionalClauses
+					);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count People
+		 * by CoPrimary Index(es)
+		 * @param integer $intCoPrimary
+		 * @return int
+		*/
+		public static function CountByCoPrimary($intCoPrimary, $objOptionalClauses = null) {
+			// Call Person::QueryCount to perform the CountByCoPrimary query
+			return Person::QueryCount(
+				QQ::Equal(QQN::Person()->CoPrimary, $intCoPrimary)
+			, $objOptionalClauses
+			);
+		}
 
 
 
@@ -2577,7 +2682,8 @@
 							`primary_state_text`,
 							`primary_zip_code_text`,
 							`primary_phone_text`,
-							`public_creation_flag`
+							`public_creation_flag`,
+							`co_primary`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intMembershipStatusTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intMaritalStatusTypeId) . ',
@@ -2609,7 +2715,8 @@
 							' . $objDatabase->SqlVariable($this->strPrimaryStateText) . ',
 							' . $objDatabase->SqlVariable($this->strPrimaryZipCodeText) . ',
 							' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
-							' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . '
+							' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . ',
+							' . $objDatabase->SqlVariable($this->intCoPrimary) . '
 						)
 					');
 
@@ -2659,7 +2766,8 @@
 							`primary_state_text` = ' . $objDatabase->SqlVariable($this->strPrimaryStateText) . ',
 							`primary_zip_code_text` = ' . $objDatabase->SqlVariable($this->strPrimaryZipCodeText) . ',
 							`primary_phone_text` = ' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
-							`public_creation_flag` = ' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . '
+							`public_creation_flag` = ' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . ',
+							`co_primary` = ' . $objDatabase->SqlVariable($this->intCoPrimary) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -2834,6 +2942,7 @@
 			$this->strPrimaryZipCodeText = $objReloaded->strPrimaryZipCodeText;
 			$this->strPrimaryPhoneText = $objReloaded->strPrimaryPhoneText;
 			$this->blnPublicCreationFlag = $objReloaded->blnPublicCreationFlag;
+			$this->CoPrimary = $objReloaded->CoPrimary;
 		}
 
 		/**
@@ -2878,6 +2987,7 @@
 					`primary_zip_code_text`,
 					`primary_phone_text`,
 					`public_creation_flag`,
+					`co_primary`,
 					__sys_login_id,
 					__sys_action,
 					__sys_date
@@ -2914,6 +3024,7 @@
 					' . $objDatabase->SqlVariable($this->strPrimaryZipCodeText) . ',
 					' . $objDatabase->SqlVariable($this->strPrimaryPhoneText) . ',
 					' . $objDatabase->SqlVariable($this->blnPublicCreationFlag) . ',
+					' . $objDatabase->SqlVariable($this->intCoPrimary) . ',
 					' . (($objDatabase->JournaledById) ? $objDatabase->JournaledById : 'NULL') . ',
 					' . $objDatabase->SqlVariable($strJournalCommand) . ',
 					NOW()
@@ -3124,6 +3235,11 @@
 					// @return boolean
 					return $this->blnPublicCreationFlag;
 
+				case 'CoPrimary':
+					// Gets the value for intCoPrimary 
+					// @return integer
+					return $this->intCoPrimary;
+
 
 				///////////////////
 				// Member Objects
@@ -3183,6 +3299,18 @@
 						if ((!$this->objPrimaryEmail) && (!is_null($this->intPrimaryEmailId)))
 							$this->objPrimaryEmail = Email::Load($this->intPrimaryEmailId);
 						return $this->objPrimaryEmail;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CoPrimaryObject':
+					// Gets the value for the Person object referenced by intCoPrimary 
+					// @return Person
+					try {
+						if ((!$this->objCoPrimaryObject) && (!is_null($this->intCoPrimary)))
+							$this->objCoPrimaryObject = Person::Load($this->intCoPrimary);
+						return $this->objCoPrimaryObject;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -3457,6 +3585,18 @@
 					// if set due to an ExpandAsArray on the parent_pager_individual.person_id reverse relationship
 					// @return ParentPagerIndividual[]
 					return (array) $this->_objParentPagerIndividualArray;
+
+				case '_PersonAsCoPrimary':
+					// Gets the value for the private _objPersonAsCoPrimary (Read-Only)
+					// if set due to an expansion on the person.co_primary reverse relationship
+					// @return Person
+					return $this->_objPersonAsCoPrimary;
+
+				case '_PersonAsCoPrimaryArray':
+					// Gets the value for the private _objPersonAsCoPrimaryArray (Read-Only)
+					// if set due to an ExpandAsArray on the person.co_primary reverse relationship
+					// @return Person[]
+					return (array) $this->_objPersonAsCoPrimaryArray;
 
 				case '_Phone':
 					// Gets the value for the private _objPhone (Read-Only)
@@ -3939,6 +4079,18 @@
 						throw $objExc;
 					}
 
+				case 'CoPrimary':
+					// Sets the value for intCoPrimary 
+					// @param integer $mixValue
+					// @return integer
+					try {
+						$this->objCoPrimaryObject = null;
+						return ($this->intCoPrimary = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -4087,6 +4239,36 @@
 						// Update Local Member Variables
 						$this->objPrimaryEmail = $mixValue;
 						$this->intPrimaryEmailId = $mixValue->Id;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'CoPrimaryObject':
+					// Sets the value for the Person object referenced by intCoPrimary 
+					// @param Person $mixValue
+					// @return Person
+					if (is_null($mixValue)) {
+						$this->intCoPrimary = null;
+						$this->objCoPrimaryObject = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Person object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Person');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED Person object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved CoPrimaryObject for this Person');
+
+						// Update Local Member Variables
+						$this->objCoPrimaryObject = $mixValue;
+						$this->intCoPrimary = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -7108,6 +7290,188 @@
 
 			
 		
+		// Related Objects' Methods for PersonAsCoPrimary
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated PeopleAsCoPrimary as an array of Person objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Person[]
+		*/ 
+		public function GetPersonAsCoPrimaryArray($objOptionalClauses = null) {
+			if ((is_null($this->intId)))
+				return array();
+
+			try {
+				return Person::LoadArrayByCoPrimary($this->intId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated PeopleAsCoPrimary
+		 * @return int
+		*/ 
+		public function CountPeopleAsCoPrimary() {
+			if ((is_null($this->intId)))
+				return 0;
+
+			return Person::CountByCoPrimary($this->intId);
+		}
+
+		/**
+		 * Associates a PersonAsCoPrimary
+		 * @param Person $objPerson
+		 * @return void
+		*/ 
+		public function AssociatePersonAsCoPrimary(Person $objPerson) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociatePersonAsCoPrimary on this unsaved Person.');
+			if ((is_null($objPerson->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociatePersonAsCoPrimary on this Person with an unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`person`
+				SET
+					`co_primary` = ' . $objDatabase->SqlVariable($this->intId) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . '
+			');
+
+			// Journaling (if applicable)
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->CoPrimary = $this->intId;
+				$objPerson->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates a PersonAsCoPrimary
+		 * @param Person $objPerson
+		 * @return void
+		*/ 
+		public function UnassociatePersonAsCoPrimary(Person $objPerson) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsCoPrimary on this unsaved Person.');
+			if ((is_null($objPerson->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsCoPrimary on this Person with an unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`person`
+				SET
+					`co_primary` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
+					`co_primary` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->CoPrimary = null;
+				$objPerson->Journal('UPDATE');
+			}
+		}
+
+		/**
+		 * Unassociates all PeopleAsCoPrimary
+		 * @return void
+		*/ 
+		public function UnassociateAllPeopleAsCoPrimary() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsCoPrimary on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByCoPrimary($this->intId) as $objPerson) {
+					$objPerson->CoPrimary = null;
+					$objPerson->Journal('UPDATE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`person`
+				SET
+					`co_primary` = null
+				WHERE
+					`co_primary` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated PersonAsCoPrimary
+		 * @param Person $objPerson
+		 * @return void
+		*/ 
+		public function DeleteAssociatedPersonAsCoPrimary(Person $objPerson) {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsCoPrimary on this unsaved Person.');
+			if ((is_null($objPerson->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsCoPrimary on this Person with an unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`person`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objPerson->Id) . ' AND
+					`co_primary` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				$objPerson->Journal('DELETE');
+			}
+		}
+
+		/**
+		 * Deletes all associated PeopleAsCoPrimary
+		 * @return void
+		*/ 
+		public function DeleteAllPeopleAsCoPrimary() {
+			if ((is_null($this->intId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociatePersonAsCoPrimary on this unsaved Person.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Person::GetDatabase();
+
+			// Journaling
+			if ($objDatabase->JournalingDatabase) {
+				foreach (Person::LoadArrayByCoPrimary($this->intId) as $objPerson) {
+					$objPerson->Journal('DELETE');
+				}
+			}
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`person`
+				WHERE
+					`co_primary` = ' . $objDatabase->SqlVariable($this->intId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for Phone
 		//-------------------------------------------------------------------
 
@@ -9335,6 +9699,7 @@
 			$strToReturn .= '<element name="PrimaryZipCodeText" type="xsd:string"/>';
 			$strToReturn .= '<element name="PrimaryPhoneText" type="xsd:string"/>';
 			$strToReturn .= '<element name="PublicCreationFlag" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="CoPrimaryObject" type="xsd1:Person"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -9348,6 +9713,7 @@
 				Address::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Phone::AlterSoapComplexTypeArray($strComplexTypeArray);
 				Email::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Person::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -9431,6 +9797,9 @@
 				$objToReturn->strPrimaryPhoneText = $objSoapObject->PrimaryPhoneText;
 			if (property_exists($objSoapObject, 'PublicCreationFlag'))
 				$objToReturn->blnPublicCreationFlag = $objSoapObject->PublicCreationFlag;
+			if ((property_exists($objSoapObject, 'CoPrimaryObject')) &&
+				($objSoapObject->CoPrimaryObject))
+				$objToReturn->CoPrimaryObject = Person::GetObjectFromSoapObject($objSoapObject->CoPrimaryObject);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -9473,6 +9842,10 @@
 				$objObject->objPrimaryEmail = Email::GetSoapObjectFromObject($objObject->objPrimaryEmail, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intPrimaryEmailId = null;
+			if ($objObject->objCoPrimaryObject)
+				$objObject->objCoPrimaryObject = Person::GetSoapObjectFromObject($objObject->objCoPrimaryObject, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intCoPrimary = null;
 			return $objObject;
 		}
 
@@ -9621,6 +9994,8 @@
 	 * @property-read QQNode $PrimaryZipCodeText
 	 * @property-read QQNode $PrimaryPhoneText
 	 * @property-read QQNode $PublicCreationFlag
+	 * @property-read QQNode $CoPrimary
+	 * @property-read QQNodePerson $CoPrimaryObject
 	 * @property-read QQNodePersonCheckingAccountLookup $CheckingAccountLookup
 	 * @property-read QQNodePersonCommunicationList $CommunicationList
 	 * @property-read QQNodePersonNameItem $NameItem
@@ -9641,6 +10016,7 @@
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodeParentPagerIndividual $ParentPagerIndividual
+	 * @property-read QQReverseReferenceNodePerson $PersonAsCoPrimary
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
@@ -9732,6 +10108,10 @@
 					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
 				case 'PublicCreationFlag':
 					return new QQNode('public_creation_flag', 'PublicCreationFlag', 'boolean', $this);
+				case 'CoPrimary':
+					return new QQNode('co_primary', 'CoPrimary', 'integer', $this);
+				case 'CoPrimaryObject':
+					return new QQNodePerson('co_primary', 'CoPrimaryObject', 'integer', $this);
 				case 'CheckingAccountLookup':
 					return new QQNodePersonCheckingAccountLookup($this);
 				case 'CommunicationList':
@@ -9772,6 +10152,8 @@
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'ParentPagerIndividual':
 					return new QQReverseReferenceNodeParentPagerIndividual($this, 'parentpagerindividual', 'reverse_reference', 'person_id');
+				case 'PersonAsCoPrimary':
+					return new QQReverseReferenceNodePerson($this, 'personascoprimary', 'reverse_reference', 'co_primary');
 				case 'Phone':
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
 				case 'PublicLogin':
@@ -9844,6 +10226,8 @@
 	 * @property-read QQNode $PrimaryZipCodeText
 	 * @property-read QQNode $PrimaryPhoneText
 	 * @property-read QQNode $PublicCreationFlag
+	 * @property-read QQNode $CoPrimary
+	 * @property-read QQNodePerson $CoPrimaryObject
 	 * @property-read QQNodePersonCheckingAccountLookup $CheckingAccountLookup
 	 * @property-read QQNodePersonCommunicationList $CommunicationList
 	 * @property-read QQNodePersonNameItem $NameItem
@@ -9864,6 +10248,7 @@
 	 * @property-read QQReverseReferenceNodeOnlineDonation $OnlineDonation
 	 * @property-read QQReverseReferenceNodeOtherContactInfo $OtherContactInfo
 	 * @property-read QQReverseReferenceNodeParentPagerIndividual $ParentPagerIndividual
+	 * @property-read QQReverseReferenceNodePerson $PersonAsCoPrimary
 	 * @property-read QQReverseReferenceNodePhone $Phone
 	 * @property-read QQReverseReferenceNodePublicLogin $PublicLogin
 	 * @property-read QQReverseReferenceNodeRelationship $Relationship
@@ -9956,6 +10341,10 @@
 					return new QQNode('primary_phone_text', 'PrimaryPhoneText', 'string', $this);
 				case 'PublicCreationFlag':
 					return new QQNode('public_creation_flag', 'PublicCreationFlag', 'boolean', $this);
+				case 'CoPrimary':
+					return new QQNode('co_primary', 'CoPrimary', 'integer', $this);
+				case 'CoPrimaryObject':
+					return new QQNodePerson('co_primary', 'CoPrimaryObject', 'integer', $this);
 				case 'CheckingAccountLookup':
 					return new QQNodePersonCheckingAccountLookup($this);
 				case 'CommunicationList':
@@ -9996,6 +10385,8 @@
 					return new QQReverseReferenceNodeOtherContactInfo($this, 'othercontactinfo', 'reverse_reference', 'person_id');
 				case 'ParentPagerIndividual':
 					return new QQReverseReferenceNodeParentPagerIndividual($this, 'parentpagerindividual', 'reverse_reference', 'person_id');
+				case 'PersonAsCoPrimary':
+					return new QQReverseReferenceNodePerson($this, 'personascoprimary', 'reverse_reference', 'co_primary');
 				case 'Phone':
 					return new QQReverseReferenceNodePhone($this, 'phone', 'reverse_reference', 'person_id');
 				case 'PublicLogin':

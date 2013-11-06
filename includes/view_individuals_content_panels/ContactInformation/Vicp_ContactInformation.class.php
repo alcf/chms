@@ -5,6 +5,7 @@
 		public $dtgPhones;
 		public $dtgEmails;
 		public $dtgOthers;
+		public $txtCoprimary;
 				
 		protected $pxySetCurrentHomeAddress;
 		protected $pxySetPrimaryPhone;
@@ -55,7 +56,21 @@
 			$this->dtgOthers->AddColumn(new QDataGridColumn('Type', '<?= $_CONTROL->ParentControl->RenderOtherType($_ITEM); ?>', 'HtmlEntities=false', 'Width=200px'));
 			$this->dtgOthers->AddColumn(new QDataGridColumn('Value', '<?= $_CONTROL->ParentControl->RenderOtherValue($_ITEM); ?>', 'HtmlEntities=false', 'Width=550px'));
 			$this->dtgOthers->SetDataBinder('dtgOthers_Bind', $this);
+			
+			$this->txtCoprimary = new QLabel($this);
+			$this->txtCoprimary->HtmlEntities = false;
+		
+			if($this->objPerson->CoPrimary) {
+				$objCoPrimary = Person::Load($this->objPerson->CoPrimary);
+				if($objCoPrimary)
+					$this->txtCoprimary->Text = sprintf("<a href='/individuals/view.php/%d#general'>%s %s</a>",$objCoPrimary->Id, $objCoPrimary->FirstName,$objCoPrimary->LastName);
+				else 
+					$this->txtCoprimary->Text = '';
+			} else {
+				$this->txtCoprimary->Text = '';
+			}
 		}
+		
 
 		public function dtgPhones_Bind() {
 			$this->dtgPhones->DataSource = $this->objPerson->GetAllAssociatedPhoneArray($this->objForm->objHousehold);

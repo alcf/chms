@@ -96,20 +96,11 @@
 					$objPerson = $objParticipation->Person;
 					EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objPerson);
 					// GJS: At this point, also check if there is a co-primary and include them to the list
-					if($objPerson->DateOfBirth) {
-						$objAttributeArray = $objPerson->GetAttributeValueArray();
-						foreach ($objAttributeArray as $objAttributeValue) {	
-							// If a co-primary found, try to identify them as a person.
-							// else they are not going to be added.						
-							if($objAttributeValue->Attribute->Name == 'Co-Primary') {
-								$objCoPrimary = Person::LoadByPrimaryEmailId($objAttributeValue->TextValue);
-								if($objCoPrimary) {
-									EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objCoPrimary);
-								} 
-								break;
-							}
-						}
-						
+					if($objPerson->DateOfBirth && $objPerson->CoPrimary) {
+						$objCoPrimary = Person::Load($objPerson->CoPrimary);
+						if($objCoPrimary) {
+							EmailOutgoingQueue::QueueMessage($this->EmailMessage, $this->Group->Token, $objCoPrimary);
+						} 						
 					}
 				}
 				foreach ($this->Group->Ministry->GetLoginArray() as $objLogin) {
