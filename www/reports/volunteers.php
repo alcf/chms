@@ -95,6 +95,11 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			foreach(Ministry::LoadAll() as $objMinistry) {
 				(QApplication::PathInfo(2) == $objMinistry->Token)? $this->lstMinistryDepartments->AddItem('Ministry: '.$objMinistry->Name,$objMinistry->Token,true) : $this->lstMinistryDepartments->AddItem('Ministry: '.$objMinistry->Name,$objMinistry->Token);
 			}
+
+			// May or may not display a table
+			$this->dtgVolunteers = new QDataGrid($this);
+			$this->dtgVolunteers->AddColumn(new QDataGridColumn('Month and Year', '<?= $_ITEM->month; ?>', 'Width=270px'));
+			$this->dtgVolunteers->AddColumn(new QDataGridColumn('# of Volunteers', '<?= $_ITEM->count; ?>', 'Width=270px'));
 				
 			// Extract information based off the selections
 			if(($this->lstAfterMonth->SelectedValue) && ($this->lstAfterYear->SelectedValue) &&
@@ -238,13 +243,9 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 					$chartArray[] = $objItem;
 				}
 				QApplication::ExecuteJavaScript('initializeChart('.json_encode($chartArray).');');
+				
+				$this->dtgVolunteers->DataSource = $chartArray;
 			}
-			
-			// May or may not display a table
-			$this->dtgVolunteers = new QDataGrid($this);
-			$this->dtgVolunteers->AddColumn(new QDataGridColumn('Month and Year', '<?= $_ITEM->month; ?>', 'Width=270px'));
-			$this->dtgVolunteers->AddColumn(new QDataGridColumn('# of Volunteers', '<?= $_ITEM->count; ?>', 'Width=270px'));
-			$this->dtgVolunteers->DataSource = $chartArray;
 		}
 		
 		public function generateReport_Click() {
