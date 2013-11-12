@@ -56,10 +56,10 @@
 <div class="section">
 	<a href="/reports/export_volunteer_to_excel.php/<?php _p($this->lstBeforeMonth->SelectedIndex+1)?> <?php _p($this->lstBeforeYear->SelectedValue) ?>/<?php _p($this->lstAfterMonth->SelectedIndex+1)?> <?php _p($this->lstAfterYear->SelectedValue) ?>/<?php _p($this->lstMinistryDepartments->SelectedValue)?>"><img src="/assets/images/icons/page_excel.png"> Download as Excel</a>
 	<br>
-	<p>Exiting Members Total: <?php _p($this->iTotalCount); ?></p>
-	<div id="chartContainer" style="width: 640px; height: 400px;"></div>
 </div>
 <div class="section">
+	<h2>Volunteer Report for <?php _p($this->lstMinistryDepartments->SelectedName);?></h2>
+	<div id="chartContainer" style="width: 640px; height: 400px;"></div>
 	<p><?php $this->dtgVolunteers->Render(); ?></p>
 </div>
 <?php require(__INCLUDES__ . '/footer.inc.php'); ?>
