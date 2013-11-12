@@ -17,6 +17,7 @@
 			if (QApplication::IsLoginHasPermission(PermissionType::AddNewIndividual)) {
 				$this->lstReports->AddItem('New Members Report', 'newMembers.php');
 				$this->lstReports->AddItem('Exiting Members Report', 'exitMembers.php');
+				$this->lstReports->AddItem('Volunteer Report', 'volunteers.php');
 			}
 			$this->lstReports->AddItem('Church Ethnicity Report', 'churchEthnicity.php');
 			if (QApplication::IsLoginHasPermission(PermissionType::AccessConfidentialNotes)) {
