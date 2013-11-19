@@ -9,6 +9,14 @@
 		If you have a <strong>my.alcf account</strong>, <a style="font-weight: bold;" href="/index.php?r=/give">Log In</a> to have the system pre-fill out the form for you, or
 		you can <a style="font-weight: bold;" href="/register/">Register</a> for one.
 	<?php } ?>
+	<?php if (QApplication::$PublicLogin) { ?>
+	<br><br>
+	<h2>Recurring Payments</h2>
+	Would you like to streamline your giving? If you make regular payments you may wish to set up Recurring Payments rather than constantly filling out the Online Giving Form.
+	<br>Once it's been set up you can regularly manage it from the Recurring Payments page.
+	<br><br>
+	<?php $this->btnRecurring->Render(); ?>
+	<?php }?>
 	</span>
 	<br/><br/>
 	

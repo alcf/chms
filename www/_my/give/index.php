@@ -10,6 +10,7 @@
 		protected $lblMessage;
 		
 		protected $txtEmail;
+		protected $btnRecurring;
 
 		/**
 		 * @var PaymentPanel
@@ -62,6 +63,12 @@
 			$strLastName = (QApplication::$PublicLogin) ? QApplication::$PublicLogin->Person->LastName : null;
 			$this->pnlPayment = new PaymentPanel($this, null, $objAddress, $strFirstName, $strLastName);
 			$this->pnlPayment->SetButtonText('Submit Donation');
+			
+			$this->btnRecurring = new QButton($this);
+			$this->btnRecurring->Name = 'Go To Recurring Payment Page';
+			$this->btnRecurring->Text = 'Go To Recurring Payment Page';
+			$this->btnRecurring->CssClass = 'primary';
+			$this->btnRecurring->AddAction(new QClickEvent(), new QAjaxAction('btnRecurring_Click'));
 		}
 
 		public function Form_Validate() {
@@ -375,6 +382,10 @@
 			if ($objPaymentObject->Address) {
 				$objPaymentObject->Person->Delete();
 			}
+		}
+		
+		public function btnRecurring_Click() {
+			QApplication::Redirect('/give/recurring.php');
 		}
 	}
 

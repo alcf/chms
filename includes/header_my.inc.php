@@ -4,8 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>my.alcf<?php _p($this->strPageTitle ? ' - ' . $this->strPageTitle : null); ?></title>
 <style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/my_alcf.css");</style>
+<style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/jquery-ui-1.8.19.custom.css");</style>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/my_alcf.js"></script>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/_core/_qc_packed.js"></script>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/jquery-ui-1.8.19.custom.min.js"></script>
 </head><body>
 <?php $this->RenderBegin(); ?>
 
@@ -42,7 +45,7 @@
 				<li class="first"><a href="http://www.alcf.net/" title="Back to ALCF.net">ALCF.net Home</a></li>
 		<?php if (QApplication::$PublicLogin) { ?>
 				<li><a href="/main/" title="My Profile">Profile</a></li>
-				<li><a href="/give/base.php" title="Give Online">Give Online</a></li>
+				<li><a href="/give/" title="Give Online">Give Online</a></li>
 				<li><a href="/stewardship/" title="View Receipt">Giving Receipt</a></li>
 				<li><a href="/classifieds/" title="Classified Acts">Classified Acts</a></li>
 		<?php } else { ?>

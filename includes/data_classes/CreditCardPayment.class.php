@@ -198,7 +198,83 @@
 		}
 
 		/**
-		 * This will submit a NVP Request to paypal and return the repsonse
+		* The following will synchronously perform an "Verification" against
+		* a given Name, Address, Cc Credentials and Amount.  If the verification succeeds, true will be returned.  
+		* Otherwise, an error message is presented in String form.
+		*
+		*
+		* @param string $strFirstName
+		* @param string $strLastName
+		* @param Address $objAddress does not have to be linked to an actual db row
+		* @param string $strCcNumber
+		* @param string $strCcExpiration four digits, MMYY format
+		* @param string $strCcCsc
+		* @param integer $intCreditCardTypeId
+		* @return true if verification successful, otherwise a string-based message on why it failed
+		*/
+		public static function PerformVerification($strFirstName, $strLastName, Address $objAddress,
+		$strCcNumber, $strCcExpiration, $strCcCsc, $intCreditCardTypeId) {
+			
+			CreditCardPayment::GetDatabase()->TransactionBegin();
+			try {				
+				$strComment1 = 'Verification ';
+				$strComment2 = '';
+				$strInvoiceNumber = 'VER00001111';	
+		
+				$strNvpRequestArray = self::PaymentGatewayGenerateVerificationPayload($strFirstName, $strLastName, $objAddress, $strCcNumber, $strCcExpiration, $strCcCsc, $strComment1, $strComment2, $strInvoiceNumber);
+				$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
+		
+				if (!is_array($strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Could Not Connect to Payment Gateway';
+				}
+		
+				// Analyze the ResponseArray
+				if (!array_key_exists('RESULT', $strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Missing Result Code from Payment Gateway';
+				}
+		
+				if (!array_key_exists('RESPMSG', $strNvpResponseArray)) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return 'Missing Response from Payment Gateway';
+				}
+		
+		
+				// Fill in the blanks
+				if (!array_key_exists('CVV2MATCH', $strNvpResponseArray)) $strNvpResponseArray['CVV2MATCH'] = '';
+				if (!array_key_exists('AVSADDR', $strNvpResponseArray)) $strNvpResponseArray['AVSADDR'] = '?';
+				if (!array_key_exists('AVSZIP', $strNvpResponseArray)) $strNvpResponseArray['AVSZIP'] = '?';
+				if (!array_key_exists('IAVS', $strNvpResponseArray)) $strNvpResponseArray['IAVS'] = '?';
+				if (!array_key_exists('AUTHCODE', $strNvpResponseArray)) $strNvpResponseArray['AUTHCODE'] = '';
+		
+				// If Failure, cleanup and then report
+				if ($strNvpResponseArray['RESULT'] != 0) {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+					return sprintf('%s (%s)', $strNvpResponseArray['RESPMSG'], $strNvpResponseArray['RESULT']);
+				}
+		
+				// If CVV2 Failed, then Report
+				if ($strNvpResponseArray['CVV2MATCH'] == 'N') {
+					CreditCardPayment::GetDatabase()->TransactionRollBack();
+		
+					$strNvpRequestArray = self::PaymentGatewayGenerateVoidPayload($strNvpResponseArray['PNREF']);
+					$strNvpResponseArray = self::PaymentGatewaySubmitRequest($strNvpRequestArray);
+					return 'The CVV2 code entered is invalid.  Please double check the 3-digit CVV2 code on the back of your card. (' . $strNvpResponseArray['RESULT'] . ')';
+				}
+		
+				CreditCardPayment::GetDatabase()->TransactionCommit();
+			} catch (Exception $objExc) {
+				CreditCardPayment::GetDatabase()->TransactionRollBack();
+				throw $objExc;
+			}
+		
+			// If we got here then success.
+			return true;
+		}
+		
+		/**
+		 * This will submit a NVP Request to paypal and return the response
 		 * or NULL if there was a connection error.
 		 * 
 		 * @param string[] $strNvpRequestArray a structured array containing the NVP Request
@@ -284,6 +360,53 @@
 			return $strNvpRequestArray;
 		}
 
+		/**
+		* Given the data provided, create a VerificationPayload for PayPal
+		* @param string $strFirstName
+		* @param string $strLastName
+		* @param Address $objAddress does not have to be linked to an actual db row
+		* @param float $fltAmount
+		* @param string $strCcNumber
+		* @param string $strCcExpiration
+		* @param string $strCcCsc
+		* @param string $strComment1
+		* @param string $strComment2
+		* @param string $strInvoiceNumber
+		* @return string
+		*/
+		protected static function PaymentGatewayGenerateVerificationPayload($strFirstName, $strLastName, Address $objAddress, $strCcNumber, $strCcExpiration, $strCcCsc,
+		$strComment1, $strComment2, $strInvoiceNumber) {
+			$strNvpRequestArray = array(
+						'TENDER' => 'C',
+						'TRXTYPE' => 'A',
+						'ACCT' => $strCcNumber,
+						'EXPDATE' => $strCcExpiration,
+						'AMT' => '0',
+						'COMMENT1' => $strComment1,
+						'COMMENT2' => $strComment2,
+						'INVNUM' => $strInvoiceNumber,
+						'CVV2' => $strCcCsc,
+						'FIRSTNAME' => $strFirstName,
+						'LASTNAME' => $strLastName,
+						'STREET' => $objAddress->Address1,
+						'STREET2' => $objAddress->Address2,
+						'CITY' => $objAddress->City,
+						'STATE'=> $objAddress->State,
+						'COUNTRYCODE' => 'US',
+						'ZIP' => $objAddress->ZipCode,
+						'CURRENCYCODE' => 'USD',
+						'SHIPTOFIRSTNAME' => $strFirstName,
+						'SHIPTOLASTNAME' => $strLastName,
+						'SHIPTOSTREET' => $objAddress->Address1,
+						'SHIPTOSTREET2' => $objAddress->Address2,
+						'SHIPTOCITY' => $objAddress->City,
+						'SHIPTOSTATE'=> $objAddress->State,
+						'SHIPTOCOUNTRYCODE' => 'US',
+						'SHIPTOZIP' => $objAddress->ZipCode);
+				
+			return $strNvpRequestArray;
+		}
+		
 		/**
 		 * Given the data provided, create a AuthorizationPayload for PayPal
 		 * @param string $strFirstName

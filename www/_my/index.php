@@ -101,7 +101,14 @@
 			
 			if ($objLogin->TemporaryPasswordFlag) {
 				QApplication::Redirect('/update_password.php');
-			} else QApplication::RedirectOnPublicLogin();
+			} else {
+				if($_REQUEST['r']=="/give") {
+					$_SESSION['redirect'] = "/give";
+					QApplication::RedirectOnPublicLogin("/give");
+				} else {
+					QApplication::RedirectOnPublicLogin();
+				}
+			}
 		}
 	}
 

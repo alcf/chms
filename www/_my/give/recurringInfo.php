@@ -22,6 +22,8 @@
 		protected $objRecurringDonation;
 		protected $objDonationItemArray;
 		protected $lblTotal;
+		protected $txtPaymentDates;
+		protected $lblMessage;
 		
 		protected function Form_Run() {
 			if (QApplication::$PublicLogin && !QApplication::$PublicLogin->Person) QApplication::PublicLogout(false);
@@ -37,6 +39,11 @@
 				
 			}
 			
+			// Any Messaging
+			$this->lblMessage = new QPanel($this);
+			$this->lblMessage->CssClass = 'section';
+			$this->lblMessage->Visible = false;
+			
 			$this->chkAgreement = new QCheckBox($this);
 			$this->chkAgreement->Text = 'I agree to allow recurring payments from my credit card';
 			if($this->isEdit) {
@@ -44,17 +51,19 @@
 			}
 				
 			$this->txtPaymentName = new QTextBox($this);
-			$this->txtPaymentName->HtmlBefore = 'Recuring Payment Name: ';
+			$this->txtPaymentName->HtmlBefore = 'Recurring Payment Name: ';
 			if($this->isEdit) {
 				$this->txtPaymentName->Text = $this->objRecurringDonation->RecurringPayment->Name;
 			}
 			
 			// Online Tithes and Offering = 28
+			$iInitialTotal = 0;
 			$this->objDonationItemArray = array();
 			if($this->isEdit) {
 				$objDonationItems = RecurringDonationItems::LoadArrayByRecurringDonationId(QApplication::PathInfo(1));
 				foreach($objDonationItems as $objDonationItem) {
 					$this->objDonationItemArray[] = $objDonationItem;
+					$iInitialTotal += $objDonationItem->Amount;
 				}
 				$objDonationItem = new RecurringDonationItems();
 				$this->objDonationItemArray[] = $objDonationItem;
@@ -73,7 +82,11 @@
 			// Total Label
 			$this->lblTotal = new QLabel($this->dtgDonationItems);
 			$this->lblTotal->FontBold = true;
-			$this->lblTotal->Text = '$ 0.00';
+			if($this->isEdit) {
+				$this->lblTotal->Text = QApplication::DisplayCurrency($iInitialTotal, ' ');
+			} else {
+				$this->lblTotal->Text = '$ 0.00';
+			}
 			
 			$this->lstPaymentPeriod = new QListBox($this);
 			$this->lstPaymentPeriod->AddItem('- Select One -', null);
@@ -85,6 +98,8 @@
 					$this->lstPaymentPeriod->AddItem($objPaymentPeriod->Name,$objPaymentPeriod->Id,false);
 				}
 			}
+			$this->lstPaymentPeriod->AddAction(new QChangeEvent(), new QAjaxAction('calculateDates'));
+			
 			$this->dtxStartDate = new QDateTimeTextBox($this);
 			$this->dtxStartDate->Name = "Start Date";
 			if($this->isEdit) {
@@ -92,6 +107,7 @@
 			}
 			$this->calStartDate = new QCalendar($this, $this->dtxStartDate);
 			$this->dtxStartDate->RemoveAllActions(QClickEvent::EventName);
+			$this->dtxStartDate->AddAction(new QChangeEvent(), new QAjaxAction('calculateDates'));
 			
 			$this->dtxEndDate = new QDateTimeTextBox($this);
 			$this->dtxEndDate->Name = "End Date";
@@ -100,6 +116,7 @@
 			}		
 			$this->calEndDate = new QCalendar($this, $this->dtxEndDate);
 			$this->dtxEndDate->RemoveAllActions(QClickEvent::EventName);
+			$this->dtxEndDate->AddAction(new QChangeEvent(), new QAjaxAction('calculateDates'));
 			
 			// Create the Payment Panel GJS- will eventually have to create a different payment panel class
 			// Figure out which address to use
@@ -137,6 +154,7 @@
 				$this->btnAdd->Text= 'Add Recurring Payment Information';
 			}
 			$this->btnAdd->CssClass = 'primary';
+			$this->btnAdd->CausesValidation = true;
 			$this->btnAdd->AddAction(new QClickEvent(), new QAjaxAction('btnAdd_Click'));
 			
 			$this->btnCancel = new QButton($this);
@@ -149,9 +167,42 @@
 			$this->btnBack->Name = 'Return To Give Online';
 			$this->btnBack->Text = 'Return To Give Online';
 			$this->btnBack->CssClass = 'primary';
-			$this->btnBack->AddAction(new QClickEvent(), new QAjaxAction('btnBack_Click'));				
-		}
+			$this->btnBack->AddAction(new QClickEvent(), new QAjaxAction('btnBack_Click'));	
 
+			$this->txtPaymentDates = new QLabel($this);
+			$this->txtPaymentDates->HtmlEntities = false;
+			$this->txtPaymentDates->Width = "500px";
+			$this->txtPaymentDates->Height = "200px";
+			if(($this->lstPaymentPeriod->SelectedValue != null) && ($this->dtxStartDate->Text) && ($this->dtxEndDate->Text)) {
+				$this->calculateDates();
+			}
+		}
+		
+		public function calculateDates() {
+			$checkTime = strtotime($this->dtxStartDate->DateTime);
+			$timePeriod = 0;
+			$this->txtPaymentDates->Text = '<table style="width:400px"><tr><th>Date</th><th>Amount</th></tr>';
+			switch($this->lstPaymentPeriod->SelectedValue) {
+				case 1: // weekly
+					$timePeriod =(7 * 24 * 60 * 60);
+					break;
+				case 2: // bi-weekly
+					$timePeriod =(2 * 7 * 24 * 60 * 60);
+					break;
+				case 3: // monthly
+					$timePeriod =(30 * 24 * 60 * 60);
+					break;
+				case 4: // quarterly
+					$timePeriod =(4 * 30 * 24 * 60 * 60);
+					break;
+			}
+			while($checkTime < strtotime($this->dtxEndDate->DateTime)) {
+				$this->txtPaymentDates->Text .= sprintf("<tr><td style='text-align:center;'>%s</td><td style='text-align:center;'>%s</td></tr>",date('D d M Y',$checkTime),$this->lblTotal->Text);
+				$checkTime += $timePeriod;
+			}
+			$this->txtPaymentDates->Text .= '</table>';
+		}
+		
 		public function Form_Validate() {
 			$blnToReturn = parent::Form_Validate();
 			$blnFirst = true;
@@ -165,18 +216,53 @@
 			}
 		
 			// Add validation for credit card numbers
-			if (($this->pnlPayment->lstCcType->SelectedName == 'Discover') &&
-			substr($this->pnlPayment->txtCcNumber->Text,0,1) != '6'){
+			if ((($this->pnlPayment->lstCcType->SelectedName == 'Discover') &&
+				substr($this->pnlPayment->txtCcNumber->Text,0,1) != '6')||
+				(($this->pnlPayment->lstCcType->SelectedName == 'Discover') &&
+				strlen($this->pnlPayment->txtCcNumber->Text) != 16)) {
 				$strMissingArray[] = 'The Account Number specified is not a valid Discover Card number';
 			}
-			if (($this->pnlPayment->lstCcType->SelectedName == 'Mastercard') &&
-			substr($this->pnlPayment->txtCcNumber->Text,0,1) != '5'){
+			if ((($this->pnlPayment->lstCcType->SelectedName == 'Mastercard') &&
+				substr($this->pnlPayment->txtCcNumber->Text,0,1) != '5') ||
+					(($this->pnlPayment->lstCcType->SelectedName == 'Mastercard') &&
+				strlen($this->pnlPayment->txtCcNumber->Text) != 16)){
 				$strMissingArray[] = 'The Account Number specified is not a valid Mastercard number';
 			}
-			if (($this->pnlPayment->lstCcType->SelectedName == 'Visa') &&
-			substr($this->pnlPayment->txtCcNumber->Text,0,1) != '4'){
+			if ((($this->pnlPayment->lstCcType->SelectedName == 'Visa') &&
+				substr($this->pnlPayment->txtCcNumber->Text,0,1) != '4') ||
+				(($this->pnlPayment->lstCcType->SelectedName == 'Visa') &&
+				strlen($this->pnlPayment->txtCcNumber->Text) != 16))
+			{
 				$strMissingArray[] = 'The Account Number specified is not a valid Visa number';
 			}
+			
+			// Add validation for invalid expiration date
+			$today = strtotime(date('Y-m-d',time()));
+			$expiration = sprintf('%02d-%02d-1', $this->pnlPayment->lstCcExpYear->SelectedValue, $this->pnlPayment->lstCcExpMonth->SelectedValue);
+			$expirationTimeStamp = strtotime($expiration);
+			if($expirationTimeStamp<$today) {
+				$strMissingArray[] = 'The Expiration Date of the card has lapsed.';
+			}
+			
+			// Can we authorize/check validity of credit card details?
+			$objAddressValidator = new AddressValidator(
+			$this->pnlPayment->txtAddress1->Text,
+			$this->pnlPayment->txtAddress2->Text,
+			$this->pnlPayment->txtCity->Text,
+			$this->pnlPayment->lstState->SelectedValue,
+			$this->pnlPayment->txtZipCode->Text);
+			$objAddressValidator->ValidateAddress();
+			$objAddress = $objAddressValidator->CreateAddressRecord();
+				
+			$mixReturn = CreditCardPayment::PerformVerification($this->pnlPayment->txtFirstName->Text, $this->pnlPayment->txtLastName->Text, $objAddress,
+				$this->pnlPayment->txtCcNumber->Text, sprintf('%02d%02d', $this->pnlPayment->lstCcExpMonth->SelectedValue, substr($this->pnlPayment->lstCcExpYear->SelectedValue, 2)), 
+				$this->pnlPayment->txtCcCsc->Text, $this->pnlPayment->lstCcType->SelectedValue);
+				
+			// Check for verification failure
+			if(!$mixReturn) {
+				$strMissingArray[] = 'Credit Card Verification failed: '.$mixReturn;
+			}
+			
 			foreach ($this->GetErrorControls() as $objControl) {
 				if($objControl) {
 					$objControl->Blink();
@@ -201,7 +287,6 @@
 				$this->lblMessage->Visible = true;
 				$this->lblMessage->Blink();
 		
-				$this->pnlPayment->btnSubmit_Reset();
 				QApplication::ExecuteJavaScript('document.location="#give";');
 				QApplication::ExecuteJavaScript('document.location="#";');
 			} else {

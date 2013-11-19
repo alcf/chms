@@ -44,7 +44,7 @@
 		}
 		
 		public function btnBack_Click() {
-			QApplication::Redirect('/give/base.php');
+			QApplication::Redirect('/give/');
 		}
 		
 		public function dtgRecurringDonation_Bind() {

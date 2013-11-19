@@ -70,9 +70,9 @@ CREATE INDEX `payment_period_id_idx` ON `recurring_payments`(`payment_period_id`
 ##############################
 # Any other Alter Table Statements
 ##############################
-ALTER TABLE online_donation ADD COLUMN is_recurring_flag tinyint(1) DEFAULT NULL;
-ALTER TABLE online_donation ADD COLUMN status INTEGER;
-ALTER TABLE online_donation ADD COLUMN recurring_payment_id INTEGER UNSIGNED;
+#ALTER TABLE online_donation ADD COLUMN is_recurring_flag tinyint(1) DEFAULT NULL;
+#ALTER TABLE online_donation ADD COLUMN status INTEGER;
+#ALTER TABLE online_donation ADD COLUMN recurring_payment_id INTEGER UNSIGNED;
 ALTER TABLE `online_donation` ADD FOREIGN KEY recurring_payment_id_idxfk (`recurring_payment_id`) REFERENCES `recurring_payments` (`id`);
 
 ALTER TABLE `recurring_payments` ADD FOREIGN KEY credit_card_type_id_idxfk_1 (`credit_card_type_id`) REFERENCES `credit_card_type` (`id`);

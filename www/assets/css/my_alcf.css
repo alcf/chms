@@ -389,3 +389,8 @@ div.shopInfo div.shopLeft { float: left; }
 		div.calendar div.options { text-align: center; background-color: #337; }
 			div.calendar div.options a { color: #fff; font-size: 10px; text-decoration: none;}
 			div.calendar div.options a:hover { text-decoration: underline; }
+
+	/* Help */
+	span.help { cursor:pointer; position:relative; width:50px; padding-left:10px; }
+	div.helpdlg { display:none; font-size: 12px; font-weight:normal; }
+	div.helpdlg li {line-height:1.5;}

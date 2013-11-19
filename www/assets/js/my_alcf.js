@@ -30,3 +30,15 @@
 
 	window.onload = myAlcf.bottomPad;
 	window.onresize = myAlcf.bottomPad;
+	
+	function displayHelp(strID) {
+		$.fx.speeds._default = 1000;
+		
+		$( "#"+strID ).dialog({
+			autoOpen: false,
+			show: "blind",
+			hide: "explode"
+		});
+		
+		$( "#"+strID ).dialog( "open" );		
+	}
