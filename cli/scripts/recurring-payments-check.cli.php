@@ -147,7 +147,7 @@ function sendSuccessEmail($intPersonId,
 	$strBody .= sprintf("Dear %s %s,\r\n\r\n",$objPerson->FirstName, $objPerson->LastName);
 	$strBody .= 'r\n';
 	$strBody .= sprintf("Thank you for your (Recurring)online donation to Abundant Life Christian Fellowship.  Your confirmation number is %d.  You may want to print this page for your records.\r\n\r\n",$intDonationId);
-	$strBody .= sprintf("An online payment of $%01.2f has been charged on your credit card %s x%s.  The following is a summary of your donation:\r\n",
+	$strBody .= sprintf("An online payment of $%01.2f has been charged on your %s credit card ending in: %s.  The following is a summary of your donation:\r\n",
 		$intAmount,CreditCardType::ToString($intCreditCardTypeId), substr($strAccountNumber,strlen($strAccountNumber)-4));
 	for ($i=0; $i< count($itemarray); $i++) {
 		$strBody .= sprintf("%s\r\n",$itemarray[$i]);
@@ -164,7 +164,7 @@ function sendSuccessEmail($intPersonId,
 	$strBody = '======= DO NOT REPLY =======';
 	$strBody .= sprintf("Dear %s %s,<br><br>",$objPerson->FirstName, $objPerson->LastName);
 	$strBody .= sprintf("Thank you for your (Recurring) online donation to Abundant Life Christian Fellowship.  Your confirmation number is %d.  You may want to print this page for your records.<br><br>",$intDonationId);
-	$strBody .= sprintf("An online payment of $%01.2f has been charged on your credit card x%s.  The following is a summary of your donation:<br>",
+	$strBody .= sprintf("An online payment of $%01.2f has been charged on your %s credit card ending in: %s.  The following is a summary of your donation:<br>",
 	$intAmount,CreditCardType::ToString($intCreditCardTypeId),substr($strAccountNumber, strlen($strAccountNumber)-4));
 	for ($i=0; $i< count($itemarray); $i++) {
 		$strBody .= sprintf("%s<br>",$itemarray[$i]);
