@@ -65,7 +65,11 @@
 						break;
 
 					case QueryDataType::CustomValue:
-						$strValue = $objQueryCondition->QueryNode->GetValueDescriptionForCustomValue($objQueryCondition->Value);
+						if ($objQueryCondition->Value) {
+							$strValue = $objQueryCondition->QueryNode->GetValueDescriptionForCustomValue($objQueryCondition->Value);
+						} else {
+							$strValue = null;
+						}
 						break;
 
 					default:
