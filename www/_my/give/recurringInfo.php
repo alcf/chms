@@ -14,6 +14,7 @@
 		protected $pnlPayment;
 		protected $dtgPaymentHistory;
 		protected $btnUpdatePaymentInfo;
+		protected $btnDelete;
 		protected $btnAdd;
 		protected $btnCancel;
 		protected $btnBack;
@@ -145,7 +146,13 @@
 			$this->dtgPaymentHistory->SortColumnIndex = 1;
 			$this->dtgPaymentHistory->ItemsPerPage = 20;
 			
-			$this->btnAdd = new QButton($this);
+			$this->btnDelete  = new QLinkButton($this);
+			$this->btnDelete->Name = 'Delete This Recurring Payment Setup';
+			$this->btnDelete->Text= 'Delete This Recurring Payment Setup';
+			$this->btnDelete->CssClass = "cancel";
+			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
+			
+			$this->btnAdd = new QButton($this);			
 			if($this->isEdit) {
 				$this->btnAdd->Name = 'Update Recurring Payment Information';
 				$this->btnAdd->Text= 'Update Recurring Payment Information';
@@ -302,7 +309,13 @@
 		public function btnCancel_Click() {
 			QApplication::Redirect('/give/recurring.php');
 		}
-		
+		public function btnDelete_Click() {
+			if($this->objRecurringDonation) {
+				$this->objRecurringDonation->DeleteAllRecurringDonationItemses();
+				$this->objRecurringDonation->Delete();
+			}
+			QApplication::Redirect('/give/recurring.php');
+		}
 		public function btnAdd_Click() {
 			//Save or create all necessary objects
 			

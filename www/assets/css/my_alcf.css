@@ -56,7 +56,7 @@
 		text-transform: uppercase;
 	}
 	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
-
+	
 	input.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	input.textbox:disabled { background-color: #e0e0e0; color: #999; }
@@ -389,7 +389,7 @@ div.shopInfo div.shopLeft { float: left; }
 		div.calendar div.options { text-align: center; background-color: #337; }
 			div.calendar div.options a { color: #fff; font-size: 10px; text-decoration: none;}
 			div.calendar div.options a:hover { text-decoration: underline; }
-
+	
 	/* Help */
 	span.help { cursor:pointer; position:relative; width:50px; padding-left:10px; }
 	div.helpdlg { display:none; font-size: 12px; font-weight:normal; }

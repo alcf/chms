@@ -33,6 +33,7 @@
 	</div>
 	<div class="buttonBar">	<?php $this->btnCancel->Render(); ?>	
 	<?php $this->btnAdd->Render(); ?>
+	<?php $this->btnDelete->Render(); ?>
 	</div>
 
 	<div class="helpdlg" id="helpAgreement" title="Agreement">

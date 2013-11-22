@@ -20,6 +20,7 @@
 			$this->dtgRecurringDonation->AddColumn(new QDataGridColumn('Payment Period', '<?= $_FORM->RenderPaymentPeriod($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgRecurringDonation->AddColumn(new QDataGridColumn('Start Date', '<?= $_FORM->RenderStartDate($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgRecurringDonation->AddColumn(new QDataGridColumn('End Date', '<?= $_FORM->RenderEndDate($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
+			$this->dtgRecurringDonation->AddColumn(new QDataGridColumn('Delete', '<?= $_FORM->RenderDeleteBtn($_ITEM); ?>', 'HtmlEntities=false', 'Width=150px'));
 			$this->dtgRecurringDonation->SetDataBinder('dtgRecurringDonation_Bind');
 			$this->dtgRecurringDonation->NoDataHtml = 'No Recurring payments have been set up.';
 				
@@ -63,6 +64,25 @@
 		public function RenderEndDate(RecurringDonation $objDonation) {
 			return sprintf('%s',$objDonation->RecurringPayment->EndDate->__toString('MMMM D, YYYY'));
 		}
+		public function RenderDeleteBtn(RecurringDonation $objDonation) {
+            $strControlId = 'btnDelete' . $objDonation->Id;
+            $btnDelete = $this->GetControl($strControlId);
+            
+            if (!$btnDelete) {
+                $btnDelete = new QButton($this->dtgRecurringDonation, $strControlId);
+                $btnDelete->Text = 'Delete';
+                $btnDelete->CssClass = 'primary';
+                $btnDelete->ActionParameter = $objDonation->Id;
+                $btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDelete_Click'));
+            }
+            return $btnDelete->Render(false);
+		}
+		public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
+            $intDonationId = $strParameter;
+            $objDonation = RecurringDonation::Load($intDonationId);
+            $objDonation->DeleteAllRecurringDonationItemses();
+            $objDonation->Delete();                   
+        }
 
 	}
 
