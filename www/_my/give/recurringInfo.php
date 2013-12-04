@@ -25,6 +25,7 @@
 		protected $lblTotal;
 		protected $txtPaymentDates;
 		protected $lblMessage;
+		protected $txtTransactionDates;
 		
 		protected function Form_Run() {
 			if (QApplication::$PublicLogin && !QApplication::$PublicLogin->Person) QApplication::PublicLogout(false);
@@ -150,6 +151,7 @@
 			$this->btnDelete->Name = 'Delete This Recurring Payment Setup';
 			$this->btnDelete->Text= 'Delete This Recurring Payment Setup';
 			$this->btnDelete->CssClass = "cancel";
+			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to Delete this Recurring Payment?'));
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
 			
 			$this->btnAdd = new QButton($this);			
@@ -180,33 +182,49 @@
 			$this->txtPaymentDates->HtmlEntities = false;
 			$this->txtPaymentDates->Width = "500px";
 			$this->txtPaymentDates->Height = "200px";
+			$this->txtTransactionDates = array();
 			if(($this->lstPaymentPeriod->SelectedValue != null) && ($this->dtxStartDate->Text) && ($this->dtxEndDate->Text)) {
 				$this->calculateDates();
 			}
+			
 		}
 		
 		public function calculateDates() {
-			$checkTime = strtotime($this->dtxStartDate->DateTime);
+			$checkTime = strtotime($this->dtxStartDate->DateTime);			
 			$timePeriod = 0;
-			$this->txtPaymentDates->Text = '<table style="width:400px"><tr><th>Date</th><th>Amount</th></tr>';
-			switch($this->lstPaymentPeriod->SelectedValue) {
-				case 1: // weekly
-					$timePeriod =(7 * 24 * 60 * 60);
-					break;
-				case 2: // bi-weekly
-					$timePeriod =(2 * 7 * 24 * 60 * 60);
-					break;
-				case 3: // monthly
-					$timePeriod =(30 * 24 * 60 * 60);
-					break;
-				case 4: // quarterly
-					$timePeriod =(4 * 30 * 24 * 60 * 60);
-					break;
+			$this->txtPaymentDates->Text = '<b>The Next Three Payments:</b><br>';
+			$this->txtPaymentDates->Text .= '<table style="width:400px"><tr><th>Date</th><th>Amount</th></tr>';
+			$timeCheck = new QDateTime($this->dtxStartDate->DateTime);
+			$paymentArray = array();
+			while(strtotime($timeCheck) < strtotime($this->dtxEndDate->DateTime)) {
+				if(strtotime($timeCheck) >= time()) {
+					$paymentArray[] = sprintf("<tr><td style='text-align:center;'>%s</td><td style='text-align:center;'>%s</td></tr>",date('D d M Y',strtotime($timeCheck)),$this->lblTotal->Text);
+					$this->txtTransactionDates[] = date('D d M Y',strtotime($timeCheck)); 
+				}
+				
+				switch($this->lstPaymentPeriod->SelectedValue) {
+					case 1: // weekly
+						$timeCheck->AddDays(7);
+						break;
+					case 2: // bi-weekly
+						$timeCheck->AddDays(14);
+						break;
+					case 3: // monthly
+						$timeCheck->AddMonths(1);
+						break;
+					case 4: // quarterly
+						$timeCheck->AddMonths(4);
+						break;
+				}
 			}
-			while($checkTime < strtotime($this->dtxEndDate->DateTime)) {
-				$this->txtPaymentDates->Text .= sprintf("<tr><td style='text-align:center;'>%s</td><td style='text-align:center;'>%s</td></tr>",date('D d M Y',$checkTime),$this->lblTotal->Text);
-				$checkTime += $timePeriod;
-			}
+			for ($i=0; $i<3; $i++) {
+				if(count($paymentArray)>$i)
+					$this->txtPaymentDates->Text .= $paymentArray[$i];
+			}			
+			$this->txtPaymentDates->Text .= '</table>';
+			$this->txtPaymentDates->Text .= '<br><br><b>The Final Payment:</b><br>';
+			$this->txtPaymentDates->Text .= '<table style="width:400px"><tr><th>Date</th><th>Amount</th></tr>';
+			$this->txtPaymentDates->Text .= end($paymentArray);
 			$this->txtPaymentDates->Text .= '</table>';
 		}
 		
@@ -222,6 +240,20 @@
 				$blnFirst = false;
 			}
 		
+			// Ensure Start date is not in the past
+			if(strtotime($this->dtxStartDate->DateTime) < strtotime(date('Y-m-d',time()))) {
+				$strMissingArray[] = 'The Payment Term start date cannot be earlier than today';
+			}
+			
+			// Verify that the Agreement has been selected
+			if(!$this->chkAgreement->Checked) {
+				$strMissingArray[] = 'You must agree to Recurring Payments being automatically submitted from your Credit Card before you can continue';
+			}
+			
+			// Ensure that Payment Period has some sort of entry.
+			if((strlen(trim($this->txtPaymentName->Text))) == 0) {
+				$strMissingArray[] = 'You must specify a Recurring Payment Name by which this recurring Payment will be identified.';
+			}
 			// Add validation for credit card numbers
 			if ((($this->pnlPayment->lstCcType->SelectedName == 'Discover') &&
 				substr($this->pnlPayment->txtCcNumber->Text,0,1) != '6')||
@@ -312,6 +344,13 @@
 		public function btnDelete_Click() {
 			if($this->objRecurringDonation) {
 				$this->objRecurringDonation->DeleteAllRecurringDonationItemses();
+				$objRecurringPayment = RecurringPayments::Load($this->objRecurringDonation->RecurringPaymentId);
+				if($objRecurringPayment) {
+					// we don't want to delete the recurring payment because it might have previously been used 
+					// to make a payment. So we simply deactivate it instead.
+					$objRecurringPayment->AuthorizeFlag = false; 
+					$objRecurringPayment->Save();
+				}
 				$this->objRecurringDonation->Delete();
 			}
 			QApplication::Redirect('/give/recurring.php');
@@ -371,9 +410,75 @@
 					$objOnlineDonationLineItem->Save();
 				}
 			}
+			$this->sendConfirmationEmail();
 			QApplication::Redirect('/give/recurring.php');
 		}
 		
+		public function sendConfirmationEmail() {
+			QEmailServer::$SmtpServer = SMTP_SERVER;
+			// Set debug mode
+			//QEmailServer::$TestMode = true;
+			//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+					
+			// Create a new message
+			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
+			$objMessage = new QEmailMessage();
+			$objMessage->From = 'ALCF Support <alcf.support@alcf.net>';
+			$objMessage->To = $this->objRecurringDonation->ConfirmationEmail ;
+			$objMessage->Bcc = 'ALCF Support <alcf.support@alcf.net>';
+			$objMessage->Subject = 'Notification of Recurring Payment Creation/Modification';
+			
+			// Setup Plaintext Message
+			$strBody = '======= DO NOT REPLY =======\r\n';
+			$strBody .= sprintf("Dear %s %s,\r\n\r\n",QApplication::$PublicLogin->Person->FirstName, QApplication::$PublicLogin->Person->LastName);
+			$strBody .= 'r\n';
+			$strBody .= sprintf("Thank you for setting up (or modifying)your Recurring Online donation to Abundant Life Christian Fellowship. \r\n");
+			$strBody .= sprintf("Each time a transaction is processed you will receive notification through email.\r\n\r\n");
+			$strBody .= sprintf("The next three transaction dates will be: \r\n");
+			for ($i=0; $i<3; $i++) {
+				$strBody .= sprintf("%s \r\n",$this->txtTransactionDates[$i]);
+			}
+			$strBody .= sprintf("\r\n\r\nThe final transaction date for this Recurring payment is: \r\n");
+			$strBody .= sprintf("%s \r\n\r\n",end($this->txtTransactionDates));
+			
+			$strBody .= sprintf("For each transaction, an online payment of %s will be charged on your %s credit card ending in: %s. \r\n",
+			$this->lblTotal->Text ,CreditCardType::ToString($this->pnlPayment->lstCcType->SelectedValue), substr($this->pnlPayment->txtCcNumber->Text,strlen($this->pnlPayment->txtCcNumber->Text)-4));
+			
+			$strBody .= "You can view your stewardship receipt online at anytime at https://my.alcf.net, however please note that it may take up to five (5) business days for this most recent transaction to show up on your receipt.\r\n";
+			$strBody .= "If you have any questions, please don't hesitate to call Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.\r\n";
+			$strBody .= "Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!\r\n\r\n";
+			$strBody .= "============================<br>";
+			$strBody .= "P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.";
+			
+			$objMessage->Body = $strBody;
+			
+			// Also setup HTML message (optional)
+			$strBody = '======= DO NOT REPLY =======';
+			$strBody .= sprintf("Dear %s %s,<br><br>",QApplication::$PublicLogin->Person->FirstName, QApplication::$PublicLogin->Person->LastName);
+			$strBody .= sprintf("Thank you for setting up (or modifying)your Recurring Online donation to Abundant Life Christian Fellowship. <br>");
+			$strBody .= sprintf("Each time a transaction is processed you will receive notification through email.<br><br>");
+			$strBody .= sprintf("The next three transaction dates will be: <br>");
+			for ($i=0; $i<3; $i++) {
+				$strBody .= sprintf("%s <br>",$this->txtTransactionDates[$i]);
+			}
+			$strBody .= sprintf("<br><br>The final transaction date for this Recurring payment is: <br>");
+			$strBody .= sprintf("%s <br><br>",end($this->txtTransactionDates));
+			
+			$strBody .= sprintf("For each transaction, an online payment of %s will be charged on your %s credit card ending in: %s. <br>",
+			$this->lblTotal->Text ,CreditCardType::ToString($this->pnlPayment->lstCcType->SelectedValue), substr($this->pnlPayment->txtCcNumber->Text,strlen($this->pnlPayment->txtCcNumber->Text)-4));
+			
+			$strBody .= "You can view your stewardship receipt online at anytime at https://my.alcf.net, however please note that it may take up to five (5) business days for this most recent transaction to show up on your receipt.<br>";
+			$strBody .= "If you have any questions, please don't hesitate to call Oom Vang at 650-561-8026 or email Oom.Vang@alcf.net.<br>";
+			$strBody .= "Thank you for your continued support of the ministry at Abundant Life Christian Fellowship!<br><br>";
+			$strBody .= "============================<br>";
+			$strBody .= "P.S. This email was sent from an unmanaged email account.  Please do not reply, as any replies to this message will bounce back.";
+			
+			$objMessage->HtmlBody = $strBody;
+			
+			// Add random/custom email headers
+			$objMessage->SetHeader('x-application', 'Recurring Online Payment');
+			QEmailServer::Send($objMessage);
+		}
 		public function dtgPaymentHistory_Bind() {
 			if($this->objRecurringDonation) {
 				$objOnlineDonationArray = OnlineDonation::LoadArrayByPersonId($this->objRecurringDonation->PersonId);

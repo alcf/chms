@@ -2,24 +2,31 @@
 
 	<a name="give"></a>
 	<h1>Give Online</h1>
-	<span style="font-size: 14px;">
+	<div style="font-size: 14px; width:480px;">
 	You can use this online form to safely, securely contribute your financial gift to Abundant Life Christian Fellowship.
+	</div>
 	<?php if (!QApplication::$PublicLogin) { ?>
 		<br/><br/>
 		If you have a <strong>my.alcf account</strong>, <a style="font-weight: bold;" href="/index.php?r=/give">Log In</a> to have the system pre-fill out the form for you, or
 		you can <a style="font-weight: bold;" href="/register/">Register</a> for one.
 	<?php } ?>
 	<?php if (QApplication::$PublicLogin) { ?>
-	<br><br>
-	<h2>Recurring Payments</h2>
+	<div style="background-color: #FFFFFF;
+    border-color: #CCCCCC;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 10px;
+    padding: 10px; position:relative; float:right; width:400px; font-size: 14px; padding:10px; top:-30px;">
+	<h3>Recurring Payments</h3>
 	Would you like to streamline your giving? If you make regular payments you may wish to set up Recurring Payments rather than constantly filling out the Online Giving Form.
 	<br>Once it's been set up you can regularly manage it from the Recurring Payments page.
 	<br><br>
 	<?php $this->btnRecurring->Render(); ?>
 	<?php }?>
-	</span>
-	<br/><br/>
-	
+	</div>
+	<div style="clear:both;"></div>
+
 	<?php $this->lblMessage->Render(); ?>
 
 	<div class="section">

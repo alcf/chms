@@ -73,6 +73,7 @@
                 $btnDelete->Text = 'Delete';
                 $btnDelete->CssClass = 'primary';
                 $btnDelete->ActionParameter = $objDonation->Id;
+                $btnDelete->AddAction(new QClickEvent(), new QConfirmAction('Are you SURE you want to Delete this Recurring Payment?'));
                 $btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDelete_Click'));
             }
             return $btnDelete->Render(false);
@@ -81,6 +82,13 @@
             $intDonationId = $strParameter;
             $objDonation = RecurringDonation::Load($intDonationId);
             $objDonation->DeleteAllRecurringDonationItemses();
+            $objRecurringPayment = RecurringPayments::Load($objDonation->RecurringPaymentId);
+            if($objRecurringPayment) {
+            	// we don't want to delete the recurring payment because it might have previously been used
+            	// to make a payment. So we simply deactivate it instead.
+            	$objRecurringPayment->AuthorizeFlag = false;
+            	$objRecurringPayment->Save();
+            }
             $objDonation->Delete();                   
         }
 

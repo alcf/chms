@@ -8,113 +8,112 @@ $objRecurringPaymentCursor = RecurringPayments::QueryCursor(QQ::AndCondition(
 	QQ::GreaterOrEqual(QQN::RecurringPayments()->EndDate, date('Y-m-d')))
 );
 while ($objRecurringPayment = RecurringPayments::InstantiateCursor($objRecurringPaymentCursor)) {
-	// display information..
-	print sprintf("Payment of: %s within time period: %s - %s\n",$objRecurringPayment->Amount,$objRecurringPayment->StartDate,$objRecurringPayment->EndDate);
-	print sprintf("name : %s\nAddress: %s %s\n City: %s\nState: %s\nZip: %s\n",
-	$objCrypto->Decrypt($objRecurringPayment->CardHolderName),$objCrypto->Decrypt($objRecurringPayment->Address1),
-	$objCrypto->Decrypt($objRecurringPayment->Address2), $objCrypto->Decrypt($objRecurringPayment->City), $objRecurringPayment->State,
-	$objCrypto->Decrypt($objRecurringPayment->Zip));
-	
-	print sprintf("Account Number: %s\nExpiration Date: %s\nSecurity code: %s\n",
-		$objCrypto->Decrypt($objRecurringPayment->AccountNumber), $objRecurringPayment->ExpirationDate, $objCrypto->Decrypt($objRecurringPayment->SecurityCode));
-	print sprintf("CreditCard Type: %d\n",$objRecurringPayment->CreditCardTypeId);
-	// identify if any are due today
-	$startDate = $objRecurringPayment->StartDate;
-	$timePeriod = 0;
-	switch($objRecurringPayment->PaymentPeriod->Id) {
-		case 1: // weekly
-			$timePeriod =(7 * 24 * 60 * 60);
-			break;
-		case 2: // bi-weekly
-			$timePeriod =(2 * 7 * 24 * 60 * 60);
-			break;
-		case 3: // monthly
-			$timePeriod =(30 * 24 * 60 * 60);
-			break;
-		case 4: // quarterly
-			$timePeriod =(4 * 30 * 24 * 60 * 60);
-			break;
-	}
-	print sprintf("today is: %s\n",date('Y-m-d',time()));
-	$checkTime = strtotime($startDate);
-	while($checkTime < strtotime($objRecurringPayment->EndDate)) {
-		if(date('Y-m-d',$checkTime) == date('Y-m-d',time())) {
-			print "TODAYS THE DAY. MAKE A PAYMENT!\n";
-			/**************/
-			// Create the Payment Object
-			$objPaymentObject = new OnlineDonation();
-			$objAddressValidator = new AddressValidator(
-			$objCrypto->Decrypt($objRecurringPayment->Address1),
-			$objCrypto->Decrypt($objRecurringPayment->Address2),
-			$objCrypto->Decrypt($objRecurringPayment->City), 
-			$objRecurringPayment->State,
-			$objCrypto->Decrypt($objRecurringPayment->Zip));
-			$objAddressValidator->ValidateAddress();
-			$objAddress = $objAddressValidator->CreateAddressRecord();
-			
-			$namearray = explode(' ', $objCrypto->Decrypt($objRecurringPayment->CardHolderName));
-			$objPaymentObject->AttachPersonWithInformation($namearray[0], $namearray[1], $objAddress);
-			$objPaymentObject->IsRecurringFlag = true;
-			$objPaymentObject->RecurringPaymentId = $objRecurringPayment->Id;
-			
-			$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, null, $namearray[0], $namearray[1], $objAddress,
-			$objRecurringPayment->Amount, $objCrypto->Decrypt($objRecurringPayment->AccountNumber), $objRecurringPayment->ExpirationDate, $objCrypto->Decrypt($objRecurringPayment->SecurityCode), $objRecurringPayment->CreditCardTypeId);
-			
-			// Success?
-			if ($mixReturn instanceof CreditCardPayment) {
-				print "Successful scheduling of payment.\n";
-				$objPaymentObject->Status = true;
-				$intDonationId = $objPaymentObject->Save();
+	if($objRecurringPayment->AuthorizeFlag == true) {
+		// display information..
+		print sprintf("Payment of: %s within time period: %s - %s\n",$objRecurringPayment->Amount,$objRecurringPayment->StartDate,$objRecurringPayment->EndDate);
+		print sprintf("name : %s\nAddress: %s %s\n City: %s\nState: %s\nZip: %s\n",
+		$objCrypto->Decrypt($objRecurringPayment->CardHolderName),$objCrypto->Decrypt($objRecurringPayment->Address1),
+		$objCrypto->Decrypt($objRecurringPayment->Address2), $objCrypto->Decrypt($objRecurringPayment->City), $objRecurringPayment->State,
+		$objCrypto->Decrypt($objRecurringPayment->Zip));
+		
+		print sprintf("Account Number: %s\nExpiration Date: %s\nSecurity code: %s\n",
+			$objCrypto->Decrypt($objRecurringPayment->AccountNumber), $objRecurringPayment->ExpirationDate, $objCrypto->Decrypt($objRecurringPayment->SecurityCode));
+		print sprintf("CreditCard Type: %d\n",$objRecurringPayment->CreditCardTypeId);
+		// identify if any are due today
+		print sprintf("today is: %s\n",date('Y-m-d',time()));
+		$timeCheck = new QDateTime($objRecurringPayment->StartDate);
+		while(strtotime($timeCheck) < strtotime($objRecurringPayment->EndDate)) {
+			if(date('Y-m-d',strtotime($timeCheck)) == date('Y-m-d',time())) {
+				print "TODAYS THE DAY. MAKE A PAYMENT!\n";
+				/**************/
+				// Create the Payment Object
+				$objPaymentObject = new OnlineDonation();
+				$objAddressValidator = new AddressValidator(
+				$objCrypto->Decrypt($objRecurringPayment->Address1),
+				$objCrypto->Decrypt($objRecurringPayment->Address2),
+				$objCrypto->Decrypt($objRecurringPayment->City), 
+				$objRecurringPayment->State,
+				$objCrypto->Decrypt($objRecurringPayment->Zip));
+				$objAddressValidator->ValidateAddress();
+				$objAddress = $objAddressValidator->CreateAddressRecord();
 				
-				$strPaymentItems = '';
-				$objDonationItems = RecurringDonationItems::LoadArrayByRecurringDonationId($objRecurringPayment->RecurringDonationAsRecurringPayment->Id);
-				foreach($objDonationItems as $objDonationItem) {
-					$objFund = StewardshipFund::LoadById($objDonationItem->StewardshipFundId);
-					$strPaymentItems .= sprintf("%s - $%01.2f ,",$objFund->Name,$objDonationItem->Amount);
-				}								
-				sendSuccessEmail($objPaymentObject->Person->Id, $objPaymentObject->Id,
-					$objCrypto->Decrypt($objRecurringPayment->CardHolderName),
-					$objCrypto->Decrypt($objRecurringPayment->AccountNumber),
-					$objRecurringPayment->CreditCardTypeId,
-					$strPaymentItems,
-					$objRecurringPayment->Amount);
+				$namearray = explode(' ', $objCrypto->Decrypt($objRecurringPayment->CardHolderName));
+				$objPaymentObject->AttachPersonWithInformation($namearray[0], $namearray[1], $objAddress);
+				$objPaymentObject->IsRecurringFlag = true;
+				$objPaymentObject->RecurringPaymentId = $objRecurringPayment->Id;
 				
+				$mixReturn = CreditCardPayment::PerformAuthorization($objPaymentObject, null, $namearray[0], $namearray[1], $objAddress,
+				$objRecurringPayment->Amount, $objCrypto->Decrypt($objRecurringPayment->AccountNumber), $objRecurringPayment->ExpirationDate, $objCrypto->Decrypt($objRecurringPayment->SecurityCode), $objRecurringPayment->CreditCardTypeId);
 				
-				// Failed!
-			} else {
-				// Report Message
-				if (!$mixReturn) {
-					print "Cannot connect to payment gateway.\n";
-					$status = null;
-					$strPaymentItems = '';
-				}
-				else {
-					$objPaymentObject->Status = false;
-					$objPaymentObject->Save();
-					$status = $mixReturn;
-					print sprintf("Credit Card Processing Failed: %s\n",$mixReturn);	
+				// Success?
+				if ($mixReturn instanceof CreditCardPayment) {
+					print "Successful scheduling of payment.\n";
+					$objPaymentObject->Status = true;
+					$intDonationId = $objPaymentObject->Save();
+					
 					$strPaymentItems = '';
 					$objDonationItems = RecurringDonationItems::LoadArrayByRecurringDonationId($objRecurringPayment->RecurringDonationAsRecurringPayment->Id);
 					foreach($objDonationItems as $objDonationItem) {
 						$objFund = StewardshipFund::LoadById($objDonationItem->StewardshipFundId);
 						$strPaymentItems .= sprintf("%s - $%01.2f ,",$objFund->Name,$objDonationItem->Amount);
-					}	
+					}								
+					sendSuccessEmail($objPaymentObject->Person->Id, $objPaymentObject->Id,
+						$objCrypto->Decrypt($objRecurringPayment->CardHolderName),
+						$objCrypto->Decrypt($objRecurringPayment->AccountNumber),
+						$objRecurringPayment->CreditCardTypeId,
+						$strPaymentItems,
+						$objRecurringPayment->Amount);
+					
+					
+					// Failed!
+				} else {
+					// Report Message
+					if (!$mixReturn) {
+						print "Cannot connect to payment gateway.\n";
+						$status = null;
+						$strPaymentItems = '';
+					}
+					else {
+						$objPaymentObject->Status = false;
+						$objPaymentObject->Save();
+						$status = $mixReturn;
+						print sprintf("Credit Card Processing Failed: %s\n",$mixReturn);	
+						$strPaymentItems = '';
+						$objDonationItems = RecurringDonationItems::LoadArrayByRecurringDonationId($objRecurringPayment->RecurringDonationAsRecurringPayment->Id);
+						foreach($objDonationItems as $objDonationItem) {
+							$objFund = StewardshipFund::LoadById($objDonationItem->StewardshipFundId);
+							$strPaymentItems .= sprintf("%s - $%01.2f ,",$objFund->Name,$objDonationItem->Amount);
+						}	
+					}
+					sendFailureEmail($objPaymentObject->Person->Id,$objPaymentObject->Id,
+					$objCrypto->Decrypt($objRecurringPayment->CardHolderName),
+					$objRecurringPayment->CreditCardTypeId,
+					$objCrypto->Decrypt($objRecurringPayment->AccountNumber),
+					$strPaymentItems,
+					$objRecurringPayment->Amount, $status);
 				}
-				sendFailureEmail($objPaymentObject->Person->Id,$objPaymentObject->Id,
-				$objCrypto->Decrypt($objRecurringPayment->CardHolderName),
-				$objRecurringPayment->CreditCardTypeId,
-				$objCrypto->Decrypt($objRecurringPayment->AccountNumber),
-				$strPaymentItems,
-				$objRecurringPayment->Amount, $status);
+				/********************/
+			} else {
+				print sprintf("Checked. And today was not : %s\n",date('Y-m-d',strtotime($timeCheck)));
 			}
-			/********************/
-		} else {
-			print sprintf("Checked. And today was not : %s\n",date('Y-m-d',$checkTime));
+			
+			switch($objRecurringPayment->PaymentPeriod->Id) {
+				case 1: // weekly
+					$timeCheck->AddDays(7);
+					break;
+				case 2: // bi-weekly
+					$timeCheck->AddDays(14);
+					break;
+				case 3: // monthly
+					$timeCheck->AddMonths(1);
+					break;
+				case 4: // quarterly
+					$timeCheck->AddMonths(4);
+					break;
+			}
 		}
-		$checkTime += $timePeriod;
+		print "\n";
 	}
-	print "\n";
-	// create a payment entry for each one scheduled for today
 }
 
 function sendSuccessEmail($intPersonId,
