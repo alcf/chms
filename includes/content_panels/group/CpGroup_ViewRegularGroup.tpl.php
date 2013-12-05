@@ -48,6 +48,7 @@
 		
 		<div style="padding: 15px; border: 1px solid #999; margin-top: 15px;">
 			<h3>Send an SMS Message</h3>
+			<p><em>NOTE: Only members who have a mobile number and service provider specified will receive these SMS Messages.</em></p>
 			<?php $_CONTROL->txtSmsTitle->RenderWithName(); ?>
 			<?php $_CONTROL->txtSmsBody->RenderWithName(); ?>
 			<div class="buttonBar">
