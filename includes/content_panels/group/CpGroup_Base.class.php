@@ -431,8 +431,8 @@
 			$this->dtgMembers->MetaAddColumn(QQN::Person()->PrimaryEmail->Address, 'Name=Email',
 				'Width=' . ($blnDisplayRoleColumn ? '190px' : '220px'));
 			$this->dtgMembers->MetaAddColumn('MembershipStatusTypeId', 'Name=ALCF Member?', 'Html=<?= $_CONTROL->ParentControl->RenderMember($_ITEM); ?>',
-				'Width=' . ($blnDisplayRoleColumn ? '60px' : '105px'));
-			$this->dtgMembers->AddColumn(new QDataGridColumn('Authorized Sender', '<?= $_CONTROL->ParentControl->RenderAuthorizedSender($_ITEM); ?>', 'HtmlEntities=true', 'Width=80px'));
+				'Width=' . ($blnDisplayRoleColumn ? '50px' : '95px'));
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Authorized Sender', '<?= $_CONTROL->ParentControl->RenderAuthorizedSender($_ITEM); ?>', 'HtmlEntities=true', 'Width=60px'));
 			
 			if ($blnDisplayRoleColumn) {
 				$this->dtgMembers->AddColumn(new QDataGridColumn('Role(s)', '<?= $_CONTROL->ParentControl->RenderCurrentRoles($_ITEM); ?>', 'HtmlEntities=false', 'Width=180px'));

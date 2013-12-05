@@ -2,11 +2,15 @@
 	class CpGroup_ViewRegularGroup extends CpGroup_Base {
 		public $txtFirstName;
 		public $txtLastName;
+		public $chkViewAll;
 		
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
 
 			$this->SetupViewControls(true, true);
+			
+			$this->dtgMembers->AddColumn(new QDataGridColumn('Active Member', '<?= $_CONTROL->ParentControl->RenderCurrentMember($_ITEM); ?>', 'HtmlEntities=true', 'Width=60px',
+			array('OrderByClause' => QQ::OrderBy(QQN::Person()->GroupParticipation->DateEnd), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Person()->GroupParticipation->DateEnd, false))));
 			$this->dtgMembers->SetDataBinder('dtgMembers_Bind', $this);
 			
 			$this->txtFirstName = new QTextBox($this);
@@ -23,13 +27,27 @@
 				
 			if ($this->objGroup->CountEmailMessageRoutes()) $this->SetupEmailMessageControls();
 			$this->SetupSmsControls();
+			
+			$this->chkViewAll = new QCheckBox($this);
+			$this->chkViewAll->Text = 'View "Inactive/Past" Members as well';
+			$this->chkViewAll->AddAction(new QClickEvent(), new QAjaxControlAction($this,'chkViewAll_Click'));
+				
 		}
 
+		public function chkViewAll_Click() {
+			$this->dtgMembers->Refresh();
+		}
+		
 		public function dtgMembers_Bind() {
-			$objConditions = QQ::AndCondition(
+			if($this->chkViewAll->Checked) {
+				$objConditions = QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id);
+			} else {
+				$objConditions = QQ::AndCondition(
 				QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id),
 				QQ::IsNull(QQN::Person()->GroupParticipation->DateEnd)
-			);
+				);
+			}
+			
 			$this->dtgMembers->TotalItemCount = Person::QueryCount($objConditions);
 
 			if ($strName = trim($this->txtFirstName->Text)) {
@@ -53,6 +71,23 @@
 		public function dtgMembers_Refresh() {
 			$this->dtgMembers->PageNumber = 1;
 			$this->dtgMembers->Refresh();
+		}
+		
+		public function RenderCurrentMember(Person $objPerson) {
+			$objArrayGroup = $objPerson->GetGroupParticipationArray();
+			$bfound = false;
+			foreach($objArrayGroup as $objParticipation) {
+				if($objParticipation->GroupId == $this->objGroup->Id) {
+					if($objParticipation->DateEnd == null)
+					$bfound = true;
+				}
+			}
+			if($bfound) {
+				return 'Y';
+			} else {
+				return 'N';
+			}
+			return '';
 		}
 	}
 ?>
