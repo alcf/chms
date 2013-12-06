@@ -21,6 +21,7 @@
 	<?php if ($_CONTROL->objGroup->IsLoginCanEdit(QApplication::$Login)) {?>
 		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/add_participation'; return false;">Add Participant</button>
 		<button class="primary" onclick="document.location = '#<?php _p($_CONTROL->objGroup->Id); ?>/clone_group'; return false;">Clone Group</button>
+		<?php $_CONTROL->btnInactivate->Render();?>
 	<?php } ?>
 </h3>
 

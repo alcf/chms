@@ -3,6 +3,7 @@
 		public $txtFirstName;
 		public $txtLastName;
 		public $chkViewAll;
+		public $btnInactivate;
 		
 		protected function SetupPanel() {
 			if (!$this->objGroup->IsLoginCanView(QApplication::$Login)) $this->ReturnTo('/groups/');
@@ -31,10 +32,33 @@
 			$this->chkViewAll = new QCheckBox($this);
 			$this->chkViewAll->Text = 'View "Inactive/Past" Members as well';
 			$this->chkViewAll->AddAction(new QClickEvent(), new QAjaxControlAction($this,'chkViewAll_Click'));
-				
+
+			$this->btnInactivate = new QButton($this);
+			$this->btnInactivate->CssClass = "primary";
+			$this->btnInactivate->Text = "Inactivate all Group Members";
+			$this->btnInactivate->AddAction(new QClickEvent(), new QAjaxControlAction($this,'btnInactivate_Click'));
 		}
 
 		public function chkViewAll_Click() {
+			$this->dtgMembers->Refresh();
+		}
+		
+		public function btnInactivate_Click() {
+			$objConditions = QQ::AndCondition(
+				QQ::Equal(QQN::Person()->GroupParticipation->GroupId, $this->objGroup->Id),
+				QQ::IsNull(QQN::Person()->GroupParticipation->DateEnd)
+				);
+			$personArray = Person::QueryArray($objConditions, null);
+			foreach($personArray as $objPerson) {
+
+				$groupParticipationArray = $objPerson->GetGroupParticipationArray();
+				foreach($groupParticipationArray as $objGroupParticipation) {
+					if($objGroupParticipation->GroupId == $this->objGroup->Id) {
+						$objGroupParticipation->DateEnd = QDateTime::Now();
+						$objGroupParticipation->Save();
+					}
+				}
+			}
 			$this->dtgMembers->Refresh();
 		}
 		
