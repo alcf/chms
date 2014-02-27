@@ -79,7 +79,6 @@
 			$objRoleArray = Ministry::Load(17)->GetGroupRoleArray(QQ::OrderBy(QQN::GroupRole()->Name));
 			$this->lstParticipationType->AddItem('-Select One-');
 			foreach($objRoleArray as $objRole) {
-				if($objRole->Name != 'Visitor')
 					$this->lstParticipationType->AddItem($objRole->Name, $objRole->Id);
 			}
 			$this->lstParticipationType->AddAction(new QChangeEvent(), new QAjaxAction('lstParticipationType_Change'));
@@ -262,12 +261,12 @@
 			// Create a new message
 			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 			$objMessage = new QEmailMessage();
-			$objMessage->From = 'Andrea Alo <andrea.alo@alcf.net>';
-			$objMessage->To = 'Andrea Alo <andrea.alo@alcf.net>';
+			$objMessage->From = 'Carisa Cruz <carisa.cruz@alcf.net>';
+			$objMessage->To = 'Carisa Cruz <carisa.cruz@alcf.net>';
 			$objMessage->Subject = 'Notification of Growth Group Registration';
 			
 			// Setup Plaintext Message
-			$strBody = "Hello Growth Group Director (Andrea)!\r\n\r\n";
+			$strBody = "Hello Growth Group Director (Carisa)!\r\n\r\n";
 			$strBody .= 'r\n';			
 			$strBody .= 'Someone just registered to join a Growth Group!\r\n\r\n';
 			$strBody .= sprintf("Their Details:\r\n%s %s\r\nemail: %s \r\n\r\n",$this->objGroupRegistration->FirstName,$this->objGroupRegistration->LastName,$this->objGroupRegistration->Email);
@@ -275,7 +274,7 @@
 			$objMessage->Body = $strBody;
 			
 			// Also setup HTML message (optional)
-			$strBody = "Hello Growth Group Director (Andrea)!!<br><br>";
+			$strBody = "Hello Growth Group Director (Carisa)!!<br><br>";
 			$strBody .= 'Someone just registered to join a Growth Group!<br><br>';			
 			$strBody .= sprintf("Their Details:<br>%s %s<br>email: %s<br><br>",$this->objGroupRegistration->FirstName,$this->objGroupRegistration->LastName,$this->objGroupRegistration->Email);
 			$strBody .= 'Blessings,<br> Noah.';
@@ -296,33 +295,33 @@
 			// Create a new message
 			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 			$objMessage = new QEmailMessage();
-			$objMessage->From = 'Andrea Alo <andrea.alo@alcf.net>';
+			$objMessage->From = 'Carisa Cruz <carisa.cruz@alcf.net>';
 			$objMessage->To = $this->objGroupRegistration->Email;
-			$objMessage->Bcc = 'andrea.alo@alcf.net';
+			$objMessage->Bcc = 'carisa.cruz@alcf.net';
 			$objMessage->Subject = 'Invitation to Growth Groups';
 		
 			// Setup Plaintext Message
 			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!\r\n\r\n";
 			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! \r\nAttached is a '.
 			'facilitator application we ask all potential facilitators to complete. \r\n'.
-			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). \r\nYou may also fax '.
+			'Please fill it out and send it back to me via email (carisa.cruz@alcf.net). \r\nYou may also fax '.
 			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
 			'center. \r\nOnce we receive your application, Pastor John will follow up with you for a short '.
 			'interview.\r\n';			
 			$strBody .= 'If you have any questions or concerns please feel free to contact me.\r\n\r\n';			
-			$strBody .= 'Blessings,\r\n Andrea';		
+			$strBody .= 'Blessings,\r\n Carisa';		
 			$objMessage->Body = $strBody;
 		
 			// Also setup HTML message (optional)
 			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!<br><br>";
 			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! <br>Attached is a '.
 			'facilitator application we ask all potential facilitators to complete. <br>'.
-			'Please fill it out and send it back to me via email (andrea.alo@alcf.net). <br>You may also fax '.
+			'Please fill it out and send it back to me via email (carisa.cruz@alcf.net). <br>You may also fax '.
 			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
 			'center. <br>Once we receive your application, Pastor John will follow up with you for a short '.
 			'interview.<br><br>';			
 			$strBody .= 'If you have any questions or concerns please feel free to contact me.<br><br>';			
-			$strBody .= 'Blessings,<br> Andrea';	
+			$strBody .= 'Blessings,<br> Carisa';	
 			$objMessage->HtmlBody = $strBody;
 		
 			// Add the attachment
