@@ -21,6 +21,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		}
 		
 		protected function btnCheck_Click($strFormId, $strControlId, $strParameter) {
+			$this->lblResult->Text = '';
 			$objEmailArray = Email::LoadArrayByAddress($this->txtEmail->Text);
 			if(count($objEmailArray)>0) {
 				$this->lblResult->Text .= "Found email objects<br><br>";
@@ -33,9 +34,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			
 				$this->lblResult->Text .= "<h3>GROUPS</h3>";
 				$objGroupCursor = Group::QueryCursor(QQ::All());
-				//QDataGen::DisplayForEachTaskStart('Checking for email in Group Lists', Group::CountAll());
 				while ($objGroup = Group::InstantiateCursor($objGroupCursor)) {
-					//QDataGen::DisplayForEachTaskNext('Checking for email in Group Lists');
 					$objGroupParticipationArr = $objGroup->GetGroupParticipationArray();
 					foreach($objGroupParticipationArr as $objGroupParticipant) {
 						if(in_array($objGroupParticipant->PersonId, $intPersonIdArray)) {
@@ -44,13 +43,10 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 						}
 					}
 				}
-				//QDataGen::DisplayForEachTaskEnd('Checking for email in Group Lists');
 			
 				$this->lblResult->Text .= "<br><h3>COMMUNICATION LISTS</h3>";
 				$objCommuncationsCursor = CommunicationList::QueryCursor(QQ::All());
-				//QDataGen::DisplayForEachTaskStart('Checking for email in Communication Lists', CommunicationList::CountAll());
 				while ($objCommunicationList = CommunicationList::InstantiateCursor($objCommuncationsCursor)) {
-					//QDataGen::DisplayForEachTaskNext('Checking for email in Communication Lists');
 					$objCommListArray = $objCommunicationList->GetMemberAsArray();
 					foreach($objCommListArray as $objComListEntry) {
 						if($objComListEntry[3] == $this->txtEmail->Text) {
@@ -59,7 +55,6 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 						}
 					}
 				}
-				//QDataGen::DisplayForEachTaskEnd('Checking for email in Communication Lists');
 			} else {
 				$this->lblResult->Text .=  "No email object found<br>";
 			}
