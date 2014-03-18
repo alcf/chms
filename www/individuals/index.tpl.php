@@ -10,6 +10,9 @@
 	<?php if (QApplication::IsLoginHasPermission(PermissionType::AccessConfidentialNotes)) { ?>
 		<button type="primary" onclick="document.location='/individuals/confidential_report.php'; return false;" class="primary">Confidential Notes Report</button>
 	<?php } ?>
+	<?php if (QApplication::IsLoginHasPermission(PermissionType::AddNewIndividual)) { ?>
+		<button type="primary" onclick="document.location='/individuals/tools.php'; return false;" class="primary">Tools and Utilities</button>
+	<?php } ?>
 	</h1>
 
 	<h3>Filter Results</h3>
