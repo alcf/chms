@@ -3,7 +3,7 @@ $objPersonCursor = Person::QueryCursor(QQ::All());
 //QDataGen::DisplayForEachTaskStart('Checking for Members who might have left', Person::CountAll());
 print("\n");
 $iTotal = 0;
-$yearBack = QDateTime::FromTimestamp(strtotime("1 January 2013"));
+$yearBack = QDateTime::FromTimestamp(strtotime("1 February 2014"));
 print "YearBack = ". $yearBack ."\n";
 while ($objPerson = Person::InstantiateCursor($objPersonCursor)) {
 	//QDataGen::DisplayForEachTaskNext('Checking for Members who might have left');
