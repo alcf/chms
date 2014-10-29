@@ -45,14 +45,12 @@
 				<li><a href="/give/" title="Give">Give</a></li>
 				<li><a href="/stewardship/" title="View Receipt">Receipts</a></li>
 				<li><a href="/classifieds/" title="Classified Acts">Classifieds</a></li>
-				<li><a href="/subscribe/" title="Subscribe">Subscribe</a></li>
-				<li><a href="/unsubscribe/" title="Unsubscribe">Unsubscribe</a></li>
+				<li><a href="/subscribe/manage.php" title="Subscribe">Manage Subscriptions</a></li>
 		<?php } else { ?>
 				<li><a href="/register/" title="Register">Register</a></li>
 				<li><a href="/give/" title="Give">Give</a></li>
 				<li><a href="/classifieds/" title="Classified Acts">Classifieds</a></li>
-				<li><a href="/subscribe/" title="Subscribe">Subscribe</a></li>
-				<li><a href="/unsubscribe/" title="Unsubscribe">Unsubscribe</a></li>
+				<li><a href="/subscribe/manage.php" title="Subscribe">Manage Subscriptions</a></li>
 		<?php } ?>
 <?php } ?>
 			</ul>

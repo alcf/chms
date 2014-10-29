@@ -1,14 +1,10 @@
 <?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
+<div style="float:right; padding:10px;">
+<button type="primary" onclick="document.location='/subscribe/manage.php'; return false;" class="primary">Return</button>
+</div>
 <div class='section'>
 	<h1>Unsubscribe From Email List</h1>
-	<p>Unsubscribe from the email lists below.</p>
-	<p>To unsubscribe:
-	<ol>
-		<li>Select the Lists you wish to unsubscribe from</li>
-		<li>Enter the email address that is currently subscribed in the lists</li>
-		<li>Click on the "Unsubscribe" button.</li>
-	</ol>
-	</p>
+	<p>Unsubscribe from:</p>	
 	<?php  
 		foreach($this->chkBtnListArray as $objItem) {
 			$objItem->Render();

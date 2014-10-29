@@ -116,10 +116,45 @@
 					$this->lblMessage->Visible = true;
 				}
 			}
-			if ($success) {
+			if ($success) {							
 				$strSubscribedList = substr($strSubscribedList,0,strlen($strSubscribedList)-1);
-				QApplication::Redirect('/subscribe/success.php/Subscribed/'.urlencode($strSubscribedList));
+				// Send confirmation email here.
+				$this->SendMessage($strSubscribedList);
+				QApplication::Redirect('/subscribe/success.php/subscribed/'.urlencode($strSubscribedList));
 			}
+		}
+		
+		public function SendMessage($strSubscribedList) {			
+			// Set debug mode
+			//QEmailServer::$TestMode = true;
+			//QEmailServer::$TestModeDirectory = __DOCROOT__ . '/../file_assets/emails';
+		
+			QEmailServer::$SmtpServer = SMTP_SERVER;
+		
+			// Create a new message
+			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
+			$objMessage = new QEmailMessage();
+			$objMessage->From = 'info@alcf.net <info@alcf.net>';
+			$objMessage->To = $this->txtEmail->Text;
+			$objMessage->Subject = 'Subscription Confirmation';
+		
+			// Setup Plaintext Message
+			$strBody = "Dear ". $this->txtFirstName->Text .",\r\n\r\n";
+			$strBody .= sprintf("You have been successfully subscribed to the %s email list.",$strSubscribedList);
+			$strBody .= sprintf("\r\nIf you did not subscribe to the list, please contact info@alcf.net");
+			$strBody .= '\r\nRegards, \r\nALCF Communications';
+			$objMessage->Body = $strBody;
+		
+			// Also setup HTML message (optional)
+			$strBody = "Dear ".$this->txtFirstName->Text .',<br/><br/>';
+			$strBody .= sprintf("You have been successfully subscribed to the %s email list.",$strSubscribedList);
+			$strBody .= sprintf("<br>If you did not subscribe to the list, please contact info@alcf.net");
+			$strBody .= '<br>Regards,<br/><b>ALCF Communications</b>';
+			$objMessage->HtmlBody = $strBody;
+		
+			// Add random/custom email headers
+			$objMessage->SetHeader('x-application', 'Communications Team');
+			QEmailServer::Send($objMessage);
 		}
 		
 	}

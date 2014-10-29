@@ -1,4 +1,8 @@
 <?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
+<div style="float:right; padding:10px;">
+<button type="primary" onclick="document.location='/subscribe/manage.php'; return false;" class="primary">Return</button>
+</div>
+
 <div class='section'>
 	<h1>Email Subscription Lists</h1>
 	<p>Subscribe to:</p>
