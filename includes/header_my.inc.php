@@ -43,7 +43,7 @@
 		<?php if (QApplication::$PublicLogin) { ?>
 				<li><a href="/main/" title="My Profile">Profile</a></li>
 				<li><a href="/give/" title="Give">Give</a></li>
-				<li><a href="/stewardship/" title="View Receipt">Giving Receipt</a></li>
+				<li><a href="/stewardship/" title="View Receipt">Receipts</a></li>
 				<li><a href="/classifieds/" title="Classified Acts">Classifieds</a></li>
 				<li><a href="/subscribe/" title="Subscribe">Subscribe</a></li>
 				<li><a href="/unsubscribe/" title="Unsubscribe">Unsubscribe</a></li>
