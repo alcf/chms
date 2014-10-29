@@ -73,6 +73,7 @@
 
 		protected function btnConfirm_Click($strFormId, $strControlId, $strParameter) {
 			$objPublicLogin = PublicLogin::LoadByUsername($this->txtUsername->Text);
+			
 			QApplication::PublicLogin($objPublicLogin);
 			QApplication::Redirect('/register/details.php');
 		}

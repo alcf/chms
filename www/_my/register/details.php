@@ -328,8 +328,17 @@
 				if (!$this->chkBulkEmail->Checked) {
 					$objPerson->CanEmailFlag = false;
 					$objPerson->Save();
+				} else {
+					//Upon confirmation, add them to the newletter list
+					$objList = CommunicationList::LoadByToken('alcfweekly');
+					if ($objList) {
+						if(!$objList->IsPersonAssociated($objPerson)) {
+							$objList->AssociatePerson($objPerson);
+						}
+						$objPerson->Save();
+					}
 				}
-
+	
 				QApplication::RedirectOnPublicLogin('/register/thankyou.php');
 			}
 		}

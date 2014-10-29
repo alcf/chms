@@ -640,7 +640,7 @@
 				$objCommunicationListEntry = CommunicationListEntry::LoadByEmail($this->txtPersonEmail->Text);
 
 				// Then add person to the church newsletter list
-				$objList = CommunicationList::LoadByToken('allchurch_nl'); // NOTE: this is the hard coded token of the congregational newsletter.
+				$objList = CommunicationList::LoadByToken('alcfweekly'); // NOTE: this is the hard coded token of the congregational newsletter.
 				if ($objList){
 					if(!$objList->IsPersonAssociated($this->mctPerson->Person)) {
 						if ($objCommunicationListEntry) {
