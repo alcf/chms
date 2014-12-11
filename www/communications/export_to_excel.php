@@ -33,20 +33,21 @@
 		if(($objMember[4] != null)&&($objMember[4] != 0)) {
 			$objPerson = Person::Load($objMember[4]);
 			if($objPerson) {
-				print EscapeCsv($objPerson->PrimaryPhone->Number); 	//Phone number
+				if($objPerson->PrimaryPhone) print EscapeCsv($objPerson->PrimaryPhone->Number); 	//Phone number
 				print ",";
-				print EscapeCsv($objPerson->PrimaryAddressText);
+				if($objPerson->PrimaryAddressText) print EscapeCsv($objPerson->PrimaryAddressText);
 				print ",";
-				print EscapeCsv($objPerson->PrimaryCityText);
+				if($objPerson->PrimaryCityText) print EscapeCsv($objPerson->PrimaryCityText);
 				print ",";
-				print EscapeCsv($objPerson->PrimaryStateText);
+				if($objPerson->PrimaryStateText) print EscapeCsv($objPerson->PrimaryStateText);
 				print ",";
-				print EscapeCsv($objPerson->PrimaryZipCodeText);
+				if($objPerson->PrimaryZipCodeText) print EscapeCsv($objPerson->PrimaryZipCodeText);
+				
 			} else {
-				print ",,";
+				print ",,,,,";
 			} 
 		}else {
-			print ",,";
+			print ",,,,,";
 		}
 
 		print "\r\n";
