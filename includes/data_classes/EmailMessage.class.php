@@ -80,6 +80,9 @@
 					if (strpos(strtolower($strSubject), '[' . trim(strtolower($objRoute->Name)) . ']') === false)
 						$strSubject = '[' . trim($objRoute->Name) . '] ' . $strSubject;
 					$strHeaderArray['Subject'] = $strSubject;
+					
+					//GJS - add a Reply-To in the header
+					$strHeaderArray['Reply-To'] = $this->FromAddress;
 
 					$strRcptToArray = array();
 					foreach ($objToSend as $objEmailOutgoingQueue) {
@@ -87,7 +90,17 @@
 							$strRcptToArray[] = $objEmailOutgoingQueue->ToAddress;
 					}
 
-					QEmailServer::SendRawMessage($this->FromAddress, $strRcptToArray, $strHeaderArray, $this->ResponseBody);
+					// GJS - Ensure that From address is the email of the group instead. This is to get around new email policies.
+					// $this->FromAddress
+					$txtFromAddress = '';
+					if($this->_EmailMessageRoute->CommunicationList) {
+						$txtFromAddress = $this->_EmailMessageRoute->CommunicationList->Token . 'groups.alcf.net';
+					} else {
+						if ($this->_EmailMessageRoute->Group->Token) {
+							$txtFromAddress = $this->_EmailMessageRoute->Group->Token . 'groups.alcf.net';
+						}
+					}
+					QEmailServer::SendRawMessage($txtFromAddress, $strRcptToArray, $strHeaderArray, $this->ResponseBody);
 
 					foreach ($objToSend as $objEmailOutgoingQueue) {
 						$objEmailOutgoingQueue->Delete();
