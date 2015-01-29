@@ -92,12 +92,14 @@
 
 					// GJS - Ensure that From address is the email of the group instead. This is to get around new email policies.
 					// $this->FromAddress
-					$txtFromAddress = '';
-					if($this->_EmailMessageRoute->CommunicationList) {
-						$txtFromAddress = $this->_EmailMessageRoute->CommunicationList->Token . 'groups.alcf.net';
-					} else {
-						if ($this->_EmailMessageRoute->Group->Token) {
-							$txtFromAddress = $this->_EmailMessageRoute->Group->Token . 'groups.alcf.net';
+					$txtFromAddress = "$this->FromAddress"; // default if we can't extract the group name;
+					if($this->_EmailMessageRoute){
+						if($this->_EmailMessageRoute->CommunicationList) {
+							$txtFromAddress = $this->_EmailMessageRoute->CommunicationList->Token . 'groups.alcf.net';
+						} else {
+							if ($this->_EmailMessageRoute->Group->Token) {
+								$txtFromAddress = $this->_EmailMessageRoute->Group->Token . 'groups.alcf.net';
+							}
 						}
 					}
 					QEmailServer::SendRawMessage($txtFromAddress, $strRcptToArray, $strHeaderArray, $this->ResponseBody);
