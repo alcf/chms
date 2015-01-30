@@ -412,7 +412,14 @@
 					}
 					return false;
 
-				case EmailBroadcastType::AnnouncementOnly:				
+				case EmailBroadcastType::AnnouncementOnly:	
+					$objLogin = Login::LoadByEmail($objPerson->PrimaryEmail->Address);	
+					if($objLogin) {
+						if($objLogin->IsMinistryAssociated($this->Ministry))
+							return true;
+						else		
+							return false;
+					}
 					return false;
 
 				default:
