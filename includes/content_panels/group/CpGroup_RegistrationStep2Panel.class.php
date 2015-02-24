@@ -139,8 +139,11 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		$objGroupParticipants = GroupParticipation::LoadArrayByGroupId($objGrowthGroup->GroupId);
 		foreach($objGroupParticipants as $objParticipant) {
 			if($objParticipant->GroupRoleId == $this->intFacilitatorRoleId) {
-				$objPerson = Person::Load($objParticipant->PersonId);
-				$strReturn = sprintf('%s %s',$objPerson->FirstName, $objPerson->LastName );
+				$dtDates = $objParticipant->GetParticipationDatesArrayForPersonIdGroupIdGroupRoleId($objParticipant->PersonId, $objGrowthGroup->GroupId, $this->intFacilitatorRoleId);
+				if(($dtDates[0][1] == null) &&($objParticipant->DateEnd == null)) {
+					$objPerson = Person::Load($objParticipant->PersonId);
+					$strReturn .= sprintf('%s %s<br>',$objPerson->FirstName, $objPerson->LastName );
+				}				
 			}			
 		}
 		return $strReturn;
@@ -257,8 +260,20 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			} else {
 				$email = Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
 			}
-			$strBody .= sprintf("%s, %s \r\Contact: %s %s\r\n%s\r\n", $groupInfo[1][0],
+			$strBody .= sprintf("%s, %s \r\Contact: %s %s\r\n%s\r\n\r\n", $groupInfo[1][0],
 			$groupInfo[1][1], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
+			$email);
+			$objMessage->Cc .= ', '.$email;
+		}
+		if(count($groupInfo) >= 3) {
+			if($facilitatorList[1]->PrimaryEmailId == null) {
+				$emailArray = Email::LoadArrayByPersonId($facilitatorList[2]->Id);
+				$email = $emailArray[0]->Address; // just grab the first one we find
+			} else {
+				$email = Email::Load($facilitatorList[2]->PrimaryEmailId)->Address;
+			}
+			$strBody .= sprintf("%s, %s \r\Contact: %s %s\r\n%s\r\n", $groupInfo[2][0],
+			$groupInfo[2][1], $facilitatorList[2]->FirstName, $facilitatorList[2]->LastName,
 			$email);
 			$objMessage->Cc .= ', '.$email;
 		}
@@ -295,8 +310,20 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			} else {
 				$email = Email::Load($facilitatorList[1]->PrimaryEmailId)->Address;
 			}
-			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Contact:</b> %s %s<br>%s<br>", $groupInfo[1][0],
+			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Contact:</b> %s %s<br>%s<br><br>", $groupInfo[1][0],
 			$groupInfo[1][1], $facilitatorList[1]->FirstName, $facilitatorList[1]->LastName,
+			$email);
+			$objMessage->Cc .= ', '.$email;
+		}
+		if(count($groupInfo) >= 3) {
+			if($facilitatorList[1]->PrimaryEmailId == null) {
+				$emailArray = Email::LoadArrayByPersonId($facilitatorList[2]->Id);
+				$email = $emailArray[0]->Address; // just grab the first one we find
+			} else {
+				$email = Email::Load($facilitatorList[2]->PrimaryEmailId)->Address;
+			}
+			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Contact:</b> %s %s<br>%s<br>", $groupInfo[2][0],
+			$groupInfo[2][1], $facilitatorList[2]->FirstName, $facilitatorList[2]->LastName,
 			$email);
 			$objMessage->Cc .= ', '.$email;
 		}
