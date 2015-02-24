@@ -118,8 +118,8 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		return $objGroup->Name;
 	}
 	public function RenderDescription(GrowthGroup $objGrowthGroup) {
-		$objGroup = Group::Load($objGrowthGroup->GroupId);
-		return $objGroup->Description;
+		//$objGroup = Group::Load($objGrowthGroup->GroupId);
+		return $objGrowthGroup->Description;
 	}
 	public function RenderGroupStructure(GrowthGroup $objGrowthGroup) {
 		$strReturn = '';
