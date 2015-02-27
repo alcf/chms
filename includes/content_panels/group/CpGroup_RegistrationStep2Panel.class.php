@@ -322,7 +322,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			} else {
 				$email = Email::Load($facilitatorList[2]->PrimaryEmailId)->Address;
 			}
-			$strBody .= sprintf("<b>Option 2</b><br>%s, %s <br><b>Contact:</b> %s %s<br>%s<br>", $groupInfo[2][0],
+			$strBody .= sprintf("<b>Option 3</b><br>%s, %s <br><b>Contact:</b> %s %s<br>%s<br>", $groupInfo[2][0],
 			$groupInfo[2][1], $facilitatorList[2]->FirstName, $facilitatorList[2]->LastName,
 			$email);
 			$objMessage->Cc .= ', '.$email;
