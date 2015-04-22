@@ -16,7 +16,7 @@
 	header('Content-Type: text/csv');
 	header('Content-Disposition: attachment; filename=' . $objList->CsvFilename);
 
-	print "First Name, Middle Name, Last Name,E-mail, Phone, Address,City, State, Zipcode\r\n";
+	print "First Name, Middle Name, Last Name,E-mail, Gender, Phone, Address,City, State, Zipcode\r\n";
 	
 	// iterate through the Communications List. sort by Last Name, then First Name
 	$objMembersListArray = $objList->GetMemberAsArray('2,0');
@@ -33,6 +33,8 @@
 		if(($objMember[4] != null)&&($objMember[4] != 0)) {
 			$objPerson = Person::Load($objMember[4]);
 			if($objPerson) {
+				if($objPerson->Gender) print EscapeCsv($objPerson->Gender);
+				print ",";
 				if($objPerson->PrimaryPhone) print EscapeCsv($objPerson->PrimaryPhone->Number); 	//Phone number
 				print ",";
 				if($objPerson->PrimaryAddressText) print EscapeCsv($objPerson->PrimaryAddressText);
@@ -42,9 +44,8 @@
 				if($objPerson->PrimaryStateText) print EscapeCsv($objPerson->PrimaryStateText);
 				print ",";
 				if($objPerson->PrimaryZipCodeText) print EscapeCsv($objPerson->PrimaryZipCodeText);
-				
 			} else {
-				print ",,,,,";
+				print ",,,,,,";
 			} 
 		}else {
 			print ",,,,,";
