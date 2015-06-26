@@ -18,6 +18,7 @@
 		protected $lblDateLastLogin;
 
 		protected $rblPermissionArray = array();
+		protected $rblMinistryArray = array();
 
 		protected $btnSave;
 		protected $btnCancel;
@@ -42,7 +43,7 @@
 				$this->lblEmail->Text = 'none';
 				$this->lblEmail->CssClass = 'na';
 			}
-			
+									
 			// Display Ministry Involvement Information
 			$this->lblMinistries = new QLabel($this);
 			$this->lblMinistries->Name = 'Ministry Involvement';
@@ -55,6 +56,20 @@
 			}
 			$this->lblMinistries->HtmlEntities = false;
 
+			foreach (Ministry::LoadAll(QQ::OrderBy(QQN::Ministry()->Name)) as $objMinistry) {
+				$rblMinistry = new QRadioButtonList($this);
+				$rblMinistry->Name = $objMinistry->Name;
+				if (in_array($objMinistry->Name,$strArray)) {
+					$rblMinistry->AddItem('Yes',$objMinistry->Id,true);
+					$rblMinistry->AddItem('No', 0, false);
+				} else {
+					$rblMinistry->AddItem('Yes', $objMinistry->Id, false);
+					$rblMinistry->AddItem('No', 0, true);
+				}
+				$rblMinistry->RepeatColumns = 2;
+				$this->rblMinistryArray[] = $rblMinistry;
+			}
+			
 			$this->lstRoleType = new QListBox($this);
 			$this->lstRoleType->Name = 'Role';
 			foreach (RoleType::$NameArray as $intKey=>$strName)
@@ -108,6 +123,13 @@
 			foreach ($this->rblPermissionArray as $rblPermission) {
 				$intBitmap = $intBitmap | $rblPermission->SelectedValue;
 			}
+			// Update ministries associated
+			$this->objLogin->UnassociateAllMinistries();
+			foreach ($this->rblMinistryArray as $rblMinistry) {
+				$objMinistry = Ministry::LoadById($rblMinistry->SelectedValue);
+				if ($objMinistry) $objMinistry->AssociateLogin($this->objLogin);
+			}
+			
 			$this->objLogin->PermissionBitmap = $intBitmap;
 			$this->objLogin->Save();
 			QApplication::Redirect('/admin/users/');

@@ -9,8 +9,13 @@
 		<?php $this->lblDateLastLogin->RenderWithName(); ?>
 		<?php $this->lblDomainActive->RenderWithName(); ?>
 		<?php $this->rblLoginActive->RenderWithName(); ?>
+		
 		<br/>
 		<?php $this->lstRoleType->RenderWithName(); ?>
+		<h3>Ministry Involvement</h3>
+		<?php foreach ($this->rblMinistryArray as $rblMinistry) $rblMinistry->RenderWithName(); ?>
+		<br>
+		<h3>Permissions</h3>
 		<?php foreach ($this->rblPermissionArray as $rblPermission) $rblPermission->RenderWithName(); ?>
 	</div>
 
