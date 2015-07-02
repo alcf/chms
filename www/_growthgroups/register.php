@@ -239,8 +239,8 @@
 			// Create a new message
 			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 			$objMessage = new QEmailMessage();
-			$objMessage->From = 'Carisa Cruz <carisa.cruz@alcf.net>';
-			$objMessage->To = 'Carisa Cruz <carisa.cruz@alcf.net>';
+			$objMessage->From = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
+			$objMessage->To = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
 			$objMessage->Subject = 'Notification of Growth Group Registration';
 			
 			// Setup Plaintext Message
@@ -273,16 +273,16 @@
 			// Create a new message
 			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 			$objMessage = new QEmailMessage();
-			$objMessage->From = 'Carisa Cruz <carisa.cruz@alcf.net>';
+			$objMessage->From = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
 			$objMessage->To = $this->objGroupRegistration->Email;
-			$objMessage->Bcc = 'carisa.cruz@alcf.net';
+			$objMessage->Bcc = 'carisa.hamilton@alcf.net';
 			$objMessage->Subject = 'Invitation to Growth Groups';
 		
 			// Setup Plaintext Message
 			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!\r\n\r\n";
 			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! \r\nAttached is a '.
 			'facilitator application we ask all potential facilitators to complete. \r\n'.
-			'Please fill it out and send it back to me via email (carisa.cruz@alcf.net). \r\nYou may also fax '.
+			'Please fill it out and send it back to me via email (carisa.hamilton@alcf.net). \r\nYou may also fax '.
 			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
 			'center. \r\nOnce we receive your application, Pastor John will follow up with you for a short '.
 			'interview.\r\n';			
@@ -294,7 +294,7 @@
 			$strBody = "Hello ".$this->objGroupRegistration->FirstName ."!<br><br>";
 			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! <br>Attached is a '.
 			'facilitator application we ask all potential facilitators to complete. <br>'.
-			'Please fill it out and send it back to me via email (carisa.cruz@alcf.net). <br>You may also fax '.
+			'Please fill it out and send it back to me via email (carisa.hamilton@alcf.net). <br>You may also fax '.
 			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
 			'center. <br>Once we receive your application, Pastor John will follow up with you for a short '.
 			'interview.<br><br>';			

@@ -230,9 +230,9 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		// Create a new message
 		// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 		$objMessage = new QEmailMessage();
-		$objMessage->From = 'Carisa Cruz <carisa.cruz@alcf.net>';
+		$objMessage->From = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
 		$objMessage->To = $this->objRegistrant->Email;
-		$objMessage->Bcc = 'carisa.cruz@alcf.net';
+		$objMessage->Bcc = 'carisa.hamilton@alcf.net';
 		$objMessage->Subject = 'Invitation to Growth Groups';
 		
 		// Setup Plaintext Message
@@ -279,7 +279,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		}
 		$strBody .= '\r\n* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the '.
 					'group is a good fit for you.\r\n\r\n';
-		$strBody .= 'Regards, \r\nCarisa Cruz';
+		$strBody .= 'Regards, \r\nCarisa Hamilton';
 		$objMessage->Body = $strBody;
 		
 		// Also setup HTML message (optional)
@@ -329,7 +329,7 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 		}
 		$strBody .= '<br>* Please don\'t hesitate to visit a group for 2 to 3 times before prayerfully deciding if the '.
 					'group is a good fit for you.<br><br>';
-		$strBody .= 'Regards,<br/><b>Carisa Cruz</b>';
+		$strBody .= 'Regards,<br/><b>Carisa Hamilton</b>';
 		$objMessage->HtmlBody = $strBody;
 		
 		// Add random/custom email headers
