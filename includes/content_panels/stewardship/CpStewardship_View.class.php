@@ -119,7 +119,7 @@
 			$strErrorNumber = '';
 			$strErrorString = '';
 			$objSock = null;
-			$objSock = @fsockopen(MICRIMAGE_IP, 23, $strErrorNumber, $strErrorString, 3);
+			$objSock = @fsockopen(MICRIMAGE_IP, 23, $strErrorNumber, $strErrorString, 10);
 
 			if (!$objSock || $strErrorNumber || $strErrorString) {
 				QApplication::DisplayAlert(sprintf('Could not connect to %s: %s (%s)', MICRIMAGE_IP,$strErrorString, $strErrorNumber));
