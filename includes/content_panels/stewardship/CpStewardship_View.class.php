@@ -122,7 +122,7 @@
 			$objSock = @fsockopen(MICRIMAGE_IP, 23, $strErrorNumber, $strErrorString, 3);
 
 			if (!$objSock || $strErrorNumber || $strErrorString) {
-				QApplication::DisplayAlert(sprintf('Could not connect: %s (%s)', $strErrorString, $strErrorNumber));
+				QApplication::DisplayAlert(sprintf('Could not connect to %s: %s (%s)', MICRIMAGE_IP,$strErrorString, $strErrorNumber));
 				if ($objSock) fclose($objSock);
 				return;
 			} else {
