@@ -20,6 +20,8 @@
 		protected $rblPermissionArray = array();
 		protected $rblMinistryArray = array();
 
+		protected $txtNewPassword;
+		protected $txtConfirmPassword;
 		protected $btnSave;
 		protected $btnCancel;
 
@@ -103,6 +105,14 @@
 				$this->lblDateLastLogin->CssClass = 'na';
 			}
 
+			$this->txtNewPassword = new QTextBox($this);
+			$this->txtNewPassword->Name = 'Reset Password to: ';
+			$this->txtNewPassword->TextMode = QTextMode::Password;
+			
+			$this->txtConfirmPassword = new QTextBox($this);
+			$this->txtConfirmPassword->Name = "Confirm Password";
+			$this->txtConfirmPassword->TextMode = QTextMode::Password;
+
 			// Add controls and stuff for Editable pages
 			$this->btnSave = new QButton($this);
 			$this->btnSave->Text = 'Update';
@@ -131,6 +141,12 @@
 			}
 			
 			$this->objLogin->PermissionBitmap = $intBitmap;
+			
+			if ($this->txtNewPassword->Text == $this->txtConfirmPassword->Text) {
+				if (strlen(trim($this->txtNewPassword->Text)) != 0) {
+					$this->objLogin->SetPasswordCache($this->txtNewPassword->Text);
+				}
+			}
 			$this->objLogin->Save();
 			QApplication::Redirect('/admin/users/');
 		}

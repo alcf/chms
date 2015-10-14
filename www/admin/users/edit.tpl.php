@@ -17,6 +17,10 @@
 		<br>
 		<h3>Permissions</h3>
 		<?php foreach ($this->rblPermissionArray as $rblPermission) $rblPermission->RenderWithName(); ?>
+		<br>
+		<h3>Reset Password</h3>
+		<?php $this->txtNewPassword->RenderWithName(); ?>
+		<?php $this->txtConfirmPassword->RenderWithName(); ?>
 	</div>
 
 	<div class="buttonBar">
