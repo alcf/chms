@@ -399,55 +399,56 @@ class CpGroup_RegistrationStep2Panel extends QPanel {
 			$locationIdArray = array();
 			$strLocationArray = array($this->objRegistrant->PreferredLocation1,$this->objRegistrant->PreferredLocation2);
 			for($i=0; $i<2; $i++) {
-				switch($strLocationArray[$i]) {
-					case 'Foster City':
-					case 'San Bruno':
-					case 'San Carlos':
-					case 'San Mateo':
-					case 'San Francisco':
-					case 'South San Francisco':
-						$locationIdArray[] = 1;
-						break;								
-					
-					case 'East Palo Alto':
-					case 'Mountain View':
-					case 'Menlo Park':
-					case 'Palo Alto':
-					case 'Redwood City':
-						$locationIdArray[] = 2;
-						break;
+				if(null != $strLocationArray[$i]){
+					switch($strLocationArray[$i]) {
+						case 'Foster City':
+						case 'San Bruno':
+						case 'San Carlos':
+						case 'San Mateo':
+						case 'San Francisco':
+						case 'South San Francisco':
+							$locationIdArray[] = 1;
+							break;								
 						
-					case 'Campbell':
-					case 'Cupertino':
-					case 'Los Altos':
-					case 'Sunnyvale':
-						$locationIdArray[] = 3;
-						break;
-	
-					case 'San Jose':
-					case 'South San Jose':
-					case 'Santa Clara':
-						$locationIdArray[] = 4;
-						break;
-						
-					case 'Fremont':
-					case 'Milpitas':
-					case 'Newark ':
-					case 'Pleasanton':
-					case 'Tracy':
-						$locationIdArray[] = 5;
-						break;																
-										
-					case 'Oakland':
-					case 'Clayton':
-						$locationIdArray[] = 6;
-						break;	
+						case 'East Palo Alto':
+						case 'Mountain View':
+						case 'Menlo Park':
+						case 'Palo Alto':
+						case 'Redwood City':
+							$locationIdArray[] = 2;
+							break;
+							
+						case 'Campbell':
+						case 'Cupertino':
+						case 'Los Altos':
+						case 'Sunnyvale':
+							$locationIdArray[] = 3;
+							break;
+		
+						case 'San Jose':
+						case 'South San Jose':
+						case 'Santa Clara':
+							$locationIdArray[] = 4;
+							break;
+							
+						case 'Fremont':
+						case 'Milpitas':
+						case 'Newark ':
+						case 'Pleasanton':
+						case 'Tracy':
+							$locationIdArray[] = 5;
+							break;																
+											
+						case 'Oakland':
+						case 'Clayton':
+							$locationIdArray[] = 6;
+							break;	
+					}
 				}
 			}
 			$newGrowthGroupArray = array();
-			foreach($growthGroupArray as $objGroup) {			
-				if (($objGroup->GrowthGroupLocationId == $locationIdArray[0]) || 
-					 ($objGroup->GrowthGroupLocationId == $locationIdArray[1])) {
+			foreach($growthGroupArray as $objGroup) {	
+				if(in_array($objGroup->GrowthGroupLocationId, $locationIdArray)) {
 					$newGrowthGroupArray[] = $objGroup;
 				}
 			}
