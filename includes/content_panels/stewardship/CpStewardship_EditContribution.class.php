@@ -311,10 +311,15 @@
 			if (!$blnFound) {
 				$this->pnlFundingError->Text = 'You must select at least one fund';
 				$this->pnlFundingError->Visible = true;
-			} else if (!$fltTotal) {
+			}
+			/* 
+			 * Removing this validation because if Stock is selected we don't want to 
+			 * specify a value.
+			 */
+			/* else if (!$fltTotal) {
 				$this->pnlFundingError->Text = 'Total of Funds must be non-zero';
 				$this->pnlFundingError->Visible = true;
-			}
+			}*/
 
 			if ($this->pnlFundingError->Visible || $this->pnlPersonError->Visible)
 				return;
