@@ -335,11 +335,12 @@
 			foreach ($this->mctAmountArray as $mctAmount) {
 				$lstFund = $mctAmount->StewardshipFundIdControl;
 				$txtAmount = $mctAmount->AmountControl;
-				if ($lstFund->SelectedValue && (floatval($txtAmount->Text))) {
+				if (($lstFund->SelectedValue && (floatval($txtAmount->Text))) || 
+					(($lstFund->SelectedValue) && $this->lstStewardshipContributionType->SelectedValue == StewardshipContributionType::Stock)) {
 					$mctAmount->StewardshipContributionAmount->StewardshipContribution = $this->mctContribution->StewardshipContribution;
-					$mctAmount->SaveStewardshipContributionAmount();
+						$mctAmount->SaveStewardshipContributionAmount();
 				} else if ($mctAmount->EditMode) {
-					$mctAmount->DeleteStewardshipContributionAmount();
+						$mctAmount->DeleteStewardshipContributionAmount();
 				}
 			}
 
