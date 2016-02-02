@@ -216,13 +216,13 @@
 
 	define('STEWARDSHIP_STATEMENT_LINE_1', 'Abundant Life Christian Fellowship');
 	define('STEWARDSHIP_STATEMENT_LINE_2', 'STEWARDSHIP AND GIVING');
-	define('STEWARDSHIP_STATEMENT_LINE_3', '2581 Leghorn Street');
+	define('STEWARDSHIP_STATEMENT_LINE_3', '2440 Leghorn Street');
 	define('STEWARDSHIP_STATEMENT_LINE_4', 'Mountain View, CA  94043-1613');
 	define('STEWARDSHIP_TOP', '792');
 
 	define('STEWARDSHIP_FOOTER_TAX_ID', 'Tax ID # 77.0013 414');
 	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_1', 'Thank you for your generous contributions.  If you have any questions regarding your statement, please call');
-	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_2', 'Dick Smith at 650-625-1500 or email dick.smith@alcf.net.  Thank you again and God Bless.');
+	define('STEWARDSHIP_FOOTER_MESSAGE_LINE_2', 'the Stewardship Team at 650-625-1500 or email stewardship@alcf.net.  Thank you again and God Bless.');
 
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_1', 'This document is necessary for any available federal income tax deduction for your contribution. Please retain it for your records.');
 	define('STEWARDSHIP_FOOTER_LEGAL_LINE_2', 'No goods or services were provided in exchange for the gifts other than intangible religious benefits.');
