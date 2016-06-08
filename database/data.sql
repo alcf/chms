@@ -2,7 +2,7 @@
 # ChMS System Database Version
 ##############################
 
-INSERT INTO _version VALUES('015');
+INSERT INTO _version VALUES('017');
 
 
 
@@ -268,6 +268,7 @@ INSERT INTO stewardship_contribution_type VALUES (6, 'Automobile');
 INSERT INTO stewardship_contribution_type VALUES (7, 'Returned Check');
 INSERT INTO stewardship_contribution_type VALUES (8, 'Summary');
 INSERT INTO stewardship_contribution_type VALUES (9, 'Other');
+INSERT INTO stewardship_contribution_type VALUES (10, 'Text Giving');
 
 INSERT INTO stewardship_batch_status_type VALUES(1, 'New Batch');
 INSERT INTO stewardship_batch_status_type VALUES(2, 'Posted In Full');

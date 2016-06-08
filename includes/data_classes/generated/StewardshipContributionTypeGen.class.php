@@ -27,8 +27,9 @@
 		const ReturnedCheck = 7;
 		const Summary = 8;
 		const Other = 9;
+		const TextGiving = 10;
 
-		const MaxId = 9;
+		const MaxId = 10;
 
 		public static $NameArray = array(
 			1 => 'Check',
@@ -39,7 +40,8 @@
 			6 => 'Automobile',
 			7 => 'Returned Check',
 			8 => 'Summary',
-			9 => 'Other');
+			9 => 'Other',
+			10 => 'Text Giving');
 
 		public static $TokenArray = array(
 			1 => 'Check',
@@ -50,7 +52,8 @@
 			6 => 'Automobile',
 			7 => 'ReturnedCheck',
 			8 => 'Summary',
-			9 => 'Other');
+			9 => 'Other',
+			10 => 'TextGiving');
 
 		public static function ToString($intStewardshipContributionTypeId) {
 			switch ($intStewardshipContributionTypeId) {
@@ -63,6 +66,7 @@
 				case 7: return 'Returned Check';
 				case 8: return 'Summary';
 				case 9: return 'Other';
+				case 10: return 'Text Giving';
 				default:
 					throw new QCallerException(sprintf('Invalid intStewardshipContributionTypeId: %s', $intStewardshipContributionTypeId));
 			}
@@ -79,6 +83,7 @@
 				case 7: return 'ReturnedCheck';
 				case 8: return 'Summary';
 				case 9: return 'Other';
+				case 10: return 'TextGiving';
 				default:
 					throw new QCallerException(sprintf('Invalid intStewardshipContributionTypeId: %s', $intStewardshipContributionTypeId));
 			}

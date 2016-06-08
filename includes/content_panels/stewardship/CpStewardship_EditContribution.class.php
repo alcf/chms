@@ -413,6 +413,7 @@
 					case StewardshipContributionType::Stock:
 					case StewardshipContributionType::Summary:
 					case StewardshipContributionType::Automobile:
+					case StewardshipContributionType::TextGiving:
 					case StewardshipContributionType::Other:
 						$this->txtAlternateSource->Visible = true;
 						$this->txtAlternateSource->Name = 'Trans. Info';
