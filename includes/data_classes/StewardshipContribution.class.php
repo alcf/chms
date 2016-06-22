@@ -69,6 +69,7 @@
 						case StewardshipContributionType::Summary:
 						case StewardshipContributionType::Automobile:
 						case StewardshipContributionType::Other:
+						case StewardshipContributionType::TextGiving:
 							return $this->AlternateSource;
 
 						default: throw new Exception('Unhandled ContributionTypeId');				

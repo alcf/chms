@@ -74,6 +74,7 @@
 		case StewardshipContributionType::Summary:
 		case StewardshipContributionType::Automobile:
 		case StewardshipContributionType::Other:
+		case StewardshipContributionType::TextGiving:
 			if ($_CONTROL->objContribution->AlternateSource) {
 ?>
 				<div class="lvp">
