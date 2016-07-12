@@ -41,6 +41,7 @@
 <?php $this->RenderEnd(); ?>
 <script type="text/javascript">
 	window.print();
-	window.close();
+	setTimeout(function(){window.close();}, 10000); 
+	//window.close();
 </script>
 </body></html>

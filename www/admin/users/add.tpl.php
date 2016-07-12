@@ -5,6 +5,9 @@
 		<?php $this->txtUsername->RenderWithName(); ?>
 		<?php $this->txtNewPassword->RenderWithName(); ?>
 		<?php $this->txtConfirmPassword->RenderWithName(); ?>
+
+		<?php $this->txtFirstName->RenderWithName(); ?>
+		<?php $this->txtLastName->RenderWithName(); ?>
 		<?php $this->txtEmail->RenderWithName(); ?>
 		
 		<?php $this->rblLoginActive->RenderWithName(); ?>

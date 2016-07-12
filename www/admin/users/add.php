@@ -10,7 +10,9 @@
 
 		protected $txtUsername;
 		protected $txtEmail;
-
+		protected $txtFirstName;
+		protected $txtLastName;
+		
 		protected $lstRoleType;
 		protected $rblDomainActive;
 		protected $rblLoginActive;
@@ -28,6 +30,14 @@
 			$this->txtUsername = new QTextBox($this);
 			$this->txtUsername->Name = 'Username';
 
+			// Display: First Name
+			$this->txtFirstName = new QTextBox($this);
+			$this->txtFirstName->Name = 'First Name';
+			
+			// Display: Last Name
+			$this->txtLastName = new QTextBox($this);
+			$this->txtLastName->Name = 'Last Name';
+			
 			// Display: Email
 			$this->txtEmail = new QTextBox($this);
 			$this->txtEmail->Name = 'Email';
@@ -85,6 +95,8 @@
 		public function btnSave_Click() {
 			$this->objLogin = new Login();
 			$this->objLogin->Username = $this->txtUsername->Text;
+			$this->objLogin->FirstName = $this->txtFirstName->Text;
+			$this->objLogin->LastName = $this->txtLastName->Text;
 			
 			$this->objLogin->LoginActiveFlag = $this->rblLoginActive->SelectedValue;
 			$this->objLogin->DomainActiveFlag = true;
