@@ -43,7 +43,8 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			
 			$dtAfterValue = new QDateTime($this->dtxAfterValue->Text);
 			$dtBeforeValue = new QDateTime($this->dtxBeforeValue->Text);
-			$objMembershipArray = Membership::LoadArrayByEndDateRange($dtAfterValue,$dtBeforeValue );
+			$objcondition = QQ::Equal(QQN::Membership()->Person->AttributeValue->Attribute->Name, 'Post-2016');				
+			$objMembershipArray = Membership::LoadArrayByEndDateRange($dtAfterValue,$dtBeforeValue,$objcondition );
 			$this->iTotalCount = count($objMembershipArray);
 			$this->dtgExitingMembers->DataSource = $objMembershipArray;
 			

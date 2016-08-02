@@ -11,9 +11,9 @@
 	
 	$objMembershipArray;
 	if ($bIsExit) {
-		$objMembershipArray = Membership::LoadArrayByEndDateRange($dtAfterValue,$dtBeforeValue );
+		$objMembershipArray = Membership::LoadArrayByEndDateRange($dtAfterValue,$dtBeforeValue,QQ::All() );
 	} else {
-		$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue );
+		$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue,QQ::All() );
 	}
 	$iTotalCount = count($objMembershipArray);
 	

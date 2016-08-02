@@ -108,37 +108,37 @@
 			return false;
 		}
 
-		public static function CountArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objOptionalClauses = null) {
+		public static function CountArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objCondition = null, $objOptionalClauses = null) {
 			// This will return an array of Membership objects
+			$objCondition = QQ::AndCondition($objCondition, QQ::AndCondition(
+			QQ::GreaterOrEqual(QQN::Membership()->DateStart, $dttAfterDateStart),
+			QQ::LessOrEqual(QQN::Membership()->DateStart, $dttBeforeDateStart)
+			));
 			return Membership::QueryCount(
-			QQ::AndCondition(
-			QQ::GreaterOrEqual(QQN::Membership()->DateStart, $dttAfterDateStart),
-			QQ::LessOrEqual(QQN::Membership()->DateStart, $dttBeforeDateStart)
-			),
+			$objCondition,
 			$objOptionalClauses
 			);
 		}
 		
-		public static function LoadArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objOptionalClauses = null) {
+		public static function LoadArrayByStartDateRange($dttAfterDateStart, $dttBeforeDateStart, $objCondition = null, $objOptionalClauses = null) {
 			// This will return an array of Membership objects
-			return Membership::QueryArray(
-			QQ::AndCondition(
+			$objCondition = QQ::AndCondition($objCondition, QQ::AndCondition(
 			QQ::GreaterOrEqual(QQN::Membership()->DateStart, $dttAfterDateStart),
 			QQ::LessOrEqual(QQN::Membership()->DateStart, $dttBeforeDateStart)
-			),
+			));
+			return Membership::QueryArray(
+			$objCondition,
 			$objOptionalClauses
 			);
 		}
 		
-		public static function LoadArrayByEndDateRange($dttAfterDateStart, $dttBeforeDateStart, $objOptionalClauses = null) {
+		public static function LoadArrayByEndDateRange($dttAfterDateStart, $dttBeforeDateStart, $objCondition=null, $objOptionalClauses = null) {
 			// This will return an array of Membership objects
-			return Membership::QueryArray(
-			QQ::AndCondition(
+			$objCondition = QQ::AndCondition($objCondition, QQ::AndCondition(
 			QQ::GreaterOrEqual(QQN::Membership()->DateEnd, $dttAfterDateStart),
 			QQ::LessOrEqual(QQN::Membership()->DateEnd, $dttBeforeDateStart)
-			),
-			$objOptionalClauses
-			);
+			));
+			return Membership::QueryArray($objCondition,$objOptionalClauses);
 		}
 		
 		// Override or Create New Load/Count methods

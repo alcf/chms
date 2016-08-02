@@ -241,6 +241,7 @@
 			$objMessage = new QEmailMessage();
 			$objMessage->From = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
 			$objMessage->To = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
+			$objMessage->Bcc = 'john.gorin@alcf.net';
 			$objMessage->Subject = 'Notification of Growth Group Registration';
 			
 			// Setup Plaintext Message
@@ -283,7 +284,7 @@
 			$strBody .= 'We are very excited that you are interested in facilitating a Growth Group! \r\nAttached is a '.
 			'facilitator application we ask all potential facilitators to complete. \r\n'.
 			'Please fill it out and send it back to me via email (carisa.hamilton@alcf.net). \r\nYou may also fax '.
-			'it to the church office at 650-625-1501 or drop it off in the All Forms Box at the worship '.
+			'it to the church office at 650-625-1500 or drop it off in the All Forms Box at the worship '.
 			'center. \r\nOnce we receive your application, Pastor John will follow up with you for a short '.
 			'interview.\r\n';			
 			$strBody .= 'If you have any questions or concerns please feel free to contact me.\r\n\r\n';			

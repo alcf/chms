@@ -24,26 +24,7 @@ class NewMembersForm extends ChmsForm {
 	public 	  $iheight;
 
 	protected function Form_Create() {
-		$this->iMaritalStatus = array('Not Specified'=> 0,
-											'Single' => 0,
-											'Married' => 0,
-											'Separated' => 0);
-		$this->iEthnicity = array();
-			
-		$this->iSalvationDate = array('Not Specified' => 0,
-										'Ten Years' => 0,
-										'Twenty Years' => 0,
-										'Thirty Years' => 0,
-										'Forty Years' =>0,
-										'Fifty Years Or More' =>0);
-		$this->iAge = array('Not Specified' => 0,
-								'0-10 Years Old' => 0,
-								'10-20  Years Old' => 0,
-								'20-30 Years Old' => 0,
-								'30-40 Years Old' =>0,
-								'40-50 Years Old' =>0,
-								'50-60 Years Old' =>0,
-								'60+ Years Old' =>0);
+		$this->initializeArrays();
 			
 		$this->lblLabel = new QLabel($this);
 		$this->lblLabel->Text = "New Members after ";
@@ -76,29 +57,76 @@ class NewMembersForm extends ChmsForm {
 		$this->dtgNewMembers->AddColumn(new QDataGridColumn('Ethnicity', '<?= $_FORM->RenderEthnicity($_ITEM) ?>', 'Width=270px'));
 		$this->dtgNewMembers->AddColumn(new QDataGridColumn('Prior Church', '<?= $_FORM->RenderPriorChurch($_ITEM) ?>', 'Width=270px'));
 		$this->dtgNewMembers->AddColumn(new QDataGridColumn('Salvation Date', '<?= $_FORM->RenderSalvationDate($_ITEM) ?>', 'Width=270px'));
-			
+					
+		//$this->dtgNewMembers->SetDataBinder('dtgNewMembers_Bind');
+		
 		$dtAfterValue = new QDateTime($this->dtxAfterValue->Text);
 		$dtBeforeValue = new QDateTime($this->dtxBeforeValue->Text);
-		$this->dtgNewMembers->SetDataBinder('dtgNewMembers_Bind');
-		$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue);
+		$objcondition = QQ::Equal(QQN::Membership()->Person->AttributeValue->Attribute->Name, 'Post-2016');
+		$this->dtgNewMembers->TotalItemCount = Membership::CountArrayByStartDateRange($dtAfterValue,$dtBeforeValue,$objcondition);
+		$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue,$objcondition);
+		
+		$this->dtgNewMembers->DataSource = $objMembershipArray;
+		$this->iTotalCount = count($objMembershipArray);
+		$this->CalculateMaritalAndAgeStatus($objMembershipArray);
+		$this->CalculateAttributeStatistics($objMembershipArray);		
+	}
+
+	protected function dtgNewMembers_Refresh() {
+		$this->dtgNewMembers->PageNumber = 1;
+		$this->dtgNewMembers->Refresh();
+	}
+	protected function dtgNewMembers_Bind() {
+		$dtAfterValue = new QDateTime($this->dtxAfterValue->Text);
+		$dtBeforeValue = new QDateTime($this->dtxBeforeValue->Text);
+		$objcondition = QQ::Equal(QQN::Membership()->Person->AttributeValue->Attribute->Name, 'Post-2016');
+			
+		$this->dtgNewMembers->TotalItemCount = Membership::CountArrayByStartDateRange($dtAfterValue,$dtBeforeValue,$objcondition);
+		$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue,$objcondition,$this->dtgNewMembers->LimitClause);
+		$this->dtgNewMembers->DataSource = $objMembershipArray;
+		
 		$this->iTotalCount = count($objMembershipArray);
 		$this->CalculateMaritalAndAgeStatus($objMembershipArray);
 		$this->CalculateAttributeStatistics($objMembershipArray);
 	}
 
-	protected function dtgNewMembers_Bind() {
-		$dtAfterValue = new QDateTime($this->dtxAfterValue->Text);
-		$dtBeforeValue = new QDateTime($this->dtxBeforeValue->Text);
-		$this->dtgNewMembers->TotalItemCount = Membership::CountArrayByStartDateRange($dtAfterValue,$dtBeforeValue);
-		$objMembershipArray = Membership::LoadArrayByStartDateRange($dtAfterValue,$dtBeforeValue,$this->dtgNewMembers->LimitClause);
-		$this->dtgNewMembers->DataSource = $objMembershipArray;
+	protected function initializeArrays() {
+		$this->iMaritalStatus = array('Not Specified'=> 0,
+													'Single' => 0,
+													'Married' => 0,
+													'Separated' => 0);
+		$this->iEthnicity = array();
+			
+		$this->iSalvationDate = array('Not Specified' => 0,
+												'Ten Years' => 0,
+												'Twenty Years' => 0,
+												'Thirty Years' => 0,
+												'Forty Years' =>0,
+												'Fifty Years Or More' =>0);
+		$this->iAge = array('Not Specified' => 0,
+										'0-10 Years Old' => 0,
+										'10-20  Years Old' => 0,
+										'20-30 Years Old' => 0,
+										'30-40 Years Old' =>0,
+										'40-50 Years Old' =>0,
+										'50-60 Years Old' =>0,
+										'60+ Years Old' =>0);
+		
 	}
-
 	protected function CalculateMaritalAndAgeStatus($objMembershipArray) {
 		$this->iMaritalStatus['Not Specified'] = 0;
 		$this->iMaritalStatus['Single'] = 0;
 		$this->iMaritalStatus['Married'] = 0;
 		$this->iMaritalStatus['Separated'] = 0;
+		$this->iAge['0-10 Years Old'] = 0;
+		$this->iAge['10-20  Years Old'] = 0;
+		$this->iAge['20-30 Years Old'] = 0;
+		$this->iAge['30-40 Years Old'] = 0;
+		$this->iAge['40-50 Years Old'] = 0;
+		$this->iAge['50-60 Years Old'] = 0;
+		$this->iAge['60+ Years Old'] = 0;
+		$this->iAge['Not Specified'] = 0;
+		
 		foreach($objMembershipArray as $objMembership) {
 			$objPerson = $objMembership->Person;
 			switch ($objPerson->MaritalStatusTypeId) {
@@ -178,8 +206,16 @@ class NewMembersForm extends ChmsForm {
 	}
 
 	protected function CalculateAttributeStatistics($objMembershipArray) {
+		// zero everything first
 		$this->iFromPreviousChurch = 0;
 		$this->iAcceptedChristAtALCF = 0;
+		$this->iSalvationDate['Ten Years'] = 0;
+		$this->iSalvationDate['Twenty Years'] = 0;
+		$this->iSalvationDate['Thirty Years'] = 0;
+		$this->iSalvationDate['Forty Years'] = 0;
+		$this->iSalvationDate['Fifty Years Or More'] = 0;
+		$this->iSalvationDate['Not Specified'] = 0;
+		
 		foreach($objMembershipArray as $objMembership) {
 			$objPerson = $objMembership->Person;
 			$attributeArray = $objPerson->GetAttributeValueArray(QQ::OrderBy(QQN::AttributeValue()->Attribute->Name));
@@ -270,6 +306,7 @@ class NewMembersForm extends ChmsForm {
 		}
 	}
 	public function dtxDate_Change() {
+		//$this->dtgNewMembers_Refresh();
 		QApplication::Redirect('/reports/newMembers.php/' . $this->dtxAfterValue->Text . '/' . $this->dtxBeforeValue->Text);
 	}
 }
