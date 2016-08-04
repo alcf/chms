@@ -27,6 +27,12 @@
 			return sprintf('Person Object %s',  $this->intId);
 		}
 
+		public static function LoadArrayBy2016Attribute($objOptionalClauses = null) {
+			// This will return an array of Person objects with the post2016 attribute set
+			$objCondition = QQ::Equal(QQN::Person()->AttributeValue->Attribute->Name, 'Post-2016');
+			return Person::QueryArray($objCondition,$objOptionalClauses);
+		}
+		
 		public function RefreshNameItemAssociations() {
 			$this->UnassociateAllNameItems();
 			$strNames = sprintf('%s %s %s %s %s %s', trim($this->strFirstName), trim($this->strMiddleName), trim($this->strLastName), trim($this->strNickname), trim($this->strPriorLastNames), trim($this->strSuffix));

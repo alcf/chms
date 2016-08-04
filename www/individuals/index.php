@@ -14,6 +14,7 @@
 		protected $txtEmail;
 		protected $txtPhone;
 		protected $txtCity;
+		protected $txtZipcode;
 
 		protected $dtgPeople;
 
@@ -85,6 +86,12 @@
 			$this->txtCity->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
 			$this->txtCity->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
 			$this->txtCity->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			
+			$this->txtZipcode = new QTextBox($this);
+			$this->txtZipcode->Name = 'Zip Code';
+			$this->txtZipcode->AddAction(new QChangeEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtZipcode->AddAction(new QEnterKeyEvent(), new QAjaxAction('dtgPeople_Refresh'));
+			$this->txtZipcode->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 		}
 		
 		public function RenderFirstName(Person $objPerson) {
@@ -125,6 +132,11 @@
 			if ($strName = trim($this->txtCity->Text)) {
 				$objConditions = QQ::AndCondition($objConditions,
 					QQ::Like( QQN::Person()->PrimaryCityText, $strName . '%')
+				);
+			}
+			if ($strName = trim($this->txtZipcode->Text)) {
+				$objConditions = QQ::AndCondition($objConditions,
+				QQ::Like( QQN::Person()->PrimaryZipCodeText, $strName . '%')
 				);
 			}
 						
