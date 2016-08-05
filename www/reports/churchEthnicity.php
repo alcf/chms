@@ -39,8 +39,8 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 				
 		protected function Form_Create() {	
 			$chartData = array();
-			$this->iTotalPersonCount = Person::CountAll();
-			$this->ethnicityArray = AttributeValue::LoadEthnicityArray();	
+						
+			$this->ethnicityArray = $this->InitializeArray(); 
 			$objEthnicityArray = array();
 			foreach ( $this->ethnicityArray as $key=>$val ){
 				$objEthnicityItem = new ethnicityItem($key, $val);
@@ -197,6 +197,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 							$this->ethnicityArray["brazilian"] +
 							$this->ethnicityArray["middleEastern"] +
 							$this->ethnicityArray["ethiopian"] +
+							$this->ethnicityArray["nigerian"] +
 							$this->ethnicityArray["other"];
 			$objOtherArray = array();
 			$objEthnicityItem = new ethnicityItem("Caucasian", $this->ethnicityArray["caucasian"]);
@@ -207,6 +208,8 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$objOtherArray[] = $objEthnicityItem;
 			$objEthnicityItem = new ethnicityItem("Ethiopian", $this->ethnicityArray["ethiopian"]);
 			$objOtherArray[] = $objEthnicityItem;
+			$objEthnicityItem = new ethnicityItem("Nigerian", $this->ethnicityArray["nigerian"]);
+			$objOtherArray[] = $objEthnicityItem;
 			$objEthnicityItem = new ethnicityItem("Other", $this->ethnicityArray["other"]);
 			$objOtherArray[] = $objEthnicityItem;
 			$this->dtgOtherGroup->DataSource = $objOtherArray;
@@ -214,6 +217,145 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			
 			// Construct the charts
 			QApplication::ExecuteJavaScript('initializeChart('.json_encode($chartData).');');
+		}
+		
+		protected function InitializeArray(){			
+			$iAfricanAmerican = $iAfricanAmericanNative = $iAfricanAmericanItalian = $iAfricanAmericanCaucasian = 0;
+			$iAsian = $iBrazilian = $iBritish = $iCaucasian = $iChinese = 0;
+			$iChineseAmerican = $iEthiopian = $iFilipino = $iFilipinoPuertoRican = $iGreek = 0;
+			$iHawaiian = $iHispanic = $iHispanicBrazilian = $iHispanicLatino = $iIndian = 0;
+			$iJapanese = $iJapaneseCaucasian = $iKoreanAmerican = $iLatino = 0;
+			$iMiddleEastern = $iPolynesian = $iSamoan = $iSpanish = $iSriLankan = $iSwiss = 0;
+			$iTongan = $iVietnamese = $iOther = $iNigerian = 0;
+			$iTotalEthnicCount = 0;
+			
+			$objPersonArray = Person::LoadArrayBy2016Attribute();
+			$this->iTotalPersonCount = count($objPersonArray);
+			foreach($objPersonArray as $objPerson) {
+				$attributeArray = $objPerson->GetAttributeValueArray(QQ::OrderBy(QQN::AttributeValue()->Attribute->Name));
+				foreach($attributeArray as $objAttribute) {
+					if($objAttribute->Attribute->Name == 'Ethnicity') {
+						$iTotalEthnicCount++;
+						switch ($objAttribute->SingleAttributeOption->Name) { 
+							case "African American":
+								$iAfricanAmerican++;
+								break;
+							case "African American/Native American":
+								$iAfricanAmericanNative++;
+								break;
+							case "African America/Italian":
+								$iAfricanAmericanItalian++;
+								break;
+							case "African America/Caucasian":
+								$iAfricanAmericanCaucasian++;
+								break;
+							case "Asian":
+								$iAsian++;
+								break;
+							case "Brazilian":
+								$iBrazilian++;
+								break;
+							case "British":
+								$iBritish++;
+								break;
+							case "Caucasian":
+								$iCaucasian++;
+								break;
+							case "Chinese":
+								$iChinese++;
+								break;
+							case "Chinese American":
+								$iChineseAmerican++;
+								break;
+							case "Ethiopian":
+								$iEthiopian++;
+								break;
+							case "Filipino":
+								$iFilipino++;
+								break;
+							case "Filipino/Puerto Rican":
+								$iFilipinoPuertoRican++;
+								break;
+							case "Greek":
+								$iGreek++;
+								break;
+							case "Hawaiian":
+								$iHawaiian++;
+								break;
+							case "Hispanic":
+								$iHispanic++;
+								break;
+							case "Hispanic/Brazilian":
+								$iHispanicBrazilian++;
+								break;
+							case "Hispanic/Latino":
+								$iHispanicLatino++;
+								break;
+							case "Indian":
+								$iIndian++;
+								break;
+							case "Japanese":
+								$iJapanese++;
+								break;
+							case "Japanese/Caucasian":
+								$iJapaneseCaucasian++;
+								break;
+							case "Korean-American":
+								$iKoreanAmerican++;
+								break;
+							case "Latino":
+								$iLatino++;
+								break;
+							case "Middle Eastern":
+								$iMiddleEastern++;
+								break;
+							case "Polynesian":
+								$iPolynesian++;
+								break;
+							case "Samoan":
+								$iSamoan++;
+								break;
+							case "Spanish":
+								$iSpanish++;
+								break;
+							case "Sri Lankan":
+								$iSriLankan++;
+								break;
+							case "Swiss":
+								$iSwiss++;
+								break;
+							case "Tongan":
+								$iTongan++;
+								break;
+							case "Vietnamese":
+								$iVietnamese++;
+								break;
+							case "Nigerian":
+								$iNigerian++;
+								break;
+							default:
+								$iOther++;
+							break;
+						}
+					}
+				}
+			}
+						
+			// Construct Associative Array of counts.
+			$returnArray = array("totalEthnicCount"=>$iTotalEthnicCount,
+									"africanAmerican"=>$iAfricanAmerican,"africanAmericanNative"=>$iAfricanAmericanNative,
+									"africanAmericanItalian"=>$iAfricanAmericanItalian, "africanAmericanCaucasian"=>$iAfricanAmericanCaucasian,
+									"asian"=>$iAsian, "brazilian"=>$iBrazilian,"british"=>$iBritish,"caucasian"=>$iCaucasian,
+									"chinese"=>$iChinese,"chineseAmerican"=>$iChineseAmerican,"ethiopian"=>$iEthiopian,
+									"filipino"=>$iFilipino,"filipinoPuertoRican"=>$iFilipinoPuertoRican,"greek"=>$iGreek,
+									"hawaiian"=>$iHawaiian,"hispanic"=>$iHispanic,"hispanicBrazilian"=>$iHispanicBrazilian,
+									"hispanicLatino"=>$iHispanicLatino,"indian"=>$iIndian,"japanese"=>$iJapanese,
+									"japaneseCaucasian"=>$iJapaneseCaucasian,"koreanAmerican"=>$iKoreanAmerican,
+									"latino"=>$iLatino,"middleEastern"=>$iMiddleEastern,"polynesian"=>$iPolynesian,
+									"samoan"=>$iSamoan,"spanish"=>$iSpanish,"sriLankan"=>$iSriLankan,"swiss"=>$iSwiss,
+									"tongan"=>$iTongan,"vietnamese"=>$iVietnamese,"other"=>$iOther, "nigerian"=>$iNigerian);
+			
+			return $returnArray;			
 		}
 		
 	}

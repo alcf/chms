@@ -31,7 +31,7 @@
 			// This will return an array of Person objects with the post2016 attribute set
 			$objCondition = QQ::Equal(QQN::Person()->AttributeValue->Attribute->Name, 'Post-2016');
 			return Person::QueryArray($objCondition,$objOptionalClauses);
-		}
+		}		
 		
 		public function RefreshNameItemAssociations() {
 			$this->UnassociateAllNameItems();
