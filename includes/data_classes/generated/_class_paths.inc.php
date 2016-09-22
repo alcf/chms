@@ -174,6 +174,13 @@
 		QApplicationBase::$ClassFile['emailoutgoingqueuemetacontrol'] = __DATA_META_CONTROLS__ . '/EmailOutgoingQueueMetaControl.class.php';
 		QApplicationBase::$ClassFile['emailoutgoingqueuedatagrid'] = __DATA_META_CONTROLS__ . '/EmailOutgoingQueueDataGrid.class.php';
 
+	// ClassPaths for the Encouragement class
+		QApplicationBase::$ClassFile['encouragement'] = __DATA_CLASSES__ . '/Encouragement.class.php';
+		QApplicationBase::$ClassFile['qqnodeencouragement'] = __DATA_CLASSES__ . '/Encouragement.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeencouragement'] = __DATA_CLASSES__ . '/Encouragement.class.php';
+		QApplicationBase::$ClassFile['encouragementmetacontrol'] = __DATA_META_CONTROLS__ . '/EncouragementMetaControl.class.php';
+		QApplicationBase::$ClassFile['encouragementdatagrid'] = __DATA_META_CONTROLS__ . '/EncouragementDataGrid.class.php';
+
 	// ClassPaths for the EventSignupForm class
 		QApplicationBase::$ClassFile['eventsignupform'] = __DATA_CLASSES__ . '/EventSignupForm.class.php';
 		QApplicationBase::$ClassFile['qqnodeeventsignupform'] = __DATA_CLASSES__ . '/EventSignupForm.class.php';
@@ -453,6 +460,20 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodephone'] = __DATA_CLASSES__ . '/Phone.class.php';
 		QApplicationBase::$ClassFile['phonemetacontrol'] = __DATA_META_CONTROLS__ . '/PhoneMetaControl.class.php';
 		QApplicationBase::$ClassFile['phonedatagrid'] = __DATA_META_CONTROLS__ . '/PhoneDataGrid.class.php';
+
+	// ClassPaths for the Praises class
+		QApplicationBase::$ClassFile['praises'] = __DATA_CLASSES__ . '/Praises.class.php';
+		QApplicationBase::$ClassFile['qqnodepraises'] = __DATA_CLASSES__ . '/Praises.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodepraises'] = __DATA_CLASSES__ . '/Praises.class.php';
+		QApplicationBase::$ClassFile['praisesmetacontrol'] = __DATA_META_CONTROLS__ . '/PraisesMetaControl.class.php';
+		QApplicationBase::$ClassFile['praisesdatagrid'] = __DATA_META_CONTROLS__ . '/PraisesDataGrid.class.php';
+
+	// ClassPaths for the PrayerRequest class
+		QApplicationBase::$ClassFile['prayerrequest'] = __DATA_CLASSES__ . '/PrayerRequest.class.php';
+		QApplicationBase::$ClassFile['qqnodeprayerrequest'] = __DATA_CLASSES__ . '/PrayerRequest.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeprayerrequest'] = __DATA_CLASSES__ . '/PrayerRequest.class.php';
+		QApplicationBase::$ClassFile['prayerrequestmetacontrol'] = __DATA_META_CONTROLS__ . '/PrayerRequestMetaControl.class.php';
+		QApplicationBase::$ClassFile['prayerrequestdatagrid'] = __DATA_META_CONTROLS__ . '/PrayerRequestDataGrid.class.php';
 
 	// ClassPaths for the ProvisionalPublicLogin class
 		QApplicationBase::$ClassFile['provisionalpubliclogin'] = __DATA_CLASSES__ . '/ProvisionalPublicLogin.class.php';
