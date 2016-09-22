@@ -151,6 +151,12 @@
 			return new QQNodeEmailOutgoingQueue('email_outgoing_queue', null, null);
 		}
 		/**
+		 * @return QQNodeEncouragement
+		 */
+		static public function Encouragement() {
+			return new QQNodeEncouragement('encouragement', null, null);
+		}
+		/**
 		 * @return QQNodeEventSignupForm
 		 */
 		static public function EventSignupForm() {
@@ -389,6 +395,18 @@
 		 */
 		static public function Phone() {
 			return new QQNodePhone('phone', null, null);
+		}
+		/**
+		 * @return QQNodePraises
+		 */
+		static public function Praises() {
+			return new QQNodePraises('praises', null, null);
+		}
+		/**
+		 * @return QQNodePrayerRequest
+		 */
+		static public function PrayerRequest() {
+			return new QQNodePrayerRequest('prayer_request', null, null);
 		}
 		/**
 		 * @return QQNodeProvisionalPublicLogin
