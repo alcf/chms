@@ -389,3 +389,29 @@ div.shopInfo div.shopLeft { float: left; }
 		div.calendar div.options { text-align: center; background-color: #337; }
 			div.calendar div.options a { color: #fff; font-size: 10px; text-decoration: none;}
 			div.calendar div.options a:hover { text-decoration: underline; }
+
+	.linkButton {
+    background:none!important;
+     border:none; 
+     padding:0!important;
+    /*border is optional*/
+     border-bottom:1px solid #444; 
+     cursor: pointer;
+	}
+	.linkButtonRight {
+    background:none!important;
+     border:none; 
+     padding:0!important;
+     border-bottom:1px solid #444; 
+     cursor: pointer;
+     float:right;
+     margin-right: 20px;
+	}
+	
+	.prayerStar {
+		background: url('/assets/images/ui-icons_cd0a0a_256x240.png')  no-repeat;
+		background-position: -224px -112px;
+		width:16px;
+		height:16px;
+		margin-right:5px;
+	}
