@@ -1,4 +1,4 @@
-<?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
+<?php require(__INCLUDES__ . '/prayer_header_my.inc.php'); ?>
 
 	<h1>Submit a Condifential Prayer Request</h1>
 	<p>We welcome and invite you to express your prayer requests through the Prayer Ministry of Abundant Life Christian Fellowship.

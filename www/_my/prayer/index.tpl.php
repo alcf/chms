@@ -1,4 +1,4 @@
-<?php require(__INCLUDES__ . '/header_my.inc.php'); ?>
+<?php require(__INCLUDES__ . '/prayer_header_my.inc.php'); ?>
 
 	<h1>Prayer Room</h1>
 
