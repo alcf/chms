@@ -1,6 +1,9 @@
 <?php require(__INCLUDES__ . '/prayer_header_my.inc.php'); ?>
-
-	<h1>Submit a Condifential Prayer Request</h1>
+	<div class="jumbotron text-center">
+	<h1>Submit a Confidential Prayer Request</h1>
+	</div>
+	<div class="row">
+	<div class="col-sm-12">
 	<p>We welcome and invite you to express your prayer requests through the Prayer Ministry of Abundant Life Christian Fellowship.
 	You may place a request or reach an intercessor by choosing one of the following options:</p>
 	<ul>
@@ -14,6 +17,8 @@
 	
 	<div class="buttonBar">
 		<?php $this->btnSubmitPrayer->Render('CssClass=primary'); ?>
+	</div>
+	</div>
 	</div>
 	</div>
 

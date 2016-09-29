@@ -2,6 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  
 <title>my.alcf<?php _p($this->strPageTitle ? ' - ' . $this->strPageTitle : null); ?></title>
 <style type="text/css">@import url("<?php _p(__CSS_ASSETS__); ?>/my_alcf.css");</style>
 <script type="text/javascript" src="<?php _p(__JS_ASSETS__); ?>/my_alcf.js"></script>
@@ -9,7 +14,7 @@
 </head><body>
 <?php $this->RenderBegin(); ?>
 
-<div class="page">
+<div class="container">
 	<div id="masthead">		
 		</div>
 		

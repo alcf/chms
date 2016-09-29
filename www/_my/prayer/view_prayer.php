@@ -21,21 +21,32 @@
 			$this->dtgPrayerRequests->AddColumn(new QDataGridColumn('Prayer Request', '<?= $_FORM->lnkSelected_Render($_ITEM) ?>','HtmlEntities=false','Width=750px'));
 			$this->dtgPrayerRequests->SetDataBinder('dtgPrayerRequests_Bind');
 			$this->dtgPrayerRequests->NoDataHtml = 'Currently there are no Prayer Requests.';
+			$objStyle = $this->dtgPrayerRequests->RowStyle;
+            $objStyle->BackColor = '#f6f5f8';
+            $objStyle->FontSize = 12;
+
+            $objStyle = $this->dtgPrayerRequests->AlternateRowStyle;
+            $objStyle->BackColor = '#eae8ec';
+
+            $objStyle = $this->dtgPrayerRequests->HeaderRowStyle;
+            $objStyle->ForeColor = '#ffffff';
+            $objStyle->BackColor = '#5a1590';
+            $objStyle->FontSize = 16;
 				
 			$this->dtgPrayerRequests->SortColumnIndex = 1;
 			$this->dtgPrayerRequests->ItemsPerPage = 20;
 			
 			$this->lblSubject = new QLabel($this);
-			$this->lblSubject->Width = 40;
+			//$this->lblSubject->Width = 40;
 			$this->lblSubject->Text = '';
 			
 			$this->lblDate = new QLabel($this);
-			$this->lblDate->Width = 10;
+			//$this->lblDate->Width = 10;
 			$this->lblDate->Text = '';
 			
 			$this->lblContent = new QLabel($this);
-			$this->lblContent->Width = 200;
-			$this->lblContent->Height = 100;
+			//$this->lblContent->Width = '50%';
+			//$this->lblContent->Height = 100;
 			$this->lblContent->BorderColor = '#888888';
 			$this->lblContent->Text = '';
 			

@@ -15,23 +15,23 @@
 		protected function Form_Create() {	
 			$this->txtName = new QTextBox($this);
 			$this->txtName->Name = 'Your Name: (not displayed)';
-			$this->txtName->Visible = true;
-			$this->txtName->Width = 400;
+			$this->txtName->Visible = true;			
+			//$this->txtName->Width = '50%';
 			
 			$this->txtEmail = new QTextBox($this);
 			$this->txtEmail->Name = 'Your Email: (not displayed)';
 			$this->txtEmail->Visible = true;
-			$this->txtEmail->Width = 400;
+			//$this->txtEmail->Width = '50%';
 			
 			$this->txtSubject = new QTextBox($this);
 			$this->txtSubject->Name = 'Prayer Subject:';
-			$this->txtSubject->Visible = true;
-			$this->txtSubject->Width = 400;
+			$this->txtSubject->Visible = true;	
+			//$this->txtSubject->Width = '50%';
 			
 			$this->txtContent = new QTextBox($this);
 			$this->txtContent->Name = 'Prayer Request:';
-			$this->txtContent->Rows = 20;
-			$this->txtContent->Columns = 20;
+			//$this->txtContent->Rows = 10;
+			//$this->txtContent->Columns = 10;
 			$this->txtContent->TextMode = QTextMode::MultiLine;
 			$this->txtContent->Visible = true;
 			

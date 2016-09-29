@@ -1,7 +1,9 @@
 <?php require(__INCLUDES__ . '/prayer_header_my.inc.php'); ?>
-
+	<div class="jumbotron text-center">
 	<h1>Submit a Prayer Request</h1>
-
+	</div>
+	<div class="row">
+	<div class="col-sm-12">
 	<div class="section">	<?php $this->txtName->RenderWithName();?>
 	<?php $this->txtEmail->RenderWithName();?>
 	<?php $this->txtSubject->RenderWithName();?>
@@ -13,6 +15,8 @@
 	
 	<div class="buttonBar">
 		<?php $this->btnSubmitPrayer->Render('CssClass=primary'); ?>
+		</div>
+		</div>
 	</div>
 	</div>
 

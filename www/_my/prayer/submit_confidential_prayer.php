@@ -11,15 +11,15 @@
 			$this->txtName = new QTextBox($this);
 			$this->txtName->Name = 'Your Name: (not displayed)';
 			$this->txtName->Visible = true;
-			$this->txtName->Width = 400;
+			//$this->txtName->Width = 400;
 			
 			$this->txtContent = new QTextBox($this);
 			$this->txtContent->Name = 'Prayer Request:';
-			$this->txtContent->Rows = 20;
-			$this->txtContent->Columns = 20;
+			$this->txtContent->Rows = 10;
+			$this->txtContent->Columns = 10;
 			$this->txtContent->TextMode = QTextMode::MultiLine;
 			$this->txtContent->Visible = true;
-			$this->txtContent->Width = 400;
+			//$this->txtContent->Width = 400;
 									
 			$this->btnSubmitPrayer = new QButton($this);
 			$this->btnSubmitPrayer->Text = 'Submit Prayer Request';
