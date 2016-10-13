@@ -21,9 +21,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		public $dtgGeography;
 		public $dtgPeople;
 		
-		protected function Form_Create() {	
-			$chartData = array();
-						
+		protected function Form_Create() {							
 			$this->geographyArray = $this->InitializeArray(); 
 			$objgeographyArray = array();
 			foreach ( $this->geographyArray as $key=>$val ){
@@ -41,11 +39,9 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$this->dtgPeople->Paginator = $objPaginator;
 			$this->dtgPeople->ItemsPerPage = 20;
 			
-			$this->dtgPeople->AddColumn(new QDataGridColumn('Member Name', '<?= $_ITEM->FullName; ?>', 'Width=270px'));
-			$this->dtgPeople->AddColumn(new QDataGridColumn('City', '<?= $_FORM->RenderCity($_ITEM) ?>', 'Width=270px'));
-			$objPeopleArray = Person::LoadArrayBy2016Attribute();
-			$this->dtgPeople->TotalItemCount = count($objPeopleArray);		
-			$this->dtgPeople->DataSource = $objPeopleArray;
+			$this->dtgPeople->AddColumn(new QDataGridColumn('Member Name', '<?= $_ITEM->FullName; ?>', 'Width=270px',array('OrderByClause' => QQ::OrderBy(QQN::Person()->LastName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Person()->LastName, false))));
+			$this->dtgPeople->AddColumn(new QDataGridColumn('City', '<?= $_FORM->RenderCity($_ITEM) ?>', 'Width=270px',array('OrderByClause' => QQ::OrderBy(QQN::Person()->PrimaryCityText), 'ReverseOrderByClause' => QQ::OrderBy(QQN::Person()->PrimaryCityText, false))));
+			$this->dtgPeople->SetDataBinder('dtgPeople_Bind');		
 			
 			// Construct the charts
 			QApplication::ExecuteJavaScript('initializeChart('.json_encode($objgeographyArray).');');
@@ -55,6 +51,14 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			return QApplication::HtmlEntities($objPerson->PrimaryCityText);
 		}
 		
+		public function dtgPeople_Bind() {
+			$objPeopleArray = Person::LoadArrayBy2016Attribute(QQ::Clause(
+                $this->dtgPeople->OrderByClause,
+                $this->dtgPeople->LimitClause
+            ));
+			$this->dtgPeople->TotalItemCount = count($objPeopleArray);
+			$this->dtgPeople->DataSource = $objPeopleArray;
+		}
 		protected function InitializeArray(){			
 			$cityArray = array();
 			

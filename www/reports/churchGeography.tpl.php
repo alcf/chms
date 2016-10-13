@@ -27,7 +27,7 @@ function initializeChart(chartData) {
 	<h2>Total People in Database: <?php _p($this->iTotalPersonCount) ?></h2>
 	<h2>Total Cities that congregants are from: <?php _p(count($this->geographyArray)) ?></h2>
 	
-	<div id="chartdiv" style="width: 100%; height: 400px;"></div>
+	<div id="chartdiv" style="width: 100%; height: 600px;"></div>
 </div>
 <div class="section">
 <h2>Member Count by City</h2>
