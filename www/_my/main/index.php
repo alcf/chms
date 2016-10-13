@@ -147,6 +147,24 @@
 
 			if ($this->mctPerson->Person->DobGuessedFlag || $this->mctPerson->Person->DobYearApproximateFlag) $this->dtxDateOfBirth->Text = null;
 			$this->Refresh();
+			
+			// Set Post 2016 Attribute by default if someone logs in that isn't set		
+			$isPost2016 = false;
+			$attributeArray = $this->mctPerson->Person->GetAttributeValueArray();
+			foreach($attributeArray as $objAttribute) {
+				if($objAttribute->Attribute->Name == 'Post-2016') {
+					$isPost2016 = true;
+					break;
+				}
+			}
+			if(!$isPost2016){
+				$objAttribute = new Attribute();
+				$objAttribute->Name = 'Post-2016';
+				$objAttribute->AttributeDataTypeId = AttributeDataType::Checkbox;
+				$objAttribute->Save();				
+				$this->mctPerson->Person->SetAttribute($objAttribute, true);
+			}
+
 		}
 
 		protected function dlgEdit_Setup($strType) {
