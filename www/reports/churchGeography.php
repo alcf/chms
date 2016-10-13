@@ -34,7 +34,7 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 			$this->dtgGeography->AddColumn(new QDataGridColumn('Count', '<?= $_ITEM->value; ?>', 'Width=270px'));
 			$this->dtgGeography->DataSource = $objgeographyArray;
 			
-			$this->dtgPeople = new QDataGrid($this);
+			$this->dtgPeople = new PersonDataGrid($this);
 			$objPaginator = new QPaginator($this->dtgPeople);
 			$this->dtgPeople->Paginator = $objPaginator;
 			$this->dtgPeople->ItemsPerPage = 20;
@@ -52,13 +52,13 @@ require(dirname(__FILE__) . '/../../includes/prepend.inc.php');
 		}
 		
 		public function dtgPeople_Bind() {
-			$objPeopleArray = Person::LoadArrayBy2016Attribute(QQ::Clause(
-                $this->dtgPeople->OrderByClause,
-                $this->dtgPeople->LimitClause
-            ));
-			$this->dtgPeople->TotalItemCount = count($objPeopleArray);
-			$this->dtgPeople->DataSource = $objPeopleArray;
+			$objConditions = QQ::Equal(QQN::Person()->AttributeValue->Attribute->Name, 'Post-2016');
+			$objClauses = QQ::Clause(
+                $this->dtgPeople->OrderByClause
+            );			
+			$this->dtgPeople->MetaDataBinder($objConditions, $objClauses);
 		}
+		
 		protected function InitializeArray(){			
 			$cityArray = array();
 			
