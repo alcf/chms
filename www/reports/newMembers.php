@@ -270,7 +270,7 @@ class NewMembersForm extends ChmsForm {
 		}
 		ksort($this->iEthnicity);
 		$this->iSalvationDate['Not Specified'] = $this->iTotalCount - array_sum($this->iSalvationDate);
-		$this->iheight = 2200 + (count($this->iEthnicity)/3)*30;
+		$this->iheight = 2840 + (count($this->iEthnicity)/3)*30;
 			
 		// Construct the charts
 		$salvationArray = array();
