@@ -22,6 +22,7 @@ class AttendeesForm extends ChmsForm {
 	public    $dtgAttendees;
 	public    $lblTitle;
 	public 	  $iheight;
+	public 	  $iSex;
 
 	protected function Form_Create() {
 		$this->initializeArrays();
@@ -45,7 +46,7 @@ class AttendeesForm extends ChmsForm {
 		$this->dtxAfterValue->AddAction(new QChangeEvent(), new QAjaxAction('dtxDate_Change'));
 		$this->dtxAfterValue->Text = QApplication::PathInfo(0);
 	*/		
-		$this->dtgAttendees = new QDataGrid($this);
+		$this->dtgAttendees = new PersonDataGrid($this);
 		$objPaginator = new QPaginator($this->dtgAttendees);
 		$this->dtgAttendees->Paginator = $objPaginator;
 		$this->dtgAttendees->ItemsPerPage = 20;
@@ -58,16 +59,23 @@ class AttendeesForm extends ChmsForm {
 		$this->dtgAttendees->AddColumn(new QDataGridColumn('Prior Church', '<?= $_FORM->RenderPriorChurch($_ITEM) ?>', 'Width=270px'));
 		$this->dtgAttendees->AddColumn(new QDataGridColumn('Salvation Date', '<?= $_FORM->RenderSalvationDate($_ITEM) ?>', 'Width=270px'));
 					
-		//$this->dtgAttendees->SetDataBinder('dtgAttendees_Bind');
+		$this->dtgAttendees->SetDataBinder('dtgAttendees_Bind');
 				
 		$objAttendeeArray = Person::LoadArrayBy2016Attribute();
-		$this->dtgAttendees->TotalItemCount = count($objAttendeeArray);		
-		$this->dtgAttendees->DataSource = $objAttendeeArray;
+		//$this->dtgAttendees->TotalItemCount = count($objAttendeeArray);		
+		//$this->dtgAttendees->DataSource = $objAttendeeArray;
 		$this->iTotalCount = count($objAttendeeArray);
 		$this->CalculateMaritalAndAgeStatus($objAttendeeArray);
 		$this->CalculateAttributeStatistics($objAttendeeArray);		
 	}
 
+	public function dtgAttendees_Bind() {
+		$objConditions = QQ::Equal(QQN::Person()->AttributeValue->Attribute->Name, 'Post-2016');
+		$objClauses = QQ::Clause(
+		$this->dtgAttendees->OrderByClause
+		);
+		$this->dtgAttendees->MetaDataBinder($objConditions, $objClauses);
+	}
 	protected function dtgAttendees_Refresh() {
 		$this->dtgAttendees->PageNumber = 1;
 		$this->dtgAttendees->Refresh();
@@ -94,6 +102,7 @@ class AttendeesForm extends ChmsForm {
 										'40-50 Years Old' =>0,
 										'50-60 Years Old' =>0,
 										'60+ Years Old' =>0);
+		$this->iSex = array('Male' => 0, 'Female' => 0, 'Unspecified' => 0);
 		
 	}
 	protected function CalculateMaritalAndAgeStatus($objAttendeeArray) {
@@ -127,6 +136,11 @@ class AttendeesForm extends ChmsForm {
 				default:
 					$this->iMaritalStatus['Not Specified']++;
 			}
+			
+			if($objPerson->Gender == 'M') $this->iSex['Male']++;
+			else if($objPerson->Gender == 'F') $this->iSex['Female']++;
+			else $this->iSex['Unspecified']++;
+			
 			$iAge = $objPerson->Age;
 			if ($iAge != null) {
 				if ($iAge<10)
@@ -165,6 +179,16 @@ class AttendeesForm extends ChmsForm {
 			$maritalArray[] = $objItem;
 		}
 		QApplication::ExecuteJavaScript('initializeMaritalChart('.json_encode($maritalArray).');');
+		
+		// Construct the sex chart		
+		$objGenderArray = array();
+		foreach ( $this->iSex as $key=>$value ){
+			$objItem = new chartArray();
+			$objItem->key = $key;
+			$objItem->value = $value;
+			$objGenderArray[] = $objItem;
+		}
+		QApplication::ExecuteJavaScript('initializeGenderChart('.json_encode($objGenderArray).');');
 	}
 
 	public function RenderMembershipStatus(Person $objPerson) {
@@ -256,7 +280,7 @@ class AttendeesForm extends ChmsForm {
 		}
 		ksort($this->iEthnicity);
 		$this->iSalvationDate['Not Specified'] = $this->iTotalCount - array_sum($this->iSalvationDate);
-		$this->iheight = 2200 + (count($this->iEthnicity)/3)*30;
+		$this->iheight = 2840 + (count($this->iEthnicity)/3)*30;
 			
 		// Construct the charts
 		$salvationArray = array();

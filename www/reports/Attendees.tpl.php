@@ -1,6 +1,24 @@
 <?php require(__INCLUDES__ . '/header.inc.php'); ?>
 <script type="text/javascript">
-    
+
+	function initializeGenderChart(chartData) {
+		// PIE CHART
+	    chart = new AmCharts.AmPieChart();
+	    chart.dataProvider = chartData;
+	    chart.titleField = "key";
+	    chart.valueField = "value";
+	    chart.outlineColor = "#FFFFFF";
+	    chart.outlineAlpha = 0.8;
+	    chart.outlineThickness = 2;
+	    chart.balloonText = "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>";
+	    // this makes the chart 3D
+	    chart.depth3D = 15;
+	    chart.angle = 30;
+		
+	    // WRITE
+	    chart.write('sexdiv');
+	}
+	
     function initializeSalvationChart(chartData) {       
         var chart = new AmCharts.AmSerialChart();
         chart.dataProvider = chartData;
@@ -177,8 +195,21 @@
 		?>
 		<div id="maritalContainer" style="width: 640px; height: 400px;"></div>
 	</div>
-	<div style='clear:both;'><br></div>
+	<div style='clear:both;'><br><br></div>
 	
+	<div style='margin-left:20px; position:relative;'>
+		<h4>Gender Breakdown</h4>
+		<?php 
+			foreach($this->iSex as $key=>$value) {
+		?>
+		<p style='float:left; margin-left:30px; margin-bottom:10px; margin-top:5px; width:200px;'><?php _p($key)?>: <?php _p($value)?></p>
+		<?php 
+			}
+		?>
+	<div id="sexdiv" style="width: 640px; height: 400px;"> </div>
+	</div>
+	<div style='clear:both;'><br><br></div>
+		
 	<div style='margin-left:20px; position:relative;'>
 		<h4>Ethnicity Breakdown</h4>
 		<?php 

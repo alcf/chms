@@ -22,6 +22,7 @@ class NewMembersForm extends ChmsForm {
 	public    $dtgNewMembers;
 	public    $lblTitle;
 	public 	  $iheight;
+	public 	  $iSex;
 
 	protected function Form_Create() {
 		$this->initializeArrays();
@@ -111,8 +112,9 @@ class NewMembersForm extends ChmsForm {
 										'40-50 Years Old' =>0,
 										'50-60 Years Old' =>0,
 										'60+ Years Old' =>0);
-		
+		$this->iSex = array('Male' => 0, 'Female' => 0, 'Unspecified' => 0);		
 	}
+	
 	protected function CalculateMaritalAndAgeStatus($objMembershipArray) {
 		$this->iMaritalStatus['Not Specified'] = 0;
 		$this->iMaritalStatus['Single'] = 0;
@@ -164,6 +166,10 @@ class NewMembersForm extends ChmsForm {
 			} else {
 				$this->iAge['Not Specified']++;
 			}
+			
+			if($objPerson->Gender == 'M') $this->iSex['Male']++;
+			else if($objPerson->Gender == 'F') $this->iSex['Female']++;
+			else $this->iSex['Unspecified']++;
 		}
 		// Construct the charts
 		$ageArray = array();
@@ -183,6 +189,16 @@ class NewMembersForm extends ChmsForm {
 			$maritalArray[] = $objItem;
 		}
 		QApplication::ExecuteJavaScript('initializeMaritalChart('.json_encode($maritalArray).');');
+		
+		// Construct the sex chart
+		$objGenderArray = array();
+		foreach ( $this->iSex as $key=>$value ){
+			$objItem = new chartArray();
+			$objItem->key = $key;
+			$objItem->value = $value;
+			$objGenderArray[] = $objItem;
+		}
+		QApplication::ExecuteJavaScript('initializeGenderChart('.json_encode($objGenderArray).');');
 	}
 
 	public function RenderMaritalStatus($objMembership) {
