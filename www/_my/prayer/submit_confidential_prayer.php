@@ -15,8 +15,8 @@
 			
 			$this->txtContent = new QTextBox($this);
 			$this->txtContent->Name = 'Prayer Request:';
-			$this->txtContent->Rows = 10;
-			$this->txtContent->Columns = 10;
+			//$this->txtContent->Rows = 10;
+			//$this->txtContent->Columns = 10;
 			$this->txtContent->TextMode = QTextMode::MultiLine;
 			$this->txtContent->Visible = true;
 			//$this->txtContent->Width = 400;
