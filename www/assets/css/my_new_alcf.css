@@ -74,10 +74,10 @@
 	}
 	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
 
-	input.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: Pier Sans; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
+	input.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: Pier Sans; font-size: 13px; padding: 3px; width: 100%; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	input.textbox:disabled { background-color: #e0e0e0; color: #999; }
-	textarea.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: Pier Sans; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
+	textarea.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: Pier Sans; font-size: 13px; padding: 3px; width: 100%; color: #444; *margin-left: -10px; height: 100px; }
 	textarea.textbox:focus { background-color: #fff; }
 	textarea.textbox:disabled { background-color: #e0e0e0; color: #999; }
 	select.listbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: Pier Sans; font-size: 13px; padding: 2px; }
