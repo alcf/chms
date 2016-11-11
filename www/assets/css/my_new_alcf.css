@@ -187,7 +187,7 @@
 
 	div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
 	div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #ffffff; font-size: 12px; font-family: Pier Sans; position: relative; top: 2px; }
+	div.renderWithName div.left { float: left; text-align: center; width: 180px; color: #ffffff; font-size: 12px; font-family: Pier Sans; position: relative; top: 2px; }
 	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; color: #ffffff; }
 /*	div.renderWithName div.required:after {content: " *"; } */ 
 	div.renderWithName div.left span.instructions { font: 10px 'Pier Sans', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
