@@ -43,7 +43,7 @@
 
 
 	body {
-		margin: 0; padding: 0; background: #787878;
+		margin: 0; padding: 0; background: #262526;
 		font-family: Pier Sans;
 		font-size: 12px; 
 		color: #ffffff;
@@ -57,12 +57,12 @@
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
 
 	input.primary, button.primary {
-		background-color: #3d4b5f; border: 1px solid #3d4b5f; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
+		background-color: #AF8768; border: 1px solid #AF8768; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
 		font-size: 12px; font-family: Pier Sans; color: #fff;
 		text-transform: uppercase;
 	}
 	input.primary:hover, button.primary:hover { cursor: pointer; background-color: #262526; }
-	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #3d4b5f; color: #fff; }
+	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #AF8768; color: #fff; }
 
 	h1 button.primary, h3 button.primary, h4 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
 	h1 input.primary, h3 input.primary, h4 input.primary { *margin-top: -15px; margin-left: 10px; float: right; }
@@ -92,7 +92,7 @@
 	/*** TYPOGRAPHY ***/
 
 	h1, h2, h3, h4, h5, h6{
-	  color: #3d4b5f;
+	  color: #AF8768;
 	  font-family: Neuzeit Grotesk, Avenir Roman;
 	  font-weight: normal;
 	  line-height: normal;
@@ -103,7 +103,7 @@
 	
 	h1 {
 		font-size: 36px;
-		color: #3d4b5f;
+		color: #AF8768;
 	}
 	
 	h2 {
@@ -114,7 +114,7 @@
 	h3 {
 		font-size: 18px;
 		text-transform: none;
-		color: #3d4b5f;
+		color: #AF8768;
 		font-weight: bold;	
 	}
 	
@@ -127,7 +127,7 @@
 	
 	h5 {
 		font-size: 13px;
-		color: #3d4b5f;
+		color: #AF8768;
 	}
 
 	/*** PAGE STRUCTURE ***/
@@ -152,12 +152,12 @@
 
 		div#masthead div.bottomPad { height: 20px; font-size: 1px; }
 
-	div#mainContent { padding: 20px; background-color: #787878; -moz-border-radius: 5px; border-radius: 5px; }
+	div#mainContent { padding: 20px; background-color: #262526; -moz-border-radius: 5px; border-radius: 5px; }
 	
 
 	div.footerPane { height: 1px; overflow: visible; }
 
-	div.footerPaneBackground { height: 80px; background-color: #787878; opacity: 0.25; filter: alpha(opacity=25); }
+	div.footerPaneBackground { height: 80px; background-color: #262526; opacity: 0.25; filter: alpha(opacity=25); }
 	
 	div.footer {
 		z-index: 1;
@@ -209,7 +209,7 @@
 	div.securePayment {width: 1px; height: 1px; overflow: visible; }
 	div.securePaymentInside { width: 150px; height:166px; border: 1px solid #888; background: url(/assets/images/secure.png); -moz-border-radius: 8px; border-radius: 8px; position: relative; left: 740px; cursor: pointer; }
 
-	div.section { background-color: #787878; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px; border-radius: 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
+	div.section { background-color: #262526; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px; border-radius: 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 	div.subnavContent div.section { border-color: #ddf; }
@@ -381,7 +381,7 @@ div.shopInfo div.shopLeft { float: left; }
 			span.paginator span.page a:hover { background-color: #ccf; }
 			span.paginator span.arrow { font-weight: bold; color: #ccc; margin: 0; padding: 0 3px 0 3px; }
 			span.paginator span.arrow a { font-weight: bold; color: #000; text-decoration: none; }
-			span.paginator span.selected { font-weight: bold; background-color: #787878; padding: 0 3px 0 3px; margin: 0 2px 0 2px; border: 1px; border-style: solid; }
+			span.paginator span.selected { font-weight: bold; background-color: #262526; padding: 0 3px 0 3px; margin: 0 2px 0 2px; border: 1px; border-style: solid; }
 			span.paginator span.break { color: #666; margin: 0 5px 0 5px; }
 			span.paginator span.ellipsis { color: #666; }
 
@@ -429,7 +429,7 @@ div.shopInfo div.shopLeft { float: left; }
 	
 	.prayerStar {
 		background: url('/assets/images/ui-icons_cd0a0a_256x240.png')  no-repeat;
-		background-position: -224px -112px;
+		background-position: -210px -112px;
 		width:16px;
 		height:16px;
 		margin-right:5px;
@@ -439,7 +439,7 @@ div.shopInfo div.shopLeft { float: left; }
 .jumbotron {
   padding: 30px;
   margin-bottom: 30px;
-  background-color: #787878;
+  background-color: #262526;
 }
 
 .jumbotron p {

@@ -30,7 +30,7 @@
 
             $objStyle = $this->dtgPrayerRequests->HeaderRowStyle;
             $objStyle->ForeColor = '#ffffff';
-            $objStyle->BackColor = '#3d4b5f';
+            $objStyle->BackColor = '#AF8768';
             $objStyle->FontSize = 16;
 				
 			$this->dtgPrayerRequests->SortColumnIndex = 1;
@@ -52,7 +52,7 @@
 			
 			$this->lblPrayerCount= new QLabel($this);
 			$this->lblPrayerCount->HtmlEntities = false;
-			$this->lblPrayerCount->Text = '# Prayers: ';
+			$this->lblPrayerCount->Text = '0 People prayed for you';
 			$this->lblPrayerCount->Visible = false;
 			$this->btnIPrayed = new QButton($this);
 			$this->btnIPrayed->Text = 'I prayed for you';
@@ -89,10 +89,8 @@
 				$this->objPrayerRequest->PrayerCount++;
 				$this->objPrayerRequest->Save();
 				
-				$imgPrayerCount = '# Prayers: ';
-				for($i=0; $i< $this->objPrayerRequest->PrayerCount; $i++) {
-					$imgPrayerCount .= '<img src="/assets/images/spacer.png" class="prayerStar" />';
-				}
+				$imgPrayerCount = '<img src="/assets/images/spacer.png" class="prayerStar" />'.
+					' '.$this->objPrayerRequest->PrayerCount. ' People prayed for you';				
 				$this->lblPrayerCount->Text = $imgPrayerCount;
 			}
 		}
@@ -137,10 +135,8 @@
 				$this->lblSubject->Text = $objPrayerRequest->Subject;
 				$this->lblDate->Text = ($objPrayerRequest->Date)? $objPrayerRequest->Date->ToString() :'';
 				$this->lblContent->Text = $objPrayerRequest->Content;
-				$imgPrayerCount = '# Prayers: ';
-				for($i=0; $i< $objPrayerRequest->PrayerCount; $i++) {
-					$imgPrayerCount .= '<img src="/assets/images/spacer.png" class="prayerStar" />';
-				}
+				$imgPrayerCount = '<img src="/assets/images/spacer.png" class="prayerStar" />'.
+					' '.$this->objPrayerRequest->PrayerCount. ' People prayed for you';	
 				$this->lblPrayerCount->Text = $imgPrayerCount;			
 			}
 		}
