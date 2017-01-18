@@ -43,10 +43,10 @@
 
 
 	body {
-		margin: 0; padding: 0; background: #262526;
+		margin: 0; padding: 0; background: #ffffff;
 		font-family: Pier Sans;
 		font-size: 12px; 
-		color: #ffffff;
+		color: #262525;
 	}
 
 	form { margin: 0; padding: 0; }
@@ -61,7 +61,7 @@
 		font-size: 12px; font-family: Pier Sans; color: #fff;
 		text-transform: uppercase;
 	}
-	input.primary:hover, button.primary:hover { cursor: pointer; background-color: #262526; }
+	input.primary:hover, button.primary:hover { cursor: pointer; background-color: #ffffff; color: #262526;}
 	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #AF8768; color: #fff; }
 
 	h1 button.primary, h3 button.primary, h4 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
@@ -152,12 +152,12 @@
 
 		div#masthead div.bottomPad { height: 20px; font-size: 1px; }
 
-	div#mainContent { padding: 20px; background-color: #262526; -moz-border-radius: 5px; border-radius: 5px; }
+	div#mainContent { padding: 20px; background-color: #ffffff; -moz-border-radius: 5px; border-radius: 5px; }
 	
 
 	div.footerPane { height: 1px; overflow: visible; }
 
-	div.footerPaneBackground { height: 80px; background-color: #262526; opacity: 0.25; filter: alpha(opacity=25); }
+	div.footerPaneBackground { height: 80px; background-color: #ffffff; opacity: 0.25; filter: alpha(opacity=25); }
 	
 	div.footer {
 		z-index: 1;
@@ -187,16 +187,16 @@
 
 	div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
 	div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-	div.renderWithName div.left { float: left; text-align: center; width: 180px; color: #ffffff; font-size: 12px; font-family: Pier Sans; position: relative; top: 2px; }
-	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; color: #ffffff; }
+	div.renderWithName div.left { float: left; text-align: center; width: 180px; color: #262525; font-size: 12px; font-family: Pier Sans; position: relative; top: 2px; }
+	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; color: #262525; }
 /*	div.renderWithName div.required:after {content: " *"; } */ 
 	div.renderWithName div.left span.instructions { font: 10px 'Pier Sans', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: Pier Sans, helvetica; }
 	div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Pier Sans', 'Helvetica'; color: #600; }
-	div.renderWithName div.right label { font-size: 12px; position: relative; top: 2px; left: 2px; color: #ffffff;}
-	div.renderWithName div.right span { font-size: 14px; color: #ffffff; }
-	div.renderWithName div.right span.detail { font-size: 11px; color: #ffffff; }
-	div.renderWithName div.right span.gray { color: #ffffff; font-style: italic; }
+	div.renderWithName div.right label { font-size: 12px; position: relative; top: 2px; left: 2px; color: #262525;}
+	div.renderWithName div.right span { font-size: 14px; color: #262525; }
+	div.renderWithName div.right span.detail { font-size: 11px; color: #262525; }
+	div.renderWithName div.right span.gray { color: #262525; font-style: italic; }
 
 	div.sectionTwoCol div.renderWithName div.right { width: 217px; }
 
@@ -209,7 +209,7 @@
 	div.securePayment {width: 1px; height: 1px; overflow: visible; }
 	div.securePaymentInside { width: 150px; height:166px; border: 1px solid #888; background: url(/assets/images/secure.png); -moz-border-radius: 8px; border-radius: 8px; position: relative; left: 740px; cursor: pointer; }
 
-	div.section { background-color: #262526; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px; border-radius: 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
+	div.section { background-color: #ffffff; padding: 10px; margin-bottom: 10px; -moz-border-radius: 5px; border-radius: 5px; border-width: 1px; border-style: solid; border-color: #ccc; }
 	div.sectionSubnavLeft { width: 384px; float: left; padding-right: 10px;}
 	div.sectionSubnavRight { width: 383px; float: left; padding-left: 10px; border-left: 1px solid #888;}
 	div.subnavContent div.section { border-color: #ddf; }
@@ -223,9 +223,9 @@
 
 	div.sectionBatchInfo { background-color: #5a768e; color: #fff; }
 
-	div.Pier Sans { font-family: Pier Sans, helvetica, sans-serif; font-size: 14px; color: #ffffff; }
-	div.section ul { font-family: Pier Sans, helvetica, sans-serif; font-size: 14px; color: #ffffff;}
-	div.section li { font-family: Pier Sans, helvetica, sans-serif; font-size: 14px; color: #ffffff; padding-top:5px;}
+	div.Pier Sans { font-family: Pier Sans, helvetica, sans-serif; font-size: 14px; color: #262525; }
+	div.section ul { font-family: Pier Sans, helvetica, sans-serif; font-size: 14px; color: #262525;}
+	div.section li { font-family: Pier Sans, helvetica, sans-serif; font-size: 14px; color: #262525; padding-top:5px;}
 
 	div.filterBy { margin-left: 15px; float: left; color: #5a768e; font-size: 11px; font-style: italic; font-family: Pier Sans, helvetica, sans-serif; }
 	div.filterByFirst { margin-left: 0; }
@@ -316,13 +316,13 @@ div.shopInfo div.shopLeft { float: left; }
 	
 	/* QDataGrid */
 	p.datagrid { font-style: italic; }
-	table.datagrid { font-family: Pier Sans, hePier Sansca; font-size: 12px; border-style: solid; border-width: 1px 0 0 0; border-color: #ffffff;}
+	table.datagrid { font-family: Pier Sans, hePier Sansca; font-size: 12px; border-style: solid; border-width: 1px 0 0 0; border-color: #262525;}
 		table.datagrid caption, table.datagrid tfoot { padding-bottom: 4px; overflow: auto; }
 			table.datagrid span.left { float: left; font-size: 10px; display: block; }
 			table.datagrid span.right { float: right; font-size: 10px; display: block; }
-		table.datagrid tr {border-style: solid; border-width: 1px 0 0 0; border-color: #ffffff; }
-			table.datagrid tr.alternate { background-color: #262526; }
-			table.datagrid tr td { border-style: solid; border-width: 1px 0 0 0; border-color: #ffffff; }
+		table.datagrid tr {border-style: solid; border-width: 1px 0 0 0; border-color: #262525; }
+			table.datagrid tr.alternate { background-color: #ffffff; }
+			table.datagrid tr td { border-style: solid; border-width: 1px 0 0 0; border-color: #262525; }
 			table.datagrid tr:hover {background-color: #e7e7e7;}
 			table.datagrid tr.selected {background-color: #e7e7e7; font-weight: bold; }
 		table.datagrid th {text-align: left; /** font-family: Pier Sans; padding: 5px; /**/ /**/ padding: 6px 5px 4px 5px; font-family: MyriadProBold; font-weight: normal; font-size: 13px; /**/ }
@@ -381,7 +381,7 @@ div.shopInfo div.shopLeft { float: left; }
 			span.paginator span.page a:hover { background-color: #ccf; }
 			span.paginator span.arrow { font-weight: bold; color: #ccc; margin: 0; padding: 0 3px 0 3px; }
 			span.paginator span.arrow a { font-weight: bold; color: #000; text-decoration: none; }
-			span.paginator span.selected { font-weight: bold; background-color: #262526; padding: 0 3px 0 3px; margin: 0 2px 0 2px; border: 1px; border-style: solid; }
+			span.paginator span.selected { font-weight: bold; background-color: #ffffff; padding: 0 3px 0 3px; margin: 0 2px 0 2px; border: 1px; border-style: solid; }
 			span.paginator span.break { color: #666; margin: 0 5px 0 5px; }
 			span.paginator span.ellipsis { color: #666; }
 
@@ -414,7 +414,7 @@ div.shopInfo div.shopLeft { float: left; }
     /*border is optional*/
      border-bottom:1px solid #fff; 
      cursor: pointer;
-     color: #ffffff;
+     color: #262525;
 	}
 	.linkButtonRight {
     background:none!important;
@@ -424,7 +424,7 @@ div.shopInfo div.shopLeft { float: left; }
      cursor: pointer;
      float:right;
      /*margin-right: 20px;*/
-     color: #ffffff;
+     color: #262525;
 	}
 	
 	.prayerStar {
@@ -439,7 +439,7 @@ div.shopInfo div.shopLeft { float: left; }
 .jumbotron {
   padding: 30px;
   margin-bottom: 30px;
-  background-color: #262526;
+  background-color: #ffffff;
 }
 
 .jumbotron p {

@@ -23,6 +23,11 @@
 			$this->dtgPraises->SortColumnIndex = 1;
 			$this->dtgPraises->ItemsPerPage = 20;
 			
+			$objStyle = $this->dtgPraises->HeaderRowStyle;
+			$objStyle->ForeColor = '#ffffff';
+			$objStyle->BackColor = '#AF8768';
+			$objStyle->FontSize = 16;
+			
 			$this->lblSubject = new QLabel($this);
 			$this->lblSubject->Width = 40;
 			$this->lblSubject->Text = '';

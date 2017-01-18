@@ -22,11 +22,11 @@
 			$this->dtgPrayerRequests->SetDataBinder('dtgPrayerRequests_Bind');
 			$this->dtgPrayerRequests->NoDataHtml = 'Currently there are no Prayer Requests.';
 			$objStyle = $this->dtgPrayerRequests->RowStyle;
-            $objStyle->BackColor = '#787878';
+            $objStyle->BackColor = '#ffffff';
             $objStyle->FontSize = 12;
 
             $objStyle = $this->dtgPrayerRequests->AlternateRowStyle;
-            $objStyle->BackColor = '#262526';
+            $objStyle->BackColor = '#ffffff';
 
             $objStyle = $this->dtgPrayerRequests->HeaderRowStyle;
             $objStyle->ForeColor = '#ffffff';
