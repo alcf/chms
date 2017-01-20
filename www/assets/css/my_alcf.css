@@ -27,7 +27,7 @@
 
 
 	body {
-		margin: 0; padding: 0; background: url('/assets/images/my_background.png');
+		margin: 0; padding: 0; background-color: #ffffff;
 		font-family: verdana, arial, helvetica, sans-serif;
 		font-size: 12px; 
 	}
@@ -40,11 +40,11 @@
 	div.cleaner { width: 0; height: 0; clear: both; font-size: 1px; }
 
 	input.primary, button.primary {
-		background-image: url(/assets/images/button_primary.png); border: 1px solid #4a3f5d; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
+		background-color: #af8768; border: 1px solid #af8768; height: 24px; -moz-border-radius: 5px; border-radius: 5px; 
 		font-size: 12px; font-family: arial; color: #fff;
 		text-transform: uppercase;
 	}
-	input.primary:hover, button.primary:hover { cursor: pointer; background-image: url(/assets/images/button_primary_hover.png); }
+	input.primary:hover, button.primary:hover { cursor: pointer; background-color: #af8768; opacity: 0.75; filter: alpha(opacity=75);}
 	input.primary:disabled, button.primary:disabled { cursor: default; background-image: none; background-color: #666; color: #999; }
 
 	h1 button.primary, h3 button.primary, h4 button.primary { *margin-top: -15px; margin-left: 10px; float: right; }
@@ -57,13 +57,13 @@
 	}
 	input.alternate:hover, button.alternate:hover { cursor: pointer; background-image: url(/assets/images/button_alternate_hover.png); }
 
-	input.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
+	input.textbox { border: 1px solid #af8768; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 250px; color: #444; *margin-left: -10px; }
 	input.textbox:focus { background-color: #fff; }
 	input.textbox:disabled { background-color: #e0e0e0; color: #999; }
-	textarea.textbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
+	textarea.textbox { border: 1px solid #af8768; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 3px; width: 400px; color: #444; *margin-left: -10px; height: 100px; }
 	textarea.textbox:focus { background-color: #fff; }
 	textarea.textbox:disabled { background-color: #e0e0e0; color: #999; }
-	select.listbox { border: 1px solid #a092b4; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 2px; }
+	select.listbox { border: 1px solid #af8768; background-color: #f3f3f3; font-family: arial; font-size: 13px; padding: 2px; }
 	select.listbox:enabled { color: #444; }
 	select.listbox:focus { background-color: #fff; }
 	select.listbox:disabled { background-color: #e0e0e0; color: #999; }
@@ -86,18 +86,18 @@
 	
 	h1 {
 		font-size: 36px;
-		color: #bdb350;
+		color: #af8768;
 	}
 	
 	h2 {
 		font-size: 24px;
-		color: #342752;
+		color: #af8768;
 	}
 	
 	h3 {
 		font-size: 18px;
 		text-transform: none;
-		color: #bdb350;
+		color: #af8768;
 		font-weight: bold;	
 	}
 	
@@ -105,12 +105,12 @@
 		font-size: 18px;
 		text-transform: uppercase;
 		font-weight: bold;
-		color: #a092b4;
+		color: #af8768;
 	}
 	
 	h5 {
 		font-size: 13px;
-		color: #412d5d;
+		color: #af8768;
 	}
 
 	/*** PAGE STRUCTURE ***/
@@ -118,29 +118,29 @@
 	div.page { width: 960px; margin: 0 auto; }
 	div#masthead { }
 		div#masthead div.utilityBar { height: 1px; overflow: visible; }
-		div#masthead div.utilityBar div.item { float: right; padding: 8px 12px; background-color: #507888; color: #fff; font-size: 10px; border-bottom: 4px solid #206070; }
-			div#masthead div.utilityBar div.item a { color: #fff; text-decoration: none; }
+		div#masthead div.utilityBar div.item { float: right; padding: 8px 12px; background-color: #ffffff; color: #262526; font-size: 10px; border-bottom: 4px solid #ffffff; }
+			div#masthead div.utilityBar div.item a { color: #262526; text-decoration: none; }
 			div#masthead div.utilityBar div.item a:hover { text-decoration: underline; }
 			div#masthead div.utilityBar div.itemPad { float: right; width: 0px; }
 
 		div#masthead div.topPad { height: 16px; font-size: 1px; }
 
-		div#masthead div.logo { height: 93px; background: url('/assets/images/my_logo.png') no-repeat; }
+		div#masthead div.logo { height: 93px; background-color: #ffffff; }
 
 		div#masthead div.navbar ul { list-style-type: none; margin: 0; padding: 0; height: 55px; }
-		div#masthead div.navbar li { margin: 0; padding: 0 20px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #fff; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
+		div#masthead div.navbar li { margin: 0; padding: 0 20px; float: left; font-family: "Century Gothic", "CenturyGothic", Arial, Helvetica, sans-serif; color: #262526; font-size: 20px; text-transform: uppercase; padding-top: 14px;}
 			div#masthead div.navbar li.first { padding-left: 23px; }
-			div#masthead div.navbar li a { color: #fff; text-decoration: none; }
+			div#masthead div.navbar li a { color: #af8768; text-decoration: none; }
 			div#masthead div.navbar li a:hover { text-decoration: underline; }
 
 		div#masthead div.bottomPad { height: 20px; font-size: 1px; }
 
-	div#mainContent { padding: 20px; background-color: #f6f0f6; -moz-border-radius: 5px; border-radius: 5px; }
+	div#mainContent { padding: 20px; background-color: #ffffff; -moz-border-radius: 5px; border-radius: 5px; }
 	
 
 	div.footerPane { height: 1px; overflow: visible; }
 
-	div.footerPaneBackground { height: 80px; background-color: #000; opacity: 0.25; filter: alpha(opacity=25); }
+	div.footerPaneBackground { height: 80px; background-color: #787878; opacity: 0.25; filter: alpha(opacity=25); }
 	
 	div.footer {
 		z-index: 1;
@@ -149,11 +149,11 @@
 		width: 960px; margin: 0 auto;
 		font-family: verdana, arial, helvetica, sans-serif;
 		font-size: 12px;
-		color: #fff;
+		color: #262526;
 		text-align: right;
 	}
 	
-	div.footer a { color: white; }
+	div.footer a { color: #262526; }
 	div.footer a:hover { text-decoration: none; }
 
 
@@ -170,8 +170,8 @@
 
 	div.renderWithName { padding: 4px 0; height: 100%; clear: both; _zoom: 1; }
 	div.renderWithName:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; }
-	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #513d6d; font-size: 12px; font-family: trebuchet ms; position: relative; top: 2px; }
-	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; color: #412d5d; }
+	div.renderWithName div.left { float: left; text-align: right; width: 180px; color: #af8768; font-size: 12px; font-family: trebuchet ms; position: relative; top: 2px; }
+	div.renderWithName div.required { font-weight: bold; text-transform: uppercase; color: #af8768; }
 /*	div.renderWithName div.required:after {content: " *"; } */ 
 	div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
 	div.renderWithName div.right { margin-left: 10px; float: left; font-family: arial, helvetica; }
@@ -305,12 +305,12 @@ div.shopInfo div.shopLeft { float: left; }
 			table.datagrid span.right { float: right; font-size: 10px; display: block; }
 		table.datagrid tr { }
 			table.datagrid tr.alternate { background-color: #e3e3e3; }
-			table.datagrid tr td { border-style: solid; border-width: 1px 0 0 0; border-color: #cec0ce; }
-			table.datagrid tr:hover {background-color: #eee3ee;}
-			table.datagrid tr.selected {background-color: #e3eee3; font-weight: bold; }
-		table.datagrid th { background: url(/assets/images/datagrid_header_background.png); text-align: left; /** font-family: trebuchet ms; padding: 5px; /**/ /**/ padding: 6px 5px 4px 5px; font-family: MyriadProBold; font-weight: normal; font-size: 13px; /**/ }
-			table.datagrid th a { color: #000; text-decoration: none; }
-			table.datagrid th a:hover { color: #000; text-decoration: underline;}
+			table.datagrid tr td { border-style: solid; border-width: 1px 0 0 0; border-color: #e7e7e7; }
+			table.datagrid tr:hover {background-color: #e7e7e7;}
+			table.datagrid tr.selected {background-color: #e7e7e7; font-weight: bold; }
+		table.datagrid th { color: #ffffff; background-color: #787878; text-align: left; /** font-family: trebuchet ms; padding: 5px; /**/ /**/ padding: 6px 5px 4px 5px; font-family: MyriadProBold; font-weight: normal; font-size: 13px; /**/ }
+			table.datagrid th a { color: #ffffff; text-decoration: none; }
+			table.datagrid th a:hover { color: #ffffff; text-decoration: underline;}
 		table.datagrid td { padding: 5px; }
 			table.datagrid td a { color: #000; }
 			table.datagrid td a:hover { color: #000; text-decoration: none; }

@@ -15,13 +15,13 @@
 		
 		<div class="renderWithName">
 			<div class="left">&nbsp;</div>
-			<div class="right" style="color: #513d6d;">
+			<div class="right" style="color: #af8768;">
 				<strong>Not yet registered?</strong>  <a href="/register/">Click here</a> to go to the registration screen.
 			</div>
 		</div>
 		<div class="renderWithName">
 			<div class="left">&nbsp;</div>
-			<div class="right" style="color: #513d6d;">
+			<div class="right" style="color: #af8768;">
 					<strong>Forgot your username or password?</strong>  Let us help you <a href="/forgot_username.php">retrieve your username</a> or <a href="/forgot_password.php">reset your password</a>.
 			</div>
 		</div>
