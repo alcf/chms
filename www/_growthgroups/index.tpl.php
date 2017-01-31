@@ -40,8 +40,8 @@
 
 <div id="map_canvas" style="width: 980px; height: 400px; border: 1px solid black; float: left; margin-bottom:10px;"></div>
 
-	<h2 style="color:#fffac9; font-size:24px;">Growth Group Regions</h2>
-	<div style="background-color: #2F6C61; width: 980px; height: 72px; float:left; box-shadow: 10px 10px 5px #444444;">
+	<h2 style="color:#af8768; font-size:24px;">Growth Group Regions</h2>
+	<div style="width: 980px; height: 72px; float:left;">
 		<ul class="mapnav">
 		<?php
 			foreach (GrowthGroupLocation::LoadAll(QQ::OrderBy(QQN::GrowthGroupLocation()->Id)) as $objLocation) {
@@ -73,7 +73,7 @@
 	</div> 
 	
 <div style="float: left; margin-top:20px; padding-top:10px; margin-bottom:20px; width:980px; ">
-	<div style="background-color: #2F6C61; padding: 10px; color: #fff; font-size: 12px; ">
+	<div style="background-color: #af8768; padding: 10px; color: #fff; font-size: 12px; ">
 		<strong>Filter Results:</strong><br/>
 		<?php $this->lstDays->Render('Width=160px'); ?> &nbsp; <?php $this->lstTypes->Render('Width=160px'); ?>
 	</div>

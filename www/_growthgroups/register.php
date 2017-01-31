@@ -31,44 +31,64 @@
 			$this->txtFirstName->Select();
 			$this->txtFirstName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtFirstName->Required = true;
+			$this->txtFirstName->BackColor = "#e7e7e7";
+			$this->txtFirstName->BorderColor = "#af8768";
 			
 			$this->txtLastName = $this->mcGroupRegistration->txtLastName_Create();
 			$this->txtLastName->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtLastName->Required = true;
+			$this->txtLastName->BackColor = "#e7e7e7";
+			$this->txtLastName->BorderColor = "#af8768";
 			
 			$this->lstGender = new QListBox($this);
 			$this->lstGender->Name = 'Gender';
 			$this->lstGender->AddItem('- Select One -');
 			$this->lstGender->AddItem('Female', 'F');
 			$this->lstGender->AddItem('Male', 'M');
+			$this->lstGender->BackColor = "#e7e7e7";
+			$this->lstGender->BorderColor = "#af8768";
 			
 			$this->txtAddress = $this->mcGroupRegistration->txtAddress_Create();
 			$this->txtAddress->Name = 'Address';
 			$this->txtAddress->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtAddress->Required = true;
+			$this->txtAddress->BackColor = "#e7e7e7";
+			$this->txtAddress->BorderColor = "#af8768";
 			
 			$this->txtCity = $this->mcGroupRegistration->txtCity_Create();
 			$this->txtCity->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtCity->Required = true;
+			$this->txtCity->BackColor = "#e7e7e7";
+			$this->txtCity->BorderColor = "#af8768";
 			
 			$this->txtZipCode = $this->mcGroupRegistration->txtZipcode_Create();
 			$this->txtZipCode->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtZipCode->Required = true;
+			$this->txtZipCode->BackColor = "#e7e7e7";
+			$this->txtZipCode->BorderColor = "#af8768";
 			
 			$this->txtPhoneNumber = $this->mcGroupRegistration->txtPhone_Create();
 			$this->txtPhoneNumber->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtPhoneNumber->Required = true;
+			$this->txtPhoneNumber->BackColor = "#e7e7e7";
+			$this->txtPhoneNumber->BorderColor = "#af8768";
 			
 			$this->txtEmail = $this->mcGroupRegistration->txtEmail_Create();
 			$this->txtEmail->AddAction(new QEnterKeyEvent(), new QTerminateAction());
 			$this->txtEmail->Required = true;
+			$this->txtEmail->BackColor = "#e7e7e7";
+			$this->txtEmail->BorderColor = "#af8768";
 			
 			$this->txtComments = $this->mcGroupRegistration->txtComments_Create();
 			$this->txtComments->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+			$this->txtComments->BackColor = "#e7e7e7";
+			$this->txtComments->BorderColor = "#af8768";
 			
 			$this->lstSource = new QListBox($this);
 			$this->lstSource->Name = 'How did you hear about us? ';	
 			$this->lstSource->Width = 250;
+			$this->lstSource->BackColor = "#e7e7e7";
+			$this->lstSource->BorderColor = "#af8768";
 			$this->lstSource->AddItem('Choose...',0);
 			foreach(SourceList::LoadAll() as $objSourceList){
 				$this->lstSource->AddItem($objSourceList->Name, $objSourceList->Id);
@@ -76,6 +96,8 @@
 			
 			$this->lstParticipationType = new QListBox($this);	
 			$this->lstParticipationType->Name = 'What would you like to be?';
+			$this->lstParticipationType->BackColor = "#e7e7e7";
+			$this->lstParticipationType->BorderColor = "#af8768";
 			$objRoleArray = Ministry::Load(17)->GetGroupRoleArray(QQ::OrderBy(QQN::GroupRole()->Name));
 			$this->lstParticipationType->AddItem('-Select One-');
 			foreach($objRoleArray as $objRole) {
@@ -92,6 +114,8 @@
 				$objChkDay = new QCheckBox($this);
 				$objChkDay->Text = $value;
 				$objChkDay->Name = $key;
+				//$objChkDay->BackColor = "#e7e7e7";
+				//$objChkDay->BorderColor = "#af8768";
 				$this->chkDaysAvailable[] = $objChkDay;
 			}
 			
@@ -102,10 +126,14 @@
 				$objListItem = new QCheckBox($this);
 				$objListItem->Text = $objGrowthGroupStructure->__toString();
 				$objListItem->Name = $objGrowthGroupStructure->Id;
+				//$objListItem->BackColor = "#e7e7e7";
+				//$objListItem->BorderColor = "#af8768";
 				$this->chkGroupType[] = $objListItem;
 			}
 			
 			$this->lstLocationFirst = new QListBox($this);
+			$this->lstLocationFirst->BackColor = "#e7e7e7";
+			$this->lstLocationFirst->BorderColor = "#af8768";
 			$this->lstLocationFirst->Name = 'First Preference';
 			$this->lstLocationFirst->AddItem('Belmont');
 			$this->lstLocationFirst->AddItem('East Palo Alto');
@@ -124,6 +152,8 @@
 			
 			
 			$this->lstLocationSecond = new QListBox($this);
+			$this->lstLocationSecond->BackColor = "#e7e7e7";
+			$this->lstLocationSecond->BorderColor = "#af8768";
 			$this->lstLocationSecond->Name = 'Second Preference';			
 			$this->lstLocationSecond->AddItem('Belmont');
 			$this->lstLocationSecond->AddItem('East Palo Alto');
@@ -239,13 +269,13 @@
 			// Create a new message
 			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 			$objMessage = new QEmailMessage();
-			$objMessage->From = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
-			$objMessage->To = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
-			$objMessage->Bcc = 'john.gorin@alcf.net';
+			$objMessage->From = 'Korie Loritts <korie.loritts@alcf.net>';
+			$objMessage->To = 'Korie Loritts <korie.loritts@alcf.net>';
+			$objMessage->Bcc = 'gareth.seeto@alcf.net';
 			$objMessage->Subject = 'Notification of Growth Group Registration';
 			
 			// Setup Plaintext Message
-			$strBody = "Hello Growth Group Director (Carisa)!\r\n\r\n";
+			$strBody = "Hello Growth Group Director (Korie)!\r\n\r\n";
 			$strBody .= 'r\n';			
 			$strBody .= 'Someone just registered to join a Growth Group!\r\n\r\n';
 			$strBody .= sprintf("Their Details:\r\n%s %s\r\nemail: %s \r\n\r\n",$this->objGroupRegistration->FirstName,$this->objGroupRegistration->LastName,$this->objGroupRegistration->Email);
@@ -253,7 +283,7 @@
 			$objMessage->Body = $strBody;
 			
 			// Also setup HTML message (optional)
-			$strBody = "Hello Growth Group Director (Carisa)!!<br><br>";
+			$strBody = "Hello Growth Group Director (Korie)!!<br><br>";
 			$strBody .= 'Someone just registered to join a Growth Group!<br><br>';			
 			$strBody .= sprintf("Their Details:<br>%s %s<br>email: %s<br><br>",$this->objGroupRegistration->FirstName,$this->objGroupRegistration->LastName,$this->objGroupRegistration->Email);
 			$strBody .= 'Blessings,<br> Noah.';
@@ -274,9 +304,9 @@
 			// Create a new message
 			// Note that you can list multiple addresses and that Qcodo supports Bcc and Cc
 			$objMessage = new QEmailMessage();
-			$objMessage->From = 'Carisa Hamilton <carisa.hamilton@alcf.net>';
+			$objMessage->From = 'Korie Loritts <korie.loritts@alcf.net>';
 			$objMessage->To = $this->objGroupRegistration->Email;
-			$objMessage->Bcc = 'carisa.hamilton@alcf.net';
+			$objMessage->Bcc = 'korie.loritts@alcf.net';
 			$objMessage->Subject = 'Invitation to Growth Groups';
 		
 			// Setup Plaintext Message
@@ -288,7 +318,7 @@
 			'center. \r\nOnce we receive your application, Pastor John will follow up with you for a short '.
 			'interview.\r\n';			
 			$strBody .= 'If you have any questions or concerns please feel free to contact me.\r\n\r\n';			
-			$strBody .= 'Blessings,\r\n Carisa';		
+			$strBody .= 'Blessings,\r\n Korie';		
 			$objMessage->Body = $strBody;
 		
 			// Also setup HTML message (optional)
@@ -300,7 +330,7 @@
 			'center. <br>Once we receive your application, Pastor John will follow up with you for a short '.
 			'interview.<br><br>';			
 			$strBody .= 'If you have any questions or concerns please feel free to contact me.<br><br>';			
-			$strBody .= 'Blessings,<br> Carisa';	
+			$strBody .= 'Blessings,<br> Korie';	
 			$objMessage->HtmlBody = $strBody;
 		
 			// Add the attachment

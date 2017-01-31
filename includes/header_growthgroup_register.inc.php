@@ -6,15 +6,15 @@
 		<script type="text/javascript" src="/assets/js/_core/_qc_packed.js"></script>
 		<style type="text/css">@import url("/scripts/styles.css");</style>
 		<style type="text/css">@import url("/scripts/ark.css");</style>
-	</head><body style="background-image:url(/images/bkgd_GG.png)" >
+	</head><body>
 
 	<div style="width: 100%; height: 100px; border-top: 1px solid #321;">
 		<div style="width: 980px; margin: auto;">
-			<a href="http://www.alcf.net/" title="ALCF Home"><div style="width: 250px; cursor: pointer; background: url(/images/alcf_logo_full.png) no-repeat; height: 80px; float: left; margin-top:20px; ">
+			<a href="http://www.alcf.net/" title="ALCF Home"><div style="width: 250px; cursor: pointer; background: url(/images/alcflogo-80x80.jpg) no-repeat; height: 80px; float: left; margin-top:20px; ">
 				&nbsp;
 			</div></a>
 			<div style="float: left;  padding-top: 10px;">
-				<img src="/images/GG_register_title.png"></img>
+				<img src="/images/GG_title.jpg"></img>
 			</div>	
 		</div>
 <?php if (!QApplication::IsBrowser(QBrowserType::InternetExplorer)) { ?>
