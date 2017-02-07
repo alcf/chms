@@ -17,8 +17,10 @@
 			$this->objPrayerRequest	= null;	
 			$this->dtgPrayerRequests = new PrayerRequestDataGrid($this);
 			$this->dtgPrayerRequests->Paginator = new QPaginator($this->dtgPrayerRequests);
-			$this->dtgPrayerRequests->MetaAddColumn('Date','Html=<?= $_ITEM->Date; ?>', 'HtmlEntities=false', 'Width=150px');
-			$this->dtgPrayerRequests->AddColumn(new QDataGridColumn('Prayer Request', '<?= $_FORM->lnkSelected_Render($_ITEM) ?>','HtmlEntities=false','Width=750px'));
+			$this->dtgPrayerRequests->MetaAddColumn('Date','Html=<?= $_ITEM->Date; ?>', 'HtmlEntities=false', 'Width=150px'
+				,array('OrderByClause' => QQ::OrderBy(QQN::PrayerRequest()->Date,false), 'ReverseOrderByClause' => QQ::OrderBy(QQN::PrayerRequest()->Date)));
+			$this->dtgPrayerRequests->AddColumn(new QDataGridColumn('Prayer Request', '<?= $_FORM->lnkSelected_Render($_ITEM) ?>','HtmlEntities=false','Width=750px'
+			,array('OrderByClause' => QQ::OrderBy(QQN::PrayerRequest()->Date,false), 'ReverseOrderByClause' => QQ::OrderBy(QQN::PrayerRequest()->Date))));
 			$this->dtgPrayerRequests->SetDataBinder('dtgPrayerRequests_Bind');
 			$this->dtgPrayerRequests->NoDataHtml = 'Currently there are no Prayer Requests.';
 			$objStyle = $this->dtgPrayerRequests->RowStyle;
@@ -34,7 +36,8 @@
             $objStyle->FontSize = 16;
 				
 			$this->dtgPrayerRequests->SortColumnIndex = 1;
-			$this->dtgPrayerRequests->ItemsPerPage = 20;
+			$this->dtgPrayerRequests->SortDirection = 1;
+			$this->dtgPrayerRequests->ItemsPerPage = 6;
 			
 			$this->lblSubject = new QLabel($this);
 			//$this->lblSubject->Width = 40;
@@ -56,7 +59,7 @@
 			$this->lblPrayerCount->Visible = false;
 			$this->btnIPrayed = new QButton($this);
 			$this->btnIPrayed->Text = 'I prayed for you';
-			$this->btnIPrayed->CssClass = 'linkButton';
+			$this->btnIPrayed->CssClass = 'primary';
             $this->btnIPrayed->AddAction(new QClickEvent(), new QServerAction('btnIPrayed_Click'));
             $this->btnIPrayed->Visible = false;
             
@@ -68,7 +71,7 @@
             
             $this->btnEncouragement = new QButton($this);
 			$this->btnEncouragement->Text = 'Send a note of encouragement';
-			$this->btnEncouragement->CssClass = 'linkButtonRight';
+			$this->btnEncouragement->CssClass = 'primary';
             $this->btnEncouragement->AddAction(new QClickEvent(), new QServerAction('btnEncouragement_Click'));
             $this->btnEncouragement->Visible = false;
 		}
@@ -141,11 +144,12 @@
 			}
 		}
 		
-		public function dtgPrayerRequests_Bind() {
+		public function dtgPrayerRequests_Bind() {			
 			$objConditions = QQ::AndCondition( QQ::Equal(QQN::PrayerRequest()->IsConfidential, false),
 											   QQ::Equal(QQN::PrayerRequest()->IsInappropriate, false));
-			$objClauses = array();
-							
+			$objClauses = array(QQ::OrderBy(QQN::PrayerRequest()->Date,false));
+
+			$this->dtgPrayerRequests->TotalItemCount = PrayerRequest::QueryCount($objConditions);
 			$this->dtgPrayerRequests->MetaDataBinder($objConditions, $objClauses);
 		}
 		
