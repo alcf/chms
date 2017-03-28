@@ -812,9 +812,10 @@
 								}
 							}
 						}
-					} else
+					} else {
 						// Nope -- Throw an exception
-						throw new Exception(sprintf('Control passed by Qform__FormControl does not exist: %s', $strId));
+						//throw new Exception(sprintf('Control passed by Qform__FormControl does not exist: %s', $strId));
+					}
 				}/* else {
 					// TODO: Code to automatically execute any PrimaryButton's onclick action, if applicable
 					// Difficult b/c of all the Qcodo hidden parameters that need to be set to get the action to work properly
